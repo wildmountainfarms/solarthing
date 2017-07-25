@@ -25,3 +25,9 @@ hs_err_pid*
 
 #Eclipse stuff
 /.metadata/
+*.eml
+*.iml
+
+#Idea stuff
+/.idea/
+
