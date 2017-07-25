@@ -8,8 +8,8 @@ import gnu.io.SerialPort;
 
 public class SolarMain {
 
-	void connect(String portName) throws Exception {
-		CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
+	void connect(ProgramArgs args) throws Exception {
+		CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(args.getPortName());
 		if (portIdentifier.isCurrentlyOwned()) {
 			System.out.println("Error: Port is currently in use");
 		} else {
@@ -26,7 +26,7 @@ public class SolarMain {
 				InputStream in = serialPort.getInputStream();
 				//OutputStream out = serialPort.getOutputStream();
 
-				(new Thread(new SolarReader(in))).start();
+				(new Thread(new SolarReader(in, args))).start();
 				//(new Thread(new SerialWriter(out))).start();
 
 			} else {
@@ -58,15 +58,13 @@ public class SolarMain {
 	}*/
 
 	public static void main(String[] args) {
-		String portName = "/dev/ttyUSB0";
-		if(args.length > 0){
-			portName = args[0];
-		}
-		System.out.println("Using portName: " + portName);
+		ProgramArgs pArgs = new ProgramArgs(args);
+		
 		try {
-			(new SolarMain()).connect(portName);
+			(new SolarMain()).connect(pArgs);
 		} catch (Exception e) {
 			e.printStackTrace();
+			pArgs.printInJson();
 		}
 	}
 

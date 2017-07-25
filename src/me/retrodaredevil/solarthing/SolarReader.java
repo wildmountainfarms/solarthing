@@ -7,7 +7,6 @@ import java.util.Collection;
 
 import org.lightcouch.CouchDbClient;
 import org.lightcouch.CouchDbException;
-import org.lightcouch.CouchDbProperties;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -18,9 +17,10 @@ import me.retrodaredevil.solarthing.util.json.JsonFile;
 
 public class SolarReader implements Runnable{
 	
-	private static final CouchDbProperties prop = new CouchDbProperties("solarthing", true, "http", "127.0.0.1", 5984, "admin", "relax");
+	//private static final CouchDbProperties prop = new CouchDbProperties("solarthing", true, "http", "127.0.0.1", 5984, "admin", "relax");
 	
 	private InputStream in;
+	//private ProgramArgs args;
 	private PacketCreator creator = null;
 	
 	private CouchDbClient client;
@@ -28,14 +28,16 @@ public class SolarReader implements Runnable{
 	private JsonFile jsonFile;
 	
 
-	public SolarReader(InputStream in) throws IOException {
+	public SolarReader(InputStream in, ProgramArgs args) throws IOException {
 		this.in = in;
+		//this.args = args;
 		try{
-			client = new CouchDbClient(prop);
+			client = new CouchDbClient(args.getProperties());
 			System.out.println("Hey! It worked!");
 		} catch (CouchDbException ex){
 			ex.printStackTrace();
 			System.err.println("Couldn't connect to data base.");
+			args.printInJson();
 			File file = new File("data.json");
 			if(!file.exists()){
 				file.createNewFile();
