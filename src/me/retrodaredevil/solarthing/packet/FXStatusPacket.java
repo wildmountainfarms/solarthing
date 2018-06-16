@@ -84,7 +84,8 @@ public class FXStatusPacket extends CharSolarPacket{
 		chksum = chksumHundreds * 100 + chksumTens * 10 + chksumOnes;
 
 		if(chksum != calculatedChksum){
-			throw new IllegalStateException("The chksum wasn't correct! Something must have gone wrong. chars: '" + new String(chars) + "'");
+			throw new IllegalStateException("The chksum wasn't correct! Something must have gone wrong. chars: '" + new String(chars) + "'" +
+					" chksum: " + chksum + " calculated chksum: " + calculatedChksum);
 		}
 
 		// set values
@@ -150,14 +151,6 @@ public class FXStatusPacket extends CharSolarPacket{
 		}
 		warnings = warningBuilder.toString();
 
-	}
-	private static int toInt(char c){
-//		return Integer.parseInt(c + "");
-		int r = c - 48; // 0 is represented as ascii(48)
-		if(r < 0 || r > 9){
-			throw new NumberFormatException(c + " is not a valid decimal digit");
-		}
-		return r;
 	}
 	@Override
 	public int getPortNumber() {
