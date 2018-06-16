@@ -64,6 +64,7 @@ public class SolarReader implements Runnable{
 			try {
 				while ((len = this.in.read(buffer)) > -1) {
 					String s = new String(buffer, 0, len);
+//					System.out.println("got characters: '" + s +"'");
 					Collection<SolarPacket> packets = creator.add(s.toCharArray());
 					
 					

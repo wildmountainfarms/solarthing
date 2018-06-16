@@ -34,11 +34,11 @@ public class PacketCreator49 implements PacketCreator{
 	public Collection<SolarPacket> add(char[] chars){
 		List<SolarPacket> r = null;
 		if(chars.length == 0){
-			return r;
+			return null;
 		}
 		char first = chars[0];
 		if(amount == 0 && first != START){
-			return r; // gotta wait for the start char
+			return null; // gotta wait for the start char
 			//this.bytes[amount] = START; // if for whatever reason it doesn't add the Start of Status Page byte to the start, we'll add it
 			//amount++;
 			//System.out.println("Just added the START char int value: " + ((int) START) + " chars[0]: " + getPrintValue(first) + " int value: " + ((int) first));
@@ -46,9 +46,10 @@ public class PacketCreator49 implements PacketCreator{
 		for(int i = 0; i < chars.length; i++, amount++){
 			if(canCreate()){
 				if(r == null){
-					r = new ArrayList<SolarPacket>();
+					r = new ArrayList<>();
 				}
-				r.add(create());
+				r.add(create()); // also resets bytes array and amount variable
+
 			}
 			char c = chars[i];
 			bytes[amount] = c;

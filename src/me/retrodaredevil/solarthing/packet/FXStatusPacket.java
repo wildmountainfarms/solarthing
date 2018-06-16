@@ -223,6 +223,11 @@ public class FXStatusPacket extends CharSolarPacket{
 		public boolean isActive(int errorMode){
 			return (errorMode & value) != 0;
 		}
+
+		@Override
+		public String toString() {
+			return name;
+		}
 	}
 	public enum ACMode{ // one must be active
 		NO_AC(0, "No AC"),
@@ -279,13 +284,19 @@ public class FXStatusPacket extends CharSolarPacket{
 		FAN_FAILURE(128, "Fan Failure");
 
 		private int value;
+		private String name;
 		WarningMode(int value, String name){
 			this.value = value;
+			this.name = name;
 		}
 		public boolean isActive(int warningMode){
 			return (warningMode & value) != 0;
 		}
 
+		@Override
+		public String toString() {
+			return name;
+		}
 	}
 
 }

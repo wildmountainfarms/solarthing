@@ -4,7 +4,7 @@ import java.util.Date;
 
 public abstract class CharSolarPacket implements SolarPacket {
 
-	protected transient char[] chars;
+	protected final transient char[] chars; // transient so it's not serialized
 	private final Date date;
 	
 	protected CharSolarPacket(char[] chars){

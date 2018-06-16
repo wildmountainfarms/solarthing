@@ -29,6 +29,8 @@ public class ProgramArgs {
 	private String userName = "admin";
 	@Parameter(names = {"-passwd", "-password"}, description = "The password for the database", password = true)
 	private String password = "relax";
+	@Parameter(names = {"--unit-test", "--unit"}, description = "If present, will use terminal input")
+	private boolean unitTest = false;
 	
 	
 	private CouchDbProperties databaseProperties;
@@ -45,6 +47,9 @@ public class ProgramArgs {
 		
 		databaseProperties = new CouchDbProperties(databaseName, true, protocol, host, port, userName, password);
 		
+	}
+	public boolean isUnitTest(){
+		return unitTest;
 	}
 	
 	public String getPortName(){
