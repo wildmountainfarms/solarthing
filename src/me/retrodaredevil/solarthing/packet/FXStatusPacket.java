@@ -15,6 +15,7 @@ public class FXStatusPacket extends CharSolarPacket{
 	private String operatingModeName;
 	private String errors;
 	private String acModeName;
+	private String miscModes;
 	private String warnings;
 
 	private final PacketType packetType = PacketType.FX_STATUS;
@@ -126,6 +127,7 @@ public class FXStatusPacket extends CharSolarPacket{
 		acModeName = acModeObject.toString();
 
 		// ==== Misc Stuff ====
+		miscModes = "";
 		if(MiscMode.FX_230V_UNIT.isActive(misc)){
 			System.out.println("230V unit is active! misc: " + misc);
 			inputVoltage *= 2;
@@ -135,9 +137,11 @@ public class FXStatusPacket extends CharSolarPacket{
 			chargerCurrent /= 2;
 			buyCurrent /= 2;
 			sellCurrent /= 2;
+			miscModes += MiscMode.FX_230V_UNIT.toString() + ", ";
 		}
 		if(MiscMode.AUX_OUTPUT_ON.isActive(misc)){
 			System.out.println("AUX output is on.");
+			miscModes += MiscMode.AUX_OUTPUT_ON.toString();
 		}
 
 		// ==== Warning Mode stuff ====
