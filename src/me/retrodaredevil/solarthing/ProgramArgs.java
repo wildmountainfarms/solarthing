@@ -9,25 +9,25 @@ import me.retrodaredevil.solarthing.util.json.JsonFile;
 
 public class ProgramArgs {
 	@Parameter(names = {"--help", "-h"}, help = true)
-	private boolean help;
+	private boolean help = false;
 	
-	@Parameter(names = { "-serial", "-serialport", "-usb", "-usbport" }, description = "Name of the USB serial port")
+	@Parameter(names = { "--serial", "--serialport", "--usb", "--usbport" }, description = "Name of the USB serial port")
 	private String portName = "/dev/ttyUSB0";
 	
-	@Parameter(names = {"-name", "-database"}, description = "The name of the database")
+	@Parameter(names = {"--name", "--database"}, description = "The name of the database")
 	private String databaseName = "solarthing";
 	
 	@Parameter(names = {}, description = "The protocol. Almost always http unless you know what you're doing.")
 	private String protocol = "http";
-	@Parameter(names = {"-host"})
+	@Parameter(names = {"--host"})
 	private String host = "127.0.0.1";
-	@Parameter(names = {"-p", "-port"}, description = "The port number.")
+	@Parameter(names = {"-p", "--port"}, description = "The port number.")
 	private int port = 5984;
 	
 	
-	@Parameter(names = {"-user", "-u"}, description = "The username for the database")
+	@Parameter(names = {"--user", "-u"}, description = "The username for the database")
 	private String userName = "admin";
-	@Parameter(names = {"-passwd", "-password"}, description = "The password for the database", password = true)
+	@Parameter(names = {"--passwd", "--password"}, description = "The password for the database", password = true)
 	private String password = "relax";
 	@Parameter(names = {"--unit-test", "--unit"}, description = "If present, will use terminal input")
 	private boolean unitTest = false;
@@ -41,7 +41,7 @@ public class ProgramArgs {
 			
 			
 			System.out.println("Help was called. Check ProgramArgs.java. Self explainatory. Sorry I'm lazy.\n" + 
-			"Also note, as a VM argument, you should have -Djava.library.path=usr/lib/jni");
+			"Also note, as a VM argument, you should have -Djava.library.path=/usr/lib/jni");
 			System.exit(1);
 		}
 		

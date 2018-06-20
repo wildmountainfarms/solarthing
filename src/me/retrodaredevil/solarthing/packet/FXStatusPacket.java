@@ -1,6 +1,8 @@
 package me.retrodaredevil.solarthing.packet;
 
 import lombok.Getter;
+import me.retrodaredevil.solarthing.util.CheckSumException;
+import me.retrodaredevil.solarthing.util.ParsePacketAsciiDecimalDigitException;
 
 public class FXStatusPacket extends CharSolarPacket{
 
@@ -22,11 +24,11 @@ public class FXStatusPacket extends CharSolarPacket{
 //
 	
 	
-	public FXStatusPacket(char[] chars) {
+	public FXStatusPacket(char[] chars) throws CheckSumException, ParsePacketAsciiDecimalDigitException{
 		super(chars);
-		init(super.chars);
 	}
-	private void init(char[] chars){
+	@Override
+	protected void init(char[] chars) throws CheckSumException, NumberFormatException{
 		// start of status page
 		int inverterAddressOnes = toInt(chars[1]);
 		// ,
@@ -85,8 +87,7 @@ public class FXStatusPacket extends CharSolarPacket{
 		chksum = chksumHundreds * 100 + chksumTens * 10 + chksumOnes;
 
 		if(chksum != calculatedChksum){
-			throw new IllegalStateException("The chksum wasn't correct! Something must have gone wrong. chars: '" + new String(chars) + "'" +
-					" chksum: " + chksum + " calculated chksum: " + calculatedChksum);
+			throw new CheckSumException(chksum, calculatedChksum, new String(chars));
 		}
 
 		// set values

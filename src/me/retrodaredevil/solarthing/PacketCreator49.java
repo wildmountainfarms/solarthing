@@ -8,6 +8,8 @@ import me.retrodaredevil.solarthing.packet.FXStatusPacket;
 import me.retrodaredevil.solarthing.packet.MXFMStatusPacket;
 import me.retrodaredevil.solarthing.packet.PacketType;
 import me.retrodaredevil.solarthing.packet.SolarPacket;
+import me.retrodaredevil.solarthing.util.CheckSumException;
+import me.retrodaredevil.solarthing.util.ParsePacketAsciiDecimalDigitException;
 import me.retrodaredevil.solarthing.util.json.JsonFile;
 
 public class PacketCreator49 implements PacketCreator{
@@ -43,23 +45,33 @@ public class PacketCreator49 implements PacketCreator{
 			//amount++;
 			//System.out.println("Just added the START char int value: " + ((int) START) + " chars[0]: " + getPrintValue(first) + " int value: " + ((int) first));
 		}
-		for(int i = 0; i < chars.length; i++, amount++){
-			if(canCreate()){
-				if(r == null){
-					r = new ArrayList<>();
+		for(char c : chars){
+			bytes[amount] = c;
+			amount++;
+			int length = bytes.length;
+			if(amount > length) {
+				System.err.println("amount should never be > length because we should have reset it.");
+			}
+			if(amount == length){
+				SolarPacket packet;
+				try{
+					packet = create(); // resets bytes array and amount
+					if(r == null){
+						r = new ArrayList<>();
+					}
+					r.add(packet);
+				} catch(CheckSumException | UnsupportedOperationException | ParsePacketAsciiDecimalDigitException ex){
+					ex.printStackTrace();
 				}
-				r.add(create()); // also resets bytes array and amount variable
 
 			}
-			char c = chars[i];
-			bytes[amount] = c;
 		}
 		return r;
 	}
-	private boolean canCreate(){
-		return amount == bytes.length;
-	}
-	private SolarPacket create(){
+//	private boolean canCreate(){
+//		return amount == bytes.length;
+//	}
+	private SolarPacket create() throws CheckSumException, ParsePacketAsciiDecimalDigitException, UnsupportedOperationException {
 		//printBytes();
 		
 		int value = (int) bytes[1]; // ascii value
@@ -69,17 +81,19 @@ public class PacketCreator49 implements PacketCreator{
 		} else if(value >= 65 && value <= 75){ // fx/fm
 			type = PacketType.MXFM_STATUS;
 		} else if(value >= 97 && value <= 106){
-			throw new UnsupportedOperationException("Not set up to use FLEXnet DC Status Packets.");
+			throw new UnsupportedOperationException("Not set up to use FLEXnet DC Status Packets. value: " + value);
 		} else {
-			throw new IllegalStateException("Ascii value: " + value + " not supported.");
+			throw new UnsupportedOperationException("Ascii value: " + value + " not supported.");
 		}
 		SolarPacket r = null;
 		if(type == PacketType.FX_STATUS){
 			r = new FXStatusPacket(bytes);
 		} else if(type == PacketType.MXFM_STATUS){
 			r = new MXFMStatusPacket(bytes);
-//			MXFMStatusPacket p = (MXFMStatusPacket) r;
-//			p.get
+		} else if(type == PacketType.FLEXNET_DC_STATUS){
+			System.err.println("FlexNET packet received but not expected. (Something's wrong with code not error in packet)");
+		} else {
+			System.err.println("Someone didn't account for a new enum value in the code. type: " + type.toString());
 		}
 		System.out.println(JsonFile.gson.toJson(r));
 		

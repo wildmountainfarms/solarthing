@@ -2,6 +2,8 @@ package me.retrodaredevil.solarthing.packet;
 
 import lombok.Getter;
 import me.retrodaredevil.solarthing.PacketCreator49;
+import me.retrodaredevil.solarthing.util.CheckSumException;
+import me.retrodaredevil.solarthing.util.ParsePacketAsciiDecimalDigitException;
 
 public class MXFMStatusPacket extends CharSolarPacket {
 
@@ -22,17 +24,11 @@ public class MXFMStatusPacket extends CharSolarPacket {
 	
 	private final PacketType packetType = PacketType.MXFM_STATUS;
 	
-	public MXFMStatusPacket(char[] chars) {
+	public MXFMStatusPacket(char[] chars) throws CheckSumException, ParsePacketAsciiDecimalDigitException {
 		super(chars);
-		try{
-			init(super.chars);
-		} catch(Throwable t){
-			printBytes();
-			
-			throw t;
-		}
 	}
-	private void init(char[] chars){
+	@Override
+	protected void init(char[] chars) throws CheckSumException, NumberFormatException{
 		// Start of Status Page
 		address = ((int) chars[1]) - 65; // if it is "A" then address would be 0
 		int addressChksum = address + 17; // if "A" -> 0 -> ascii 17 (device control 1) weird but that's how it is.
@@ -106,8 +102,7 @@ public class MXFMStatusPacket extends CharSolarPacket {
 		chksum = chksumHundreds * 100 + chksumTens * 10 + chksumOnes;
 
 		if(chksum != calculatedChksum){
-			throw new IllegalStateException("The chksum wasn't correct! Something must have gone wrong. chars: '" + new String(chars) + "'" +
-					" chksum: " + chksum + " calculated chksum: " + calculatedChksum);
+			throw new CheckSumException(chksum, calculatedChksum, new String(chars));
 		}
 
 		chargerCurrent = chargerCurrentTens * 10 + chargerCurrentOnes;

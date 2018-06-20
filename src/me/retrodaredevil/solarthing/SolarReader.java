@@ -33,10 +33,10 @@ public class SolarReader implements Runnable{
 		//this.args = args;
 		try{
 			client = new CouchDbClient(args.getProperties());
-			System.out.println("Hey! It worked!");
+			System.out.println("Connecting to database worked!");
 		} catch (CouchDbException ex){
 			ex.printStackTrace();
-			System.err.println("Couldn't connect to data base.");
+			System.err.println("Couldn't connect to data base. data going into ./data.json");
 			args.printInJson();
 			File file = new File("data.json");
 			if(!file.exists()){
