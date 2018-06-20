@@ -7,12 +7,12 @@ import me.retrodaredevil.solarthing.util.ParsePacketAsciiDecimalDigitException;
 public class FXStatusPacket extends CharSolarPacket{
 
 	@Getter
-	private int inverterAddress =  0, inverterCurrent =  00, chargerCurrent =  00, buyCurrent =  00, inputVoltage =  000, outputVoltage =  000, 
-		sellCurrent =  00, operatingMode =  00, errorMode =  000, acMode =  00;
+	private int inverterAddress, inverterCurrent, chargerCurrent, buyCurrent, inputVoltage, outputVoltage,
+		sellCurrent, operatingMode, errorMode, acMode;
 	@Getter
-	private float batteryVoltage =  00.0f;
+	private float batteryVoltage;
 	@Getter
-	private int misc =  000, warningMode =  000, chksum =  000;
+	private int misc, warningMode, chksum;
 
 	private String operatingModeName;
 	private String errors;
@@ -26,9 +26,13 @@ public class FXStatusPacket extends CharSolarPacket{
 	
 	public FXStatusPacket(char[] chars) throws CheckSumException, ParsePacketAsciiDecimalDigitException{
 		super(chars);
+		try{
+			init(chars);
+		} catch(NumberFormatException ex){
+			throw new ParsePacketAsciiDecimalDigitException(ex.getMessage(), charString);
+		}
 	}
-	@Override
-	protected void init(char[] chars) throws CheckSumException, NumberFormatException{
+	private void init(char[] chars) throws CheckSumException, NumberFormatException{
 		// start of status page
 		int inverterAddressOnes = toInt(chars[1]);
 		// ,

@@ -26,9 +26,13 @@ public class MXFMStatusPacket extends CharSolarPacket {
 	
 	public MXFMStatusPacket(char[] chars) throws CheckSumException, ParsePacketAsciiDecimalDigitException {
 		super(chars);
+		try{
+			init(chars);
+		} catch(NumberFormatException ex){
+			throw new ParsePacketAsciiDecimalDigitException(ex.getMessage(), charString);
+		}
 	}
-	@Override
-	protected void init(char[] chars) throws CheckSumException, NumberFormatException{
+	private void init(char[] chars) throws CheckSumException, NumberFormatException{
 		// Start of Status Page
 		address = ((int) chars[1]) - 65; // if it is "A" then address would be 0
 		int addressChksum = address + 17; // if "A" -> 0 -> ascii 17 (device control 1) weird but that's how it is.
@@ -140,13 +144,6 @@ public class MXFMStatusPacket extends CharSolarPacket {
 
 	}
 
-	private void printBytes(){
-		for(char c : super.chars){
-			System.out.print(getPrintValue(c));
-		}
-		System.out.println();
-		
-	}
 	private static String getPrintValue(char c){
 		if(c == PacketCreator49.START){
 			return "start";

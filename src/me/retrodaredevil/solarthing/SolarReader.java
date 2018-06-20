@@ -4,6 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.lightcouch.CouchDbClient;
 import org.lightcouch.CouchDbException;
@@ -33,6 +37,14 @@ public class SolarReader implements Runnable{
 		//this.args = args;
 		try{
 			client = new CouchDbClient(args.getProperties());
+			Logger logger = Logger.getLogger("com.couchbase.client");
+			Level level = Level.INFO;
+			logger.setLevel(level);
+			for(Handler h : logger.getParent().getHandlers()) {
+				if(h instanceof ConsoleHandler){
+					h.setLevel(level);
+				}
+			}
 			System.out.println("Connecting to database worked!");
 		} catch (CouchDbException ex){
 			ex.printStackTrace();

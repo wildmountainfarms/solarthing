@@ -55,7 +55,11 @@ public class PacketCreator49 implements PacketCreator{
 			if(amount == length){
 				SolarPacket packet;
 				try{
+					System.out.println();
+					System.out.println("============");
 					packet = create(); // resets bytes array and amount
+					System.out.println("============");
+					System.out.println();
 					if(r == null){
 						r = new ArrayList<>();
 					}
