@@ -31,7 +31,8 @@ public class ProgramArgs {
 	private String password = "relax";
 	@Parameter(names = {"--unit-test", "--unit"}, description = "If present, will use terminal input")
 	private boolean unitTest = false;
-	
+	@Parameter(names = {"--throttle", "--throttle-factor", "--tf"}, description = "Every nth packet, data should be saved.")
+	private int throttleFactor = 12;
 	
 	private CouchDbProperties databaseProperties;
 	
@@ -50,6 +51,9 @@ public class ProgramArgs {
 	}
 	public boolean isUnitTest(){
 		return unitTest;
+	}
+	public int getThrottleFactor(){
+		return throttleFactor;
 	}
 	
 	public String getPortName(){

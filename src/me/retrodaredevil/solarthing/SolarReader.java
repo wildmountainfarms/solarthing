@@ -20,20 +20,22 @@ import me.retrodaredevil.solarthing.packet.SolarPacket;
 import me.retrodaredevil.solarthing.util.json.JsonFile;
 
 public class SolarReader implements Runnable{
-	
-	//private static final CouchDbProperties prop = new CouchDbProperties("solarthing", true, "http", "127.0.0.1", 5984, "admin", "relax");
-	
+	private static final long SAME_PACKET_COLLECTION_TIME = 250;
+
+	private final int throttleFactor;
 	private InputStream in;
 	//private ProgramArgs args;
 	private PacketCreator creator = null;
+	private int packetCollectionCounter = -1;
+	private long lastFirstSavePacket = Long.MIN_VALUE;
 	
 	private CouchDbClient client;
-	
 	private JsonFile jsonFile;
 	
 
 	public SolarReader(InputStream in, ProgramArgs args) throws IOException {
 		this.in = in;
+		this.throttleFactor = args.getThrottleFactor();
 		//this.args = args;
 		try{
 			client = new CouchDbClient(args.getProperties());
@@ -79,31 +81,39 @@ public class SolarReader implements Runnable{
 //					System.out.println("got characters: '" + s +"'");
 					Collection<SolarPacket> packets = creator.add(s.toCharArray());
 					
-					
-					if(packets != null){
-						for(SolarPacket p : packets){
-							if(client != null){
-								client.save(p);
-							} else {
-								
-								JsonElement el = jsonFile.getObject().get("packets"); // can be null
-								if(el == null){
-									el = new JsonArray();
-									jsonFile.getObject().add("packets", el);
-								}
-								if(el instanceof JsonArray){
-									JsonArray ar = (JsonArray) el;
-									JsonObject add = (JsonObject) JsonFile.pa.parse(JsonFile.gson.toJson(p));
-									ar.add(add);
+					if(packets != null){ // packets.length should never be 0 if it's not null
+						long now = System.currentTimeMillis();
+						if(lastFirstSavePacket + SAME_PACKET_COLLECTION_TIME < now){
+							lastFirstSavePacket = now;
+							packetCollectionCounter++; // starts at -1
+						}
+						if(packetCollectionCounter % throttleFactor == 0){
+							System.out.println("saving above packet(s).");
+							for(SolarPacket p : packets){
+								if(client != null){
+									client.save(p);
 								} else {
-									throw new IllegalStateException("The JsonElement retreived from packets, must be a JsonArray");
+
+									JsonElement el = jsonFile.getObject().get("packets"); // can be null
+									if(el == null){
+										el = new JsonArray();
+										jsonFile.getObject().add("packets", el);
+									}
+									if(el instanceof JsonArray){
+										JsonArray ar = (JsonArray) el;
+										JsonObject add = (JsonObject) JsonFile.pa.parse(JsonFile.gson.toJson(p));
+										ar.add(add);
+									} else {
+										throw new IllegalStateException("The JsonElement retreived from packets, must be a JsonArray");
+									}
+									jsonFile.save();
 								}
 							}
+						} else {
+							System.out.println("Not saving above packet(s) because " +
+									"throttleFactor: " + throttleFactor +
+									" packetCollectionCounter: " + packetCollectionCounter);
 						}
-					}
-	
-					if(jsonFile != null){
-						jsonFile.save();
 					}
 				}
 			} catch (IOException e) {
