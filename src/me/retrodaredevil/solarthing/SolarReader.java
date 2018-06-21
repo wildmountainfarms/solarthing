@@ -21,7 +21,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class SolarReader extends Thread{
+public class SolarReader {
 	private static final long SAME_PACKET_COLLECTION_TIME = 250;
 
 	private final int throttleFactor;
@@ -76,8 +76,10 @@ public class SolarReader extends Thread{
 		}
 	}
 
-	@Override
-	public void run() {
+	/**
+	 * Takes over the current thread and runs forever
+	 */
+	public void start() {
 		final PacketCreator creator = new PacketCreator49();
 		final List<SolarPacket> packetList = new ArrayList<>(); // a list that piles up SolarPackets and saves when needed
 		long lastFirstReceivedData = Long.MIN_VALUE; // the last time a packet was added to packetList
