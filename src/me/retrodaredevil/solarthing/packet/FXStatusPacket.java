@@ -153,7 +153,7 @@ public class FXStatusPacket extends CharSolarPacket{
 		StringBuilder warningBuilder = new StringBuilder();
 		for(WarningMode mode : WarningMode.values()){
 			if(mode.isActive(warningMode)){
-				System.out.println("WarningMode: " + mode.toString() + " is active!! Possibly very bad");
+//				System.out.println("WarningMode: " + mode.toString() + " is active!! Possibly very bad");
 				warningBuilder.append(mode.toString());
 				warningBuilder.append(',');
 			}

@@ -20,7 +20,7 @@ public class JsonFile {
 	public static final JsonParser pa = new JsonParser();
 	public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 	
-	private File file;
+	private final File file;
 	private boolean isJson = true;
 	
 	private JsonObject obj;

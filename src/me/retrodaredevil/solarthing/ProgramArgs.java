@@ -34,7 +34,7 @@ public class ProgramArgs {
 	@Parameter(names = {"--throttle", "--throttle-factor", "--tf"}, description = "Every nth packet, data should be saved.")
 	private int throttleFactor = 12;
 	
-	private CouchDbProperties databaseProperties;
+	private final CouchDbProperties databaseProperties;
 	
 	public ProgramArgs(String[] args){
 		JCommander.newBuilder().addObject(this).build().parse(args);

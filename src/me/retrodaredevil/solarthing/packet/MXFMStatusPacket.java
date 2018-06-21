@@ -89,6 +89,9 @@ public class MXFMStatusPacket extends CharSolarPacket {
 			dailyAHHundreds = toInt(chars[37]);
 			dailyAHTens = toInt(chars[38]);
 			dailyAHOnes = toInt(chars[39]);
+			if(dailyAHHundreds != 0 || dailyAHTens != 0 || dailyAHOnes != 0){
+				System.err.println("Even though we are on old firmware, dailyAH isn't 0.");
+			}
 			// , UNUSED UNUSED UNUSED
 		}
 

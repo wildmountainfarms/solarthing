@@ -1,17 +1,13 @@
 package me.retrodaredevil.solarthing.packet;
 
-import java.util.Date;
-
 public abstract class CharSolarPacket implements SolarPacket {
 
 	private final transient char[] chars; // transient so it's not serialized
 	protected final transient String charString;
-	private final Date date;
-	
+
 	protected CharSolarPacket(char[] chars){
 		this.chars = chars;
 		this.charString = new String(chars);
-		date = new Date();
 		System.out.println(charString);
 	}
 //	protected abstract void init(char[] chars) throws CheckSumException, NumberFormatException;
@@ -29,9 +25,9 @@ public abstract class CharSolarPacket implements SolarPacket {
 	public char getChar(int index) throws IndexOutOfBoundsException {
 		return chars[index];
 	}
-	@Override
-	public Date getDateCreated() {
-		return date;
-	}
+//	@Override
+//	public Date getDateCreated() {
+//		return date;
+//	}
 	
 }

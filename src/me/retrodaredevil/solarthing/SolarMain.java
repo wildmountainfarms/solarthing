@@ -1,19 +1,20 @@
 package me.retrodaredevil.solarthing;
 
-import java.io.InputStream;
-import java.util.Scanner;
-
 import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
 
+import java.io.InputStream;
+
 public class SolarMain {
 
 	void connect(ProgramArgs args) throws Exception {
+//		SolarSaver saver = new SolarSaver(args);
 		if(args.isUnitTest()){
 			System.out.println("Starting in unit test mode. (No Serial port connection needed!)");
 			InputStream in = System.in;
-			(new Thread(new SolarReader(in, args))).start();
+			(new SolarReader(in, args)).start();
+//			saver.start();
 			return;
 		}
 
@@ -34,7 +35,8 @@ public class SolarMain {
 				InputStream in = serialPort.getInputStream();
 				//OutputStream out = serialPort.getOutputStream();
 
-				(new Thread(new SolarReader(in, args))).start();
+				(new SolarReader(in, args)).start();
+//				saver.start();
 				//(new Thread(new SerialWriter(out))).start();
 
 			} else {
