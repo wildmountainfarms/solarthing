@@ -10,7 +10,7 @@ import me.retrodaredevil.solarthing.packet.PacketType;
 import me.retrodaredevil.solarthing.packet.SolarPacket;
 import me.retrodaredevil.solarthing.util.CheckSumException;
 import me.retrodaredevil.solarthing.util.ParsePacketAsciiDecimalDigitException;
-import me.retrodaredevil.solarthing.util.json.JsonFile;
+import me.retrodaredevil.util.json.JsonFile;
 
 public class PacketCreator49 implements PacketCreator{
 

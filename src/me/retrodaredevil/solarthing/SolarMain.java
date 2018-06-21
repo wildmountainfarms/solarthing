@@ -3,13 +3,13 @@ package me.retrodaredevil.solarthing;
 import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
+import me.retrodaredevil.ProgramArgs;
 
 import java.io.InputStream;
 
 public class SolarMain {
 
-	void connect(ProgramArgs args) throws Exception {
-//		SolarSaver saver = new SolarSaver(args);
+	public void connect(ProgramArgs args) throws Exception {
 		if(args.isUnitTest()){
 			System.out.println("Starting in unit test mode. (No Serial port connection needed!)");
 			InputStream in = System.in;

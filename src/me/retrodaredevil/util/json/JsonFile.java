@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing.util.json;
+package me.retrodaredevil.util.json;
 
 import java.io.BufferedWriter;
 import java.io.File;

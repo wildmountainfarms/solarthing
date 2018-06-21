@@ -1,11 +1,11 @@
-package me.retrodaredevil.solarthing;
+package me.retrodaredevil;
 
 import org.lightcouch.CouchDbProperties;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 
-import me.retrodaredevil.solarthing.util.json.JsonFile;
+import me.retrodaredevil.util.json.JsonFile;
 
 public class ProgramArgs {
 	@Parameter(names = {"--help", "-h"}, help = true)
