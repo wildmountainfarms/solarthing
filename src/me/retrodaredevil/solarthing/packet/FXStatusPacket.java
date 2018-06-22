@@ -1,17 +1,15 @@
 package me.retrodaredevil.solarthing.packet;
 
-import lombok.Getter;
 import me.retrodaredevil.solarthing.util.CheckSumException;
 import me.retrodaredevil.solarthing.util.ParsePacketAsciiDecimalDigitException;
 
 public class FXStatusPacket extends CharSolarPacket{
 
-	@Getter
-	private int inverterAddress, inverterCurrent, chargerCurrent, buyCurrent, inputVoltage, outputVoltage,
+	private int inverterCurrent, chargerCurrent, buyCurrent, inputVoltage, outputVoltage,
 		sellCurrent, operatingMode, errorMode, acMode;
-	@Getter
+
 	private float batteryVoltage;
-	@Getter
+
 	private int misc, warningMode, chksum;
 
 	private String operatingModeName;
@@ -20,12 +18,11 @@ public class FXStatusPacket extends CharSolarPacket{
 	private String miscModes;
 	private String warnings;
 
-	private final PacketType packetType = PacketType.FX_STATUS;
 //
 	
 	
 	public FXStatusPacket(char[] chars) throws CheckSumException, ParsePacketAsciiDecimalDigitException{
-		super(chars);
+		super(chars, PacketType.FX_STATUS);
 		try{
 			init(chars);
 		} catch(NumberFormatException ex){
@@ -95,7 +92,7 @@ public class FXStatusPacket extends CharSolarPacket{
 		}
 
 		// set values
-		inverterAddress = inverterAddressOnes;
+		address = inverterAddressOnes;
 		inverterCurrent = inverterCurrentTens * 10 + inverterCurrentOnes;
 		chargerCurrent = chargerCurrentTens * 10 + chargerCurrentOnes;
 		buyCurrent = buyCurrentTens * 10 + buyCurrentOnes;
@@ -160,14 +157,6 @@ public class FXStatusPacket extends CharSolarPacket{
 		}
 		warnings = warningBuilder.toString();
 
-	}
-	@Override
-	public int getPortNumber() {
-		return inverterAddress;
-	}
-	@Override
-	public PacketType getPacketType() {
-		return packetType;
 	}
 	public enum OperationalMode{ // one must be active
 		UNKNOWN(-1, "unknown"),

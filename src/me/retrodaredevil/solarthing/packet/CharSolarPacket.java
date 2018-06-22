@@ -5,9 +5,14 @@ public abstract class CharSolarPacket implements SolarPacket {
 	private final transient char[] chars; // transient so it's not serialized
 	protected final transient String charString;
 
-	protected CharSolarPacket(char[] chars){
+	private final PacketType packetType;
+
+	protected int address;
+
+	protected CharSolarPacket(char[] chars, PacketType packetType){
 		this.chars = chars;
 		this.charString = new String(chars);
+		this.packetType = packetType;
 		System.out.println(charString);
 	}
 //	protected abstract void init(char[] chars) throws CheckSumException, NumberFormatException;
@@ -21,13 +26,4 @@ public abstract class CharSolarPacket implements SolarPacket {
 		return r;
 	}
 
-	@Override
-	public char getChar(int index) throws IndexOutOfBoundsException {
-		return chars[index];
-	}
-//	@Override
-//	public Date getDateCreated() {
-//		return date;
-//	}
-	
 }

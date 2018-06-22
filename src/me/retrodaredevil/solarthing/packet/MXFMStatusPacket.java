@@ -1,31 +1,22 @@
 package me.retrodaredevil.solarthing.packet;
 
-import lombok.Getter;
-import me.retrodaredevil.solarthing.PacketCreator49;
 import me.retrodaredevil.solarthing.util.CheckSumException;
 import me.retrodaredevil.solarthing.util.ParsePacketAsciiDecimalDigitException;
 
 public class MXFMStatusPacket extends CharSolarPacket {
 
-	@Getter
-	private int address = 0, chargerCurrent = 00, pvCurrent = 00, inputVoltage = 000;
-	@Getter
+	private int chargerCurrent = 00, pvCurrent = 00, inputVoltage = 000;
 	private float dailyKWH = 00.0f, ampChargerCurrent = 0.0f;
-	@Getter
 	private int auxMode = 00, errorMode = 000, chargerMode = 00;
-	@Getter
 	private float batteryVoltage = 00.0f;
-	@Getter
 	private int dailyAH = 0000, chksum = 000;
 
 	private String auxModeName;
 	private String errors;
 	private String chargerModeName;
 	
-	private final PacketType packetType = PacketType.MXFM_STATUS;
-	
 	public MXFMStatusPacket(char[] chars) throws CheckSumException, ParsePacketAsciiDecimalDigitException {
-		super(chars);
+		super(chars, PacketType.MXFM_STATUS);
 		try{
 			init(chars);
 		} catch(NumberFormatException ex){
@@ -147,25 +138,17 @@ public class MXFMStatusPacket extends CharSolarPacket {
 
 	}
 
-	private static String getPrintValue(char c){
-		if(c == PacketCreator49.START){
-			return "start";
-		} else if(c == PacketCreator49.END){
-			return "end";
-		} else if(c == PacketCreator49.NULL_CHAR){
-			return "NUL";
-		}
-		return c + "";
-	}
-	@Override
-	public int getPortNumber() {
-		return address;
-	}
+//	private static String getPrintValue(char c){
+//		if(c == PacketCreator49.START){
+//			return "start";
+//		} else if(c == PacketCreator49.END){
+//			return "end";
+//		} else if(c == PacketCreator49.NULL_CHAR){
+//			return "NUL";
+//		}
+//		return c + "";
+//	}
 
-	@Override
-	public PacketType getPacketType() {
-		return packetType;
-	}
 	public enum AuxMode {
 		UNKNOWN(-1, "unknown"),
 		DISABLED(0, "disabled"),
@@ -221,7 +204,6 @@ public class MXFMStatusPacket extends CharSolarPacket {
 			return name;
 		}
 	}
-
 	public enum ChargeMode {
 		UNKNOWN(-1, "unknown"),
 		SILENT(0, "Silent"),
