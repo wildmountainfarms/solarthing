@@ -88,11 +88,11 @@ public class SolarReader {
 		int packetCollectionCounter = -1;
 
 		final byte[] buffer = new byte[1024];
-		int len;
 
 		while(true) {
 			try {
 				// ======= read bytes, append to packetList =======
+				int len;
 				while (this.in.available() > 0 && (len = this.in.read(buffer)) > -1) {
 					String s = new String(buffer, 0, len);
 //					System.out.println("got characters: '" + s +"'");
@@ -120,7 +120,7 @@ public class SolarReader {
 							packetList.clear();
 							if (client != null) {
 								client.save(packetCollection);
-							} else {
+							} else { // this entire else statement is to save it to a json file;
 
 								JsonElement el = jsonFile.getObject().get("packets"); // can be null
 								if (el == null) {
@@ -146,10 +146,14 @@ public class SolarReader {
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
+				System.err.println("We got an IOException which doesn't happen often. We are going to try again so hopefully this works.");
 			} catch(DocumentConflictException ex){
 				ex.printStackTrace();
 				System.err.println("Error while saving something to couchdb. Continuing like nothing happened now. " +
 						"Your throttle factor (--tf) may be too low.");
+			} catch(CouchDbException ex){
+				ex.printStackTrace();
+				System.err.println("We got a CouchDbException probably meaning we couldn't reach the database.");
 			}
 		}
 	}

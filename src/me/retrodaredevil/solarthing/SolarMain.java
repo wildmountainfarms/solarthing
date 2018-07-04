@@ -15,6 +15,7 @@ public class SolarMain {
 			InputStream in = System.in;
 			(new SolarReader(in, args)).start();
 //			saver.start();
+			System.out.println("Program is ending. Was in unit test mode.");
 			return;
 		}
 
@@ -33,11 +34,11 @@ public class SolarMain {
 				serialPort.setRTS(false);
 				
 				InputStream in = serialPort.getInputStream();
-				//OutputStream out = serialPort.getOutputStream();
 
 				(new SolarReader(in, args)).start();
-//				saver.start();
-				//(new Thread(new SerialWriter(out))).start();
+				final String errorString = "Program is ending.";
+				System.out.println(errorString);
+				System.err.println(errorString);
 
 			} else {
 				System.out.println("Error: Only serial ports are handled by this example.");
@@ -73,6 +74,7 @@ public class SolarMain {
 			e.printStackTrace();
 			pArgs.printInJson();
 		}
+		System.out.println("Program is now fully exiting.");
 	}
 
 }
