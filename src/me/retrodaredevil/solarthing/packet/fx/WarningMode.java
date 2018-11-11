@@ -1,9 +1,11 @@
 package me.retrodaredevil.solarthing.packet.fx;
 
+import me.retrodaredevil.solarthing.packet.BitmaskMode;
+
 /**
  * The warning modes for the fx
  */
-public enum WarningMode { // multiple can be active (or 0)
+public enum WarningMode implements BitmaskMode { // multiple can be active (or 0)
 	AC_INPUT_FREQ_HIGH(1, "AC Input Freq High"),
 	AC_INPUT_FREQ_LOW(2, "AC Input Freq Low"),
 	INPUT_VAC_HIGH(4, "Input VAC High"),
@@ -19,8 +21,15 @@ public enum WarningMode { // multiple can be active (or 0)
 		this.value = value;
 		this.name = name;
 	}
-	public boolean isActive(int warningMode){
-		return (warningMode & value) != 0;
+
+	@Override
+	public int getMaskValue() {
+        return value;
+	}
+
+	@Override
+	public String getModeName() {
+        return name;
 	}
 
 	@Override

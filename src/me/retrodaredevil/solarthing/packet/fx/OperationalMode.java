@@ -1,10 +1,12 @@
 package me.retrodaredevil.solarthing.packet.fx;
 
 
+import me.retrodaredevil.solarthing.packet.CodeMode;
+
 /**
  * The FX Operational Mode
  */
-public enum OperationalMode{ // one must be active
+public enum OperationalMode implements CodeMode { // one must be active
 	UNKNOWN(-1, "unknown"),
 	INV_OFF(0, "Inv Off"),
 	SEARCH(1, "Search"),
@@ -22,17 +24,28 @@ public enum OperationalMode{ // one must be active
 	AGS_ERROR(91, "AGS Error"),
 	COM_ERROR(92, "Com Error");
 
-	private int value;
-	private String name;
+	private final int value;
+	private final String name;
+
 	OperationalMode(int value, String name){
 		this.value = value;
 		this.name = name;
+	}
+	@Override
+	public int getValueCode() {
+		return value;
+	}
+
+	@Override
+	public String getModeName() {
+		return name;
 	}
 
 	@Override
 	public String toString() {
 		return name;
 	}
+
 	public static OperationalMode getMode(int operatingMode){
 		for(OperationalMode mode : values()){
 			if(mode.value == operatingMode){
@@ -41,5 +54,6 @@ public enum OperationalMode{ // one must be active
 		}
 		return UNKNOWN;
 	}
+
 }
 

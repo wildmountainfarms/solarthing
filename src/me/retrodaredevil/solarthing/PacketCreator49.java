@@ -5,34 +5,24 @@ import java.util.Collection;
 import java.util.List;
 
 import me.retrodaredevil.solarthing.packet.fx.ImmutableFXStatusPacket;
-import me.retrodaredevil.solarthing.packet.mxfm.CharMXFMStatusPacket;
 import me.retrodaredevil.solarthing.packet.SolarPacket;
+import me.retrodaredevil.solarthing.packet.mxfm.ImmutableMXFMStatusPacket;
 import me.retrodaredevil.solarthing.util.CheckSumException;
 import me.retrodaredevil.solarthing.util.ParsePacketAsciiDecimalDigitException;
 import me.retrodaredevil.util.json.JsonFile;
 
 public class PacketCreator49 implements PacketCreator{
-
-	//Constants
 	public static final char START = 10;
 	public static final char END = 13;
 	public static final char NULL_CHAR = 0;
 	
-	
-	
-	// Private Variables
 	private final char[] bytes = new char[49];
 	/** The amount of char elements initialized in the bytes array */
 	private int amount = 0;
-	
-	//Constructor
-	public PacketCreator49(){
-		
-	}
-	
+
 	//Public Methods
 	@Override
-	public Collection<SolarPacket> add(char[] chars){ // TODO set this up to tolerate packets that aren't 49 bytes (utilizing END char)
+	public Collection<SolarPacket> add(char[] chars){ // TODO set this up to tolerate (and ignore) packets that aren't 49 bytes (utilizing END char)
 		List<SolarPacket> r = null;
 		if(chars.length == 0){
 			return null;
@@ -79,7 +69,7 @@ public class PacketCreator49 implements PacketCreator{
 		if(value >= 48 && value <= 58){ // fx status
 			r = new ImmutableFXStatusPacket(bytes);
 		} else if(value >= 65 && value <= 75){ // fx/fm
-			r = new CharMXFMStatusPacket(bytes);
+			r = new ImmutableMXFMStatusPacket(bytes);
 		} else if(value >= 97 && value <= 106){
 			throw new UnsupportedOperationException("Not set up to use FLEXnet DC Status Packets. value: " + value);
 		} else {

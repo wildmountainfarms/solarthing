@@ -40,11 +40,6 @@ public interface FXStatusPacket extends FXStatusPacketRaw {
 	 */
 	int getSellCurrent();
 
-	/**
-	 * Should be serialized as "batteryVoltageString" if serialized at all
-	 * @return The battery voltage as a String
-	 */
-	String getBatteryVoltageString();
 
 	/**
 	 * Should be serialized as "operatingModeName"

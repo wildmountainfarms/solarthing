@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.packet.fx;
 
+import me.retrodaredevil.solarthing.packet.BitmaskMode;
 import me.retrodaredevil.solarthing.packet.PacketType;
 import me.retrodaredevil.solarthing.util.CheckSumException;
 import me.retrodaredevil.solarthing.util.ParsePacketAsciiDecimalDigitException;
@@ -172,9 +173,7 @@ public class ImmutableFXStatusPacket implements FXStatusPacket {
 		acModeName = acModeObject.toString();
 
 		// ==== Misc Stuff ====
-        StringBuilder miscModesBuilder = new StringBuilder();
 		if(MiscMode.FX_230V_UNIT.isActive(misc)){
-//			System.out.println("230V unit is active! misc: " + misc);
 			inputVoltage = inputVoltageRaw * 2;
 			outputVoltage = inputVoltageRaw * 2;
 
@@ -182,7 +181,6 @@ public class ImmutableFXStatusPacket implements FXStatusPacket {
 			chargerCurrent = chargerCurrentRaw / 2;
 			buyCurrent = buyCurrentRaw / 2;
 			sellCurrent = sellCurrentRaw / 2;
-			miscModesBuilder.append(MiscMode.FX_230V_UNIT.toString()).append(", ");
 		} else {
 			inputVoltage = inputVoltageRaw;
 			outputVoltage = outputVoltageRaw;
@@ -192,17 +190,12 @@ public class ImmutableFXStatusPacket implements FXStatusPacket {
 			buyCurrent = buyCurrentRaw;
 			sellCurrent = sellCurrentRaw;
 		}
-		if(MiscMode.AUX_OUTPUT_ON.isActive(misc)){
-//			System.out.println("AUX output is on.");
-			miscModesBuilder.append(MiscMode.AUX_OUTPUT_ON);
-		}
-		miscModes = miscModesBuilder.toString();
+		miscModes = BitmaskMode.toString(MiscMode.class, misc);
 
 		// ==== Warning Mode stuff ====
 		StringBuilder warningBuilder = new StringBuilder();
 		for(WarningMode mode : WarningMode.values()){
 			if(mode.isActive(warningMode)){
-//				System.out.println("WarningMode: " + mode.toString() + " is active!! Possibly very bad");
 				warningBuilder.append(mode.toString()).append(", ");
 			}
 		}
