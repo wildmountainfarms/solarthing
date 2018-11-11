@@ -1,9 +1,11 @@
-package me.retrodaredevil.solarthing.packet;
+package me.retrodaredevil.solarthing.packet.mxfm;
 
+import me.retrodaredevil.solarthing.packet.CharSolarPacket;
+import me.retrodaredevil.solarthing.packet.PacketType;
 import me.retrodaredevil.solarthing.util.CheckSumException;
 import me.retrodaredevil.solarthing.util.ParsePacketAsciiDecimalDigitException;
 
-public class MXFMStatusPacket extends CharSolarPacket {
+public class CharMXFMStatusPacket extends CharSolarPacket {
 
 	private int chargerCurrent = 00, pvCurrent = 00, inputVoltage = 000;
 	private float dailyKWH = 00.0f, ampChargerCurrent = 0.0f;
@@ -15,7 +17,7 @@ public class MXFMStatusPacket extends CharSolarPacket {
 	private String errors;
 	private String chargerModeName;
 	
-	public MXFMStatusPacket(char[] chars) throws CheckSumException, ParsePacketAsciiDecimalDigitException {
+	public CharMXFMStatusPacket(char[] chars) throws CheckSumException, ParsePacketAsciiDecimalDigitException {
 		super(chars, PacketType.MXFM_STATUS);
 		try{
 			init(chars);
@@ -124,7 +126,7 @@ public class MXFMStatusPacket extends CharSolarPacket {
 
 		// ==== Error Mode stuff ====
 		StringBuilder errorBuilder = new StringBuilder();
-		for(ErrorMode mode : ErrorMode.values()){
+		for(MXFMErrorMode mode : MXFMErrorMode.values()){
 			if(mode.isActive(errorMode)){
 				errorBuilder.append(mode.toString());
 				errorBuilder.append(',');
@@ -184,14 +186,14 @@ public class MXFMStatusPacket extends CharSolarPacket {
 			return UNKNOWN;
 		}
 	}
-	public enum ErrorMode {
+	public enum MXFMErrorMode {
 		SHORTED_BATTERY_SENSOR(32, "Shorted Battery Sensor"),
 		TOO_HOT(64, "Too Hot"),
 		HIGH_VOC(128, "High VOC");
 
 		private int value;
 		private String name;
-		ErrorMode(int value, String name){
+		MXFMErrorMode(int value, String name){
 			this.value = value;
 			this.name = name;
 		}

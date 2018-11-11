@@ -82,7 +82,7 @@ public class SolarReader {
 	 */
 	public void start() {
 		final PacketCreator creator = new PacketCreator49();
-		final List<SolarPacket> packetList = new ArrayList<>(); // a list that piles up SolarPackets and saves when needed
+		final List<SolarPacket> packetList = new ArrayList<>(); // a list that piles up SolarPackets and saves when needed // may be cleared
 		long lastFirstReceivedData = Long.MIN_VALUE; // the last time a packet was added to packetList
 
 		int packetCollectionCounter = -1;

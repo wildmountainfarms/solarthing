@@ -12,3 +12,10 @@ Run the command
 ```
 mvn clean compile assembly:single
 ```
+
+### References
+New documentation:
+http://www.outbackpower.com/downloads/documents/system_management/mate/mate_serial_communicationsguide.pdf
+
+Older documentation:
+https://www.wmrc.edu/projects/BARenergy/manuals/outback-manuals/Mate_Serial_Comm_R302.pdf

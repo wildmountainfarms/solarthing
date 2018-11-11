@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import me.retrodaredevil.solarthing.packet.FXStatusPacket;
-import me.retrodaredevil.solarthing.packet.MXFMStatusPacket;
-import me.retrodaredevil.solarthing.packet.PacketType;
+import me.retrodaredevil.solarthing.packet.fx.ImmutableFXStatusPacket;
+import me.retrodaredevil.solarthing.packet.mxfm.CharMXFMStatusPacket;
 import me.retrodaredevil.solarthing.packet.SolarPacket;
 import me.retrodaredevil.solarthing.util.CheckSumException;
 import me.retrodaredevil.solarthing.util.ParsePacketAsciiDecimalDigitException;
@@ -23,7 +22,7 @@ public class PacketCreator49 implements PacketCreator{
 	
 	// Private Variables
 	private final char[] bytes = new char[49];
-	/** The amount of elements initialized in the bytes array */
+	/** The amount of char elements initialized in the bytes array */
 	private int amount = 0;
 	
 	//Constructor
@@ -33,7 +32,7 @@ public class PacketCreator49 implements PacketCreator{
 	
 	//Public Methods
 	@Override
-	public Collection<SolarPacket> add(char[] chars){
+	public Collection<SolarPacket> add(char[] chars){ // TODO set this up to tolerate packets that aren't 49 bytes (utilizing END char)
 		List<SolarPacket> r = null;
 		if(chars.length == 0){
 			return null;
@@ -53,13 +52,15 @@ public class PacketCreator49 implements PacketCreator{
 				System.err.println("amount should never be > length because we should have reset it.");
 			}
 			if(amount == length){
-				SolarPacket packet;
 				try{
+					final SolarPacket packet = create(); // resets bytes array and amount
+
 					System.out.println();
 					System.out.println("============");
-					packet = create(); // resets bytes array and amount
+					System.out.println(JsonFile.gson.toJson(packet));
 					System.out.println("============");
 					System.out.println();
+
 					if(r == null){
 						r = new ArrayList<>();
 					}
@@ -72,35 +73,19 @@ public class PacketCreator49 implements PacketCreator{
 		}
 		return r;
 	}
-//	private boolean canCreate(){
-//		return amount == bytes.length;
-//	}
 	private SolarPacket create() throws CheckSumException, ParsePacketAsciiDecimalDigitException, UnsupportedOperationException {
-		//printBytes();
-		
-		int value = (int) bytes[1]; // ascii value
-		PacketType type = null;
+		final int value = (int) bytes[1]; // ascii value
+		final SolarPacket r;
 		if(value >= 48 && value <= 58){ // fx status
-			type = PacketType.FX_STATUS;
+			r = new ImmutableFXStatusPacket(bytes);
 		} else if(value >= 65 && value <= 75){ // fx/fm
-			type = PacketType.MXFM_STATUS;
+			r = new CharMXFMStatusPacket(bytes);
 		} else if(value >= 97 && value <= 106){
 			throw new UnsupportedOperationException("Not set up to use FLEXnet DC Status Packets. value: " + value);
 		} else {
 			throw new UnsupportedOperationException("Ascii value: " + value + " not supported.");
 		}
-		SolarPacket r = null;
-		if(type == PacketType.FX_STATUS){
-			r = new FXStatusPacket(bytes);
-		} else if(type == PacketType.MXFM_STATUS){
-			r = new MXFMStatusPacket(bytes);
-		} else if(type == PacketType.FLEXNET_DC_STATUS){
-			System.err.println("FlexNET packet received but not expected. (Something's wrong with code not error in packet)");
-		} else {
-			System.err.println("Someone didn't account for a new enum value in the code. type: " + type.toString());
-		}
-		System.out.println(JsonFile.gson.toJson(r));
-		
+
 		reset();
 		return r;
 	}
@@ -110,9 +95,5 @@ public class PacketCreator49 implements PacketCreator{
 			bytes[i] = 0; // reset bytes array
 		}
 	}
-	
-	// Private Static
-	
-	
-	
+
 }

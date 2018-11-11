@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.packet;
 
+@Deprecated
 public abstract class CharSolarPacket implements SolarPacket {
 
 	private final transient char[] chars; // transient so it's not serialized
@@ -15,7 +16,6 @@ public abstract class CharSolarPacket implements SolarPacket {
 		this.packetType = packetType;
 		System.out.println(charString);
 	}
-//	protected abstract void init(char[] chars) throws CheckSumException, NumberFormatException;
 
 	public static int toInt(char c) throws NumberFormatException{
 //		return Integer.parseInt(c + "");
