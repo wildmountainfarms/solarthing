@@ -1,9 +1,11 @@
 package me.retrodaredevil.solarthing.packet.fx;
 
+import me.retrodaredevil.solarthing.packet.BitmaskMode;
+
 /**
  * The errors modes for the FX
  */
-public enum FXErrorMode { // multiple can be active (or 0)
+public enum FXErrorMode implements BitmaskMode { // multiple can be active (or 0)
 	LOW_VAC_OUTPUT(1, "Low VAC output"),
 	STACKING_ERROR(2, "Stacking Error"),
 	OVER_TEMP(4, "Over Temp."),
@@ -18,9 +20,16 @@ public enum FXErrorMode { // multiple can be active (or 0)
 		this.value = value;
 		this.name = name;
 	}
-	public boolean isActive(int errorMode){
-										 return (errorMode & value) != 0;
-																		 }
+
+	@Override
+	public int getMaskValue() {
+        return value;
+	}
+
+	@Override
+	public String getModeName() {
+        return name;
+	}
 
 	@Override
 	public String toString() {

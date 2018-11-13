@@ -10,7 +10,7 @@ public interface PacketCreator {
 	/**
 	 * 
 	 * @param bytes the characters to read from
-	 * @return usually null, or if it can be read, will return a collection of SolarPackets
+	 * @return An empty collection, or if it can be read, a collection of SolarPackets
 	 */
 	Collection<SolarPacket> add(char[] bytes);
 	

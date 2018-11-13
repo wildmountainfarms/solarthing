@@ -8,7 +8,7 @@ import me.retrodaredevil.solarthing.packet.StatusPacket;
 public interface MXFMStatusPacketRaw extends StatusPacket {
 	/**
 	 * Should be serialized as "address"
-	 * @return The MX Address
+	 * @return The MX Address. In range [0..10]. If 0, that means the MX is directly connected
 	 */
 	@Override
 	int getAddress();

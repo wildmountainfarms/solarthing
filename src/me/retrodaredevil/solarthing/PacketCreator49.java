@@ -2,23 +2,33 @@ package me.retrodaredevil.solarthing;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import me.retrodaredevil.solarthing.packet.fx.ImmutableFXStatusPacket;
 import me.retrodaredevil.solarthing.packet.SolarPacket;
 import me.retrodaredevil.solarthing.packet.mxfm.ImmutableMXFMStatusPacket;
 import me.retrodaredevil.solarthing.util.CheckSumException;
+import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
 import me.retrodaredevil.solarthing.util.ParsePacketAsciiDecimalDigitException;
 import me.retrodaredevil.util.json.JsonFile;
 
 public class PacketCreator49 implements PacketCreator{
-	public static final char START = 10;
-	public static final char END = 13;
+	public static final char START = 10; // \n
+	public static final char END = 13; // \r
 	public static final char NULL_CHAR = 0;
-	
+
+	private final IgnoreCheckSum ignoreCheckSum;
 	private final char[] bytes = new char[49];
 	/** The amount of char elements initialized in the bytes array */
 	private int amount = 0;
+
+	public PacketCreator49(IgnoreCheckSum ignoreCheckSum){
+        this.ignoreCheckSum = ignoreCheckSum;
+	}
+	public PacketCreator49(){
+		this(IgnoreCheckSum.DISABLED);
+	}
 
 	//Public Methods
 	@Override
@@ -29,10 +39,7 @@ public class PacketCreator49 implements PacketCreator{
 		}
 		char first = chars[0];
 		if(amount == 0 && first != START){
-			return null; // gotta wait for the start char
-			//this.bytes[amount] = START; // if for whatever reason it doesn't add the Start of Status Page byte to the start, we'll add it
-			//amount++;
-			//System.out.println("Just added the START char int value: " + ((int) START) + " chars[0]: " + getPrintValue(first) + " int value: " + ((int) first));
+			return Collections.emptySet(); // gotta wait for the start char
 		}
 		for(char c : chars){
 			bytes[amount] = c;
@@ -57,6 +64,9 @@ public class PacketCreator49 implements PacketCreator{
 					r.add(packet);
 				} catch(CheckSumException | UnsupportedOperationException | ParsePacketAsciiDecimalDigitException ex){
 					ex.printStackTrace();
+					System.err.println("Got an exception that we were able to handle. Ignoring it...");
+				} finally {
+					reset();
 				}
 
 			}
@@ -65,19 +75,15 @@ public class PacketCreator49 implements PacketCreator{
 	}
 	private SolarPacket create() throws CheckSumException, ParsePacketAsciiDecimalDigitException, UnsupportedOperationException {
 		final int value = (int) bytes[1]; // ascii value
-		final SolarPacket r;
 		if(value >= 48 && value <= 58){ // fx status
-			r = new ImmutableFXStatusPacket(bytes);
+			return ImmutableFXStatusPacket.createFromChars(bytes, ignoreCheckSum);
 		} else if(value >= 65 && value <= 75){ // fx/fm
-			r = new ImmutableMXFMStatusPacket(bytes);
+			return ImmutableMXFMStatusPacket.createFromChars(bytes, ignoreCheckSum);
 		} else if(value >= 97 && value <= 106){
 			throw new UnsupportedOperationException("Not set up to use FLEXnet DC Status Packets. value: " + value);
 		} else {
-			throw new UnsupportedOperationException("Ascii value: " + value + " not supported.");
+			throw new UnsupportedOperationException("Ascii value: " + value + " not supported. (from: '" + new String(bytes) + "')");
 		}
-
-		reset();
-		return r;
 	}
 	private void reset(){
 		amount = 0;

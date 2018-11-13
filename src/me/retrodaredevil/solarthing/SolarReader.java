@@ -1,26 +1,15 @@
 package me.retrodaredevil.solarthing;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import me.retrodaredevil.ProgramArgs;
-import me.retrodaredevil.solarthing.packet.PacketCollection;
-import me.retrodaredevil.solarthing.packet.SolarPacket;
-import me.retrodaredevil.util.json.JsonFile;
-import org.lightcouch.CouchDbClient;
 import org.lightcouch.CouchDbException;
 import org.lightcouch.DocumentConflictException;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import me.retrodaredevil.solarthing.packet.SolarPacket;
 
 public class SolarReader {
 	private static final long SAME_PACKET_COLLECTION_TIME = 250;
@@ -29,59 +18,21 @@ public class SolarReader {
 	private final InputStream in;
 	//private ProgramArgs args;
 
-	private final CouchDbClient client;
-	private final JsonFile jsonFile;
+	private final PacketCreator creator;
+	private final PacketSaver packetSaver;
 
 
-	public SolarReader(InputStream in, ProgramArgs args) throws IOException {
+	public SolarReader(InputStream in, int throttleFactor, PacketCreator packetCreator, PacketSaver packetSaver) throws IOException {
 		this.in = in;
-		this.throttleFactor = args.getThrottleFactor();
-		//this.args = args;
-		makeCouchQuiet();
-		client = createClient(args);
-		if(client == null){
-			args.printInJson();
-			File file = new File("data.json");
-			if(!file.exists()){
-				file.createNewFile();
-			}
-			jsonFile = new JsonFile(file);
-			if(!jsonFile.isJson()){
-				jsonFile.load(true);
-			}
-		} else {
-			jsonFile = null;
-		}
-	}
-	/** @return The CouchDbClient using the given ProgramArgs or null if a connection could not be established */
-	private static CouchDbClient createClient(ProgramArgs args){
-		try{
-			CouchDbClient client = new CouchDbClient(args.getProperties());
-			System.out.println("Connecting to database worked!");
-			return client;
-		} catch(CouchDbException ex){
-			ex.printStackTrace();
-			System.err.println("Couldn't connect to data base.");
-			return null;
-		}
-	}
-	/** Assuming the log4j library is running, this stops CouchDb from spitting out logs every time we save*/
-	private static void makeCouchQuiet(){
-		Logger logger = Logger.getLogger("com.couchbase.client");
-		Level level = Level.INFO;
-		logger.setLevel(level);
-		for(Handler h : logger.getParent().getHandlers()) {
-			if(h instanceof ConsoleHandler){
-				h.setLevel(level);
-			}
-		}
+		this.throttleFactor = throttleFactor;
+		this.creator = packetCreator;
+		this.packetSaver = packetSaver;
 	}
 
 	/**
 	 * Takes over the current thread and runs forever
 	 */
 	public void start() {
-		final PacketCreator creator = new PacketCreator49();
 		final List<SolarPacket> packetList = new ArrayList<>(); // a list that piles up SolarPackets and saves when needed // may be cleared
 		long lastFirstReceivedData = Long.MIN_VALUE; // the last time a packet was added to packetList
 
@@ -116,26 +67,8 @@ public class SolarReader {
 						// because packetCollectionCounter starts at -1, after above if statement, it will be >= 0
 						if(packetCollectionCounter % throttleFactor == 0) {
 							System.out.println("saving above packet(s). packetList.size(): " + packetList.size());
-							PacketCollection packetCollection = new PacketCollection(new ArrayList<>(packetList));
+							packetSaver.savePackets(packetList);
 							packetList.clear();
-							if (client != null) {
-								client.save(packetCollection);
-							} else { // this entire else statement is to save it to a json file;
-
-								JsonElement el = jsonFile.getObject().get("packets"); // can be null
-								if (el == null) {
-									el = new JsonArray();
-									jsonFile.getObject().add("packets", el);
-								}
-								if (el instanceof JsonArray) {
-									JsonArray ar = (JsonArray) el;
-									JsonObject add = (JsonObject) JsonFile.pa.parse(JsonFile.gson.toJson(packetCollection));
-									ar.add(add);
-								} else {
-									throw new IllegalStateException("The JsonElement retrieved from packet must be a JsonArray");
-								}
-								jsonFile.save();
-							}
 						} else {
 							System.out.println("Not saving above packet(s) because " +
 									"throttleFactor: " + throttleFactor +

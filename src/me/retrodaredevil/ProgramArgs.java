@@ -5,6 +5,7 @@ import org.lightcouch.CouchDbProperties;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 
+import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
 import me.retrodaredevil.util.json.JsonFile;
 
 public class ProgramArgs {
@@ -17,7 +18,7 @@ public class ProgramArgs {
 	@Parameter(names = {"--name", "--database"}, description = "The name of the database")
 	private String databaseName = "solarthing";
 	
-	@Parameter(names = {}, description = "The protocol. Almost always http unless you know what you're doing.")
+	@Parameter(names = { "--protocol" }, description = "The protocol. Almost always http unless you know what you're doing.")
 	private String protocol = "http";
 	@Parameter(names = {"--host"})
 	private String host = "127.0.0.1";
@@ -33,15 +34,25 @@ public class ProgramArgs {
 	private boolean unitTest = false;
 	@Parameter(names = {"--throttle", "--throttle-factor", "--tf"}, description = "Every nth packet, data should be saved.")
 	private int throttleFactor = 12;
-	
+
+	@Parameter(names = { "-i", "--ignore-checksum", "--ignore-check-sum", "--ignore-chksum" }, description = "Ignore the checksum in all packets")
+	private boolean ignoreCheckSum = false;
+	@Parameter(names = { "-c", "--cc", "--correct-check-sum", "--correct-checksum", "--correct-chksum",
+			"--calc-check-sum", "--calc-checksum", "--calc-chksum",
+			"--calculate-check-sum", "--calculate-checksum", "--calculate-chksum"}, description = "Ignore and correct the checksum in all packets")
+	private boolean correctCheckSum = false;
+
+	@Parameter(names = {"--file", "--path", "-f"}, description = "Set the path to save the json data to. Must be used with --local")
+	private String filePath = "data.json";
+	@Parameter(names = {"--local"}, description = "Save data to a local file on the system")
+	private boolean local = false;
+
 	private final CouchDbProperties databaseProperties;
 	
 	public ProgramArgs(String[] args){
 		JCommander.newBuilder().addObject(this).build().parse(args);
 		if(help){
-			
-			
-			System.out.println("Help was called. Check ProgramArgs.java. Self explainatory. Sorry I'm lazy.\n" + 
+			System.out.println("Help was called. Check ProgramArgs.java. Self explainatory. Sorry I'm lazy.\n" +
 			"Also note, as a VM argument, you should have -Djava.library.path=/usr/lib/jni");
 			System.exit(1);
 		}
@@ -51,6 +62,20 @@ public class ProgramArgs {
 	}
 	public boolean isUnitTest(){
 		return unitTest;
+	}
+	public IgnoreCheckSum getIgnoreCheckSum() {
+        if(correctCheckSum){
+        	return IgnoreCheckSum.IGNORE_AND_USE_CALCULATED;
+		} else if(ignoreCheckSum){
+        	return IgnoreCheckSum.IGNORE;
+		}
+		return IgnoreCheckSum.DISABLED;
+	}
+	public String getFilePath(){
+		return filePath;
+	}
+	public boolean isLocal(){
+		return local;
 	}
 	public int getThrottleFactor(){
 		return throttleFactor;
@@ -62,9 +87,9 @@ public class ProgramArgs {
 	public CouchDbProperties getProperties(){
 		return databaseProperties;
 	}
+
 	/**
 	 * Entry point to test ProgramArgs class
-	 * @throws Exception 
 	 */
 	public static void main(String[] args){
 		ProgramArgs arguments = new ProgramArgs(args);
@@ -74,4 +99,5 @@ public class ProgramArgs {
 		System.out.println(JsonFile.gson.toJson(this));
 		
 	}
+
 }

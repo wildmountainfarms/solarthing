@@ -1,7 +1,9 @@
 package me.retrodaredevil.solarthing.packet.mxfm;
 
+import me.retrodaredevil.solarthing.packet.BitmaskMode;
 import me.retrodaredevil.solarthing.packet.PacketType;
 import me.retrodaredevil.solarthing.util.CheckSumException;
+import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
 import me.retrodaredevil.solarthing.util.ParsePacketAsciiDecimalDigitException;
 
 import static me.retrodaredevil.solarthing.util.ParseUtil.toInt;
@@ -55,9 +57,9 @@ public class ImmutableMXFMStatusPacket implements MXFMStatusPacket {
 		this.errors = errors;
 		this.chargerModeName = chargerModeName;
 	}
-	public ImmutableMXFMStatusPacket(char[] chars) throws CheckSumException, ParsePacketAsciiDecimalDigitException {
+	public static ImmutableMXFMStatusPacket createFromChars(char[] chars, IgnoreCheckSum ignoreCheckSum) throws CheckSumException, ParsePacketAsciiDecimalDigitException {
 		// Start of Status Page
-		address = ((int) chars[1]) - 65; // if it is "A" then address would be 0
+		final int address = ((int) chars[1]) - 65; // if it is "A" then address would be 0
 		final int addressChksum = address + 17; // if "A" -> 0 -> ascii 17 (device control 1) weird but that's how it is.
 		// , UNUSED UNUSED ,
 		final int chargerCurrentTens = toInt(chars, 6); // 00 to 99
@@ -129,48 +131,53 @@ public class ImmutableMXFMStatusPacket implements MXFMStatusPacket {
 				chargerModeTens + chargerModeOnes + batteryVoltageTens + batteryVoltageOnes + batteryVoltageTenths +
 				dailyAHThousands + dailyAHHundreds + dailyAHTens + dailyAHOnes;
 
-		chksum = chksumHundreds * 100 + chksumTens * 10 + chksumOnes;
+		final int packetChksum = chksumHundreds * 100 + chksumTens * 10 + chksumOnes;
 
-		if(chksum != calculatedChksum){
-			throw new CheckSumException(chksum, calculatedChksum, new String(chars));
+		if(packetChksum != calculatedChksum && ignoreCheckSum == IgnoreCheckSum.DISABLED){
+			throw new CheckSumException(packetChksum, calculatedChksum, new String(chars));
+		}
+		final int chksum;
+		switch (ignoreCheckSum){
+			case DISABLED: case IGNORE:
+				chksum = packetChksum;
+				break;
+			case IGNORE_AND_USE_CALCULATED:
+				chksum = calculatedChksum;
+				break;
+			default:
+				throw new RuntimeException("Unknown IgnoreCheckSum enum value: " + ignoreCheckSum);
 		}
 
-		chargerCurrent = chargerCurrentTens * 10 + chargerCurrentOnes;
-		pvCurrent = pvCurrentTens * 10 + pvCurrentOnes;
-		inputVoltage = inputVoltageHundreds * 100 + inputVoltageTens * 10 + inputVoltageOnes;
 
-		dailyKWH = dailyKWHTens * 10 + dailyKWHOnes + (dailyKWHTenths / 10.0f);
-		dailyKWHString = dailyKWHTens + "" + dailyKWHOnes + "." + dailyKWHTenths;
-		ampChargerCurrent = ampChargerCurrentTenths / 10.0f;
-		ampChargerCurrentString = "0." + ampChargerCurrentTenths;
+		final int chargerCurrent = chargerCurrentTens * 10 + chargerCurrentOnes;
+		final int pvCurrent = pvCurrentTens * 10 + pvCurrentOnes;
+		final int inputVoltage = inputVoltageHundreds * 100 + inputVoltageTens * 10 + inputVoltageOnes;
 
-		auxMode = auxModeTens * 10 + auxModeOnes;
-		errorMode = errorModeHundreds * 100 + errorModeTens * 10 + errorModeOnes;
-		chargerMode = chargerModeTens * 10 + chargerModeOnes;
+		final float dailyKWH = dailyKWHTens * 10 + dailyKWHOnes + (dailyKWHTenths / 10.0f);
+		final String dailyKWHString = dailyKWHTens + "" + dailyKWHOnes + "." + dailyKWHTenths;
+		final float ampChargerCurrent = ampChargerCurrentTenths / 10.0f;
+		final String ampChargerCurrentString = "0." + ampChargerCurrentTenths;
 
-		batteryVoltage = batteryVoltageTens * 10 + batteryVoltageOnes + (batteryVoltageTenths / 10.0f);
-		batteryVoltageString = batteryVoltageTens + "" + batteryVoltageOnes + "." + batteryVoltageTenths;
+		final int auxMode = auxModeTens * 10 + auxModeOnes;
+		final int errorMode = errorModeHundreds * 100 + errorModeTens * 10 + errorModeOnes;
+		final int chargerMode = chargerModeTens * 10 + chargerModeOnes;
 
-		dailyAH = dailyAHThousands * 1000 + dailyAHHundreds * 100 + dailyAHTens * 10 + dailyAHOnes; // will be 9999 if MX60
+		final float batteryVoltage = batteryVoltageTens * 10 + batteryVoltageOnes + (batteryVoltageTenths / 10.0f);
+		final String batteryVoltageString = batteryVoltageTens + "" + batteryVoltageOnes + "." + batteryVoltageTenths;
+
+		final int dailyAH = dailyAHThousands * 1000 + dailyAHHundreds * 100 + dailyAHTens * 10 + dailyAHOnes; // will be 9999 if MX60
 
 		// ==== Aux Mode stuff ====
-		AuxMode auxModeObject = AuxMode.getAuxMode(auxMode);
-		auxModeName = auxModeObject.toString();
+		final String auxModeName = AuxMode.getAuxMode(auxMode).toString();
 
 		// ==== Error Mode stuff ====
-		StringBuilder errorBuilder = new StringBuilder();
-		for(MXFMErrorMode mode : MXFMErrorMode.values()){
-			if(mode.isActive(errorMode)){
-				errorBuilder.append(mode.toString());
-				errorBuilder.append(',');
-			}
-		}
-		errors = errorBuilder.toString();
+		final String errors = BitmaskMode.toString(MXFMErrorMode.class, errorMode);
 
 		// ==== Charge Mode stuff ====
-		ChargerMode mode = ChargerMode.getMode(chargerMode);
-		chargerModeName = mode.toString();
-
+		final String chargerModeName = ChargerMode.getMode(chargerMode).toString();
+		return new ImmutableMXFMStatusPacket(address, chargerCurrent, pvCurrent, inputVoltage, dailyKWH,
+				dailyKWHString, ampChargerCurrent, ampChargerCurrentString, auxMode, errorMode, chargerMode,
+				batteryVoltage, batteryVoltageString, dailyAH, chksum, auxModeName, errors, chargerModeName);
 	}
 
 	@Override

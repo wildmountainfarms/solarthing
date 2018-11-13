@@ -1,80 +1,83 @@
 package me.retrodaredevil.solarthing;
 
+import org.lightcouch.CouchDbException;
+
+import java.io.IOException;
+import java.io.InputStream;
+
 import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
+import gnu.io.NoSuchPortException;
+import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
+import gnu.io.UnsupportedCommOperationException;
 import me.retrodaredevil.ProgramArgs;
-
-import java.io.InputStream;
 
 public class SolarMain {
 
-	public void connect(ProgramArgs args) throws Exception {
-		if(args.isUnitTest()){
-			System.out.println("Starting in unit test mode. (No Serial port connection needed!)");
-			InputStream in = System.in;
-			(new SolarReader(in, args)).start();
-//			saver.start();
-			System.out.println("Program is ending. Was in unit test mode.");
-			return;
+	public int connect(ProgramArgs args) throws Exception {
+		InputStream in = null;
+		try {
+			in = getInputStream(args);
+		} catch (PortInUseException e){
+			e.printStackTrace();
+			System.err.println("That port is in use!");
+		} catch (NoSuchPortException e){
+			e.printStackTrace();
+			System.err.println("No such port: '" + args.getPortName() + "'");
 		}
-
-		CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(args.getPortName());
-		if (portIdentifier.isCurrentlyOwned()) {
-			System.out.println("Error: Port is currently in use");
-		} else {
-			CommPort commPort = portIdentifier.open(this.getClass().getName(), 2000);
-			
-			if (commPort instanceof SerialPort) {
-				SerialPort serialPort = (SerialPort) commPort;
-				serialPort.setSerialPortParams(19200, SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
-						SerialPort.PARITY_NONE);
-
-				serialPort.setDTR(true);
-				serialPort.setRTS(false);
-				
-				InputStream in = serialPort.getInputStream();
-
-				(new SolarReader(in, args)).start();
-				final String errorString = "Program is ending.";
-				System.out.println(errorString);
-				System.err.println(errorString);
-
+		if(in != null) {
+			PacketSaver packetSaver;
+			if(args.isLocal()){
+				packetSaver = new JsonFilePacketSaver(args.getFilePath());
 			} else {
-				System.out.println("Error: Only serial ports are handled by this example.");
-			}
-		}
-	}
-
-	/*public static class SerialWriter implements Runnable {
-		OutputStream out;
-
-		public SerialWriter(OutputStream out) {
-			this.out = out;
-		}
-
-		public void run() {
-			try {
-				int c = 0;
-				while ((c = System.in.read()) > -1) {
-					this.out.write(c);
+				try {
+					packetSaver = new CouchDbPacketSaver(args);
+				} catch (CouchDbException e) {
+					e.printStackTrace();
+					System.err.println("Unable to connect to database.");
+					packetSaver = new JsonFilePacketSaver(args.getFilePath());
 				}
-			} catch (IOException e) {
-				e.printStackTrace();
 			}
+			(new SolarReader(in, args.getThrottleFactor(), new PacketCreator49(args.getIgnoreCheckSum()), packetSaver)).start();
+			return 0;
 		}
-	}*/
+		return 1;
+	}
+	private InputStream getInputStream(ProgramArgs args) throws UnsupportedCommOperationException, IOException, PortInUseException, NoSuchPortException {
+		if(args.isUnitTest()){
+			return System.in;
+		}
+
+		final CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(args.getPortName());
+		final CommPort commPort = portIdentifier.open(this.getClass().getName(), 2000);
+
+		if (!(commPort instanceof SerialPort)) {
+			throw new IllegalStateException("The port is not a serial port! It's a '" + commPort.getClass().getName() + "'");
+		}
+		final SerialPort serialPort = (SerialPort) commPort;
+		serialPort.setSerialPortParams(19200, SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
+				SerialPort.PARITY_NONE);
+
+		serialPort.setDTR(true);
+		serialPort.setRTS(false);
+
+		return serialPort.getInputStream(); // TODO, if we need to, we'll have to refactor this code a bit if we want to use the output stream
+	}
 
 	public static void main(String[] args) {
 		ProgramArgs pArgs = new ProgramArgs(args);
 		
 		try {
-			(new SolarMain()).connect(pArgs);
-		} catch (Exception e) {
-			e.printStackTrace();
+			int status = (new SolarMain()).connect(pArgs);
+			System.exit(status);
+		} catch (Throwable t) {
+			t.printStackTrace();
+
 			pArgs.printInJson();
+
+			System.exit(1);
 		}
-		System.out.println("Program is now fully exiting.");
 	}
 
 }

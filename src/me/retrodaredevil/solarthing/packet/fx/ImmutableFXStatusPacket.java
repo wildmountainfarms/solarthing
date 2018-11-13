@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.packet.fx;
 import me.retrodaredevil.solarthing.packet.BitmaskMode;
 import me.retrodaredevil.solarthing.packet.PacketType;
 import me.retrodaredevil.solarthing.util.CheckSumException;
+import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
 import me.retrodaredevil.solarthing.util.ParsePacketAsciiDecimalDigitException;
 
 import static me.retrodaredevil.solarthing.util.ParseUtil.toInt;
@@ -69,7 +70,16 @@ public class ImmutableFXStatusPacket implements FXStatusPacket {
 		this.miscModes = miscModes;
 		this.warnings = warnings;
 	}
-	public ImmutableFXStatusPacket(char[] chars) throws ParsePacketAsciiDecimalDigitException, CheckSumException{
+
+	/**
+	 *
+	 * @param chars An array of chars with a length of 49. After this method is called, mutating this will have to effect on the created ImmutableFXStatusPacket
+	 * @param ignoreCheckSum The IgnoreCheckSum enum value
+	 * @return The created FXStatusPacket from chars
+	 * @throws ParsePacketAsciiDecimalDigitException thrown if the formatting of the data in the chars array is incorrect
+	 * @throws CheckSumException Thrown if the chksum from the chars array is not consistent with the other data. Never thrown if ignoreCheckSum != DISABLED
+	 */
+	public static FXStatusPacket createFromChars(char[] chars, IgnoreCheckSum ignoreCheckSum) throws ParsePacketAsciiDecimalDigitException, CheckSumException{
 		if(chars.length != 49){
 			throw new IllegalArgumentException("The passed chars array must have a length of 49! Got length of: " + chars.length + " with chars='" + new String(chars) + "'");
 		}
@@ -128,51 +138,54 @@ public class ImmutableFXStatusPacket implements FXStatusPacket {
 				operatingModeTens + operatingModeOnes + errorModeHundreds + errorModeTens + errorModeOnes + acModeTens + acModeOnes +
 				batteryVoltageTens + batteryVoltageOnes + batteryVoltageTenths + miscHundreds + miscTens + miscOnes + warningModeHundreds + warningModeTens + warningModeOnes;
 
-		chksum = chksumHundreds * 100 + chksumTens * 10 + chksumOnes;
+		final int packetChksum = chksumHundreds * 100 + chksumTens * 10 + chksumOnes;
 
-		if(chksum != calculatedChksum){
-			throw new CheckSumException(chksum, calculatedChksum, new String(chars));
+		if(packetChksum != calculatedChksum && ignoreCheckSum == IgnoreCheckSum.DISABLED){
+			throw new CheckSumException(packetChksum, calculatedChksum, new String(chars));
+		}
+		final int chksum;
+		switch(ignoreCheckSum){
+			case DISABLED: case IGNORE:
+				chksum = packetChksum;
+				break;
+			case IGNORE_AND_USE_CALCULATED:
+				chksum = calculatedChksum;
+				break;
+			default:
+				throw new IllegalArgumentException("Unknown IgnoreCheckSum enum value: " + ignoreCheckSum);
 		}
 
 		// set values
-		address = inverterAddressOnes;
-		inverterCurrentRaw = inverterCurrentTens * 10 + inverterCurrentOnes;
-		chargerCurrentRaw = chargerCurrentTens * 10 + chargerCurrentOnes;
-		buyCurrentRaw = buyCurrentTens * 10 + buyCurrentOnes;
-		inputVoltageRaw = inputVoltageHundreds * 100 + inputVoltageTens * 10 + inputVoltageOnes;
-		outputVoltageRaw = outputVoltageHundreds * 100 + outputVoltageTens * 10 + outputVoltageOnes;
+		final int address = inverterAddressOnes;
+		final int inverterCurrentRaw = inverterCurrentTens * 10 + inverterCurrentOnes;
+		final int chargerCurrentRaw = chargerCurrentTens * 10 + chargerCurrentOnes;
+		final int buyCurrentRaw = buyCurrentTens * 10 + buyCurrentOnes;
+		final int inputVoltageRaw = inputVoltageHundreds * 100 + inputVoltageTens * 10 + inputVoltageOnes;
+		final int outputVoltageRaw = outputVoltageHundreds * 100 + outputVoltageTens * 10 + outputVoltageOnes;
 
-		sellCurrentRaw = sellCurrentTens * 10 + sellCurrentOnes;
-		operatingMode = operatingModeTens * 10 + operatingModeOnes;
-		errorMode = errorModeHundreds * 100 + errorModeTens * 10 + errorModeOnes; // high middle and low
-		acMode = acModeTens * 10 + acModeOnes;  // high and low
+		final int sellCurrentRaw = sellCurrentTens * 10 + sellCurrentOnes;
+		final int operatingMode = operatingModeTens * 10 + operatingModeOnes;
+		final int errorMode = errorModeHundreds * 100 + errorModeTens * 10 + errorModeOnes; // high middle and low
+		final int acMode = acModeTens * 10 + acModeOnes;  // high and low
 
-		batteryVoltage = batteryVoltageTens * 10 + batteryVoltageOnes + (batteryVoltageTenths / 10.0f);
-		batteryVoltageString = Integer.toString(batteryVoltageTens) + Integer.toString(batteryVoltageOnes) + "." + Integer.toString(batteryVoltageTenths);
+		final float batteryVoltage = batteryVoltageTens * 10 + batteryVoltageOnes + (batteryVoltageTenths / 10.0f);
+		final String batteryVoltageString = Integer.toString(batteryVoltageTens) + Integer.toString(batteryVoltageOnes) + "." + Integer.toString(batteryVoltageTenths);
 
-		misc = miscHundreds * 100 + miscTens * 10 + miscOnes;
-		warningMode = warningModeHundreds * 100 + warningModeTens * 10 + warningModeOnes;
+		final int misc = miscHundreds * 100 + miscTens * 10 + miscOnes;
+		final int warningMode = warningModeHundreds * 100 + warningModeTens * 10 + warningModeOnes;
 		// chksum set above
 
 		// Operational Mode Stuff ====
-		OperationalMode operationalMode = OperationalMode.getMode(operatingMode);
-		operatingModeName = operationalMode.toString();
+		final String operatingModeName = OperationalMode.getMode(operatingMode).toString();
 
 		// ==== Error mode stuff ====
-		StringBuilder errorBuilder = new StringBuilder();
-		for(FXErrorMode mode : FXErrorMode.values()){
-			if (mode.isActive(errorMode)) {
-				errorBuilder.append(mode.toString());
-				errorBuilder.append(',');
-			}
-		}
-		errors = errorBuilder.toString();
+		final String errors = BitmaskMode.toString(FXErrorMode.class, errorMode);
 
 		// ==== AC Mode Stuff ====
-		ACMode acModeObject = ACMode.getACMode(acMode);
-		acModeName = acModeObject.toString();
+		final String acModeName = ACMode.getACMode(acMode).toString();
 
 		// ==== Misc Stuff ====
+		final int inputVoltage, outputVoltage, inverterCurrent, chargerCurrent, buyCurrent, sellCurrent;
 		if(MiscMode.FX_230V_UNIT.isActive(misc)){
 			inputVoltage = inputVoltageRaw * 2;
 			outputVoltage = inputVoltageRaw * 2;
@@ -190,17 +203,14 @@ public class ImmutableFXStatusPacket implements FXStatusPacket {
 			buyCurrent = buyCurrentRaw;
 			sellCurrent = sellCurrentRaw;
 		}
-		miscModes = BitmaskMode.toString(MiscMode.class, misc);
+		final String miscModes = BitmaskMode.toString(MiscMode.class, misc);
 
 		// ==== Warning Mode stuff ====
-		StringBuilder warningBuilder = new StringBuilder();
-		for(WarningMode mode : WarningMode.values()){
-			if(mode.isActive(warningMode)){
-				warningBuilder.append(mode.toString()).append(", ");
-			}
-		}
-		warnings = warningBuilder.toString();
-
+		final String warnings = BitmaskMode.toString(WarningMode.class, warningMode);
+		return new ImmutableFXStatusPacket(address, inverterCurrent, inverterCurrentRaw, chargerCurrent,
+				chargerCurrentRaw, buyCurrent, buyCurrentRaw, inputVoltage, inputVoltageRaw, outputVoltage,
+				outputVoltageRaw, sellCurrent, sellCurrentRaw, operatingMode, errorMode, acMode, batteryVoltage,
+				batteryVoltageString, misc, warningMode, chksum, operatingModeName, errors, acModeName, miscModes, warnings);
 	}
 
 
