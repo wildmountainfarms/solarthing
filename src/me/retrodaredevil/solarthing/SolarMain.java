@@ -67,7 +67,12 @@ public class SolarMain {
 
 	public static void main(String[] args) {
 		ProgramArgs pArgs = new ProgramArgs(args);
-		
+		if(pArgs.isHelp()){
+			System.out.println("Help was called. Check ProgramArgs.java. Self explainatory. Sorry I'm lazy.\n" +
+					"Also note, as a VM argument, you should have -Djava.library.path=/usr/lib/jni");
+			System.exit(1);
+		}
+
 		try {
 			int status = (new SolarMain()).connect(pArgs);
 			System.exit(status);

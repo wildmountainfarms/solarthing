@@ -5,18 +5,18 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import me.retrodaredevil.solarthing.packet.fx.ImmutableFXStatusPacket;
 import me.retrodaredevil.solarthing.packet.SolarPacket;
-import me.retrodaredevil.solarthing.packet.mxfm.ImmutableMXFMStatusPacket;
+import me.retrodaredevil.solarthing.packet.fx.FXStatusPackets;
+import me.retrodaredevil.solarthing.packet.mxfm.MXFMStatusPackets;
 import me.retrodaredevil.solarthing.util.CheckSumException;
 import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
 import me.retrodaredevil.solarthing.util.ParsePacketAsciiDecimalDigitException;
 import me.retrodaredevil.util.json.JsonFile;
 
 public class PacketCreator49 implements PacketCreator{
-	public static final char START = 10; // \n
-	public static final char END = 13; // \r
-	public static final char NULL_CHAR = 0;
+	private static final char START = 10; // \n
+	private static final char END = 13; // \r
+	private static final char NULL_CHAR = 0;
 
 	private final IgnoreCheckSum ignoreCheckSum;
 	private final char[] bytes = new char[49];
@@ -33,14 +33,14 @@ public class PacketCreator49 implements PacketCreator{
 	//Public Methods
 	@Override
 	public Collection<SolarPacket> add(char[] chars){ // TODO set this up to tolerate (and ignore) packets that aren't 49 bytes (utilizing END char)
-		List<SolarPacket> r = null;
 		if(chars.length == 0){
-			return null;
+            return Collections.emptySet();
 		}
 		char first = chars[0];
 		if(amount == 0 && first != START){
 			return Collections.emptySet(); // gotta wait for the start char
 		}
+		List<SolarPacket> r = null;
 		for(char c : chars){
 			bytes[amount] = c;
 			amount++;
@@ -71,14 +71,17 @@ public class PacketCreator49 implements PacketCreator{
 
 			}
 		}
+		if(r == null){
+			return Collections.emptySet();
+		}
 		return r;
 	}
 	private SolarPacket create() throws CheckSumException, ParsePacketAsciiDecimalDigitException, UnsupportedOperationException {
 		final int value = (int) bytes[1]; // ascii value
 		if(value >= 48 && value <= 58){ // fx status
-			return ImmutableFXStatusPacket.createFromChars(bytes, ignoreCheckSum);
+			return FXStatusPackets.createFromChars(bytes, ignoreCheckSum);
 		} else if(value >= 65 && value <= 75){ // fx/fm
-			return ImmutableMXFMStatusPacket.createFromChars(bytes, ignoreCheckSum);
+			return MXFMStatusPackets.createFromChars(bytes, ignoreCheckSum);
 		} else if(value >= 97 && value <= 106){
 			throw new UnsupportedOperationException("Not set up to use FLEXnet DC Status Packets. value: " + value);
 		} else {

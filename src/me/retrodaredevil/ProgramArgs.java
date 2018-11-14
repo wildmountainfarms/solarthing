@@ -33,7 +33,7 @@ public class ProgramArgs {
 	@Parameter(names = {"--unit-test", "--unit"}, description = "If present, will use terminal input")
 	private boolean unitTest = false;
 	@Parameter(names = {"--throttle", "--throttle-factor", "--tf"}, description = "Every nth packet, data should be saved.")
-	private int throttleFactor = 12;
+	private int throttleFactor = 1;
 
 	@Parameter(names = { "-i", "--ignore-checksum", "--ignore-check-sum", "--ignore-chksum" }, description = "Ignore the checksum in all packets")
 	private boolean ignoreCheckSum = false;
@@ -51,14 +51,12 @@ public class ProgramArgs {
 	
 	public ProgramArgs(String[] args){
 		JCommander.newBuilder().addObject(this).build().parse(args);
-		if(help){
-			System.out.println("Help was called. Check ProgramArgs.java. Self explainatory. Sorry I'm lazy.\n" +
-			"Also note, as a VM argument, you should have -Djava.library.path=/usr/lib/jni");
-			System.exit(1);
-		}
-		
+
 		databaseProperties = new CouchDbProperties(databaseName, true, protocol, host, port, userName, password);
 		
+	}
+	public boolean isHelp(){
+		return help;
 	}
 	public boolean isUnitTest(){
 		return unitTest;

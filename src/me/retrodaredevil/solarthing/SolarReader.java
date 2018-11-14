@@ -3,13 +3,20 @@ package me.retrodaredevil.solarthing;
 import org.lightcouch.CouchDbException;
 import org.lightcouch.DocumentConflictException;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.channels.ByteChannel;
+import java.nio.channels.Channels;
+import java.nio.channels.Pipe;
+import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import me.retrodaredevil.solarthing.packet.SolarPacket;
+import sun.nio.ch.SimpleAsynchronousFileChannelImpl;
 
 public class SolarReader {
 	private static final long SAME_PACKET_COLLECTION_TIME = 250;
@@ -22,7 +29,7 @@ public class SolarReader {
 	private final PacketSaver packetSaver;
 
 
-	public SolarReader(InputStream in, int throttleFactor, PacketCreator packetCreator, PacketSaver packetSaver) throws IOException {
+	public SolarReader(InputStream in, int throttleFactor, PacketCreator packetCreator, PacketSaver packetSaver) {
 		this.in = in;
 		this.throttleFactor = throttleFactor;
 		this.creator = packetCreator;
@@ -40,28 +47,27 @@ public class SolarReader {
 
 		final byte[] buffer = new byte[1024];
 
-		while(true) {
+        for(int len = 0; len != -1; ){
 			try {
+				// This implementation isn't perfect - we cannot detect EOF
+				// stackoverflow: https://stackoverflow.com/q/53291868/5434860
+				
 				// ======= read bytes, append to packetList =======
-				int len;
-				while (this.in.available() > 0 && (len = this.in.read(buffer)) > -1) {
+				while (in.available() > 0 && (len = in.read(buffer)) > -1) {
 					String s = new String(buffer, 0, len);
-//					System.out.println("got characters: '" + s +"'");
-					Collection<SolarPacket> newPackets = creator.add(s.toCharArray()); // usually null or size of 1 possibly size > 1
+//					System.out.println("got: '" + s.replaceAll("\n", "\\\\n").replaceAll("\r", "\\\\r") + "'. len: " + len);
+					Collection<SolarPacket> newPackets = creator.add(s.toCharArray());
 
 					long now = System.currentTimeMillis();
 					if(lastFirstReceivedData + SAME_PACKET_COLLECTION_TIME < now) {
 						lastFirstReceivedData = now; // set this to the first time we get bytes
 					}
-
-					if (newPackets != null) { // packets.length should never be 0 if it's not null
-						packetList.addAll(newPackets);
-					}
+					packetList.addAll(newPackets);
 				}
 
 				// ======= Save data if needed =======
 				long now = System.currentTimeMillis();
-				if (lastFirstReceivedData + SAME_PACKET_COLLECTION_TIME < now) { // if there's no packets coming any time soon
+				if (len == -1 || lastFirstReceivedData + SAME_PACKET_COLLECTION_TIME < now) { // if there's no packets coming any time soon
 					if(!packetList.isEmpty()) {
 						packetCollectionCounter++;
 						// because packetCollectionCounter starts at -1, after above if statement, it will be >= 0
