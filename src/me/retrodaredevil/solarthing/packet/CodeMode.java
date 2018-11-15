@@ -1,7 +1,5 @@
 package me.retrodaredevil.solarthing.packet;
 
-import java.util.EnumSet;
-
 public interface CodeMode extends Mode {
 	int getValueCode();
 
@@ -10,15 +8,4 @@ public interface CodeMode extends Mode {
 		return getValueCode() == valueCode;
 	}
 
-	static <T extends Enum<T> & CodeMode> T getActiveMode(Class<T> tEnum, int valueCode, T defaultValue){
-		for(T enumValue : EnumSet.allOf(tEnum)){
-			if(enumValue.isActive(valueCode)){
-				return enumValue;
-			}
-		}
-		return defaultValue;
-	}
-	static <T extends Enum<T> & CodeMode> T getActiveMode(Class<T> tEnum, int valueCode){
-		return getActiveMode(tEnum, valueCode, null);
-	}
 }

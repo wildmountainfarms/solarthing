@@ -7,6 +7,7 @@ import java.util.Objects;
 
 import me.retrodaredevil.solarthing.packet.BitmaskMode;
 import me.retrodaredevil.solarthing.packet.CodeMode;
+import me.retrodaredevil.solarthing.packet.Modes;
 import me.retrodaredevil.solarthing.util.CheckSumException;
 import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
 import me.retrodaredevil.solarthing.util.ParsePacketAsciiDecimalDigitException;
@@ -120,13 +121,13 @@ public final class FXStatusPackets {
 		// chksum set above
 
 		// Operational Mode Stuff ====
-		final String operatingModeName = CodeMode.getActiveMode(OperationalMode.class, operatingMode, OperationalMode.UNKNOWN).getModeName();
+		final String operatingModeName = Modes.getActiveMode(OperationalMode.class, operatingMode, OperationalMode.UNKNOWN).getModeName();
 
 		// ==== Error mode stuff ====
-		final String errors = BitmaskMode.toString(FXErrorMode.class, errorMode);
+		final String errors = Modes.toString(FXErrorMode.class, errorMode);
 
 		// ==== AC Mode Stuff ====
-		final String acModeName = CodeMode.getActiveMode(ACMode.class, acMode, ACMode.UNKNOWN).getModeName();
+		final String acModeName = Modes.getActiveMode(ACMode.class, acMode, ACMode.UNKNOWN).getModeName();
 
 		// ==== Misc Stuff ====
 		final int inputVoltage, outputVoltage, inverterCurrent, chargerCurrent, buyCurrent, sellCurrent;
@@ -147,10 +148,10 @@ public final class FXStatusPackets {
 			buyCurrent = buyCurrentRaw;
 			sellCurrent = sellCurrentRaw;
 		}
-		final String miscModes = BitmaskMode.toString(MiscMode.class, misc);
+		final String miscModes = Modes.toString(MiscMode.class, misc);
 
 		// ==== Warning Mode stuff ====
-		final String warnings = BitmaskMode.toString(WarningMode.class, warningMode);
+		final String warnings = Modes.toString(WarningMode.class, warningMode);
 		return new ImmutableFXStatusPacket(address, inverterCurrent, inverterCurrentRaw, chargerCurrent,
 				chargerCurrentRaw, buyCurrent, buyCurrentRaw, inputVoltage, inputVoltageRaw, outputVoltage,
 				outputVoltageRaw, sellCurrent, sellCurrentRaw, operatingMode, errorMode, acMode, batteryVoltage,
@@ -212,11 +213,11 @@ public final class FXStatusPackets {
 
 		final String operatingModeName, errors, acModeName, miscModes, warnings;
 		{
-			operatingModeName = storedOperatingModeName != null ? storedOperatingModeName : CodeMode.getActiveMode(OperationalMode.class, operatingMode, OperationalMode.UNKNOWN).getModeName();
-			errors = storedErrors != null ? storedErrors : BitmaskMode.toString(FXErrorMode.class, errorMode);
-			acModeName = storedAcModeName != null ? storedAcModeName : CodeMode.getActiveMode(ACMode.class, acMode, ACMode.UNKNOWN).getModeName();
-			miscModes = storedMiscModes != null ? storedMiscModes : BitmaskMode.toString(MiscMode.class, misc);
-			warnings = storedWarnings != null ? storedWarnings : BitmaskMode.toString(WarningMode.class, warningMode);
+			operatingModeName = storedOperatingModeName != null ? storedOperatingModeName : Modes.getActiveMode(OperationalMode.class, operatingMode, OperationalMode.UNKNOWN).getModeName();
+			errors = storedErrors != null ? storedErrors : Modes.toString(FXErrorMode.class, errorMode);
+			acModeName = storedAcModeName != null ? storedAcModeName : Modes.getActiveMode(ACMode.class, acMode, ACMode.UNKNOWN).getModeName();
+			miscModes = storedMiscModes != null ? storedMiscModes : Modes.toString(MiscMode.class, misc);
+			warnings = storedWarnings != null ? storedWarnings : Modes.toString(WarningMode.class, warningMode);
 		}
 
         return new ImmutableFXStatusPacket(address, inverterCurrent, inverterCurrentRaw,
