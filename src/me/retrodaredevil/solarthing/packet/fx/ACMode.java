@@ -1,10 +1,12 @@
 package me.retrodaredevil.solarthing.packet.fx;
 
 
+import me.retrodaredevil.solarthing.packet.CodeMode;
+
 /**
  * The AC Mode for the FX
  */
-public enum ACMode{ // one must be active
+public enum ACMode implements CodeMode { // one must be active
 	NO_AC(0, "No AC"),
 	AC_DROP(1, "AC Drop"),
 	AC_USE(2, "AC Use"),
@@ -21,13 +23,15 @@ public enum ACMode{ // one must be active
 	public String toString() {
 		return name;
 	}
-	public static ACMode getACMode(int value){
-		for(ACMode mode : values()){
-			if(mode.value == value){
-				return mode;
-			}
-		}
-		return UNKNOWN;
+
+	@Override
+	public int getValueCode() {
+        return value;
+	}
+
+	@Override
+	public String getModeName() {
+        return name;
 	}
 }
 

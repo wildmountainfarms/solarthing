@@ -46,14 +46,5 @@ public enum OperationalMode implements CodeMode { // one must be active
 		return name;
 	}
 
-	public static OperationalMode getMode(int operatingMode){
-		for(OperationalMode mode : values()){
-			if(mode.value == operatingMode){
-				return mode;
-			}
-		}
-		return UNKNOWN;
-	}
-
 }
 

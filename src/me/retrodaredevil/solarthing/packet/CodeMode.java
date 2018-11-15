@@ -10,12 +10,15 @@ public interface CodeMode extends Mode {
 		return getValueCode() == valueCode;
 	}
 
-	static <T extends Enum<T> & CodeMode> T getActiveMode(Class<T> tEnum, int valueCode){
+	static <T extends Enum<T> & CodeMode> T getActiveMode(Class<T> tEnum, int valueCode, T defaultValue){
 		for(T enumValue : EnumSet.allOf(tEnum)){
 			if(enumValue.isActive(valueCode)){
 				return enumValue;
 			}
 		}
-		return null;
+		return defaultValue;
+	}
+	static <T extends Enum<T> & CodeMode> T getActiveMode(Class<T> tEnum, int valueCode){
+		return getActiveMode(tEnum, valueCode, null);
 	}
 }

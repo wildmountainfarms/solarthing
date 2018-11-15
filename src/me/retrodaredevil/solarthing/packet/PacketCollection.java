@@ -27,7 +27,7 @@ public class PacketCollection {
 		final int year = cal.get(Calendar.YEAR);
 		final int day = cal.get(Calendar.DAY_OF_MONTH);
 		final int month = cal.get(Calendar.MONTH) + 1; // [1..12]
-		final int hour = cal.get(Calendar.HOUR);
+		final int hour = cal.get(Calendar.HOUR_OF_DAY);
 		final int minute = cal.get(Calendar.MINUTE);
 		final int second = cal.get(Calendar.SECOND);
 		final int millisecond = cal.get(Calendar.MILLISECOND);

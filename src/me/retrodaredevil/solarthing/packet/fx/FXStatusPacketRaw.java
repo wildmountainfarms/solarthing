@@ -2,6 +2,9 @@ package me.retrodaredevil.solarthing.packet.fx;
 
 import me.retrodaredevil.solarthing.packet.StatusPacket;
 
+/**
+ * Contains all the necessary data to calculate convenience data in {@link FXStatusPacket}
+ */
 public interface FXStatusPacketRaw extends StatusPacket {
 	/**
 	 * Should be serialized as "inverterCurrentRaw" if serialized at all
@@ -64,11 +67,6 @@ public interface FXStatusPacketRaw extends StatusPacket {
 	 * @return The battery voltage as a float
 	 */
 	float getBatteryVoltage();
-	/**
-	 * Should be serialized as "batteryVoltageString" if serialized at all
-	 * @return The battery voltage as a String
-	 */
-	String getBatteryVoltageString();
 
 	/**
 	 * Should be serialized as "misc"

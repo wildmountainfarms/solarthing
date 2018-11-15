@@ -46,26 +46,12 @@ public interface MXFMStatusPacketRaw extends StatusPacket {
 	float getDailyKWH();
 
 	/**
-	 * Should be serialized as "dailyKWHString" if serialized at all
-	 * @see #getDailyKWH()
-	 * @return [0..99.9] in string form
-	 */
-	String getDailyKWHString();
-
-	/**
 	 * Should be serialized as "ampChargerCurrent"
 	 * <p>
 	 * Only applies to newer firmware using FlexMAX 80 or FlexMAX 60
 	 * @return [0..0.9] The current to add to {@link #getChargerCurrent()} to get current displayed on FM80 or FM60
 	 */
 	float getAmpChargerCurrent();
-
-	/**
-	 * Should be serialized as "ampChargerCurrent" if serialized at all
-	 * @see #getAmpChargerCurrent()
-	 * @return The amp charger current in the format "0.X" where X is a digit [0..9]
-	 */
-	String getAmpChargerCurrentString();
 
 	/**
 	 * Should be serialized as "auxMode"
@@ -92,12 +78,6 @@ public interface MXFMStatusPacketRaw extends StatusPacket {
 	 * @return The battery voltage (in volts)
 	 */
 	float getBatteryVoltage();
-
-	/**
-	 * Should be serialized as "batteryVoltage" if serialized at all
-	 * @return The battery voltage as a String
-	 */
-	String getBatteryVoltageString();
 
 	/**
 	 * Should be serialized as "dailyAH"

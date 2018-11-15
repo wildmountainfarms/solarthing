@@ -37,14 +37,5 @@ public enum ChargerMode implements CodeMode {
         return name;
 	}
 
-	public static ChargerMode getMode(int chargerMode){
-		for(ChargerMode mode : values()){
-			if(mode.value == chargerMode){
-				return mode;
-			}
-		}
-		return UNKNOWN;
-	}
-
 }
 

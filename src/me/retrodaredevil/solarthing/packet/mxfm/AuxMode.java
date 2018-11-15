@@ -38,13 +38,5 @@ public enum AuxMode implements CodeMode {
         return value;
 	}
 
-	public static AuxMode getAuxMode(int auxMode){
-		for(AuxMode mode : values()){
-			if(mode.value == auxMode){
-				return mode;
-			}
-		}
-		return UNKNOWN;
-	}
 }
 

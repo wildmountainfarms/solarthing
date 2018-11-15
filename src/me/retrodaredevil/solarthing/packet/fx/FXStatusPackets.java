@@ -1,12 +1,17 @@
 package me.retrodaredevil.solarthing.packet.fx;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import java.util.Objects;
+
 import me.retrodaredevil.solarthing.packet.BitmaskMode;
+import me.retrodaredevil.solarthing.packet.CodeMode;
 import me.retrodaredevil.solarthing.util.CheckSumException;
 import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
 import me.retrodaredevil.solarthing.util.ParsePacketAsciiDecimalDigitException;
 
+import static me.retrodaredevil.solarthing.packet.StatusPackets.getOrNull;
 import static me.retrodaredevil.solarthing.util.ParseUtil.toInt;
 
 public final class FXStatusPackets {
@@ -115,13 +120,13 @@ public final class FXStatusPackets {
 		// chksum set above
 
 		// Operational Mode Stuff ====
-		final String operatingModeName = OperationalMode.getMode(operatingMode).toString();
+		final String operatingModeName = CodeMode.getActiveMode(OperationalMode.class, operatingMode, OperationalMode.UNKNOWN).getModeName();
 
 		// ==== Error mode stuff ====
 		final String errors = BitmaskMode.toString(FXErrorMode.class, errorMode);
 
 		// ==== AC Mode Stuff ====
-		final String acModeName = ACMode.getACMode(acMode).toString();
+		final String acModeName = CodeMode.getActiveMode(ACMode.class, acMode, ACMode.UNKNOWN).getModeName();
 
 		// ==== Misc Stuff ====
 		final int inputVoltage, outputVoltage, inverterCurrent, chargerCurrent, buyCurrent, sellCurrent;
@@ -152,8 +157,72 @@ public final class FXStatusPackets {
 				batteryVoltageString, misc, warningMode, chksum, operatingModeName, errors, acModeName, miscModes, warnings);
 	}
 
-//	public static FXStatusPacket createFromJson(JsonObject object){
-//		final int address = object.getAsJsonPrimitive("address").getAsInt();
-//		final int inverterCurrent = object.getAsJsonPrimitive("inverterCurrent").getAsInt();
-//	}
+	public static FXStatusPacket createFromJson(JsonObject object){
+		Objects.requireNonNull(object);
+//		JsonFile.gson.fromJson
+		final int address = object.get("address").getAsInt();
+
+		final int inverterCurrent = object.get("inverterCurrent").getAsInt();
+		final Integer storedInverterCurrentRaw = getOrNull(object, "inverterCurrentRaw", JsonElement::getAsInt);
+
+		final int chargerCurrent = object.get("chargerCurrent").getAsInt();
+		final Integer storedChargerCurrentRaw = getOrNull(object, "chargerCurrentRaw", JsonElement::getAsInt);
+
+		final int buyCurrent = object.get("buyCurrent").getAsInt();
+		final Integer storedBuyCurrentRaw = getOrNull(object, "buyCurrentRaw", JsonElement::getAsInt);
+
+		final int sellCurrent = object.get("sellCurrent").getAsInt();
+		final Integer storedSellCurrentRaw = getOrNull(object, "sellCurrentRaw", JsonElement::getAsInt);
+
+		final int inputVoltage = object.get("inputVoltage").getAsInt();
+		final Integer storedInputVoltageRaw = getOrNull(object, "inputVoltageRaw", JsonElement::getAsInt);
+
+		final int outputVoltage = object.get("outputVoltage").getAsInt();
+		final Integer storedOutputVoltageRaw = getOrNull(object, "outputVoltageRaw", JsonElement::getAsInt);
+
+		final int operatingMode = object.get("operatingMode").getAsInt();
+		final int errorMode = object.get("errorMode").getAsInt();
+		final int acMode = object.get("acMode").getAsInt();
+
+		final float batteryVoltage = object.get("batteryVoltage").getAsFloat();
+		final String storedBatteryVoltageString = getOrNull(object, "batteryVoltageString", JsonElement::getAsString);
+		final String batteryVoltageString = storedBatteryVoltageString != null ? storedBatteryVoltageString : Float.toString(batteryVoltage);
+
+		final int misc = object.get("misc").getAsInt();
+		final int warningMode = object.get("warningMode").getAsInt();
+		final int chksum = object.get("chksum").getAsInt();
+
+		final String storedOperatingModeName = getOrNull(object, "operatingModeName", JsonElement::getAsString);
+		final String storedErrors = getOrNull(object, "errors", JsonElement::getAsString);
+		final String storedAcModeName = getOrNull(object, "acModeName", JsonElement::getAsString);
+		final String storedMiscModes = getOrNull(object, "miscModes", JsonElement::getAsString);
+		final String storedWarnings = getOrNull(object, "warnings", JsonElement::getAsString);
+
+		final int inverterCurrentRaw, chargerCurrentRaw, buyCurrentRaw, sellCurrentRaw, inputVoltageRaw, outputVoltageRaw;
+		{
+			final int number = MiscMode.FX_230V_UNIT.isActive(misc) ? 2 : 1;
+			inputVoltageRaw = storedInputVoltageRaw != null ? storedInputVoltageRaw : inputVoltage / number;
+			outputVoltageRaw = storedOutputVoltageRaw != null ? storedOutputVoltageRaw : outputVoltage / number;
+
+			inverterCurrentRaw = storedInverterCurrentRaw != null ? storedInverterCurrentRaw : inverterCurrent * number;
+			chargerCurrentRaw = storedChargerCurrentRaw != null ? storedChargerCurrentRaw : chargerCurrent * number;
+			buyCurrentRaw = storedBuyCurrentRaw != null ? storedBuyCurrentRaw : buyCurrent * number;
+			sellCurrentRaw = storedSellCurrentRaw != null ? storedSellCurrentRaw : sellCurrent * number;
+		}
+
+		final String operatingModeName, errors, acModeName, miscModes, warnings;
+		{
+			operatingModeName = storedOperatingModeName != null ? storedOperatingModeName : CodeMode.getActiveMode(OperationalMode.class, operatingMode, OperationalMode.UNKNOWN).getModeName();
+			errors = storedErrors != null ? storedErrors : BitmaskMode.toString(FXErrorMode.class, errorMode);
+			acModeName = storedAcModeName != null ? storedAcModeName : CodeMode.getActiveMode(ACMode.class, acMode, ACMode.UNKNOWN).getModeName();
+			miscModes = storedMiscModes != null ? storedMiscModes : BitmaskMode.toString(MiscMode.class, misc);
+			warnings = storedWarnings != null ? storedWarnings : BitmaskMode.toString(WarningMode.class, warningMode);
+		}
+
+        return new ImmutableFXStatusPacket(address, inverterCurrent, inverterCurrentRaw,
+				chargerCurrent, chargerCurrentRaw, buyCurrent, buyCurrentRaw,
+				inputVoltage, inputVoltageRaw, outputVoltage, outputVoltageRaw,
+				sellCurrent, sellCurrentRaw, operatingMode, errorMode, acMode, batteryVoltage, batteryVoltageString,
+				misc, warningMode, chksum, operatingModeName, errors, acModeName, miscModes, warnings);
+	}
 }

@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing;
 
 import org.lightcouch.CouchDbException;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -46,7 +47,7 @@ public class SolarMain {
 	}
 	private InputStream getInputStream(ProgramArgs args) throws UnsupportedCommOperationException, IOException, PortInUseException, NoSuchPortException {
 		if(args.isUnitTest()){
-			return System.in;
+			return new BufferedInputStream(System.in);
 		}
 
 		final CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(args.getPortName());
@@ -56,13 +57,12 @@ public class SolarMain {
 			throw new IllegalStateException("The port is not a serial port! It's a '" + commPort.getClass().getName() + "'");
 		}
 		final SerialPort serialPort = (SerialPort) commPort;
-		serialPort.setSerialPortParams(19200, SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
-				SerialPort.PARITY_NONE);
+		serialPort.setSerialPortParams(19200, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
 
 		serialPort.setDTR(true);
 		serialPort.setRTS(false);
 
-		return serialPort.getInputStream(); // TODO, if we need to, we'll have to refactor this code a bit if we want to use the output stream
+		return new BufferedInputStream(serialPort.getInputStream()); // TODO, if we need to, we'll have to refactor this code a bit if we want to use the output stream
 	}
 
 	public static void main(String[] args) {

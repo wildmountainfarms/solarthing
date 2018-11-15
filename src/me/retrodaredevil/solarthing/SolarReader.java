@@ -3,20 +3,13 @@ package me.retrodaredevil.solarthing;
 import org.lightcouch.CouchDbException;
 import org.lightcouch.DocumentConflictException;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.nio.channels.ByteChannel;
-import java.nio.channels.Channels;
-import java.nio.channels.Pipe;
-import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import me.retrodaredevil.solarthing.packet.SolarPacket;
-import sun.nio.ch.SimpleAsynchronousFileChannelImpl;
 
 public class SolarReader {
 	private static final long SAME_PACKET_COLLECTION_TIME = 250;
@@ -29,6 +22,13 @@ public class SolarReader {
 	private final PacketSaver packetSaver;
 
 
+	/**
+	 *
+	 * @param in The InputStream to read directly from
+	 * @param throttleFactor Will save every nth packet where n is this number
+	 * @param packetCreator The packet creator that creates packets from bytes
+	 * @param packetSaver The packet saver that saves a collection of packets at once
+	 */
 	public SolarReader(InputStream in, int throttleFactor, PacketCreator packetCreator, PacketSaver packetSaver) {
 		this.in = in;
 		this.throttleFactor = throttleFactor;
@@ -51,7 +51,7 @@ public class SolarReader {
 			try {
 				// This implementation isn't perfect - we cannot detect EOF
 				// stackoverflow: https://stackoverflow.com/q/53291868/5434860
-				
+
 				// ======= read bytes, append to packetList =======
 				while (in.available() > 0 && (len = in.read(buffer)) > -1) {
 					String s = new String(buffer, 0, len);

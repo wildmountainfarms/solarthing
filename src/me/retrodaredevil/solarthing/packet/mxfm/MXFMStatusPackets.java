@@ -1,10 +1,16 @@
 package me.retrodaredevil.solarthing.packet.mxfm;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
 import me.retrodaredevil.solarthing.packet.BitmaskMode;
+import me.retrodaredevil.solarthing.packet.CodeMode;
+import me.retrodaredevil.solarthing.packet.StatusPacket;
 import me.retrodaredevil.solarthing.util.CheckSumException;
 import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
 import me.retrodaredevil.solarthing.util.ParsePacketAsciiDecimalDigitException;
 
+import static me.retrodaredevil.solarthing.packet.StatusPackets.getOrNull;
 import static me.retrodaredevil.solarthing.util.ParseUtil.toInt;
 
 public final class MXFMStatusPackets {
@@ -121,15 +127,57 @@ public final class MXFMStatusPackets {
 		final int dailyAH = dailyAHThousands * 1000 + dailyAHHundreds * 100 + dailyAHTens * 10 + dailyAHOnes; // will be 9999 if MX60
 
 		// ==== Aux Mode stuff ====
-		final String auxModeName = AuxMode.getAuxMode(auxMode).toString();
+		final String auxModeName = CodeMode.getActiveMode(AuxMode.class, auxMode, AuxMode.UNKNOWN).getModeName();
 
 		// ==== Error Mode stuff ====
 		final String errors = BitmaskMode.toString(MXFMErrorMode.class, errorMode);
 
 		// ==== Charge Mode stuff ====
-		final String chargerModeName = ChargerMode.getMode(chargerMode).toString();
+		final String chargerModeName = CodeMode.getActiveMode(ChargerMode.class, chargerMode, ChargerMode.UNKNOWN).getModeName();
 		return new ImmutableMXFMStatusPacket(address, chargerCurrent, pvCurrent, inputVoltage, dailyKWH,
 				dailyKWHString, ampChargerCurrent, ampChargerCurrentString, auxMode, errorMode, chargerMode,
 				batteryVoltage, batteryVoltageString, dailyAH, chksum, auxModeName, errors, chargerModeName);
+	}
+
+	public static MXFMStatusPacket createFromJson(JsonObject object) {
+
+		final int address = object.get("address").getAsInt();
+
+		final int chargerCurrent = object.get("chargerCurrent").getAsInt();
+		final int pvCurrent = object.get("pvCurrent").getAsInt();
+		final int inputVoltage = object.get("inputVoltage").getAsInt();
+
+		final float dailyKWH = object.get("dailyKWH").getAsFloat();
+		final String storedDailyKWHString = getOrNull(object, "dailyKWHString", JsonElement::getAsString);
+
+		final float ampChargerCurrent = object.get("ampChargerCurrent").getAsFloat();
+		final String storedAmpChargerCurrentString = getOrNull(object, "ampChargerCurrentString", JsonElement::getAsString);
+
+		final int auxMode = object.get("auxMode").getAsInt();
+		final int errorMode = object.get("errorMode").getAsInt();
+		final int chargerMode = object.get("chargerMode").getAsInt();
+
+		final float batteryVoltage = object.get("batteryVoltage").getAsFloat();
+		final String storedBatteryVoltageString = getOrNull(object, "batteryVoltageString", JsonElement::getAsString);
+
+		final String dailyKWHString = storedDailyKWHString != null ? storedDailyKWHString : Float.toString(dailyKWH);
+		final String ampChargerCurrentString = storedAmpChargerCurrentString != null ? storedAmpChargerCurrentString : Float.toString(ampChargerCurrent);
+		final String batteryVoltageString = storedBatteryVoltageString != null ? storedBatteryVoltageString : Float.toString(batteryVoltage);
+
+		final int dailyAH = object.get("dailyAH").getAsInt();
+		final int chksum = object.get("chksum").getAsInt();
+
+		final String storedAuxModeName = getOrNull(object, "auxModeName", JsonElement::getAsString);
+		final String storedErrors = getOrNull(object, "error", JsonElement::getAsString);
+		final String storedChargerModeName = getOrNull(object, "chargerModeName", JsonElement::getAsString);
+
+		final String auxModeName = storedAuxModeName != null ? storedAuxModeName : CodeMode.getActiveMode(AuxMode.class, auxMode, AuxMode.UNKNOWN).getModeName();
+		final String errors = storedErrors != null ? storedErrors : BitmaskMode.toString(MXFMErrorMode.class, errorMode);
+		final String chargerModeName = storedChargerModeName != null ? storedChargerModeName : CodeMode.getActiveMode(ChargerMode.class, chargerMode, ChargerMode.UNKNOWN).getModeName();
+
+
+        return new ImmutableMXFMStatusPacket(address, chargerCurrent, pvCurrent, inputVoltage, dailyKWH, dailyKWHString,
+				ampChargerCurrent, ampChargerCurrentString, auxMode, errorMode, chargerMode, batteryVoltage, batteryVoltageString,
+				dailyAH, chksum, auxModeName, errors, chargerModeName);
 	}
 }
