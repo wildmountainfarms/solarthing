@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import me.retrodaredevil.solarthing.packet.SolarPacket;
+import me.retrodaredevil.solarthing.packet.Packet;
 
 public class SolarReader {
 	private static final long SAME_PACKET_COLLECTION_TIME = 250;
@@ -40,7 +40,7 @@ public class SolarReader {
 	 * Takes over the current thread and runs forever
 	 */
 	public void start() {
-		final List<SolarPacket> packetList = new ArrayList<>(); // a list that piles up SolarPackets and saves when needed // may be cleared
+		final List<Packet> packetList = new ArrayList<>(); // a list that piles up SolarPackets and saves when needed // may be cleared
 		long lastFirstReceivedData = Long.MIN_VALUE; // the last time a packet was added to packetList
 
 		int packetCollectionCounter = -1;
@@ -56,7 +56,7 @@ public class SolarReader {
 				while (in.available() > 0 && (len = in.read(buffer)) > -1) {
 					String s = new String(buffer, 0, len);
 //					System.out.println("got: '" + s.replaceAll("\n", "\\\\n").replaceAll("\r", "\\\\r") + "'. len: " + len);
-					Collection<SolarPacket> newPackets = creator.add(s.toCharArray());
+					Collection<Packet> newPackets = creator.add(s.toCharArray());
 
 					long now = System.currentTimeMillis();
 					if(lastFirstReceivedData + SAME_PACKET_COLLECTION_TIME < now) {

@@ -1,6 +1,6 @@
 package me.retrodaredevil.solarthing.packet;
 
-public interface StatusPacket extends SolarPacket {
+public interface StatusPacket extends Packet {
 	/**
 	 * Should be serialized as "packetType"
 	 * @return The packet type

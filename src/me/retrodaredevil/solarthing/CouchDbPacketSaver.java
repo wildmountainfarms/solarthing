@@ -10,7 +10,8 @@ import java.util.logging.Logger;
 
 import me.retrodaredevil.ProgramArgs;
 import me.retrodaredevil.solarthing.packet.PacketCollection;
-import me.retrodaredevil.solarthing.packet.SolarPacket;
+import me.retrodaredevil.solarthing.packet.Packet;
+import me.retrodaredevil.solarthing.packet.PacketCollections;
 
 public class CouchDbPacketSaver implements PacketSaver {
 	private final CouchDbClient client;
@@ -40,7 +41,7 @@ public class CouchDbPacketSaver implements PacketSaver {
 	}
 
 	@Override
-	public void savePackets(Collection<SolarPacket> packets) {
-		savePacketCollection(new PacketCollection(packets));
+	public void savePackets(Collection<Packet> packets) {
+		savePacketCollection(PacketCollections.createFromPackets(packets));
 	}
 }

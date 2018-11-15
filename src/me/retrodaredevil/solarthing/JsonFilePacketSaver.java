@@ -9,7 +9,8 @@ import java.io.IOException;
 import java.util.Collection;
 
 import me.retrodaredevil.solarthing.packet.PacketCollection;
-import me.retrodaredevil.solarthing.packet.SolarPacket;
+import me.retrodaredevil.solarthing.packet.Packet;
+import me.retrodaredevil.solarthing.packet.PacketCollections;
 import me.retrodaredevil.util.json.JsonFile;
 
 public class JsonFilePacketSaver implements PacketSaver{
@@ -54,7 +55,7 @@ public class JsonFilePacketSaver implements PacketSaver{
 	}
 
 	@Override
-	public void savePackets(Collection<SolarPacket> packets) {
-		savePacketCollection(new PacketCollection(packets));
+	public void savePackets(Collection<Packet> packets) {
+		savePacketCollection(PacketCollections.createFromPackets(packets));
 	}
 }

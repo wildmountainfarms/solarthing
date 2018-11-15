@@ -6,13 +6,11 @@ import com.google.gson.JsonObject;
 import org.lightcouch.CouchDbClient;
 import org.lightcouch.CouchDbProperties;
 
-import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import me.retrodaredevil.solarthing.packet.fx.FXStatusPacket;
 import me.retrodaredevil.solarthing.packet.fx.FXStatusPackets;
-import me.retrodaredevil.solarthing.packet.mxfm.MXFMStatusPacket;
 import me.retrodaredevil.solarthing.packet.mxfm.MXFMStatusPackets;
+import me.retrodaredevil.util.json.JsonFile;
 
 public final class StatusPackets {
 	private StatusPackets(){ throw new UnsupportedOperationException(); }
@@ -48,26 +46,12 @@ public final class StatusPackets {
 	}
 	public static void main(String[] args){
 		CouchDbClient client = new CouchDbClient(new CouchDbProperties("solarthing", false, "http", "localhost", 5984, "admin", "relax"));
-		for(JsonObject object : client.view("packets/millis").startKey(System.currentTimeMillis() - 1000 * 60 * 60).query(JsonObject.class)){
+		for(JsonObject object : client.view("packets/millis").startKey(0).query(JsonObject.class)){
 			JsonObject value = object.getAsJsonObject("value");
 			GregorianCalendar calendar = new GregorianCalendar();
 			calendar.setTimeInMillis(value.get("dateMillis").getAsLong());
-			for(JsonElement elementPacket : value.getAsJsonArray("packets")){
-				try {
-					StatusPacket packet = StatusPackets.createFromJson(elementPacket.getAsJsonObject());
-					if(packet.getPacketType() == PacketType.FX_STATUS){
-						FXStatusPacket fx = (FXStatusPacket) packet;
-						System.out.println("(fx)battery voltage is " + fx.getBatteryVoltageString() + " at " + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE));
-					} else if(packet.getPacketType() == PacketType.MXFM_STATUS){
-						MXFMStatusPacket mx = (MXFMStatusPacket) packet;
-						System.out.println("(mx)battery voltage is " + mx.getBatteryVoltageString() + " at " + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE));
-					}
-				} catch(NullPointerException ex){
-					System.out.println("Couldn't parse:");
-					System.out.println(elementPacket.toString());
-					throw ex;
-				}
-			}
+			PacketCollection packetCollection = PacketCollections.createFromJson(value);
+			System.out.println(JsonFile.gson.toJson(packetCollection));
 		}
 	}
 }

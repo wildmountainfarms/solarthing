@@ -3,7 +3,7 @@ package me.retrodaredevil.solarthing;
 import java.util.Collection;
 
 import me.retrodaredevil.solarthing.packet.PacketCollection;
-import me.retrodaredevil.solarthing.packet.SolarPacket;
+import me.retrodaredevil.solarthing.packet.Packet;
 
 public interface PacketSaver {
 	/**
@@ -18,5 +18,5 @@ public interface PacketSaver {
 	 * After this method is called, mutating packets will have no effect and is tolerated.
 	 * @param packets The packets to save.
 	 */
-	void savePackets(Collection<SolarPacket> packets);
+	void savePackets(Collection<Packet> packets);
 }

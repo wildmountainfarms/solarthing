@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import me.retrodaredevil.solarthing.packet.SolarPacket;
+import me.retrodaredevil.solarthing.packet.Packet;
 import me.retrodaredevil.solarthing.packet.fx.FXStatusPackets;
 import me.retrodaredevil.solarthing.packet.mxfm.MXFMStatusPackets;
 import me.retrodaredevil.solarthing.util.CheckSumException;
@@ -32,7 +32,7 @@ public class PacketCreator49 implements PacketCreator{
 
 	//Public Methods
 	@Override
-	public Collection<SolarPacket> add(char[] chars){ // TODO set this up to tolerate (and ignore) packets that aren't 49 bytes (utilizing END char)
+	public Collection<Packet> add(char[] chars){ // TODO set this up to tolerate (and ignore) packets that aren't 49 bytes (utilizing END char)
 		if(chars.length == 0){
             return Collections.emptySet();
 		}
@@ -40,7 +40,7 @@ public class PacketCreator49 implements PacketCreator{
 		if(amount == 0 && first != START){
 			return Collections.emptySet(); // gotta wait for the start char
 		}
-		List<SolarPacket> r = null;
+		List<Packet> r = null;
 		for(char c : chars){
 			bytes[amount] = c;
 			amount++;
@@ -50,7 +50,7 @@ public class PacketCreator49 implements PacketCreator{
 			}
 			if(amount == length){
 				try{
-					final SolarPacket packet = create(); // resets bytes array and amount
+					final Packet packet = create(); // resets bytes array and amount
 
 					System.out.println();
 					System.out.println("============");
@@ -76,7 +76,7 @@ public class PacketCreator49 implements PacketCreator{
 		}
 		return r;
 	}
-	private SolarPacket create() throws CheckSumException, ParsePacketAsciiDecimalDigitException, UnsupportedOperationException {
+	private Packet create() throws CheckSumException, ParsePacketAsciiDecimalDigitException, UnsupportedOperationException {
 		final int value = (int) bytes[1]; // ascii value
 		if(value >= 48 && value <= 58){ // fx status
 			return FXStatusPackets.createFromChars(bytes, ignoreCheckSum);
