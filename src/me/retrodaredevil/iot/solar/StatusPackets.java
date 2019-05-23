@@ -17,8 +17,8 @@ import me.retrodaredevil.util.json.JsonFile;
 public final class StatusPackets {
 	private StatusPackets(){ throw new UnsupportedOperationException(); }
 
-	public static StatusPacket createFromJson(JsonObject jsonObject) throws IllegalArgumentException{
-		final PacketType packetType = PacketType.valueOf(jsonObject.getAsJsonPrimitive("packetType").getAsString());
+	public static SolarPacket createFromJson(JsonObject jsonObject) throws IllegalArgumentException{
+		final SolarPacketType packetType = SolarPacketType.valueOf(jsonObject.getAsJsonPrimitive("packetType").getAsString());
 		switch(packetType){
 			case FX_STATUS:
 				return FXStatusPackets.createFromJson(jsonObject);

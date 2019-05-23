@@ -16,6 +16,7 @@ public class ProgramArgs {
 	private String portName = "/dev/ttyUSB0";
 	
 	@Parameter(names = {"--name", "--database"}, description = "The name of the database")
+	@Deprecated
 	private String databaseName = "solarthing";
 	
 	@Parameter(names = { "--protocol" }, description = "The protocol. Almost always http unless you know what you're doing.")
@@ -52,7 +53,7 @@ public class ProgramArgs {
 	public ProgramArgs(String[] args){
 		JCommander.newBuilder().addObject(this).build().parse(args);
 
-		databaseProperties = new CouchDbProperties(databaseName, true, protocol, host, port, userName, password);
+		databaseProperties = new CouchDbProperties(null, true, protocol, host, port, userName, password);
 		
 	}
 	public boolean isHelp(){

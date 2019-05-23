@@ -1,9 +1,9 @@
 package me.retrodaredevil.iot.solar.mx;
 
-import me.retrodaredevil.iot.solar.PacketType;
+import me.retrodaredevil.iot.solar.SolarPacketType;
 
 class ImmutableMXStatusPacket implements MXStatusPacket {
-	private final PacketType packetType = PacketType.MXFM_STATUS;
+	private final SolarPacketType packetType = SolarPacketType.MXFM_STATUS;
 
 	private final int address;
 
@@ -70,7 +70,7 @@ class ImmutableMXStatusPacket implements MXStatusPacket {
 	}
 
 	@Override
-	public PacketType getPacketType() {
+	public SolarPacketType getPacketType() {
 		return packetType;
 	}
 

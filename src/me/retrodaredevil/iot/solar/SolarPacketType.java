@@ -6,7 +6,7 @@ package me.retrodaredevil.iot.solar;
  * NOTE: In the future, do NOT override the {@link #toString()} method. Doing so may break code
  * from other projects
  */
-public enum PacketType {
+public enum SolarPacketType {
 	/**
 	 * FX Status Packets
 	 */

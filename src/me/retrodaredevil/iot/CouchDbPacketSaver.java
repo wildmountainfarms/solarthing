@@ -13,17 +13,20 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import me.retrodaredevil.ProgramArgs;
+import org.lightcouch.CouchDbProperties;
 
 public class CouchDbPacketSaver implements PacketSaver {
 	private final CouchDbClient client;
 
-	public CouchDbPacketSaver(ProgramArgs args){
-		client = createClient(args);
+	public CouchDbPacketSaver(ProgramArgs args, String databaseName){
+		client = createClient(args, databaseName);
 	}
 
 	/** @return The CouchDbClient using the given ProgramArgs or null if a connection could not be established */
-	private static CouchDbClient createClient(ProgramArgs args){
-		return new CouchDbClient(args.getProperties());
+	private static CouchDbClient createClient(ProgramArgs args, String databaseName){
+		CouchDbProperties properties = args.getProperties();
+		properties.setDbName(databaseName);
+		return new CouchDbClient(properties);
 	}
 	/** Assuming the log4j library is running, this stops CouchDb from spitting out logs every time we save*/
 	private static void makeCouchQuiet(){

@@ -1,11 +1,11 @@
 package me.retrodaredevil.iot.solar.fx;
 
-import me.retrodaredevil.iot.solar.StatusPacket;
+import me.retrodaredevil.iot.solar.SolarPacket;
 
 /**
  * Contains all the necessary data to calculate convenience data in {@link FXStatusPacket}
  */
-public interface FXStatusPacketRaw extends StatusPacket {
+public interface FXStatusPacketRaw extends SolarPacket {
 	/**
 	 * Should be serialized as "inverterCurrentRaw" if serialized at all
 	 * @return The raw inverter current.

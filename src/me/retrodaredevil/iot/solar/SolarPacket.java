@@ -2,12 +2,12 @@ package me.retrodaredevil.iot.solar;
 
 import me.retrodaredevil.iot.packets.Packet;
 
-public interface StatusPacket extends Packet {
+public interface SolarPacket extends Packet {
 	/**
 	 * Should be serialized as "packetType"
 	 * @return The packet type
 	 */
-	PacketType getPacketType();
+	SolarPacketType getPacketType();
 
 	/**
 	 * Should be serialized as "address"

@@ -35,7 +35,7 @@ public class SolarMain {
 				packetSaver = new JsonFilePacketSaver(args.getFilePath());
 			} else {
 				try {
-					packetSaver = new CouchDbPacketSaver(args);
+					packetSaver = new CouchDbPacketSaver(args, "solarthing");
 				} catch (CouchDbException e) {
 					e.printStackTrace();
 					System.err.println("Unable to connect to database.");

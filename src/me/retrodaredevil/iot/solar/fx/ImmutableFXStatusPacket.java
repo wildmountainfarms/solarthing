@@ -1,9 +1,9 @@
 package me.retrodaredevil.iot.solar.fx;
 
-import me.retrodaredevil.iot.solar.PacketType;
+import me.retrodaredevil.iot.solar.SolarPacketType;
 
 class ImmutableFXStatusPacket implements FXStatusPacket {
-	private final PacketType packetType = PacketType.FX_STATUS;
+	private final SolarPacketType packetType = SolarPacketType.FX_STATUS;
 
 	private final int address;
 
@@ -195,7 +195,7 @@ class ImmutableFXStatusPacket implements FXStatusPacket {
 	}
 
 	@Override
-	public PacketType getPacketType() {
+	public SolarPacketType getPacketType() {
 		return packetType;
 	}
 

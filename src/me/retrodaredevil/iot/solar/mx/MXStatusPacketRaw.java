@@ -1,11 +1,11 @@
 package me.retrodaredevil.iot.solar.mx;
 
-import me.retrodaredevil.iot.solar.StatusPacket;
+import me.retrodaredevil.iot.solar.SolarPacket;
 
 /**
  * In previous version, it was just "MX" instead of "MXFM" so MX is the same as MXFM in the documentation
  */
-public interface MXStatusPacketRaw extends StatusPacket {
+public interface MXStatusPacketRaw extends SolarPacket {
 	/**
 	 * Should be serialized as "address"
 	 * @return The MX Address. In range [0..10]. If 0, that means the MX is directly connected
