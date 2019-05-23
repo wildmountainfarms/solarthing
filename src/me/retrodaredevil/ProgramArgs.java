@@ -5,7 +5,7 @@ import org.lightcouch.CouchDbProperties;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 
-import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
+import me.retrodaredevil.iot.util.IgnoreCheckSum;
 import me.retrodaredevil.util.json.JsonFile;
 
 public class ProgramArgs {
@@ -62,10 +62,10 @@ public class ProgramArgs {
 		return unitTest;
 	}
 	public IgnoreCheckSum getIgnoreCheckSum() {
-        if(correctCheckSum){
-        	return IgnoreCheckSum.IGNORE_AND_USE_CALCULATED;
+		if(correctCheckSum){
+			return IgnoreCheckSum.IGNORE_AND_USE_CALCULATED;
 		} else if(ignoreCheckSum){
-        	return IgnoreCheckSum.IGNORE;
+			return IgnoreCheckSum.IGNORE;
 		}
 		return IgnoreCheckSum.DISABLED;
 	}

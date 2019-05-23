@@ -12,6 +12,17 @@ Run the command
 ```
 mvn clean compile assembly:single
 ```
+Move the jar to the root folder and name the jar `SolarThing.jar`
+
+You would then usually run a command similar to 
+```
+source solar/virtual_mate.sh | java -jar SolarThing.jar --host 192.168.1.110 --cc --unit-test
+```
+If you are running this on a Pi with a serial port connected, you would probably run
+```
+java -jar SolarThing.jar --host 192.168.1.110
+```
+For each example replace the host with the ip of your CouchDB database IP.
 
 ### References
 New documentation:
