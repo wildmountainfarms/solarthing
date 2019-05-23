@@ -1,11 +1,11 @@
-package me.retrodaredevil.iot.solar.mxfm;
+package me.retrodaredevil.iot.solar.mx;
 
 import me.retrodaredevil.iot.solar.StatusPacket;
 
 /**
  * In previous version, it was just "MX" instead of "MXFM" so MX is the same as MXFM in the documentation
  */
-public interface MXFMStatusPacketRaw extends StatusPacket {
+public interface MXStatusPacketRaw extends StatusPacket {
 	/**
 	 * Should be serialized as "address"
 	 * @return The MX Address. In range [0..10]. If 0, that means the MX is directly connected
@@ -63,7 +63,7 @@ public interface MXFMStatusPacketRaw extends StatusPacket {
 
 	/**
 	 * Should be serialized as "errorMode"
-	 * @return [0..256] represents a varying number of active {@link MXFMErrorMode}s
+	 * @return [0..256] represents a varying number of active {@link MXErrorMode}s
 	 */
 	int getErrorMode();
 

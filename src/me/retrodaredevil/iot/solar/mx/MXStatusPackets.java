@@ -1,4 +1,4 @@
-package me.retrodaredevil.iot.solar.mxfm;
+package me.retrodaredevil.iot.solar.mx;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -11,10 +11,10 @@ import me.retrodaredevil.iot.util.ParsePacketAsciiDecimalDigitException;
 import static me.retrodaredevil.iot.solar.StatusPackets.getOrNull;
 import static me.retrodaredevil.iot.util.ParseUtil.toInt;
 
-public final class MXFMStatusPackets {
-	private MXFMStatusPackets(){ throw new UnsupportedOperationException(); }
+public final class MXStatusPackets {
+	private MXStatusPackets(){ throw new UnsupportedOperationException(); }
 
-	public static ImmutableMXFMStatusPacket createFromChars(char[] chars, IgnoreCheckSum ignoreCheckSum) throws CheckSumException, ParsePacketAsciiDecimalDigitException {
+	public static ImmutableMXStatusPacket createFromChars(char[] chars, IgnoreCheckSum ignoreCheckSum) throws CheckSumException, ParsePacketAsciiDecimalDigitException {
 		// Start of Status Page
 		final int address = ((int) chars[1]) - 65; // if it is "A" then address would be 0
 		final int addressChksum = address + 17; // if "A" -> 0 -> ascii 17 (device control 1) weird but that's how it is.
@@ -128,16 +128,16 @@ public final class MXFMStatusPackets {
 		final String auxModeName = Modes.getActiveMode(AuxMode.class, auxMode, AuxMode.UNKNOWN).getModeName();
 
 		// ==== Error Mode stuff ====
-		final String errors = Modes.toString(MXFMErrorMode.class, errorMode);
+		final String errors = Modes.toString(MXErrorMode.class, errorMode);
 
 		// ==== Charge Mode stuff ====
 		final String chargerModeName = Modes.getActiveMode(ChargerMode.class, chargerMode, ChargerMode.UNKNOWN).getModeName();
-		return new ImmutableMXFMStatusPacket(address, chargerCurrent, pvCurrent, inputVoltage, dailyKWH,
+		return new ImmutableMXStatusPacket(address, chargerCurrent, pvCurrent, inputVoltage, dailyKWH,
 				dailyKWHString, ampChargerCurrent, ampChargerCurrentString, auxMode, errorMode, chargerMode,
 				batteryVoltage, batteryVoltageString, dailyAH, chksum, auxModeName, errors, chargerModeName);
 	}
 
-	public static MXFMStatusPacket createFromJson(JsonObject object) {
+	public static MXStatusPacket createFromJson(JsonObject object) {
 
 		final int address = object.get("address").getAsInt();
 
@@ -170,11 +170,11 @@ public final class MXFMStatusPackets {
 		final String storedChargerModeName = getOrNull(object, "chargerModeName", JsonElement::getAsString);
 
 		final String auxModeName = storedAuxModeName != null ? storedAuxModeName : Modes.getActiveMode(AuxMode.class, auxMode, AuxMode.UNKNOWN).getModeName();
-		final String errors = storedErrors != null ? storedErrors : Modes.toString(MXFMErrorMode.class, errorMode);
+		final String errors = storedErrors != null ? storedErrors : Modes.toString(MXErrorMode.class, errorMode);
 		final String chargerModeName = storedChargerModeName != null ? storedChargerModeName : Modes.getActiveMode(ChargerMode.class, chargerMode, ChargerMode.UNKNOWN).getModeName();
 
 
-		return new ImmutableMXFMStatusPacket(address, chargerCurrent, pvCurrent, inputVoltage, dailyKWH, dailyKWHString,
+		return new ImmutableMXStatusPacket(address, chargerCurrent, pvCurrent, inputVoltage, dailyKWH, dailyKWHString,
 				ampChargerCurrent, ampChargerCurrentString, auxMode, errorMode, chargerMode, batteryVoltage, batteryVoltageString,
 				dailyAH, chksum, auxModeName, errors, chargerModeName);
 	}

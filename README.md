@@ -6,7 +6,9 @@ That program uploads packets to a CouchDB database on a separate computer which 
 found here: https://github.com/retrodaredevil/solarthing-web . With each of these combined we are able
 to see the current battery voltage and other information along with a graph to see past data.
 ### Developer Use
-Currently this project is not set up to be used as an API but maybe in the future it will be.
+You can import the most current release by using www.jitpack.io. This project is set up to be able to parse JSON
+and turn it into a packet. https://github.com/retrodaredevil/solarthing-android is currently using this.
+
 ### Compiling
 Run the command
 ```
@@ -16,7 +18,7 @@ Move the jar to the root folder and name the jar `SolarThing.jar`
 
 You would then usually run a command similar to 
 ```
-source solar/virtual_mate.sh | java -jar SolarThing.jar --host 192.168.1.110 --cc --unit-test
+solar/virtual_mate.sh | java -jar SolarThing.jar --host 192.168.1.110 --cc --unit-test
 ```
 If you are running this on a Pi with a serial port connected, you would probably run
 ```

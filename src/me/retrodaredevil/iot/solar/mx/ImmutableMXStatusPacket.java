@@ -1,8 +1,8 @@
-package me.retrodaredevil.iot.solar.mxfm;
+package me.retrodaredevil.iot.solar.mx;
 
 import me.retrodaredevil.iot.solar.PacketType;
 
-class ImmutableMXFMStatusPacket implements MXFMStatusPacket {
+class ImmutableMXStatusPacket implements MXStatusPacket {
 	private final PacketType packetType = PacketType.MXFM_STATUS;
 
 	private final int address;
@@ -26,7 +26,7 @@ class ImmutableMXFMStatusPacket implements MXFMStatusPacket {
 	private final String errors;
 	private final String chargerModeName;
 
-	ImmutableMXFMStatusPacket(
+	ImmutableMXStatusPacket(
 			int address, int chargerCurrent, int pvCurrent, int inputVoltage,
 			float dailyKWH, String dailyKWHString,
 			float ampChargerCurrent, String ampChargerCurrentString,

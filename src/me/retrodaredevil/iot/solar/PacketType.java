@@ -7,5 +7,16 @@ package me.retrodaredevil.iot.solar;
  * from other projects
  */
 public enum PacketType {
-	FX_STATUS, MXFM_STATUS, FLEXNET_DC_STATUS
+	/**
+	 * FX Status Packets
+	 */
+	FX_STATUS,
+	/**
+	 * MX/FM Status Packets
+	 */
+	MXFM_STATUS,
+	/**
+	 * FlexNET DC Status Packets
+	 */
+	FLEXNET_DC_STATUS
 }

@@ -11,7 +11,7 @@ import org.lightcouch.CouchDbProperties;
 import java.util.GregorianCalendar;
 
 import me.retrodaredevil.iot.solar.fx.FXStatusPackets;
-import me.retrodaredevil.iot.solar.mxfm.MXFMStatusPackets;
+import me.retrodaredevil.iot.solar.mx.MXStatusPackets;
 import me.retrodaredevil.util.json.JsonFile;
 
 public final class StatusPackets {
@@ -23,7 +23,7 @@ public final class StatusPackets {
 			case FX_STATUS:
 				return FXStatusPackets.createFromJson(jsonObject);
 			case MXFM_STATUS:
-				return MXFMStatusPackets.createFromJson(jsonObject);
+				return MXStatusPackets.createFromJson(jsonObject);
 			case FLEXNET_DC_STATUS:
 				throw new UnsupportedOperationException("FLEXNet Status Packets aren't supported yet.");
 			default:

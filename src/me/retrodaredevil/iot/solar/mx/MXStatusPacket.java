@@ -1,6 +1,6 @@
-package me.retrodaredevil.iot.solar.mxfm;
+package me.retrodaredevil.iot.solar.mx;
 
-public interface MXFMStatusPacket extends MXFMStatusPacketRaw{
+public interface MXStatusPacket extends MXStatusPacketRaw {
 	String getAuxModeName();
 	String getErrorsString();
 	String getChargerModeName();

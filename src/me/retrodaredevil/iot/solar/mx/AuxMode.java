@@ -1,4 +1,4 @@
-package me.retrodaredevil.iot.solar.mxfm;
+package me.retrodaredevil.iot.solar.mx;
 
 import me.retrodaredevil.iot.packets.CodeMode;
 

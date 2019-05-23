@@ -8,7 +8,7 @@ import java.util.List;
 import me.retrodaredevil.iot.packets.PacketCreator;
 import me.retrodaredevil.iot.packets.Packet;
 import me.retrodaredevil.iot.solar.fx.FXStatusPackets;
-import me.retrodaredevil.iot.solar.mxfm.MXFMStatusPackets;
+import me.retrodaredevil.iot.solar.mx.MXStatusPackets;
 import me.retrodaredevil.iot.util.CheckSumException;
 import me.retrodaredevil.iot.util.IgnoreCheckSum;
 import me.retrodaredevil.iot.util.ParsePacketAsciiDecimalDigitException;
@@ -81,8 +81,8 @@ public class MatePacketCreator49 implements PacketCreator {
 		final int value = (int) bytes[1]; // ascii value
 		if(value >= 48 && value <= 58){ // fx status
 			return FXStatusPackets.createFromChars(bytes, ignoreCheckSum);
-		} else if(value >= 65 && value <= 75){ // fx/fm
-			return MXFMStatusPackets.createFromChars(bytes, ignoreCheckSum);
+		} else if(value >= 65 && value <= 75){ // mx
+			return MXStatusPackets.createFromChars(bytes, ignoreCheckSum);
 		} else if(value >= 97 && value <= 106){
 			throw new UnsupportedOperationException("Not set up to use FLEXnet DC Status Packets. value: " + value);
 		} else {

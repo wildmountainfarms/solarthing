@@ -1,8 +1,8 @@
-package me.retrodaredevil.iot.solar.mxfm;
+package me.retrodaredevil.iot.solar.mx;
 
 import me.retrodaredevil.iot.packets.BitmaskMode;
 
-public enum MXFMErrorMode implements BitmaskMode {
+public enum MXErrorMode implements BitmaskMode {
 	SHORTED_BATTERY_SENSOR(32, "Shorted Battery Sensor"),
 	TOO_HOT(64, "Too Hot"),
 	HIGH_VOC(128, "High VOC");
@@ -10,7 +10,7 @@ public enum MXFMErrorMode implements BitmaskMode {
 	private final int value;
 	private final String name;
 
-	MXFMErrorMode(int value, String name){
+	MXErrorMode(int value, String name){
 		this.value = value;
 		this.name = name;
 	}

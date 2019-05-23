@@ -1,10 +1,10 @@
-package me.retrodaredevil.iot.solar.mxfm;
+package me.retrodaredevil.iot.solar.mx;
 
 
 import me.retrodaredevil.iot.packets.CodeMode;
 
 /**
- * The charger mode of the MXFM
+ * The charger mode of the MX
  */
 public enum ChargerMode implements CodeMode {
 	UNKNOWN(-1, "unknown"),
