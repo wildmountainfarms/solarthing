@@ -10,6 +10,8 @@ import java.util.Collection;
 
 public class OuthousePacketCreator extends StartEndPacketCreator {
 	
+	private Double lastDistance = null;
+	
 	public OuthousePacketCreator() {
 		super('\n', '\r', 256, "\n0.0 0 0\r".length());
 	}
@@ -29,16 +31,18 @@ public class OuthousePacketCreator extends StartEndPacketCreator {
 		final int humidity;
 		try {
 			if(split[0].equals("null")){
-				distance = null;
+				distance = lastDistance;
+				lastDistance = null;
 			} else {
 				distance = Double.parseDouble(split[0]);
+				lastDistance = distance;
 			}
 			temperature = Integer.parseInt(split[1]);
 			humidity = Integer.parseInt(split[2]);
 		} catch (NumberFormatException ex){
 			throw new PacketCreationException("debugBytes: " + escape(new String(bytes)), ex);
 		}
-		Packet occupancy = new ImmutableOccupancyPacket(distance != null && distance < 30 ? Occupancy.OCCUPIED.getValueCode() : Occupancy.VACANT.getValueCode());
+		Packet occupancy = new ImmutableOccupancyPacket(distance != null && distance < 85 ? Occupancy.OCCUPIED.getValueCode() : Occupancy.VACANT.getValueCode());
 		Packet weather = new IntegerWeatherPacket(temperature, humidity);
 		System.out.println("=====");
 		System.out.println(JsonFile.gson.toJson(occupancy));
