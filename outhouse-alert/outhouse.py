@@ -9,12 +9,9 @@ GPIO.setwarnings(False)
 TRIG = 23
 ECHO = 24
 
-GPIO.setup(TRIG,GPIO.OUT)
-GPIO.setup(ECHO,GPIO.IN)
 
 SENSOR_NAME = DHT11
 SENSOR_PIN = 4
-time.sleep(2)
 
 def get_humidity_temperature():
     hum, temp = read_retry(SENSOR_NAME, SENSOR_PIN)
@@ -48,12 +45,18 @@ def get_distance():
         return None
 
 def main():
-    while True:
-        distance = get_distance()
-        hum, temp = get_humidity_temperature()
+    try:
+        GPIO.setup(TRIG,GPIO.OUT)
+        GPIO.setup(ECHO,GPIO.IN)
+        time.sleep(.1)
+        while True:
+            distance = get_distance()
+            hum, temp = get_humidity_temperature()
 
-        print("\n{} {} {}".format(distance, temp, hum), end="\r")
-        time.sleep(.75)
+            print("\n{} {} {}".format(distance or "null", temp, hum), end="\r")
+            time.sleep(.75)
+    finally:
+        GPIO.cleanup()
 
 if __name__ == '__main__':
     main()
