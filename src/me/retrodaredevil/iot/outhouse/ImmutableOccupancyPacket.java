@@ -1,6 +1,7 @@
 package me.retrodaredevil.iot.outhouse;
 
 public class ImmutableOccupancyPacket implements OccupancyPacket {
+	private final OuthousePacketType packetType = OuthousePacketType.OCCUPANCY;
 	
 	private final int occupancy;
 	
@@ -15,6 +16,6 @@ public class ImmutableOccupancyPacket implements OccupancyPacket {
 	
 	@Override
 	public OuthousePacketType getPacketType() {
-		return OuthousePacketType.OCCUPANCY;
+		return packetType;
 	}
 }

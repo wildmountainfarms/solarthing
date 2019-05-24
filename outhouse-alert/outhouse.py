@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import RPi.GPIO as GPIO
 import time
 from Adafruit_DHT import read_retry, DHT11
@@ -54,3 +55,5 @@ def main():
         print("\n{} {} {}".format(distance, temp, hum), end="\r")
         time.sleep(.75)
 
+if __name__ == '__main__':
+    main()

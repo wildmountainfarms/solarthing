@@ -1,14 +1,19 @@
 package me.retrodaredevil;
 
-import org.lightcouch.CouchDbProperties;
-
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
-
 import me.retrodaredevil.iot.util.IgnoreCheckSum;
 import me.retrodaredevil.util.json.JsonFile;
+import org.lightcouch.CouchDbProperties;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProgramArgs {
+	
+	@Parameter()
+	private List<String> parameters = new ArrayList<>();
+	
 	@Parameter(names = {"--help", "-h"}, help = true)
 	private boolean help = false;
 	
@@ -55,6 +60,9 @@ public class ProgramArgs {
 
 		databaseProperties = new CouchDbProperties(null, true, protocol, host, port, userName, password);
 		
+	}
+	public List<String> getParameters(){
+		return parameters;
 	}
 	public boolean isHelp(){
 		return help;

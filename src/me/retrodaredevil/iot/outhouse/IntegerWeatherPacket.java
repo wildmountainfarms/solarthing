@@ -1,6 +1,7 @@
 package me.retrodaredevil.iot.outhouse;
 
 public class IntegerWeatherPacket implements WeatherPacket{
+	private final OuthousePacketType packetType = OuthousePacketType.WEATHER;
 	
 	private final int temperatureCelsius;
 	private final int humidityPercent;
@@ -27,6 +28,6 @@ public class IntegerWeatherPacket implements WeatherPacket{
 	
 	@Override
 	public OuthousePacketType getPacketType() {
-		return OuthousePacketType.WEATHER;
+		return packetType;
 	}
 }
