@@ -3,6 +3,7 @@ package me.retrodaredevil.iot.outhouse;
 import me.retrodaredevil.iot.packets.Packet;
 import me.retrodaredevil.iot.packets.PacketCreator;
 import me.retrodaredevil.iot.packets.StartEndPacketCreator;
+import me.retrodaredevil.util.json.JsonFile;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -37,10 +38,13 @@ public class OuthousePacketCreator extends StartEndPacketCreator {
 		} catch (NumberFormatException ex){
 			throw new PacketCreationException("debugBytes: " + escape(new String(bytes)), ex);
 		}
-		return Arrays.asList(
-			new ImmutableOccupancyPacket(distance != null && distance < 30 ? Occupancy.OCCUPIED.getValueCode() : Occupancy.VACANT.getValueCode()),
-			new IntegerWeatherPacket(temperature, humidity)
-		);
+		Packet occupancy = new ImmutableOccupancyPacket(distance != null && distance < 30 ? Occupancy.OCCUPIED.getValueCode() : Occupancy.VACANT.getValueCode());
+		Packet weather = new IntegerWeatherPacket(temperature, humidity);
+		System.out.println("=====");
+		System.out.println(JsonFile.gson.toJson(occupancy));
+		System.out.println(JsonFile.gson.toJson(weather));
+		System.out.println("=====");
+		return Arrays.asList(occupancy, weather);
 	}
 	public static void main(String[] args){
 		PacketCreator packetCreator = new OuthousePacketCreator();

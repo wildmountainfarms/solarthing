@@ -7,6 +7,7 @@ import me.retrodaredevil.iot.solar.mx.MXStatusPackets;
 import me.retrodaredevil.iot.util.CheckSumException;
 import me.retrodaredevil.iot.util.IgnoreCheckSum;
 import me.retrodaredevil.iot.util.ParsePacketAsciiDecimalDigitException;
+import me.retrodaredevil.util.json.JsonFile;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -31,15 +32,16 @@ public class MatePacketCreator49 extends StartEndPacketCreator {
 	@Override
 	public Collection<Packet> create(char[] bytes) throws PacketCreationException{
 		final int value = (int) bytes[1]; // ascii value
+		final Packet r;
 		if(value >= 48 && value <= 58){ // fx status
 			try {
-				return Collections.singleton(FXStatusPackets.createFromChars(bytes, ignoreCheckSum));
+				r = FXStatusPackets.createFromChars(bytes, ignoreCheckSum);
 			} catch (ParsePacketAsciiDecimalDigitException | CheckSumException e) {
 				throw new PacketCreationException(e);
 			}
 		} else if(value >= 65 && value <= 75){ // mx
 			try {
-				return Collections.singleton(MXStatusPackets.createFromChars(bytes, ignoreCheckSum));
+				r = MXStatusPackets.createFromChars(bytes, ignoreCheckSum);
 			} catch (ParsePacketAsciiDecimalDigitException | CheckSumException e) {
 				throw new PacketCreationException(e);
 			}
@@ -48,6 +50,10 @@ public class MatePacketCreator49 extends StartEndPacketCreator {
 		} else {
 			throw new UnsupportedOperationException("Ascii value: " + value + " not supported. (from: '" + new String(bytes) + "')");
 		}
+		System.out.println("=====");
+		System.out.println(JsonFile.gson.toJson(r));
+		System.out.println("=====");
+		return Collections.singleton(r);
 	}
 
 }

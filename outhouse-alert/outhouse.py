@@ -53,7 +53,7 @@ def main():
             distance = get_distance()
             hum, temp = get_humidity_temperature()
 
-            print("\n{} {} {}".format(distance or "null", temp, hum), end="\r")
+            print("\n{} {} {}".format(distance or "null", temp, hum), end="\r", flush=True)
             time.sleep(.75)
     finally:
         GPIO.cleanup()
