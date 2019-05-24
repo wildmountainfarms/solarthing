@@ -10,7 +10,10 @@ public final class PacketCollections {
 	public static PacketCollection createFromPackets(Collection<Packet> packets){
 		return new ImmutablePacketCollection(packets);
 	}
-	public static PacketCollection createFromJson(JsonObject object){
-		return new ImmutablePacketCollection(object);
+	public static PacketCollection createFromJson(JsonObject object, JsonPacketGetter packetGetter){
+		return new ImmutablePacketCollection(object, packetGetter);
+	}
+	public interface JsonPacketGetter {
+		Packet createFromJson(JsonObject packetObject);
 	}
 }

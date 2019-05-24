@@ -8,7 +8,7 @@ import me.retrodaredevil.iot.util.CheckSumException;
 import me.retrodaredevil.iot.util.IgnoreCheckSum;
 import me.retrodaredevil.iot.util.ParsePacketAsciiDecimalDigitException;
 
-import static me.retrodaredevil.iot.solar.StatusPackets.getOrNull;
+import static me.retrodaredevil.util.json.JsonHelper.getOrNull;
 import static me.retrodaredevil.iot.util.ParseUtil.toInt;
 
 public final class MXStatusPackets {

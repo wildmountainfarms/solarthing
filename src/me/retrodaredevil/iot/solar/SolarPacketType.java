@@ -1,12 +1,14 @@
 package me.retrodaredevil.iot.solar;
 
+import me.retrodaredevil.iot.packets.DocumentedPacketType;
+
 /**
  * Represents the packet type.
  *
  * NOTE: In the future, do NOT override the {@link #toString()} method. Doing so may break code
  * from other projects
  */
-public enum SolarPacketType {
+public enum SolarPacketType implements DocumentedPacketType {
 	/**
 	 * FX Status Packets
 	 */

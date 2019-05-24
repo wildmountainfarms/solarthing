@@ -1,13 +1,8 @@
 package me.retrodaredevil.iot.solar;
 
-import me.retrodaredevil.iot.packets.Packet;
+import me.retrodaredevil.iot.packets.DocumentedPacket;
 
-public interface SolarPacket extends Packet {
-	/**
-	 * Should be serialized as "packetType"
-	 * @return The packet type
-	 */
-	SolarPacketType getPacketType();
+public interface SolarPacket extends DocumentedPacket<SolarPacketType> {
 
 	/**
 	 * Should be serialized as "address"

@@ -1,6 +1,8 @@
 package me.retrodaredevil.iot.outhouse;
 
-public enum OuthousePacketType {
+import me.retrodaredevil.iot.packets.DocumentedPacketType;
+
+public enum OuthousePacketType implements DocumentedPacketType {
 	OCCUPANCY,
 	WEATHER
 }

@@ -14,11 +14,17 @@ import me.retrodaredevil.iot.solar.fx.FXStatusPackets;
 import me.retrodaredevil.iot.solar.mx.MXStatusPackets;
 import me.retrodaredevil.util.json.JsonFile;
 
-public final class StatusPackets {
-	private StatusPackets(){ throw new UnsupportedOperationException(); }
+public final class SolarPackets {
+	private SolarPackets(){ throw new UnsupportedOperationException(); }
 
 	public static SolarPacket createFromJson(JsonObject jsonObject) throws IllegalArgumentException{
-		final SolarPacketType packetType = SolarPacketType.valueOf(jsonObject.getAsJsonPrimitive("packetType").getAsString());
+		final String packetName = jsonObject.getAsJsonPrimitive("packetType").getAsString();
+		final SolarPacketType packetType;
+		try {
+			packetType = SolarPacketType.valueOf(packetName);
+		} catch(IllegalArgumentException e){
+			throw new IllegalArgumentException("packet type name: " + packetName, e);
+		}
 		switch(packetType){
 			case FX_STATUS:
 				return FXStatusPackets.createFromJson(jsonObject);
@@ -30,29 +36,13 @@ public final class StatusPackets {
 				throw new UnsupportedOperationException();
 		}
 	}
-	public static <T> T getOrNull(JsonObject jsonObject, String memberName, Getter<T, JsonElement> getter){
-		JsonElement element = jsonObject.get(memberName);
-		if(element == null){
-			return null;
-		}
-		return getter.get(element);
-	}
-
-	/**
-	 * Should not be instantiated using an anonymous class, should use a lambda instead.
-	 * @param <T> The return value type
-	 * @param <H> The input value type
-	 */
-	public interface Getter<T, H>{
-		T get(H h);
-	}
 	public static void main(String[] args){
 		CouchDbClient client = new CouchDbClient(new CouchDbProperties("solarthing", false, "http", "localhost", 5984, "admin", "relax"));
 		for(JsonObject object : client.view("packets/millis").startKey(0).query(JsonObject.class)){
 			JsonObject value = object.getAsJsonObject("value");
 			GregorianCalendar calendar = new GregorianCalendar();
 			calendar.setTimeInMillis(value.get("dateMillis").getAsLong());
-			PacketCollection packetCollection = PacketCollections.createFromJson(value);
+			PacketCollection packetCollection = PacketCollections.createFromJson(value, SolarPackets::createFromJson);
 			System.out.println(JsonFile.gson.toJson(packetCollection));
 		}
 	}

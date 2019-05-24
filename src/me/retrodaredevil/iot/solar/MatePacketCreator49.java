@@ -13,9 +13,6 @@ import java.util.Collection;
 import java.util.Collections;
 
 public class MatePacketCreator49 extends StartEndPacketCreator {
-	private static final char START = 10; // \n
-	private static final char END = 13; // \r
-	private static final char NULL_CHAR = 0;
 
 	private final IgnoreCheckSum ignoreCheckSum;
 	private final char[] bytes = new char[49];

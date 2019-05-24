@@ -37,11 +37,11 @@ public abstract class StartEndPacketCreator implements PacketCreator{
 		}
 		List<Packet> r = null;
 		for(char c : chars){
-			bytes[amount] = c;
-			amount++;
 			if(amount >= bytes.length) {
 				throw new AssertionError("The packet will be longer than the maximum size!");
 			}
+			bytes[amount] = c;
+			amount++;
 			if(c == end){
 				if(amount < assertSizeAtLeast){
 					throw new AssertionError("amount is less than the minimum required size! amount: " + amount + " assertSizeAtLeast: " + assertSizeAtLeast);

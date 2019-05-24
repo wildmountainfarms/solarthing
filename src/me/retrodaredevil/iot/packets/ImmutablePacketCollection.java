@@ -3,7 +3,7 @@ package me.retrodaredevil.iot.packets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import me.retrodaredevil.iot.solar.StatusPackets;
+import me.retrodaredevil.iot.solar.SolarPackets;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -45,10 +45,11 @@ class ImmutablePacketCollection implements PacketCollection {
 		this._id = "" + year + "," + month + "," + day + "," +
 				hour + "," + minute + "," + second + "," + Math.random(); // avoid collisions
 	}
-	ImmutablePacketCollection(JsonObject object){
+	ImmutablePacketCollection(JsonObject object, PacketCollections.JsonPacketGetter packetGetter){
 		final List<Packet> packets = new ArrayList<>();
 		for(JsonElement elementPacket : object.getAsJsonArray("packets")){
-			packets.add(StatusPackets.createFromJson(elementPacket.getAsJsonObject()));
+//			packets.add(SolarPackets.createFromJson(elementPacket.getAsJsonObject()));
+			packets.add(packetGetter.createFromJson(elementPacket.getAsJsonObject()));
 		}
 		this.packets = Collections.unmodifiableList(packets);
 		this.dateArray = new int[7];
@@ -79,4 +80,5 @@ class ImmutablePacketCollection implements PacketCollection {
 	public String getDbId() {
 		return _id;
 	}
+	
 }
