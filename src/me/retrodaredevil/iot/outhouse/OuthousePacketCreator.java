@@ -1,6 +1,7 @@
 package me.retrodaredevil.iot.outhouse;
 
 import me.retrodaredevil.iot.packets.Packet;
+import me.retrodaredevil.iot.packets.PacketCreator;
 import me.retrodaredevil.iot.packets.StartEndPacketCreator;
 
 import java.util.Arrays;
@@ -11,11 +12,14 @@ public class OuthousePacketCreator extends StartEndPacketCreator {
 	public OuthousePacketCreator() {
 		super('\n', '\r', 256, "\n0.0 0 0\r".length());
 	}
+	private static String escape(String s){
+		return "'" + s.replace("\n", "\\n").replace("\r", "\\r") + "'";
+	}
 	
 	@Override
 	protected Collection<Packet> create(char[] bytes) throws PacketCreationException {
 		String data = new String(bytes, 1, bytes.length - 2);
-		String[] split = data.split(data);
+		String[] split = data.split(" ");
 		if(split.length != 3){
 			throw new PacketCreationException("split.length should be 3! It's: " + split.length);
 		}
@@ -31,11 +35,15 @@ public class OuthousePacketCreator extends StartEndPacketCreator {
 			temperature = Integer.parseInt(split[1]);
 			humidity = Integer.parseInt(split[2]);
 		} catch (NumberFormatException ex){
-			throw new PacketCreationException("data: " + data, ex);
+			throw new PacketCreationException("debugBytes: " + escape(new String(bytes)), ex);
 		}
 		return Arrays.asList(
 			new ImmutableOccupancyPacket(distance != null && distance < 30 ? Occupancy.OCCUPIED.getValueCode() : Occupancy.VACANT.getValueCode()),
 			new IntegerWeatherPacket(temperature, humidity)
 		);
+	}
+	public static void main(String[] args){
+		PacketCreator packetCreator = new OuthousePacketCreator();
+		System.out.println(packetCreator.add("\n22.9 24 43\r".toCharArray()));
 	}
 }

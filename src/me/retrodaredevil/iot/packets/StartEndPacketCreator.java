@@ -47,7 +47,7 @@ public abstract class StartEndPacketCreator implements PacketCreator{
 					throw new AssertionError("amount is less than the minimum required size! amount: " + amount + " assertSizeAtLeast: " + assertSizeAtLeast);
 				}
 				try{
-					final Collection<Packet> packetsToAdd = create(bytes); // resets bytes array and amount
+					final Collection<Packet> packetsToAdd = create(new String(bytes, 0, amount).toCharArray()); // resets bytes array and amount
 					
 					if(r == null){
 						r = new ArrayList<>();
@@ -60,6 +60,10 @@ public abstract class StartEndPacketCreator implements PacketCreator{
 					reset();
 				}
 				
+			} else if(c == start){
+				reset();
+				bytes[0] = start;
+				amount++;
 			}
 		}
 		if(r == null){
