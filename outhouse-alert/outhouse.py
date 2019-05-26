@@ -54,7 +54,7 @@ def main():
 
             print("\n{} {} {}".format(distance or "null", temp, hum), end="\r", flush=True)
             total_time = time.time() - start_time
-            time.sleep(max(.5, 1 - total_time))
+            time.sleep(max(.5, 2 - total_time))
     finally:
         GPIO.cleanup()
 
