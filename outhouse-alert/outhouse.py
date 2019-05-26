@@ -20,9 +20,6 @@ def get_humidity_temperature():
     return hum, temp
 
 def get_distance():
-    GPIO.output(TRIG, False)
-    time.sleep(.75)
-
     GPIO.output(TRIG, True)
     time.sleep(0.00001)
     GPIO.output(TRIG, False)
@@ -47,6 +44,7 @@ def get_distance():
 def main():
     try:
         GPIO.setup(TRIG,GPIO.OUT)
+        GPIO.output(TRIG, False)
         GPIO.setup(ECHO,GPIO.IN)
         time.sleep(.1)
         while True:
