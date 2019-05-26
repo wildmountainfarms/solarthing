@@ -8,9 +8,12 @@ import me.retrodaredevil.util.json.JsonFile;
 import java.util.Arrays;
 import java.util.Collection;
 
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+
 public class OuthousePacketCreator extends StartEndPacketCreator {
 	
-	private Double lastDistance = null;
+	private int counter = 0;
 	
 	public OuthousePacketCreator() {
 		super('\n', '\r', 256, "\n0.0 0 0\r".length());
@@ -31,18 +34,31 @@ public class OuthousePacketCreator extends StartEndPacketCreator {
 		final int humidity;
 		try {
 			if(split[0].equals("null")){
-				distance = lastDistance;
-				lastDistance = null;
+				distance = null;
 			} else {
 				distance = Double.parseDouble(split[0]);
-				lastDistance = distance;
 			}
 			temperature = Integer.parseInt(split[1]);
 			humidity = Integer.parseInt(split[2]);
 		} catch (NumberFormatException ex){
 			throw new PacketCreationException("debugBytes: " + escape(new String(bytes)), ex);
 		}
-		Packet occupancy = new ImmutableOccupancyPacket(distance != null && distance < 85 ? Occupancy.OCCUPIED.getValueCode() : Occupancy.VACANT.getValueCode());
+		if(distance != null){
+			if(distance < 30){
+				counter = 7;
+			} else if(distance < 85){
+				counter += 2;
+			} else if(distance < 130){
+				counter++;
+			} else {
+				counter -= 2;
+			}
+			counter = max(0, min(7, counter));
+		} else {
+			counter--;
+		}
+		System.out.println("distance was: " + distance + " counter is now: " + counter);
+		Packet occupancy = new ImmutableOccupancyPacket(counter >= 2 ? Occupancy.OCCUPIED.getValueCode() : Occupancy.VACANT.getValueCode());
 		Packet weather = new IntegerWeatherPacket(temperature, humidity);
 		System.out.println("=====");
 		System.out.println(JsonFile.gson.toJson(occupancy));

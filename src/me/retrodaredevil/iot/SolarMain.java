@@ -59,6 +59,11 @@ public class SolarMain {
 		Runnable run = new SolarReader(in, args.getThrottleFactor(), packetCreator, packetSaver);
 		while(true){
 			run.run();
+			try{
+				Thread.sleep(5);
+			} catch(InterruptedException e){
+				throw new RuntimeException("We didn't expect the program to be interrupted.", e);
+			}
 		}
 	}
 	private InputStream getInputStream(ProgramArgs args) throws UnsupportedCommOperationException, IOException, PortInUseException, NoSuchPortException {

@@ -50,11 +50,13 @@ def main():
         GPIO.setup(ECHO,GPIO.IN)
         time.sleep(.1)
         while True:
+            start_time = time.time()
             distance = get_distance()
             hum, temp = get_humidity_temperature()
 
             print("\n{} {} {}".format(distance or "null", temp, hum), end="\r", flush=True)
-            time.sleep(.75)
+            total_time = time.time() - start_time
+            time.sleep(max(.5, 1 - total_time))
     finally:
         GPIO.cleanup()
 
