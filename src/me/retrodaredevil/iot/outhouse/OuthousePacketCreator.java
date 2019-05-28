@@ -13,6 +13,7 @@ import static java.lang.Math.min;
 
 public class OuthousePacketCreator extends StartEndPacketCreator {
 	
+	private Occupancy currentOccupancy = Occupancy.VACANT;
 	private int counter = 0;
 	
 	public OuthousePacketCreator() {
@@ -45,20 +46,33 @@ public class OuthousePacketCreator extends StartEndPacketCreator {
 		}
 		if(distance != null){
 			if(distance < 30){
-				counter = 7;
+				counter = 6;
 			} else if(distance < 85){
 				counter += 2;
-			} else if(distance < 130){
+			} else if(distance < 100){
 				counter++;
-			} else {
-				counter -= 2;
+			} else if(distance > 130){ // don't do anything between 100 and 130
+				if(distance > 150) {
+					counter -= 2;
+				} else {
+					counter--;
+				}
 			}
-			counter = max(0, min(7, counter));
 		} else {
 			counter--;
 		}
+		counter = max(0, min(6, counter));
+		if(currentOccupancy == Occupancy.VACANT){
+			if(counter >= 4){
+				currentOccupancy = Occupancy.OCCUPIED;
+			}
+		} else if(currentOccupancy == Occupancy.OCCUPIED){
+			if(counter <= 1){
+				currentOccupancy = Occupancy.VACANT;
+			}
+		} else throw new UnsupportedOperationException("unknown: " + currentOccupancy);
 		System.out.println("distance was: " + distance + " counter is now: " + counter);
-		Packet occupancy = new ImmutableOccupancyPacket(counter >= 2 ? Occupancy.OCCUPIED.getValueCode() : Occupancy.VACANT.getValueCode());
+		Packet occupancy = new ImmutableOccupancyPacket(currentOccupancy.getValueCode());
 		Packet weather = new IntegerWeatherPacket(temperature, humidity);
 		System.out.println("=====");
 		System.out.println(JsonFile.gson.toJson(occupancy));

@@ -1,4 +1,4 @@
-# outhouse-alert
+# outhouse
 Part of the IoT code for Wild Mountain Farms
 
 ## Info
@@ -13,6 +13,6 @@ temperature is in celsius (an int), humidity is a number from 0 to 100 represent
 ## Running
 You would normally run this command:
 ```
-outhouse-alert/outhouse.py | java -jar SolarThing.jar outhouse --host 192.168.1.110 --tf 5
+outhouse/outhouse.py | java -jar SolarThing.jar outhouse --host 192.168.1.110 --tf 3
 ```
 

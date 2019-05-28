@@ -3,8 +3,6 @@ import RPi.GPIO as GPIO
 import time
 from Adafruit_DHT import read_retry, DHT11
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
 
 TRIG = 23
 ECHO = 24
@@ -24,13 +22,12 @@ def get_distance():
     time.sleep(0.00001)
     GPIO.output(TRIG, False)
 
-    pulse_start = None
-    pulse_end = None
     while GPIO.input(ECHO)==0:
-        pulse_start = time.time()
-
+        time.sleep(0.00001)  # be nice to the CPU
+    pulse_start = time.time()
     while GPIO.input(ECHO)==1:
-        pulse_end = time.time()
+        time.sleep(0.00001)
+    pulse_end = time.time()
 
     assert pulse_start is not None and pulse_end is not None
     pulse_duration = pulse_end - pulse_start
@@ -43,6 +40,9 @@ def get_distance():
 
 def main():
     try:
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setwarnings(False)
+
         GPIO.setup(TRIG,GPIO.OUT)
         GPIO.output(TRIG, False)
         GPIO.setup(ECHO,GPIO.IN)
@@ -50,11 +50,14 @@ def main():
         while True:
             start_time = time.time()
             distance = get_distance()
+            time.sleep(.03)  # give CPU a little rest
             hum, temp = get_humidity_temperature()
 
             print("\n{} {} {}".format(distance or "null", temp, hum), end="\r", flush=True)
             total_time = time.time() - start_time
             time.sleep(max(.5, 2 - total_time))
+    except KeyboardInterrupt:
+        pass
     finally:
         GPIO.cleanup()
 
