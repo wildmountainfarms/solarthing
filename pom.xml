@@ -24,7 +24,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>me.retrodaredevil.iot.SolarMain</mainClass>
+                            <mainClass>me.retrodaredevil.solarthing.SolarMain</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -34,7 +34,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>me.retrodaredevil.iot.SolarMain</mainClass>
+                            <mainClass>me.retrodaredevil.solarthing.SolarMain</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

@@ -3,11 +3,16 @@ A program that listens for packets from a OutBack POWER Mate device and uploads 
 
 ### Running
 ```
-solar/virtual_mate.sh | java -jar SolarThing.jar --host 192.168.1.110 --cc --unit-test
+solar/virtual_mate.sh | java -jar SolarThing.jar solar --host 192.168.1.110 --cc --unit-test
 ```
+Note the `--cc`. This stands for correct checksum. To make it easy in `virtual_mate.sh` to change values, using `--cc`
+makes it quicker to change values without calculating the checksum ourselves and just have the program do it for us.
+Obviously you don't want to use that when you are getting reliable data from a serial port. The `--unit-test` makes
+it so it takes input from `System.in` instead of trying to establish a connection with a serial port
+
 If you are running this on a Pi with a serial port connected, you would probably run
 ```
-java -jar SolarThing.jar --host 192.168.1.110
+java -jar SolarThing.jar solar --host 192.168.1.110
 ```
 For each example replace the host with the ip of your CouchDB database IP.
 
