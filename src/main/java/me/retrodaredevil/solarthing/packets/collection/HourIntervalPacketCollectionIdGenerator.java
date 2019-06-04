@@ -2,6 +2,9 @@ package me.retrodaredevil.solarthing.packets.collection;
 
 import java.util.Calendar;
 
+/**
+ * A {@link PacketCollectionIdGenerator} that generates a certain number of unique IDs per hour.
+ */
 public final class HourIntervalPacketCollectionIdGenerator implements PacketCollectionIdGenerator {
 	
 	private final int uniqueIdsInOneHour;
@@ -11,6 +14,9 @@ public final class HourIntervalPacketCollectionIdGenerator implements PacketColl
 	 */
 	public HourIntervalPacketCollectionIdGenerator(int uniqueIdsInOneHour) {
 		this.uniqueIdsInOneHour = uniqueIdsInOneHour;
+		if(uniqueIdsInOneHour <= 0){
+			throw new IllegalArgumentException("uniqueIdsInOneHour cannot be <= 0. It is: " + uniqueIdsInOneHour);
+		}
 	}
 	
 	@Override
@@ -24,6 +30,6 @@ public final class HourIntervalPacketCollectionIdGenerator implements PacketColl
 		final int millisecond = cal.get(Calendar.MILLISECOND);
 		final double percent = (millisecond + 1000 * (second + (60 * minute))) / (1000.0 * 60.0 * 60.0);
 		return "" + year + "," + month + "," + day + "," +
-			hour + ",(hour interval: " + ((int) (percent * uniqueIdsInOneHour) + 1) + "/" + uniqueIdsInOneHour + ")";
+			hour + ",(" + ((int) (percent * uniqueIdsInOneHour) + 1) + "/" + uniqueIdsInOneHour + ")";
 	}
 }

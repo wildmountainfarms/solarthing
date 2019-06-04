@@ -36,6 +36,9 @@ public class ProgramArgs {
 	private boolean unitTest = false;
 	@Parameter(names = {"--throttle", "--throttle-factor", "--tf"}, description = "Every nth packet, data should be saved.")
 	private int throttleFactor = 1;
+	
+	@Parameter(names = {"--unique"})
+	private Integer uniqueIdsInOneHour = null;
 
 	@Parameter(names = { "-i", "--ignore-checksum", "--ignore-check-sum", "--ignore-chksum" }, description = "Ignore the checksum in all packets")
 	private boolean ignoreCheckSum = false;
@@ -49,12 +52,9 @@ public class ProgramArgs {
 	@Parameter(names = {"--local"}, description = "Save data to a local file on the system")
 	private boolean local = false;
 
-	private final CouchDbProperties databaseProperties;
-	
 	public ProgramArgs(String[] args){
 		JCommander.newBuilder().addObject(this).build().parse(args);
 
-		databaseProperties = new CouchDbProperties(null, true, protocol, host, port, userName, password);
 		
 	}
 	public List<String> getParameters(){
@@ -83,12 +83,15 @@ public class ProgramArgs {
 	public int getThrottleFactor(){
 		return throttleFactor;
 	}
+	public Integer getUniqueIdsInOneHour() {
+		return uniqueIdsInOneHour;
+	}
 	
 	public String getPortName(){
 		return portName;
 	}
-	public CouchDbProperties getProperties(){
-		return databaseProperties;
+	public CouchDbProperties createProperties(){
+		return new CouchDbProperties(null, true, protocol, host, port, userName, password);
 	}
 
 	public void printInJson(){

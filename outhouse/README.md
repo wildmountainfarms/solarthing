@@ -13,6 +13,6 @@ temperature is in celsius (an int), humidity is a number from 0 to 100 represent
 ## Running
 You would normally run this command:
 ```
-outhouse/outhouse.py | java -jar SolarThing.jar outhouse --host 192.168.1.110 --tf 3
+outhouse/outhouse.py | java -jar SolarThing.jar outhouse --host 192.168.1.110 --unique 30
 ```
 
