@@ -18,8 +18,10 @@ class ImmutablePacketCollection implements PacketCollection {
 	private final int[] dateArray;
 	/** The UTC date represented in milliseconds */
 	private final long dateMillis;
-	/** A special field that's used when serializing an object into a couchdb database */
+	/** A special field that's used when serializing an object into a couchdb database to uniquely identify it*/
 	private final String _id;
+//	/** A speical field that's used when serializing an object into a couchdb database to indicate its version/revision*/
+//	private final String _rev;
 
 	/**
 	 * Creates a new PacketCollection
@@ -43,6 +45,7 @@ class ImmutablePacketCollection implements PacketCollection {
 		};
 		dateMillis = cal.getTimeInMillis(); // in UTC
 		this._id = idGenerator.generateId(cal);
+//		this._rev = PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR.generateId(cal);
 	}
 	ImmutablePacketCollection(JsonObject object, PacketCollections.JsonPacketGetter packetGetter){
 		final List<Packet> packets = new ArrayList<>();
@@ -57,6 +60,7 @@ class ImmutablePacketCollection implements PacketCollection {
 		}
 		this.dateMillis = object.get("dateMillis").getAsLong();
 		this._id = object.get("_id").getAsString();
+//		this._rev = object.get("_rev").getAsString();
 	}
 
 	@Override

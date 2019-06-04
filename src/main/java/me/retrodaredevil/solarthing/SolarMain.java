@@ -3,6 +3,8 @@ package me.retrodaredevil.solarthing;
 import me.retrodaredevil.solarthing.outhouse.OuthousePacketCreator;
 import me.retrodaredevil.solarthing.packets.PacketCreator;
 import me.retrodaredevil.solarthing.packets.PacketSaver;
+import me.retrodaredevil.solarthing.packets.collection.HourIntervalPacketCollectionIdGenerator;
+import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.solar.MatePacketCreator49;
 import org.apache.log4j.BasicConfigurator;
@@ -23,7 +25,7 @@ import gnu.io.SerialPort;
 import gnu.io.UnsupportedCommOperationException;
 
 public class SolarMain {
-	private int connectSolar(ProgramArgs args) throws Exception {
+	private int connectSolar(ProgramArgs args, PacketCollectionIdGenerator idGenerator) throws Exception {
 		InputStream in = null;
 		try {
 			in = getInputStream(args);
@@ -37,29 +39,29 @@ public class SolarMain {
 		if(in == null){
 			return 1;
 		}
-		connect(args, in, "solarthing", new MatePacketCreator49(args.getIgnoreCheckSum()));
+		connect(args, in, "solarthing", new MatePacketCreator49(args.getIgnoreCheckSum()), idGenerator);
 		return 0;
 	}
-	private int connectOuthouse(ProgramArgs args) throws Exception {
+	private int connectOuthouse(ProgramArgs args, PacketCollectionIdGenerator idGenerator) throws Exception {
 		InputStream in = System.in;
-		connect(args, in, "outhouse", new OuthousePacketCreator());
+		connect(args, in, "outhouse", new OuthousePacketCreator(), idGenerator);
 		return 0;
 	}
 
-	private void connect(ProgramArgs args, InputStream in, String databaseName, PacketCreator packetCreator) throws Exception {
+	private void connect(ProgramArgs args, InputStream in, String databaseName, PacketCreator packetCreator, PacketCollectionIdGenerator idGenerator) throws Exception {
 		PacketSaver packetSaver;
 		if(args.isLocal()){
 			packetSaver = new JsonFilePacketSaver(args.getFilePath());
 		} else {
 			try {
-				packetSaver = new CouchDbPacketSaver(args, databaseName);
+				packetSaver = new CouchDbPacketSaver(args.createProperties(), databaseName);
 			} catch (CouchDbException e) {
 				e.printStackTrace();
 				System.err.println("Unable to connect to database.");
 				packetSaver = new JsonFilePacketSaver(args.getFilePath());
 			}
 		}
-		Runnable run = new SolarReader(in, args.getThrottleFactor(), packetCreator, packetSaver, PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR); // TODO change unique generator
+		Runnable run = new SolarReader(in, args.getThrottleFactor(), packetCreator, packetSaver, idGenerator);
 		while(true){
 			run.run();
 			try{
@@ -100,13 +102,26 @@ public class SolarMain {
 			System.out.println("Help was called. Check ProgramArgs.java. Self explainatory. Sorry I'm lazy.\n" +
 					"Also note, as a VM argument, you should have -Djava.library.path=/usr/lib/jni");
 			System.exit(1);
+			throw new AssertionError();
+		}
+		final PacketCollectionIdGenerator idGenerator;
+		final Integer uniqueIdsInOneHour = pArgs.getUniqueIdsInOneHour();
+		if(uniqueIdsInOneHour == null){
+			idGenerator = PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR;
+		} else {
+			if(uniqueIdsInOneHour <= 0){
+				System.err.println("--unique must be > 0 or not specified!");
+				System.exit(1);
+				throw new AssertionError();
+			}
+			idGenerator = new HourIntervalPacketCollectionIdGenerator(uniqueIdsInOneHour);
 		}
 		try {
 			int status = 1;
 			if(program == Program.SOLAR) {
-				status = (new SolarMain()).connectSolar(pArgs);
+				status = (new SolarMain()).connectSolar(pArgs, idGenerator);
 			} else if(program == Program.OUTHOUSE){
-				status = (new SolarMain()).connectOuthouse(pArgs);
+				status = (new SolarMain()).connectOuthouse(pArgs, idGenerator);
 			} else {
 				System.out.println("Specify solar|outhouse");
 			}

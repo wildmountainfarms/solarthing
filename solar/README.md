@@ -3,7 +3,7 @@ A program that listens for packets from a OutBack POWER Mate device and uploads 
 
 ### Running
 ```
-solar/virtual_mate.sh | java -jar SolarThing.jar solar --host 192.168.1.110 --cc --unit-test
+solar/virtual_mate.sh | java -jar SolarThing.jar solar --host 192.168.1.110 --cc --unit-test --unique 60
 ```
 Note the `--cc`. This stands for correct checksum. To make it easy in `virtual_mate.sh` to change values, using `--cc`
 makes it quicker to change values without calculating the checksum ourselves and just have the program do it for us.
@@ -12,7 +12,7 @@ it so it takes input from `System.in` instead of trying to establish a connectio
 
 If you are running this on a Pi with a serial port connected, you would probably run
 ```
-java -jar SolarThing.jar solar --host 192.168.1.110
+java -jar SolarThing.jar solar --host 192.168.1.110 --unique 60
 ```
 For each example replace the host with the ip of your CouchDB database IP.
 

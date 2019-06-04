@@ -2,6 +2,9 @@ package me.retrodaredevil.solarthing.solar.mx;
 
 import me.retrodaredevil.solarthing.packets.BitmaskMode;
 
+/**
+ * NOTE: Error modes are only implemented on MX versions greater than 5.11 and on FLEXmax80 and FLEXmax60s.
+ */
 public enum MXErrorMode implements BitmaskMode {
 	SHORTED_BATTERY_SENSOR(32, "Shorted Battery Sensor"),
 	TOO_HOT(64, "Too Hot"),

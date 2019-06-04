@@ -1,3 +1,6 @@
+# Custom stuff:
+*.attach_pid*
+
 # Compiled class file
 *.class
 
