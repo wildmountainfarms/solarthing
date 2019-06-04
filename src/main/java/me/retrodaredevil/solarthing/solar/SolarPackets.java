@@ -2,8 +2,8 @@ package me.retrodaredevil.solarthing.solar;
 
 import com.google.gson.JsonObject;
 
-import me.retrodaredevil.solarthing.packets.PacketCollection;
-import me.retrodaredevil.solarthing.packets.PacketCollections;
+import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
+import me.retrodaredevil.solarthing.packets.collection.PacketCollections;
 import org.lightcouch.CouchDbClient;
 import org.lightcouch.CouchDbProperties;
 

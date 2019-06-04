@@ -1,13 +1,9 @@
 package me.retrodaredevil.solarthing;
 
-import me.retrodaredevil.solarthing.packets.Packet;
-import me.retrodaredevil.solarthing.packets.PacketCollection;
-import me.retrodaredevil.solarthing.packets.PacketCollections;
 import me.retrodaredevil.solarthing.packets.PacketSaver;
+import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import org.lightcouch.CouchDbClient;
 import org.lightcouch.CouchDbProperties;
-
-import java.util.Collection;
 
 public class CouchDbPacketSaver implements PacketSaver {
 	private final CouchDbClient client;
@@ -27,8 +23,4 @@ public class CouchDbPacketSaver implements PacketSaver {
 		client.save(packetCollection);
 	}
 
-	@Override
-	public void savePackets(Collection<Packet> packets) {
-		savePacketCollection(PacketCollections.createFromPackets(packets));
-	}
 }

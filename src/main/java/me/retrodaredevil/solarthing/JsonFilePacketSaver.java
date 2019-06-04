@@ -3,16 +3,12 @@ package me.retrodaredevil.solarthing;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import me.retrodaredevil.solarthing.packets.PacketSaver;
+import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
+import me.retrodaredevil.util.json.JsonFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
-
-import me.retrodaredevil.solarthing.packets.Packet;
-import me.retrodaredevil.solarthing.packets.PacketCollection;
-import me.retrodaredevil.solarthing.packets.PacketCollections;
-import me.retrodaredevil.solarthing.packets.PacketSaver;
-import me.retrodaredevil.util.json.JsonFile;
 
 public class JsonFilePacketSaver implements PacketSaver {
 	private final JsonFile jsonFile;
@@ -53,10 +49,5 @@ public class JsonFilePacketSaver implements PacketSaver {
 			e.printStackTrace();
 			System.err.println("Unable to save to JSON file!");
 		}
-	}
-
-	@Override
-	public void savePackets(Collection<Packet> packets) {
-		savePacketCollection(PacketCollections.createFromPackets(packets));
 	}
 }

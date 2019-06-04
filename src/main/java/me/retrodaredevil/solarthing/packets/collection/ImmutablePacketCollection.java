@@ -1,8 +1,9 @@
-package me.retrodaredevil.solarthing.packets;
+package me.retrodaredevil.solarthing.packets.collection;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import me.retrodaredevil.solarthing.packets.Packet;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -26,7 +27,7 @@ class ImmutablePacketCollection implements PacketCollection {
 	 * If packets is mutated after this constructor is called, it will have no effect; it is tolerated
 	 * @param packets The packets collection
 	 */
-	ImmutablePacketCollection(Collection<Packet> packets){
+	ImmutablePacketCollection(Collection<? extends Packet> packets, PacketCollectionIdGenerator idGenerator){
 		this.packets = Collections.unmodifiableList(new ArrayList<>(packets));
 		final Calendar cal = new GregorianCalendar();
 		final int year = cal.get(Calendar.YEAR);
@@ -41,8 +42,7 @@ class ImmutablePacketCollection implements PacketCollection {
 				hour, minute, second, millisecond
 		};
 		dateMillis = cal.getTimeInMillis(); // in UTC
-		this._id = "" + year + "," + month + "," + day + "," +
-				hour + "," + minute + "," + second + "," + Math.random(); // avoid collisions
+		this._id = idGenerator.generateId(cal);
 	}
 	ImmutablePacketCollection(JsonObject object, PacketCollections.JsonPacketGetter packetGetter){
 		final List<Packet> packets = new ArrayList<>();

@@ -20,10 +20,6 @@ public class ProgramArgs {
 	@Parameter(names = { "--serial", "--serialport", "--usb", "--usbport" }, description = "Name of the USB serial port")
 	private String portName = "/dev/ttyUSB0";
 	
-	@Parameter(names = {"--name", "--database"}, description = "The name of the database")
-	@Deprecated
-	private String databaseName = "solarthing";
-	
 	@Parameter(names = { "--protocol" }, description = "The protocol. Almost always http unless you know what you're doing.")
 	private String protocol = "http";
 	@Parameter(names = {"--host"})
@@ -95,13 +91,6 @@ public class ProgramArgs {
 		return databaseProperties;
 	}
 
-	/**
-	 * Entry point to test ProgramArgs class
-	 */
-	public static void main(String[] args){
-		ProgramArgs arguments = new ProgramArgs(args);
-		arguments.printInJson();
-	}
 	public void printInJson(){
 		System.out.println(JsonFile.gson.toJson(this));
 		
