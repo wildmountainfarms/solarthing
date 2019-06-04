@@ -1,5 +1,8 @@
 package me.retrodaredevil.solarthing.packets;
 
+import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
+import me.retrodaredevil.solarthing.packets.collection.PacketCollections;
+
 import java.util.Collection;
 
 public interface PacketSaver {
@@ -15,5 +18,8 @@ public interface PacketSaver {
 	 * After this method is called, mutating {@code packets} will have no effect and is tolerated.
 	 * @param packets The packets to save.
 	 */
-	void savePackets(Collection<Packet> packets);
+	@Deprecated
+	default void savePackets(Collection<Packet> packets){
+		savePacketCollection(PacketCollections.createFromPackets(packets));
+	}
 }

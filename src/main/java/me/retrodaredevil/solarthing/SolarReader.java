@@ -3,6 +3,8 @@ package me.retrodaredevil.solarthing;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.PacketCreator;
 import me.retrodaredevil.solarthing.packets.PacketSaver;
+import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
+import me.retrodaredevil.solarthing.packets.collection.PacketCollections;
 import org.lightcouch.CouchDbException;
 import org.lightcouch.DocumentConflictException;
 
@@ -19,6 +21,7 @@ public class SolarReader implements Runnable{
 	private final InputStream in;
 	private final PacketCreator creator;
 	private final PacketSaver packetSaver;
+	private final PacketCollectionIdGenerator idGenerator;
 	
 	
 	private final List<Packet> packetList = new ArrayList<>(); // a list that piles up SolarPackets and saves when needed // may be cleared
@@ -27,17 +30,18 @@ public class SolarReader implements Runnable{
 	private final byte[] buffer = new byte[1024];
 
 	/**
-	 *
-	 * @param in The InputStream to read directly from
+	 *  @param in The InputStream to read directly from
 	 * @param throttleFactor Will save every nth packet where n is this number
 	 * @param packetCreator The packet creator that creates packets from bytes
 	 * @param packetSaver The packet saver that saves a collection of packets at once
+	 * @param idGenerator
 	 */
-	public SolarReader(InputStream in, int throttleFactor, PacketCreator packetCreator, PacketSaver packetSaver) {
+	public SolarReader(InputStream in, int throttleFactor, PacketCreator packetCreator, PacketSaver packetSaver, PacketCollectionIdGenerator idGenerator) {
 		this.in = in;
 		this.throttleFactor = throttleFactor;
 		this.creator = packetCreator;
 		this.packetSaver = packetSaver;
+		this.idGenerator = idGenerator;
 	}
 	
 	/**
@@ -54,7 +58,7 @@ public class SolarReader implements Runnable{
 			while (in.available() > 0 && (len = in.read(buffer)) > -1) {
 				String s = new String(buffer, 0, len);
 //					System.out.println("got: '" + s.replaceAll("\n", "\\\\n").replaceAll("\r", "\\\\r") + "'. len: " + len);
-				Collection<Packet> newPackets = creator.add(s.toCharArray());
+				Collection<? extends Packet> newPackets = creator.add(s.toCharArray());
 				
 				long now = System.currentTimeMillis();
 				if(lastFirstReceivedData + SAME_PACKET_COLLECTION_TIME < now) {
@@ -62,20 +66,21 @@ public class SolarReader implements Runnable{
 				}
 				packetList.addAll(newPackets);
 			}
+			if(len == -1) throw new AssertionError("Because we call in.available(), len should never be -1. Did we change the code?");
 			
 			// ======= Save data if needed =======
 			long now = System.currentTimeMillis();
-			if (len == -1 || lastFirstReceivedData + SAME_PACKET_COLLECTION_TIME < now) { // if there's no packets coming any time soon
+			if (lastFirstReceivedData + SAME_PACKET_COLLECTION_TIME < now) { // if there's no packets coming any time soon
 				if(!packetList.isEmpty()) {
 					packetCollectionCounter++;
 					// because packetCollectionCounter starts at -1, after above if statement, it will be >= 0
 					if(packetCollectionCounter % throttleFactor == 0) {
 						System.out.println("saving above packet(s). packetList.size(): " + packetList.size());
-						packetSaver.savePackets(packetList);
+						packetSaver.savePacketCollection(PacketCollections.createFromPackets(packetList, idGenerator));
 						packetList.clear();
 					} else {
-						System.out.println("Not saving above packet(s) because " +
-								"throttleFactor: " + throttleFactor +
+						System.out.println("Not saving above packet(s) because" +
+								" throttleFactor: " + throttleFactor +
 								" packetCollectionCounter: " + packetCollectionCounter);
 						packetList.clear(); // don't save these packets - ignore them
 					}

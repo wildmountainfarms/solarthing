@@ -1,5 +1,8 @@
-package me.retrodaredevil.solarthing.packets;
+package me.retrodaredevil.solarthing.packets.collection;
 
+
+import me.retrodaredevil.solarthing.packets.Packet;
+import me.retrodaredevil.solarthing.packets.PacketEntry;
 
 import java.util.List;
 

@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing;
 import me.retrodaredevil.solarthing.outhouse.OuthousePacketCreator;
 import me.retrodaredevil.solarthing.packets.PacketCreator;
 import me.retrodaredevil.solarthing.packets.PacketSaver;
+import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.solar.MatePacketCreator49;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
@@ -58,7 +59,7 @@ public class SolarMain {
 				packetSaver = new JsonFilePacketSaver(args.getFilePath());
 			}
 		}
-		Runnable run = new SolarReader(in, args.getThrottleFactor(), packetCreator, packetSaver);
+		Runnable run = new SolarReader(in, args.getThrottleFactor(), packetCreator, packetSaver, PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR); // TODO change unique generator
 		while(true){
 			run.run();
 			try{
