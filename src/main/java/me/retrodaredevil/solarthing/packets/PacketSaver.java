@@ -7,6 +7,6 @@ public interface PacketSaver {
 	 * Saves the packetCollection
 	 * @param packetCollection
 	 */
-	void savePacketCollection(PacketCollection packetCollection);
+	void savePacketCollection(PacketCollection packetCollection) throws PacketSaveException;
 
 }

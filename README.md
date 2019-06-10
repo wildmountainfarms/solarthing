@@ -38,6 +38,21 @@ mvn clean compile assembly:single
 ```
 Move the jar to the root folder and name the jar `SolarThing.jar`
 
+
+### What the database structure looks like
+The CouchDB has two databases in it. "solarthing" and "outhouse". Each database has many packets stored in the
+"PacketCollection" format. Each packet in the database holds other packets that were saved at the same time. This makes
+it simple to link FX1 FX2 and MX3 packets to one single packet. By default the program links packets together by saving
+packets only when there haven't been any new packets for 250 millis seconds.
+
+You can see how to set up the views and design documents for each database [here](couchdb.md)
+
+### Duplicate Packets in a single PacketCollection
+It is expected that if the program falls behind trying to save packets, that what should be two or three PacketCollections
+are put into one. Without adding additional threads to the program, it is not possible to solve this. Because I do not
+plan to add additional threads to the program, it will remain like this so you should expect that a packet in the database
+may have one or two other identical packets from almost the same time.
+
 ### Inspiration
 @eidolon1138 is the one who originally came up with the idea to collect data from his Outback Mate device. He helped
 set up the database and @retrodaredevil did the rest. Eventually @retrodaredevil created an android app making it much

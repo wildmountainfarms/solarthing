@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing;
 
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.PacketCreator;
+import me.retrodaredevil.solarthing.packets.PacketSaveException;
 import me.retrodaredevil.solarthing.packets.PacketSaver;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollections;
@@ -10,12 +11,16 @@ import org.lightcouch.DocumentConflictException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 
 public class SolarReader implements Runnable{
 	private static final long SAME_PACKET_COLLECTION_TIME = 250;
+	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
 
 	private final int throttleFactor;
 	private final InputStream in;
@@ -70,32 +75,33 @@ public class SolarReader implements Runnable{
 			
 			// ======= Save data if needed =======
 			long now = System.currentTimeMillis();
-			if (lastFirstReceivedData + SAME_PACKET_COLLECTION_TIME < now) { // if there's no packets coming any time soon
+			if (lastFirstReceivedData + SAME_PACKET_COLLECTION_TIME < now) { // if there's no new packets coming any time soon
 				if(!packetList.isEmpty()) {
 					packetCollectionCounter++;
 					// because packetCollectionCounter starts at -1, after above if statement, it will be >= 0
-					if(packetCollectionCounter % throttleFactor == 0) {
-						System.out.println("saving above packet(s). packetList.size(): " + packetList.size());
-						packetSaver.savePacketCollection(PacketCollections.createFromPackets(packetList, idGenerator));
-						packetList.clear();
-					} else {
-						System.out.println("Not saving above packet(s) because" +
+					try {
+						if (packetCollectionCounter % throttleFactor == 0) {
+							System.out.println("saving above packet(s). packetList.size(): " + packetList.size());
+							packetSaver.savePacketCollection(PacketCollections.createFromPackets(packetList, idGenerator));
+						} else {
+							System.out.println("Not saving above packet(s) because" +
 								" throttleFactor: " + throttleFactor +
 								" packetCollectionCounter: " + packetCollectionCounter);
-						packetList.clear(); // don't save these packets - ignore them
+						}
+					} catch(PacketSaveException ex){
+						System.err.println();
+						System.err.println(DATE_FORMAT.format(Calendar.getInstance().getTime()));
+						ex.printStackTrace();
+						System.err.println("Was unable to save " + packetList.size() + " packets.");
+						System.err.println();
+					} finally {
+						packetList.clear();
 					}
 				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.err.println("We got an IOException which doesn't happen often. We are going to try again so hopefully this works.");
-		} catch(DocumentConflictException ex){
-			ex.printStackTrace();
-			System.err.println("Error while saving something to couchdb. Continuing like nothing happened now. " +
-					"Your throttle factor (--tf) may be too low.");
-		} catch(CouchDbException ex){
-			ex.printStackTrace();
-			System.err.println("We got a CouchDbException probably meaning we couldn't reach the database.");
 		}
 	}
 }

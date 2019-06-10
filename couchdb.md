@@ -1,6 +1,6 @@
 ## Using CouchDB
 All you need is a vanilla CouchDB instance to create a usable database
-for solarthing.
+for solarthing and outhouse.
 
 ## Creating it
 You can start by creating a new view and specifying the "_design" to be packets.
