@@ -12,7 +12,7 @@ it so it takes input from `System.in` instead of trying to establish a connectio
 
 If you are running this on a Pi with a serial port connected, you would probably run
 ```
-java -jar SolarThing.jar solar --host 192.168.1.110 --unique 60
+java -jar solarthing.jar solar --host 192.168.1.110 --unique 60
 ```
 For each example replace the host with the ip of your CouchDB database IP.
 

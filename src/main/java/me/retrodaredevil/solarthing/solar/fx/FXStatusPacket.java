@@ -5,6 +5,7 @@ import me.retrodaredevil.solarthing.solar.SolarPacket;
 /**
  * Represents an FX Status Packet from an Outback Mate
  */
+@SuppressWarnings("unused")
 public interface FXStatusPacket extends SolarPacket {
 	
 	// region Packet Values

@@ -91,7 +91,9 @@ public class ProgramArgs {
 		return portName;
 	}
 	public CouchDbProperties createProperties(){
-		return new CouchDbProperties(null, true, protocol, host, port, userName, password);
+		CouchDbProperties r = new CouchDbProperties(null, true, protocol, host, port, userName, password);
+		r.setConnectionTimeout(2000);
+		return r;
 	}
 
 	public void printInJson(){
