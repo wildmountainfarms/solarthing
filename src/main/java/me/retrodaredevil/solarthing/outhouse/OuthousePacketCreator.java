@@ -13,9 +13,6 @@ import static java.lang.Math.min;
 
 public class OuthousePacketCreator extends StartEndPacketCreator {
 	
-	private Occupancy currentOccupancy = Occupancy.VACANT;
-	private int counter = 0;
-	
 	public OuthousePacketCreator() {
 		super('\n', '\r', 256, "\n0.0 0 0\r".length());
 	}
@@ -30,48 +27,17 @@ public class OuthousePacketCreator extends StartEndPacketCreator {
 		if(split.length != 3){
 			throw new PacketCreationException("split.length should be 3! It's: " + split.length);
 		}
-		final Double distance;
+		final boolean occupied;
 		final int temperature;
 		final int humidity;
+		occupied = Boolean.parseBoolean(split[0]);
 		try {
-			if(split[0].equals("null")){
-				distance = null;
-			} else {
-				distance = Double.parseDouble(split[0]);
-			}
 			temperature = Integer.parseInt(split[1]);
 			humidity = Integer.parseInt(split[2]);
 		} catch (NumberFormatException ex){
 			throw new PacketCreationException("debugBytes: " + escape(new String(bytes)), ex);
 		}
-		if(distance != null){
-			if(distance < 30){
-				counter = 6;
-			} else if(distance < 85){
-				counter += 2;
-			} else if(distance < 100){
-				counter++;
-			} else if(distance > 130){ // don't do anything between 100 and 130
-				if(distance > 150) {
-					counter -= 2;
-				} else {
-					counter--;
-				}
-			}
-		} else {
-			counter--;
-		}
-		counter = max(0, min(6, counter));
-		if(currentOccupancy == Occupancy.VACANT){
-			if(counter >= 4){
-				currentOccupancy = Occupancy.OCCUPIED;
-			}
-		} else if(currentOccupancy == Occupancy.OCCUPIED){
-			if(counter <= 1){
-				currentOccupancy = Occupancy.VACANT;
-			}
-		} else throw new UnsupportedOperationException("unknown: " + currentOccupancy);
-		System.out.println("distance was: " + distance + " counter is now: " + counter);
+		Occupancy currentOccupancy = occupied ? Occupancy.OCCUPIED : Occupancy.VACANT;
 		Packet occupancy = new ImmutableOccupancyPacket(currentOccupancy.getValueCode());
 		Packet weather = new IntegerWeatherPacket(temperature, humidity);
 		System.out.println("=====");

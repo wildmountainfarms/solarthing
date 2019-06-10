@@ -25,7 +25,7 @@ import gnu.io.SerialPort;
 import gnu.io.UnsupportedCommOperationException;
 
 public class SolarMain {
-	private int connectSolar(ProgramArgs args, PacketCollectionIdGenerator idGenerator) throws Exception {
+	private int connectSolar(ProgramArgs args, PacketCollectionIdGenerator idGenerator) throws Exception{
 		InputStream in = null;
 		try {
 			in = getInputStream(args);
@@ -42,24 +42,22 @@ public class SolarMain {
 		connect(args, in, "solarthing", new MatePacketCreator49(args.getIgnoreCheckSum()), idGenerator);
 		return 0;
 	}
-	private int connectOuthouse(ProgramArgs args, PacketCollectionIdGenerator idGenerator) throws Exception {
+	private int connectOuthouse(ProgramArgs args, PacketCollectionIdGenerator idGenerator) {
 		InputStream in = System.in;
 		connect(args, in, "outhouse", new OuthousePacketCreator(), idGenerator);
 		return 0;
 	}
 
-	private void connect(ProgramArgs args, InputStream in, String databaseName, PacketCreator packetCreator, PacketCollectionIdGenerator idGenerator) throws Exception {
+	private void connect(ProgramArgs args, InputStream in, String databaseName, PacketCreator packetCreator, PacketCollectionIdGenerator idGenerator) {
 		PacketSaver packetSaver;
 		if(args.isLocal()){
-			packetSaver = new JsonFilePacketSaver(args.getFilePath());
-		} else {
 			try {
-				packetSaver = new CouchDbPacketSaver(args.createProperties(), databaseName);
-			} catch (CouchDbException e) {
-				e.printStackTrace();
-				System.err.println("Unable to connect to database.");
 				packetSaver = new JsonFilePacketSaver(args.getFilePath());
+			} catch (IOException e) {
+				throw new RuntimeException("Incorrect file path", e);
 			}
+		} else {
+			packetSaver = new CouchDbPacketSaver(args.createProperties(), databaseName);
 		}
 		Runnable run = new SolarReader(in, args.getThrottleFactor(), packetCreator, packetSaver, idGenerator);
 		while(true){
@@ -126,7 +124,7 @@ public class SolarMain {
 				System.out.println("Specify solar|outhouse");
 			}
 			System.exit(status);
-		} catch (Throwable t) {
+		} catch (Exception t) {
 			t.printStackTrace();
 
 			pArgs.printInJson();
