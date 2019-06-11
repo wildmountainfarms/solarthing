@@ -1,28 +1,20 @@
 package me.retrodaredevil.solarthing;
 
+import gnu.io.*;
 import me.retrodaredevil.solarthing.outhouse.OuthousePacketCreator;
 import me.retrodaredevil.solarthing.packets.PacketCreator;
 import me.retrodaredevil.solarthing.packets.PacketSaver;
 import me.retrodaredevil.solarthing.packets.collection.HourIntervalPacketCollectionIdGenerator;
-import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.solar.MatePacketCreator49;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.lightcouch.CouchDbException;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-
-import gnu.io.CommPort;
-import gnu.io.CommPortIdentifier;
-import gnu.io.NoSuchPortException;
-import gnu.io.PortInUseException;
-import gnu.io.SerialPort;
-import gnu.io.UnsupportedCommOperationException;
 
 public class SolarMain {
 	private int connectSolar(ProgramArgs args, PacketCollectionIdGenerator idGenerator) throws Exception{
@@ -60,6 +52,7 @@ public class SolarMain {
 			packetSaver = new CouchDbPacketSaver(args.createProperties(), databaseName);
 		}
 		Runnable run = new SolarReader(in, args.getThrottleFactor(), packetCreator, packetSaver, idGenerator);
+		//noinspection InfiniteLoopStatement
 		while(true){
 			run.run();
 			try{

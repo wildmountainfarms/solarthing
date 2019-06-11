@@ -6,6 +6,7 @@ import me.retrodaredevil.solarthing.packets.CodeMode;
  * NOTE: Some of these values are only supported on FLEXmax80 and FLEXmax60. If it is a FLEXmax unit, you also have to
  * make sure that the value code you compare with this
  */
+@SuppressWarnings("unused")
 public enum AuxMode implements CodeMode {
 	UNKNOWN(-1, "unknown"),
 	DISABLED(0, "disabled"),

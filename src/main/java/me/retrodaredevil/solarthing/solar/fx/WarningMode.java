@@ -5,6 +5,7 @@ import me.retrodaredevil.solarthing.packets.BitmaskMode;
 /**
  * The warning modes for the fx
  */
+@SuppressWarnings("unused")
 public enum WarningMode implements BitmaskMode { // multiple can be active (or 0)
 	AC_INPUT_FREQ_HIGH(1, "AC Input Freq High"),
 	AC_INPUT_FREQ_LOW(2, "AC Input Freq Low"),
@@ -15,8 +16,8 @@ public enum WarningMode implements BitmaskMode { // multiple can be active (or 0
 	COMM_ERROR(64, "Comm Error"),
 	FAN_FAILURE(128, "Fan Failure");
 
-	private int value;
-	private String name;
+	private final int value;
+	private final String name;
 	WarningMode(int value, String name){
 		this.value = value;
 		this.name = name;

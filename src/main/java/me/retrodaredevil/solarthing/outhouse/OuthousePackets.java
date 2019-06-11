@@ -1,15 +1,16 @@
 package me.retrodaredevil.solarthing.outhouse;
 
 import com.google.gson.JsonObject;
-import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
-import me.retrodaredevil.solarthing.packets.collection.PacketCollections;
-import me.retrodaredevil.util.json.JsonFile;
-import org.lightcouch.CouchDbClient;
-import org.lightcouch.CouchDbProperties;
 
+@SuppressWarnings("unused")
 public final class OuthousePackets {
 	private OuthousePackets(){ throw new UnsupportedOperationException(); }
-	public static OuthousePacket createFromJson(JsonObject jsonObject) throws IllegalArgumentException{
+	/**
+	 * @param jsonObject The {@link JsonObject} to create the {@link OuthousePacket} from
+	 * @return The {@link OuthousePacket} created from {@code jsonObject}
+	 * @throws IllegalArgumentException thrown if {@code jsonObject} isn't a {@link OuthousePacket}
+	 */
+	public static OuthousePacket createFromJson(JsonObject jsonObject) {
 		final String packetName = jsonObject.getAsJsonPrimitive("packetType").getAsString();
 		final OuthousePacketType packetType;
 		try {
@@ -25,14 +26,5 @@ public final class OuthousePackets {
 			default:
 				throw new UnsupportedOperationException();
 		}
-	}
-	public static void main(String[] args){
-		CouchDbClient client = new CouchDbClient(new CouchDbProperties("outhouse", false, "http", "192.168.1.110", 5984, "admin", "relax"));
-		for(JsonObject object : client.view("packets/millis").startKey(System.currentTimeMillis() - 20 * 1000).query(JsonObject.class)){
-			JsonObject value = object.getAsJsonObject("value");
-			PacketCollection packetCollection = PacketCollections.createFromJson(value, OuthousePackets::createFromJson);
-			System.out.println(JsonFile.gson.toJson(packetCollection));
-		}
-		System.out.println("finished successfully");
 	}
 }

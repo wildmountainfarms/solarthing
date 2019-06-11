@@ -14,8 +14,8 @@ public enum FXErrorMode implements BitmaskMode { // multiple can be active (or 0
 	HIGH_BATTERY(32, "High Battery"),
 	SHORTED_OUTPUT(64, "Shorted output"),
 	BACK_FEED(128, "Back feed");
-	private int value;
-	private String name;
+	private final int value;
+	private final String name;
 	FXErrorMode(int value, String name){
 		this.value = value;
 		this.name = name;

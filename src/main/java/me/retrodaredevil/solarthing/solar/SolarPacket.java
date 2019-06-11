@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.solar;
 
 import me.retrodaredevil.solarthing.packets.DocumentedPacket;
 
+@SuppressWarnings("unused")
 public interface SolarPacket extends DocumentedPacket<SolarPacketType> {
 
 	/**

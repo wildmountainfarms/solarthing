@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.solar.mx;
 
 import me.retrodaredevil.solarthing.solar.SolarPacketType;
 
+@SuppressWarnings("unused")
 class ImmutableMXStatusPacket implements MXStatusPacket {
 	private final SolarPacketType packetType = SolarPacketType.MXFM_STATUS;
 

@@ -8,9 +8,6 @@ import me.retrodaredevil.util.json.JsonFile;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static java.lang.Math.max;
-import static java.lang.Math.min;
-
 public class OuthousePacketCreator extends StartEndPacketCreator {
 	
 	public OuthousePacketCreator() {

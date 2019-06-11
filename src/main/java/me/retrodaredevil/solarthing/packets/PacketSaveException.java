@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.packets;
 
+@SuppressWarnings("unused")
 public class PacketSaveException extends Exception {
 	public PacketSaveException() {
 	}
