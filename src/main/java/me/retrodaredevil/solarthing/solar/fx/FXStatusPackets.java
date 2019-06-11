@@ -112,7 +112,7 @@ public final class FXStatusPackets {
 		final int acMode = acModeTens * 10 + acModeOnes; // high and low
 
 		final float batteryVoltage = batteryVoltageTens * 10 + batteryVoltageOnes + (batteryVoltageTenths / 10.0f);
-		final String batteryVoltageString = Integer.toString(batteryVoltageTens) + Integer.toString(batteryVoltageOnes) + "." + Integer.toString(batteryVoltageTenths);
+		final String batteryVoltageString = batteryVoltageTens + "" + batteryVoltageOnes + "." + batteryVoltageTenths;
 
 		final int misc = miscHundreds * 100 + miscTens * 10 + miscOnes;
 		final int warningMode = warningModeHundreds * 100 + warningModeTens * 10 + warningModeOnes;

@@ -7,6 +7,7 @@ import me.retrodaredevil.solarthing.solar.SolarPacket;
  *
  * In previous version, it was just "MX" instead of "MXFM" so MX is the same as MXFM in the documentation. FM stands for FLEXmax.
  */
+@SuppressWarnings("unused")
 public interface MXStatusPacket extends SolarPacket {
 	
 	// region Packet Values

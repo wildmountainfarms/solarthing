@@ -15,15 +15,10 @@ import java.util.Collections;
 public class MatePacketCreator49 extends StartEndPacketCreator {
 
 	private final IgnoreCheckSum ignoreCheckSum;
-	private final char[] bytes = new char[49];
-	/** The amount of char elements initialized in the bytes array */
 
 	public MatePacketCreator49(IgnoreCheckSum ignoreCheckSum){
 		super('\n', '\r', 49, 49);
 		this.ignoreCheckSum = ignoreCheckSum;
-	}
-	public MatePacketCreator49(){
-		this(IgnoreCheckSum.DISABLED);
 	}
 
 	@Override

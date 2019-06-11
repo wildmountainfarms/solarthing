@@ -57,7 +57,7 @@ public class JsonFile {
 	/**
 	 * Loads the json file
 	 * @param overwrite if this is a json file and overwrite is false, it will call reload. If it is not a json file, then overwrite must be true or an error will be thrown
-	 * @throws IOException 
+	 * @throws IOException If there was a problem reading or writing to the file
 	 */
 	public void load(boolean overwrite) throws IOException {
 		if(overwrite){

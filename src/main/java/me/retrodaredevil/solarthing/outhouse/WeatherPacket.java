@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.outhouse;
 
+@SuppressWarnings("unused")
 public interface WeatherPacket extends OuthousePacket {
 	/**
 	 * Should be serialized as "temperatureCelsius"

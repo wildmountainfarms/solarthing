@@ -2,22 +2,31 @@ package me.retrodaredevil.solarthing.packets;
 
 import java.util.*;
 
+@SuppressWarnings("unused")
 public final class Modes {
 	private Modes(){ throw new UnsupportedOperationException(); }
 	
 	// region CodeMode
 	/**
-	 *
 	 * @param tEnum The enum to get the active mode from
 	 * @param valueCode The code to match with {@link CodeMode#getValueCode()}
 	 * @param defaultValue The value to return if not found
-	 * @param <T>
-	 * @return The enum value
+	 * @param <T> The type of the {@link CodeMode}
+	 * @return The active mode or the default value
 	 */
 	public static <T extends Enum<T> & CodeMode> T getActiveMode(Class<T> tEnum, int valueCode, T defaultValue){
 		return getActiveMode(EnumSet.allOf(tEnum), valueCode, defaultValue);
 	}
-
+	
+	
+	/**
+	 * Gets the active mode from a collection of modes.
+	 * @param values The collection of possible values to find the correct value for
+	 * @param valueCode The code to match with {@link CodeMode#getValueCode()}
+	 * @param <T> The type of the {@link CodeMode}
+	 * @return A value from {@code values} with the {@link CodeMode} matching {@code valueCode} or null if not found.
+	 * @throws NullPointerException optional. May be thrown if {@code values} contains a null element
+	 */
 	public static <T extends CodeMode> T getActiveMode(Collection<? extends T> values, int valueCode, T defaultValue){
 		for(T value : values){
 			if(value.isActive(valueCode)){
@@ -26,9 +35,22 @@ public final class Modes {
 		}
 		return defaultValue;
 	}
+	/**
+	 * @param tEnum The enum to get the active mode from
+	 * @param valueCode The code to match with {@link CodeMode#getValueCode()}
+	 * @param <T> The type of the {@link CodeMode}
+	 * @return The active mode or null if not found
+	 */
 	public static <T extends Enum<T> & CodeMode> T getActiveModeOrNull(Class<T> tEnum, int valueCode){
 		return getActiveMode(tEnum, valueCode, null);
 	}
+	/**
+	 * @param tEnum The enum to get the active mode from
+	 * @param valueCode The code to match with {@link CodeMode#getValueCode()}
+	 * @param <T> The type of the {@link CodeMode}
+	 * @return The active mode
+	 * @throws NoSuchElementException thrown if the active mode was not found
+	 */
 	public static <T extends Enum<T> & CodeMode> T getActiveMode(Class<T> tEnum, int valueCode){
 		T r = getActiveMode(tEnum, valueCode, null);
 		if(r == null){
@@ -78,6 +100,12 @@ public final class Modes {
 		getActiveModes(EnumSet.allOf(tEnum), code, set);
 		return set;
 	}
+	/**
+	 * @param possibleValues The collection of possible values to return
+	 * @param code The code that is bit masked
+	 * @param <T> The enum that has all the possible modes
+	 * @return A new set with all of the modes that are active in tEnum
+	 */
 	public static <T extends BitmaskMode> Set<T> getActiveModes(Collection<? extends T> possibleValues, int code){
 		final Set<T> set = new HashSet<>();
 		getActiveModes(possibleValues, code, set);

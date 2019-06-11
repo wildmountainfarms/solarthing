@@ -13,7 +13,6 @@ public interface PacketCollectionIdGenerator {
 			final int hour = cal.get(Calendar.HOUR_OF_DAY);
 			final int minute = cal.get(Calendar.MINUTE);
 			final int second = cal.get(Calendar.SECOND);
-//			final int millisecond = cal.get(Calendar.MILLISECOND);
 			return "" + year + "," + month + "," + day + "," +
 					hour + "," + minute + "," + second + "," + Math.random(); // avoid collisions
 		};

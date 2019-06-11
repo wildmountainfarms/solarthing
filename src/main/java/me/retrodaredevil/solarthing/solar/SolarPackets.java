@@ -15,8 +15,13 @@ import me.retrodaredevil.util.json.JsonFile;
 
 public final class SolarPackets {
 	private SolarPackets(){ throw new UnsupportedOperationException(); }
-
-	public static SolarPacket createFromJson(JsonObject jsonObject) throws IllegalArgumentException{
+	
+	/**
+	 * @param jsonObject The {@link JsonObject} to create the {@link SolarPacket} from
+	 * @return The {@link SolarPacket} created from {@code jsonObject}
+	 * @throws IllegalArgumentException thrown if {@code jsonObject} isn't a {@link SolarPacket}
+	 */
+	public static SolarPacket createFromJson(JsonObject jsonObject) {
 		final String packetName = jsonObject.getAsJsonPrimitive("packetType").getAsString();
 		final SolarPacketType packetType;
 		try {

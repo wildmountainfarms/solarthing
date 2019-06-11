@@ -86,6 +86,7 @@ public abstract class StartEndPacketCreator implements PacketCreator{
 		}
 	}
 	public static class PacketCreationException extends Exception {
+		@SuppressWarnings("unused")
 		public PacketCreationException(){}
 		public PacketCreationException(Throwable cause){
 			super(cause);

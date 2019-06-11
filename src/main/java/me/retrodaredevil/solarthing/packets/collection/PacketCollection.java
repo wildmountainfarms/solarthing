@@ -6,6 +6,7 @@ import me.retrodaredevil.solarthing.packets.PacketEntry;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 public interface PacketCollection extends PacketEntry {
 	/**
 	 * Should be serialized as "packets"
