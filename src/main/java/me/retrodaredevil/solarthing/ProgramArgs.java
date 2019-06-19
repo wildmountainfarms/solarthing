@@ -51,11 +51,14 @@ public class ProgramArgs {
 	private String filePath = "data.json";
 	@Parameter(names = {"--local"}, description = "Save data to a local file on the system")
 	private boolean local = false;
+	
+	@Parameter(names = {"--ct", "--connect-timeout", "--connection-timeout"})
+	private int connectionTimeoutSeconds = 0;
+	@Parameter(names = {"--st", "--socket-timeout"})
+	private int socketTimeoutSeconds = 0;
 
 	public ProgramArgs(String[] args){
 		JCommander.newBuilder().addObject(this).build().parse(args);
-
-		
 	}
 	public List<String> getParameters(){
 		return parameters;
@@ -92,7 +95,8 @@ public class ProgramArgs {
 	}
 	public CouchDbProperties createProperties(){
 		CouchDbProperties r = new CouchDbProperties(null, true, protocol, host, port, userName, password);
-		r.setConnectionTimeout(2000);
+		r.setConnectionTimeout(connectionTimeoutSeconds * 1000);
+		r.setSocketTimeout(socketTimeoutSeconds * 1000);
 		return r;
 	}
 

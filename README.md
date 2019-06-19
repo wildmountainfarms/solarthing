@@ -36,7 +36,7 @@ Run the command
 ```
 mvn clean compile assembly:single
 ```
-Move the jar to the root folder and name the jar `SolarThing.jar`
+Move the jar to the root folder and name the jar `solarthing.jar`
 
 
 ### What the database structure looks like
@@ -61,3 +61,7 @@ more convenient than a website.
 @retrodaredevil came up with the idea of the outhouse status when he walked all the way out to the outhouse only to find
 that it was occupied! He walked all the way back inside, then went back out a few minutes later. He knew that something
 had to be done about this first world problem.
+
+### Legacy
+[The perl script](helloworld.pl) is a legacy program. It was the program that started solarthing.
+After learning perl for a day. I went straight back to Java, which I am more familiar with.
