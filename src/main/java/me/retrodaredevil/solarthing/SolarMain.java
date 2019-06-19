@@ -105,7 +105,7 @@ public class SolarMain {
 				System.exit(1);
 				throw new AssertionError();
 			}
-			idGenerator = new HourIntervalPacketCollectionIdGenerator(uniqueIdsInOneHour);
+			idGenerator = new HourIntervalPacketCollectionIdGenerator(uniqueIdsInOneHour, new Object().hashCode());
 		}
 		try {
 			int status = 1;
