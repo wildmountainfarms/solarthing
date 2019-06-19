@@ -15,6 +15,7 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Random;
 
 public class SolarMain {
 	private int connectSolar(ProgramArgs args, PacketCollectionIdGenerator idGenerator) throws Exception{
@@ -105,7 +106,7 @@ public class SolarMain {
 				System.exit(1);
 				throw new AssertionError();
 			}
-			idGenerator = new HourIntervalPacketCollectionIdGenerator(uniqueIdsInOneHour, new Object().hashCode());
+			idGenerator = new HourIntervalPacketCollectionIdGenerator(uniqueIdsInOneHour, new Random().nextInt());
 		}
 		try {
 			int status = 1;
