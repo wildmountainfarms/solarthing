@@ -2,6 +2,8 @@ package me.retrodaredevil.solarthing;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+import me.retrodaredevil.couchdb.CouchProperties;
+import me.retrodaredevil.couchdb.CouchPropertiesBuilder;
 import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
 import me.retrodaredevil.util.json.JsonFile;
 import org.lightcouch.CouchDbProperties;
@@ -93,11 +95,10 @@ public class ProgramArgs {
 	public String getPortName(){
 		return portName;
 	}
-	public CouchDbProperties createProperties(){
-		CouchDbProperties r = new CouchDbProperties(null, true, protocol, host, port, userName, password);
-		r.setConnectionTimeout(connectionTimeoutSeconds * 1000);
-		r.setSocketTimeout(socketTimeoutSeconds * 1000);
-		return r;
+	public CouchProperties createProperties(){
+		return new CouchPropertiesBuilder(null, true, protocol, host, port, userName, password)
+			.setConnectionTimeout(connectionTimeoutSeconds * 1000)
+			.setSocketTimeout(socketTimeoutSeconds * 1000).build();
 	}
 
 	public void printInJson(){
