@@ -65,3 +65,6 @@ had to be done about this first world problem.
 ### Legacy
 [The perl script](helloworld.pl) is a legacy program. It was the program that started solarthing.
 After learning perl for a day. I went straight back to Java, which I am more familiar with.
+
+### TODO
+* Figure out how to use https://emoncms.org/ to graph data
