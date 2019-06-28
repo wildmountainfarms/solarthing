@@ -16,9 +16,14 @@ java -jar solarthing.jar solar --host 192.168.1.110 --unique 60
 ```
 For each example replace the host with the ip of your CouchDB database IP.
 
-### References
+### Outback References
 New documentation:
 http://www.outbackpower.com/downloads/documents/system_management/mate/mate_serial_communicationsguide.pdf
 
 Older documentation:
 https://www.wmrc.edu/projects/BARenergy/manuals/outback-manuals/Mate_Serial_Comm_R302.pdf
+
+
+## Renogy References:
+https://www.rototron.info/raspberry-pi-solar-serial-rest-api-tutorial/
+https://www.overstock.com/Electronics/Renogy-RNG-CTRL-RVR20-BT-Solar-Charge-Controller-MPPT-20A-with-BT/20973007/product.html

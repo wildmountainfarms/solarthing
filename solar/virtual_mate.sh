@@ -5,9 +5,10 @@
 sleep 4
 while true
 do
-    printf "\n1,10,10,10,100,100,10,03,000,00,282,000,000,999\r"  # this is a FX Packet
-    printf "\n2,10,10,10,100,100,10,03,000,00,282,000,000,999\r"  # this is a FX Packet
-    printf "\nD,uu,10,99,999,888,u7,09,000,04,282,000,000,999\r"  # this is a MX Packet
+    printf "\n1,10,10,10,100,100,10,03,000,02,282,129,000,999\r"  # this is a FX Packet
+    printf "\n2,10,10,10,100,100,10,03,000,02,282,129,000,999\r"  # this is a FX Packet
+    printf "\nD,uu,10,99,999,000,u7,73,000,04,282,000,000,999\r"  # this is a MX Packet  # 73 = 9 | 64
+    printf "\nE,uu,10,99,999,000,u7,73,000,04,282,000,000,999\r"  # this is a MX Packet  # 73 = 9 | 64
     sleep 6
 done
 
