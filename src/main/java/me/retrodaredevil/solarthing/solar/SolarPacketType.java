@@ -7,6 +7,8 @@ import me.retrodaredevil.solarthing.packets.DocumentedPacketType;
  *
  * NOTE: In the future, do NOT override the {@link #toString()} method. Doing so may break code
  * from other projects
+ *
+ * NOTE: This enum may have more values added to it in the future
  */
 public enum SolarPacketType implements DocumentedPacketType {
 	/**

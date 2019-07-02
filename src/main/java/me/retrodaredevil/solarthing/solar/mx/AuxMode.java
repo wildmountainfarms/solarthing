@@ -8,7 +8,6 @@ import me.retrodaredevil.solarthing.packets.CodeMode;
  */
 @SuppressWarnings("unused")
 public enum AuxMode implements CodeMode {
-	UNKNOWN(-1, "unknown"),
 	DISABLED(0, "disabled"),
 	DIVERSION(1, "Diversion"),
 	REMOTE(2, "Remote"),

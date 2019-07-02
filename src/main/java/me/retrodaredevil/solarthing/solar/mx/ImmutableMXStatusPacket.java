@@ -1,5 +1,7 @@
 package me.retrodaredevil.solarthing.solar.mx;
 
+import me.retrodaredevil.solarthing.packets.identification.Identifier;
+import me.retrodaredevil.solarthing.solar.OutbackIdentifier;
 import me.retrodaredevil.solarthing.solar.SolarPacketType;
 
 @SuppressWarnings("unused")
@@ -26,6 +28,8 @@ class ImmutableMXStatusPacket implements MXStatusPacket {
 	private final String auxModeName;
 	private final String errors;
 	private final String chargerModeName;
+	
+	private final transient Identifier identifier;
 
 	ImmutableMXStatusPacket(
 			int address, int chargerCurrent, int pvCurrent, int inputVoltage,
@@ -53,6 +57,8 @@ class ImmutableMXStatusPacket implements MXStatusPacket {
 		this.auxModeName = auxModeName;
 		this.errors = errors;
 		this.chargerModeName = chargerModeName;
+		
+		this.identifier = new OutbackIdentifier(address);
 	}
 
 	@Override
@@ -79,7 +85,12 @@ class ImmutableMXStatusPacket implements MXStatusPacket {
 	public int getAddress() {
 		return address;
 	}
-
+	
+	@Override
+	public Identifier getIdentifier() {
+		return identifier;
+	}
+	
 	@Override
 	public int getChargerCurrent() {
 		return chargerCurrent;

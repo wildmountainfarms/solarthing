@@ -1,5 +1,7 @@
 package me.retrodaredevil.solarthing.solar.fx;
 
+import me.retrodaredevil.solarthing.packets.identification.Identifier;
+import me.retrodaredevil.solarthing.solar.OutbackIdentifier;
 import me.retrodaredevil.solarthing.solar.SolarPacketType;
 
 @SuppressWarnings("unused")
@@ -26,6 +28,8 @@ class ImmutableFXStatusPacket implements FXStatusPacket {
 	private final String acModeName;
 	private final String miscModes;
 	private final String warnings;
+	
+	private final transient Identifier identifier;
 
 	ImmutableFXStatusPacket(
 			int address,
@@ -66,6 +70,8 @@ class ImmutableFXStatusPacket implements FXStatusPacket {
 		this.acModeName = acModeName;
 		this.miscModes = miscModes;
 		this.warnings = warnings;
+		
+		this.identifier = new OutbackIdentifier(address);
 	}
 
 
@@ -203,5 +209,10 @@ class ImmutableFXStatusPacket implements FXStatusPacket {
 	@Override
 	public int getAddress() {
 		return address;
+	}
+	
+	@Override
+	public Identifier getIdentifier() {
+		return identifier;
 	}
 }

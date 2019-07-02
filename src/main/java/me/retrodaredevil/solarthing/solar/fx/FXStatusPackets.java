@@ -119,13 +119,13 @@ public final class FXStatusPackets {
 		// chksum set above
 
 		// Operational Mode Stuff ====
-		final String operatingModeName = Modes.getActiveMode(OperationalMode.class, operatingMode, OperationalMode.UNKNOWN).getModeName();
+		final String operatingModeName = Modes.getActiveMode(OperationalMode.class, operatingMode).getModeName();
 
 		// ==== Error mode stuff ====
 		final String errors = Modes.toString(FXErrorMode.class, errorMode);
 
 		// ==== AC Mode Stuff ====
-		final String acModeName = Modes.getActiveMode(ACMode.class, acMode, ACMode.UNKNOWN).getModeName();
+		final String acModeName = Modes.getActiveMode(ACMode.class, acMode).getModeName();
 
 		// ==== Misc Stuff ====
 		final int inputVoltage, outputVoltage, inverterCurrent, chargerCurrent, buyCurrent, sellCurrent;
@@ -211,9 +211,9 @@ public final class FXStatusPackets {
 
 		final String operatingModeName, errors, acModeName, miscModes, warnings;
 		{
-			operatingModeName = storedOperatingModeName != null ? storedOperatingModeName : Modes.getActiveMode(OperationalMode.class, operatingMode, OperationalMode.UNKNOWN).getModeName();
+			operatingModeName = storedOperatingModeName != null ? storedOperatingModeName : Modes.getActiveMode(OperationalMode.class, operatingMode).getModeName();
 			errors = storedErrors != null ? storedErrors : Modes.toString(FXErrorMode.class, errorMode);
-			acModeName = storedAcModeName != null ? storedAcModeName : Modes.getActiveMode(ACMode.class, acMode, ACMode.UNKNOWN).getModeName();
+			acModeName = storedAcModeName != null ? storedAcModeName : Modes.getActiveMode(ACMode.class, acMode).getModeName();
 			miscModes = storedMiscModes != null ? storedMiscModes : Modes.toString(MiscMode.class, misc);
 			warnings = storedWarnings != null ? storedWarnings : Modes.toString(WarningMode.class, warningMode);
 		}

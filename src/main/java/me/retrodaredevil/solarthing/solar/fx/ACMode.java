@@ -10,8 +10,7 @@ import me.retrodaredevil.solarthing.packets.CodeMode;
 public enum ACMode implements CodeMode { // one must be active
 	NO_AC(0, "No AC"),
 	AC_DROP(1, "AC Drop"),
-	AC_USE(2, "AC Use"),
-	UNKNOWN(-1, "UNKNOWN");
+	AC_USE(2, "AC Use");
 
 	private final int value;
 	private final String name;

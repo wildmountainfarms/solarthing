@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.solar.mx;
 
-import me.retrodaredevil.solarthing.solar.SolarPacket;
+import me.retrodaredevil.solarthing.solar.OutbackPacket;
+import me.retrodaredevil.solarthing.solar.common.BatteryVoltagePacket;
 
 /**
  * Represents an MX Status Packet from an Outback Mate
@@ -8,15 +9,9 @@ import me.retrodaredevil.solarthing.solar.SolarPacket;
  * In previous version, it was just "MX" instead of "MXFM" so MX is the same as MXFM in the documentation. FM stands for FLEXmax.
  */
 @SuppressWarnings("unused")
-public interface MXStatusPacket extends SolarPacket {
+public interface MXStatusPacket extends OutbackPacket, BatteryVoltagePacket {
 	
 	// region Packet Values
-	/**
-	 * Should be serialized as "address"
-	 * @return The MX Address. In range [0..10]. If 0, that means the MX is directly connected
-	 */
-	@Override
-	int getAddress();
 	
 	/**
 	 * Should be serialized as "chargerCurrent"
@@ -79,12 +74,6 @@ public interface MXStatusPacket extends SolarPacket {
 	int getChargerMode();
 	
 	/**
-	 * Should be serialized as "batteryVoltage"
-	 * @return The battery voltage (in volts)
-	 */
-	float getBatteryVoltage();
-	
-	/**
 	 * Should be serialized as "dailyAH"
 	 * <p>
 	 * Only works on MATE devices with newer firmware
@@ -116,16 +105,11 @@ public interface MXStatusPacket extends SolarPacket {
 	String getDailyKWHString();
 
 	/**
-	 * Should be serialized as "ampChargerCurrent" if serialized at all
+	 * Should be serialized as "ampChargerCurrentString" if serialized at all
 	 * @see #getAmpChargerCurrent()
-	 * @return The amp charger current in the format "0.X" where X is a digit [0..9]
+	 * @return The amp charger current in the format "0.X" where X is a digit [0..0.9]
 	 */
 	String getAmpChargerCurrentString();
 
-	/**
-	 * Should be serialized as "batteryVoltage" if serialized at all
-	 * @return The battery voltage as a String
-	 */
-	String getBatteryVoltageString();
 	// endregion
 }
