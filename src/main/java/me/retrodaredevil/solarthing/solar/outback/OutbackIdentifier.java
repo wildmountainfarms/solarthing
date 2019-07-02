@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing.solar;
+package me.retrodaredevil.solarthing.solar.outback;
 
 import me.retrodaredevil.solarthing.packets.identification.IntegerIdentifier;
 

@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing.solar.mx;
+package me.retrodaredevil.solarthing.solar.outback.mx;
 
 import me.retrodaredevil.solarthing.packets.CodeMode;
 

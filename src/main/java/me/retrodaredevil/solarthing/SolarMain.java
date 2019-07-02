@@ -6,7 +6,7 @@ import me.retrodaredevil.solarthing.packets.PacketCreator;
 import me.retrodaredevil.solarthing.packets.PacketSaver;
 import me.retrodaredevil.solarthing.packets.collection.HourIntervalPacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
-import me.retrodaredevil.solarthing.solar.MatePacketCreator49;
+import me.retrodaredevil.solarthing.solar.outback.MatePacketCreator49;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -53,14 +53,13 @@ public class SolarMain {
 			packetSaver = new CouchDbPacketSaver(args.createProperties(), databaseName);
 		}
 		Runnable run = new SolarReader(in, args.getThrottleFactor(), packetCreator, packetSaver, idGenerator);
-		//noinspection InfiniteLoopStatement
-		while(true){
-			run.run();
-			try{
+		try {
+			while (!Thread.currentThread().isInterrupted()) {
+				run.run();
 				Thread.sleep(5);
-			} catch(InterruptedException e){
-				throw new RuntimeException("We didn't expect the program to be interrupted.", e);
 			}
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
 		}
 	}
 	private InputStream getInputStream(ProgramArgs args) throws UnsupportedCommOperationException, IOException, PortInUseException, NoSuchPortException {

@@ -1,6 +1,6 @@
-package me.retrodaredevil.solarthing.solar.fx;
+package me.retrodaredevil.solarthing.solar.outback.fx;
 
-import me.retrodaredevil.solarthing.solar.OutbackPacket;
+import me.retrodaredevil.solarthing.solar.outback.OutbackPacket;
 import me.retrodaredevil.solarthing.solar.common.BatteryVoltagePacket;
 
 /**
