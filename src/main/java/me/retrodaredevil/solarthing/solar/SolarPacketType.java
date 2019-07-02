@@ -22,5 +22,9 @@ public enum SolarPacketType implements DocumentedPacketType {
 	/**
 	 * FlexNET DC Status Packets
 	 */
-	FLEXNET_DC_STATUS
+	FLEXNET_DC_STATUS,
+	/**
+	 * Renogy Rover Charge Controller Status Packet
+	 */
+	RENOGY_ROVER_STATUS,
 }

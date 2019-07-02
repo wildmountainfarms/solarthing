@@ -3,56 +3,81 @@ package me.retrodaredevil.solarthing;
 import gnu.io.*;
 import me.retrodaredevil.solarthing.outhouse.OuthousePacketCreator;
 import me.retrodaredevil.solarthing.packets.PacketCreator;
-import me.retrodaredevil.solarthing.packets.PacketSaver;
+import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
 import me.retrodaredevil.solarthing.packets.collection.HourIntervalPacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
+import me.retrodaredevil.solarthing.packets.handling.PacketHandlerMultiplexer;
+import me.retrodaredevil.solarthing.packets.handling.ThrottleFactorPacketHandler;
+import me.retrodaredevil.solarthing.solar.outback.MateCommand;
 import me.retrodaredevil.solarthing.solar.outback.MatePacketCreator49;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
 public class SolarMain {
 	private int connectSolar(ProgramArgs args, PacketCollectionIdGenerator idGenerator) throws Exception{
-		InputStream in = null;
-		try {
-			in = getInputStream(args);
-		} catch (PortInUseException e){
-			e.printStackTrace();
-			System.err.println("That port is in use!");
-		} catch (NoSuchPortException e){
-			e.printStackTrace();
-			System.err.println("No such port: '" + args.getPortName() + "'");
+		final InputStream in;
+		final OutputStream output;
+		if(args.isUnitTest()){
+			in = System.in;
+			output = System.out;
+		} else {
+			final SerialPort port;
+			try {
+				port = getSerialPort(args.getPortName());
+			} catch (PortInUseException e) {
+				e.printStackTrace();
+				System.err.println("That port is in use!");
+				return 1;
+			} catch (NoSuchPortException e) {
+				e.printStackTrace();
+				System.err.println("No such port: '" + args.getPortName() + "'");
+				return 1;
+			}
+			in = port.getInputStream();
+			output = port.getOutputStream();
 		}
-		if(in == null){
-			return 1;
-		}
-		connect(args, in, "solarthing", new MatePacketCreator49(args.getIgnoreCheckSum()), idGenerator);
+		connect(
+			in,
+			new MatePacketCreator49(args.getIgnoreCheckSum()),
+			new PacketHandlerMultiplexer(
+				new MateCommandHandler(new LinkedList<>(), output),
+				new ThrottleFactorPacketHandler(getPacketSaver(args, "solarthing"), args.getThrottleFactor())
+			),
+			idGenerator,
+			100
+		);
 		return 0;
 	}
 	private int connectOuthouse(ProgramArgs args, PacketCollectionIdGenerator idGenerator) {
-		InputStream in = System.in;
-		connect(args, in, "outhouse", new OuthousePacketCreator(), idGenerator);
+		connect(
+			System.in,
+			new OuthousePacketCreator(),
+			new ThrottleFactorPacketHandler(getPacketSaver(args, "outhouse"), args.getThrottleFactor()),
+			idGenerator,
+			0
+		);
 		return 0;
 	}
-
-	private void connect(ProgramArgs args, InputStream in, String databaseName, PacketCreator packetCreator, PacketCollectionIdGenerator idGenerator) {
-		PacketSaver packetSaver;
+	private PacketHandler getPacketSaver(ProgramArgs args, String databaseName){
 		if(args.isLocal()){
 			try {
-				packetSaver = new JsonFilePacketSaver(args.getFilePath());
+				return new JsonFilePacketSaver(args.getFilePath());
 			} catch (IOException e) {
 				throw new RuntimeException("Incorrect file path", e);
 			}
-		} else {
-			packetSaver = new CouchDbPacketSaver(args.createProperties(), databaseName);
 		}
-		Runnable run = new SolarReader(in, args.getThrottleFactor(), packetCreator, packetSaver, idGenerator);
+		return new CouchDbPacketSaver(args.createProperties(), databaseName);
+	}
+
+	private void connect(InputStream in, PacketCreator packetCreator, PacketHandler packetHandler, PacketCollectionIdGenerator idGenerator, long samePacketTime) {
+		Runnable run = new SolarReader(in, packetCreator, packetHandler, idGenerator, samePacketTime);
 		try {
 			while (!Thread.currentThread().isInterrupted()) {
 				run.run();
@@ -62,12 +87,9 @@ public class SolarMain {
 			Thread.currentThread().interrupt();
 		}
 	}
-	private InputStream getInputStream(ProgramArgs args) throws UnsupportedCommOperationException, IOException, PortInUseException, NoSuchPortException {
-		if(args.isUnitTest()){
-			return new BufferedInputStream(System.in);
-		}
+	private SerialPort getSerialPort(String portName) throws UnsupportedCommOperationException, PortInUseException, NoSuchPortException {
 
-		final CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(args.getPortName());
+		final CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
 		final CommPort commPort = portIdentifier.open(this.getClass().getName(), 2000);
 
 		if (!(commPort instanceof SerialPort)) {
@@ -79,7 +101,7 @@ public class SolarMain {
 		serialPort.setDTR(true);
 		serialPort.setRTS(false);
 
-		return new BufferedInputStream(serialPort.getInputStream()); // TODO, if we need to, we'll have to refactor this code a bit if we want to use the output stream
+		return serialPort;
 	}
 
 	public static void main(String[] args) {
