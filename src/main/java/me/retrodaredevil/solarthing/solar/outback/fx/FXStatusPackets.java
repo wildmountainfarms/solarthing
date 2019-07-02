@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing.solar.fx;
+package me.retrodaredevil.solarthing.solar.outback.fx;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

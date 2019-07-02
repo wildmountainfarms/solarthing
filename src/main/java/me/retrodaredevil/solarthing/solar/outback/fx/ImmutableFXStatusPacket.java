@@ -1,7 +1,7 @@
-package me.retrodaredevil.solarthing.solar.fx;
+package me.retrodaredevil.solarthing.solar.outback.fx;
 
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
-import me.retrodaredevil.solarthing.solar.OutbackIdentifier;
+import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import me.retrodaredevil.solarthing.solar.SolarPacketType;
 
 @SuppressWarnings("unused")

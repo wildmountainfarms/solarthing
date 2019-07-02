@@ -9,8 +9,8 @@ import org.lightcouch.CouchDbProperties;
 
 import java.util.GregorianCalendar;
 
-import me.retrodaredevil.solarthing.solar.fx.FXStatusPackets;
-import me.retrodaredevil.solarthing.solar.mx.MXStatusPackets;
+import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPackets;
+import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPackets;
 import me.retrodaredevil.util.json.JsonFile;
 
 public final class SolarPackets {

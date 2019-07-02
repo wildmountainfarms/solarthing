@@ -1,9 +1,9 @@
-package me.retrodaredevil.solarthing.solar;
+package me.retrodaredevil.solarthing.solar.outback;
 
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.StartEndPacketCreator;
-import me.retrodaredevil.solarthing.solar.fx.FXStatusPackets;
-import me.retrodaredevil.solarthing.solar.mx.MXStatusPackets;
+import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPackets;
+import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPackets;
 import me.retrodaredevil.solarthing.util.CheckSumException;
 import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
 import me.retrodaredevil.solarthing.util.ParsePacketAsciiDecimalDigitException;

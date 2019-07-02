@@ -1,4 +1,6 @@
-package me.retrodaredevil.solarthing.solar;
+package me.retrodaredevil.solarthing.solar.outback;
+
+import me.retrodaredevil.solarthing.solar.SolarPacket;
 
 public interface OutbackPacket extends SolarPacket {
 	/**
