@@ -3,14 +3,14 @@ package me.retrodaredevil.solarthing;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import me.retrodaredevil.solarthing.packets.PacketSaver;
+import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.util.json.JsonFile;
 
 import java.io.File;
 import java.io.IOException;
 
-public class JsonFilePacketSaver implements PacketSaver {
+public class JsonFilePacketSaver implements PacketHandler {
 	private final JsonFile jsonFile;
 
 	public JsonFilePacketSaver(File file) throws IOException {
@@ -29,7 +29,7 @@ public class JsonFilePacketSaver implements PacketSaver {
 	}
 
 	@Override
-	public void savePacketCollection(PacketCollection packetCollection) {
+	public void handle(PacketCollection packetCollection, boolean wasInstant) {
 
 		JsonElement el = jsonFile.getObject().get("packets"); // can be null
 		if (el == null) {
