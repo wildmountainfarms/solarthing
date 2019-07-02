@@ -1,12 +1,13 @@
 package me.retrodaredevil.solarthing.solar.fx;
 
-import me.retrodaredevil.solarthing.solar.SolarPacket;
+import me.retrodaredevil.solarthing.solar.OutbackPacket;
+import me.retrodaredevil.solarthing.solar.common.BatteryVoltagePacket;
 
 /**
  * Represents an FX Status Packet from an Outback Mate
  */
 @SuppressWarnings("unused")
-public interface FXStatusPacket extends SolarPacket {
+public interface FXStatusPacket extends OutbackPacket, BatteryVoltagePacket {
 	
 	// region Packet Values
 	/**
@@ -66,12 +67,6 @@ public interface FXStatusPacket extends SolarPacket {
 	int getACMode();
 	
 	/**
-	 * Should be serialized as "batteryVoltage"
-	 * @return The battery voltage as a float
-	 */
-	float getBatteryVoltage();
-	
-	/**
 	 * Should be serialized as "misc"
 	 * @return The misc mode bitmask which represents a varying number of MiscModes
 	 */
@@ -129,11 +124,6 @@ public interface FXStatusPacket extends SolarPacket {
 	// endregion
 
 	// region Convenience Strings
-	/**
-	 * Should be serialized as "batteryVoltageString" if serialized at all
-	 * @return The battery voltage as a String
-	 */
-	String getBatteryVoltageString();
 
 	/**
 	 * Should be serialized as "operatingModeName"

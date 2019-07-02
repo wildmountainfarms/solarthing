@@ -125,13 +125,13 @@ public final class MXStatusPackets {
 		final int dailyAH = dailyAHThousands * 1000 + dailyAHHundreds * 100 + dailyAHTens * 10 + dailyAHOnes; // will be 9999 if MX60
 
 		// ==== Aux Mode stuff ====
-		final String auxModeName = Modes.getActiveMode(AuxMode.class, auxMode, AuxMode.UNKNOWN).getModeName();
+		final String auxModeName = Modes.getActiveMode(AuxMode.class, auxMode).getModeName();
 
 		// ==== Error Mode stuff ====
 		final String errors = Modes.toString(MXErrorMode.class, errorMode);
 
 		// ==== Charge Mode stuff ====
-		final String chargerModeName = Modes.getActiveMode(ChargerMode.class, chargerMode, ChargerMode.UNKNOWN).getModeName();
+		final String chargerModeName = Modes.getActiveMode(ChargerMode.class, chargerMode).getModeName();
 		return new ImmutableMXStatusPacket(address, chargerCurrent, pvCurrent, inputVoltage, dailyKWH,
 				dailyKWHString, ampChargerCurrent, ampChargerCurrentString, auxMode, errorMode, chargerMode,
 				batteryVoltage, batteryVoltageString, dailyAH, chksum, auxModeName, errors, chargerModeName);
@@ -169,9 +169,9 @@ public final class MXStatusPackets {
 		final String storedErrors = getOrNull(object, "error", JsonElement::getAsString);
 		final String storedChargerModeName = getOrNull(object, "chargerModeName", JsonElement::getAsString);
 
-		final String auxModeName = storedAuxModeName != null ? storedAuxModeName : Modes.getActiveMode(AuxMode.class, auxMode, AuxMode.UNKNOWN).getModeName();
+		final String auxModeName = storedAuxModeName != null ? storedAuxModeName : Modes.getActiveMode(AuxMode.class, auxMode).getModeName();
 		final String errors = storedErrors != null ? storedErrors : Modes.toString(MXErrorMode.class, errorMode);
-		final String chargerModeName = storedChargerModeName != null ? storedChargerModeName : Modes.getActiveMode(ChargerMode.class, chargerMode, ChargerMode.UNKNOWN).getModeName();
+		final String chargerModeName = storedChargerModeName != null ? storedChargerModeName : Modes.getActiveMode(ChargerMode.class, chargerMode).getModeName();
 
 
 		return new ImmutableMXStatusPacket(address, chargerCurrent, pvCurrent, inputVoltage, dailyKWH, dailyKWHString,

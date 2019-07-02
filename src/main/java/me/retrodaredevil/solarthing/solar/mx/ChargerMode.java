@@ -6,8 +6,8 @@ import me.retrodaredevil.solarthing.packets.CodeMode;
 /**
  * The charger mode of the MX
  */
+@SuppressWarnings("unused")
 public enum ChargerMode implements CodeMode {
-	UNKNOWN(-1, "unknown"),
 	SILENT(0, "Silent"),
 	FLOAT(1, "Float"),
 	BULK(2, "Bulk"),
