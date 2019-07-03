@@ -55,6 +55,7 @@ public class SolarReader implements Runnable{
 	 */
 	@Override
 	public void run() {
+//		System.out.println("updating");
 		// This implementation isn't perfect - we cannot detect EOF
 		// stackoverflow: https://stackoverflow.com/q/53291868/5434860
 		int len = 0;
@@ -65,6 +66,7 @@ public class SolarReader implements Runnable{
 				String s = new String(buffer, 0, len);
 				System.out.println("got: '" + s.replaceAll("\n", "\\\\n").replaceAll("\r", "\\\\r") + "'. len: " + len + " at: " + System.currentTimeMillis());
 				Collection<? extends Packet> newPackets = creator.add(s.toCharArray());
+//				System.out.println("finished adding packets to the creator");
 				
 				long now = System.currentTimeMillis();
 				boolean firstData = lastFirstReceivedData + samePacketTime < now;
@@ -74,7 +76,9 @@ public class SolarReader implements Runnable{
 				}
 				onDataReceive.onDataReceive(firstData, instant);
 				packetList.addAll(newPackets);
+//				System.out.println("Added " + newPackets.size() + " new packets!");
 			}
+//			System.out.println("finished receiving data");
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.err.println("We got an IOException which doesn't happen often. We are going to try again so hopefully this works.");
