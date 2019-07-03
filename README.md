@@ -3,7 +3,7 @@ A program that listens for packets from a OutBack POWER Mate device and uploads 
 ## What This is used for
 This program is run on a raspberry pi at Wild Mountain Farms (www.wildmountainfarms.com).
 That program uploads packets to a CouchDB database on a separate computer which hosts the web portion
-found here: https://github.com/retrodaredevil/solarthing-web . With each of these combined we are able
+found here: https://github.com/wildmountainfarms/solarthing-web . With each of these combined we are able
 to see the current battery voltage and other information along with a graph to see past data.
 
 Although this is named solarthing, it is expanding to be more than just solar data collection. The latest feature is
@@ -17,11 +17,11 @@ forever stick! Long live <strong>solarthing</strong>!
 Primarily, we are viewing the data in the Android app. Originally a web app was created. The Android app is superior 
 and more convenient.
 
-SolarThing Android: [Github](https://github.com/retrodaredevil/solarthing-android)
+SolarThing Android: [Github](https://github.com/wildmountainfarms/solarthing-android)
 |
 [Google Play](https://play.google.com/store/apps/details?id=me.retrodaredevil.solarthing.android)
 
-[SolarThing Web](https://github.com/retrodaredevil/solarthing-web)
+[SolarThing Web](https://github.com/wildmountainfarms/solarthing-web)
 ### Individual documentation
 [Solar readme](solar/README.md)
 
@@ -29,7 +29,7 @@ SolarThing Android: [Github](https://github.com/retrodaredevil/solarthing-androi
 
 ### Developer Use
 You can import the most current release by using www.jitpack.io. This project is set up to be able to parse JSON
-and turn it into a packet. https://github.com/retrodaredevil/solarthing-android is currently using this.
+and turn it into a packet. https://github.com/wildmountainfarms/solarthing-android is currently using this.
 
 ### Compiling
 Run the command
