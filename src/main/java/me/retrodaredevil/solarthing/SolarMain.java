@@ -3,9 +3,9 @@ package me.retrodaredevil.solarthing;
 import gnu.io.*;
 import me.retrodaredevil.solarthing.outhouse.OuthousePacketCreator;
 import me.retrodaredevil.solarthing.packets.PacketCreator;
-import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
 import me.retrodaredevil.solarthing.packets.collection.HourIntervalPacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
+import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandlerMultiplexer;
 import me.retrodaredevil.solarthing.packets.handling.ThrottleFactorPacketHandler;
 import me.retrodaredevil.solarthing.solar.outback.MateCommand;
@@ -16,7 +16,6 @@ import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
@@ -47,7 +46,7 @@ public class SolarMain {
 			in,
 			new MatePacketCreator49(args.getIgnoreCheckSum()),
 			new PacketHandlerMultiplexer(
-				new MateCommandHandler(new LinkedList<>(), output),
+				new MateCommandHandler(InputStreamCommandProvider.createFromList(new FileInputStream(new File("command_input.txt")), Arrays.asList(MateCommand.AUX_OFF, MateCommand.AUX_ON)), output),
 				new ThrottleFactorPacketHandler(getPacketSaver(args, "solarthing"), args.getThrottleFactor())
 			),
 			idGenerator,
