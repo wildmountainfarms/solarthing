@@ -1,6 +1,9 @@
 package me.retrodaredevil.solarthing;
 
-import gnu.io.*;
+import com.fazecast.jSerialComm.SerialPort;
+import me.retrodaredevil.solarthing.io.IOBundle;
+import me.retrodaredevil.solarthing.io.JSerialIOBundle;
+import me.retrodaredevil.solarthing.io.SerialPortException;
 import me.retrodaredevil.solarthing.outhouse.OuthousePacketCreator;
 import me.retrodaredevil.solarthing.packets.PacketCreator;
 import me.retrodaredevil.solarthing.packets.collection.HourIntervalPacketCollectionIdGenerator;
@@ -19,35 +22,43 @@ import java.util.List;
 import java.util.Random;
 
 public class SolarMain {
-	private int connectSolar(ProgramArgs args, PacketCollectionIdGenerator idGenerator) throws Exception{
+	private int connectSolar(ProgramArgs args, PacketCollectionIdGenerator idGenerator) {
 		final InputStream in;
 		final OutputStream output;
 		if(args.isUnitTest()){
 			in = System.in;
 			output = System.out;
 		} else {
-			final SerialPort port;
+			final IOBundle port;
 			try {
-				port = getSerialPort(args.getPortName());
-			} catch (PortInUseException e) {
+				port = JSerialIOBundle.createPort(args.getPortName());
+			} catch (SerialPortException e) {
 				e.printStackTrace();
-				System.err.println("That port is in use!");
-				return 1;
-			} catch (NoSuchPortException e) {
-				e.printStackTrace();
-				System.err.println("No such port: '" + args.getPortName() + "'");
 				return 1;
 			}
 			in = port.getInputStream();
 			output = port.getOutputStream();
 		}
+		InputStream fileInputStream = null;
+		try {
+			fileInputStream = new FileInputStream(new File("command_input.txt"));
+		} catch (FileNotFoundException e) {
+			System.out.println("no command input file!");
+		}
+		final OnDataReceive onDataReceive;
+		if(fileInputStream == null){
+			onDataReceive = OnDataReceive.Defaults.NOTHING;
+		} else {
+			onDataReceive = new MateCommandSender(InputStreamCommandProvider.createFromList(fileInputStream, Arrays.asList(MateCommand.AUX_OFF, MateCommand.AUX_ON)), output);
+		}
+		
 		connect(
 			in,
 			new MatePacketCreator49(args.getIgnoreCheckSum()),
 			new ThrottleFactorPacketHandler(getPacketSaver(args, "solarthing"), args.getThrottleFactor(), args.isOnlyInstant()),
 			idGenerator,
 			250,
-			new MateCommandSender(InputStreamCommandProvider.createFromList(new FileInputStream(new File("command_input.txt")), Arrays.asList(MateCommand.AUX_OFF, MateCommand.AUX_ON)), output)
+			onDataReceive
 		);
 		return 0;
 	}
@@ -83,22 +94,6 @@ public class SolarMain {
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 		}
-	}
-	private SerialPort getSerialPort(String portName) throws UnsupportedCommOperationException, PortInUseException, NoSuchPortException {
-
-		final CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
-		final CommPort commPort = portIdentifier.open(this.getClass().getName(), 2000);
-
-		if (!(commPort instanceof SerialPort)) {
-			throw new IllegalStateException("The port is not a serial port! It's a '" + commPort.getClass().getName() + "'");
-		}
-		final SerialPort serialPort = (SerialPort) commPort;
-		serialPort.setSerialPortParams(19200, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
-
-		serialPort.setDTR(true);
-		serialPort.setRTS(false);
-
-		return serialPort;
 	}
 
 	public static void main(String[] args) {
