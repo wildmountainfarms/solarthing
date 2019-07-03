@@ -1,5 +1,6 @@
 # Custom stuff:
 *.attach_pid*
+data.json
 
 # Compiled class file
 *.class

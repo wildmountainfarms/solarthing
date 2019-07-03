@@ -12,18 +12,21 @@ import java.util.Queue;
 import static java.util.Objects.requireNonNull;
 
 public class MateCommandHandler implements PacketHandler {
-	private final Queue<MateCommand> queue;
+	private final CommandProvider commandProvider;
 	private final OutputStream outputStream;
 	
-	public MateCommandHandler(Queue<MateCommand> queue, OutputStream outputStream) {
-		this.queue = requireNonNull(queue);
+	public MateCommandHandler(CommandProvider commandProvider, OutputStream outputStream) {
+		this.commandProvider = commandProvider;
 		this.outputStream = requireNonNull(outputStream);
+	}
+	public MateCommandHandler(Queue<MateCommand> queue, OutputStream outputStream) {
+		this(queue::poll, outputStream);
 	}
 	
 	@Override
 	public void handle(PacketCollection packetCollection, boolean wasInstant) throws PacketHandleException {
 		if(wasInstant){
-			MateCommand command = queue.poll();
+			MateCommand command = commandProvider.pollCommand();
 			if(command != null){
 				try {
 					command.send(outputStream);
@@ -32,5 +35,8 @@ public class MateCommandHandler implements PacketHandler {
 				}
 			}
 		}
+	}
+	public interface CommandProvider {
+		MateCommand pollCommand();
 	}
 }
