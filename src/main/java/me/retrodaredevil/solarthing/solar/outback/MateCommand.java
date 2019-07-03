@@ -56,6 +56,11 @@ public enum MateCommand {
 		return name;
 	}
 	
+	@Override
+	public String toString() {
+		return getCommandName();
+	}
+	
 	public void send(OutputStream outputStream) throws IOException {
 		outputStream.write(byteArray);
 		outputStream.flush();

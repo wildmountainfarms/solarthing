@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
-public class InputStreamCommandProvider implements MateCommandHandler.CommandProvider {
+public class InputStreamCommandProvider implements MateCommandSender.CommandProvider {
 	private final InputStream inputStream;
 	private final Map<String, MateCommand> commandMap;
 	

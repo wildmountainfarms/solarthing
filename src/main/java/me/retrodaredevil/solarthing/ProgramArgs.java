@@ -38,6 +38,8 @@ public class ProgramArgs {
 	private boolean unitTest = false;
 	@Parameter(names = {"--throttle", "--throttle-factor", "--tf"}, description = "Every nth packet, data should be saved.")
 	private int throttleFactor = 1;
+	@Parameter(names = {"--only-instant", "--reliable", "--instant", "--oi"}, description = "Only saves packets that are 'instant'")
+	private boolean onlyInstant = false;
 	
 	@Parameter(names = {"--unique"})
 	private Integer uniqueIdsInOneHour = null;
@@ -87,6 +89,9 @@ public class ProgramArgs {
 	}
 	public int getThrottleFactor(){
 		return throttleFactor;
+	}
+	public boolean isOnlyInstant(){
+		return onlyInstant;
 	}
 	public Integer getUniqueIdsInOneHour() {
 		return uniqueIdsInOneHour;

@@ -1,35 +1,30 @@
 package me.retrodaredevil.solarthing;
 
-import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
-import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
-import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
 import me.retrodaredevil.solarthing.solar.outback.MateCommand;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Queue;
 
 import static java.util.Objects.requireNonNull;
 
-public class MateCommandHandler implements PacketHandler {
+public class MateCommandSender implements OnDataReceive {
 	private final CommandProvider commandProvider;
 	private final OutputStream outputStream;
 	
-	public MateCommandHandler(CommandProvider commandProvider, OutputStream outputStream) {
+	public MateCommandSender(CommandProvider commandProvider, OutputStream outputStream) {
 		this.commandProvider = requireNonNull(commandProvider);
 		this.outputStream = requireNonNull(outputStream);
 	}
 	
-	@Override
-	public void handle(PacketCollection packetCollection, boolean wasInstant) throws PacketHandleException {
-		if(wasInstant){
+	public void onDataReceive(boolean firstData, boolean wasInstant) {
+		if(firstData && wasInstant){
 			MateCommand command = commandProvider.pollCommand();
 			if(command != null){
 				try {
 					command.send(outputStream);
-					System.out.println("\nSent command: " + command);
+					System.out.println("\nSent command: " + command + " at " + System.currentTimeMillis());
 				} catch (IOException e) {
-					throw new PacketHandleException("Unable to send command: " + command, e);
+					throw new RuntimeException("Unable to send command: " + command, e);
 				}
 			}
 		}

@@ -16,6 +16,8 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 
+import static java.util.Objects.requireNonNull;
+
 public class SolarReader implements Runnable{
 	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
 	
@@ -24,6 +26,7 @@ public class SolarReader implements Runnable{
 	private final PacketHandler packetHandler;
 	private final PacketCollectionIdGenerator idGenerator;
 	private final long samePacketTime;
+	private final OnDataReceive onDataReceive;
 	
 	private final List<Packet> packetList = new ArrayList<>(); // a list that piles up SolarPackets and handles when needed // may be cleared
 	private long lastFirstReceivedData = Long.MIN_VALUE; // the last time a packet was added to packetList
@@ -36,13 +39,15 @@ public class SolarReader implements Runnable{
 	 * @param packetHandler The packet handler that handles a {@link me.retrodaredevil.solarthing.packets.collection.PacketCollection} {@code samePacketTime} millis after the last packet has been created
 	 * @param idGenerator The {@link PacketCollectionIdGenerator} used to get the id to save packets with
 	 * @param samePacketTime The maximum amount of time allowed between packets that will be grouped together in a {@link me.retrodaredevil.solarthing.packets.collection.PacketCollection}
+	 * @param onDataReceive This is called whenever data is received from {@code in}
 	 */
-	public SolarReader(InputStream in, PacketCreator packetCreator, PacketHandler packetHandler, PacketCollectionIdGenerator idGenerator, long samePacketTime) {
-		this.in = in;
-		this.creator = packetCreator;
-		this.packetHandler = packetHandler;
-		this.idGenerator = idGenerator;
+	public SolarReader(InputStream in, PacketCreator packetCreator, PacketHandler packetHandler, PacketCollectionIdGenerator idGenerator, long samePacketTime, OnDataReceive onDataReceive) {
+		this.in = requireNonNull(in);
+		this.creator = requireNonNull(packetCreator);
+		this.packetHandler = requireNonNull(packetHandler);
+		this.idGenerator = requireNonNull(idGenerator);
 		this.samePacketTime = samePacketTime;
+		this.onDataReceive = requireNonNull(onDataReceive);
 	}
 	
 	/**
@@ -58,13 +63,16 @@ public class SolarReader implements Runnable{
 			// ======= read bytes, append to packetList =======
 			while (in.available() > 0 && (len = in.read(buffer)) > -1) {
 				String s = new String(buffer, 0, len);
-//					System.out.println("got: '" + s.replaceAll("\n", "\\\\n").replaceAll("\r", "\\\\r") + "'. len: " + len);
+				System.out.println("got: '" + s.replaceAll("\n", "\\\\n").replaceAll("\r", "\\\\r") + "'. len: " + len + " at: " + System.currentTimeMillis());
 				Collection<? extends Packet> newPackets = creator.add(s.toCharArray());
 				
 				long now = System.currentTimeMillis();
-				if(lastFirstReceivedData + samePacketTime < now) {
+				boolean firstData = lastFirstReceivedData + samePacketTime < now;
+				if(firstData) {
 					lastFirstReceivedData = now; // set this to the first time we get bytes
+					System.out.println("received first data at: " + now);
 				}
+				onDataReceive.onDataReceive(firstData, instant);
 				packetList.addAll(newPackets);
 			}
 		} catch (IOException e) {
