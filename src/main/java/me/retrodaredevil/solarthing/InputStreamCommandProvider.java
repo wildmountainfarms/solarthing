@@ -47,10 +47,10 @@ public class InputStreamCommandProvider implements MateCommandHandler.CommandPro
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		String line = lines.poll();
-		if(line != null) {
-			return commandMap.get(line);
+		MateCommand command = null;
+		while(command == null && !lines.isEmpty()) {
+			command = commandMap.get(lines.poll());
 		}
-		return null;
+		return command;
 	}
 }
