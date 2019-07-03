@@ -6,7 +6,6 @@ import me.retrodaredevil.solarthing.packets.PacketCreator;
 import me.retrodaredevil.solarthing.packets.collection.HourIntervalPacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
-import me.retrodaredevil.solarthing.packets.handling.PacketHandlerMultiplexer;
 import me.retrodaredevil.solarthing.packets.handling.ThrottleFactorPacketHandler;
 import me.retrodaredevil.solarthing.solar.outback.MateCommand;
 import me.retrodaredevil.solarthing.solar.outback.MatePacketCreator49;
@@ -45,12 +44,10 @@ public class SolarMain {
 		connect(
 			in,
 			new MatePacketCreator49(args.getIgnoreCheckSum()),
-			new PacketHandlerMultiplexer(
-				new MateCommandHandler(InputStreamCommandProvider.createFromList(new FileInputStream(new File("command_input.txt")), Arrays.asList(MateCommand.AUX_OFF, MateCommand.AUX_ON)), output),
-				new ThrottleFactorPacketHandler(getPacketSaver(args, "solarthing"), args.getThrottleFactor())
-			),
+			new ThrottleFactorPacketHandler(getPacketSaver(args, "solarthing"), args.getThrottleFactor(), args.isOnlyInstant()),
 			idGenerator,
-			100
+			250,
+			new MateCommandSender(InputStreamCommandProvider.createFromList(new FileInputStream(new File("command_input.txt")), Arrays.asList(MateCommand.AUX_OFF, MateCommand.AUX_ON)), output)
 		);
 		return 0;
 	}
@@ -58,9 +55,10 @@ public class SolarMain {
 		connect(
 			System.in,
 			new OuthousePacketCreator(),
-			new ThrottleFactorPacketHandler(getPacketSaver(args, "outhouse"), args.getThrottleFactor()),
+			new ThrottleFactorPacketHandler(getPacketSaver(args, "outhouse"), args.getThrottleFactor(), args.isOnlyInstant()),
 			idGenerator,
-			0
+			0,
+			OnDataReceive.Defaults.NOTHING
 		);
 		return 0;
 	}
@@ -75,8 +73,8 @@ public class SolarMain {
 		return new CouchDbPacketSaver(args.createProperties(), databaseName);
 	}
 
-	private void connect(InputStream in, PacketCreator packetCreator, PacketHandler packetHandler, PacketCollectionIdGenerator idGenerator, long samePacketTime) {
-		Runnable run = new SolarReader(in, packetCreator, packetHandler, idGenerator, samePacketTime);
+	private void connect(InputStream in, PacketCreator packetCreator, PacketHandler packetHandler, PacketCollectionIdGenerator idGenerator, long samePacketTime, OnDataReceive onDataReceive) {
+		Runnable run = new SolarReader(in, packetCreator, packetHandler, idGenerator, samePacketTime, onDataReceive);
 		try {
 			while (!Thread.currentThread().isInterrupted()) {
 				run.run();
