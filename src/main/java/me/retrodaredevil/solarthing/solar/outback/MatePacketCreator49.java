@@ -1,7 +1,8 @@
 package me.retrodaredevil.solarthing.solar.outback;
 
 import me.retrodaredevil.solarthing.packets.Packet;
-import me.retrodaredevil.solarthing.packets.StartEndPacketCreator;
+import me.retrodaredevil.solarthing.packets.creation.PacketCreationException;
+import me.retrodaredevil.solarthing.packets.creation.StartEndPacketCreator;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPackets;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPackets;
 import me.retrodaredevil.solarthing.util.CheckSumException;
@@ -22,7 +23,7 @@ public class MatePacketCreator49 extends StartEndPacketCreator {
 	}
 
 	@Override
-	public Collection<Packet> create(char[] bytes) throws PacketCreationException{
+	public Collection<Packet> create(char[] bytes) throws PacketCreationException {
 		final int value = (int) bytes[1]; // ascii value
 		final Packet r;
 		if(value >= 48 && value <= 58){ // fx status
@@ -38,9 +39,9 @@ public class MatePacketCreator49 extends StartEndPacketCreator {
 				throw new PacketCreationException(e);
 			}
 		} else if(value >= 97 && value <= 106){
-			throw new UnsupportedOperationException("Not set up to use FLEXnet DC Status Packets. value: " + value);
+			throw new PacketCreationException("Not set up to use FLEXnet DC Status Packets. value: " + value);
 		} else {
-			throw new UnsupportedOperationException("Ascii value: " + value + " not supported. (from: '" + new String(bytes) + "')");
+			throw new PacketCreationException("Ascii value: " + value + " not supported. (from: '" + new String(bytes) + "')");
 		}
 		System.out.println("=====");
 		System.out.println(JsonFile.gson.toJson(r));

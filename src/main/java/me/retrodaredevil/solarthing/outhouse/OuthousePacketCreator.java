@@ -1,8 +1,9 @@
 package me.retrodaredevil.solarthing.outhouse;
 
 import me.retrodaredevil.solarthing.packets.Packet;
-import me.retrodaredevil.solarthing.packets.PacketCreator;
-import me.retrodaredevil.solarthing.packets.StartEndPacketCreator;
+import me.retrodaredevil.solarthing.packets.creation.PacketCreationException;
+import me.retrodaredevil.solarthing.packets.creation.PacketCreator;
+import me.retrodaredevil.solarthing.packets.creation.StartEndPacketCreator;
 import me.retrodaredevil.util.json.JsonFile;
 
 import java.util.Arrays;
@@ -43,7 +44,7 @@ public class OuthousePacketCreator extends StartEndPacketCreator {
 		System.out.println("=====");
 		return Arrays.asList(occupancy, weather);
 	}
-	public static void main(String[] args){
+	public static void main(String[] args) throws Exception{
 		PacketCreator packetCreator = new OuthousePacketCreator();
 		System.out.println(packetCreator.add("\n22.9 24 43\r".toCharArray()));
 	}

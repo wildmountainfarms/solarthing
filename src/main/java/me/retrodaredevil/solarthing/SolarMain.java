@@ -1,11 +1,10 @@
 package me.retrodaredevil.solarthing;
 
-import com.fazecast.jSerialComm.SerialPort;
 import me.retrodaredevil.solarthing.io.IOBundle;
 import me.retrodaredevil.solarthing.io.JSerialIOBundle;
 import me.retrodaredevil.solarthing.io.SerialPortException;
 import me.retrodaredevil.solarthing.outhouse.OuthousePacketCreator;
-import me.retrodaredevil.solarthing.packets.PacketCreator;
+import me.retrodaredevil.solarthing.packets.creation.PacketCreator;
 import me.retrodaredevil.solarthing.packets.collection.HourIntervalPacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
@@ -49,7 +48,7 @@ public class SolarMain {
 		if(fileInputStream == null){
 			onDataReceive = OnDataReceive.Defaults.NOTHING;
 		} else {
-			onDataReceive = new MateCommandSender(InputStreamCommandProvider.createFromList(fileInputStream, Arrays.asList(MateCommand.AUX_OFF, MateCommand.AUX_ON)), output);
+			onDataReceive = new MateCommandSender(InputStreamCommandProvider.createFromList(fileInputStream, Arrays.asList(MateCommand.AUX_OFF, MateCommand.AUX_ON, MateCommand.USE, MateCommand.DROP)), output);
 		}
 		
 		connect(
