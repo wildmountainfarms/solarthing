@@ -1,4 +1,6 @@
-package me.retrodaredevil.solarthing.packets;
+package me.retrodaredevil.solarthing.packets.creation;
+
+import me.retrodaredevil.solarthing.packets.Packet;
 
 import java.util.Collection;
 
@@ -13,6 +15,6 @@ public interface PacketCreator {
 	 * @param bytes the characters to read from
 	 * @return An empty collection, or if it can be read, a collection of SolarPackets
 	 */
-	Collection<? extends Packet> add(char[] bytes);
+	Collection<? extends Packet> add(char[] bytes) throws PacketCreationException;
 	
 }

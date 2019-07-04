@@ -23,7 +23,11 @@ http://www.outbackpower.com/downloads/documents/system_management/mate/mate_seri
 Older documentation:
 https://www.wmrc.edu/projects/BARenergy/manuals/outback-manuals/Mate_Serial_Comm_R302.pdf
 
+Mate Manual:
+https://www.wmrc.edu/projects/BARenergy/manuals/outback-manuals/Mate-rev-230.pdf
+
 
 ## Renogy References:
 https://www.rototron.info/raspberry-pi-solar-serial-rest-api-tutorial/
+
 https://www.overstock.com/Electronics/Renogy-RNG-CTRL-RVR20-BT-Solar-Charge-Controller-MPPT-20A-with-BT/20973007/product.html

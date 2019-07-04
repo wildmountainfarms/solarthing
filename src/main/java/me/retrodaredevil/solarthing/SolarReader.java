@@ -1,7 +1,8 @@
 package me.retrodaredevil.solarthing;
 
 import me.retrodaredevil.solarthing.packets.Packet;
-import me.retrodaredevil.solarthing.packets.PacketCreator;
+import me.retrodaredevil.solarthing.packets.creation.PacketCreationException;
+import me.retrodaredevil.solarthing.packets.creation.PacketCreator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollections;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
@@ -64,8 +65,19 @@ public class SolarReader implements Runnable{
 			// ======= read bytes, append to packetList =======
 			while (in.available() > 0 && (len = in.read(buffer)) > -1) {
 				String s = new String(buffer, 0, len);
-				System.out.println("got: '" + s.replaceAll("\n", "\\\\n").replaceAll("\r", "\\\\r") + "'. len: " + len + " at: " + System.currentTimeMillis());
-				Collection<? extends Packet> newPackets = creator.add(s.toCharArray());
+				String debugString = s.replaceAll("\n", "\\\\n").replaceAll("\r", "\\\\r");
+				System.out.println("got: '" + debugString + "'. len: " + len + " at: " + System.currentTimeMillis());
+				final Collection<? extends Packet> newPackets;
+				try {
+					newPackets = creator.add(s.toCharArray());
+				} catch (PacketCreationException e) {
+					e.printStackTrace();
+					System.out.println("That was a garbled packet!");
+					System.err.println("Got a garbled packet! got: '" + debugString + "'");
+					packetList.clear();
+					instant = false; // because we check instant to see if data is reliable, set it to false because it's not reliable right now
+					break;
+				}
 //				System.out.println("finished adding packets to the creator");
 				
 				long now = System.currentTimeMillis();

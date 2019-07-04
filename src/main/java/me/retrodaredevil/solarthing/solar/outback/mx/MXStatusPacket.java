@@ -5,7 +5,7 @@ import me.retrodaredevil.solarthing.solar.common.BatteryVoltagePacket;
 
 /**
  * Represents an MX Status Packet from an Outback Mate
- *
+ * <p>
  * In previous version, it was just "MX" instead of "MXFM" so MX is the same as MXFM in the documentation. FM stands for FLEXmax.
  */
 @SuppressWarnings("unused")

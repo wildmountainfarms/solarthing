@@ -4,10 +4,10 @@ import me.retrodaredevil.solarthing.packets.DocumentedPacketType;
 
 /**
  * Represents the packet type.
- *
+ * <p>
  * NOTE: In the future, do NOT override the {@link #toString()} method. Doing so may break code
  * from other projects
- *
+ * <p>
  * NOTE: This enum may have more values added to it in the future
  */
 public enum SolarPacketType implements DocumentedPacketType {

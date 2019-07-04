@@ -1,11 +1,14 @@
-package me.retrodaredevil.solarthing.packets;
+package me.retrodaredevil.solarthing.packets.creation;
+
+import me.retrodaredevil.solarthing.packets.Packet;
+import me.retrodaredevil.solarthing.packets.creation.PacketCreator;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class StartEndPacketCreator implements PacketCreator{
+public abstract class StartEndPacketCreator implements PacketCreator {
 	private final char start, end;
 	private final int assertSizeAtLeast;
 	private final char[] bytes;
@@ -27,7 +30,7 @@ public abstract class StartEndPacketCreator implements PacketCreator{
 	}
 	
 	@Override
-	public Collection<Packet> add(char[] chars){
+	public Collection<Packet> add(char[] chars) throws PacketCreationException{
 		if(chars.length == 0){
 			return Collections.emptySet();
 		}
@@ -38,13 +41,21 @@ public abstract class StartEndPacketCreator implements PacketCreator{
 		List<Packet> r = null;
 		for(char c : chars){
 			if(amount >= bytes.length) {
-				throw new AssertionError("The packet will be longer than the maximum size!");
+				try {
+					throw new PacketTooBigException("The packet will be longer than the maximum size!");
+				} finally {
+					reset();
+				}
 			}
 			bytes[amount] = c;
 			amount++;
 			if(c == end){
 				if(amount < assertSizeAtLeast){
-					throw new AssertionError("amount is less than the minimum required size! amount: " + amount + " assertSizeAtLeast: " + assertSizeAtLeast);
+					try {
+						throw new PacketTooSmallException("amount is less than the minimum required size! amount: " + amount + " assertSizeAtLeast: " + assertSizeAtLeast);
+					} finally {
+						reset();
+					}
 				}
 				try{
 					final Collection<Packet> packetsToAdd = create(new String(bytes, 0, amount).toCharArray()); // resets bytes array and amount
@@ -83,19 +94,6 @@ public abstract class StartEndPacketCreator implements PacketCreator{
 		amount = 0;
 		for(int i = 0; i < bytes.length; i++){
 			bytes[i] = 0; // reset bytes array
-		}
-	}
-	public static class PacketCreationException extends Exception {
-		@SuppressWarnings("unused")
-		public PacketCreationException(){}
-		public PacketCreationException(Throwable cause){
-			super(cause);
-		}
-		public PacketCreationException(String message, Throwable cause){
-			super(message, cause);
-		}
-		public PacketCreationException(String message){
-			super(message);
 		}
 	}
 }
