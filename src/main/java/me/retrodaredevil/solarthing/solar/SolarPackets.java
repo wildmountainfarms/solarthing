@@ -1,17 +1,8 @@
 package me.retrodaredevil.solarthing.solar;
 
 import com.google.gson.JsonObject;
-
-import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
-import me.retrodaredevil.solarthing.packets.collection.PacketCollections;
-import org.lightcouch.CouchDbClient;
-import org.lightcouch.CouchDbProperties;
-
-import java.util.GregorianCalendar;
-
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPackets;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPackets;
-import me.retrodaredevil.util.json.JsonFile;
 
 public final class SolarPackets {
 	private SolarPackets(){ throw new UnsupportedOperationException(); }
@@ -35,11 +26,12 @@ public final class SolarPackets {
 			case MXFM_STATUS:
 				return MXStatusPackets.createFromJson(jsonObject);
 			case FLEXNET_DC_STATUS:
-				throw new UnsupportedOperationException("FLEXNet Status Packets aren't supported yet.");
+				throw new UnsupportedOperationException("FLEXNet DC Status Packets aren't supported yet.");
 			default:
 				throw new UnsupportedOperationException();
 		}
 	}
+	/*
 	public static void main(String[] args){
 		CouchDbClient client = new CouchDbClient(new CouchDbProperties("solarthing", false, "http", "localhost", 5984, "admin", "relax"));
 		for(JsonObject object : client.view("packets/millis").startKey(0).query(JsonObject.class)){
@@ -50,4 +42,5 @@ public final class SolarPackets {
 			System.out.println(JsonFile.gson.toJson(packetCollection));
 		}
 	}
+	 */
 }

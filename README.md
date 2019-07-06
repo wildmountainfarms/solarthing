@@ -8,7 +8,7 @@ to see the current battery voltage and other information along with a graph to s
 
 Although this is named solarthing, it is expanding to be more than just solar data collection. The latest feature is
 the outhouse status. This allows us to store and display three pieces of data: occupancy,
-temperature and humidity.
+temperature and humidity. Luckily if you want to just use the solar feature for Outback Mate data, you can do that!
 
 In the future, this project may extend to more IoT uses other than just solar and outhouse status. But the name will
 forever stick! Long live <strong>solarthing</strong>!
@@ -28,8 +28,17 @@ SolarThing Android: [Github](https://github.com/wildmountainfarms/solarthing-and
 [Outhouse Status readme](outhouse/README.md)
 
 ### Developer Use
-You can import the most current release by using www.jitpack.io. This project is set up to be able to parse JSON
-and turn it into a packet. https://github.com/wildmountainfarms/solarthing-android is currently using this.
+[![](https://jitpack.io/v/wildmountainfarms/solarthing.svg)](https://jitpack.io/#wildmountainfarms/solarthing)
+
+You can import the most current release by using www.jitpack.io. 
+* Useful for parsing JSON packets stored in CouchDB. [solarthing-android](https://github.com/wildmountainfarms/solarthing-android) uses this
+* You can parse Outback Mate packets directly
+
+### Customizing
+This project doesn't have too many options because it was primarily set up to store packets in CouchDB. If you want
+to store data in another database, you can create your own implementation of [PacketHandler](src/main/java/me/retrodaredevil/solarthing/packets/handling/PacketHandler.java)
+
+If your implementation is general enough, submit a pull request so others can use your implementation as well!
 
 ### Compiling
 Run the command
@@ -43,7 +52,16 @@ Move the jar to the root folder and name the jar `solarthing.jar`
 The CouchDB has two databases in it. "solarthing" and "outhouse". Each database has many packets stored in the
 "PacketCollection" format. Each packet in the database holds other packets that were saved at the same time. This makes
 it simple to link FX1 FX2 and MX3 packets to one single packet. By default the program links packets together by saving
-packets only when there haven't been any new packets for 250 millis seconds.
+packets when it's been 250 ms after the first data received from a packet. 
+
+Example:
+
+* We receive 10% of Packet 1 so we start the 250ms timer
+* We receive 90% of Packet 1 and 80% of Packet 2
+* We receive 20% of Packet 2 and 99% of Packet 3
+* 250ms is up so Packet 1 and 2 are saved together, Packet 3 will be saved next time
+
+Usually packets aren't cut off like this, but sometimes it happens
 
 You can see how to set up the views and design documents for each database [here](couchdb.md)
 

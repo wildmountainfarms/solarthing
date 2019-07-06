@@ -13,4 +13,7 @@ public interface PacketHandler {
 	 */
 	void handle(PacketCollection packetCollection, boolean wasInstant) throws PacketHandleException;
 
+	class Defaults {
+		public static final PacketHandler HANDLE_NOTHING = (packetCollection, wasInstant) -> {};
+	}
 }

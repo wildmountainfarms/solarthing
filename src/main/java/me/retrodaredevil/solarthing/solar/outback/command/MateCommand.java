@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing.solar.outback;
+package me.retrodaredevil.solarthing.solar.outback.command;
 
 import java.io.IOException;
 import java.io.OutputStream;
