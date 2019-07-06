@@ -1,6 +1,8 @@
 package me.retrodaredevil.solarthing.packets.security.crypto;
 
-public class CryptoException extends Exception {
+import java.security.GeneralSecurityException;
+
+public class CryptoException extends GeneralSecurityException {
 	public CryptoException() {
 	}
 	
@@ -16,7 +18,4 @@ public class CryptoException extends Exception {
 		super(cause);
 	}
 	
-	public CryptoException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-		super(message, cause, enableSuppression, writableStackTrace);
-	}
 }
