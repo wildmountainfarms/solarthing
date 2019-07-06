@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing;
+package me.retrodaredevil.solarthing.couchdb;
 
 import com.google.gson.JsonObject;
 import me.retrodaredevil.couchdb.CouchProperties;

@@ -6,7 +6,6 @@ import me.retrodaredevil.couchdb.CouchProperties;
 import me.retrodaredevil.couchdb.CouchPropertiesBuilder;
 import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
 import me.retrodaredevil.util.json.JsonFile;
-import org.lightcouch.CouchDbProperties;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,25 +1,23 @@
 package me.retrodaredevil.solarthing;
 
-import me.retrodaredevil.solarthing.solar.outback.MateCommand;
+import me.retrodaredevil.solarthing.solar.outback.command.CommandProvider;
+import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
+import me.retrodaredevil.util.InputStreamSplitter;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
-public class InputStreamCommandProvider implements MateCommandSender.CommandProvider {
-	private final InputStream inputStream;
+public class InputStreamCommandProvider implements CommandProvider {
+	private final InputStreamSplitter inputStreamSplitter;
 	private final Map<String, MateCommand> commandMap;
 	
-	private final byte[] buffer = new byte[1024];
-	private final Queue<String> lines = new LinkedList<>();
-	private String currentLine = "";
-	
 	public InputStreamCommandProvider(InputStream inputStream, Map<String, MateCommand> commandMap) {
-		this.inputStream = inputStream;
+		this.inputStreamSplitter = new InputStreamSplitter(inputStream);
 		this.commandMap = commandMap;
 	}
 	
-	public static InputStreamCommandProvider createFromList(InputStream inputStream, List<MateCommand> commands){
+	public static InputStreamCommandProvider createFrom(InputStream inputStream, Collection<MateCommand> commands){
 		Map<String, MateCommand> commandMap = new HashMap<>();
 		for(MateCommand command : commands){
 			commandMap.put(command.getCommandName(), command);
@@ -29,21 +27,9 @@ public class InputStreamCommandProvider implements MateCommandSender.CommandProv
 	
 	@Override
 	public MateCommand pollCommand() {
+		final Queue<String> lines;
 		try {
-			if(inputStream.available() > 0){
-				int len = inputStream.read(buffer);
-				String s = new String(buffer, 0, len);
-				final StringBuilder currentLine = new StringBuilder(this.currentLine);
-				for(char c : s.toCharArray()){
-					if(c == '\n'){
-						lines.add(currentLine.toString());
-						currentLine.setLength(0);
-					} else {
-						currentLine.append(c);
-					}
-				}
-				this.currentLine = currentLine.toString();
-			}
+			lines = inputStreamSplitter.getQueue();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

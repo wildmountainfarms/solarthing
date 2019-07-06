@@ -20,7 +20,7 @@ public abstract class StartEndPacketCreator implements PacketCreator {
 	 * @param end The char indicating a packet end
 	 * @param maxPacketSize The maximum number of characters in a packet including start and end characters
 	 * @param assertSizeAtLeast The minimum number of characters allowed in a packet including start and and characters.
-	 *                          If this is not satisfied, an AssertionError will be thrown
+	 *                          If this is not satisfied, a {@link PacketCreationException} will be thrown from {@link #add(char[])}
 	 */
 	public StartEndPacketCreator(char start, char end, int maxPacketSize, int assertSizeAtLeast) {
 		this.start = start;

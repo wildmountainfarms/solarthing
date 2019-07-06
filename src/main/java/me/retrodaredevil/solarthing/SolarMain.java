@@ -1,26 +1,38 @@
 package me.retrodaredevil.solarthing;
 
+import me.retrodaredevil.solarthing.couchdb.CouchDbPacketSaver;
 import me.retrodaredevil.solarthing.io.IOBundle;
 import me.retrodaredevil.solarthing.io.JSerialIOBundle;
 import me.retrodaredevil.solarthing.io.SerialPortException;
 import me.retrodaredevil.solarthing.outhouse.OuthousePacketCreator;
-import me.retrodaredevil.solarthing.packets.creation.PacketCreator;
 import me.retrodaredevil.solarthing.packets.collection.HourIntervalPacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
+import me.retrodaredevil.solarthing.packets.creation.PacketCreator;
+import me.retrodaredevil.solarthing.packets.handling.LatestPacketHandler;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
+import me.retrodaredevil.solarthing.packets.handling.PacketHandlerMultiplexer;
 import me.retrodaredevil.solarthing.packets.handling.ThrottleFactorPacketHandler;
-import me.retrodaredevil.solarthing.solar.outback.MateCommand;
 import me.retrodaredevil.solarthing.solar.outback.MatePacketCreator49;
+import me.retrodaredevil.solarthing.solar.outback.command.CommandProvider;
+import me.retrodaredevil.solarthing.solar.outback.command.CommandProviderMultiplexer;
+import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
+import me.retrodaredevil.solarthing.solar.outback.command.sequence.CommandSequence;
+import me.retrodaredevil.solarthing.solar.outback.command.sequence.CommandSequenceCommandProvider;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class SolarMain {
+	/*
+	TODO This solar command part of this file is not general at all. The command stuff was made for my specific use case and because of that, it would
+	be hard for someone else to find use of this program without customizing it to their own needs.
+	
+	This is one thing we have to think about because while I want it to be easy for my own needs, I also want it to
+	be customizable for others as well
+	 */
 	private int connectSolar(ProgramArgs args, PacketCollectionIdGenerator idGenerator) {
 		final InputStream in;
 		final OutputStream output;
@@ -38,23 +50,44 @@ public class SolarMain {
 			in = port.getInputStream();
 			output = port.getOutputStream();
 		}
-		InputStream fileInputStream = null;
-		try {
-			fileInputStream = new FileInputStream(new File("command_input.txt"));
-		} catch (FileNotFoundException e) {
-			System.out.println("no command input file!");
+		LatestPacketHandler latestPacketHandler = new LatestPacketHandler(true);
+		List<CommandProvider> commandProviders = new ArrayList<>();
+		{
+			InputStream fileInputStream = null;
+			try {
+				fileInputStream = new FileInputStream(new File("command_input.txt"));
+			} catch (FileNotFoundException e) {
+				System.out.println("no command input file!");
+			}
+			if (fileInputStream != null) {
+				commandProviders.add(InputStreamCommandProvider.createFrom(fileInputStream, EnumSet.allOf(MateCommand.class)));
+			}
 		}
-		final OnDataReceive onDataReceive;
-		if(fileInputStream == null){
-			onDataReceive = OnDataReceive.Defaults.NOTHING;
-		} else {
-			onDataReceive = new MateCommandSender(InputStreamCommandProvider.createFromList(fileInputStream, Arrays.asList(MateCommand.AUX_OFF, MateCommand.AUX_ON, MateCommand.USE, MateCommand.DROP)), output);
+		{
+			InputStream fileInputStream = null;
+			try {
+				fileInputStream = new FileInputStream(new File("command_sequence_input.txt"));
+			} catch (FileNotFoundException e) {
+				System.out.println("no command sequence input file!");
+			}
+			if(fileInputStream != null) {
+				CommandSequence generatorShutOff = CommandSequences.createAuxGeneratorShutOff(latestPacketHandler::getLatestPacketCollection);
+				Map<String, CommandSequence> map = new HashMap<>();
+				map.put("GEN OFF", generatorShutOff);
+				commandProviders.add(new CommandSequenceCommandProvider(new InputStreamCommandSequenceProvider(fileInputStream, map)));
+			}
 		}
+		
+		Collection<MateCommand> allowedCommands = EnumSet.of(MateCommand.AUX_OFF, MateCommand.AUX_ON, MateCommand.USE, MateCommand.DROP);
+		OnDataReceive onDataReceive = new MateCommandSender(new CommandProviderMultiplexer(commandProviders), output, allowedCommands);
 		
 		connect(
 			in,
 			new MatePacketCreator49(args.getIgnoreCheckSum()),
-			new ThrottleFactorPacketHandler(getPacketSaver(args, "solarthing"), args.getThrottleFactor(), args.isOnlyInstant()),
+			new PacketHandlerMultiplexer(
+				latestPacketHandler,
+				new ThrottleFactorPacketHandler(getPacketSaver(args, "solarthing"), args.getThrottleFactor(), args.isOnlyInstant())
+			),
 			idGenerator,
 			250,
 			onDataReceive
