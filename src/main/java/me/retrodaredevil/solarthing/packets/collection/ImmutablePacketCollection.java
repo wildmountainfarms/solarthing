@@ -12,6 +12,8 @@ import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import static java.util.Objects.requireNonNull;
+
 class ImmutablePacketCollection implements PacketCollection {
 	private final List<Packet> packets;
 	/** An array that represents the date [year, day, month, hour, minute, second, millisecond] (local time)*/
@@ -45,6 +47,8 @@ class ImmutablePacketCollection implements PacketCollection {
 		this._id = idGenerator.generateId(cal);
 	}
 	ImmutablePacketCollection(JsonObject object, PacketCollections.JsonPacketGetter packetGetter){
+		requireNonNull(object);
+		requireNonNull(packetGetter);
 		final List<Packet> packets = new ArrayList<>();
 		for(JsonElement elementPacket : object.getAsJsonArray("packets")){
 			packets.add(packetGetter.createFromJson(elementPacket.getAsJsonObject()));
