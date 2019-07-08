@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.packets.security;
 
 import com.google.gson.JsonObject;
+import me.retrodaredevil.solarthing.packets.security.crypto.InvalidKeyException;
 
 public final class SecurityPackets {
 	public static SecurityPacket createFromJson(JsonObject jsonObject){
@@ -13,9 +14,19 @@ public final class SecurityPackets {
 		}
 		switch(packetType){
 			case INTEGRITY_PACKET:
-			
-			case AUTH_NEW_INTEGRITY_SENDER:
-				throw new UnsupportedOperationException("I haven't implemented this yet");
+				return new ImmutableIntegrityPacket(
+					jsonObject.getAsJsonPrimitive("sender").getAsString(),
+					jsonObject.getAsJsonPrimitive("encryptedData").getAsString()
+				);
+			case AUTH_NEW_SENDER:
+				try {
+					return new ImmutableAuthNewSenderPacket(
+						jsonObject.getAsJsonPrimitive("sender").getAsString(),
+						jsonObject.getAsJsonPrimitive("publicKey").getAsString()
+					);
+				} catch (InvalidKeyException e) {
+					throw new RuntimeException(e);
+				}
 			default:
 				throw new UnsupportedOperationException();
 		}

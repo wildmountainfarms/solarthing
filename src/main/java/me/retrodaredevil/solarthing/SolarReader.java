@@ -1,26 +1,22 @@
 package me.retrodaredevil.solarthing;
 
 import me.retrodaredevil.solarthing.packets.Packet;
-import me.retrodaredevil.solarthing.packets.creation.PacketCreationException;
-import me.retrodaredevil.solarthing.packets.creation.PacketCreator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollections;
+import me.retrodaredevil.solarthing.packets.creation.PacketCreationException;
+import me.retrodaredevil.solarthing.packets.creation.PacketCreator;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
 public class SolarReader implements Runnable{
-	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
 	
 	private final InputStream in;
 	private final PacketCreator creator;
@@ -112,11 +108,7 @@ public class SolarReader implements Runnable{
 					System.out.println("handling above packet(s). packetList.size(): " + packetList.size() + " instant: " + wasInstant);
 					packetHandler.handle(PacketCollections.createFromPackets(packetList, idGenerator), wasInstant);
 				} catch(PacketHandleException ex){
-					System.err.println();
-					System.err.println(DATE_FORMAT.format(Calendar.getInstance().getTime()));
-					ex.printStackTrace();
-					System.err.println("Was unable to handle " + packetList.size() + " packets.");
-					System.err.println();
+					ex.printUnableToHandle(System.err, "Was unable to handle " + packetList.size() + " packets.");
 				} finally {
 					packetList.clear();
 				}

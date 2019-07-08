@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing;
 
+import me.retrodaredevil.solarthing.couchdb.CouchDbPacketRetriever;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketSaver;
 import me.retrodaredevil.solarthing.io.IOBundle;
 import me.retrodaredevil.solarthing.io.JSerialIOBundle;
@@ -8,16 +9,13 @@ import me.retrodaredevil.solarthing.outhouse.OuthousePacketCreator;
 import me.retrodaredevil.solarthing.packets.collection.HourIntervalPacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.creation.PacketCreator;
-import me.retrodaredevil.solarthing.packets.handling.LatestPacketHandler;
-import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
-import me.retrodaredevil.solarthing.packets.handling.PacketHandlerMultiplexer;
-import me.retrodaredevil.solarthing.packets.handling.ThrottleFactorPacketHandler;
+import me.retrodaredevil.solarthing.packets.handling.*;
+import me.retrodaredevil.solarthing.packets.security.crypto.DirectoryKeyMap;
 import me.retrodaredevil.solarthing.solar.outback.MatePacketCreator49;
 import me.retrodaredevil.solarthing.solar.outback.command.CommandProvider;
 import me.retrodaredevil.solarthing.solar.outback.command.CommandProviderMultiplexer;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
 import me.retrodaredevil.solarthing.solar.outback.command.sequence.CommandSequence;
-import me.retrodaredevil.solarthing.solar.outback.command.sequence.CommandSequenceCommandProvider;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -63,7 +61,7 @@ public class SolarMain {
 				commandProviders.add(InputStreamCommandProvider.createFrom(fileInputStream, EnumSet.allOf(MateCommand.class)));
 			}
 		}
-		{
+		/*{
 			InputStream fileInputStream = null;
 			try {
 				fileInputStream = new FileInputStream(new File("command_sequence_input.txt"));
@@ -71,11 +69,32 @@ public class SolarMain {
 				System.out.println("no command sequence input file!");
 			}
 			if(fileInputStream != null) {
+				commandProviders.add(new CommandSequenceCommandProvider(new InputStreamCommandSequenceProvider(fileInputStream, map)));
+			}
+		}*/
+		
+		
+		final PacketHandler commandRequesterHandler;
+		if(args.isLocal()){
+			commandRequesterHandler = PacketHandler.Defaults.HANDLE_NOTHING;
+		} else {
+			final CommandSequenceDataReceiver commandSequenceDataReceiver;
+			{
 				CommandSequence generatorShutOff = CommandSequences.createAuxGeneratorShutOff(latestPacketHandler::getLatestPacketCollection);
 				Map<String, CommandSequence> map = new HashMap<>();
 				map.put("GEN OFF", generatorShutOff);
-				commandProviders.add(new CommandSequenceCommandProvider(new InputStreamCommandSequenceProvider(fileInputStream, map)));
+				commandSequenceDataReceiver = new CommandSequenceDataReceiver(map);
 			}
+			commandProviders.add(commandSequenceDataReceiver.getCommandProvider());
+			
+			commandRequesterHandler = new ThrottleFactorPacketHandler(new PrintPacketHandleExceptionWrapper(
+				new CouchDbPacketRetriever(
+					args.createProperties(),
+					"commands",
+					new SecurityPacketReceiver(new DirectoryKeyMap(new File("authorized")), commandSequenceDataReceiver, new DirectoryKeyMap(new File("unauthorized")))
+				),
+				System.err
+			), 4, true);
 		}
 		
 		Collection<MateCommand> allowedCommands = EnumSet.of(MateCommand.AUX_OFF, MateCommand.AUX_ON, MateCommand.USE, MateCommand.DROP);
@@ -86,7 +105,12 @@ public class SolarMain {
 			new MatePacketCreator49(args.getIgnoreCheckSum()),
 			new PacketHandlerMultiplexer(
 				latestPacketHandler,
-				new ThrottleFactorPacketHandler(getPacketSaver(args, "solarthing"), args.getThrottleFactor(), args.isOnlyInstant())
+				new ThrottleFactorPacketHandler(
+					new PrintPacketHandleExceptionWrapper(getPacketSaver(args, "solarthing"), System.err),
+					args.getThrottleFactor(),
+					args.isOnlyInstant(),
+					commandRequesterHandler
+				)
 			),
 			idGenerator,
 			250,

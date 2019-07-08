@@ -3,9 +3,7 @@ package me.retrodaredevil.solarthing.packets.security.crypto;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
-
-import java.io.ByteArrayOutputStream;
-import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.security.PrivateKey;
 import java.util.Base64;
 
@@ -23,13 +21,9 @@ public final class Encrypt {
 		} catch (java.security.InvalidKeyException e) {
 			throw new InvalidKeyException(e);
 		}
-		ByteArrayOutputStream output = new ByteArrayOutputStream();
-		PrintWriter writer = new PrintWriter(output);
-		writer.write(dataToEncrypt);
-		writer.flush();
 		final byte[] encryptedData;
 		try {
-			encryptedData = cipher.doFinal(output.toByteArray());
+			encryptedData = cipher.doFinal(dataToEncrypt.getBytes(StandardCharsets.UTF_8));
 		} catch (IllegalBlockSizeException | BadPaddingException e) {
 			throw new EncryptException("Exception while encrypting! This should not happen!", e);
 		}
