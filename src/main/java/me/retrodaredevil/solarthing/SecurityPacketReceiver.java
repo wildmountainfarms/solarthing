@@ -39,7 +39,7 @@ public class SecurityPacketReceiver implements JsonPacketReceiver{
 		this.publicKeySave = publicKeySave;
 		
 		try {
-			cipher = Cipher.getInstance("RSA");
+			cipher = Cipher.getInstance(KeyUtil.CIPHER_TRANSFORMATION);
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
 			throw new RuntimeException(e);
 		}
@@ -128,13 +128,13 @@ public class SecurityPacketReceiver implements JsonPacketReceiver{
 		CouchDbClient client = new CouchDbClient("commands", false, "http", "192.168.10.104", 5984, "admin", "relax");
 		KeyPair pair = KeyUtil.generateKeyPair();
 		String data = Long.toHexString(System.currentTimeMillis()) + ",GEN OFF";
-		Cipher cipher = Cipher.getInstance("RSA");
+		Cipher cipher = Cipher.getInstance(KeyUtil.CIPHER_TRANSFORMATION);
 		String encryptedData = Encrypt.encrypt(cipher, pair.getPrivate(), data);
 		client.save(PacketCollections.createFromPackets(
 			Arrays.asList(new ImmutableIntegrityPacket("josh", encryptedData)),
 //			Arrays.asList(new ImmutableAuthNewSenderPacket("josh", KeyUtil.encodePublicKey(pair.getPublic()))),
 			PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR
 		));
-//		new DirectoryKeyMap(new File("authorized")).putKey("josh", pair.getPublic());
+		new DirectoryKeyMap(new File("authorized")).putKey("josh", pair.getPublic());
 	}
 }

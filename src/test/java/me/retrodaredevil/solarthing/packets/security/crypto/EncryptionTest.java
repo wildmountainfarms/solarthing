@@ -17,7 +17,7 @@ final class EncryptionTest {
 		PublicKey publicKey = pair.getPublic();
 		
 		final String toEncrypt = "Hello there how are you?";
-		Cipher cipher = Cipher.getInstance("RSA");
+		Cipher cipher = Cipher.getInstance(KeyUtil.CIPHER_TRANSFORMATION);
 		String encrypted = Encrypt.encrypt(cipher, privateKey, toEncrypt);
 		String decrypted = Decrypt.decrypt(cipher, publicKey, encrypted);
 		
@@ -29,7 +29,7 @@ final class EncryptionTest {
 		PublicKey publicKey = KeyUtil.generateKeyPair().getPublic();
 		
 		final String toEncrypt = "Hello there how are you?";
-		Cipher cipher = Cipher.getInstance("RSA");
+		Cipher cipher = Cipher.getInstance(KeyUtil.CIPHER_TRANSFORMATION);
 		String encrypted = Encrypt.encrypt(cipher, privateKey, toEncrypt);
 		
 		assertThrows(DecryptException.class, () -> Decrypt.decrypt(cipher, publicKey, encrypted));
