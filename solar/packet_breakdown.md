@@ -2,7 +2,6 @@
 FX Packet:
 ```
 \n1,10,10,10,100,100,10,03,000,02,282,129,000,999\r
-
 \n - The start character
   1 - The address of the FX. 0 means it is plugged directly into the Mate.
    ,
@@ -31,5 +30,6 @@ FX Packet:
                                           000 - The warning mode
                                              ,
                                               999 - The check sum (incorrect on this particular packet)
+\n1,10,10,10,100,100,10,03,000,02,282,129,000,999\r
 ```
 

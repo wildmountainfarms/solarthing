@@ -44,11 +44,14 @@ public class CouchDbPacketRetriever implements PacketHandler {
 			client = currentClient;
 		}
 		final List<JsonObject> packets;
+		View view = alterView(client.view("packets/millis"));
 		try {
 			// This query returns a new ArrayList that we can mutate without side effects
-			packets = alterView(client.view("packets/millis")).query(JsonObject.class); // all packets
+			packets = view.query(JsonObject.class); // all packets
 		} catch(NoDocumentException e){
-			throw new PacketHandleException(e);
+			throw new PacketHandleException("No document exception... Maybe the 'millis' view hasn't been created in design 'packets'?", e);
+		} catch(CouchDbException e){
+			throw new PacketHandleException("This probably means we couldn't reach the database", e);
 		}
 		for(int i = 0; i < packets.size(); i++){
 			JsonObject jsonObject = packets.get(i).getAsJsonObject("value");
