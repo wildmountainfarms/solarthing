@@ -5,7 +5,6 @@ import me.retrodaredevil.solarthing.commands.CommandProvider;
 import me.retrodaredevil.solarthing.commands.ConditionCommand;
 import me.retrodaredevil.solarthing.commands.SourcedCommand;
 import me.retrodaredevil.solarthing.commands.sequence.condition.ConditionTask;
-import me.retrodaredevil.solarthing.commands.source.Source;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -15,7 +14,7 @@ import static java.util.Objects.requireNonNull;
 public class CommandSequenceCommandProvider<T extends Command> implements CommandProvider<T> {
 	private final CommandSequenceProvider<T> commandSequenceProvider;
 	
-	private Source currentSource = null;
+	private String currentSource = null;
 	private Queue<ConditionCommand<T>> commands = null;
 	
 	private ConditionCommand<T> currentCommand = null;
@@ -27,7 +26,7 @@ public class CommandSequenceCommandProvider<T extends Command> implements Comman
 	
 	@Override
 	public SourcedCommand<T> pollCommand() {
-		Source currentSource = this.currentSource;
+		String currentSource = this.currentSource;
 		ConditionCommand<T> currentCommand = this.currentCommand;
 		if(currentCommand == null){
 			Queue<ConditionCommand<T>> commands = this.commands;

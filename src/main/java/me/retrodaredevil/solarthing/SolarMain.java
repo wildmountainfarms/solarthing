@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing;
 
-import me.retrodaredevil.solarthing.commands.source.Sources;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketRetriever;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketSaver;
 import me.retrodaredevil.solarthing.io.IOBundle;
@@ -59,7 +58,7 @@ public class SolarMain {
 				System.out.println("no command input file!");
 			}
 			if (fileInputStream != null) {
-				commandProviders.add(InputStreamCommandProvider.createFrom(fileInputStream, Sources.createNamed("command_input.txt"), EnumSet.allOf(MateCommand.class)));
+				commandProviders.add(InputStreamCommandProvider.createFrom(fileInputStream, "command_input.txt", EnumSet.allOf(MateCommand.class)));
 			}
 		}
 		/*{
@@ -76,15 +75,17 @@ public class SolarMain {
 		
 		
 		final PacketHandler commandRequesterHandler;
+		final PacketHandler commandFeedbackHandler;
 		if(args.isLocal()){
 			commandRequesterHandler = PacketHandler.Defaults.HANDLE_NOTHING;
+			commandFeedbackHandler = PacketHandler.Defaults.HANDLE_NOTHING;
 		} else {
-			final CommandSequenceDataReceiver commandSequenceDataReceiver;
+			final CommandSequenceDataReceiver<MateCommand> commandSequenceDataReceiver;
 			{
-				CommandSequence generatorShutOff = CommandSequences.createAuxGeneratorShutOff(latestPacketHandler::getLatestPacketCollection);
-				Map<String, CommandSequence> map = new HashMap<>();
+				CommandSequence<MateCommand> generatorShutOff = CommandSequences.createAuxGeneratorShutOff(latestPacketHandler::getLatestPacketCollection);
+				Map<String, CommandSequence<MateCommand>> map = new HashMap<>();
 				map.put("GEN OFF", generatorShutOff);
-				commandSequenceDataReceiver = new CommandSequenceDataReceiver(map);
+				commandSequenceDataReceiver = new CommandSequenceDataReceiver<>(map);
 			}
 			commandProviders.add(commandSequenceDataReceiver.getCommandProvider());
 			
@@ -97,10 +98,16 @@ public class SolarMain {
 				),
 				System.err
 			), 4, true);
+			commandFeedbackHandler = new CouchDbPacketSaver(args.createProperties(), "command_feedback");
 		}
 		
 		Collection<MateCommand> allowedCommands = EnumSet.of(MateCommand.AUX_OFF, MateCommand.AUX_ON, MateCommand.USE, MateCommand.DROP);
-		OnDataReceive onDataReceive = new MateCommandSender(new CommandProviderMultiplexer<>(commandProviders), output, allowedCommands);
+		OnDataReceive onDataReceive = new MateCommandSender(
+			new CommandProviderMultiplexer<>(commandProviders),
+			output,
+			allowedCommands,
+			new OnMateCommandSent(commandFeedbackHandler)
+		);
 		
 		connect(
 			in,

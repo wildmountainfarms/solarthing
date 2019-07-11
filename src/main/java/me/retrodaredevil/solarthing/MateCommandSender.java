@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing;
 
 import me.retrodaredevil.solarthing.commands.CommandProvider;
+import me.retrodaredevil.solarthing.commands.OnCommandExecute;
 import me.retrodaredevil.solarthing.commands.SourcedCommand;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
 
@@ -14,11 +15,13 @@ public class MateCommandSender implements OnDataReceive {
 	private final CommandProvider<MateCommand> commandProvider;
 	private final OutputStream outputStream;
 	private final Collection<MateCommand> allowedCommands;
+	private final OnCommandExecute<MateCommand> onCommandExecute;
 	
-	public MateCommandSender(CommandProvider<MateCommand> commandProvider, OutputStream outputStream, Collection<MateCommand> allowedCommands) {
+	public MateCommandSender(CommandProvider<MateCommand> commandProvider, OutputStream outputStream, Collection<MateCommand> allowedCommands, OnCommandExecute<MateCommand> onCommandExecute) {
 		this.commandProvider = requireNonNull(commandProvider);
 		this.outputStream = requireNonNull(outputStream);
 		this.allowedCommands = allowedCommands;
+		this.onCommandExecute = onCommandExecute;
 	}
 	
 	public void onDataReceive(boolean firstData, boolean wasInstant) {
@@ -32,10 +35,11 @@ public class MateCommandSender implements OnDataReceive {
 				}
 				try {
 					command.send(outputStream);
-					System.out.println("\nSent command: " + command + " at " + System.currentTimeMillis());
 				} catch (IOException e) {
 					throw new RuntimeException("Unable to send command: " + command, e);
 				}
+				System.out.println("\nSent command: " + command + " at " + System.currentTimeMillis());
+				onCommandExecute.onCommandExecute(sourcedCommand);
 			}
 		}
 	}
