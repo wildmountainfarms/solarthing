@@ -86,5 +86,7 @@ After learning perl for a day. I went straight back to Java, which I am more fam
 
 ### TODO
 * Add better logging with timestamps
+* Create a PacketHandler that saves json data to a file location that can be easily accessed using a Apache web server
 * Figure out how to use https://emoncms.org/ to graph data
-* Implement FlexMAX DC Packets
+* Implement Outback FlexMAX DC Packets
+* Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)

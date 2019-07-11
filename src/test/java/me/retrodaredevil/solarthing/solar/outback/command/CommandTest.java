@@ -7,7 +7,6 @@ import me.retrodaredevil.solarthing.commands.sequence.SourcedCommandSequence;
 import me.retrodaredevil.solarthing.commands.sequence.condition.Condition;
 import me.retrodaredevil.solarthing.commands.sequence.condition.ConditionTask;
 import me.retrodaredevil.solarthing.commands.sequence.condition.TimedCondition;
-import me.retrodaredevil.solarthing.commands.source.Sources;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
@@ -36,7 +35,7 @@ final class CommandTest {
 			.build();
 		CommandProvider<MateCommand> commandProvider = new CommandSequenceCommandProvider<>(
 			new LinkedList<>(Collections.singletonList(
-				new SourcedCommandSequence<>(Sources.createUnique(), commandSequence)
+				new SourcedCommandSequence<>("blank source", commandSequence)
 			))::poll
 		);
 		assertNull(commandProvider.pollCommand());

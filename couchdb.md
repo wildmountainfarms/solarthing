@@ -2,7 +2,16 @@
 All you need is a vanilla CouchDB instance to create a usable database
 for solarthing and outhouse.
 
+## Databases
+You must create each database if you wish to use the features they come with
+* "solarthing" Stores status packets from the Outback MATE
+* "commands" Commands are saved here then deleted to send commands to the Outback MATE. Commands in here are encrypted for integrity
+* "command_feedback" Stores feedback for commands that were sent to the Outback MATE
+* "outhouse" Stores packets from the outhouse
+
 ## Creating it
+Each database must have the same "_design/packets/_view/millis" view
+
 You can start by creating a new view and specifying the "_design" to be packets.
 
 The view name must be "millis" and the map function looks like this:

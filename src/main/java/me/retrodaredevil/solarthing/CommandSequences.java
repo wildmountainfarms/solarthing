@@ -10,8 +10,8 @@ import me.retrodaredevil.solarthing.solar.outback.fx.ACMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 
 final class CommandSequences {
-	public static CommandSequence createAuxGeneratorShutOff(PacketCollectionProvider packetCollectionProvider){
-		return new CommandSequence.Builder()
+	public static CommandSequence<MateCommand> createAuxGeneratorShutOff(PacketCollectionProvider packetCollectionProvider){
+		return new CommandSequence.Builder<MateCommand>()
 			.append(Conditions.IMMEDIATE, MateCommand.DROP)
 			.append(new TimedCondition(2000), MateCommand.AUX_ON)
 			.append(Conditions.create(() -> {

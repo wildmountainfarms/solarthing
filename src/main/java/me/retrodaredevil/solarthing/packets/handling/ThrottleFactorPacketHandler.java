@@ -2,6 +2,8 @@ package me.retrodaredevil.solarthing.packets.handling;
 
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 
+import static java.util.Objects.requireNonNull;
+
 public class ThrottleFactorPacketHandler implements PacketHandler {
 	private final PacketHandler packetHandler;
 	private final int throttleFactor;
@@ -17,10 +19,10 @@ public class ThrottleFactorPacketHandler implements PacketHandler {
 	 * @param otherPacketHandler This handler is called when {@code packetHandler} is not called.
 	 */
 	public ThrottleFactorPacketHandler(PacketHandler packetHandler, int throttleFactor, boolean instantOnly, PacketHandler otherPacketHandler) {
-		this.packetHandler = packetHandler;
+		this.packetHandler = requireNonNull(packetHandler);
 		this.throttleFactor = throttleFactor;
 		this.instantOnly = instantOnly;
-		this.otherPacketHandler = otherPacketHandler;
+		this.otherPacketHandler = requireNonNull(otherPacketHandler);
 	}
 	public ThrottleFactorPacketHandler(PacketHandler packetHandler, int throttleFactor, boolean instantOnly){
 		this(packetHandler, throttleFactor, instantOnly, PacketHandler.Defaults.HANDLE_NOTHING);
