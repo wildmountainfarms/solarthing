@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing;
 
+import me.retrodaredevil.solarthing.commands.source.Sources;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketRetriever;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketSaver;
 import me.retrodaredevil.solarthing.io.IOBundle;
@@ -12,10 +13,10 @@ import me.retrodaredevil.solarthing.packets.creation.PacketCreator;
 import me.retrodaredevil.solarthing.packets.handling.*;
 import me.retrodaredevil.solarthing.packets.security.crypto.DirectoryKeyMap;
 import me.retrodaredevil.solarthing.solar.outback.MatePacketCreator49;
-import me.retrodaredevil.solarthing.solar.outback.command.CommandProvider;
-import me.retrodaredevil.solarthing.solar.outback.command.CommandProviderMultiplexer;
+import me.retrodaredevil.solarthing.commands.CommandProvider;
+import me.retrodaredevil.solarthing.commands.CommandProviderMultiplexer;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
-import me.retrodaredevil.solarthing.solar.outback.command.sequence.CommandSequence;
+import me.retrodaredevil.solarthing.commands.sequence.CommandSequence;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -49,7 +50,7 @@ public class SolarMain {
 			output = port.getOutputStream();
 		}
 		LatestPacketHandler latestPacketHandler = new LatestPacketHandler(true);
-		List<CommandProvider> commandProviders = new ArrayList<>();
+		List<CommandProvider<MateCommand>> commandProviders = new ArrayList<>();
 		{
 			InputStream fileInputStream = null;
 			try {
@@ -58,7 +59,7 @@ public class SolarMain {
 				System.out.println("no command input file!");
 			}
 			if (fileInputStream != null) {
-				commandProviders.add(InputStreamCommandProvider.createFrom(fileInputStream, EnumSet.allOf(MateCommand.class)));
+				commandProviders.add(InputStreamCommandProvider.createFrom(fileInputStream, Sources.createNamed("command_input.txt"), EnumSet.allOf(MateCommand.class)));
 			}
 		}
 		/*{
@@ -91,14 +92,15 @@ public class SolarMain {
 				new CouchDbPacketRetriever(
 					args.createProperties(),
 					"commands",
-					new SecurityPacketReceiver(new DirectoryKeyMap(new File("authorized")), commandSequenceDataReceiver, new DirectoryKeyMap(new File("unauthorized")))
+					new SecurityPacketReceiver(new DirectoryKeyMap(new File("authorized")), commandSequenceDataReceiver, new DirectoryKeyMap(new File("unauthorized"))),
+					true
 				),
 				System.err
 			), 4, true);
 		}
 		
 		Collection<MateCommand> allowedCommands = EnumSet.of(MateCommand.AUX_OFF, MateCommand.AUX_ON, MateCommand.USE, MateCommand.DROP);
-		OnDataReceive onDataReceive = new MateCommandSender(new CommandProviderMultiplexer(commandProviders), output, allowedCommands);
+		OnDataReceive onDataReceive = new MateCommandSender(new CommandProviderMultiplexer<>(commandProviders), output, allowedCommands);
 		
 		connect(
 			in,

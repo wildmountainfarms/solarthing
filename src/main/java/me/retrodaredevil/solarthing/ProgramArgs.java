@@ -10,7 +10,7 @@ import me.retrodaredevil.util.json.JsonFile;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProgramArgs {
+class ProgramArgs {
 	
 	@Parameter()
 	private List<String> parameters = new ArrayList<>();

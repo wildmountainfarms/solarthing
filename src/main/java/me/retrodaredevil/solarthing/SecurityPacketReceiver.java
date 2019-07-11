@@ -16,9 +16,7 @@ import java.io.File;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class SecurityPacketReceiver implements JsonPacketReceiver{
 	private final PublicKeyLookUp publicKeyLookUp;
@@ -26,6 +24,8 @@ public class SecurityPacketReceiver implements JsonPacketReceiver{
 	private final PublicKeySave publicKeySave;
 	
 	private final Cipher cipher;
+	
+	private Map<String, Long> senderLastCommandMap = new HashMap<>();
 	
 	/**
 	 *
@@ -66,6 +66,11 @@ public class SecurityPacketReceiver implements JsonPacketReceiver{
 			}
 			packets.add(packetCollection);
 		}
+		/*
+		 * If someone sends multiple commands in a single PacketCollection, those commands might have the same time in millis,
+		 * which we want to allow. If we just updated senderLastCommandMap directly, this would not be allowed.
+		 */
+		Map<String, Long> lastCommands = new HashMap<>();
 		for(PacketCollection packetCollection : packets){
 			for(Packet packet : packetCollection.getPackets()){
 				SecurityPacket securityPacket = (SecurityPacket) packet;
@@ -93,9 +98,15 @@ public class SecurityPacketReceiver implements JsonPacketReceiver{
 									e.printStackTrace();
 								}
 								if(dateMillis != null){
-									if(dateMillis < minTime){
+									Long lastCommand = senderLastCommandMap.get(sender);
+									if(dateMillis > System.currentTimeMillis()) {
+										System.err.println("Message from " + sender + " is from the future???");
+									} else if(dateMillis < minTime){
 										System.err.println("Message from " + sender + " was parsed, but it too old!");
+									} else if(lastCommand != null && dateMillis <= lastCommand) { // if this command is old or if someone is trying to send the exact same command twice
+										System.err.println("Message from " + sender + " was parsed, but was older than the last command they sent!");
 									} else {
+										lastCommands.put(sender, dateMillis);
 										dataReceiver.receiveData(sender, dateMillis, message);
 									}
 								}
@@ -123,6 +134,7 @@ public class SecurityPacketReceiver implements JsonPacketReceiver{
 				}
 			}
 		}
+		senderLastCommandMap.putAll(lastCommands);
 	}
 	public static void main(String[] args) throws NoSuchPaddingException, NoSuchAlgorithmException, EncryptException, InvalidKeyException {
 		CouchDbClient client = new CouchDbClient("commands", false, "http", "192.168.10.104", 5984, "admin", "relax");

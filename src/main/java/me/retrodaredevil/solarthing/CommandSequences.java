@@ -3,13 +3,13 @@ package me.retrodaredevil.solarthing;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.solar.outback.OutbackUtil;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
-import me.retrodaredevil.solarthing.solar.outback.command.sequence.CommandSequence;
-import me.retrodaredevil.solarthing.solar.outback.command.sequence.condition.Conditions;
-import me.retrodaredevil.solarthing.solar.outback.command.sequence.condition.TimedCondition;
+import me.retrodaredevil.solarthing.commands.sequence.CommandSequence;
+import me.retrodaredevil.solarthing.commands.sequence.condition.Conditions;
+import me.retrodaredevil.solarthing.commands.sequence.condition.TimedCondition;
 import me.retrodaredevil.solarthing.solar.outback.fx.ACMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 
-public final class CommandSequences {
+final class CommandSequences {
 	public static CommandSequence createAuxGeneratorShutOff(PacketCollectionProvider packetCollectionProvider){
 		return new CommandSequence.Builder()
 			.append(Conditions.IMMEDIATE, MateCommand.DROP)

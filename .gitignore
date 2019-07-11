@@ -1,6 +1,8 @@
 # Custom stuff:
 *.attach_pid*
 data.json
+authorized/
+unauthorized/
 
 # Compiled class file
 *.class
