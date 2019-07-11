@@ -7,7 +7,6 @@ import me.retrodaredevil.solarthing.JsonPacketReceiver;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
-import me.retrodaredevil.util.json.JsonFile;
 import org.lightcouch.CouchDbClient;
 import org.lightcouch.CouchDbException;
 import org.lightcouch.NoDocumentException;
@@ -18,11 +17,13 @@ import java.util.List;
 public class CouchDbPacketRetriever implements PacketHandler {
 	private final CouchProperties properties;
 	private final JsonPacketReceiver jsonPacketReceiver;
+	private final boolean removeQueriedPackets;
 	private CouchDbClient client = null;
 	
-	public CouchDbPacketRetriever(CouchProperties properties, String databaseName, JsonPacketReceiver jsonPacketReceiver){
+	public CouchDbPacketRetriever(CouchProperties properties, String databaseName, JsonPacketReceiver jsonPacketReceiver, boolean removeQueriedPackets){
 		this.jsonPacketReceiver = jsonPacketReceiver;
 		this.properties = new CouchPropertiesBuilder(properties).setDatabase(databaseName).setCreateIfNotExist(false).build();
+		this.removeQueriedPackets = removeQueriedPackets;
 	}
 	
 	protected View alterView(View view){
@@ -56,8 +57,9 @@ public class CouchDbPacketRetriever implements PacketHandler {
 		for(int i = 0; i < packets.size(); i++){
 			JsonObject jsonObject = packets.get(i).getAsJsonObject("value");
 			packets.set(i, jsonObject);
-			System.out.println("removing: " + JsonFile.gson.toJson(jsonObject));
-			client.remove(jsonObject); // TODO figure out a way to do a bulk remove
+			if(removeQueriedPackets) {
+				client.remove(jsonObject); // TODO figure out a way to do a bulk remove
+			}
 		}
 		jsonPacketReceiver.receivePackets(packets);
 	}

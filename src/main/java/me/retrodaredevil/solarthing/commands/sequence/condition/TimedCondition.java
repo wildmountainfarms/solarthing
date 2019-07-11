@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing.solar.outback.command.sequence.condition;
+package me.retrodaredevil.solarthing.commands.sequence.condition;
 
 public class TimedCondition implements Condition {
 	private final long waitTime;

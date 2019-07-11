@@ -1,31 +1,31 @@
 package me.retrodaredevil.solarthing;
 
-import me.retrodaredevil.solarthing.solar.outback.command.CommandProvider;
-import me.retrodaredevil.solarthing.solar.outback.command.sequence.CommandSequence;
-import me.retrodaredevil.solarthing.solar.outback.command.sequence.CommandSequenceCommandProvider;
+import me.retrodaredevil.solarthing.commands.Command;
+import me.retrodaredevil.solarthing.commands.CommandProvider;
+import me.retrodaredevil.solarthing.commands.sequence.CommandSequence;
+import me.retrodaredevil.solarthing.commands.sequence.CommandSequenceCommandProvider;
+import me.retrodaredevil.solarthing.commands.sequence.SourcedCommandSequence;
+import me.retrodaredevil.solarthing.commands.source.Sources;
 
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
-public class CommandSequenceDataReceiver implements DataReceiver {
-	private final Queue<CommandSequence> queue = new LinkedList<>();
-	private final CommandProvider commandProvider = new CommandSequenceCommandProvider(queue::poll);
+public class CommandSequenceDataReceiver<T extends Command> implements DataReceiver {
+	private final Queue<SourcedCommandSequence<T>> queue = new LinkedList<>();
+	private final CommandProvider commandProvider = new CommandSequenceCommandProvider<>(queue::poll);
 	
-	private final Map<String, CommandSequence> commandSequenceMap;
+	private final Map<String, CommandSequence<T>> commandSequenceMap;
 	
-	public CommandSequenceDataReceiver(Map<String, CommandSequence> commandSequenceMap) {
+	public CommandSequenceDataReceiver(Map<String, CommandSequence<T>> commandSequenceMap) {
 		this.commandSequenceMap = commandSequenceMap;
 	}
-//	public static CouchDbPacketRetriever createCouchDbCommandRetriever(CouchProperties properties, PublicKeyLookUp publicKeyLookUp){
-//		return new CouchDbPacketRetriever(properties, "commands", new SecurityPacketReceiver(publicKeyLookUp, dataReceiver));
-//	}
 	
 	@Override
 	public void receiveData(String sender, long dateMillis, String data) {
-		CommandSequence requested = commandSequenceMap.get(data);
+		CommandSequence<T> requested = commandSequenceMap.get(data);
 		if(requested != null){
-			queue.add(requested);
+			queue.add(new SourcedCommandSequence<>(Sources.createNamed("from:" + sender + ",at:" + dateMillis + ",data:" + data), requested));
 			System.out.println(sender + " has requested command sequence: " + data);
 		}
 	}

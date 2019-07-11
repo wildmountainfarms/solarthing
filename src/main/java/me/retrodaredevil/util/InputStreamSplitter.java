@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A non-blocking utility class to get input from an input stream usually by splitting lines
  */
@@ -17,7 +19,7 @@ public class InputStreamSplitter {
 	private String currentLine = "";
 	
 	public InputStreamSplitter(InputStream inputStream, char splitChar) {
-		this.inputStream = inputStream;
+		this.inputStream = requireNonNull(inputStream);
 		this.splitChar = splitChar;
 	}
 	public InputStreamSplitter(InputStream inputStream){

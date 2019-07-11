@@ -1,5 +1,7 @@
 package me.retrodaredevil.solarthing.solar.outback.command;
 
+import me.retrodaredevil.solarthing.commands.Command;
+
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -10,7 +12,7 @@ import java.io.OutputStream;
  * Aux to "Auto" will allow you to control it. <a href="http://outbackpower.com/forum/viewtopic.php?f=14&t=7976">outbackpower.com forum thread</a>
  * You also must make sure the Aux is not used for Generator control (AGS Control)
  */
-public enum MateCommand {
+public enum MateCommand implements Command {
 	/**
 	 * Turns the FX to on mode
 	 */
@@ -59,6 +61,7 @@ public enum MateCommand {
 	public String getCompleteCommand(){
 		return command + "" + command;
 	}
+	@Override
 	public String getCommandName(){
 		return name;
 	}

@@ -1,19 +1,19 @@
-package me.retrodaredevil.solarthing.solar.outback.command;
+package me.retrodaredevil.solarthing.commands;
 
-import me.retrodaredevil.solarthing.solar.outback.command.sequence.condition.Condition;
+import me.retrodaredevil.solarthing.commands.sequence.condition.Condition;
 
 import static java.util.Objects.requireNonNull;
 
-public final class CommandCondition {
+public final class ConditionCommand<T extends Command> {
 	
 	private final Condition condition;
-	private final MateCommand command;
+	private final T command;
 	
 	/**
 	 * @param condition The condition that waits
 	 * @param command The command to execute
 	 */
-	public CommandCondition(Condition condition, MateCommand command) {
+	public ConditionCommand(Condition condition, T command) {
 		this.condition = requireNonNull(condition);
 		this.command = requireNonNull(command);
 	}
@@ -22,7 +22,7 @@ public final class CommandCondition {
 		return condition;
 	}
 	
-	public MateCommand getCommand() {
+	public T getCommand() {
 		return command;
 	}
 }

@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing;
 
-import me.retrodaredevil.solarthing.solar.outback.command.CommandProvider;
+import me.retrodaredevil.solarthing.commands.CommandProvider;
+import me.retrodaredevil.solarthing.commands.SourcedCommand;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
 
 import java.io.IOException;
@@ -10,11 +11,11 @@ import java.util.Collection;
 import static java.util.Objects.requireNonNull;
 
 public class MateCommandSender implements OnDataReceive {
-	private final CommandProvider commandProvider;
+	private final CommandProvider<MateCommand> commandProvider;
 	private final OutputStream outputStream;
 	private final Collection<MateCommand> allowedCommands;
 	
-	public MateCommandSender(CommandProvider commandProvider, OutputStream outputStream, Collection<MateCommand> allowedCommands) {
+	public MateCommandSender(CommandProvider<MateCommand> commandProvider, OutputStream outputStream, Collection<MateCommand> allowedCommands) {
 		this.commandProvider = requireNonNull(commandProvider);
 		this.outputStream = requireNonNull(outputStream);
 		this.allowedCommands = allowedCommands;
@@ -22,8 +23,9 @@ public class MateCommandSender implements OnDataReceive {
 	
 	public void onDataReceive(boolean firstData, boolean wasInstant) {
 		if(firstData && wasInstant){
-			MateCommand command = commandProvider.pollCommand();
-			if(command != null){
+			SourcedCommand<MateCommand> sourcedCommand = commandProvider.pollCommand();
+			if(sourcedCommand != null){
+				MateCommand command = sourcedCommand.getCommand();
 				if(!allowedCommands.contains(command)){
 					System.err.println("Command: " + command + " is not allowed!");
 					return;
