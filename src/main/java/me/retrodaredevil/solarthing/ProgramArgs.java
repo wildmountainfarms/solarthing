@@ -59,6 +59,9 @@ class ProgramArgs {
 	private int connectionTimeoutSeconds = 0;
 	@Parameter(names = {"--st", "--socket-timeout"})
 	private int socketTimeoutSeconds = 0;
+	
+	@Parameter(names = {"--latest-save"})
+	private String latestPacketJsonSaveLocation = null;
 
 	public ProgramArgs(String[] args){
 		JCommander.newBuilder().addObject(this).build().parse(args);
@@ -103,6 +106,9 @@ class ProgramArgs {
 		return new CouchPropertiesBuilder(null, true, protocol, host, port, userName, password)
 			.setConnectionTimeout(connectionTimeoutSeconds * 1000)
 			.setSocketTimeout(socketTimeoutSeconds * 1000).build();
+	}
+	public String getLatestPacketJsonSaveLocation() {
+		return latestPacketJsonSaveLocation;
 	}
 
 	public void printInJson(){

@@ -9,6 +9,9 @@ You must create each database if you wish to use the features they come with
 * "command_feedback" Stores feedback for commands that were sent to the Outback MATE
 * "outhouse" Stores packets from the outhouse
 
+"solarthing", "command_feedback", and "outhouse" should be password protected. "commands" is not required to be password
+protected because data in it is protected by encryption to provide integrity.
+
 ## Creating it
 Each database must have the same "_design/packets/_view/millis" view
 

@@ -20,8 +20,8 @@ public class MateCommandSender implements OnDataReceive {
 	public MateCommandSender(CommandProvider<MateCommand> commandProvider, OutputStream outputStream, Collection<MateCommand> allowedCommands, OnCommandExecute<MateCommand> onCommandExecute) {
 		this.commandProvider = requireNonNull(commandProvider);
 		this.outputStream = requireNonNull(outputStream);
-		this.allowedCommands = allowedCommands;
-		this.onCommandExecute = onCommandExecute;
+		this.allowedCommands = requireNonNull(allowedCommands);
+		this.onCommandExecute = requireNonNull(onCommandExecute);
 	}
 	
 	public void onDataReceive(boolean firstData, boolean wasInstant) {

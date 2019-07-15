@@ -46,17 +46,12 @@ https://www.wmrc.edu/projects/BARenergy/manuals/outback-manuals/Mate-rev-230.pdf
 
 
 ## Renogy References:
+Rover manual: https://www.renogy.com/template/files/Manuals/Rover%20203040%20Manual.pdf
+
+Software download: https://www.renogy.com/template/files/Solar%20Station%20Monitor.zip
+
+
 https://www.rototron.info/raspberry-pi-solar-serial-rest-api-tutorial/
 
 https://www.overstock.com/Electronics/Renogy-RNG-CTRL-RVR20-BT-Solar-Charge-Controller-MPPT-20A-with-BT/20973007/product.html
 
-### Thoughts on sending commands
-
-#### Authentication
-On client (android or web app), sign with private key. If that device is authorized, it will have it's public
-key on the Raspberry Pi running solarthing.
-
-Talk about a standard password for everything running solarthing
-
-We will sign currentTimeMillis() and the command with our private key. When the Pi decrypts the message with our 
-public key, it will be able to parse the time and the command
