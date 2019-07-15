@@ -6,6 +6,7 @@ import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 
@@ -24,7 +25,7 @@ public class FileWritePacketHandler implements PacketHandler {
 	public void handle(PacketCollection packetCollection, boolean wasInstant) throws PacketHandleException {
 		String string = stringPacketHandler.getString(packetCollection);
 		try {
-			Files.writeString(file.toPath(), string, StandardOpenOption.CREATE, (append ? StandardOpenOption.APPEND : StandardOpenOption.WRITE));
+			Files.write(file.toPath(), string.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, (append ? StandardOpenOption.APPEND : StandardOpenOption.WRITE));
 		} catch (IOException e) {
 			throw new PacketHandleException(e);
 		}
