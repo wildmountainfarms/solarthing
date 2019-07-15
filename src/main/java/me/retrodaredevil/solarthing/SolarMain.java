@@ -10,6 +10,8 @@ import me.retrodaredevil.solarthing.packets.collection.HourIntervalPacketCollect
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.creation.PacketCreator;
 import me.retrodaredevil.solarthing.packets.handling.*;
+import me.retrodaredevil.solarthing.packets.handling.implementations.FileWritePacketHandler;
+import me.retrodaredevil.solarthing.packets.handling.implementations.GsonStringPacketHandler;
 import me.retrodaredevil.solarthing.packets.security.crypto.DirectoryKeyMap;
 import me.retrodaredevil.solarthing.solar.outback.MatePacketCreator49;
 import me.retrodaredevil.solarthing.commands.CommandProvider;
@@ -109,18 +111,28 @@ public class SolarMain {
 			new OnMateCommandSent(commandFeedbackHandler)
 		);
 		
+		List<PacketHandler> packetHandlers = new ArrayList<>();
+		{
+			String latestSave = args.getLatestPacketJsonSaveLocation();
+			if(latestSave != null){
+				packetHandlers.add(new FileWritePacketHandler(new File(latestSave), new GsonStringPacketHandler(), false));
+			}
+		}
+		
+		packetHandlers.addAll(Arrays.asList(
+			latestPacketHandler,
+			new ThrottleFactorPacketHandler(
+				new PrintPacketHandleExceptionWrapper(getPacketSaver(args, "solarthing"), System.err),
+				args.getThrottleFactor(),
+				args.isOnlyInstant(),
+				commandRequesterHandler
+			)
+		));
+		
 		connect(
 			in,
 			new MatePacketCreator49(args.getIgnoreCheckSum()),
-			new PacketHandlerMultiplexer(
-				latestPacketHandler,
-				new ThrottleFactorPacketHandler(
-					new PrintPacketHandleExceptionWrapper(getPacketSaver(args, "solarthing"), System.err),
-					args.getThrottleFactor(),
-					args.isOnlyInstant(),
-					commandRequesterHandler
-				)
-			),
+			new PacketHandlerMultiplexer(packetHandlers),
 			idGenerator,
 			250,
 			onDataReceive
@@ -128,10 +140,19 @@ public class SolarMain {
 		return 0;
 	}
 	private int connectOuthouse(ProgramArgs args, PacketCollectionIdGenerator idGenerator) {
+		List<PacketHandler> packetHandlers = new ArrayList<>();
+		{
+			String latestSave = args.getLatestPacketJsonSaveLocation();
+			if(latestSave != null){
+				packetHandlers.add(new FileWritePacketHandler(new File(latestSave), new GsonStringPacketHandler(), false));
+			}
+		}
+		
+		packetHandlers.add(new ThrottleFactorPacketHandler(getPacketSaver(args, "outhouse"), args.getThrottleFactor(), args.isOnlyInstant()));
 		connect(
 			System.in,
 			new OuthousePacketCreator(),
-			new ThrottleFactorPacketHandler(getPacketSaver(args, "outhouse"), args.getThrottleFactor(), args.isOnlyInstant()),
+			new PacketHandlerMultiplexer(packetHandlers),
 			idGenerator,
 			0,
 			OnDataReceive.Defaults.NOTHING
