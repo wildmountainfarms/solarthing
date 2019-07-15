@@ -25,7 +25,7 @@ public class FileWritePacketHandler implements PacketHandler {
 	public void handle(PacketCollection packetCollection, boolean wasInstant) throws PacketHandleException {
 		String string = stringPacketHandler.getString(packetCollection);
 		try {
-			Files.write(file.toPath(), string.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, (append ? StandardOpenOption.APPEND : StandardOpenOption.WRITE));
+			Files.write(file.toPath(), string.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE, (append ? StandardOpenOption.APPEND : StandardOpenOption.TRUNCATE_EXISTING));
 		} catch (IOException e) {
 			throw new PacketHandleException(e);
 		}
