@@ -1,7 +1,15 @@
 package me.retrodaredevil.solarthing.solar.common;
 
 public interface ChargeController extends BatteryVoltage, PVCurrentAndVoltage {
+	/**
+	 * @return The current in amps this controller is putting into the batteries
+	 */
 	Number getChargerCurrent();
+	
+	/**
+	 * Normally, this can also be calculated by multiplying {@link #getChargerCurrent()} and {@link #getBatteryVoltage()}
+	 * @return The charging power in Watts
+	 */
 	Number getChargingPower();
 	
 	/**

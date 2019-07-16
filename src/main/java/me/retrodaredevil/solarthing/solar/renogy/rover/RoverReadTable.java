@@ -5,36 +5,58 @@ import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
 import me.retrodaredevil.solarthing.solar.common.ChargeController;
 import me.retrodaredevil.solarthing.solar.common.DailyData;
 import me.retrodaredevil.solarthing.solar.renogy.BatteryType;
+import me.retrodaredevil.solarthing.solar.renogy.Voltage;
 import me.retrodaredevil.solarthing.solar.renogy.ProductType;
-import me.retrodaredevil.solarthing.solar.renogy.SystemVoltage;
+import me.retrodaredevil.solarthing.solar.renogy.Version;
 
 @SuppressWarnings("unused")
 public interface RoverReadTable extends ChargeController, DailyData {
-	int getMaxVoltage();
-	default MaxVoltage getMaxVoltageMode(){ return Modes.getActiveMode(MaxVoltage.class, getMaxVoltage()); }
+	int getMaxVoltageValue();
+	default Voltage getMaxVoltage(){ return Modes.getActiveMode(Voltage.class, getMaxVoltageValue()); }
 	
-	int getRatedChargingCurrent();
-	default RatedCurrent getRatedChargingCurrentMode(){ return Modes.getActiveMode(RatedCurrent.class, getRatedChargingCurrent()); }
+	int getRatedChargingCurrentValue();
+	default RatedCurrent getRatedChargingCurrent(){ return Modes.getActiveMode(RatedCurrent.class, getRatedChargingCurrentValue()); }
 	
-	int getRatedDischargingCurrent();
-	default RatedCurrent getRatedDischargingCurrentMode(){ return Modes.getActiveMode(RatedCurrent.class, getRatedDischargingCurrent()); }
+	int getRatedDischargingCurrentValue();
+	default RatedCurrent getRatedDischargingCurrent(){ return Modes.getActiveMode(RatedCurrent.class, getRatedDischargingCurrentValue()); }
 	
-	int getProductType();
-	default ProductType getProductTypeMode(){ return Modes.getActiveMode(ProductType.class, getProductType()); }
+	int getProductTypeValue();
+	default ProductType getProductType(){ return Modes.getActiveMode(ProductType.class, getProductTypeValue()); }
 	
-	byte[] getProductModel(); // TODO maybe change this signature
-	int getSoftwareVersion();
-	int getHardwareVersion();
+	/**
+	 * @return An array of 16 bytes in length representing the product model
+	 */
+	byte[] getProductModelValue(); // TODO maybe change this signature
+	default String getProductModel(){
+		byte[] raw = getProductModelValue();
+		if(raw.length != 16){
+			throw new IllegalStateException();
+		}
+		StringBuilder r = new StringBuilder(15);
+		for(byte value : raw){
+			int intValue = ((int) value) & 0xff;
+			if(intValue < 0) throw new AssertionError();
+			if(intValue > 127) throw new IllegalStateException(intValue + " is out of normal ascii range!");
+			if(intValue == 0x20) continue; // space
+			// TODO check if there are other values we need to ignore
+			r.append((char) value);
+		}
+		return r.toString();
+	}
+	int getSoftwareVersionValue();
+	Version getSoftwareVersion();
+	int getHardwareVersionValue();
+	Version getHardwareVersion();
 	int getProductSerialNumber();
 	
 	/**
 	 * Should be serialized as "address"
 	 * @return A number in range [1..247] representing the controller device address
 	 */
-	int getControllerDeviceAddress(); // TODO make a common renogy interface for addresses
+	int getControllerDeviceAddress();
 	
 	/**
-	 * @return A number in range [0..100] representing the battery percentage
+	 * @return A number in range [0..100] representing the current battery capacity value
 	 */
 	int getBatteryCapacitySOC();
 	
@@ -42,8 +64,6 @@ public interface RoverReadTable extends ChargeController, DailyData {
 	
 	@Override
 	Float getChargerCurrent();
-	@Override
-	Integer getChargingPower();
 	
 	int getControllerTemperature();
 	int getBatteryTemperature();
@@ -58,17 +78,27 @@ public interface RoverReadTable extends ChargeController, DailyData {
 	Float getInputVoltage();
 	@Override
 	Float getPVCurrent();
-	int getChargerPower();
+	@Override
+	Integer getChargingPower();
 	
-	BatteryVoltage getMinBatteryVoltage();
-	BatteryVoltage getMaxBatteryVoltage();
-	float getMaxChargerCurrent();
-	float getMaxDischargingCurrent();
-	int getMaxChargingPower();
-	int getMaxDischargingPower();
+	BatteryVoltage getDailyMinBatteryVoltage();
+	BatteryVoltage getDailyMaxBatteryVoltage();
 	
-	int getChargingAmpHours();
-	int getDischargingAmpHours();
+	/**
+	 * @return The daily record for the maximum charger current
+	 */
+	float getDailyMaxChargerCurrent();
+	
+	/**
+	 * @return The daily record for the maximum discharging current
+	 */
+	float getDailyMaxDischargingCurrent();
+	int getDailyMaxChargingPower();
+	int getDailyMaxDischargingPower();
+	
+	@Override
+	int getDailyAH();
+	int getDailyAHDischarging();
 	
 	// 0x0113
 	@Override
@@ -87,16 +117,23 @@ public interface RoverReadTable extends ChargeController, DailyData {
 	default StreetLight getStreetLightStatus(){ return Modes.getActiveMode(StreetLight.class, getStreetLightValue()); }
 	default int getStreetLightBrightnessPercent(){ return StreetLight.getBrightnessValue(getStreetLightValue()); }
 	
+	int getChargingStateValue();
+	default ChargingState getChargingState(){ return Modes.getActiveMode(ChargingState.class, getChargingStateValue()); }
+	
 	int getErrorMode();
 	
+	/**
+	 *
+	 * @return The nominal battery capacity in AmpHours (AH)
+	 */
 	int getNominalBatteryCapacity();
 	
 	/** Should be serialized as "systemVoltageSetting" */
 	int getSystemVoltageSettingValue();
 	/** Should be serialized as "recognizedVoltage" */
 	int getRecognizedVoltageValue();
-	default SystemVoltage getSystemVoltageSetting(){ return Modes.getActiveMode(SystemVoltage.class, getSystemVoltageSettingValue()); }
-	default SystemVoltage getRecognizedVoltage(){ return Modes.getActiveMode(SystemVoltage.class, getRecognizedVoltageValue()); }
+	default SpecialPowerControl_E02D.SystemVoltage getSystemVoltageSetting(){ return Modes.getActiveMode(SpecialPowerControl_E02D.SystemVoltage.class, getSystemVoltageSettingValue()); }
+	default SpecialPowerControl_E02D.SystemVoltage getRecognizedVoltage(){ return Modes.getActiveMode(SpecialPowerControl_E02D.SystemVoltage.class, getRecognizedVoltageValue()); }
 	
 	// 0xE004
 	/** Should be serialized as "batteryType" */
@@ -123,17 +160,29 @@ public interface RoverReadTable extends ChargeController, DailyData {
 	int getOverDischargeTimeDelaySeconds();
 	
 	int getEqualizingChargingTimeRaw();
-	int getEqualizingChargingTimeMinutes();
+	default int getEqualizingChargingTimeMinutes(){ return getEqualizingChargingTimeRaw() + 10; }
 	
 	int getBoostChargingTimeRaw();
-	int getBoostChargingTimeMinutes();
+	default int getBoostChargingTimeMinutes(){ return getBoostChargingTimeRaw() + 10; }
 	
 	int getEqualizingChargingIntervalRaw();
-	int getEqualizingChargingIntervalDays();
+	default int getEqualizingChargingIntervalDays(){
+		int raw = getEqualizingChargingIntervalRaw();
+		if(raw == 0){
+			return 0;
+		}
+		return raw + 5;
+	}
 	
 	int getTemperatureCompensationFactorRaw();
 	/** Units: mV/C/2V*/
-	int getTemperatureCompensationFactor();
+	default int getTemperatureCompensationFactor(){
+		int raw = getTemperatureCompensationFactorRaw();
+		if(raw == 0){
+			return 0;
+		}
+		return raw + 1;
+	}
 	
 	//0xE015
 	OperatingStage getStage1();
@@ -151,24 +200,24 @@ public interface RoverReadTable extends ChargeController, DailyData {
 	// 0xE020
 	int getLEDLoadCurrentSettingRaw();
 	/** Units: mA */
-	int getLEDLoadCurrentSetting();
+	default int getLEDLoadCurrentSettingMilliAmps(){ return getLEDLoadCurrentSettingRaw() * 10; }
 	
 	int getSpecialPowerControlE021Raw();
-	SpecialPowerControl_E021 getSpecialPowerControlE021();
+	default SpecialPowerControl_E021 getSpecialPowerControlE021(){ return new SpecialPowerControl_E021(getSpecialPowerControlE021Raw()); }
 	
 	PowerSensing getPowerSensing1();
 	PowerSensing getPowerSensing2();
 	PowerSensing getPowerSensing3();
 	
 	int getSensingTimeDelayRaw();
-	int getSensingTimeDelaySeconds();
+	default int getSensingTimeDelaySeconds(){ return getSensingTimeDelayRaw() + 10; }
 	
 	int getLEDLoadCurrentRaw();
 	/** Units: mA */
-	int getLEDLoadCurrent();
+	default int getLEDLoadCurrentMilliAmps(){ return getLEDLoadCurrentRaw() * 10; }
 	
 	int getSpecialPowerControlE02DRaw();
-	SpecialPowerControl_E02D getSpecialPowerControlE0D1();
+	default SpecialPowerControl_E02D getSpecialPowerControlE0D1(){ return new SpecialPowerControl_E02D(getSpecialPowerControlE02DRaw()); }
 	
 	
 	
@@ -199,13 +248,13 @@ public interface RoverReadTable extends ChargeController, DailyData {
 		private final int powerWithNoPeopleSensedRaw;
 		private final int powerWithNoPeopleSensed;
 		
-		public PowerSensing(int workingHoursRaw, int workingHours, int powerWithPeopleSensedRaw, int powerWithPeopleSensed, int powerWithNoPeopleSensedRaw, int powerWithNoPeopleSensed) {
+		public PowerSensing(int workingHoursRaw, int powerWithPeopleSensedRaw, int powerWithNoPeopleSensedRaw) {
 			this.workingHoursRaw = workingHoursRaw;
-			this.workingHours = workingHours;
+			this.workingHours = workingHoursRaw + 1;
 			this.powerWithPeopleSensedRaw = powerWithPeopleSensedRaw;
-			this.powerWithPeopleSensed = powerWithPeopleSensed;
+			this.powerWithPeopleSensed = powerWithPeopleSensedRaw + 10;
 			this.powerWithNoPeopleSensedRaw = powerWithNoPeopleSensedRaw;
-			this.powerWithNoPeopleSensed = powerWithNoPeopleSensed;
+			this.powerWithNoPeopleSensed = powerWithNoPeopleSensedRaw + 10;
 		}
 		
 		public int getWorkingHoursRaw() { return workingHoursRaw; }

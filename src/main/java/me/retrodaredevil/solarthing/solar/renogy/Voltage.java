@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing.solar.renogy.rover;
+package me.retrodaredevil.solarthing.solar.renogy;
 
 import me.retrodaredevil.solarthing.packets.CodeMode;
 
@@ -7,7 +7,7 @@ import me.retrodaredevil.solarthing.packets.CodeMode;
  *
  * PDU address: 0x000A, Bytes: 2, upper 8 bits
  */
-public enum MaxVoltage implements CodeMode {
+public enum Voltage implements CodeMode {
 	V12(12, 12),
 	V24(24, 24),
 	V36(36, 36),
@@ -18,7 +18,7 @@ public enum MaxVoltage implements CodeMode {
 	private final int code;
 	private final Integer voltage;
 	
-	MaxVoltage(int code, Integer voltage) {
+	Voltage(int code, Integer voltage) {
 		this.code = code;
 		this.voltage = voltage;
 	}

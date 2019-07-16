@@ -14,7 +14,7 @@ import me.retrodaredevil.solarthing.packets.CodeMode;
  */
 public enum StreetLight implements CodeMode {
 	OFF("Off", 0),
-	ON("On", 1)
+	ON("On", 1 << 7)
 	;
 	private final String name;
 	private final int code;
@@ -24,6 +24,10 @@ public enum StreetLight implements CodeMode {
 		this.code = code;
 	}
 	
+	@Override
+	public Integer getMaximumAllowedValue() {
+		return 255;
+	}
 	
 	@Override
 	public int getIgnoredBits() {
@@ -45,6 +49,6 @@ public enum StreetLight implements CodeMode {
 	 * @return An int in range [0..100] representing the brightness level
 	 */
 	public static int getBrightnessValue(int rawValue){
-		return 0b10000000 ^ rawValue;
+		return ~0b10000000 & rawValue;
 	}
 }

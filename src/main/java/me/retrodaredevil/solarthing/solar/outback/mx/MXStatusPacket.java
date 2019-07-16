@@ -34,7 +34,7 @@ public interface MXStatusPacket extends OutbackPacket, BatteryVoltagePacket, Cha
 	
 	@Override
 	default Float getChargingPower(){
-		return getChargerCurrent() * getBatteryVoltage();
+		return (getChargerCurrent() + getAmpChargerCurrent()) * getBatteryVoltage();
 	}
 	
 	/**
