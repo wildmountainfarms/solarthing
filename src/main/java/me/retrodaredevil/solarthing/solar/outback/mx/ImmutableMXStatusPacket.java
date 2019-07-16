@@ -97,12 +97,12 @@ class ImmutableMXStatusPacket implements MXStatusPacket {
 	}
 
 	@Override
-	public int getPVCurrent() {
+	public Integer getPVCurrent() {
 		return pvCurrent;
 	}
 
 	@Override
-	public int getInputVoltage() {
+	public Integer getInputVoltage() {
 		return inputVoltage;
 	}
 
