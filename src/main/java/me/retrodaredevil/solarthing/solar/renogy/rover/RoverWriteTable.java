@@ -1,14 +1,14 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover;
 
 import me.retrodaredevil.solarthing.solar.renogy.BatteryType;
-import me.retrodaredevil.solarthing.solar.renogy.SystemVoltage;
+import me.retrodaredevil.solarthing.solar.renogy.Voltage;
 
 @SuppressWarnings("unused")
 public interface RoverWriteTable {
 	void setControllerDeviceAddress(int address);
 	void setStreetLightStatus(StreetLight streetLightStatus);
 	void setStreetLightBrightnessPercent(int brightnessPercent);
-	void setSystemVoltageSetting(SystemVoltage systemVoltage);
+	void setSystemVoltageSetting(Voltage voltage);
 	// I don't think we can set the recognized voltage
 	void setBatteryType(BatteryType batteryType);
 	void setOverVoltageThresholdRaw(int value);
@@ -22,8 +22,7 @@ public interface RoverWriteTable {
 	void setOverDischargeVoltageRaw(int value);
 	void setDischargingLimitVoltageRaw(int value);
 	
-	void setEndOfChargeSOC(int value);
-	void setEndOfDischargeSOC(int value);
+	void setEndOfChargeSOCEndOfDischargeSOC(int endOfChargeSOCValue, int endOfDischargeSOCValue);
 	
 	void setOverDischargeTimeDelaySeconds(int seconds);
 	
@@ -86,7 +85,7 @@ public interface RoverWriteTable {
 	void setLightControlVoltage(int voltage);
 	
 	void setLEDLoadCurrentSettingRaw(int value);
-	default void setLEDLoadCurrentSetting(int milliAmps){
+	default void setLEDLoadCurrentSettingMilliAmps(int milliAmps){
 		if(milliAmps % 10 != 0){
 			throw new IllegalArgumentException("milliAmps must a multiple of 10! it was: " + milliAmps);
 		}

@@ -2,7 +2,6 @@ package me.retrodaredevil.solarthing.solar.renogy.rover;
 
 import me.retrodaredevil.solarthing.packets.CodeMode;
 import me.retrodaredevil.solarthing.packets.Modes;
-import me.retrodaredevil.solarthing.solar.renogy.SystemVoltage;
 
 public class SpecialPowerControl_E02D {
 	
@@ -14,7 +13,7 @@ public class SpecialPowerControl_E02D {
 		this.lower = lower;
 	}
 	public SpecialPowerControl_E02D(int value){
-		this(value >> 8, value & 0xFF);
+		this(value >>> 8, value & 0xFF);
 	}
 	
 	public boolean isIntelligentPowerEnabled(){
@@ -106,5 +105,35 @@ public class SpecialPowerControl_E02D {
 	}
 	public SystemVoltage getSystemVoltage(){
 		return Modes.getActiveMode(SystemVoltage.class, getSystemVoltageValueCode());
+	}
+	public boolean is24VSystem(){
+		return getSystemVoltage() == SystemVoltage.V24;
+	}
+	
+	/**
+	 * For use with PDU Address 0xE02D, lower 8 bits, (b1 to b0)
+	 */
+	public enum SystemVoltage implements CodeMode {
+		V12(12, 0),
+		V24(24, 1)
+		;
+		
+		private final int voltage;
+		private final int code;
+		
+		SystemVoltage(int voltage, int code) {
+			this.voltage = voltage;
+			this.code = code;
+		}
+		
+		@Override
+		public int getValueCode() {
+			return code;
+		}
+		
+		@Override
+		public String getModeName() {
+			return voltage + "V";
+		}
 	}
 }

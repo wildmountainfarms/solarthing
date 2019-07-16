@@ -13,7 +13,7 @@ public class SpecialPowerControl_E021 {
 		this.lower = lower;
 	}
 	public SpecialPowerControl_E021(int value){
-		this(value >> 8, value & 0xFF);
+		this(value >>> 8, value & 0xFF);
 	}
 	
 	

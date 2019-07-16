@@ -92,7 +92,7 @@ class ImmutableMXStatusPacket implements MXStatusPacket {
 	}
 	
 	@Override
-	public int getChargerCurrent() {
+	public Integer getChargerCurrent() {
 		return chargerCurrent;
 	}
 
@@ -117,7 +117,7 @@ class ImmutableMXStatusPacket implements MXStatusPacket {
 	}
 
 	@Override
-	public float getAmpChargerCurrent() {
+	public Float getAmpChargerCurrent() {
 		return ampChargerCurrent;
 	}
 
