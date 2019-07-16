@@ -1,7 +1,9 @@
 package me.retrodaredevil.solarthing.solar.outback.mx;
 
-import me.retrodaredevil.solarthing.solar.outback.OutbackPacket;
 import me.retrodaredevil.solarthing.solar.common.BatteryVoltagePacket;
+import me.retrodaredevil.solarthing.solar.common.ChargeController;
+import me.retrodaredevil.solarthing.solar.common.DailyData;
+import me.retrodaredevil.solarthing.solar.outback.OutbackPacket;
 
 /**
  * Represents an MX Status Packet from an Outback Mate
@@ -9,7 +11,7 @@ import me.retrodaredevil.solarthing.solar.common.BatteryVoltagePacket;
  * In previous version, it was just "MX" instead of "MXFM" so MX is the same as MXFM in the documentation. FM stands for FLEXmax.
  */
 @SuppressWarnings("unused")
-public interface MXStatusPacket extends OutbackPacket, BatteryVoltagePacket {
+public interface MXStatusPacket extends OutbackPacket, BatteryVoltagePacket, ChargeController, DailyData {
 	
 	// region Packet Values
 	
@@ -19,7 +21,21 @@ public interface MXStatusPacket extends OutbackPacket, BatteryVoltagePacket {
 	 * The DC current the MX is delivering to the batteries in Amps
 	 * @return [0..99] representing the charger current in Amps
 	 */
-	int getChargerCurrent();
+	@Override
+	Integer getChargerCurrent();
+	/**
+	 * Should be serialized as "ampChargerCurrent"
+	 * <p>
+	 * Only applies to newer firmware using FlexMAX 80 or FlexMAX 60
+	 * @return [0..0.9] The current to add to {@link #getChargerCurrent()} to get current displayed on FM80 or FM60
+	 */
+	@Override
+	Float getAmpChargerCurrent();
+	
+	@Override
+	default Float getChargingPower(){
+		return getChargerCurrent() * getBatteryVoltage();
+	}
 	
 	/**
 	 * Should be serialized as "pvCurrent"
@@ -27,7 +43,8 @@ public interface MXStatusPacket extends OutbackPacket, BatteryVoltagePacket {
 	 * The DC current the MX is taking from the PV panels in Amps
 	 * @return [0..99] representing the PV current in Amps
 	 */
-	int getPVCurrent();
+	@Override
+	Integer getPVCurrent();
 	
 	/**
 	 * Should be serialized as "inputVoltage"
@@ -35,7 +52,8 @@ public interface MXStatusPacket extends OutbackPacket, BatteryVoltagePacket {
 	 * The voltage seen at the MX's PV input terminals
 	 * @return [0..256] The PV panel voltage (in volts)
 	 */
-	int getInputVoltage();
+	@Override
+	Integer getInputVoltage();
 	
 	/**
 	 * Should be serialized as "dailyKWH"
@@ -43,15 +61,9 @@ public interface MXStatusPacket extends OutbackPacket, BatteryVoltagePacket {
 	 * This number is reset every morning when the MX wakes up
 	 * @return [0..99.9] representing the running total of KWatt Hours produced by the PV array
 	 */
+	@Override
 	float getDailyKWH();
 	
-	/**
-	 * Should be serialized as "ampChargerCurrent"
-	 * <p>
-	 * Only applies to newer firmware using FlexMAX 80 or FlexMAX 60
-	 * @return [0..0.9] The current to add to {@link #getChargerCurrent()} to get current displayed on FM80 or FM60
-	 */
-	float getAmpChargerCurrent();
 	
 	/**
 	 * Should be serialized as "auxMode"
@@ -83,6 +95,7 @@ public interface MXStatusPacket extends OutbackPacket, BatteryVoltagePacket {
 	 * 0 is always returned if this is on old firmware. (this only works on FLEXmax80 and FLEXmax60)
 	 * @return [0..2000]u[9999] The running daily total of amp hours produced by the charge controller
 	 */
+	@Override
 	int getDailyAH();
 	
 	/**
@@ -102,6 +115,7 @@ public interface MXStatusPacket extends OutbackPacket, BatteryVoltagePacket {
 	 * @see #getDailyKWH()
 	 * @return [0..99.9] in string form
 	 */
+	@Override
 	String getDailyKWHString();
 
 	/**

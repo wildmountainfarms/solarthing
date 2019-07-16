@@ -49,8 +49,8 @@ public enum AuxMode implements CodeMode {
 	}
 	
 	@Override
-	public boolean isActive(int valueCode) {
-		return CodeMode.super.isActive(getActualValueCode(valueCode));
+	public int getIgnoredBits() {
+		return 0b01000000;
 	}
 	
 	/**

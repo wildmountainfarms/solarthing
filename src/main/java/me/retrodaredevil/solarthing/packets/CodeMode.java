@@ -8,10 +8,15 @@ public interface CodeMode extends Mode {
 	 * @return The code representing the mode
 	 */
 	int getValueCode();
+	
 
 	@Override
 	default boolean isActive(int valueCode){
-		return getValueCode() == valueCode;
+		return getValueCode() == (getIgnoredBits() ^ valueCode);
+	}
+	
+	default int getIgnoredBits(){
+		return 0;
 	}
 
 }

@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.solar.renogy;
 
-import me.retrodaredevil.solarthing.solar.SolarPacket;
+import me.retrodaredevil.solarthing.solar.AddressedSolarPacket;
 
-public interface RenogyPacket extends SolarPacket {
+public interface RenogyPacket extends AddressedSolarPacket {
+
 }
