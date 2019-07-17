@@ -1,7 +1,11 @@
 package me.retrodaredevil.solarthing.solar.outback.fx;
 
+import me.retrodaredevil.solarthing.packets.BitmaskMode;
+import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.solar.outback.OutbackPacket;
 import me.retrodaredevil.solarthing.solar.common.BatteryVoltagePacket;
+
+import java.util.Collection;
 
 /**
  * Represents an FX Status Packet from an Outback Mate
@@ -59,6 +63,10 @@ public interface FXStatusPacket extends OutbackPacket, BatteryVoltagePacket {
 	 * @return The error mode bitmask which represents a varying number of ErrorModes
 	 */
 	int getErrorMode();
+	@Override
+	default Collection<? extends BitmaskMode> getActiveErrors(){
+		return Modes.getActiveModes(FXErrorMode.class, getErrorMode());
+	}
 	
 	/**
 	 * Should be serialized as "acMode"

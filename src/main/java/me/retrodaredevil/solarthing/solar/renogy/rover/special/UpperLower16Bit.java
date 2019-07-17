@@ -9,7 +9,7 @@ public interface UpperLower16Bit {
 	default int getCombined(){
 		return getCombined(getUpper(), getLower());
 	}
-	default int getCombinedShort(){
+	default short getCombinedShort(){
 		return (short) getCombined();
 	}
 	static int getCombined(int upper, int lower){

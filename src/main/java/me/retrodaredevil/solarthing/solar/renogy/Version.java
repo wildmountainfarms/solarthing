@@ -37,6 +37,6 @@ public final class Version {
 	
 	@Override
 	public String toString() {
-		return "V" + twoPlaces(high) + "." + twoPlaces(middle) + twoPlaces(low);
+		return "V" + twoPlaces(high) + "." + twoPlaces(middle) + "." +twoPlaces(low);
 	}
 }

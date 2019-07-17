@@ -13,14 +13,17 @@ class ImmutableMXStatusPacket implements MXStatusPacket {
 	private final int chargerCurrent, pvCurrent, inputVoltage;
 
 	private final float dailyKWH;
+	@Deprecated
 	private final String dailyKWHString;
 
 	private final float ampChargerCurrent;
+	@Deprecated
 	private final String ampChargerCurrentString;
 
 	private final int auxMode, errorMode, chargerMode;
 
 	private final float batteryVoltage;
+	@Deprecated
 	private final String batteryVoltageString;
 
 	private final int dailyAH, chksum;
@@ -91,11 +94,17 @@ class ImmutableMXStatusPacket implements MXStatusPacket {
 		return identifier;
 	}
 	
+	@Deprecated
 	@Override
 	public Integer getChargerCurrent() {
 		return chargerCurrent;
 	}
-
+	
+	@Override
+	public Number getChargingCurrent() {
+		return chargerCurrent + ampChargerCurrent;
+	}
+	
 	@Override
 	public Integer getPVCurrent() {
 		return pvCurrent;

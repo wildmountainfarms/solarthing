@@ -40,6 +40,13 @@ to store data in another database, you can create your own implementation of [Pa
 
 If your implementation is general enough, submit a pull request so others can use your implementation as well!
 
+### Contributing
+Contributions are welcome! Feel free to submit an issue to check to see if you want to start working on a feature but aren't
+sure if it will be accepted.
+
+### Conventions
+This project requires Java 8+. However Java 8 API additions aren't used to remain compatible with Android SDK level 19.
+
 ### Compiling
 Run the command
 ```

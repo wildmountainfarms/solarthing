@@ -1,9 +1,13 @@
 package me.retrodaredevil.solarthing.solar.outback.mx;
 
+import me.retrodaredevil.solarthing.packets.BitmaskMode;
+import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.solar.common.BatteryVoltagePacket;
 import me.retrodaredevil.solarthing.solar.common.ChargeController;
 import me.retrodaredevil.solarthing.solar.common.DailyData;
 import me.retrodaredevil.solarthing.solar.outback.OutbackPacket;
+
+import java.util.Collection;
 
 /**
  * Represents an MX Status Packet from an Outback Mate
@@ -78,6 +82,10 @@ public interface MXStatusPacket extends OutbackPacket, BatteryVoltagePacket, Cha
 	 * @return [0..256] represents a varying number of active {@link MXErrorMode}s
 	 */
 	int getErrorMode();
+	@Override
+	default Collection<? extends BitmaskMode> getActiveErrors(){
+		return Modes.getActiveModes(MXErrorMode.class, getErrorMode());
+	}
 	
 	/**
 	 * Right now, the range should only be [0..4] as there are no documented charger modes other than those 5
@@ -115,15 +123,10 @@ public interface MXStatusPacket extends OutbackPacket, BatteryVoltagePacket, Cha
 	 * @see #getDailyKWH()
 	 * @return [0..99.9] in string form
 	 */
+	@Deprecated
 	@Override
 	String getDailyKWHString();
 
-	/**
-	 * Should be serialized as "ampChargerCurrentString" if serialized at all
-	 * @see #getAmpChargerCurrent()
-	 * @return The amp charger current in the format "0.X" where X is a digit [0..0.9]
-	 */
-	String getAmpChargerCurrentString();
 
 	// endregion
 }

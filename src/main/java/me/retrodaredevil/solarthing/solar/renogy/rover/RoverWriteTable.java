@@ -2,6 +2,8 @@ package me.retrodaredevil.solarthing.solar.renogy.rover;
 
 import me.retrodaredevil.solarthing.solar.renogy.BatteryType;
 import me.retrodaredevil.solarthing.solar.renogy.Voltage;
+import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerControl_E021;
+import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerControl_E02D;
 
 @SuppressWarnings("unused")
 public interface RoverWriteTable extends Rover {
@@ -77,7 +79,7 @@ public interface RoverWriteTable extends Rover {
 			setTemperatureCompensationFactorRaw(value - 1);
 		}
 	}
-	void setDurationHours(OperatingSetting setting, int hours);
+	void setOperatingDurationHours(OperatingSetting setting, int hours);
 	void setOperatingPowerPercentage(OperatingSetting setting, int operatingPowerPercentage);
 	
 	void setLoadWorkingMode(LoadWorkingMode loadWorkingMode);
@@ -93,9 +95,15 @@ public interface RoverWriteTable extends Rover {
 		setLEDLoadCurrentSettingRaw(milliAmps / 10);
 	}
 	
-	void setSpecialPowerControlE021Raw(int value); // TODO create mutable SpecialPowerControl_E021
+	void setSpecialPowerControlE021Raw(int value);
+	default void setSpecialPowerControl(SpecialPowerControl_E021 specialPowerControl){ setSpecialPowerControlE021Raw(specialPowerControl.getCombined()); }
 	
-	// TODO add PowerSensing setters
+	void setWorkingHoursRaw(PowerSensing powerSensing, int value);
+	default void setWorkingHours(PowerSensing powerSensing, int hours){ setWorkingHoursRaw(powerSensing, hours - 1); }
+	void setPowerWithPeopleSensedRaw(PowerSensing powerSensing, int value);
+	default void setPowerWithPeopleSensedPercentage(PowerSensing powerSensing, int percentage) { setPowerWithPeopleSensedRaw(powerSensing, percentage - 10); }
+	void setPowerWithNoPeopleSensedRaw(PowerSensing powerSensing, int value);
+	default void setPowerWithNoPeopleSensedPercentage(PowerSensing powerSensing, int percentage) { setPowerWithNoPeopleSensedRaw(powerSensing, percentage - 10); }
 	
 	void setSensingTimeDelayRaw(int value);
 	default void setSensingTimeDelaySeconds(int seconds){
@@ -109,7 +117,7 @@ public interface RoverWriteTable extends Rover {
 	}
 	
 	void setLEDLoadCurrentRaw(int value);
-	default void setLEDLoadCurrent(int milliAmps){
+	default void setLEDLoadCurrentMilliAmps(int milliAmps){
 		if(milliAmps % 10 != 0){
 			throw new IllegalArgumentException("milliAmps must a multiple of 10! it was: " + milliAmps);
 		}
@@ -117,4 +125,5 @@ public interface RoverWriteTable extends Rover {
 	}
 	
 	void setSpecialPowerControlE02DRaw(int value);
+	default void setSpecialPowerControl(SpecialPowerControl_E02D specialPowerControl){ setSpecialPowerControlE02DRaw(specialPowerControl.getCombined()); }
 }

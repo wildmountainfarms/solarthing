@@ -1,20 +1,22 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover;
 
+import me.retrodaredevil.solarthing.packets.BitmaskMode;
 import me.retrodaredevil.solarthing.packets.Modes;
-import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
 import me.retrodaredevil.solarthing.solar.common.ChargeController;
 import me.retrodaredevil.solarthing.solar.common.DailyData;
-import me.retrodaredevil.solarthing.solar.renogy.BatteryType;
-import me.retrodaredevil.solarthing.solar.renogy.ProductType;
-import me.retrodaredevil.solarthing.solar.renogy.Version;
-import me.retrodaredevil.solarthing.solar.renogy.Voltage;
+import me.retrodaredevil.solarthing.solar.common.ErrorReporter;
+import me.retrodaredevil.solarthing.solar.renogy.*;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.ImmutableSpecialPowerControl_E021;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.ImmutableSpecialPowerControl_E02D;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerControl_E021;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerControl_E02D;
 
+import java.util.Collection;
+
 @SuppressWarnings("unused")
-public interface RoverReadTable extends Rover, ChargeController, DailyData {
+public interface RoverReadTable extends Rover, ErrorReporter, ChargeController, DailyData {
+	
+	
 	int getMaxVoltageValue();
 	default Voltage getMaxVoltage(){ return Modes.getActiveMode(Voltage.class, getMaxVoltageValue()); }
 	
@@ -67,7 +69,7 @@ public interface RoverReadTable extends Rover, ChargeController, DailyData {
 	// implements BatteryVoltage
 	
 	@Override
-	Float getChargerCurrent();
+	Float getChargingCurrent();
 	
 	int getControllerTemperature();
 	int getBatteryTemperature();
@@ -85,13 +87,13 @@ public interface RoverReadTable extends Rover, ChargeController, DailyData {
 	@Override
 	Integer getChargingPower();
 	
-	BatteryVoltage getDailyMinBatteryVoltage();
-	BatteryVoltage getDailyMaxBatteryVoltage();
+	float getDailyMinBatteryVoltage();
+	float getDailyMaxBatteryVoltage();
 	
 	/**
 	 * @return The daily record for the maximum charger current
 	 */
-	float getDailyMaxChargerCurrent();
+	float getDailyMaxChargingCurrent();
 	
 	/**
 	 * @return The daily record for the maximum discharging current
@@ -124,7 +126,12 @@ public interface RoverReadTable extends Rover, ChargeController, DailyData {
 	int getChargingStateValue();
 	default ChargingState getChargingState(){ return Modes.getActiveMode(ChargingState.class, getChargingStateValue()); }
 	
+	@Override
 	int getErrorMode();
+	@Override
+	default Collection<RoverErrorMode> getActiveErrors(){
+		return Modes.getActiveModes(RoverErrorMode.class, getErrorMode());
+	}
 	
 	/**
 	 *
@@ -136,15 +143,15 @@ public interface RoverReadTable extends Rover, ChargeController, DailyData {
 	int getSystemVoltageSettingValue();
 	/** Should be serialized as "recognizedVoltage" */
 	int getRecognizedVoltageValue();
-	default SpecialPowerControl_E02D.SystemVoltage getSystemVoltageSetting(){ return Modes.getActiveMode(SpecialPowerControl_E02D.SystemVoltage.class, getSystemVoltageSettingValue()); }
-	default SpecialPowerControl_E02D.SystemVoltage getRecognizedVoltage(){ return Modes.getActiveMode(SpecialPowerControl_E02D.SystemVoltage.class, getRecognizedVoltageValue()); }
+	default Voltage getSystemVoltageSetting(){ return Modes.getActiveMode(Voltage.class, getSystemVoltageSettingValue()); }
+	default Voltage getRecognizedVoltage(){ return Modes.getActiveMode(Voltage.class, getRecognizedVoltageValue()); }
 	
 	// 0xE004
 	/** Should be serialized as "batteryType" */
 	int getBatteryTypeValue();
 	default BatteryType getBatteryType(){ return Modes.getActiveMode(BatteryType.class, getBatteryTypeValue()); }
 	
-	int getOverVoltageThresholdRaw(); // TODO add non-raw method that returns a float
+	int getOverVoltageThresholdRaw(); // TODO add a static method that converts a float into the raw voltage
 	int getChargingVoltageLimitRaw();
 	int getEqualizingChargingVoltageRaw();
 	/** AKA overcharge voltage (for lithium batteries) */
@@ -189,7 +196,7 @@ public interface RoverReadTable extends Rover, ChargeController, DailyData {
 	}
 	
 	//0xE015
-	int getDurationHours(OperatingSetting setting);
+	int getOperatingDurationHours(OperatingSetting setting);
 	int getOperatingPowerPercentage(OperatingSetting setting);
 	
 	/** Should be serialized as "loadWorkingMode" */
@@ -207,12 +214,12 @@ public interface RoverReadTable extends Rover, ChargeController, DailyData {
 	int getSpecialPowerControlE021Raw();
 	default SpecialPowerControl_E021 getSpecialPowerControlE021(){ return new ImmutableSpecialPowerControl_E021(getSpecialPowerControlE021Raw()); }
 	
-	int getWorkingHoursRaw(PowerSensing powerSensing); // TODO add setters in RoverWriteTable
+	int getWorkingHoursRaw(PowerSensing powerSensing);
 	default int getWorkingHours(PowerSensing powerSensing){ return getWorkingHoursRaw(powerSensing) + 1; }
 	int getPowerWithPeopleSensedRaw(PowerSensing powerSensing);
-	default int getPowerWithPeopleSensed(PowerSensing powerSensing){ return getPowerWithPeopleSensedRaw(powerSensing) + 10; }
+	default int getPowerWithPeopleSensedPercentage(PowerSensing powerSensing){ return getPowerWithPeopleSensedRaw(powerSensing) + 10; }
 	int getPowerWithNoPeopleSensedRaw(PowerSensing powerSensing);
-	default int getPowerWithNoPeopleSensed(PowerSensing powerSensing){ return getPowerWithNoPeopleSensedRaw(powerSensing) + 10; }
+	default int getPowerWithNoPeopleSensedPercentage(PowerSensing powerSensing){ return getPowerWithNoPeopleSensedRaw(powerSensing) + 10; }
 	
 	
 	int getSensingTimeDelayRaw();

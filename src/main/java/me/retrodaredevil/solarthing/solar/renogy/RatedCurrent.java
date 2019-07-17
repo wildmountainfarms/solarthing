@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing.solar.renogy.rover;
+package me.retrodaredevil.solarthing.solar.renogy;
 
 import me.retrodaredevil.solarthing.packets.CodeMode;
 
