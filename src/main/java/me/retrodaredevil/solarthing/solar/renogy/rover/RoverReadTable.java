@@ -8,6 +8,9 @@ import me.retrodaredevil.solarthing.solar.renogy.BatteryType;
 import me.retrodaredevil.solarthing.solar.renogy.Voltage;
 import me.retrodaredevil.solarthing.solar.renogy.ProductType;
 import me.retrodaredevil.solarthing.solar.renogy.Version;
+import me.retrodaredevil.solarthing.solar.renogy.rover.special.ImmutableSpecialPowerControl_E02D;
+import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerControl_E021;
+import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerControl_E02D;
 
 @SuppressWarnings("unused")
 public interface RoverReadTable extends ChargeController, DailyData {
@@ -44,9 +47,9 @@ public interface RoverReadTable extends ChargeController, DailyData {
 		return r.toString();
 	}
 	int getSoftwareVersionValue();
-	Version getSoftwareVersion();
+	default Version getSoftwareVersion(){ return new Version(getSoftwareVersionValue()); }
 	int getHardwareVersionValue();
-	Version getHardwareVersion();
+	default Version getHardwareVersion() { return new Version(getHardwareVersionValue()); }
 	int getProductSerialNumber();
 	
 	/**
@@ -217,7 +220,7 @@ public interface RoverReadTable extends ChargeController, DailyData {
 	default int getLEDLoadCurrentMilliAmps(){ return getLEDLoadCurrentRaw() * 10; }
 	
 	int getSpecialPowerControlE02DRaw();
-	default SpecialPowerControl_E02D getSpecialPowerControlE0D1(){ return new SpecialPowerControl_E02D(getSpecialPowerControlE02DRaw()); }
+	default SpecialPowerControl_E02D getSpecialPowerControlE0D1(){ return new ImmutableSpecialPowerControl_E02D(getSpecialPowerControlE02DRaw()); }
 	
 	
 	

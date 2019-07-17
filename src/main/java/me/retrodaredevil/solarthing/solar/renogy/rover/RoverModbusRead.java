@@ -47,13 +47,11 @@ public class RoverModbusRead implements RoverReadTable {
 	public int getSoftwareVersionValue() {
 		return modbus.readRegisterAndNext(0x0014);
 	}
-	@Override public Version getSoftwareVersion() { return new Version(getSoftwareVersionValue()); }
 	
 	@Override
 	public int getHardwareVersionValue() {
 		return modbus.readRegisterAndNext(0x0016);
 	}
-	@Override public Version getHardwareVersion() { return new Version(getHardwareVersionValue()); }
 	
 	@Override
 	public int getProductSerialNumber() {

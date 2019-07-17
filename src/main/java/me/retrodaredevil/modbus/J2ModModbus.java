@@ -2,16 +2,31 @@ package me.retrodaredevil.modbus;
 
 import com.ghgande.j2mod.modbus.ModbusException;
 import com.ghgande.j2mod.modbus.facade.AbstractModbusMaster;
+import com.ghgande.j2mod.modbus.facade.ModbusSerialMaster;
 import com.ghgande.j2mod.modbus.procimg.Register;
+import com.ghgande.j2mod.modbus.util.SerialParameters;
 
 public class J2ModModbus implements ModbusRead {
 	private final AbstractModbusMaster master;
 	public J2ModModbus(AbstractModbusMaster master){
 		this.master = master;
+		try {
+			master.connect();
+		} catch (Exception e) {
+			throw new ModbusRuntimeException(e);
+		}
+	}
+	
+	/**
+	 * NOTE: For renogy products, the {@link SerialParameters#getEncoding()} should be set to <code>"rtu"</code>
+	 * @param serialParameters
+	 */
+	public J2ModModbus(SerialParameters serialParameters){
+		this(new ModbusSerialMaster(serialParameters));
 	}
 	private static int convertTwo(Register r, Register r2){
 		int highValue = r.toUnsignedShort();
-		int lowValue = r.toUnsignedShort();
+		int lowValue = r2.toUnsignedShort();
 		return (highValue << 16) & lowValue;
 	}
 	private static int convertTwo(Register[] registers){
