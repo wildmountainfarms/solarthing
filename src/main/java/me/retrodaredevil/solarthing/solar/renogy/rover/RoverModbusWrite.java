@@ -139,6 +139,18 @@ public class RoverModbusWrite implements RoverWriteTable {
 	}
 	
 	@Override
+	public void setDurationHours(OperatingSetting setting, int hours) {
+		// TODO get range
+		modbus.writeRegister(setting.getDurationHoursRegister(), hours);
+	}
+	
+	@Override
+	public void setOperatingPowerPercentage(OperatingSetting setting, int operatingPowerPercentage) {
+		checkRange(0, 100, operatingPowerPercentage);
+		modbus.writeRegister(setting.getOperatingPowerPercentageRegister(), operatingPowerPercentage);
+	}
+	
+	@Override
 	public void setLoadWorkingMode(LoadWorkingMode loadWorkingMode) {
 		modbus.writeRegister(0xE01D, loadWorkingMode.getValueCode());
 	}

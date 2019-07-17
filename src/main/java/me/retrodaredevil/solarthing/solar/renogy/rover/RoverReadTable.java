@@ -5,15 +5,16 @@ import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
 import me.retrodaredevil.solarthing.solar.common.ChargeController;
 import me.retrodaredevil.solarthing.solar.common.DailyData;
 import me.retrodaredevil.solarthing.solar.renogy.BatteryType;
-import me.retrodaredevil.solarthing.solar.renogy.Voltage;
 import me.retrodaredevil.solarthing.solar.renogy.ProductType;
 import me.retrodaredevil.solarthing.solar.renogy.Version;
+import me.retrodaredevil.solarthing.solar.renogy.Voltage;
+import me.retrodaredevil.solarthing.solar.renogy.rover.special.ImmutableSpecialPowerControl_E021;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.ImmutableSpecialPowerControl_E02D;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerControl_E021;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerControl_E02D;
 
 @SuppressWarnings("unused")
-public interface RoverReadTable extends ChargeController, DailyData {
+public interface RoverReadTable extends Rover, ChargeController, DailyData {
 	int getMaxVoltageValue();
 	default Voltage getMaxVoltage(){ return Modes.getActiveMode(Voltage.class, getMaxVoltageValue()); }
 	
@@ -188,10 +189,8 @@ public interface RoverReadTable extends ChargeController, DailyData {
 	}
 	
 	//0xE015
-	OperatingStage getStage1();
-	OperatingStage getStage2();
-	OperatingStage getStage3();
-	OperatingStage getMorningOn();
+	int getDurationHours(OperatingSetting setting);
+	int getOperatingPowerPercentage(OperatingSetting setting);
 	
 	/** Should be serialized as "loadWorkingMode" */
 	int getLoadWorkingModeValue();
@@ -206,11 +205,15 @@ public interface RoverReadTable extends ChargeController, DailyData {
 	default int getLEDLoadCurrentSettingMilliAmps(){ return getLEDLoadCurrentSettingRaw() * 10; }
 	
 	int getSpecialPowerControlE021Raw();
-	default SpecialPowerControl_E021 getSpecialPowerControlE021(){ return new SpecialPowerControl_E021(getSpecialPowerControlE021Raw()); }
+	default SpecialPowerControl_E021 getSpecialPowerControlE021(){ return new ImmutableSpecialPowerControl_E021(getSpecialPowerControlE021Raw()); }
 	
-	PowerSensing getPowerSensing1();
-	PowerSensing getPowerSensing2();
-	PowerSensing getPowerSensing3();
+	int getWorkingHoursRaw(PowerSensing powerSensing); // TODO add setters in RoverWriteTable
+	default int getWorkingHours(PowerSensing powerSensing){ return getWorkingHoursRaw(powerSensing) + 1; }
+	int getPowerWithPeopleSensedRaw(PowerSensing powerSensing);
+	default int getPowerWithPeopleSensed(PowerSensing powerSensing){ return getPowerWithPeopleSensedRaw(powerSensing) + 10; }
+	int getPowerWithNoPeopleSensedRaw(PowerSensing powerSensing);
+	default int getPowerWithNoPeopleSensed(PowerSensing powerSensing){ return getPowerWithNoPeopleSensedRaw(powerSensing) + 10; }
+	
 	
 	int getSensingTimeDelayRaw();
 	default int getSensingTimeDelaySeconds(){ return getSensingTimeDelayRaw() + 10; }
@@ -221,51 +224,5 @@ public interface RoverReadTable extends ChargeController, DailyData {
 	
 	int getSpecialPowerControlE02DRaw();
 	default SpecialPowerControl_E02D getSpecialPowerControlE0D1(){ return new ImmutableSpecialPowerControl_E02D(getSpecialPowerControlE02DRaw()); }
-	
-	
-	
-	final class OperatingStage {
-		private final int durationHours;
-		private final int operatingPowerPercentage;
-		
-		public OperatingStage(int durationHours, int operatingPowerPercentage) {
-			this.durationHours = durationHours;
-			this.operatingPowerPercentage = operatingPowerPercentage;
-		}
-		
-		public int getDurationHours() {
-			return durationHours;
-		}
-		
-		public int getOperatingPowerPercentage() {
-			return operatingPowerPercentage;
-		}
-	}
-	final class PowerSensing {
-		private final int workingHoursRaw;
-		private final int workingHours;
-		
-		private final int powerWithPeopleSensedRaw;
-		private final int powerWithPeopleSensed;
-		
-		private final int powerWithNoPeopleSensedRaw;
-		private final int powerWithNoPeopleSensed;
-		
-		public PowerSensing(int workingHoursRaw, int powerWithPeopleSensedRaw, int powerWithNoPeopleSensedRaw) {
-			this.workingHoursRaw = workingHoursRaw;
-			this.workingHours = workingHoursRaw + 1;
-			this.powerWithPeopleSensedRaw = powerWithPeopleSensedRaw;
-			this.powerWithPeopleSensed = powerWithPeopleSensedRaw + 10;
-			this.powerWithNoPeopleSensedRaw = powerWithNoPeopleSensedRaw;
-			this.powerWithNoPeopleSensed = powerWithNoPeopleSensedRaw + 10;
-		}
-		
-		public int getWorkingHoursRaw() { return workingHoursRaw; }
-		public int getWorkingHours() { return workingHours; }
-		public int getPowerWithPeopleSensedRaw() { return powerWithPeopleSensedRaw; }
-		public int getPowerWithPeopleSensed() { return powerWithPeopleSensed; }
-		public int getPowerWithNoPeopleSensedRaw() { return powerWithNoPeopleSensedRaw; }
-		public int getPowerWithNoPeopleSensed() { return powerWithNoPeopleSensed; }
-	}
 	
 }
