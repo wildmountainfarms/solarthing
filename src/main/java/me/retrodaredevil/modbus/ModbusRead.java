@@ -1,7 +1,7 @@
 package me.retrodaredevil.modbus;
 
-import static me.retrodaredevil.modbus.ByteUtil.getLower;
-import static me.retrodaredevil.modbus.ByteUtil.getUpper;
+import static me.retrodaredevil.util.NumberUtil.getLower;
+import static me.retrodaredevil.util.NumberUtil.getUpper;
 
 public interface ModbusRead {
 	int readRegister(int register);

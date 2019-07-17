@@ -1,7 +1,8 @@
-package me.retrodaredevil.solarthing.solar.renogy.rover;
+package me.retrodaredevil.solarthing.solar.renogy.rover.special;
 
 import me.retrodaredevil.solarthing.packets.CodeMode;
 import me.retrodaredevil.solarthing.packets.Modes;
+import me.retrodaredevil.solarthing.solar.renogy.rover.ChargingMethod;
 
 public class SpecialPowerControl_E021 {
 	

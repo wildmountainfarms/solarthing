@@ -50,6 +50,8 @@ Rover manual: https://www.renogy.com/template/files/Manuals/Rover%20203040%20Man
 
 Software download: https://www.renogy.com/template/files/Solar%20Station%20Monitor.zip
 
+Modbus protocol: renogy.boards.net/thread/266/rover-modbus
+
 
 https://www.rototron.info/raspberry-pi-solar-serial-rest-api-tutorial/
 
