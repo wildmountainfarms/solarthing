@@ -4,7 +4,7 @@ import me.retrodaredevil.solarthing.solar.renogy.BatteryType;
 import me.retrodaredevil.solarthing.solar.renogy.Voltage;
 
 @SuppressWarnings("unused")
-public interface RoverWriteTable {
+public interface RoverWriteTable extends Rover {
 	void setControllerDeviceAddress(int address);
 	void setStreetLightStatus(StreetLight streetLightStatus);
 	void setStreetLightBrightnessPercent(int brightnessPercent);
@@ -77,7 +77,8 @@ public interface RoverWriteTable {
 			setTemperatureCompensationFactorRaw(value - 1);
 		}
 	}
-	// TODO add Operating Stage setters
+	void setDurationHours(OperatingSetting setting, int hours);
+	void setOperatingPowerPercentage(OperatingSetting setting, int operatingPowerPercentage);
 	
 	void setLoadWorkingMode(LoadWorkingMode loadWorkingMode);
 	

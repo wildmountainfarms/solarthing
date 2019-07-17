@@ -4,60 +4,50 @@ import me.retrodaredevil.solarthing.packets.CodeMode;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.solar.renogy.rover.ChargingMethod;
 
-public class SpecialPowerControl_E021 {
-	
-	private final int upper;
-	private final int lower;
-	
-	public SpecialPowerControl_E021(int upper, int lower){
-		this.upper = upper;
-		this.lower = lower;
-	}
-	public SpecialPowerControl_E021(int value){
-		this(value >>> 8, value & 0xFF);
-	}
+public interface SpecialPowerControl_E021 extends UpperLower16Bit {
 	
 	
-	// region upper
+	// upper
+	
 	/**
 	 *
 	 * @return true if charging mode is controller by voltage, false if charging mode controlled by SOC
 	 */
-	public boolean isChargingModeControlledByVoltage(){
-		return (0b100 & upper) != 0;
+	default boolean isChargingModeControlledByVoltage(){
+		return (0b100 & getUpper()) != 0;
 	}
 	/**
 	 * @return true if special power control is enabled, false if disabled
 	 */
-	public boolean isSpecialPowerControlEnabled(){
-		return (0b10 & upper) != 0;
+	default boolean isSpecialPowerControlEnabled(){
+		return (0b10 & getUpper()) != 0;
 	}
 	/**
 	 *
 	 * @return true if the "each night on" function is enabled, false if disabled
 	 */
-	public boolean isEachNightOnEnabled(){
-		return (0b1 & upper) != 0;
+	default boolean isEachNightOnEnabled(){
+		return (0b1 & getUpper()) != 0;
 	}
-	// endregion
 	
-	// region lower
+	
+	// lower
+	
 	/**
 	 * @return true if "no charging below 0C" is enabled, false otherwise
 	 */
-	public boolean isNoChargingBelow0CEnabled(){
-		return (0b100 & lower) != 0;
+	default boolean isNoChargingBelow0CEnabled(){
+		return (0b100 & getLower()) != 0;
 	}
 	
-	public int getChargingMethodValueCode(){
-		return 0b11 & lower;
+	default int getChargingMethodValueCode(){
+		return 0b11 & getLower();
 	}
-	public ChargingMethod_E021 getChargingMethod(){
+	default ChargingMethod_E021 getChargingMethod(){
 		return Modes.getActiveMode(ChargingMethod_E021.class, getChargingMethodValueCode());
 	}
 	
-	// endregion
-	public enum ChargingMethod_E021 implements CodeMode {
+	enum ChargingMethod_E021 implements CodeMode {
 		DIRECT(0, ChargingMethod.DIRECT),
 		PWM(1, ChargingMethod.PWM)
 		;
@@ -83,6 +73,5 @@ public class SpecialPowerControl_E021 {
 			return chargingMethod.getModeName();
 		}
 	}
-	
 	
 }

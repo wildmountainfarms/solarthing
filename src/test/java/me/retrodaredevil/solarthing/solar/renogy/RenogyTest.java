@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.solar.renogy;
 
 import me.retrodaredevil.solarthing.solar.renogy.rover.ChargingMethod;
 import me.retrodaredevil.solarthing.solar.renogy.rover.StreetLight;
+import me.retrodaredevil.solarthing.solar.renogy.rover.special.MutableSpecialPowerControl_E021;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.MutableSpecialPowerControl_E02D;
 import org.junit.jupiter.api.Test;
 
@@ -26,6 +27,41 @@ final class RenogyTest {
 		assertEquals(100, StreetLight.getBrightnessValue(100 | (1 << 7)));
 		assertEquals(49, StreetLight.getBrightnessValue(49));
 		assertEquals(49, StreetLight.getBrightnessValue(49 | (1 << 7)));
+	}
+	@Test
+	void testSpecialPower_E021(){
+		MutableSpecialPowerControl_E021 power = new MutableSpecialPowerControl_E021();
+		
+		power.setChargingModeControlledByVoltage(true);
+		assertTrue(power.isChargingModeControlledByVoltage());
+		power.setChargingModeControlledByVoltage(false);
+		assertFalse(power.isChargingModeControlledByVoltage());
+		
+		power.setSpecialPowerControlEnabled(true);
+		assertTrue(power.isSpecialPowerControlEnabled());
+		power.setSpecialPowerControlEnabled(false);
+		assertFalse(power.isSpecialPowerControlEnabled());
+		
+		power.setEachNightOnEnabled(true);
+		assertTrue(power.isEachNightOnEnabled());
+		power.setEachNightOnEnabled(false);
+		assertFalse(power.isEachNightOnEnabled());
+		
+		power.setNoChargingBelow0CEnabled(true);
+		assertTrue(power.isNoChargingBelow0CEnabled());
+		power.setNoChargingBelow0CEnabled(false);
+		assertFalse(power.isNoChargingBelow0CEnabled());
+		
+		power.setChargingMethod(ChargingMethod.DIRECT);
+		assertEquals(ChargingMethod.DIRECT, power.getChargingMethod().getChargingMethod());
+		power.setChargingMethod(ChargingMethod.PWM);
+		assertEquals(ChargingMethod.PWM, power.getChargingMethod().getChargingMethod());
+		
+		assertFalse(power.isChargingModeControlledByVoltage());
+		assertFalse(power.isSpecialPowerControlEnabled());
+		assertFalse(power.isEachNightOnEnabled());
+		assertFalse(power.isNoChargingBelow0CEnabled());
+		assertEquals(ChargingMethod.PWM, power.getChargingMethod().getChargingMethod());
 	}
 	@Test
 	void testSpecialPower_E02D(){
@@ -61,5 +97,11 @@ final class RenogyTest {
 		power.setIs24VSystem(false);
 		assertFalse(power.is24VSystem());
 		
+		assertFalse(power.isIntelligentPowerEnabled());
+		assertFalse(power.isEachNightOnEnabled());
+		assertFalse(power.isLithiumBattery());
+		assertEquals(ChargingMethod.PWM, power.getChargingMethod().getChargingMethod());
+		assertFalse(power.isNoChargingBelow0CEnabled());
+		assertFalse(power.is24VSystem());
 	}
 }

@@ -4,7 +4,7 @@ import me.retrodaredevil.solarthing.packets.CodeMode;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.solar.renogy.rover.ChargingMethod;
 
-public interface SpecialPowerControl_E02D {
+public interface SpecialPowerControl_E02D extends UpperLower16Bit {
 	int getUpper();
 	int getLower();
 	

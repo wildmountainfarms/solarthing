@@ -2,7 +2,6 @@ package me.retrodaredevil.solarthing.solar.renogy.rover;
 
 import me.retrodaredevil.modbus.ModbusRead;
 import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
-import me.retrodaredevil.solarthing.solar.renogy.Version;
 
 import java.text.DecimalFormat;
 import java.text.Format;
@@ -340,20 +339,13 @@ public class RoverModbusRead implements RoverReadTable {
 	}
 	
 	@Override
-	public OperatingStage getStage1() {
-		return new OperatingStage(modbus.readRegister(0xE015), modbus.readRegister(0xE016));
+	public int getDurationHours(OperatingSetting setting) {
+		return modbus.readRegister(setting.getDurationHoursRegister());
 	}
+	
 	@Override
-	public OperatingStage getStage2() {
-		return new OperatingStage(modbus.readRegister(0xE017), modbus.readRegister(0xE018));
-	}
-	@Override
-	public OperatingStage getStage3() {
-		return new OperatingStage(modbus.readRegister(0xE019), modbus.readRegister(0xE01A));
-	}
-	@Override
-	public OperatingStage getMorningOn() {
-		return new OperatingStage(modbus.readRegister(0xE01B), modbus.readRegister(0xE01C));
+	public int getOperatingPowerPercentage(OperatingSetting setting) {
+		return modbus.readRegister(setting.getOperatingPowerPercentageRegister());
 	}
 	
 	@Override
@@ -382,16 +374,18 @@ public class RoverModbusRead implements RoverReadTable {
 	}
 	
 	@Override
-	public PowerSensing getPowerSensing1() {
-		return new PowerSensing(modbus.readRegister(0xE022), modbus.readRegister(0xE023), modbus.readRegister(0xE024));
+	public int getWorkingHoursRaw(PowerSensing powerSensing) {
+		return modbus.readRegister(powerSensing.getWorkingHoursRegister());
 	}
+	
 	@Override
-	public PowerSensing getPowerSensing2() {
-		return new PowerSensing(modbus.readRegister(0xE025), modbus.readRegister(0xE026), modbus.readRegister(0xE027));
+	public int getPowerWithPeopleSensedRaw(PowerSensing powerSensing) {
+		return modbus.readRegister(powerSensing.getPowerWithPeopleSensedRegister());
 	}
+	
 	@Override
-	public PowerSensing getPowerSensing3() {
-		return new PowerSensing(modbus.readRegister(0xE028), modbus.readRegister(0xE029), modbus.readRegister(0xE02A));
+	public int getPowerWithNoPeopleSensedRaw(PowerSensing powerSensing) {
+		return modbus.readRegister(powerSensing.getPowerWithNoPeopleSensedRegister());
 	}
 	
 	@Override
