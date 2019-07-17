@@ -27,32 +27,32 @@ public interface Rover {
 	}
 	final class OperatingSettingBundle {
 		private final int durationHours;
-		private final int operatingPowerPercentageRegister;
+		private final int operatingPowerPercentage;
 		
-		public OperatingSettingBundle(int durationHours, int operatingPowerPercentageRegister) {
+		public OperatingSettingBundle(int durationHours, int operatingPowerPercentage) {
 			this.durationHours = durationHours;
-			this.operatingPowerPercentageRegister = operatingPowerPercentageRegister;
+			this.operatingPowerPercentage = operatingPowerPercentage;
 		}
 		
 		public int getDurationHours() {
 			return durationHours;
 		}
 		
-		public int getOperatingPowerPercentageRegister() {
-			return operatingPowerPercentageRegister;
+		public int getOperatingPowerPercentage() {
+			return operatingPowerPercentage;
 		}
 	}
-	enum PowerSensing {
-		POWER_SENSING_1(0xE022),
-		POWER_SENSING_2(0xE025),
-		POWER_SENSING_3(0xE028)
+	enum Sensing {
+		SENSING_1(0xE022),
+		SENSING_2(0xE025),
+		SENSING_3(0xE028)
 		;
 		
 		private final int workingHoursRegister;
 		private final int powerWithPeopleSensedRegister;
 		private final int powerWithNoPeopleSensedRegister;
 		
-		PowerSensing(int register) {
+		Sensing(int register) {
 			workingHoursRegister = register;
 			powerWithPeopleSensedRegister = register + 1;
 			powerWithNoPeopleSensedRegister = register + 2;
@@ -70,12 +70,12 @@ public interface Rover {
 			return powerWithNoPeopleSensedRegister;
 		}
 	}
-	final class PowerSensingBundle {
+	final class SensingBundle {
 		private final int workingHoursRaw;
 		private final int powerWithPeopleSensedRaw;
 		private final int powerWithNoPeopleSensedRaw;
 		
-		public PowerSensingBundle(int workingHoursRaw, int powerWithPeopleSensedRaw, int powerWithNoPeopleSensedRaw) {
+		public SensingBundle(int workingHoursRaw, int powerWithPeopleSensedRaw, int powerWithNoPeopleSensedRaw) {
 			this.workingHoursRaw = workingHoursRaw;
 			this.powerWithPeopleSensedRaw = powerWithPeopleSensedRaw;
 			this.powerWithNoPeopleSensedRaw = powerWithNoPeopleSensedRaw;

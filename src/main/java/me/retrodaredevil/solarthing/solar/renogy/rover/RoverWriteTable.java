@@ -98,12 +98,12 @@ public interface RoverWriteTable extends Rover {
 	void setSpecialPowerControlE021Raw(int value);
 	default void setSpecialPowerControl(SpecialPowerControl_E021 specialPowerControl){ setSpecialPowerControlE021Raw(specialPowerControl.getCombined()); }
 	
-	void setWorkingHoursRaw(PowerSensing powerSensing, int value);
-	default void setWorkingHours(PowerSensing powerSensing, int hours){ setWorkingHoursRaw(powerSensing, hours - 1); }
-	void setPowerWithPeopleSensedRaw(PowerSensing powerSensing, int value);
-	default void setPowerWithPeopleSensedPercentage(PowerSensing powerSensing, int percentage) { setPowerWithPeopleSensedRaw(powerSensing, percentage - 10); }
-	void setPowerWithNoPeopleSensedRaw(PowerSensing powerSensing, int value);
-	default void setPowerWithNoPeopleSensedPercentage(PowerSensing powerSensing, int percentage) { setPowerWithNoPeopleSensedRaw(powerSensing, percentage - 10); }
+	void setWorkingHoursRaw(Sensing sensing, int value);
+	default void setWorkingHours(Sensing sensing, int hours){ setWorkingHoursRaw(sensing, hours - 1); }
+	void setPowerWithPeopleSensedRaw(Sensing sensing, int value);
+	default void setPowerWithPeopleSensedPercentage(Sensing sensing, int percentage) { setPowerWithPeopleSensedRaw(sensing, percentage - 10); }
+	void setPowerWithNoPeopleSensedRaw(Sensing sensing, int value);
+	default void setPowerWithNoPeopleSensedPercentage(Sensing sensing, int percentage) { setPowerWithNoPeopleSensedRaw(sensing, percentage - 10); }
 	
 	void setSensingTimeDelayRaw(int value);
 	default void setSensingTimeDelaySeconds(int seconds){

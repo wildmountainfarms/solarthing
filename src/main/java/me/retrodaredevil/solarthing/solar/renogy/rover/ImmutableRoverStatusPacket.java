@@ -78,16 +78,22 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	private final int endOfChargeSOC;
 	private final int endOfDischargeSOC;
 	private final int overDischargeTimeDelaySeconds;
-	private final int equalizingChargingTimeRaw; // TODO add convenienet
+	private final int equalizingChargingTimeRaw;
 	private final int boostChargingTimeRaw;
 	private final int equalizingChargingIntervalRaw;
 	private final int temperatureCompensationFactorRaw;
+	
+	private final OperatingSettingBundle operatingStage1, operatingStage2, operatingStage3, operatingMorningOn;
+	
 	private final int loadWorkingMode;
 	private final String loadWorkingModeName; // convenient
 	private final int lightControlDelayMinutes;
 	private final int lightControlVoltage;
 	private final int ledLoadCurrentSettingRaw;
 	private final int specialPowerControlE021Raw; // maybe add convenient?
+	
+	private final SensingBundle sensed1, sensed2, sensed3;
+	
 	private final int sensingTimeDelayRaw;
 	private final int ledLoadCurrentRaw;
 	private final int specialPowerControlE02DRaw;
@@ -115,8 +121,8 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 		int endOfChargeSOC, int endOfDischargeSOC,
 		int overDischargeTimeDelaySeconds, int equalizingChargingTimeRaw,
 		int boostChargingTimeRaw, int equalizingChargingIntervalRaw, int temperatureCompensationFactorRaw,
-		int loadWorkingMode, int lightControlDelayMinutes, int lightControlVoltage, int ledLoadCurrentSettingRaw,
-		int specialPowerControlE021Raw, int sensingTimeDelayRaw, int ledLoadCurrentRaw, int specialPowerControlE02DRaw
+		OperatingSettingBundle operatingStage1, OperatingSettingBundle operatingStage2, OperatingSettingBundle operatingStage3, OperatingSettingBundle operatingMorningOn, int loadWorkingMode, int lightControlDelayMinutes, int lightControlVoltage, int ledLoadCurrentSettingRaw,
+		int specialPowerControlE021Raw, SensingBundle sensed1, SensingBundle sensed2, SensingBundle sensed3, int sensingTimeDelayRaw, int ledLoadCurrentRaw, int specialPowerControlE02DRaw
 	) {
 		// region initialization
 		this.maxVoltage = maxVoltage;
@@ -181,11 +187,18 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 		this.boostChargingTimeRaw = boostChargingTimeRaw;
 		this.equalizingChargingIntervalRaw = equalizingChargingIntervalRaw;
 		this.temperatureCompensationFactorRaw = temperatureCompensationFactorRaw;
+		this.operatingStage1 = operatingStage1;
+		this.operatingStage2 = operatingStage2;
+		this.operatingStage3 = operatingStage3;
+		this.operatingMorningOn = operatingMorningOn;
 		this.loadWorkingMode = loadWorkingMode;
 		this.lightControlDelayMinutes = lightControlDelayMinutes;
 		this.lightControlVoltage = lightControlVoltage;
 		this.ledLoadCurrentSettingRaw = ledLoadCurrentSettingRaw;
 		this.specialPowerControlE021Raw = specialPowerControlE021Raw;
+		this.sensed1 = sensed1;
+		this.sensed2 = sensed2;
+		this.sensed3 = sensed3;
 		this.sensingTimeDelayRaw = sensingTimeDelayRaw;
 		this.ledLoadCurrentRaw = ledLoadCurrentRaw;
 		this.specialPowerControlE02DRaw = specialPowerControlE02DRaw;
@@ -522,13 +535,25 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	}
 	
 	@Override
-	public int getOperatingDurationHours(OperatingSetting setting) { // TODO
-		return 0;
+	public int getOperatingDurationHours(OperatingSetting setting) {
+		switch(setting){
+			case STAGE_1: return operatingStage1.getDurationHours();
+			case STAGE_2: return operatingStage2.getDurationHours();
+			case STAGE_3: return operatingStage3.getDurationHours();
+			case MORNING_ON: return operatingMorningOn.getDurationHours();
+			default: throw new UnsupportedOperationException(setting.toString());
+		}
 	}
 	
 	@Override
 	public int getOperatingPowerPercentage(OperatingSetting setting) {
-		return 0;
+		switch(setting){
+			case STAGE_1: return operatingStage1.getOperatingPowerPercentage();
+			case STAGE_2: return operatingStage2.getOperatingPowerPercentage();
+			case STAGE_3: return operatingStage3.getOperatingPowerPercentage();
+			case MORNING_ON: return operatingMorningOn.getOperatingPowerPercentage();
+			default: throw new UnsupportedOperationException(setting.toString());
+		}
 	}
 	
 	@Override
@@ -557,18 +582,33 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	}
 	
 	@Override
-	public int getWorkingHoursRaw(PowerSensing powerSensing) { // TODO
-		return 0;
+	public int getWorkingHoursRaw(Sensing sensing) {
+		switch(sensing){
+			case SENSING_1: return sensed1.getWorkingHoursRaw();
+			case SENSING_2: return sensed2.getWorkingHoursRaw();
+			case SENSING_3: return sensed3.getWorkingHoursRaw();
+			default: throw new UnsupportedOperationException(sensing.toString());
+		}
 	}
 	
 	@Override
-	public int getPowerWithPeopleSensedRaw(PowerSensing powerSensing) {
-		return 0;
+	public int getPowerWithPeopleSensedRaw(Sensing sensing) {
+		switch(sensing){
+			case SENSING_1: return sensed1.getPowerWithPeopleSensedRaw();
+			case SENSING_2: return sensed2.getPowerWithPeopleSensedRaw();
+			case SENSING_3: return sensed3.getPowerWithPeopleSensedRaw();
+			default: throw new UnsupportedOperationException(sensing.toString());
+		}
 	}
 	
 	@Override
-	public int getPowerWithNoPeopleSensedRaw(PowerSensing powerSensing) {
-		return 0;
+	public int getPowerWithNoPeopleSensedRaw(Sensing sensing) {
+		switch(sensing){
+			case SENSING_1: return sensed1.getPowerWithNoPeopleSensedRaw();
+			case SENSING_2: return sensed2.getPowerWithNoPeopleSensedRaw();
+			case SENSING_3: return sensed3.getPowerWithNoPeopleSensedRaw();
+			default: throw new UnsupportedOperationException(sensing.toString());
+		}
 	}
 	
 	@Override

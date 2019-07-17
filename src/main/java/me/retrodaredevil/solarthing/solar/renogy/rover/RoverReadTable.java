@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover;
 
-import me.retrodaredevil.solarthing.packets.BitmaskMode;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.solar.common.ChargeController;
 import me.retrodaredevil.solarthing.solar.common.DailyData;
@@ -198,6 +197,9 @@ public interface RoverReadTable extends Rover, ErrorReporter, ChargeController, 
 	//0xE015
 	int getOperatingDurationHours(OperatingSetting setting);
 	int getOperatingPowerPercentage(OperatingSetting setting);
+	default OperatingSettingBundle getOperatingSettingBundle(OperatingSetting setting){
+		return new OperatingSettingBundle(getOperatingDurationHours(setting), getOperatingPowerPercentage(setting));
+	}
 	
 	/** Should be serialized as "loadWorkingMode" */
 	int getLoadWorkingModeValue();
@@ -214,12 +216,15 @@ public interface RoverReadTable extends Rover, ErrorReporter, ChargeController, 
 	int getSpecialPowerControlE021Raw();
 	default SpecialPowerControl_E021 getSpecialPowerControlE021(){ return new ImmutableSpecialPowerControl_E021(getSpecialPowerControlE021Raw()); }
 	
-	int getWorkingHoursRaw(PowerSensing powerSensing);
-	default int getWorkingHours(PowerSensing powerSensing){ return getWorkingHoursRaw(powerSensing) + 1; }
-	int getPowerWithPeopleSensedRaw(PowerSensing powerSensing);
-	default int getPowerWithPeopleSensedPercentage(PowerSensing powerSensing){ return getPowerWithPeopleSensedRaw(powerSensing) + 10; }
-	int getPowerWithNoPeopleSensedRaw(PowerSensing powerSensing);
-	default int getPowerWithNoPeopleSensedPercentage(PowerSensing powerSensing){ return getPowerWithNoPeopleSensedRaw(powerSensing) + 10; }
+	int getWorkingHoursRaw(Sensing sensing);
+	default int getWorkingHours(Sensing sensing){ return getWorkingHoursRaw(sensing) + 1; }
+	int getPowerWithPeopleSensedRaw(Sensing sensing);
+	default int getPowerWithPeopleSensedPercentage(Sensing sensing){ return getPowerWithPeopleSensedRaw(sensing) + 10; }
+	int getPowerWithNoPeopleSensedRaw(Sensing sensing);
+	default int getPowerWithNoPeopleSensedPercentage(Sensing sensing){ return getPowerWithNoPeopleSensedRaw(sensing) + 10; }
+	default SensingBundle getSensingBundle(Sensing sensing){
+		return new SensingBundle(getWorkingHoursRaw(sensing), getPowerWithPeopleSensedRaw(sensing), getPowerWithNoPeopleSensedRaw(sensing));
+	}
 	
 	
 	int getSensingTimeDelayRaw();
