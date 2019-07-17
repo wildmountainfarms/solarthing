@@ -4,9 +4,13 @@ import com.ghgande.j2mod.modbus.ModbusException;
 import com.ghgande.j2mod.modbus.facade.AbstractModbusMaster;
 import com.ghgande.j2mod.modbus.facade.ModbusSerialMaster;
 import com.ghgande.j2mod.modbus.procimg.Register;
+import com.ghgande.j2mod.modbus.procimg.SimpleRegister;
 import com.ghgande.j2mod.modbus.util.SerialParameters;
 
-public class J2ModModbus implements ModbusRead {
+import static me.retrodaredevil.util.NumberUtil.getLowerByte;
+import static me.retrodaredevil.util.NumberUtil.getUpperByte;
+
+public class J2ModModbus implements ModbusReadWrite {
 	private final AbstractModbusMaster master;
 	public J2ModModbus(AbstractModbusMaster master){
 		this.master = master;
@@ -27,7 +31,7 @@ public class J2ModModbus implements ModbusRead {
 	private static int convertTwo(Register r, Register r2){
 		int highValue = r.toUnsignedShort();
 		int lowValue = r2.toUnsignedShort();
-		return (highValue << 16) & lowValue;
+		return (highValue << 16) | lowValue;
 	}
 	private static int convertTwo(Register[] registers){
 		if(registers.length != 2){
@@ -119,7 +123,7 @@ public class J2ModModbus implements ModbusRead {
 		byte[] bytes = readRegistersToByteArray(register, numberOfRegisters);
 		short[] r = new short[bytes.length];
 		for(int i = 0; i < bytes.length; i++){
-			int unsigned = bytes[i] & 0xFF;
+			int unsigned = ((int) bytes[i]) & 0xFF;
 			r[i] = (short) unsigned;
 		}
 		return r;
@@ -127,7 +131,28 @@ public class J2ModModbus implements ModbusRead {
 	
 	@Override
 	public byte[] readRegistersToByteArray(int register, int numberOfRegisters) {
-		return new byte[0];
+		byte[] bytes = new byte[numberOfRegisters * 2];
+		final Register[] registers;
+		try {
+			registers = master.readMultipleRegisters(register, numberOfRegisters);
+		} catch (ModbusException e) {
+			throw new ModbusRuntimeException(e);
+		}
+		for(int i = 0; i < registers.length; i++){
+			Register r = registers[i];
+			int value = r.toUnsignedShort();
+			bytes[i * 2] = getUpperByte(value);
+			bytes[i * 2 + 1] = getLowerByte(value);
+		}
+		return bytes;
 	}
 	
+	@Override
+	public void writeRegister(int register, int value) {
+		try {
+			master.writeMultipleRegisters(register, new Register[]{ new SimpleRegister(value) });
+		} catch (ModbusException e) {
+			throw new ModbusRuntimeException(e);
+		}
+	}
 }

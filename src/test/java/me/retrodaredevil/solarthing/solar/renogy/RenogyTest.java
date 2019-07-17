@@ -1,7 +1,9 @@
 package me.retrodaredevil.solarthing.solar.renogy;
 
-import me.retrodaredevil.solarthing.solar.renogy.rover.ChargingMethod;
-import me.retrodaredevil.solarthing.solar.renogy.rover.StreetLight;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import me.retrodaredevil.solarthing.solar.renogy.rover.*;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.MutableSpecialPowerControl_E021;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.MutableSpecialPowerControl_E02D;
 import org.junit.jupiter.api.Test;
@@ -103,5 +105,29 @@ final class RenogyTest {
 		assertEquals(ChargingMethod.PWM, power.getChargingMethod().getChargingMethod());
 		assertFalse(power.isNoChargingBelow0CEnabled());
 		assertFalse(power.is24VSystem());
+	}
+	@Test
+	void testPacket(){
+		RoverStatusPacket packet = new ImmutableRoverStatusPacket(
+			0,0,0,0,
+			"     HI         ".getBytes(),
+			0,0,
+			0,0,0,0,0,
+			0,0,0,0,0,0,0,
+			0,0,0,0,0,0,
+			0,0,0,0,0,
+			0,0,0,0,0,0,
+			0,0,0,0,0,0,0,
+			BatteryType.OPEN.getValueCode(),0,0,0,0,0,
+			0,0,0,0,0,
+			0,0,0,0,0,0,
+			0,0,0,0,0,
+			0,0,0,0
+		);
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		String json = gson.toJson(packet);
+		System.out.println(json);
+		JsonObject object = gson.fromJson(json, JsonObject.class);
+		RoverStatusPacket parsed = RoverStatusPackets.createFromJson(object);
 	}
 }

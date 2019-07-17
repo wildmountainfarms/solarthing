@@ -2,6 +2,9 @@ package me.retrodaredevil.solarthing.solar.common;
 
 public interface DailyData {
 	float getDailyKWH();
-	String getDailyKWHString();
+	@Deprecated
+	default String getDailyKWHString(){
+		return "" + getDailyKWH();
+	}
 	int getDailyAH();
 }

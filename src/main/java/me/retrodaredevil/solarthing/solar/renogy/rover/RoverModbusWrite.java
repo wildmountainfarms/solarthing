@@ -5,6 +5,7 @@ import me.retrodaredevil.solarthing.solar.renogy.BatteryType;
 import me.retrodaredevil.solarthing.solar.renogy.Voltage;
 
 import static java.util.Objects.requireNonNull;
+import static me.retrodaredevil.solarthing.solar.renogy.rover.special.UpperLower16Bit.getCombined;
 import static me.retrodaredevil.util.NumberUtil.checkRange;
 
 public class RoverModbusWrite implements RoverWriteTable {
@@ -105,7 +106,10 @@ public class RoverModbusWrite implements RoverWriteTable {
 	@Override
 	public void setEndOfChargeSOCEndOfDischargeSOC(int endOfChargeSOCValue, int endOfDischargeSOCValue) {
 		// TODO figure out allowed range of each
-		modbus.writeRegister(0xE00F, (endOfChargeSOCValue << 16) & endOfDischargeSOCValue);
+		// I'm pretty sure it's a percentage, but I'm not sure
+		checkRange(0, 100, endOfChargeSOCValue);
+		checkRange(0, 100, endOfDischargeSOCValue);
+		modbus.writeRegister(0xE00F, getCombined(endOfChargeSOCValue, endOfDischargeSOCValue));
 	}
 	
 	@Override
@@ -139,8 +143,8 @@ public class RoverModbusWrite implements RoverWriteTable {
 	}
 	
 	@Override
-	public void setDurationHours(OperatingSetting setting, int hours) {
-		// TODO get range
+	public void setOperatingDurationHours(OperatingSetting setting, int hours) {
+		checkRange(0, 21, hours);
 		modbus.writeRegister(setting.getDurationHoursRegister(), hours);
 	}
 	
@@ -170,14 +174,32 @@ public class RoverModbusWrite implements RoverWriteTable {
 	@Override
 	public void setLEDLoadCurrentSettingRaw(int value) {
 		// TODO figure out allowed range
-		checkRange(0, 1 << 16, value);
+		checkRange(0, (1 << 16) - 1, value);
 		modbus.writeRegister(0xE020, value);
 	}
 	
 	@Override
 	public void setSpecialPowerControlE021Raw(int value) {
-		checkRange(0, 1 << 16, value);
+		checkRange(0, (1 << 16) - 1, value);
 		modbus.writeRegister(0xE021, value);
+	}
+	
+	@Override
+	public void setWorkingHoursRaw(PowerSensing powerSensing, int value) {
+		checkRange(0, 15, value);
+		modbus.writeRegister(powerSensing.getWorkingHoursRegister(), value);
+	}
+	
+	@Override
+	public void setPowerWithPeopleSensedRaw(PowerSensing powerSensing, int value) {
+		checkRange(0, 100, value);
+		modbus.writeRegister(powerSensing.getPowerWithPeopleSensedRegister(), value);
+	}
+	
+	@Override
+	public void setPowerWithNoPeopleSensedRaw(PowerSensing powerSensing, int value) {
+		checkRange(0, 100, value);
+		modbus.writeRegister(powerSensing.getPowerWithNoPeopleSensedRegister(), value);
 	}
 	
 	@Override

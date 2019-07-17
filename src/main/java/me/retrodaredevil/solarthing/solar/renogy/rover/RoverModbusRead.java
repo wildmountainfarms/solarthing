@@ -1,10 +1,12 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover;
 
 import me.retrodaredevil.modbus.ModbusRead;
-import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
+import me.retrodaredevil.solarthing.packets.BitmaskMode;
+import me.retrodaredevil.solarthing.packets.Modes;
 
 import java.text.DecimalFormat;
 import java.text.Format;
+import java.util.Collection;
 
 public class RoverModbusRead implements RoverReadTable {
 	private static final Format TEN_THOUSANDTHS_FORMAT = new DecimalFormat("00.0000");
@@ -68,7 +70,7 @@ public class RoverModbusRead implements RoverReadTable {
 	}
 	
 	@Override
-	public Float getChargerCurrent() {
+	public Float getChargingCurrent() {
 		return modbus.readRegister(0x0102) / 100.0F;
 	}
 	
@@ -76,17 +78,6 @@ public class RoverModbusRead implements RoverReadTable {
 	public float getBatteryVoltage() {
 		int raw = modbus.readRegister(0x0101);
         return raw / 10.0F;
-	}
-	
-	@Override
-	public String getBatteryVoltageString() {
-		return TENTHS_FORMAT.format(getBatteryVoltage());
-	}
-	
-	@Override
-	public String getChargerCurrentString() {
-		int raw = modbus.readRegister(0x0102);
-		return HUNDREDTHS_FORMAT.format(raw / 100.0F);
 	}
 	
 	@Override
@@ -130,16 +121,16 @@ public class RoverModbusRead implements RoverReadTable {
 	}
 	
 	@Override
-	public BatteryVoltage getDailyMinBatteryVoltage() {
-		return BatteryVoltage.createTenthsBatteryVoltage(modbus.readRegister(0x010B));
+	public float getDailyMinBatteryVoltage() {
+		return modbus.readRegister(0x010B);
 	}
 	@Override
-	public BatteryVoltage getDailyMaxBatteryVoltage() {
-		return BatteryVoltage.createTenthsBatteryVoltage(modbus.readRegister(0x010C));
+	public float getDailyMaxBatteryVoltage() {
+		return modbus.readRegister(0x010C);
 	}
 	
 	@Override
-	public float getDailyMaxChargerCurrent() {
+	public float getDailyMaxChargingCurrent() {
 		return modbus.readRegister(0x010D) / 100.0F;
 	}
 	
@@ -171,11 +162,6 @@ public class RoverModbusRead implements RoverReadTable {
 	@Override
 	public float getDailyKWH() {
 		return modbus.readRegister(0x0113) / 10_000.0F;
-	}
-	
-	@Override
-	public String getDailyKWHString() {
-		return TEN_THOUSANDTHS_FORMAT.format(getDailyKWH());
 	}
 	
 	@Override
@@ -339,7 +325,7 @@ public class RoverModbusRead implements RoverReadTable {
 	}
 	
 	@Override
-	public int getDurationHours(OperatingSetting setting) {
+	public int getOperatingDurationHours(OperatingSetting setting) {
 		return modbus.readRegister(setting.getDurationHoursRegister());
 	}
 	
