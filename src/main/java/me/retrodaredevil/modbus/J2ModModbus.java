@@ -7,10 +7,12 @@ import com.ghgande.j2mod.modbus.procimg.Register;
 import com.ghgande.j2mod.modbus.procimg.SimpleRegister;
 import com.ghgande.j2mod.modbus.util.SerialParameters;
 
+import java.io.Closeable;
+
 import static me.retrodaredevil.util.NumberUtil.getLowerByte;
 import static me.retrodaredevil.util.NumberUtil.getUpperByte;
 
-public class J2ModModbus implements ModbusReadWrite {
+public class J2ModModbus implements ModbusReadWrite, Closeable {
 	private final AbstractModbusMaster master;
 	public J2ModModbus(AbstractModbusMaster master){
 		this.master = master;
@@ -23,11 +25,17 @@ public class J2ModModbus implements ModbusReadWrite {
 	
 	/**
 	 * NOTE: For renogy products, the {@link SerialParameters#getEncoding()} should be set to <code>"rtu"</code>
-	 * @param serialParameters
+	 * @param serialParameters Serial parameters for communicating over serial
 	 */
 	public J2ModModbus(SerialParameters serialParameters){
 		this(new ModbusSerialMaster(serialParameters));
 	}
+	
+	@Override
+	public void close() {
+		master.disconnect();
+	}
+	
 	private static int convertTwo(Register r, Register r2){
 		int highValue = r.toUnsignedShort();
 		int lowValue = r2.toUnsignedShort();

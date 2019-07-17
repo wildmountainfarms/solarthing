@@ -1,17 +1,8 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover;
 
 import me.retrodaredevil.modbus.ModbusRead;
-import me.retrodaredevil.solarthing.packets.BitmaskMode;
-import me.retrodaredevil.solarthing.packets.Modes;
-
-import java.text.DecimalFormat;
-import java.text.Format;
-import java.util.Collection;
 
 public class RoverModbusRead implements RoverReadTable {
-	private static final Format TEN_THOUSANDTHS_FORMAT = new DecimalFormat("00.0000");
-	private static final Format HUNDREDTHS_FORMAT = new DecimalFormat("00.00");
-	private static final Format TENTHS_FORMAT = new DecimalFormat("00.0");
 	
 	private final ModbusRead modbus;
 	
@@ -360,18 +351,18 @@ public class RoverModbusRead implements RoverReadTable {
 	}
 	
 	@Override
-	public int getWorkingHoursRaw(PowerSensing powerSensing) {
-		return modbus.readRegister(powerSensing.getWorkingHoursRegister());
+	public int getWorkingHoursRaw(Sensing sensing) {
+		return modbus.readRegister(sensing.getWorkingHoursRegister());
 	}
 	
 	@Override
-	public int getPowerWithPeopleSensedRaw(PowerSensing powerSensing) {
-		return modbus.readRegister(powerSensing.getPowerWithPeopleSensedRegister());
+	public int getPowerWithPeopleSensedRaw(Sensing sensing) {
+		return modbus.readRegister(sensing.getPowerWithPeopleSensedRegister());
 	}
 	
 	@Override
-	public int getPowerWithNoPeopleSensedRaw(PowerSensing powerSensing) {
-		return modbus.readRegister(powerSensing.getPowerWithNoPeopleSensedRegister());
+	public int getPowerWithNoPeopleSensedRaw(Sensing sensing) {
+		return modbus.readRegister(sensing.getPowerWithNoPeopleSensedRegister());
 	}
 	
 	@Override

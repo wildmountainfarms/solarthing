@@ -185,21 +185,21 @@ public class RoverModbusWrite implements RoverWriteTable {
 	}
 	
 	@Override
-	public void setWorkingHoursRaw(PowerSensing powerSensing, int value) {
+	public void setWorkingHoursRaw(Sensing sensing, int value) {
 		checkRange(0, 15, value);
-		modbus.writeRegister(powerSensing.getWorkingHoursRegister(), value);
+		modbus.writeRegister(sensing.getWorkingHoursRegister(), value);
 	}
 	
 	@Override
-	public void setPowerWithPeopleSensedRaw(PowerSensing powerSensing, int value) {
+	public void setPowerWithPeopleSensedRaw(Sensing sensing, int value) {
 		checkRange(0, 100, value);
-		modbus.writeRegister(powerSensing.getPowerWithPeopleSensedRegister(), value);
+		modbus.writeRegister(sensing.getPowerWithPeopleSensedRegister(), value);
 	}
 	
 	@Override
-	public void setPowerWithNoPeopleSensedRaw(PowerSensing powerSensing, int value) {
+	public void setPowerWithNoPeopleSensedRaw(Sensing sensing, int value) {
 		checkRange(0, 100, value);
-		modbus.writeRegister(powerSensing.getPowerWithNoPeopleSensedRegister(), value);
+		modbus.writeRegister(sensing.getPowerWithNoPeopleSensedRegister(), value);
 	}
 	
 	@Override

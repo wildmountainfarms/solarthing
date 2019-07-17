@@ -8,6 +8,8 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.special.MutableSpecialPow
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.MutableSpecialPowerControl_E02D;
 import org.junit.jupiter.api.Test;
 
+import java.nio.charset.StandardCharsets;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 final class RenogyTest {
@@ -108,9 +110,11 @@ final class RenogyTest {
 	}
 	@Test
 	void testPacket(){
+		Rover.OperatingSettingBundle operating = new Rover.OperatingSettingBundle(0, 0);
+		Rover.SensingBundle sensing = new Rover.SensingBundle(0, 0, 0);
 		RoverStatusPacket packet = new ImmutableRoverStatusPacket(
 			0,0,0,0,
-			"     HI         ".getBytes(),
+			"     HI         ".getBytes(StandardCharsets.UTF_8),
 			0,0,
 			0,0,0,0,0,
 			0,0,0,0,0,0,0,
@@ -121,13 +125,16 @@ final class RenogyTest {
 			BatteryType.OPEN.getValueCode(),0,0,0,0,0,
 			0,0,0,0,0,
 			0,0,0,0,0,0,
-			0,0,0,0,0,
-			0,0,0,0
+			0, operating, operating, operating, operating, 0,0,0,0,
+			0, sensing, sensing, sensing, 0,0,0
 		);
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		String json = gson.toJson(packet);
 		System.out.println(json);
 		JsonObject object = gson.fromJson(json, JsonObject.class);
 		RoverStatusPacket parsed = RoverStatusPackets.createFromJson(object);
+		
+		String json2 = gson.toJson(parsed);
+		assertEquals(json, json2);
 	}
 }

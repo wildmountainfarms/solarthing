@@ -1,5 +1,8 @@
 package me.retrodaredevil.solarthing;
 
+import com.ghgande.j2mod.modbus.util.SerialParameters;
+import me.retrodaredevil.modbus.J2ModModbus;
+import me.retrodaredevil.modbus.ModbusRead;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketRetriever;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketSaver;
 import me.retrodaredevil.solarthing.io.IOBundle;
@@ -7,7 +10,9 @@ import me.retrodaredevil.solarthing.io.JSerialIOBundle;
 import me.retrodaredevil.solarthing.io.SerialPortException;
 import me.retrodaredevil.solarthing.outhouse.OuthousePacketCreator;
 import me.retrodaredevil.solarthing.packets.collection.HourIntervalPacketCollectionIdGenerator;
+import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
+import me.retrodaredevil.solarthing.packets.collection.PacketCollections;
 import me.retrodaredevil.solarthing.packets.creation.PacketCreator;
 import me.retrodaredevil.solarthing.packets.handling.*;
 import me.retrodaredevil.solarthing.packets.handling.implementations.FileWritePacketHandler;
@@ -18,6 +23,11 @@ import me.retrodaredevil.solarthing.commands.CommandProvider;
 import me.retrodaredevil.solarthing.commands.CommandProviderMultiplexer;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
 import me.retrodaredevil.solarthing.commands.sequence.CommandSequence;
+import me.retrodaredevil.solarthing.solar.renogy.rover.RoverModbusRead;
+import me.retrodaredevil.solarthing.solar.renogy.rover.RoverReadTable;
+import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
+import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPackets;
+import me.retrodaredevil.util.json.JsonFile;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -33,7 +43,7 @@ public class SolarMain {
 	This is one thing we have to think about because while I want it to be easy for my own needs, I also want it to
 	be customizable for others as well
 	 */
-	private int connectSolar(ProgramArgs args, PacketCollectionIdGenerator idGenerator) {
+	private int connectMate(ProgramArgs args, PacketCollectionIdGenerator idGenerator) {
 		final InputStream in;
 		final OutputStream output;
 		if(args.isUnitTest()){
@@ -129,7 +139,7 @@ public class SolarMain {
 			)
 		));
 		
-		connect(
+		initReader(
 			in,
 			new MatePacketCreator49(args.getIgnoreCheckSum()),
 			new PacketHandlerMultiplexer(packetHandlers),
@@ -137,6 +147,39 @@ public class SolarMain {
 			250,
 			onDataReceive
 		);
+		return 0;
+	}
+	private int connectRover(ProgramArgs args, PacketCollectionIdGenerator idGenerator){
+		List<PacketHandler> packetHandlers = new ArrayList<>();
+		{
+			String latestSave = args.getLatestPacketJsonSaveLocation();
+			if(latestSave != null){
+				packetHandlers.add(new FileWritePacketHandler(new File(latestSave), new GsonStringPacketHandler(), false));
+			}
+		}
+		packetHandlers.add(new ThrottleFactorPacketHandler(getPacketSaver(args, "rover"), args.getThrottleFactor(), args.isOnlyInstant()));
+		PacketHandler packetHandler = new PacketHandlerMultiplexer(packetHandlers);
+		
+		SerialParameters parameters = new SerialParameters(args.getPortName(), 9600, 0, 0, 8, 1, 0, false);
+		parameters.setEncoding("rtu");
+		try(J2ModModbus modbus = new J2ModModbus(parameters)) {
+			RoverReadTable read = new RoverModbusRead(modbus);
+			try {
+				while (!Thread.currentThread().isInterrupted()) {
+					RoverStatusPacket packet = RoverStatusPackets.createFromReadTable(read);
+					System.out.println(JsonFile.gson.toJson(packet));
+					PacketCollection packetCollection = PacketCollections.createFromPackets(Collections.singleton(packet), idGenerator);
+					try {
+						packetHandler.handle(packetCollection, true);
+					} catch (PacketHandleException e) {
+						e.printUnableToHandle(System.err, "Couldn't save a renogy rover packet!");
+					}
+					Thread.sleep(1000);
+				}
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+			}
+		}
 		return 0;
 	}
 	private int connectOuthouse(ProgramArgs args, PacketCollectionIdGenerator idGenerator) {
@@ -149,7 +192,7 @@ public class SolarMain {
 		}
 		
 		packetHandlers.add(new ThrottleFactorPacketHandler(getPacketSaver(args, "outhouse"), args.getThrottleFactor(), args.isOnlyInstant()));
-		connect(
+		initReader(
 			System.in,
 			new OuthousePacketCreator(),
 			new PacketHandlerMultiplexer(packetHandlers),
@@ -169,8 +212,8 @@ public class SolarMain {
 		}
 		return new CouchDbPacketSaver(args.createProperties(), databaseName);
 	}
-
-	private void connect(InputStream in, PacketCreator packetCreator, PacketHandler packetHandler, PacketCollectionIdGenerator idGenerator, long samePacketTime, OnDataReceive onDataReceive) {
+	
+	private void initReader(InputStream in, PacketCreator packetCreator, PacketHandler packetHandler, PacketCollectionIdGenerator idGenerator, long samePacketTime, OnDataReceive onDataReceive) {
 		Runnable run = new SolarReader(in, packetCreator, packetHandler, idGenerator, samePacketTime, onDataReceive);
 		try {
 			while (!Thread.currentThread().isInterrupted()) {
@@ -189,7 +232,7 @@ public class SolarMain {
 		ProgramArgs pArgs = new ProgramArgs(args);
 		Program program = getProgram(pArgs.getParameters());
 		if(pArgs.isHelp() || program == null){
-			System.out.println("<command> {solar|outhouse}");
+			System.out.println("<command> {mate|rover|outhouse}");
 			System.out.println("Help was called. Check ProgramArgs.java. Self explainatory. Sorry I'm lazy.\n" +
 					"Also note, as a VM argument, you should have -Djava.library.path=/usr/lib/jni");
 			System.exit(1);
@@ -209,12 +252,14 @@ public class SolarMain {
 		}
 		try {
 			int status = 1;
-			if(program == Program.SOLAR) {
-				status = (new SolarMain()).connectSolar(pArgs, idGenerator);
+			if(program == Program.MATE) {
+				status = new SolarMain().connectMate(pArgs, idGenerator);
+			} else if(program == Program.ROVER){
+				status = new SolarMain().connectRover(pArgs, idGenerator);
 			} else if(program == Program.OUTHOUSE){
-				status = (new SolarMain()).connectOuthouse(pArgs, idGenerator);
+				status = new SolarMain().connectOuthouse(pArgs, idGenerator);
 			} else {
-				System.out.println("Specify solar|outhouse");
+				System.out.println("Specify mate|rover|outhouse");
 			}
 			System.exit(status);
 		} catch (Exception t) {
@@ -225,20 +270,24 @@ public class SolarMain {
 			System.exit(1);
 		}
 	}
-	private static Program getProgram(List<String> args){
-		if(args.size() == 0){
+	private static Program getProgram(List<String> args) {
+		if (args.size() == 0) {
 			return null;
 		}
 		String program = args.get(0).toLowerCase();
-		if(program.equals("solar")){
-			return Program.SOLAR;
+		if (program.equals("solar") || program.equals("mate")) {
+			return Program.MATE;
+		} else if (program.equals("rover")) {
+			return Program.ROVER;
 		} else if(program.equals("outhouse")){
 			return Program.OUTHOUSE;
 		}
 		return null;
 	}
 	private enum Program {
-		SOLAR, OUTHOUSE
+		MATE,
+		ROVER,
+		OUTHOUSE
 	}
 
 }
