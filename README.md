@@ -56,7 +56,7 @@ Move the jar to the root folder and name the jar `solarthing.jar`
 
 
 ### What the database structure looks like
-The CouchDB has two databases in it. "solarthing" and "outhouse". Each database has many packets stored in the
+The CouchDB has a few databases in it. Each database has many packets stored in the
 "PacketCollection" format. Each packet in the database holds other packets that were saved at the same time. This makes
 it simple to link FX1 FX2 and MX3 packets to one single packet. By default the program links packets together by saving
 packets when it's been 250 ms after the first data received from a packet. 

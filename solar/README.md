@@ -1,16 +1,17 @@
-# solar
-A program that listens for packets from a OutBack POWER Mate device and uploads it to a database.
-
+# Detailed Solar Implementation
+Shows set up for Outback MATE and Renogy Rover communication
 
 ## About
 Outback Mate products have a serial port on them that prints data every second for each device connected.
 Because of this, you can hook up just about anything to the Mate and receive and parse data from it and even send
 commands to your mate! This program aims to be compatible with new and old Mate firmwares. This does not implement
-FlexNET DC Packets, but FX and MX/FM packets are supported.
+FlexNET DC Packets, but FX, MX/FM, and Renogy Rover communication is supported.
 
 You can look at how we parse packets for 
-[FX Here](../src/main/java/me/retrodaredevil/solarthing/solar/outback/fx/FXStatusPackets.java) and 
-[MX/FM Here](../src/main/java/me/retrodaredevil/solarthing/solar/outback/mx/MXStatusPackets.java)
+[FX Here](../src/main/java/me/retrodaredevil/solarthing/solar/outback/fx/FXStatusPackets.java),
+[MX/FM Here](../src/main/java/me/retrodaredevil/solarthing/solar/outback/mx/MXStatusPackets.java),
+[Renogy Read Here](../src/main/java/me/retrodaredevil/solarthing/solar/renogy/rover/RoverModbusRead.java) and
+[Renogy Write Here](../src/main/java/me/retrodaredevil/solarthing/solar/renogy/rover/RoverModbusRead.java)
 
 ### Running
 ```
@@ -34,6 +35,22 @@ Example command that I use while running it on a raspberry pi:
 && java -Djava.library.path=/usr/lib/jni -jar solarthing.jar --host 192.168.10.250 --user user --passwd password --unique 30 --tf 3 --instant solar >output.txt 2>errors.txt) &
 ```
 
+### Connecting to Outback MATE
+Connecting a Raspberry Pi or any device to an Outback MATE's serial port is pretty simple. For the easiest solution,
+you should get a serial to USB cable. It is also possible to make a DIY solution and connect the serial interface
+to a Raspberry Pi GPIO. I do not have experience with that.
+
+### Connecting to Renogy Rover
+If you have the USB to RS232 cable that comes with the Rover, all you have to do is connect it to your computer of
+choice and it will act like a serial port!
+
+If you don't have that cable, it is also possible to use an RJ12 cable to connect to a Raspberry Pi GPIO, but be careful!
+Some of those pins may have 15 volts running through it! One wrong move and you've fried your pi! I recommend measuring
+voltage using a multimeter just to make sure.
+
+I do not know the pin out, but when I find it I will put it here. I will again stress to make sure you don't send 15V through your
+pi's GPIO. Don't do it!
+
 ### Outback References
 New documentation:
 http://www.outbackpower.com/downloads/documents/system_management/mate/mate_serial_communicationsguide.pdf
@@ -53,7 +70,12 @@ Software download: https://www.renogy.com/template/files/Solar%20Station%20Monit
 Modbus protocol: renogy.boards.net/thread/266/rover-modbus
 
 
-https://www.rototron.info/raspberry-pi-solar-serial-rest-api-tutorial/
 
 https://www.overstock.com/Electronics/Renogy-RNG-CTRL-RVR20-BT-Solar-Charge-Controller-MPPT-20A-with-BT/20973007/product.html
 
+## Products to support in the future
+
+https://www.rototron.info/raspberry-pi-solar-serial-rest-api-tutorial/
+* https://github.com/rdagger/Expo-Solar-Tracker
+* Tracer MT-5. Example: https://github.com/xxv/tracer
+* EPsolar Tracer BN. Example: https://github.com/kasbert/epsolar-tracer

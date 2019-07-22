@@ -34,5 +34,6 @@ hs_err_pid*
 *.iml
 
 #Idea stuff
-/.idea/
+.idea/*
+!.idea/dictionaries/
 
