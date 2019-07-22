@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing;
 import com.ghgande.j2mod.modbus.util.SerialParameters;
 import me.retrodaredevil.modbus.J2ModModbus;
 import me.retrodaredevil.modbus.ModbusRead;
+import me.retrodaredevil.modbus.ModbusRuntimeException;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketRetriever;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketSaver;
 import me.retrodaredevil.solarthing.io.IOBundle;
@@ -166,7 +167,15 @@ public class SolarMain {
 			RoverReadTable read = new RoverModbusRead(modbus);
 			try {
 				while (!Thread.currentThread().isInterrupted()) {
-					RoverStatusPacket packet = RoverStatusPackets.createFromReadTable(read);
+					final RoverStatusPacket packet;
+					try {
+						packet = RoverStatusPackets.createFromReadTable(read);
+					} catch(ModbusRuntimeException e){
+						e.printStackTrace();
+						System.err.println("Modbus exception above!");
+						Thread.sleep(1000);
+						continue;
+					}
 					System.out.println(JsonFile.gson.toJson(packet));
 					PacketCollection packetCollection = PacketCollections.createFromPackets(Collections.singleton(packet), idGenerator);
 					try {

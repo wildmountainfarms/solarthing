@@ -81,6 +81,7 @@ public interface MXStatusPacket extends OutbackPacket, BatteryVoltagePacket, Cha
 	 * Should be serialized as "errorMode"
 	 * @return [0..256] represents a varying number of active {@link MXErrorMode}s
 	 */
+	@Override
 	int getErrorMode();
 	@Override
 	default Collection<? extends BitmaskMode> getActiveErrors(){

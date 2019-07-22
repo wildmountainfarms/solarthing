@@ -3,8 +3,6 @@ package me.retrodaredevil.solarthing.solar.renogy.rover;
 import me.retrodaredevil.solarthing.packets.CodeMode;
 
 /**
- * Enum values and names subject to change
- * <p><p>
  * R/W PDU address: 0xE01D, Bytes: 2
  */
 public enum LoadWorkingMode implements CodeMode {

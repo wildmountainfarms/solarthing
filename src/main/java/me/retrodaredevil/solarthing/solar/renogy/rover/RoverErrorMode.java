@@ -21,10 +21,10 @@ public enum RoverErrorMode implements BitmaskMode {
 	CONTROLLER_TEMP_HIGH("Controller temp high", 1 << 21),
 	/** Load overpower or load over-current*/
 	LOAD_OVER("Load over", 1 << 20),
-	LOAD_SHORT_CIRCUIT("Load short circuit",  1 << 19),
-	BATTERY_UNDER_VOLTAGE("Battery under-voltage", 1 << 18),
-	BATTERY_OVER_VOLTAGE("Battery over-voltage", 1 << 17),
-	BATTERY_OVER_DISCHARGE("Battery over-discharge", 1 << 16)
+	LOAD_SHORT_CIRCUIT("Load short circuit",  1 << 19), // E4
+	BATTERY_UNDER_VOLTAGE("Battery under-voltage", 1 << 18), // E3
+	BATTERY_OVER_VOLTAGE("Battery over-voltage", 1 << 17), // E2
+	BATTERY_OVER_DISCHARGE("Battery over-discharge", 1 << 16) // E1
 	;
 	
 	private final String name;

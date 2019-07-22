@@ -8,6 +8,9 @@ import me.retrodaredevil.solarthing.packets.CodeMode;
  * PDU address: 0xE004, Bytes: 2
  */
 public enum BatteryType implements CodeMode {
+	/**
+	 * AKA Flooded
+	 */
 	OPEN("open", 1),
 	SEALED("sealed", 2),
 	GEL("gel", 3),

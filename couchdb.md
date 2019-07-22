@@ -5,6 +5,7 @@ for solarthing and outhouse.
 ## Databases
 You must create each database if you wish to use the features they come with
 * "solarthing" Stores status packets from the Outback MATE
+* "rover" Stores status packets from the Renogy Rover
 * "commands" Commands are saved here then deleted to send commands to the Outback MATE. Commands in here are encrypted for integrity
 * "command_feedback" Stores feedback for commands that were sent to the Outback MATE
 * "outhouse" Stores packets from the outhouse
