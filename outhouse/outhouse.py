@@ -22,9 +22,10 @@ def main(args):
         while True:
             is_open = door.is_open()
             if was_open is False and is_open:  # door just opened
-                last_close = d.time_millis()
-            elif was_open is True and not is_open:  # door just closed
                 last_open = d.time_millis()
+            elif was_open is True and not is_open:  # door just closed
+                last_close = d.time_millis()
+
 
             was_open = is_open
 

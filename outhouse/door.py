@@ -59,9 +59,9 @@ def main(args):
         while True:
             is_open = door.is_open()
             if was_open is False and is_open:  # door just opened
-                last_close = time_millis()
-            elif was_open is True and not is_open:  # door just closed
                 last_open = time_millis()
+            elif was_open is True and not is_open:  # door just closed
+                last_close = time_millis()
 
             was_open = is_open
             print("\nDOOR {} {} {}".format("true" if is_open else "false", last_close, last_open), end="\r", flush=True)
