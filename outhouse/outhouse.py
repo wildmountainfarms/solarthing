@@ -1,4 +1,5 @@
-import door
+import sys
+import door as d
 import occupancy_weather as ow
 
 
@@ -6,10 +7,10 @@ def main(args):
     door = None
     try:
         if len(args) >= 1 and args[0].lower() == "test":
-            door = door.PeriodDoor(5, 5)
+            door = d.PeriodDoor(5, 5)
             data = ow.DummyData()
         else:
-            door = door.GPIODoor()
+            door = d.GPIODoor()
             data = ow.SensorData()
 
         occupancy_handler = ow.OccupancyHandler()
@@ -19,9 +20,9 @@ def main(args):
         while True:
             is_open = door.is_open()
             if was_open is False and is_open:  # door just opened
-                last_close = door.time_millis()
+                last_close = d.time_millis()
             elif was_open is True and not is_open:  # door just closed
-                last_open = door.time_millis()
+                last_open = d.time_millis()
 
             was_open = is_open
             print("\nDOOR {} {} {}".format("true" if is_open else "false", last_close, last_open), end="\r", flush=True)
@@ -42,4 +43,4 @@ def main(args):
 
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv[1:])

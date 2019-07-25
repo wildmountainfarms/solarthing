@@ -3,9 +3,6 @@ import sys
 import time
 
 
-INPUT_PIN = 26
-
-
 class GPIODoor:
     def __init__(self, pin=26):
         self.pin = pin
@@ -16,9 +13,7 @@ class GPIODoor:
 
     def is_open(self):
         import RPi.GPIO as GPIO
-        # when the door is closed, the sensor is pressed -> a value of 0 means door is closed
-        # when the door is open, the sensor is not pressed -> a value of 1 means the door is open
-        return GPIO.input(self.pin) == 1
+        return GPIO.input(self.pin) == 0
 
     def cleanup(self):
         import RPi.GPIO as GPIO
