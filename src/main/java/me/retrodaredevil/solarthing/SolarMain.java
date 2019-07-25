@@ -206,7 +206,7 @@ public class SolarMain {
 			new OuthousePacketCreator(),
 			new PacketHandlerMultiplexer(packetHandlers),
 			idGenerator,
-			0,
+			10,
 			OnDataReceive.Defaults.NOTHING
 		);
 		return 0;

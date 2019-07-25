@@ -18,7 +18,7 @@ public class JsonFile {
 	
 
 	public static final JsonParser pa = new JsonParser();
-	public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+	public static final Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
 	
 	private final File file;
 	private boolean isJson = true;
