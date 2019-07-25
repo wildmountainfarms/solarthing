@@ -1,4 +1,6 @@
+#!/usr/bin/env python3
 import sys
+import time
 import door as d
 import occupancy_weather as ow
 
@@ -25,13 +27,13 @@ def main(args):
                 last_open = d.time_millis()
 
             was_open = is_open
-            print("\nDOOR {} {} {}".format("true" if is_open else "false", last_close, last_open), end="\r", flush=True)
 
             distance = data.get_distance()
             time.sleep(.03)  # give CPU a little rest
             hum, temp = data.get_humidity_temperature()
 
             occupancy_handler.on_distance(distance)
+            print("\nDOOR {} {} {}".format("true" if is_open else "false", last_close, last_open), end="\r", flush=True)
             print("\nOCCUPANCY {}".format("true" if occupancy_handler.occupied else "false"), end="\r")
             print("\nWEATHER {} {}".format(temp, hum), end="\r", flush=True)
             time.sleep(1)
