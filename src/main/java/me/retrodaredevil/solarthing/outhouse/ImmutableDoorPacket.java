@@ -4,14 +4,14 @@ public class ImmutableDoorPacket implements DoorPacket {
 	private final OuthousePacketType packetType = OuthousePacketType.DOOR;
 	
 	private final boolean isOpen;
-	private final Long lastClose;
-	private final Long lastOpen;
+	private final Long lastCloseTimeMillis;
+	private final Long lastOpenTimeMillis;
 	
-	public ImmutableDoorPacket(boolean isOpen, Long lastClose, Long lastOpen) {
+	public ImmutableDoorPacket(boolean isOpen, Long lastCloseTimeMillis, Long lastOpenTimeMillis) {
 		this.isOpen = isOpen;
-		this.lastClose = lastClose;
-		this.lastOpen = lastOpen;
-//		System.out.println("Created " + isOpen + " " + lastClose + " " + lastOpen);
+		this.lastCloseTimeMillis = lastCloseTimeMillis;
+		this.lastOpenTimeMillis = lastOpenTimeMillis;
+//		System.out.println("Created " + isOpen + " " + lastCloseTimeMillis + " " + lastOpenTimeMillis);
 	}
 	
 	@Override
@@ -21,12 +21,12 @@ public class ImmutableDoorPacket implements DoorPacket {
 	
 	@Override
 	public Long getLastCloseTimeMillis() {
-		return lastClose;
+		return lastCloseTimeMillis;
 	}
 	
 	@Override
 	public Long getLastOpenTimeMillis() {
-		return lastOpen;
+		return lastOpenTimeMillis;
 	}
 	
 	@Override

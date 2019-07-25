@@ -1,8 +1,21 @@
 package me.retrodaredevil.solarthing.outhouse;
 
 public interface DoorPacket extends OuthousePacket {
+	/**
+	 * Should be serialized as "isOpen"
+	 * @return
+	 */
 	boolean isOpen();
+	
+	/**
+	 * Should be serialized as "lastCloseTimeMillis"
+	 * @return
+	 */
 	Long getLastCloseTimeMillis();
+	/**
+	 * Should be serialized as "lastOpenTimeMillis"
+	 * @return
+	 */
 	Long getLastOpenTimeMillis();
 	
 	default Long getLastActivity(){
