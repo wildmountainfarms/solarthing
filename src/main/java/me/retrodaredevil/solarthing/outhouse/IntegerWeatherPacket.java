@@ -18,7 +18,7 @@ public class IntegerWeatherPacket implements WeatherPacket{
 	
 	@Override
 	public double getHumidity() {
-		return temperatureCelsius / 100.0;
+		return humidityPercent / 100.0;
 	}
 	
 	@Override

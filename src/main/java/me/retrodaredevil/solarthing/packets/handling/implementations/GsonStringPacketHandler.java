@@ -11,7 +11,7 @@ public class GsonStringPacketHandler implements StringPacketHandler {
 		this.gson = gson;
 	}
 	public GsonStringPacketHandler(){
-		this(new GsonBuilder().setPrettyPrinting().create());
+		this(new GsonBuilder().setPrettyPrinting().serializeNulls().create());
 	}
 	
 	@Override

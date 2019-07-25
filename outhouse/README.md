@@ -13,10 +13,10 @@ temperature is in celsius (an int), humidity is a number from 0 to 100 represent
 ## Running
 You would normally run this command:
 ```
-outhouse/outhouse.py | java -jar solarthing.jar outhouse --host 192.168.1.110 --unique 30
+outhouse/occupancy_weather.py | java -jar solarthing.jar outhouse --host 192.168.1.110 --unique 30
 # or this in /etc/rc.local
 (cd /home/pi/Programming/SolarThing/solarthing 
-&& (outhouse/outhouse.py 
+&& (outhouse/occupancy_weather.py 
 | java -jar solarthing.jar outhouse --user user --passwd password --host 192.168.10.250 --unique 15 --tf 3 --ct 30 --st 5) >output.txt 2>errors.txt) &
 ```
 
