@@ -4,8 +4,14 @@ import time
 
 
 class GPIODoor:
-    def __init__(self, pin=26):
+    def __init__(self, pin=26, invert_sensor=False):
+        """
+        :param pin: The pin that is shorted to ground when the limit switch is closed
+        :param invert_sensor: Should be set to true if switch is pressed when door is closed and the switch is "normally closed" or if the switch is pressed
+        when the door is open and the switch is "normally open"
+        """
         self.pin = pin
+        self.invert_sensor = invert_sensor
         import RPi.GPIO as GPIO
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
@@ -13,7 +19,9 @@ class GPIODoor:
 
     def is_open(self):
         import RPi.GPIO as GPIO
-        return GPIO.input(self.pin) == 0
+        # when the circuit is closed, value will be 0
+        value = GPIO.input(self.pin)
+        return value == (0 if self.invert_sensor else 1)
 
     def cleanup(self):
         import RPi.GPIO as GPIO

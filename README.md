@@ -1,5 +1,5 @@
 # solarthing
-A program that listens for packets from a OutBack POWER Mate device and uploads it to a database.
+Parses data from an Outback MATE, communicates with a renogy rover, and uses CouchDB as a database!
 ## What This is used for
 This program is run on a raspberry pi at Wild Mountain Farms (www.wildmountainfarms.com).
 That program uploads packets to a CouchDB database on a separate computer which hosts the web portion
@@ -7,8 +7,9 @@ found here: https://github.com/wildmountainfarms/solarthing-web . With each of t
 to see the current battery voltage and other information along with a graph to see past data.
 
 Although this is named solarthing, it is expanding to be more than just solar data collection. The latest feature is
-the outhouse status. This allows us to store and display three pieces of data: occupancy,
-temperature and humidity. Luckily if you want to just use the solar feature for Outback Mate data, you can do that!
+the outhouse status. This allows us to store and display four pieces of data: occupancy,
+temperature, humidity and door opened/closed. 
+Luckily if you want to just use the solar feature for Outback Mate data, you can do that!
 
 In the future, this project may extend to more IoT uses other than just solar and outhouse status. But the name will
 forever stick! Long live <strong>solarthing</strong>!
@@ -95,5 +96,5 @@ After learning perl for a day. I went straight back to Java, which I am more fam
 * Add better logging with timestamps
 * Create a PacketHandler that saves json data to a file location that can be easily accessed using a Apache web server
 * Figure out how to use https://emoncms.org/ to graph data
-* Implement Outback FlexMAX DC Packets
+* Implement Outback FlexNet DC Packets
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
