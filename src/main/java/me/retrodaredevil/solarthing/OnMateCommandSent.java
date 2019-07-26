@@ -8,7 +8,7 @@ import me.retrodaredevil.solarthing.packets.collection.PacketCollections;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
-import me.retrodaredevil.solarthing.solar.outback.command.packets.ImmutableSuccessCommandPacket;
+import me.retrodaredevil.solarthing.solar.outback.command.packets.ImmutableSuccessMateCommandPacket;
 
 import java.util.Collections;
 
@@ -21,7 +21,7 @@ public class OnMateCommandSent implements OnCommandExecute<MateCommand> {
 	}
 	@Override
 	public void onCommandExecute(SourcedCommand<MateCommand> command) {
-		Packet packet = new ImmutableSuccessCommandPacket(command.getCommand(), command.getSource());
+		Packet packet = new ImmutableSuccessMateCommandPacket(command.getCommand(), command.getSource());
 		try {
 			packetHandler.handle(PacketCollections.createFromPackets(Collections.singleton(packet), PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR), true);
 		} catch (PacketHandleException e) {

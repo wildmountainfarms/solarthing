@@ -4,14 +4,14 @@ import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
 
 import static java.util.Objects.requireNonNull;
 
-public class ImmutableSuccessCommandPacket implements SuccessCommandPacket {
+public class ImmutableSuccessMateCommandPacket implements SuccessMateCommandPacket {
 	
-	private final CommandFeedbackPacketType packetType = CommandFeedbackPacketType.SUCCESS;
+	private final MateCommandFeedbackPacketType packetType = MateCommandFeedbackPacketType.SUCCESS;
 	
 	private final MateCommand command;
 	private final String source;
 	
-	public ImmutableSuccessCommandPacket(MateCommand command, String source) {
+	public ImmutableSuccessMateCommandPacket(MateCommand command, String source) {
 		this.command = requireNonNull(command);
 		this.source = requireNonNull(source);
 	}
@@ -27,7 +27,7 @@ public class ImmutableSuccessCommandPacket implements SuccessCommandPacket {
 	}
 	
 	@Override
-	public CommandFeedbackPacketType getPacketType() {
+	public MateCommandFeedbackPacketType getPacketType() {
 		return packetType;
 	}
 }

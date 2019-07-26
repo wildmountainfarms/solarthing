@@ -1,8 +1,10 @@
 package me.retrodaredevil.solarthing.solar;
 
 import com.google.gson.JsonObject;
+import me.retrodaredevil.solarthing.packets.UnknownPacketTypeException;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPackets;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPackets;
+import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPackets;
 
 public final class SolarPackets {
 	private SolarPackets(){ throw new UnsupportedOperationException(); }
@@ -18,7 +20,7 @@ public final class SolarPackets {
 		try {
 			packetType = SolarPacketType.valueOf(packetName);
 		} catch(IllegalArgumentException e){
-			throw new IllegalArgumentException("packet type name: " + packetName, e);
+			throw new UnknownPacketTypeException("packet type name: " + packetName, e);
 		}
 		switch(packetType){
 			case FX_STATUS:
@@ -27,6 +29,8 @@ public final class SolarPackets {
 				return MXStatusPackets.createFromJson(jsonObject);
 			case FLEXNET_DC_STATUS:
 				throw new UnsupportedOperationException("FLEXNet DC Status Packets aren't supported yet.");
+			case RENOGY_ROVER_STATUS:
+				return RoverStatusPackets.createFromJson(jsonObject);
 			default:
 				throw new UnsupportedOperationException();
 		}
