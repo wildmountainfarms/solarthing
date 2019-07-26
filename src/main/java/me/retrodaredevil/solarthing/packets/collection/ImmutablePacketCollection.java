@@ -46,7 +46,7 @@ class ImmutablePacketCollection implements PacketCollection {
 		dateMillis = cal.getTimeInMillis(); // in UTC
 		this._id = idGenerator.generateId(cal);
 	}
-	ImmutablePacketCollection(JsonObject object, PacketCollections.JsonPacketGetter packetGetter){
+	ImmutablePacketCollection(JsonObject object, JsonPacketGetter packetGetter){
 		requireNonNull(object);
 		requireNonNull(packetGetter);
 		final List<Packet> packets = new ArrayList<>();

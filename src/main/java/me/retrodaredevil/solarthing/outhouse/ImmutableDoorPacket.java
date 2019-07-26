@@ -11,7 +11,6 @@ public class ImmutableDoorPacket implements DoorPacket {
 		this.isOpen = isOpen;
 		this.lastCloseTimeMillis = lastCloseTimeMillis;
 		this.lastOpenTimeMillis = lastOpenTimeMillis;
-//		System.out.println("Created " + isOpen + " " + lastCloseTimeMillis + " " + lastOpenTimeMillis);
 	}
 	
 	@Override

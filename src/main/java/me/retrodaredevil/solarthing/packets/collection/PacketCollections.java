@@ -14,7 +14,4 @@ public final class PacketCollections {
 	public static PacketCollection createFromJson(JsonObject object, JsonPacketGetter packetGetter){
 		return new ImmutablePacketCollection(object, packetGetter);
 	}
-	public interface JsonPacketGetter {
-		Packet createFromJson(JsonObject packetObject);
-	}
 }
