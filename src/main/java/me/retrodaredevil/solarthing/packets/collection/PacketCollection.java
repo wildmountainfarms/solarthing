@@ -6,7 +6,6 @@ import me.retrodaredevil.solarthing.packets.PacketEntry;
 
 import java.util.List;
 
-@SuppressWarnings("unused")
 public interface PacketCollection extends PacketEntry {
 	/**
 	 * Should be serialized as "packets"
@@ -16,9 +15,13 @@ public interface PacketCollection extends PacketEntry {
 
 	/**
 	 * Should be serialized as "dateArray"
+	 * <p>
 	 * NOTE: Modifying this may mutate this object. DO NOT MODIFY
+	 * <p>
+	 * NOTE: The month is 1 index based (range of [1..12]). The day of the month is also 1 index based (standard)
 	 * @return The date array representing the local time. [year, month, day, hour, minute, second, millisecond]
 	 */
+	@Deprecated
 	int[] getDateArray();
 
 	/**
