@@ -2,7 +2,6 @@ package me.retrodaredevil.solarthing;
 
 import com.ghgande.j2mod.modbus.util.SerialParameters;
 import me.retrodaredevil.modbus.J2ModModbus;
-import me.retrodaredevil.modbus.ModbusRead;
 import me.retrodaredevil.modbus.ModbusRuntimeException;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketRetriever;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketSaver;
@@ -10,24 +9,26 @@ import me.retrodaredevil.solarthing.io.IOBundle;
 import me.retrodaredevil.solarthing.io.JSerialIOBundle;
 import me.retrodaredevil.solarthing.io.SerialPortException;
 import me.retrodaredevil.solarthing.outhouse.OuthousePacketCreator;
+import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.HourIntervalPacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollections;
-import me.retrodaredevil.solarthing.packets.creation.PacketCreator;
+import me.retrodaredevil.solarthing.packets.creation.PacketProvider;
+import me.retrodaredevil.solarthing.packets.creation.TextPacketCreator;
 import me.retrodaredevil.solarthing.packets.handling.*;
 import me.retrodaredevil.solarthing.packets.handling.implementations.FileWritePacketHandler;
 import me.retrodaredevil.solarthing.packets.handling.implementations.GsonStringPacketHandler;
+import me.retrodaredevil.solarthing.packets.instance.InstanceFragmentIndicatorPacket;
+import me.retrodaredevil.solarthing.packets.instance.InstanceFragmentIndicatorPackets;
+import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePackets;
 import me.retrodaredevil.solarthing.packets.security.crypto.DirectoryKeyMap;
 import me.retrodaredevil.solarthing.solar.outback.MatePacketCreator49;
 import me.retrodaredevil.solarthing.commands.CommandProvider;
 import me.retrodaredevil.solarthing.commands.CommandProviderMultiplexer;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
 import me.retrodaredevil.solarthing.commands.sequence.CommandSequence;
-import me.retrodaredevil.solarthing.solar.renogy.rover.RoverModbusRead;
-import me.retrodaredevil.solarthing.solar.renogy.rover.RoverReadTable;
-import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
-import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPackets;
+import me.retrodaredevil.solarthing.solar.renogy.rover.*;
 import me.retrodaredevil.util.json.JsonFile;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
@@ -35,6 +36,8 @@ import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.util.*;
+
+import static java.util.Objects.requireNonNull;
 
 public class SolarMain {
 	/*
@@ -74,18 +77,6 @@ public class SolarMain {
 				commandProviders.add(InputStreamCommandProvider.createFrom(fileInputStream, "command_input.txt", EnumSet.allOf(MateCommand.class)));
 			}
 		}
-		/*{
-			InputStream fileInputStream = null;
-			try {
-				fileInputStream = new FileInputStream(new File("command_sequence_input.txt"));
-			} catch (FileNotFoundException e) {
-				System.out.println("no command sequence input file!");
-			}
-			if(fileInputStream != null) {
-				commandProviders.add(new CommandSequenceCommandProvider(new InputStreamCommandSequenceProvider(fileInputStream, map)));
-			}
-		}*/
-		
 		
 		final PacketHandler commandRequesterHandler;
 		final PacketHandler commandFeedbackHandler;
@@ -146,7 +137,8 @@ public class SolarMain {
 			new PacketHandlerMultiplexer(packetHandlers),
 			idGenerator,
 			250,
-			onDataReceive
+			onDataReceive,
+			getAdditionalPacketProvider(args)
 		);
 		return 0;
 	}
@@ -158,13 +150,15 @@ public class SolarMain {
 				packetHandlers.add(new FileWritePacketHandler(new File(latestSave), new GsonStringPacketHandler(), false));
 			}
 		}
-		packetHandlers.add(new ThrottleFactorPacketHandler(getPacketSaver(args, "rover"), args.getThrottleFactor(), args.isOnlyInstant()));
+		packetHandlers.add(new ThrottleFactorPacketHandler(getPacketSaver(args, "solarthing"), args.getThrottleFactor(), args.isOnlyInstant()));
 		PacketHandler packetHandler = new PacketHandlerMultiplexer(packetHandlers);
+		PacketProvider packetProvider = getAdditionalPacketProvider(args);
 		
 		SerialParameters parameters = new SerialParameters(args.getPortName(), 9600, 0, 0, 8, 1, 0, false);
 		parameters.setEncoding("rtu");
 		try(J2ModModbus modbus = new J2ModModbus(parameters)) {
 			RoverReadTable read = new RoverModbusRead(modbus);
+//			RoverWriteTable write = new RoverModbusWrite(modbus);
 			try {
 				while (!Thread.currentThread().isInterrupted()) {
 					final long startTime = System.currentTimeMillis();
@@ -181,13 +175,17 @@ public class SolarMain {
 					System.out.println(packet.getSpecialPowerControlE021().getFormattedInfo().replaceAll("\n", "\n\t"));
 					System.out.println(packet.getSpecialPowerControlE02D().getFormattedInfo().replaceAll("\n", "\n\t"));
 					System.out.println();
-					PacketCollection packetCollection = PacketCollections.createFromPackets(Collections.singleton(packet), idGenerator);
+					List<Packet> packets = new ArrayList<>();
+					packets.add(packet);
+					packets.addAll(packetProvider.createPackets());
+					PacketCollection packetCollection = PacketCollections.createFromPackets(packets, idGenerator);
 					try {
 						packetHandler.handle(packetCollection, true);
 					} catch (PacketHandleException e) {
 						e.printUnableToHandle(System.err, "Couldn't save a renogy rover packet!");
 					}
 					final long duration =  System.currentTimeMillis() - startTime;
+					System.out.println("took " + duration + "ms to read from Rover");
 					Thread.sleep(Math.max(200, 1000 - duration));
 				}
 			} catch (InterruptedException e) {
@@ -212,7 +210,8 @@ public class SolarMain {
 			new PacketHandlerMultiplexer(packetHandlers),
 			idGenerator,
 			10,
-			OnDataReceive.Defaults.NOTHING
+			OnDataReceive.Defaults.NOTHING,
+			getAdditionalPacketProvider(args)
 		);
 		return 0;
 	}
@@ -227,8 +226,8 @@ public class SolarMain {
 		return new CouchDbPacketSaver(args.createProperties(), databaseName);
 	}
 	
-	private void initReader(InputStream in, PacketCreator packetCreator, PacketHandler packetHandler, PacketCollectionIdGenerator idGenerator, long samePacketTime, OnDataReceive onDataReceive) {
-		Runnable run = new SolarReader(in, packetCreator, packetHandler, idGenerator, samePacketTime, onDataReceive);
+	private void initReader(InputStream in, TextPacketCreator packetCreator, PacketHandler packetHandler, PacketCollectionIdGenerator idGenerator, long samePacketTime, OnDataReceive onDataReceive, PacketProvider additionalPacketProvider) {
+		Runnable run = new SolarReader(in, packetCreator, packetHandler, idGenerator, samePacketTime, onDataReceive, additionalPacketProvider);
 		try {
 			while (!Thread.currentThread().isInterrupted()) {
 				run.run();
@@ -237,6 +236,19 @@ public class SolarMain {
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 		}
+	}
+	private PacketProvider getAdditionalPacketProvider(ProgramArgs args){
+		final String source = args.getSourceId();
+		final Integer fragment = args.getFragmentId();
+		requireNonNull(source);
+		return () -> {
+			List<Packet> r = new ArrayList<>();
+			r.add(InstanceSourcePackets.create(source));
+			if(fragment != null){
+				r.add(InstanceFragmentIndicatorPackets.create(fragment));
+			}
+			return r;
+		};
 	}
 
 	public static void main(String[] args) {

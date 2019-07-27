@@ -8,7 +8,7 @@ import java.util.Collection;
  * A packet creator is something that creates packets from characters from some sort of stream. The characters may be
  * received at different time intervals.
  */
-public interface PacketCreator {
+public interface TextPacketCreator {
 
 	/**
 	 * 

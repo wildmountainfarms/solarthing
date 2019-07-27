@@ -2,7 +2,7 @@ package me.retrodaredevil.solarthing.solar.outback;
 
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.creation.PacketCreationException;
-import me.retrodaredevil.solarthing.packets.creation.StartEndPacketCreator;
+import me.retrodaredevil.solarthing.packets.creation.StartEndTextPacketCreator;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPackets;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPackets;
 import me.retrodaredevil.solarthing.util.CheckSumException;
@@ -13,7 +13,7 @@ import me.retrodaredevil.util.json.JsonFile;
 import java.util.Collection;
 import java.util.Collections;
 
-public class MatePacketCreator49 extends StartEndPacketCreator {
+public class MatePacketCreator49 extends StartEndTextPacketCreator {
 
 	private final IgnoreCheckSum ignoreCheckSum;
 

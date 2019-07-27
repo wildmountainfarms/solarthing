@@ -116,6 +116,9 @@ public final class RoverStatusPackets {
 	}
 	private static JsonPrimitive getPrimitive(JsonObject object, String name){
 		JsonElement element = object.get(name);
+		if(element == null){
+			throw new NullPointerException(name + " is null! (undefined in JSON)");
+		}
 		if(!element.isJsonPrimitive()){
 			throw new RuntimeException(name + " is not a json primitive!");
 		}

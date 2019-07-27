@@ -62,6 +62,11 @@ class ProgramArgs {
 	
 	@Parameter(names = {"--latest-save"})
 	private String latestPacketJsonSaveLocation = null;
+	
+	@Parameter(names = {"--source"})
+	private String sourceId = "default";
+	@Parameter(names = {"--fragment"})
+	private Integer fragmentId = null;
 
 	public ProgramArgs(String[] args){
 		JCommander.newBuilder().addObject(this).build().parse(args);
@@ -109,6 +114,12 @@ class ProgramArgs {
 	}
 	public String getLatestPacketJsonSaveLocation() {
 		return latestPacketJsonSaveLocation;
+	}
+	public String getSourceId(){
+		return sourceId;
+	}
+	public Integer getFragmentId(){
+		return fragmentId;
 	}
 
 	public void printInJson(){

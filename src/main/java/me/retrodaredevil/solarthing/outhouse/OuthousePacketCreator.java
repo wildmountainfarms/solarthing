@@ -2,15 +2,14 @@ package me.retrodaredevil.solarthing.outhouse;
 
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.creation.PacketCreationException;
-import me.retrodaredevil.solarthing.packets.creation.PacketCreator;
-import me.retrodaredevil.solarthing.packets.creation.StartEndPacketCreator;
+import me.retrodaredevil.solarthing.packets.creation.TextPacketCreator;
+import me.retrodaredevil.solarthing.packets.creation.StartEndTextPacketCreator;
 import me.retrodaredevil.util.json.JsonFile;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
-public class OuthousePacketCreator extends StartEndPacketCreator {
+public class OuthousePacketCreator extends StartEndTextPacketCreator {
 	
 	public OuthousePacketCreator() {
 		super('\n', '\r', 256, 0);
@@ -76,7 +75,7 @@ public class OuthousePacketCreator extends StartEndPacketCreator {
 		}
 	}
 	public static void main(String[] args) throws Exception{
-		PacketCreator packetCreator = new OuthousePacketCreator();
+		TextPacketCreator packetCreator = new OuthousePacketCreator();
 		System.out.println(packetCreator.add("\n22.9 24 43\r".toCharArray()));
 	}
 }
