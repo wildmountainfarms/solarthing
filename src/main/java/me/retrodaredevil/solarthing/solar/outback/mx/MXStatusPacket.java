@@ -25,6 +25,7 @@ public interface MXStatusPacket extends OutbackPacket, BatteryVoltagePacket, Cha
 	 * The DC current the MX is delivering to the batteries in Amps
 	 * @return [0..99] representing the charger current in Amps
 	 */
+	@Deprecated
 	@Override
 	Integer getChargerCurrent();
 	/**
@@ -33,6 +34,7 @@ public interface MXStatusPacket extends OutbackPacket, BatteryVoltagePacket, Cha
 	 * Only applies to newer firmware using FlexMAX 80 or FlexMAX 60
 	 * @return [0..0.9] The current to add to {@link #getChargerCurrent()} to get current displayed on FM80 or FM60
 	 */
+	@Deprecated
 	@Override
 	Float getAmpChargerCurrent();
 	
