@@ -1,10 +1,11 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover;
 
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
+import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 
 import java.util.Objects;
 
-public final class RoverIdentifier implements Identifier {
+public final class RoverIdentifier implements Identifier, Comparable<Identifier> {
 	private final int hardwareVersion;
 	private final int serialNumber;
 	private final int controllerDeviceAddress;
@@ -28,5 +29,16 @@ public final class RoverIdentifier implements Identifier {
 		this.hardwareVersion = hardwareVersion;
 		this.serialNumber = serialNumber;
 		this.controllerDeviceAddress = controllerDeviceAddress;
+	}
+	
+	@Override
+	public int compareTo(Identifier o) {
+		if(o instanceof RoverIdentifier){
+			return serialNumber - ((RoverIdentifier) o).serialNumber;
+		}
+		if(o instanceof OutbackIdentifier){
+			return 1; // renogy devices show up after outback devices
+		}
+		return 0;
 	}
 }
