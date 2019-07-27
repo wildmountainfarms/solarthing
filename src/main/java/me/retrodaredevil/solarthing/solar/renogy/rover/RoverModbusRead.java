@@ -72,12 +72,12 @@ public class RoverModbusRead implements RoverReadTable {
 	}
 	
 	@Override
-	public int getControllerTemperature() {
+	public int getControllerTemperatureRaw() {
 		return modbus.readRegisterUpper8Bits(0x0103);
 	}
 	
 	@Override
-	public int getBatteryTemperature() {
+	public int getBatteryTemperatureRaw() {
 		return modbus.readRegisterLower8Bits(0x0103);
 	}
 	
@@ -113,11 +113,11 @@ public class RoverModbusRead implements RoverReadTable {
 	
 	@Override
 	public float getDailyMinBatteryVoltage() {
-		return modbus.readRegister(0x010B);
+		return modbus.readRegister(0x010B) / 10.0F;
 	}
 	@Override
 	public float getDailyMaxBatteryVoltage() {
-		return modbus.readRegister(0x010C);
+		return modbus.readRegister(0x010C) / 10.0F;
 	}
 	
 	@Override

@@ -70,8 +70,20 @@ public interface RoverReadTable extends Rover, ErrorReporter, ChargeController, 
 	@Override
 	Float getChargingCurrent();
 	
-	int getControllerTemperature();
-	int getBatteryTemperature();
+	int getControllerTemperatureRaw();
+	int getBatteryTemperatureRaw();
+	default int getControllerTemperature(){
+		return convertRawTemperature(getControllerTemperatureRaw());
+	}
+	default int getBatteryTemperature(){
+		return convertRawTemperature(getBatteryTemperatureRaw());
+	}
+	static int convertRawTemperature(int temperature){
+		if(temperature > 127){
+			return temperature - 128;
+		}
+		return temperature;
+	}
 	
 	/** AKA street light voltage*/
 	float getLoadVoltage();
@@ -235,6 +247,6 @@ public interface RoverReadTable extends Rover, ErrorReporter, ChargeController, 
 	default int getLEDLoadCurrentMilliAmps(){ return getLEDLoadCurrentRaw() * 10; }
 	
 	int getSpecialPowerControlE02DRaw();
-	default SpecialPowerControl_E02D getSpecialPowerControlE0D1(){ return new ImmutableSpecialPowerControl_E02D(getSpecialPowerControlE02DRaw()); }
+	default SpecialPowerControl_E02D getSpecialPowerControlE02D(){ return new ImmutableSpecialPowerControl_E02D(getSpecialPowerControlE02DRaw()); }
 	
 }

@@ -15,19 +15,23 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	private final int ratedDischargingCurrent;
 	private final int productType;
 	private transient final byte[] productModel;
+	@SuppressWarnings({"unused", "FieldCanBeLocal"})
 	private final String productModelEncoded;
+	@SuppressWarnings({"unused", "FieldCanBeLocal"})
 	private final String productModelString;
 	private final int softwareVersion;
+	@SuppressWarnings({"unused", "FieldCanBeLocal"})
 	private final String softwareVersionString;
 	private final int hardwareVersion;
+	@SuppressWarnings({"unused", "FieldCanBeLocal"})
 	private final String hardwareVersionString;
 	private final int productSerialNumber;
 	private final int controllerDeviceAddress;
 	private final int batteryCapacitySOC;
 	private final float batteryVoltage;
 	private final float chargingCurrent;
-	private final int controllerTemperature;
-	private final int batteryTemperature;
+	private final int controllerTemperatureRaw;
+	private final int batteryTemperatureRaw;
 	private final float loadVoltage;
 	private final float loadCurrent;
 	private final int loadPower;
@@ -52,16 +56,21 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	private final float cumulativeKWH;
 	private final float cumulativeKWHConsumption;
 	private final int streetLightValue;
+	@SuppressWarnings({"unused", "FieldCanBeLocal"})
 	private final boolean streetLightOn; // convenient
+	@SuppressWarnings({"unused", "FieldCanBeLocal"})
 	private final int streetLightBrightness; // convenient
 	private final int chargingState;
+	@SuppressWarnings({"unused", "FieldCanBeLocal"})
 	private final String chargingStateName;
 	private final int errorMode;
+	@SuppressWarnings({"unused", "FieldCanBeLocal"})
 	private final String errors; // convenient
 	private final int nominalBatteryCapacity;
 	private final int systemVoltageSetting;
 	private final int recognizedVoltage;
 	private final int batteryType;
+	@SuppressWarnings({"unused", "FieldCanBeLocal"})
 	private final String batteryTypeName; // convenient
 	
 	private final int overVoltageThresholdRaw;
@@ -86,6 +95,7 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	private final OperatingSettingBundle operatingStage1, operatingStage2, operatingStage3, operatingMorningOn;
 	
 	private final int loadWorkingMode;
+	@SuppressWarnings({"unused", "FieldCanBeLocal"})
 	private final String loadWorkingModeName; // convenient
 	private final int lightControlDelayMinutes;
 	private final int lightControlVoltage;
@@ -103,7 +113,7 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 		int maxVoltage, int ratedChargingCurrent, int ratedDischargingCurrent, int productType, byte[] productModel,
 		int softwareVersion, int hardwareVersion, int productSerialNumber,
 		int controllerDeviceAddress,
-		int batteryCapacitySOC, float batteryVoltage, float chargingCurrent, int controllerTemperature, int batteryTemperature,
+		int batteryCapacitySOC, float batteryVoltage, float chargingCurrent, int controllerTemperatureRaw, int batteryTemperatureRaw,
 		float loadVoltage, float loadCurrent, int loadPower, float inputVoltage, float pvCurrent,
 		int chargingPower, float dailyMinBatteryVoltage, float dailyMaxBatteryVoltage,
 		float dailyMaxChargingCurrent, float dailyMaxDischargingCurrent, int dailyMaxChargingPower, int dailyMaxDischargingPower,
@@ -138,8 +148,8 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 		this.batteryCapacitySOC = batteryCapacitySOC;
 		this.batteryVoltage = batteryVoltage;
 		this.chargingCurrent = chargingCurrent;
-		this.controllerTemperature = controllerTemperature;
-		this.batteryTemperature = batteryTemperature;
+		this.controllerTemperatureRaw = controllerTemperatureRaw;
+		this.batteryTemperatureRaw = batteryTemperatureRaw;
 		this.loadVoltage = loadVoltage;
 		this.loadCurrent = loadCurrent;
 		this.loadPower = loadPower;
@@ -290,13 +300,13 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	}
 	
 	@Override
-	public int getControllerTemperature() {
-		return controllerTemperature;
+	public int getControllerTemperatureRaw() {
+		return controllerTemperatureRaw;
 	}
 	
 	@Override
-	public int getBatteryTemperature() {
-		return batteryTemperature;
+	public int getBatteryTemperatureRaw() {
+		return batteryTemperatureRaw;
 	}
 	
 	@Override

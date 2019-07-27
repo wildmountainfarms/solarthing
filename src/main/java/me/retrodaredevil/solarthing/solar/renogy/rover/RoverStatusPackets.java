@@ -17,7 +17,7 @@ public final class RoverStatusPackets {
 			read.getSoftwareVersionValue(), read.getHardwareVersionValue(),
 			read.getProductSerialNumber(), read.getControllerDeviceAddress(),
 			read.getBatteryCapacitySOC(), read.getBatteryVoltage(),
-			read.getChargingCurrent(), read.getControllerTemperature(), read.getBatteryTemperature(),
+			read.getChargingCurrent(), read.getControllerTemperatureRaw(), read.getBatteryTemperatureRaw(),
 			read.getLoadVoltage(), read.getLoadCurrent(),
 			read.getLoadPower(), read.getInputVoltage(), read.getPVCurrent(),
 			read.getChargingPower(), read.getDailyMinBatteryVoltage(), read.getDailyMaxBatteryVoltage(),
