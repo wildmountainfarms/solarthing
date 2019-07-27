@@ -14,6 +14,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 final class RenogyTest {
 	@Test
+	void temperatureConvertTest(){
+		assertEquals(2, RoverReadTable.convertRawTemperature(2));
+		assertEquals(-2, RoverReadTable.convertRawTemperature(2 | (1 << 7)));
+		assertEquals(-30, RoverReadTable.convertRawTemperature(30 | (1 << 7)));
+	}
+	@Test
 	void testStreetLight(){
 		assertThrows(IllegalArgumentException.class, () -> StreetLight.OFF.isActive(256));
 		

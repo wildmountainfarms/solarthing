@@ -12,7 +12,7 @@ public interface SpecialPowerControl_E02D extends UpperLower16Bit {
 			"battery type: " + getBatteryType().getModeName() + "\n" +
 			"charging method: " + getChargingMethod().getModeName() + "\n" +
 			"no charging below 0C: " + (isNoChargingBelow0CEnabled() ? "enabled" : "disabled") + "\n" +
-			"system voltage: " + getSystemVoltage().getModeName() + "\n";
+			"system voltage: " + getSystemVoltage().getModeName();
 	}
 	
 	default boolean isIntelligentPowerEnabled(){
@@ -36,10 +36,8 @@ public interface SpecialPowerControl_E02D extends UpperLower16Bit {
 			default: throw new UnsupportedOperationException();
 		}
 	}
-	
-	
 	default int getChargingMethodValueCode(){
-		return (0b1000 & getLower()) >> 3;
+		return (0b1000 & getLower()) >>> 3;
 	}
 	default ChargingMethod_E02D getChargingMethod(){
 		return Modes.getActiveMode(ChargingMethod_E02D.class, getChargingMethodValueCode());

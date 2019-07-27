@@ -78,11 +78,12 @@ public interface RoverReadTable extends Rover, ErrorReporter, ChargeController, 
 	default int getBatteryTemperature(){
 		return convertRawTemperature(getBatteryTemperatureRaw());
 	}
-	static int convertRawTemperature(int temperature){
-		if(temperature > 127){
-			return temperature - 128;
+	static int convertRawTemperature(int temperatureRaw){
+		if(temperatureRaw > 127){
+			return 128 - temperatureRaw; // uses bit 7 (8th bit) as a sign indicator. Signed numbers are not represented in the standard way
+//			return -((~temperatureRaw & 0xFF) + 1);
 		}
-		return temperature;
+		return temperatureRaw;
 	}
 	
 	/** AKA street light voltage*/
@@ -154,7 +155,10 @@ public interface RoverReadTable extends Rover, ErrorReporter, ChargeController, 
 	int getSystemVoltageSettingValue();
 	/** Should be serialized as "recognizedVoltage" */
 	int getRecognizedVoltageValue();
+	
+	/** @return Any voltage from {@link Voltage} representing the current voltage setting */
 	default Voltage getSystemVoltageSetting(){ return Modes.getActiveMode(Voltage.class, getSystemVoltageSettingValue()); }
+	/** @return The recognized {@link Voltage}. {@link Voltage#AUTO} will never be returned*/
 	default Voltage getRecognizedVoltage(){ return Modes.getActiveMode(Voltage.class, getRecognizedVoltageValue()); }
 	
 	// 0xE004

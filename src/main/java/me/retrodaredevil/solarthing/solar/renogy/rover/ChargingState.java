@@ -14,6 +14,7 @@ public enum ChargingState implements CodeMode {
 	EQ("EQ", 3),
 	BOOST("Boost", 4),
 	FLOAT("Float", 5),
+	/** AKA overpower. Done with a constant current*/
 	CURRENT_LIMITING("Current limiting", 6)
 	;
 	
