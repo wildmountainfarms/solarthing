@@ -167,6 +167,7 @@ public class SolarMain {
 			RoverReadTable read = new RoverModbusRead(modbus);
 			try {
 				while (!Thread.currentThread().isInterrupted()) {
+					final long startTime = System.currentTimeMillis();
 					final RoverStatusPacket packet;
 					try {
 						packet = RoverStatusPackets.createFromReadTable(read);
@@ -177,13 +178,17 @@ public class SolarMain {
 						continue;
 					}
 					System.out.println(JsonFile.gson.toJson(packet));
+					System.out.println(packet.getSpecialPowerControlE021().getFormattedInfo().replaceAll("\n", "\n\t"));
+					System.out.println(packet.getSpecialPowerControlE02D().getFormattedInfo().replaceAll("\n", "\n\t"));
+					System.out.println();
 					PacketCollection packetCollection = PacketCollections.createFromPackets(Collections.singleton(packet), idGenerator);
 					try {
 						packetHandler.handle(packetCollection, true);
 					} catch (PacketHandleException e) {
 						e.printUnableToHandle(System.err, "Couldn't save a renogy rover packet!");
 					}
-					Thread.sleep(1000);
+					final long duration =  System.currentTimeMillis() - startTime;
+					Thread.sleep(Math.max(200, 1000 - duration));
 				}
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();

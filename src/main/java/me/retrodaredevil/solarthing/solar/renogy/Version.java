@@ -6,8 +6,8 @@ public final class Version {
 	public Version(int versionCodeRaw) {
 		int versionCode = versionCodeRaw & 0x00FFFFFF;
 		low = versionCode & 0xFF;
-		middle = (versionCode & 0xFF00) >>> 16;
-		high = (versionCode & 0xFF0000) >>> 24;
+		middle = (versionCode & 0xFF00) >>> 8;
+		high = (versionCode & 0xFF0000) >>> 16;
 	}
 	public int getMajor(){
 		return high;

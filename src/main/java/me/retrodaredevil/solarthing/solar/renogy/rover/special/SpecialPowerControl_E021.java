@@ -6,6 +6,13 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.ChargingMethod;
 
 public interface SpecialPowerControl_E021 extends UpperLower16Bit {
 	
+	default String getFormattedInfo(){
+		return "charging mode controlled by voltage: " + isChargingModeControlledByVoltage() + "\n" +
+			"special power control: " + (isSpecialPowerControlEnabled() ? "enabled" : "disabled") + "\n" +
+			"each night on: " + (isEachNightOnEnabled() ? "enabled" : "disabled") + "\n" +
+			"no charging below 0C: " + (isNoChargingBelow0CEnabled() ? "enabled" : "disabled") + "\n" +
+			"charging method: " + getChargingMethod().getModeName() + "\n";
+	}
 	
 	// upper
 	
