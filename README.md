@@ -98,7 +98,7 @@ After learning perl for a day. I went straight back to Java, which I am more fam
 * Create a PacketHandler that saves json data to a file location that can be easily accessed using a Apache web server
 * Figure out how to use https://emoncms.org/ to graph data
 * Implement Outback FlexNet DC Packets
-* Add field to MX Status Packet to indicate whether it supports dailyAH and field to indicate the versino of the MX or if it is a FM
+* Add field to MX Status Packet to indicate whether it supports dailyAH and field to indicate the version of the MX or if it is a FM
 * Cache some data from Renogy Rover that won't be updated
 
 ### Completed TODO:
