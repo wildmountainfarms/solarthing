@@ -34,6 +34,7 @@ SolarThing Android: [Github](https://github.com/wildmountainfarms/solarthing-and
 You can import the most current release by using www.jitpack.io. 
 * Useful for parsing JSON packets stored in CouchDB. [solarthing-android](https://github.com/wildmountainfarms/solarthing-android) uses this
 * You can parse Outback Mate packets directly
+* You can read and write to a Renogy Rover easily
 
 ### Customizing
 This project doesn't have too many options because it was primarily set up to store packets in CouchDB. If you want
@@ -97,4 +98,9 @@ After learning perl for a day. I went straight back to Java, which I am more fam
 * Create a PacketHandler that saves json data to a file location that can be easily accessed using a Apache web server
 * Figure out how to use https://emoncms.org/ to graph data
 * Implement Outback FlexNet DC Packets
+* Add field to MX Status Packet to indicate whether it supports dailyAH and field to indicate the versino of the MX or if it is a FM
+* Cache some data from Renogy Rover that won't be updated
+
+### Completed TODO:
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
+    * Done by using fragmented packets. Will be stored in the same database but uses InstancePackets to indicate source and fragment ids

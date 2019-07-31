@@ -62,7 +62,7 @@ public final class RoverStatusPackets {
 			getInt(object, "softwareVersion"), getInt(object, "hardwareVersion"),
 			getInt(object, "productSerialNumber"), getInt(object, "controllerDeviceAddress"),
 			getInt(object, "batteryCapacitySOC"), getFloat(object, "batteryVoltage"),
-			getInt(object, "chargingCurrent"),getInt(object, "controllerTemperatureRaw"), getInt(object, "batteryTemperatureRaw"),
+			getFloat(object, "chargingCurrent"),getInt(object, "controllerTemperatureRaw"), getInt(object, "batteryTemperatureRaw"),
 			getFloat(object, "loadVoltage"), getFloat(object, "loadCurrent"),
 			getInt(object, "loadPower"), getFloat(object, "inputVoltage"), getFloat(object, "pvCurrent"),
 			getInt(object, "chargingPower"),getFloat(object, "dailyMinBatteryVoltage"),getFloat(object, "dailyMaxBatteryVoltage"),
@@ -136,6 +136,6 @@ public final class RoverStatusPackets {
 		return primitive.getAsInt();
 	}
 	private static float getFloat(JsonObject object, String name){
-		return getPrimitive(object, name).getAsInt();
+		return getPrimitive(object, name).getAsFloat();
 	}
 }
