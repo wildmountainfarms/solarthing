@@ -11,12 +11,14 @@ public final class OutbackUtil {
 	
 	/**
 	 *
-	 * @param packetCollection The packet collection containing only {@link me.retrodaredevil.solarthing.solar.SolarPacket}s
+	 * @param packetCollection The packet collection containing {@link me.retrodaredevil.solarthing.solar.SolarPacket}s. Other types of packets will be ignored
 	 * @return The {@link FXStatusPacket} from {@code packetCollection} or null if there were no FX packets in {@code packetCollection}
 	 */
 	public static FXStatusPacket getMasterFX(PacketCollection packetCollection){
 		FXStatusPacket fx = null;
 		for(Packet packet : packetCollection.getPackets()){
+			if(!(packet instanceof SolarPacket)) continue;
+			
 			SolarPacket solarPacket = (SolarPacket) packet;
 			if(solarPacket.getPacketType() == SolarPacketType.FX_STATUS){
 				FXStatusPacket fxStatusPacket = (FXStatusPacket) packet;
