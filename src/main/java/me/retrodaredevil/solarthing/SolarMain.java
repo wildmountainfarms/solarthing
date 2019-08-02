@@ -179,14 +179,17 @@ public class SolarMain {
 					packets.add(packet);
 					packets.addAll(packetProvider.createPackets());
 					PacketCollection packetCollection = PacketCollections.createFromPackets(packets, idGenerator);
+					final long readDuration = System.currentTimeMillis() - startTime;
+					System.out.println("took " + readDuration + "ms to read from Rover");
+					final long saveStartTime = System.currentTimeMillis();
 					try {
 						packetHandler.handle(packetCollection, true);
 					} catch (PacketHandleException e) {
 						e.printUnableToHandle(System.err, "Couldn't save a renogy rover packet!");
 					}
-					final long duration =  System.currentTimeMillis() - startTime;
-					System.out.println("took " + duration + "ms to read from Rover");
-					Thread.sleep(Math.max(200, 1000 - duration));
+					final long saveDuration = System.currentTimeMillis() - saveStartTime;
+					System.out.println("took " + saveDuration + "ms to handle packets");
+					Thread.sleep(Math.max(200, 5000 - readDuration)); // allow 5 seconds to read from rover // assume saveDuration is very small
 				}
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
@@ -300,13 +303,13 @@ public class SolarMain {
 		if (args.size() == 0) {
 			return null;
 		}
-		String program = args.get(0).toLowerCase();
-		if (program.equals("solar") || program.equals("mate")) {
-			return Program.MATE;
-		} else if (program.equals("rover")) {
-			return Program.ROVER;
-		} else if(program.equals("outhouse")){
-			return Program.OUTHOUSE;
+		switch (args.get(0).toLowerCase()) {
+			case "solar": case "mate":
+				return Program.MATE;
+			case "rover":
+				return Program.ROVER;
+			case "outhouse":
+				return Program.OUTHOUSE;
 		}
 		return null;
 	}
