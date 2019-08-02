@@ -31,8 +31,15 @@ For each example replace the host with the ip of your CouchDB database IP.
 Example command that I use while running it on a raspberry pi:
 ```
 # this is located in my /etc/rc.local
-(cd /home/pi/solarthing && printf "" > command_input.txt 
-&& java -Djava.library.path=/usr/lib/jni -jar solarthing.jar --host 192.168.10.250 --user user --passwd password --unique 30 --tf 3 --instant solar >output.txt 2>errors.txt) &
+# For getting data from outback mate:
+((cd /home/pi/solarthing && printf "" > command_input.txt 
+&& java -Djava.library.path=/usr/lib/jni -jar solarthing.jar mate --host 192.168.10.250 --user username --passwd password --unique 30 --tf 3 --instant --latest-save /var/www/html/index.json --source default --fragment 1 --ct 30 --st 30
+) 1>output.txt 2>errors.txt) &
+
+# For getting data from Renogy rover:
+((cd /home/pi/solarthing 
+&& java -jar solarthing.jar rover --host 192.168.10.250 --user username --passwd password --source default --fragment 2 --unique 30 --ct 30 --st 30
+) 1>output.txt 2>errors.txt) &
 ```
 
 ### Connecting to Outback MATE
@@ -44,12 +51,13 @@ to a Raspberry Pi GPIO. I do not have experience with that.
 If you have the USB to RS232 cable that comes with the Rover, all you have to do is connect it to your computer of
 choice and it will act like a serial port!
 
-If you don't have that cable, it is also possible to use an RJ12 cable to connect to a Raspberry Pi GPIO, but be careful!
-Some of those pins may have 15 volts running through it! One wrong move and you've fried your pi! I recommend measuring
-voltage using a multimeter just to make sure.
 
-I do not know the pin out, but when I find it I will put it here. I will again stress to make sure you don't send 15V through your
-pi's GPIO. Don't do it!
+If you don't have that cable, you can jump through some hoops to do conversion to allow the Pi UART to read it, or you can order a nice RS232 to DB9 cable and a break out
+
+*DO NOT CONNECT THE RJ12 CABLE DIRECTLY TO YOUR PI*. Beware there is 15V in two of the pins in the RJ12 cable, plus you need
+an adapter or a way to convert the RS232 signal to something the pi can read. I recommend an adapter.
+
+TODO: Put pin out and recommenced products to buy here
 
 ### Outback References
 New documentation:
