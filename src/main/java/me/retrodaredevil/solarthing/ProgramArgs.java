@@ -67,6 +67,9 @@ class ProgramArgs {
 	private String sourceId = "default";
 	@Parameter(names = {"--fragment"})
 	private Integer fragmentId = null;
+	
+	@Parameter(names = {"--dummy"})
+	private String dummyFile = "dummy_rover.json";
 
 	public ProgramArgs(String[] args){
 		JCommander.newBuilder().addObject(this).build().parse(args);
@@ -120,6 +123,9 @@ class ProgramArgs {
 	}
 	public Integer getFragmentId(){
 		return fragmentId;
+	}
+	public String getDummyFile(){
+		return dummyFile;
 	}
 
 	public void printInJson(){
