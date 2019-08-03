@@ -16,6 +16,7 @@ public enum StreetLight implements CodeMode {
 	OFF("Off", 0),
 	ON("On", 1 << 7)
 	;
+	public static final int IGNORED_BITS = 0b01111111;
 	private final String name;
 	private final int code;
 	
@@ -31,7 +32,7 @@ public enum StreetLight implements CodeMode {
 	
 	@Override
 	public int getIgnoredBits() {
-		return 0b01111111;
+		return IGNORED_BITS;
 	}
 	
 	@Override

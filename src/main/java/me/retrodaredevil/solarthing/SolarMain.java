@@ -1,6 +1,8 @@
 package me.retrodaredevil.solarthing;
 
 import com.ghgande.j2mod.modbus.util.SerialParameters;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import me.retrodaredevil.modbus.J2ModModbus;
 import me.retrodaredevil.modbus.ModbusRuntimeException;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketRetriever;
@@ -35,6 +37,8 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.*;
 
 import static java.util.Objects.requireNonNull;
@@ -197,6 +201,169 @@ public class SolarMain {
 		}
 		return 0;
 	}
+	private int connectRoverSetup(ProgramArgs args) throws IOException{
+		if(args.isUnitTest()){
+			File file = new File(args.getDummyFile());
+			final byte[] bytes = Files.readAllBytes(file.toPath());
+			String json = new String(bytes, StandardCharsets.UTF_8);
+			JsonObject jsonPacket = new GsonBuilder().create().fromJson(json, JsonObject.class);
+			RoverStatusPacket roverStatusPacket = RoverStatusPackets.createFromJson(jsonPacket);
+			DummyRoverReadWrite readWrite = new DummyRoverReadWrite(roverStatusPacket, (fieldName, previousValue, newValue) -> {
+				System.out.println(fieldName + " changed from " + previousValue + " to " + newValue);
+			});
+			startRoverSetup(readWrite, readWrite);
+		} else {
+			SerialParameters parameters = new SerialParameters(args.getPortName(), 9600, 0, 0, 8, 1, 0, false);
+			parameters.setEncoding("rtu");
+			try (J2ModModbus modbus = new J2ModModbus(parameters)) {
+				RoverReadTable read = new RoverModbusRead(modbus);
+				RoverWriteTable write = new RoverModbusWrite(modbus);
+				startRoverSetup(read, write);
+			}
+		}
+		return 0;
+	}
+	private void startRoverSetup(RoverReadTable read, RoverWriteTable write){
+		Scanner scanner = new Scanner(System.in);
+		loop: while (scanner.hasNextLine()) {
+			String command = scanner.nextLine();
+			String[] split = command.split(" ");
+			switch(split.length){
+				case 0:
+					continue loop;
+				case 1:
+					// display data
+					String request = split[0].toLowerCase();
+					switch(request){
+						case "batteryvoltage":
+							System.out.println(read.getBatteryVoltage());
+							break;
+						case "maxvoltage":
+							System.out.println(read.getMaxVoltage().getModeName());
+							break;
+						case "producttype":
+							System.out.println(read.getProductType().getModeName());
+							break;
+						case "controllerdeviceaddress": case "deviceaddress": case "address":
+							System.out.println(read.getControllerDeviceAddress());
+							break;
+						default:
+							System.err.println(request + " is not supported!");
+							break;
+					}
+					break;
+				case 2:
+					// set most data
+					String toSet = split[1].toLowerCase();
+					switch(split[0].toLowerCase()) {
+						case "controllerdeviceaddress": case "deviceaddress": case "address":
+							write.setControllerDeviceAddress(Integer.parseInt(toSet));
+							break;
+						case "streetlight": // on/off
+							final boolean streetOn;
+							if(toSet.equals("on")) {
+								streetOn = true;
+							} else if(toSet.equals("off")){
+								streetOn = false;
+							} else {
+								throw new IllegalArgumentException(toSet + " not supported for streetlight on/off")
+							}
+							write.setStreetLightStatus(streetOn ? StreetLight.ON : StreetLight.OFF);
+							break;
+						case "brightness": // 0-100
+							int brightness = Integer.parseInt(toSet);
+							write.setStreetLightBrightnessPercent(brightness);
+							break;
+						case "systemvoltage":
+							
+							break;
+						case "batterytype":
+							
+							break;
+						case "overvoltagethresholdraw":
+							
+							break;
+						case "chargingvoltagelimitraw":
+							
+							break;
+						case "equalizingchargingvoltageraw":
+							
+							break;
+						case "boostchargingvoltageraw":
+							
+							break;
+						case "floatingchargingvoltageraw":
+							
+							break;
+						case "boostchargingrecoveryvoltageraw":
+							
+							break;
+						case "overdischargerecoveryvoltageraw":
+							
+							break;
+						case "undervoltagewarninglevelraw":
+							
+							break;
+						case "discharginglimitvoltageraw":
+							
+							break;
+							// end of charge SOC end of discharge SOC
+						case "overdischargetimedelayseconds":
+							
+							break;
+						case "equalizingchargingtimeminutes":
+							
+							break;
+						case "boostchargingtimeminutes":
+							
+							break;
+						case "equalizingchargingintervaldays":
+							
+							break;
+						case "temperaturecompensationfactor":
+							
+							break;
+						// operating settings
+						case "loadworkingmode":
+							
+							break;
+						case "lightcontroldelayminutes":
+							
+							break;
+						case "lightcontrolvoltage":
+							
+							break;
+						case "ledloadcurrentsettingmilliamps":
+							
+							break;
+						case "specialpowercontrole021raw":
+							
+							break;
+						// sensing values
+						case "sensingtimedelayseconds":
+							
+							break;
+						case "ledloadcurrentmilliamps":
+							
+							break;
+						case "specialpowercontrole02draw":
+							
+							break;
+						default:
+							System.err.println("Not supported!");
+							break;
+					}
+					break;
+				case 3:
+					// set some data
+					
+					break;
+				default:
+					System.out.println("Only a maximum of 3 arguments are allowed!");
+					continue loop;
+			}
+		}
+	}
 	private int connectOuthouse(ProgramArgs args, PacketCollectionIdGenerator idGenerator) {
 		List<PacketHandler> packetHandlers = new ArrayList<>();
 		{
@@ -287,6 +454,8 @@ public class SolarMain {
 				status = new SolarMain().connectRover(pArgs, idGenerator);
 			} else if(program == Program.OUTHOUSE){
 				status = new SolarMain().connectOuthouse(pArgs, idGenerator);
+			} else if(program == Program.ROVER_SETUP){
+				status = new SolarMain().connectRoverSetup(pArgs);
 			} else {
 				System.out.println("Specify mate|rover|outhouse");
 			}
@@ -308,6 +477,8 @@ public class SolarMain {
 				return Program.MATE;
 			case "rover":
 				return Program.ROVER;
+			case "rover-setup":
+				return Program.ROVER_SETUP;
 			case "outhouse":
 				return Program.OUTHOUSE;
 		}
@@ -316,7 +487,7 @@ public class SolarMain {
 	private enum Program {
 		MATE,
 		ROVER,
+		ROVER_SETUP,
 		OUTHOUSE
 	}
-
 }

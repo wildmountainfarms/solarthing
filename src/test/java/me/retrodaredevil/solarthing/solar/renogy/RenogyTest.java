@@ -122,7 +122,7 @@ final class RenogyTest {
 			0,0,0,0,
 			"     HI         ".getBytes(StandardCharsets.UTF_8),
 			0,0,
-			0,0,0,0,0,
+			0,0,0,26.2f,0,
 			0,0,0,0,0,0,0,
 			0,0,0,0,0,0,
 			0,0,0,0,0,

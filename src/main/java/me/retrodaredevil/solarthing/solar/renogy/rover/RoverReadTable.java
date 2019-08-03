@@ -65,7 +65,8 @@ public interface RoverReadTable extends Rover, ErrorReporter, ChargeController, 
 	 */
 	int getBatteryCapacitySOC();
 	
-	// implements BatteryVoltage
+	@Override
+	float getBatteryVoltage();
 	
 	@Override
 	Float getChargingCurrent();
