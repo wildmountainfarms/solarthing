@@ -1,0 +1,6 @@
+# Rover Setup Config
+batterytype open
+undervoltagewarninglevelraw 111
+chargingvoltagelimitraw 149
+overvoltagethresholdraw 151
+

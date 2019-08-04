@@ -3,11 +3,11 @@ package me.retrodaredevil.solarthing;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.solar.renogy.BatteryType;
 import me.retrodaredevil.solarthing.solar.renogy.Voltage;
-import me.retrodaredevil.solarthing.solar.renogy.rover.LoadWorkingMode;
-import me.retrodaredevil.solarthing.solar.renogy.rover.RoverReadTable;
-import me.retrodaredevil.solarthing.solar.renogy.rover.RoverWriteTable;
-import me.retrodaredevil.solarthing.solar.renogy.rover.StreetLight;
+import me.retrodaredevil.solarthing.solar.renogy.rover.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 public final class RoverSetupProgram {
@@ -17,7 +17,17 @@ public final class RoverSetupProgram {
 		Scanner scanner = new Scanner(System.in);
 		loop: while (scanner.hasNextLine()) {
 			String command = scanner.nextLine();
-			String[] split = command.split(" ");
+			String[] commentSplit = command.split("#");
+			final String[] split;
+			if(commentSplit.length == 0){
+				split = new String[0];
+			} else {
+				List<String> splitList = new ArrayList<>(Arrays.asList(commentSplit[0].split(" ")));
+				while(splitList.contains("")){
+					splitList.remove("");
+				}
+				split = splitList.toArray(new String[0]);
+			}
 			switch(split.length){
 				case 0:
 					continue loop;
@@ -25,17 +35,220 @@ public final class RoverSetupProgram {
 					// display data
 					String request = split[0].toLowerCase();
 					switch(request){
-						case "batteryvoltage":
-							System.out.println(read.getBatteryVoltage());
-							break;
 						case "maxvoltage":
 							System.out.println(read.getMaxVoltage().getModeName());
+							break;
+						case "ratedchargingcurrent": case "ratedcurrent":
+							System.out.println(read.getRatedChargingCurrent().getModeName());
+							break;
+						case "rateddischargingcurrent":
+							System.out.println(read.getRatedDischargingCurrent().getModeName());
 							break;
 						case "producttype":
 							System.out.println(read.getProductType().getModeName());
 							break;
+						case "productmodel":
+							System.out.println(read.getProductModel());
+							break;
+						case "softwareversion":
+							System.out.println(read.getSoftwareVersion());
+							break;
+						case "hardwareversion":
+							System.out.println(read.getHardwareVersion());
+							break;
+						case "productserialnumber": case "serialnumber": case "serial":
+							System.out.println(read.getProductSerialNumber());
+							break;
 						case "controllerdeviceaddress": case "deviceaddress": case "address":
 							System.out.println(read.getControllerDeviceAddress());
+							break;
+						case "batterycapacitysoc": case "soc": case "percent":
+							System.out.println(read.getBatteryCapacitySOC());
+							break;
+						case "batteryvoltage":
+							System.out.println(read.getBatteryVoltage());
+							break;
+						case "chargingcurrent":
+							System.out.println(read.getChargingCurrent());
+							break;
+						case "controllertemperature":
+							System.out.println(read.getControllerTemperature());
+							break;
+						case "batterytemperature":
+							System.out.println(read.getBatteryTemperature());
+							break;
+						case "loadvoltage":
+							System.out.println(read.getLoadVoltage());
+							break;
+						case "loadcurrent":
+							System.out.println(read.getLoadCurrent());
+							break;
+						case "loadpower":
+							System.out.println(read.getLoadPower());
+							break;
+						case "inputvoltage": case "pvvoltage": case "solarlvoltage":
+							System.out.println(read.getInputVoltage());
+							break;
+						case "pvcurrent": case "solarcurrent":
+							System.out.println(read.getPVCurrent());
+							break;
+						case "chargingpower":
+							System.out.println(read.getChargingPower());
+							break;
+						case "dailyminbatteryvoltage": case "dailyminbattery":
+							System.out.println(read.getDailyMinBatteryVoltage());
+							break;
+						case "dailymaxbatteryvoltage": case "dailymaxbattery":
+							System.out.println(read.getDailyMaxBatteryVoltage());
+							break;
+						case "dailymaxchargingcurrent":
+							System.out.println(read.getDailyMaxChargingCurrent());
+							break;
+						case "dailymaxdischargingcurrent":
+							System.out.println(read.getDailyMaxDischargingCurrent());
+							break;
+						case "dailymaxchargingpower":
+							System.out.println(read.getDailyMaxChargingPower());
+							break;
+						case "dailymaxdischargingpower":
+							System.out.println(read.getDailyMaxDischargingPower());
+							break;
+						case "dailyah": case "dailyahcharging":
+							System.out.println(read.getDailyAH());
+							break;
+						case "dailyahdischarging":
+							System.out.println(read.getDailyAHDischarging());
+							break;
+						case "dailykwh":
+							System.out.println(read.getDailyKWH());
+							break;
+						case "dailykwhconsumption":
+							System.out.println(read.getDailyKWHConsumption());
+							break;
+						case "operatingdayscount": case "operatingdays":
+							System.out.println(read.getOperatingDaysCount());
+							break;
+						case "batteryoverdischargescount": case "batteryoverdischarge":
+							System.out.println(read.getBatteryOverDischargesCount());
+							break;
+						case "batteryfullchargescount": case "batteryfullcharges":
+							System.out.println(read.getBatteryFullChargesCount());
+							break;
+						case "ahcount": case "ahchargingcount": case "ahcharging":
+							System.out.println(read.getChargingAmpHoursOfBatteryCount());
+							break;
+						case "ahdischargingcount": case "ahdischarging":
+							System.out.println(read.getDischargingAmpHoursOfBatteryCount());
+							break;
+						case "cumulativekwh":
+							System.out.println(read.getCumulativeKWH());
+							break;
+						case "cumulativekwhcunsumption":
+							System.out.println(read.getCumulativeKWHConsumption());
+							break;
+						case "streetlightvalue":
+							System.out.println(read.getStreetLightValue());
+							break;
+						case "streetlight":
+							System.out.println(read.getStreetLightStatus().getModeName());
+							break;
+						case "streetlightbrightness": case "brightness":
+							System.out.println(read.getStreetLightBrightnessPercent());
+							break;
+						case "chargingstate":
+							System.out.println(read.getChargingState().getModeName());
+							break;
+						case "errormode": case "errors":
+							System.out.println(Modes.toString(RoverErrorMode.class, read.getErrorMode()));
+							break;
+						case "nominalbatterycapacity": case "batterycapacity": case "batteryah":
+							System.out.println(read.getNominalBatteryCapacity());
+							break;
+						case "systemvoltagesetting": case "systemvoltage":
+							System.out.println(read.getSystemVoltageSetting().getModeName());
+							break;
+						case "recognizedvoltage":
+							System.out.println(read.getRecognizedVoltage().getModeName());
+							break;
+						case "batterytype":
+							System.out.println(read.getBatteryType().getModeName());
+							break;
+						case "overvoltagethresholdraw":
+							System.out.println(read.getOverVoltageThresholdRaw());
+							break;
+						case "chargingvoltagelimitraw":
+							System.out.println(read.getChargingVoltageLimitRaw());
+							break;
+						case "equalizingchargingvoltageraw":
+							System.out.println(read.getEqualizingChargingVoltageRaw());
+							break;
+						case "boostchargingvoltageraw":
+							System.out.println(read.getBoostChargingVoltageRaw());
+							break;
+						case "floatingchargingvoltageraw":
+							System.out.println(read.getFloatingChargingVoltageRaw());
+							break;
+						case "boostchargingrecoveryvoltageraw":
+							System.out.println(read.getBoostChargingRecoveryVoltageRaw());
+							break;
+						case "overdischargerecoveryvoltageraw":
+							System.out.println(read.getOverDischargeRecoveryVoltageRaw());
+							break;
+						case "undervoltagewarninglevelraw":
+							System.out.println(read.getUnderVoltageWarningLevelRaw());
+							break;
+						case "overdischargevoltageraw":
+							System.out.println(read.getOverDischargeVoltageRaw());
+							break;
+						case "discharginglimitvoltageraw":
+							System.out.println(read.getDischargingLimitVoltageRaw());
+							break;
+							
+						case "endofchargesoc":
+							System.out.println(read.getEndOfChargeSOC());
+							break;
+						case "endofdischargesoc":
+							System.out.println(read.getEndOfDischargeSOC());
+							break;
+						case "overdischargetimedelayseconds":
+							System.out.println(read.getOverDischargeTimeDelaySeconds());
+							break;
+						case "equalizingchargingtimeminutes":
+							System.out.println(read.getEqualizingChargingTimeMinutes());
+							break;
+						case "boostchargingtimeminutes":
+							System.out.println(read.getBoostChargingTimeMinutes());
+							break;
+						case "equalizingchargingintervaldays":
+							System.out.println(read.getEqualizingChargingIntervalDays());
+							break;
+						case "temperaturecompensationfactor":
+							System.out.println(read.getTemperatureCompensationFactor());
+							break;
+						// operating setting stuff
+						case "loadworkingmode":
+							System.out.println(read.getLoadWorkingMode().getModeName());
+							break;
+						case "lightcontroldelayminutes":
+							System.out.println(read.getLightControlDelayMinutes());
+							break;
+						case "lightcontrolvoltage":
+							System.out.println(read.getLightControlVoltage());
+							break;
+						case "ledloadcurrentsettingmilliamps":
+							System.out.println(read.getLEDLoadCurrentSettingMilliAmps());
+							break;
+						case "specialpowercontrole021":
+							System.out.println(read.getSpecialPowerControlE021().getFormattedInfo());
+							break;
+						// sensing stuff
+						case "sensingtimedelayseconds":
+							System.out.println(read.getSensingTimeDelaySeconds());
+						case "ledloadcurrentmilliamps":
+							System.out.println(read.getLEDLoadCurrentMilliAmps());
+							break;
+						case "specialpowercontrole02d":
+							System.out.println(read.getSpecialPowerControlE02D().getFormattedInfo());
 							break;
 						default:
 							System.err.println(request + " is not supported!");
@@ -158,20 +371,25 @@ public final class RoverSetupProgram {
 							write.setLightControlVoltage(lightControlVoltage);
 							break;
 						case "ledloadcurrentsettingmilliamps":
-							
+							int ledLoadCurrentSettingMilliAmps = Integer.parseInt(toSet);
+							write.setLEDLoadCurrentSettingMilliAmps(ledLoadCurrentSettingMilliAmps);
 							break;
 						case "specialpowercontrole021raw":
-							
+							int spce021Raw = Integer.parseInt(toSet);
+							write.setSpecialPowerControlE021Raw(spce021Raw);
 							break;
 						// sensing values
 						case "sensingtimedelayseconds":
-							
+							int sensingTimeDelaySeconds = Integer.parseInt(toSet);
+							write.setSensingTimeDelaySeconds(sensingTimeDelaySeconds);
 							break;
 						case "ledloadcurrentmilliamps":
-							
+							int ledLoadCurrentMilliAmps = Integer.parseInt(toSet);
+							write.setLEDLoadCurrentMilliAmps(ledLoadCurrentMilliAmps);
 							break;
 						case "specialpowercontrole02draw":
-							
+							int spce02dRaw = Integer.parseInt(toSet);
+							write.setSpecialPowerControlE02DRaw(spce02dRaw);
 							break;
 						default:
 							System.err.println("Not supported!");
