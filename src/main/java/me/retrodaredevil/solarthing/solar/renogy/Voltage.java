@@ -2,6 +2,8 @@ package me.retrodaredevil.solarthing.solar.renogy;
 
 import me.retrodaredevil.solarthing.packets.CodeMode;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * The max voltage supported by the system
  *
@@ -31,5 +33,16 @@ public enum Voltage implements CodeMode {
 	@Override
 	public String getModeName() {
 		return voltage != null ? (voltage + "V") : "Auto";
+	}
+	
+	public boolean isSupported(Voltage maxVoltage){
+		requireNonNull(maxVoltage);
+		if(maxVoltage == AUTO){
+			throw new IllegalArgumentException("maxVoltage cannot be 'AUTO'");
+		}
+		if(this == AUTO){
+			return true;
+		}
+		return voltage <= maxVoltage.voltage;
 	}
 }

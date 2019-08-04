@@ -84,9 +84,19 @@ public interface RoverWriteTable extends Rover {
 	
 	void setLoadWorkingMode(LoadWorkingMode loadWorkingMode);
 	
+	/**
+	 * @param minutes A number in range [0..60]
+	 */
 	void setLightControlDelayMinutes(int minutes);
+	
+	/**
+	 * @param voltage A number in range [1..40]
+	 */
 	void setLightControlVoltage(int voltage);
 	
+	/**
+	 * @param value Unknown range.
+	 */
 	void setLEDLoadCurrentSettingRaw(int value);
 	default void setLEDLoadCurrentSettingMilliAmps(int milliAmps){
 		if(milliAmps % 10 != 0){

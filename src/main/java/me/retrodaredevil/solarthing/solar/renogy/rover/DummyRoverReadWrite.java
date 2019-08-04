@@ -171,7 +171,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 				streetLightValue &= StreetLight.IGNORED_BITS;
 				break;
 			case ON:
-				streetLightValue |= ~StreetLight.IGNORED_BITS;
+				streetLightValue |= (~StreetLight.IGNORED_BITS & 0xFF);
 				break;
 		}
 		onChange.onChange("streetLightStatus", oldValue.getModeName(), streetLightStatus.getModeName());
