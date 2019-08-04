@@ -11,6 +11,7 @@ import me.retrodaredevil.solarthing.io.IOBundle;
 import me.retrodaredevil.solarthing.io.JSerialIOBundle;
 import me.retrodaredevil.solarthing.io.SerialPortException;
 import me.retrodaredevil.solarthing.outhouse.OuthousePacketCreator;
+import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.HourIntervalPacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
@@ -30,6 +31,8 @@ import me.retrodaredevil.solarthing.commands.CommandProvider;
 import me.retrodaredevil.solarthing.commands.CommandProviderMultiplexer;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
 import me.retrodaredevil.solarthing.commands.sequence.CommandSequence;
+import me.retrodaredevil.solarthing.solar.renogy.BatteryType;
+import me.retrodaredevil.solarthing.solar.renogy.Voltage;
 import me.retrodaredevil.solarthing.solar.renogy.rover.*;
 import me.retrodaredevil.util.json.JsonFile;
 import org.apache.log4j.BasicConfigurator;
@@ -211,158 +214,17 @@ public class SolarMain {
 			DummyRoverReadWrite readWrite = new DummyRoverReadWrite(roverStatusPacket, (fieldName, previousValue, newValue) -> {
 				System.out.println(fieldName + " changed from " + previousValue + " to " + newValue);
 			});
-			startRoverSetup(readWrite, readWrite);
+			RoverSetupProgram.startRoverSetup(readWrite, readWrite);
 		} else {
 			SerialParameters parameters = new SerialParameters(args.getPortName(), 9600, 0, 0, 8, 1, 0, false);
 			parameters.setEncoding("rtu");
 			try (J2ModModbus modbus = new J2ModModbus(parameters)) {
 				RoverReadTable read = new RoverModbusRead(modbus);
 				RoverWriteTable write = new RoverModbusWrite(modbus);
-				startRoverSetup(read, write);
+				RoverSetupProgram.startRoverSetup(read, write);
 			}
 		}
 		return 0;
-	}
-	private void startRoverSetup(RoverReadTable read, RoverWriteTable write){
-		Scanner scanner = new Scanner(System.in);
-		loop: while (scanner.hasNextLine()) {
-			String command = scanner.nextLine();
-			String[] split = command.split(" ");
-			switch(split.length){
-				case 0:
-					continue loop;
-				case 1:
-					// display data
-					String request = split[0].toLowerCase();
-					switch(request){
-						case "batteryvoltage":
-							System.out.println(read.getBatteryVoltage());
-							break;
-						case "maxvoltage":
-							System.out.println(read.getMaxVoltage().getModeName());
-							break;
-						case "producttype":
-							System.out.println(read.getProductType().getModeName());
-							break;
-						case "controllerdeviceaddress": case "deviceaddress": case "address":
-							System.out.println(read.getControllerDeviceAddress());
-							break;
-						default:
-							System.err.println(request + " is not supported!");
-							break;
-					}
-					break;
-				case 2:
-					// set most data
-					String toSet = split[1].toLowerCase();
-					switch(split[0].toLowerCase()) {
-						case "controllerdeviceaddress": case "deviceaddress": case "address":
-							write.setControllerDeviceAddress(Integer.parseInt(toSet));
-							break;
-						case "streetlight": // on/off
-							final boolean streetOn;
-							if(toSet.equals("on")) {
-								streetOn = true;
-							} else if(toSet.equals("off")){
-								streetOn = false;
-							} else {
-								throw new IllegalArgumentException(toSet + " not supported for streetlight on/off")
-							}
-							write.setStreetLightStatus(streetOn ? StreetLight.ON : StreetLight.OFF);
-							break;
-						case "brightness": // 0-100
-							int brightness = Integer.parseInt(toSet);
-							write.setStreetLightBrightnessPercent(brightness);
-							break;
-						case "systemvoltage":
-							
-							break;
-						case "batterytype":
-							
-							break;
-						case "overvoltagethresholdraw":
-							
-							break;
-						case "chargingvoltagelimitraw":
-							
-							break;
-						case "equalizingchargingvoltageraw":
-							
-							break;
-						case "boostchargingvoltageraw":
-							
-							break;
-						case "floatingchargingvoltageraw":
-							
-							break;
-						case "boostchargingrecoveryvoltageraw":
-							
-							break;
-						case "overdischargerecoveryvoltageraw":
-							
-							break;
-						case "undervoltagewarninglevelraw":
-							
-							break;
-						case "discharginglimitvoltageraw":
-							
-							break;
-							// end of charge SOC end of discharge SOC
-						case "overdischargetimedelayseconds":
-							
-							break;
-						case "equalizingchargingtimeminutes":
-							
-							break;
-						case "boostchargingtimeminutes":
-							
-							break;
-						case "equalizingchargingintervaldays":
-							
-							break;
-						case "temperaturecompensationfactor":
-							
-							break;
-						// operating settings
-						case "loadworkingmode":
-							
-							break;
-						case "lightcontroldelayminutes":
-							
-							break;
-						case "lightcontrolvoltage":
-							
-							break;
-						case "ledloadcurrentsettingmilliamps":
-							
-							break;
-						case "specialpowercontrole021raw":
-							
-							break;
-						// sensing values
-						case "sensingtimedelayseconds":
-							
-							break;
-						case "ledloadcurrentmilliamps":
-							
-							break;
-						case "specialpowercontrole02draw":
-							
-							break;
-						default:
-							System.err.println("Not supported!");
-							break;
-					}
-					break;
-				case 3:
-					// set some data
-					
-					break;
-				default:
-					System.out.println("Only a maximum of 3 arguments are allowed!");
-					continue loop;
-			}
-		}
 	}
 	private int connectOuthouse(ProgramArgs args, PacketCollectionIdGenerator idGenerator) {
 		List<PacketHandler> packetHandlers = new ArrayList<>();
