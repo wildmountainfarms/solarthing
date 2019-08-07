@@ -65,8 +65,10 @@ public interface RoverWriteTable extends Rover {
 		}
 	}
 	
+	/** NOTE: Untested */
 	void setTemperatureCompensationFactorRaw(int value);
-	default void setTemperatureCompensationFactor(int value){
+	/** NOTE: Untested */
+	default void setTemperatureCompensationFactor(int value){ // TODO When tested with a Renogy Rover, 30 is an allowed value. We aren't exactly sure why...
 		if(value == 0){
 			setTemperatureCompensationFactorRaw(0);
 		} else {

@@ -39,10 +39,10 @@ public final class RoverSetupProgram {
 							System.out.println(read.getMaxVoltage().getModeName());
 							break;
 						case "ratedchargingcurrent": case "ratedcurrent":
-							System.out.println(read.getRatedChargingCurrent().getModeName());
+							System.out.println(read.getRatedChargingCurrentValue());
 							break;
 						case "rateddischargingcurrent":
-							System.out.println(read.getRatedDischargingCurrent().getModeName());
+							System.out.println(read.getRatedDischargingCurrentValue());
 							break;
 						case "producttype":
 							System.out.println(read.getProductType().getModeName());

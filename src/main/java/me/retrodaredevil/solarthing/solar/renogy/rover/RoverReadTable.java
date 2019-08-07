@@ -15,23 +15,67 @@ import java.util.Collection;
 @SuppressWarnings("unused")
 public interface RoverReadTable extends Rover, ErrorReporter, ChargeController, DailyData {
 	
+	@Override
+	default boolean isNewDay(DailyData previousDailyData) {
+		if(DailyData.super.isNewDay(previousDailyData)){
+			return true;
+		}
+		if (!(previousDailyData instanceof RoverReadTable)) {
+			throw new IllegalArgumentException("previousDailyData is not a RoverReadTable! It's: " + previousDailyData.getClass().getName());
+		}
+		RoverReadTable previous = (RoverReadTable) previousDailyData;
+		return getDailyMinBatteryVoltage() > previous.getDailyMinBatteryVoltage() || // the min voltage was reset to a larger number
+			getDailyMaxBatteryVoltage() < previous.getDailyMaxBatteryVoltage() || // the max voltage was reset to a smaller number
+			getOperatingDaysCount() > previous.getOperatingDaysCount() || // The
+			getDailyMaxChargingPower() < previous.getDailyMaxChargingPower(); // The max charging power was reset to a smaller number
+	}
 	
+	/**
+	 * Should be serialized as "maxVoltage"
+	 * @return The int value of the max voltage
+	 */
 	int getMaxVoltageValue();
+	
+	/** @return The enum value representing the max voltage */
 	default Voltage getMaxVoltage(){ return Modes.getActiveMode(Voltage.class, getMaxVoltageValue()); }
 	
+	/**
+	 * Should be serialized as "ratedChargingCurrent"
+	 * @return The rated charging current
+	 */
 	int getRatedChargingCurrentValue();
+	@Deprecated
 	default RatedCurrent getRatedChargingCurrent(){ return Modes.getActiveMode(RatedCurrent.class, getRatedChargingCurrentValue()); }
 	
+	/**
+	 * Should be serialized as "ratedDischargingCurrent"
+	 * @return The rated discharging current
+	 */
 	int getRatedDischargingCurrentValue();
+	@Deprecated
 	default RatedCurrent getRatedDischargingCurrent(){ return Modes.getActiveMode(RatedCurrent.class, getRatedDischargingCurrentValue()); }
 	
+	/**
+	 * Should be serialized as "productType"
+	 * @return The int value representing the product type
+	 */
 	int getProductTypeValue();
+	
+	/**
+	 * @return The enum value representing the product type
+	 */
 	default ProductType getProductType(){ return Modes.getActiveMode(ProductType.class, getProductTypeValue()); }
 	
 	/**
+	 * If serialized in JSON, should first be converted to Base64, then stored as "productModelEncoded"
 	 * @return An array of 16 bytes in length representing the product model
 	 */
-	byte[] getProductModelValue(); // TODO maybe change this signature
+	byte[] getProductModelValue();
+	
+	/**
+	 * Should be serialized as "productModelString"
+	 * @return The string representing the product model
+	 */
 	default String getProductModel(){
 		byte[] raw = getProductModelValue();
 		if(raw.length != 16){
@@ -42,16 +86,38 @@ public interface RoverReadTable extends Rover, ErrorReporter, ChargeController, 
 			int intValue = ((int) value) & 0xff;
 			if(intValue < 0) throw new AssertionError();
 			if(intValue > 127) throw new IllegalStateException(intValue + " is out of normal ascii range!");
-			if(intValue == 0x20) continue; // space
-			// TODO check if there are other values we need to ignore
+			if(intValue == 0x20) continue; // space // really, we don't have to do this, but the documentation says we should
 			r.append((char) value);
 		}
 		return r.toString();
 	}
+	
+	/**
+	 * Should be serialized as "softwareVersion"
+	 * @return The int value representing the software version
+	 */
 	int getSoftwareVersionValue();
+	/**
+	 * If serialized, should be serialized as "softwareVersionString" using {@link Version#toString()}
+	 * @return The {@link Version} object representing the software version
+	 */
 	default Version getSoftwareVersion(){ return new Version(getSoftwareVersionValue()); }
+	
+	/**
+	 * Should be serialized as "hardwareVersion"
+	 * @return The int value representing the hardware version
+	 */
 	int getHardwareVersionValue();
+	/**
+	 * If serialized, should be serialized as "hardwareVersionString" using {@link Version#toString()}
+	 * @return The {@link Version} object representing the hardware version
+	 */
 	default Version getHardwareVersion() { return new Version(getHardwareVersionValue()); }
+	
+	/**
+	 * Should be serialized as "productSerialNumber"
+	 * @return The serial number
+	 */
 	int getProductSerialNumber();
 	
 	/**
@@ -61,21 +127,40 @@ public interface RoverReadTable extends Rover, ErrorReporter, ChargeController, 
 	int getControllerDeviceAddress();
 	
 	/**
-	 * @return A number in range [0..100] representing the current battery capacity value
+	 * @return A number in range [0..100] representing the current battery capacity value (The battery percentage)
 	 */
 	int getBatteryCapacitySOC();
 	
 	@Override
 	float getBatteryVoltage();
 	
+	/**
+	 * Should be serialized as "chargingCurrent"
+	 * @return The charging current
+	 */
 	@Override
 	Float getChargingCurrent();
 	
+	/**
+	 * Should be serialized as "controllerTemperatureRaw"
+	 * @return The raw controller temperature
+	 */
 	int getControllerTemperatureRaw();
+	/**
+	 * Should be serialized as "batteryTemperatureRaw"
+	 * @return The raw battery temperature
+	 */
 	int getBatteryTemperatureRaw();
+	
+	/**
+	 * @return The temperature of the controller in degrees celsius
+	 */
 	default int getControllerTemperature(){
 		return convertRawTemperature(getControllerTemperatureRaw());
 	}
+	/**
+	 * @return The temperature of the battery in degrees celsius
+	 */
 	default int getBatteryTemperature(){
 		return convertRawTemperature(getBatteryTemperatureRaw());
 	}
@@ -87,9 +172,28 @@ public interface RoverReadTable extends Rover, ErrorReporter, ChargeController, 
 		return temperatureRaw;
 	}
 	
-	/** AKA street light voltage*/
+	/**
+	 * Should be serialized as "loadVoltage"
+	 * <p>
+	 * AKA street light voltage
+	 * @return The load/street light voltage in volts
+	 */
 	float getLoadVoltage();
+	
+	/**
+	 * Should be serialized as "loadCurrent"
+	 * <p>
+	 * AKA street light current
+	 * @return The load/street light current in amps
+	 */
 	float getLoadCurrent();
+	
+	/**
+	 * Should be serialized as "loadPower"
+	 * <p>
+	 * AKA street light power
+	 * @return The load/street light power in watts
+	 */
 	int getLoadPower();
 	
 	/** AKA PV/Solar Panel voltage*/
@@ -167,7 +271,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, ChargeController, 
 	int getBatteryTypeValue();
 	default BatteryType getBatteryType(){ return Modes.getActiveMode(BatteryType.class, getBatteryTypeValue()); }
 	
-	int getOverVoltageThresholdRaw(); // TODO add a static method that converts a float into the raw voltage
+	int getOverVoltageThresholdRaw();
 	int getChargingVoltageLimitRaw();
 	int getEqualizingChargingVoltageRaw();
 	/** AKA overcharge voltage (for lithium batteries) */
@@ -181,7 +285,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, ChargeController, 
 	int getDischargingLimitVoltageRaw();
 	
 	// 0xE00F
-	int getEndOfChargeSOC(); // TODO figure out units and what this means
+	int getEndOfChargeSOC();
 	int getEndOfDischargeSOC();
 	
 	int getOverDischargeTimeDelaySeconds();

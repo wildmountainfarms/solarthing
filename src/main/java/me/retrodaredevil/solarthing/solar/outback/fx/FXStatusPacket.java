@@ -2,8 +2,9 @@ package me.retrodaredevil.solarthing.solar.outback.fx;
 
 import me.retrodaredevil.solarthing.packets.BitmaskMode;
 import me.retrodaredevil.solarthing.packets.Modes;
+import me.retrodaredevil.solarthing.solar.SolarPacket;
+import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
 import me.retrodaredevil.solarthing.solar.outback.OutbackPacket;
-import me.retrodaredevil.solarthing.solar.common.BatteryVoltagePacket;
 
 import java.util.Collection;
 
@@ -11,7 +12,7 @@ import java.util.Collection;
  * Represents an FX Status Packet from an Outback Mate
  */
 @SuppressWarnings("unused")
-public interface FXStatusPacket extends OutbackPacket, BatteryVoltagePacket {
+public interface FXStatusPacket extends OutbackPacket, BatteryVoltage {
 	
 	// region Packet Values
 	/**

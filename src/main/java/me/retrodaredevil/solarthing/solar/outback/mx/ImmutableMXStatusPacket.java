@@ -94,15 +94,9 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 		return identifier;
 	}
 	
-	@Deprecated
 	@Override
-	public Integer getChargerCurrent() {
+	public int getChargerCurrent() {
 		return chargerCurrent;
-	}
-	
-	@Override
-	public Number getChargingCurrent() {
-		return chargerCurrent + ampChargerCurrent;
 	}
 	
 	@Override
@@ -126,7 +120,7 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 	}
 
 	@Override
-	public Float getAmpChargerCurrent() {
+	public float getAmpChargerCurrent() {
 		return ampChargerCurrent;
 	}
 

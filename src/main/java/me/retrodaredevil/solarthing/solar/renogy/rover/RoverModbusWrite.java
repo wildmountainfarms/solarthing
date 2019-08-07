@@ -105,8 +105,6 @@ public class RoverModbusWrite implements RoverWriteTable {
 	
 	@Override
 	public void setEndOfChargeSOCEndOfDischargeSOC(int endOfChargeSOCValue, int endOfDischargeSOCValue) {
-		// TODO figure out allowed range of each
-		// I'm pretty sure it's a percentage, but I'm not sure
 		checkRange(0, 100, endOfChargeSOCValue);
 		checkRange(0, 100, endOfDischargeSOCValue);
 		modbus.writeRegister(0xE00F, getCombined(endOfChargeSOCValue, endOfDischargeSOCValue));

@@ -2,7 +2,8 @@ package me.retrodaredevil.solarthing.solar.outback.mx;
 
 import me.retrodaredevil.solarthing.packets.BitmaskMode;
 import me.retrodaredevil.solarthing.packets.Modes;
-import me.retrodaredevil.solarthing.solar.common.BatteryVoltagePacket;
+import me.retrodaredevil.solarthing.solar.SolarPacket;
+import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
 import me.retrodaredevil.solarthing.solar.common.ChargeController;
 import me.retrodaredevil.solarthing.solar.common.DailyData;
 import me.retrodaredevil.solarthing.solar.outback.OutbackPacket;
@@ -15,7 +16,7 @@ import java.util.Collection;
  * In previous version, it was just "MX" instead of "MXFM" so MX is the same as MXFM in the documentation. FM stands for FLEXmax.
  */
 @SuppressWarnings("unused")
-public interface MXStatusPacket extends OutbackPacket, BatteryVoltagePacket, ChargeController, DailyData {
+public interface MXStatusPacket extends OutbackPacket, ChargeController, DailyData, BatteryVoltage {
 	
 	// region Packet Values
 	
@@ -24,19 +25,40 @@ public interface MXStatusPacket extends OutbackPacket, BatteryVoltagePacket, Cha
 	 * <p>
 	 * The DC current the MX is delivering to the batteries in Amps
 	 * @return [0..99] representing the charger current in Amps
+	 * @deprecated Deprecated to encourage use of {@link #getChargingCurrent()}
 	 */
 	@Deprecated
-	@Override
-	Integer getChargerCurrent();
+	int getChargerCurrent();
 	/**
 	 * Should be serialized as "ampChargerCurrent"
 	 * <p>
 	 * Only applies to newer firmware using FlexMAX 80 or FlexMAX 60
 	 * @return [0..0.9] The current to add to {@link #getChargerCurrent()} to get current displayed on FM80 or FM60
+	 * @deprecated Deprecated to encourage use of {@link #getChargingCurrent()}
 	 */
 	@Deprecated
+	float getAmpChargerCurrent();
+	
 	@Override
-	Float getAmpChargerCurrent();
+	default Number getChargingCurrent(){
+		/*
+		In the future, if we decide to detect and store if we are on old firmware or a non-FM device, we may want to
+		explicitly return either an Integer or Float so the caller can decide how they want to display the number.
+		(They may display the number differently if it is a Integer rather than a Float)
+		 */
+		return getChargerCurrent() + getAmpChargerCurrent();
+	}
+	
+	/**
+	 * Should be serialized as "ampChargerCurrentString" if serialized at all
+	 * @see #getAmpChargerCurrent()
+	 * @return The amp charger current in the format "0.X" where X is a digit [0..0.9]
+	 */
+	@Deprecated
+	default String getAmpChargerCurrentString(){
+		return "" + getAmpChargerCurrent();
+	}
+	
 	
 	@Override
 	default Float getChargingPower(){
