@@ -12,7 +12,9 @@ public enum ChargingState implements CodeMode {
 	ACTIVATED("Activated", 1),
 	MPPT("MPPT charging", 2),
 	EQ("EQ", 3),
+	/** Involves a high current for a short period*/
 	BOOST("Boost", 4),
+	/** Charges at a reduced voltage, as it charges, the current is gradually reduced*/
 	FLOAT("Float", 5),
 	/** AKA overpower. Done with a constant current*/
 	CURRENT_LIMITING("Current limiting", 6)

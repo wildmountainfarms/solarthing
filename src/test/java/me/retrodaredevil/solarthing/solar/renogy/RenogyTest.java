@@ -142,5 +142,7 @@ final class RenogyTest {
 		
 		String json2 = gson.toJson(parsed);
 		assertEquals(json, json2);
+		
+		assertFalse(parsed.isNewDay(parsed)); // because they're the same, just do a quick check to make sure this method returns false. Maybe we'll add another test for it later...
 	}
 }

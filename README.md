@@ -1,15 +1,22 @@
 # solarthing
 Parses data from an Outback MATE, communicates with a renogy rover, and uses CouchDB as a database!
-## What This is used for
+
+## Supported Products
+* Communicates with <strong>Outback MATEs</strong> 1/2 via the DB9 serial port. This supports receiving and parsing data from FX's, MX's and FM's
+* Communicates with <strong>Renogy Rover</strong> (And other Renogy products) over modbus serial.
+
+## Uses
+* Upload data to a database
+* Display data in Android Application
+* Display data in Web Application
+* Use as an API for your own uses!
+
+## What This is currently used for
 This program is run on a raspberry pi at Wild Mountain Farms (www.wildmountainfarms.com).
 That program uploads packets to a CouchDB database on a separate computer which hosts the web portion
 found here: https://github.com/wildmountainfarms/solarthing-web . With each of these combined we are able
-to see the current battery voltage and other information along with a graph to see past data.
-
-Although this is named solarthing, it is expanding to be more than just solar data collection. The latest feature is
-the outhouse status. This allows us to store and display four pieces of data: occupancy,
-temperature, humidity and door opened/closed. 
-Luckily if you want to just use the solar feature for Outback Mate data, you can do that!
+to see the current battery voltage and other information along with a graph to see past data. This application is
+also used for an outhouse status!
 
 In the future, this project may extend to more IoT uses other than just solar and outhouse status. But the name will
 forever stick! Long live <strong>solarthing</strong>!
@@ -74,11 +81,27 @@ Usually packets aren't cut off like this, but sometimes it happens
 
 You can see how to set up the views and design documents for each database [here](couchdb.md)
 
+### Fragmented Packets
+Sometimes, an instance needs multiple packets to come from different sub-sources (different computers or different programs).
+When this happens, you can set up packets to be stored in the database fragmented. The way this works is simple. One
+program is the "master fragment", indicated by the lowest fragment-id. Other programs have higher fragment IDs. Each program
+has its own fragment ID, allowing you to distinguish between them in the database.
+
+When you read from the database, you iterate through master packets and find the nearest fragment for all the other
+fragment IDs.
+
+Example: <br/>
+Fragment 1: FX1, FX2, MX3, MX4 <br/>
+Fragment 2: Renogy Rover
+
 ### Duplicate Packets in a single PacketCollection
 It is expected that if the program falls behind trying to save packets, that what should be two or three PacketCollections
-are put into one. Without adding additional threads to the program, it is not possible to solve this. Because I do not
+are put into one. I have a simple way to try to filter these packets, "instant-only". This works most of the time, but not 100%.
+Without adding additional threads to the program, it is difficult to completely solve this. Because I do not
 plan to add additional threads to the program, it will remain like this so you should expect that a packet in the database
-may have one or two other identical packets from almost the same time.
+may have one or two other identical packets from almost the same time. 
+This is where [Identifiers](src/main/java/me/retrodaredevil/solarthing/packets/identification/Identifier.java) comes in. By
+adding packets to a Map, you can make sure that there's only one packet for each unique Identifier
 
 ### Inspiration
 @eidolon1138 is the one who originally came up with the idea to collect data from his Outback Mate device. He helped

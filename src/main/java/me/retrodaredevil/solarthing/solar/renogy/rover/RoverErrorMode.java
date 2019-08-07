@@ -3,8 +3,8 @@ package me.retrodaredevil.solarthing.solar.renogy.rover;
 import me.retrodaredevil.solarthing.packets.BitmaskMode;
 
 /**
- * The max voltage supported by the system
- *
+ * Represents different error modes supported by the Renogy Rover
+ * <p>
  * PDU address: 0x0121 and 0x0122, Bytes: 4, all 4 bytes
  */
 public enum RoverErrorMode implements BitmaskMode {
@@ -25,6 +25,7 @@ public enum RoverErrorMode implements BitmaskMode {
 	BATTERY_UNDER_VOLTAGE("Battery under-voltage", 1 << 18), // E3
 	BATTERY_OVER_VOLTAGE("Battery over-voltage", 1 << 17), // E2
 	BATTERY_OVER_DISCHARGE("Battery over-discharge", 1 << 16) // E1
+	// Bit 15 down to 0 are reserved.
 	;
 	
 	private final String name;
