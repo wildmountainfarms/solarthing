@@ -137,7 +137,7 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 	}
 
 	@Override
-	public int getOperatingMode() {
+	public int getOperatingModeValue() {
 		return operatingMode;
 	}
 
@@ -147,7 +147,7 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 	}
 
 	@Override
-	public int getACMode() {
+	public int getACModeValue() {
 		return acMode;
 	}
 
@@ -155,8 +155,12 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 	public float getBatteryVoltage() {
 		return batteryVoltage;
 	}
-
-	@Override
+	
+	/**
+	 * Should be serialized as "batteryVoltageString" if serialized at all
+	 * @return The battery voltage as a String
+	 */
+	@Deprecated
 	public String getBatteryVoltageString() {
 		return batteryVoltageString;
 	}

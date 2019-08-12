@@ -1,5 +1,8 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover;
 
+/**
+ * An interface that indicates that an object is somehow associated by a rover either by providing data or by setting data
+ */
 public interface Rover {
 	
 	enum OperatingSetting {

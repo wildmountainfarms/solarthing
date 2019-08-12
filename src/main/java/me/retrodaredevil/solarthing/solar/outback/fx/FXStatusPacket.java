@@ -7,6 +7,7 @@ import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
 import me.retrodaredevil.solarthing.solar.outback.OutbackPacket;
 
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * Represents an FX Status Packet from an Outback Mate
@@ -57,7 +58,10 @@ public interface FXStatusPacket extends OutbackPacket, BatteryVoltage {
 	 * AKA FX operational mode
 	 * @return The operating mode code which represents a single OperationalMode
 	 */
-	int getOperatingMode();
+	int getOperatingModeValue();
+	@Deprecated
+	default int getOperatingMode(){ return getOperatingModeValue(); }
+	default OperationalMode getOperationalMode(){ return Modes.getActiveMode(OperationalMode.class, getOperatingModeValue()); }
 	
 	/**
 	 * Should be serialized as "errorMode"
@@ -73,19 +77,24 @@ public interface FXStatusPacket extends OutbackPacket, BatteryVoltage {
 	 * Should be serialized as "acMode"
 	 * @return The AC mode code which represents a single ACMode
 	 */
-	int getACMode();
+	int getACModeValue();
+	@Deprecated
+	default int getACMode(){ return getACModeValue(); }
+	default ACMode getACModeMode(){ return Modes.getActiveMode(ACMode.class, getACModeValue()); }
 	
 	/**
 	 * Should be serialized as "misc"
 	 * @return The misc mode bitmask which represents a varying number of MiscModes
 	 */
 	int getMisc();
+	default Set<MiscMode> getActiveMiscModes(){ return Modes.getActiveModes(MiscMode.class, getMisc()); }
 	
 	/**
 	 * Should be serialized as "warningMode"
 	 * @return The warning mode bitmask which represents a varying number of WarningModes
 	 */
 	int getWarningMode();
+	default Set<WarningMode> getActiveWarningModes(){ return Modes.getActiveModes(WarningMode.class, getWarningMode()); }
 	
 	/**
 	 * Should be serialized as "chksum"

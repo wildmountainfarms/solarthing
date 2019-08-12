@@ -87,3 +87,10 @@ https://www.rototron.info/raspberry-pi-solar-serial-rest-api-tutorial/
 * https://github.com/rdagger/Expo-Solar-Tracker
 * Tracer MT-5. Example: https://github.com/xxv/tracer
 * EPsolar Tracer BN. Example: https://github.com/kasbert/epsolar-tracer
+
+## Identifier Order
+Identifiers are used in SolarPackets to identify solar products and act as keys for Maps. Identifiers should
+implement Comparable<Identifier> so Identifiers have a defined order which is this:
+
+* Outback packets in order (port 1, port 2, etc)
+* Renogy packet in order according to serial number (serial 65, serial 1234, serial 5989)

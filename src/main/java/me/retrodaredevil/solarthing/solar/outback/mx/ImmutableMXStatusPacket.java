@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.solar.outback.mx;
 
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
+import me.retrodaredevil.solarthing.packets.support.Support;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import me.retrodaredevil.solarthing.solar.SolarPacketType;
 
@@ -26,21 +27,24 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 	@Deprecated
 	private final String batteryVoltageString;
 
-	private final int dailyAH, chksum;
+	private final int dailyAH;
+	private final Support dailyAHSupport;
+	private final int chksum;
 
 	private final String auxModeName;
 	private final String errors;
 	private final String chargerModeName;
 	
 	private final transient Identifier identifier;
-
+	
 	ImmutableMXStatusPacket(
-			int address, int chargerCurrent, int pvCurrent, int inputVoltage,
-			float dailyKWH, String dailyKWHString,
-			float ampChargerCurrent, String ampChargerCurrentString,
-			int auxMode, int errorMode, int chargerMode,
-			float batteryVoltage, String batteryVoltageString,
-			int dailyAH, int chksum, String auxModeName, String errors, String chargerModeName
+		int address, int chargerCurrent, int pvCurrent, int inputVoltage,
+		float dailyKWH, String dailyKWHString,
+		float ampChargerCurrent, String ampChargerCurrentString,
+		int auxMode, int errorMode, int chargerMode,
+		float batteryVoltage, String batteryVoltageString,
+		int dailyAH, Support dailyAHSupport,
+		int chksum, String auxModeName, String errors, String chargerModeName
 	) {
 		this.address = address;
 		this.chargerCurrent = chargerCurrent;
@@ -56,12 +60,30 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 		this.batteryVoltage = batteryVoltage;
 		this.batteryVoltageString = batteryVoltageString;
 		this.dailyAH = dailyAH;
+		this.dailyAHSupport = dailyAHSupport;
 		this.chksum = chksum;
 		this.auxModeName = auxModeName;
 		this.errors = errors;
 		this.chargerModeName = chargerModeName;
 		
 		this.identifier = new OutbackIdentifier(address);
+	}
+	@Deprecated
+	ImmutableMXStatusPacket(
+			int address, int chargerCurrent, int pvCurrent, int inputVoltage,
+			float dailyKWH, String dailyKWHString,
+			float ampChargerCurrent, String ampChargerCurrentString,
+			int auxMode, int errorMode, int chargerMode,
+			float batteryVoltage, String batteryVoltageString,
+			int dailyAH, int chksum, String auxModeName, String errors, String chargerModeName
+	) {
+		this(
+			address, chargerCurrent, pvCurrent, inputVoltage,
+			dailyKWH, dailyKWHString, ampChargerCurrent, ampChargerCurrentString,
+			auxMode, errorMode, chargerMode,
+			batteryVoltage, batteryVoltageString,
+			dailyAH, Support.UNKNOWN, chksum, auxModeName, errors, chargerModeName
+		);
 	}
 
 	@Override
@@ -114,7 +136,7 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 		return dailyKWH;
 	}
 
-	@Override
+	@Deprecated
 	public String getDailyKWHString() {
 		return dailyKWHString;
 	}
@@ -124,7 +146,12 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 		return ampChargerCurrent;
 	}
 
-	@Override
+	/**
+	 * Should be serialized as "ampChargerCurrentString" if serialized at all
+	 * @see #getAmpChargerCurrent()
+	 * @return The amp charger current in the format "0.X" where X is a digit [0..0.9]
+	 */
+	@Deprecated
 	public String getAmpChargerCurrentString() {
 		return ampChargerCurrentString;
 	}
@@ -148,8 +175,12 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 	public float getBatteryVoltage() {
 		return batteryVoltage;
 	}
-
-	@Override
+	
+	/**
+	 * Should be serialized as "batteryVoltageString" if serialized at all
+	 * @return The battery voltage as a String
+	 */
+	@Deprecated
 	public String getBatteryVoltageString() {
 		return batteryVoltageString;
 	}
@@ -158,7 +189,12 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 	public int getDailyAH() {
 		return dailyAH;
 	}
-
+	
+	@Override
+	public Support getDailyAHSupport() {
+		return dailyAHSupport;
+	}
+	
 	@Override
 	public int getChksum() {
 		return chksum;

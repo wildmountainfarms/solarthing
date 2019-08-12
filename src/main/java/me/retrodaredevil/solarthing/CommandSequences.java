@@ -24,7 +24,7 @@ final class CommandSequences {
 					System.err.println("No master FX in PacketCollection at: " + packetCollection.getDateMillis());
 					return false;
 				}
-				return ACMode.NO_AC.isActive(fx.getACMode());
+				return ACMode.NO_AC.isActive(fx.getACModeValue());
 			}), MateCommand.AUX_OFF)
 			.append(Conditions.IMMEDIATE, MateCommand.USE)
 			.build();
