@@ -145,4 +145,10 @@ final class RenogyTest {
 		
 		assertFalse(parsed.isNewDay(parsed)); // because they're the same, just do a quick check to make sure this method returns false. Maybe we'll add another test for it later...
 	}
+	@Test
+	void productModelTest(){
+		assertTrue(ProductModelUtil.isPositiveGround("RNG-CTRL-RVRPG40"));
+		assertTrue(ProductModelUtil.isRover("RNG-CTRL-RVRPG40"));
+		assertFalse(ProductModelUtil.isWanderer("RNG-CTRL-RVRPG40"));
+	}
 }

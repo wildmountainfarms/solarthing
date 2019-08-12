@@ -1,12 +1,16 @@
 package me.retrodaredevil.solarthing.solar.common;
 
+import me.retrodaredevil.solarthing.packets.support.Support;
+
 public interface DailyData {
 	float getDailyKWH();
-	@Deprecated
-	default String getDailyKWHString(){
-		return "" + getDailyKWH();
-	}
 	int getDailyAH();
+	
+	/**
+	 * Should be serialized as "dailyAHSupport" if serialized at all. Should be serialized using {@link Support#toString()}
+	 * @return A {@link Support} enum constant indicating whether or not {@link #getDailyAH()} is supported
+	 */
+	default Support getDailyAHSupport(){ return Support.UNKNOWN; }
 	
 	/**
 	 * NOTE: If {@code previousDailyData} is data from a {@link DailyData} generated after this, the returned result is

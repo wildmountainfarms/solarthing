@@ -1,34 +1,41 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover;
 
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
+import me.retrodaredevil.solarthing.packets.identification.IntegerIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 
 import java.util.Objects;
 
-public final class RoverIdentifier implements Identifier, Comparable<Identifier> {
-	private final int hardwareVersion;
+public final class RoverIdentifier implements IntegerIdentifier, Comparable<Identifier> {
 	private final int serialNumber;
-	private final int controllerDeviceAddress;
 	
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		RoverIdentifier that = (RoverIdentifier) o;
-		return hardwareVersion == that.hardwareVersion &&
-			serialNumber == that.serialNumber &&
-			controllerDeviceAddress == that.controllerDeviceAddress;
+		return serialNumber == that.serialNumber;
 	}
 	
 	@Override
 	public int hashCode() {
-		return Objects.hash(hardwareVersion, serialNumber, controllerDeviceAddress);
+		return Objects.hash(serialNumber);
 	}
 	
-	public RoverIdentifier(int hardwareVersion, int serialNumber, int controllerDeviceAddress) {
-		this.hardwareVersion = hardwareVersion;
+	public RoverIdentifier(int serialNumber) {
 		this.serialNumber = serialNumber;
-		this.controllerDeviceAddress = controllerDeviceAddress;
+	}
+	@Deprecated
+	public RoverIdentifier(int hardwareVersion, int serialNumber, int controllerDeviceAddress) {
+		this(serialNumber);
+	}
+	
+	public int getProductSerialNumber(){
+		return serialNumber;
+	}
+	@Override
+	public int getIntegerIdentifier() {
+		return serialNumber;
 	}
 	
 	@Override
@@ -39,6 +46,6 @@ public final class RoverIdentifier implements Identifier, Comparable<Identifier>
 		if(o instanceof OutbackIdentifier){
 			return 1; // renogy devices show up after outback devices
 		}
-		return 0;
+		return -1; // whatever it is should show up after us
 	}
 }

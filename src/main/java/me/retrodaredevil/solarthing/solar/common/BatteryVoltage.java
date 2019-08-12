@@ -1,5 +1,8 @@
 package me.retrodaredevil.solarthing.solar.common;
 
+/**
+ * Represents something that detects and measures the battery voltage
+ */
 public interface BatteryVoltage {
 	
 	/**
@@ -7,14 +10,5 @@ public interface BatteryVoltage {
 	 * @return The battery voltage as a float
 	 */
 	float getBatteryVoltage();
-	
-	/**
-	 * Should be serialized as "batteryVoltageString" if serialized at all
-	 * @return The battery voltage as a String
-	 */
-	@Deprecated
-	default String getBatteryVoltageString(){
-		return "" + getBatteryVoltage();
-	}
 	
 }

@@ -156,7 +156,7 @@ public final class RoverSetupProgram {
 							System.out.println(read.getStreetLightBrightnessPercent());
 							break;
 						case "chargingstate":
-							System.out.println(read.getChargingState().getModeName());
+							System.out.println(read.getChargingMode().getModeName());
 							break;
 						case "errormode": case "errors":
 							System.out.println(Modes.toString(RoverErrorMode.class, read.getErrorMode()));

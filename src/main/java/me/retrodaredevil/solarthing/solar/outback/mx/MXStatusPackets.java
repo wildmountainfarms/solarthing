@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import me.retrodaredevil.solarthing.packets.Modes;
+import me.retrodaredevil.solarthing.packets.support.Support;
 import me.retrodaredevil.solarthing.util.CheckSumException;
 import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
 import me.retrodaredevil.solarthing.util.ParsePacketAsciiDecimalDigitException;
@@ -14,6 +15,7 @@ import static me.retrodaredevil.solarthing.util.ParseUtil.toInt;
 public final class MXStatusPackets {
 	private MXStatusPackets(){ throw new UnsupportedOperationException(); }
 
+	@SuppressWarnings("Duplicates")
 	public static ImmutableMXStatusPacket createFromChars(char[] chars, IgnoreCheckSum ignoreCheckSum) throws CheckSumException, ParsePacketAsciiDecimalDigitException {
 		// Start of Status Page
 		final int address = ((int) chars[1]) - 65; // if it is "A" then address would be 0
@@ -54,7 +56,8 @@ public final class MXStatusPackets {
 		final int dailyAHTens;
 		final int dailyAHOnes;
 		final char char41 = chars[40];
-		if(Character.isDigit(char41)){ // then this must use all four places
+		final boolean oldFirmware = !Character.isDigit(char41); // if the dailyAH spot doesn't use all 4 digits, it must be on old firmware
+		if(!oldFirmware){ // then this must use all four places
 			dailyAHThousands = toInt(chars, 37);
 			dailyAHHundreds = toInt(chars, 38);
 			dailyAHTens = toInt(chars, 39);
@@ -121,8 +124,18 @@ public final class MXStatusPackets {
 
 		final float batteryVoltage = batteryVoltageTens * 10 + batteryVoltageOnes + (batteryVoltageTenths / 10.0f);
 		final String batteryVoltageString = batteryVoltageTens + "" + batteryVoltageOnes + "." + batteryVoltageTenths;
-
+		
 		final int dailyAH = dailyAHThousands * 1000 + dailyAHHundreds * 100 + dailyAHTens * 10 + dailyAHOnes; // will be 9999 if MX60
+		final Support dailyAHSupported;
+		if(oldFirmware || dailyAH == 9999){
+			if(dailyAH != 0 && dailyAH != 9999){
+				dailyAHSupported = Support.UNKNOWN;
+			} else {
+				dailyAHSupported = Support.NOT_SUPPORTED;
+			}
+		} else {
+			dailyAHSupported = Support.FULLY_SUPPORTED;
+		}
 
 		// ==== Aux Mode stuff ====
 		final String auxModeName = Modes.getActiveMode(AuxMode.class, auxMode).getModeName();
@@ -134,7 +147,7 @@ public final class MXStatusPackets {
 		final String chargerModeName = Modes.getActiveMode(ChargerMode.class, chargerMode).getModeName();
 		return new ImmutableMXStatusPacket(address, chargerCurrent, pvCurrent, inputVoltage, dailyKWH,
 				dailyKWHString, ampChargerCurrent, ampChargerCurrentString, auxMode, errorMode, chargerMode,
-				batteryVoltage, batteryVoltageString, dailyAH, chksum, auxModeName, errors, chargerModeName);
+				batteryVoltage, batteryVoltageString, dailyAH, dailyAHSupported, chksum, auxModeName, errors, chargerModeName);
 	}
 
 	public static MXStatusPacket createFromJson(JsonObject object) {
@@ -163,6 +176,13 @@ public final class MXStatusPackets {
 		final String batteryVoltageString = storedBatteryVoltageString != null ? storedBatteryVoltageString : Float.toString(batteryVoltage);
 
 		final int dailyAH = object.get("dailyAH").getAsInt();
+		final String dailyAHSupportString = getOrNull(object, "dailyAHSupport", JsonElement::getAsString);
+		final Support dailyAHSupport;
+		if(dailyAHSupportString == null){
+			dailyAHSupport = Support.UNKNOWN;
+		} else {
+			dailyAHSupport = Support.valueOf(dailyAHSupportString);
+		}
 		final int chksum = object.get("chksum").getAsInt();
 
 		final String storedAuxModeName = getOrNull(object, "auxModeName", JsonElement::getAsString);
@@ -176,6 +196,6 @@ public final class MXStatusPackets {
 
 		return new ImmutableMXStatusPacket(address, chargerCurrent, pvCurrent, inputVoltage, dailyKWH, dailyKWHString,
 				ampChargerCurrent, ampChargerCurrentString, auxMode, errorMode, chargerMode, batteryVoltage, batteryVoltageString,
-				dailyAH, chksum, auxModeName, errors, chargerModeName);
+				dailyAH, dailyAHSupport, chksum, auxModeName, errors, chargerModeName);
 	}
 }

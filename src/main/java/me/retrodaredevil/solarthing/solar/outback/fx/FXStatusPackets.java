@@ -23,6 +23,7 @@ public final class FXStatusPackets {
 	 * @throws ParsePacketAsciiDecimalDigitException thrown if the formatting of the data in the chars array is incorrect
 	 * @throws CheckSumException Thrown if the chksum from the chars array is not consistent with the other data. Never thrown if ignoreCheckSum != DISABLED
 	 */
+	@SuppressWarnings("Duplicates")
 	public static FXStatusPacket createFromChars(char[] chars, IgnoreCheckSum ignoreCheckSum) throws ParsePacketAsciiDecimalDigitException, CheckSumException{
 		if(chars.length != 49){
 			throw new IllegalArgumentException("The passed chars array must have a length of 49! Got length of: " + chars.length + " with chars='" + new String(chars) + "'");

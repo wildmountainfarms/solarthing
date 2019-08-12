@@ -214,7 +214,7 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 		this.specialPowerControlE02DRaw = specialPowerControlE02DRaw;
 		// endregion
 		
-		identifier = new RoverIdentifier(hardwareVersion, productSerialNumber, controllerDeviceAddress);
+		identifier = new RoverIdentifier(productSerialNumber);
 		
 		hardwareVersionString = getHardwareVersion().toString();
 		softwareVersionString = getSoftwareVersion().toString();

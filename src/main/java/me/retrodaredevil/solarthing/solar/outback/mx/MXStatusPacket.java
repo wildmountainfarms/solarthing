@@ -1,14 +1,13 @@
 package me.retrodaredevil.solarthing.solar.outback.mx;
 
-import me.retrodaredevil.solarthing.packets.BitmaskMode;
 import me.retrodaredevil.solarthing.packets.Modes;
-import me.retrodaredevil.solarthing.solar.SolarPacket;
+import me.retrodaredevil.solarthing.packets.support.Support;
 import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
 import me.retrodaredevil.solarthing.solar.common.ChargeController;
 import me.retrodaredevil.solarthing.solar.common.DailyData;
 import me.retrodaredevil.solarthing.solar.outback.OutbackPacket;
 
-import java.util.Collection;
+import java.util.Set;
 
 /**
  * Represents an MX Status Packet from an Outback Mate
@@ -48,17 +47,6 @@ public interface MXStatusPacket extends OutbackPacket, ChargeController, DailyDa
 		 */
 		return getChargerCurrent() + getAmpChargerCurrent();
 	}
-	
-	/**
-	 * Should be serialized as "ampChargerCurrentString" if serialized at all
-	 * @see #getAmpChargerCurrent()
-	 * @return The amp charger current in the format "0.X" where X is a digit [0..0.9]
-	 */
-	@Deprecated
-	default String getAmpChargerCurrentString(){
-		return "" + getAmpChargerCurrent();
-	}
-	
 	
 	@Override
 	default Float getChargingPower(){
@@ -100,6 +88,7 @@ public interface MXStatusPacket extends OutbackPacket, ChargeController, DailyDa
 	 * @return [0..99] representing the {@link AuxMode}
 	 */
 	int getAuxMode();
+	default AuxMode getAuxModeMode(){ return Modes.getActiveMode(AuxMode.class, getAuxMode());}
 	
 	/**
 	 * Should be serialized as "errorMode"
@@ -108,7 +97,7 @@ public interface MXStatusPacket extends OutbackPacket, ChargeController, DailyDa
 	@Override
 	int getErrorMode();
 	@Override
-	default Collection<? extends BitmaskMode> getActiveErrors(){
+	default Set<MXErrorMode> getActiveErrors(){
 		return Modes.getActiveModes(MXErrorMode.class, getErrorMode());
 	}
 	
@@ -118,10 +107,17 @@ public interface MXStatusPacket extends OutbackPacket, ChargeController, DailyDa
 	 */
 	int getChargerMode();
 	
+	@Override
+	default ChargerMode getChargingMode(){
+		return Modes.getActiveMode(ChargerMode.class, getChargerMode());
+	}
+	
 	/**
 	 * Should be serialized as "dailyAH"
 	 * <p>
 	 * Only works on MATE devices with newer firmware
+	 * <p>
+	 * Use {@link #getDailyAHSupport()} to check if this is supported
 	 * <p>
 	 * 9999 is returned if charge controller is MX60
 	 * <p>
@@ -130,6 +126,12 @@ public interface MXStatusPacket extends OutbackPacket, ChargeController, DailyDa
 	 */
 	@Override
 	int getDailyAH();
+	/**
+	 * Should be serialized as "dailyAHSupport". Should be serialized using {@link Support#toString()}
+	 * @return A {@link Support} enum constant indicating whether or not {@link #getDailyAH()} is supported
+	 */
+	@Override
+	Support getDailyAHSupport();
 	
 	/**
 	 * Should be serialized as "chksum"
@@ -142,16 +144,5 @@ public interface MXStatusPacket extends OutbackPacket, ChargeController, DailyDa
 	String getAuxModeName();
 	String getErrorsString();
 	String getChargerModeName();
-
-	/**
-	 * Should be serialized as "dailyKWHString" if serialized at all
-	 * @see #getDailyKWH()
-	 * @return [0..99.9] in string form
-	 */
-	@Deprecated
-	@Override
-	String getDailyKWHString();
-
-
 	// endregion
 }

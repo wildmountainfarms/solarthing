@@ -60,7 +60,6 @@ public interface RoverReadTable extends Rover, ErrorReporter, ChargeController, 
 	 * @return The int value representing the product type
 	 */
 	int getProductTypeValue();
-	
 	/**
 	 * @return The enum value representing the product type
 	 */
@@ -167,7 +166,6 @@ public interface RoverReadTable extends Rover, ErrorReporter, ChargeController, 
 	static int convertRawTemperature(int temperatureRaw){
 		if(temperatureRaw > 127){
 			return 128 - temperatureRaw; // uses bit 7 (8th bit) as a sign indicator. Signed numbers are not represented in the standard way
-//			return -((~temperatureRaw & 0xFF) + 1);
 		}
 		return temperatureRaw;
 	}
@@ -241,7 +239,10 @@ public interface RoverReadTable extends Rover, ErrorReporter, ChargeController, 
 	default int getStreetLightBrightnessPercent(){ return StreetLight.getBrightnessValue(getStreetLightValue()); }
 	
 	int getChargingStateValue();
-	default ChargingState getChargingState(){ return Modes.getActiveMode(ChargingState.class, getChargingStateValue()); }
+	@Deprecated
+	default ChargingState getChargingState(){ return getChargingMode(); }
+	@Override
+	default ChargingState getChargingMode(){ return Modes.getActiveMode(ChargingState.class, getChargingStateValue()); }
 	
 	@Override
 	int getErrorMode();
