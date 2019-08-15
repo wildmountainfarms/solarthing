@@ -9,7 +9,7 @@ import java.util.Base64;
 
 public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	private final SolarPacketType packetType = SolarPacketType.RENOGY_ROVER_STATUS;
-	private transient final Identifier identifier;
+	private transient final RoverIdentifier identifier;
 	private final int maxVoltage;
 	private final int ratedChargingCurrent;
 	private final int ratedDischargingCurrent;
@@ -230,7 +230,7 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	
 	
 	@Override
-	public Identifier getIdentifier() {
+	public RoverIdentifier getIdentifier() {
 		return identifier;
 	}
 	

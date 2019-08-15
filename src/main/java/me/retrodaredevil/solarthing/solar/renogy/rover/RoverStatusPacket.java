@@ -7,8 +7,10 @@ import me.retrodaredevil.solarthing.solar.renogy.RenogyPacket;
  */
 public interface RoverStatusPacket extends RenogyPacket, RoverReadTable {
 	@Deprecated
-	@Override
 	default int getAddress(){
 		return getControllerDeviceAddress();
 	}
+	
+	@Override
+	RoverIdentifier getIdentifier();
 }

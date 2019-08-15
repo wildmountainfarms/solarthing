@@ -111,6 +111,11 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 	}
 	
 	
+	@Override
+	public RoverIdentifier getIdentifier() {
+		return new RoverIdentifier(getProductSerialNumber());
+	}
+	
 	@Override public int getMaxVoltageValue() { return roverReadTable.getMaxVoltageValue(); }
 	@Override public int getRatedChargingCurrentValue() { return roverReadTable.getRatedChargingCurrentValue(); }
 	@Override public int getRatedDischargingCurrentValue() { return roverReadTable.getRatedDischargingCurrentValue(); }

@@ -29,7 +29,7 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 	private final String miscModes;
 	private final String warnings;
 	
-	private final transient Identifier identifier;
+	private final transient OutbackIdentifier identifier;
 
 	ImmutableFXStatusPacket(
 			int address,
@@ -216,7 +216,7 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 	}
 	
 	@Override
-	public Identifier getIdentifier() {
+	public OutbackIdentifier getIdentifier() {
 		return identifier;
 	}
 }
