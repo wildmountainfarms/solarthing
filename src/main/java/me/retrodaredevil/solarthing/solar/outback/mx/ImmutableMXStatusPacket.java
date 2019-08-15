@@ -35,7 +35,7 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 	private final String errors;
 	private final String chargerModeName;
 	
-	private final transient Identifier identifier;
+	private final transient OutbackIdentifier identifier;
 	
 	ImmutableMXStatusPacket(
 		int address, int chargerCurrent, int pvCurrent, int inputVoltage,
@@ -112,7 +112,7 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 	}
 	
 	@Override
-	public Identifier getIdentifier() {
+	public OutbackIdentifier getIdentifier() {
 		return identifier;
 	}
 	

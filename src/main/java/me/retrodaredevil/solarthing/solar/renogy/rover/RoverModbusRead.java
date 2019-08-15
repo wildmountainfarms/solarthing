@@ -11,6 +11,11 @@ public class RoverModbusRead implements RoverReadTable {
 	}
 	
 	@Override
+	public RoverIdentifier getIdentifier() {
+		return new RoverIdentifier(getProductSerialNumber());
+	}
+	
+	@Override
 	public int getMaxVoltageValue() {
 		return modbus.readRegisterUpper8Bits(0x000A);
 	}
