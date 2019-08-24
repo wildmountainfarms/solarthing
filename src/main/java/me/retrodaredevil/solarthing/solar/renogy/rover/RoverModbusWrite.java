@@ -33,9 +33,12 @@ public class RoverModbusWrite implements RoverWriteTable {
 	}
 	
 	@Override
-	public void setSystemVoltageSetting(Voltage voltage) { // TODO test to see if recognized voltage actually changes because of this
+	public void setSystemVoltageSetting(Voltage voltage) {
 		int value = voltage.getValueCode();
-		modbus.writeRegister(0xE003, (value << 8) | value); // TODO I don't know if I'm supposed to set the upper or lower 8 bits, so set both for now
+//		modbus.writeRegister(0xE003, (value << 8) | value); // NOTTODO I don't know if I'm supposed to set the upper or lower 8 bits, so set both for now
+		// recognized is on lower bits
+		// lower bits will be 0
+		modbus.writeRegister(0xE003, value << 8);
 	}
 	
 	@Override

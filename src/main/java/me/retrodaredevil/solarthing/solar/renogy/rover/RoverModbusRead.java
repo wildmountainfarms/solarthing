@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.solar.renogy.rover;
 import me.retrodaredevil.modbus.ModbusRead;
 
 public class RoverModbusRead implements RoverReadTable {
+	private static final float KWH_DIVIDER = 1_000; // units are returned in Watt Hours
 	
 	private final ModbusRead modbus;
 	
@@ -157,12 +158,12 @@ public class RoverModbusRead implements RoverReadTable {
 	
 	@Override
 	public float getDailyKWH() {
-		return modbus.readRegister(0x0113) / 10_000.0F;
+		return modbus.readRegister(0x0113) / KWH_DIVIDER;
 	}
 	
 	@Override
 	public float getDailyKWHConsumption() {
-		return modbus.readRegister(0x0114) / 10_000.0F;
+		return modbus.readRegister(0x0114) / KWH_DIVIDER;
 	}
 	
 	@Override
@@ -192,12 +193,12 @@ public class RoverModbusRead implements RoverReadTable {
 	
 	@Override
 	public float getCumulativeKWH() {
-		return modbus.readRegisterAndNext(0x011C) / 10_000.0F;
+		return modbus.readRegisterAndNext(0x011C) / KWH_DIVIDER;
 	}
 	
 	@Override
 	public float getCumulativeKWHConsumption() {
-		return modbus.readRegisterAndNext(0x011E) / 10_000.0F;
+		return modbus.readRegisterAndNext(0x011E) / KWH_DIVIDER;
 	}
 	
 	@Override
