@@ -277,7 +277,7 @@ public final class RoverSetupProgram {
 							int brightness = Integer.parseInt(toSet);
 							write.setStreetLightBrightnessPercent(brightness);
 							break;
-						case "systemvoltage":
+						case "systemvoltage": case "systemvoltagesetting":
 							Voltage systemVoltage = null;
 							try {
 								systemVoltage = Modes.getActiveMode(Voltage.class, Integer.parseInt(toSet), Voltage.AUTO);

@@ -123,6 +123,7 @@ After learning perl for a day. I went straight back to Java, which I am more fam
 * Implement Outback FlexNet DC Packets
 * Add field to MX Status Packet to indicate whether it supports dailyAH and field to indicate the version of the MX or if it is a FM
 * Cache some data from Renogy Rover that won't be updated
+* Create Arduino program to simulate MATE or Rover
 
 ### Completed TODO:
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
