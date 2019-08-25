@@ -99,12 +99,13 @@ public class SecurityPacketReceiver implements JsonPacketReceiver{
 								}
 								if(dateMillis != null){
 									Long lastCommand = senderLastCommandMap.get(sender);
-									if(dateMillis > System.currentTimeMillis()) {
-										System.err.println("Message from " + sender + " is from the future???");
+									long currentTime = System.currentTimeMillis();
+									if(dateMillis > currentTime) {
+										System.err.println("Message from " + sender + " is from the future??? dateMillis: " + dateMillis + " currentTime: " + currentTime);
 									} else if(dateMillis < minTime){
-										System.err.println("Message from " + sender + " was parsed, but it too old!");
+										System.err.println("Message from " + sender + " was parsed, but it too old! dateMillis: " + dateMillis + " minTime: " + minTime);
 									} else if(lastCommand != null && dateMillis <= lastCommand) { // if this command is old or if someone is trying to send the exact same command twice
-										System.err.println("Message from " + sender + " was parsed, but was older than the last command they sent!");
+										System.err.println("Message from " + sender + " was parsed, but was older than the last command they sent! dateMillis: " + dateMillis + " lastCommand: " + lastCommand);
 									} else {
 										lastCommands.put(sender, dateMillis);
 										dataReceiver.receiveData(sender, dateMillis, message);
