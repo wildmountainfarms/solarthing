@@ -16,6 +16,44 @@ public interface RoverWriteTable extends Rover {
 	void setSystemVoltageSetting(Voltage voltage);
 	// I don't think we can set the recognized voltage
 	void setBatteryType(BatteryType batteryType);
+	
+	default void setVoltageSetPoints(
+		int overVoltageThreshold,
+		int chargingVoltageLimit,
+		int equalizingChargingVoltage,
+		int boostChargingVoltage,
+		int floatingChargingVoltage,
+		int boostChargingRecoveryVoltage,
+		int overDischargeRecoveryVoltage,
+		int underVoltageWarningLevel,
+		int overDischargeVoltage,
+		int dischargingLimitVoltage,
+		int endOfChargeSOCValue, int endOfDischargeSOCValue,
+		int overDischargeTimeDelaySeconds,
+		int equalizingChargingTimeMinutes, // not raw
+		int boostChargingTimeMinutes, // not raw
+		int equalizingChargingIntervalDays, // not raw
+		int temperatureCompensationFactor // not raw
+	){
+		setOverVoltageThresholdRaw(overVoltageThreshold);
+		setChargingVoltageLimitRaw(chargingVoltageLimit);
+		setEqualizingChargingVoltageRaw(equalizingChargingVoltage);
+		setBoostChargingVoltageRaw(boostChargingVoltage);
+		setFloatingChargingVoltageRaw(floatingChargingVoltage);
+		setBoostChargingRecoveryVoltageRaw(boostChargingRecoveryVoltage);
+		setOverDischargeRecoveryVoltageRaw(overDischargeRecoveryVoltage);
+		setUnderVoltageWarningLevelRaw(underVoltageWarningLevel);
+		setOverDischargeVoltageRaw(overDischargeVoltage);
+		setDischargingLimitVoltageRaw(dischargingLimitVoltage);
+		
+		setEndOfChargeSOCEndOfDischargeSOC(endOfChargeSOCValue, endOfDischargeSOCValue);
+		
+		setOverDischargeTimeDelaySeconds(overDischargeTimeDelaySeconds);
+		setEqualizingChargingTimeMinutes(equalizingChargingTimeMinutes);
+		setBoostChargingTimeMinutes(boostChargingTimeMinutes);
+		setEqualizingChargingIntervalDays(equalizingChargingIntervalDays);
+		setTemperatureCompensationFactor(temperatureCompensationFactor);
+	}
 	void setOverVoltageThresholdRaw(int value);
 	void setChargingVoltageLimitRaw(int value);
 	void setEqualizingChargingVoltageRaw(int value);
@@ -31,32 +69,40 @@ public interface RoverWriteTable extends Rover {
 	
 	void setOverDischargeTimeDelaySeconds(int seconds);
 	
-	void setEqualizingChargingTimeRaw(int value);
-	default void setEqualizingChargingTimeMinutes(int minutes){
+	@Deprecated
+	static int getEqualizingChargingTimeRawFromMinutes(int minutes){
 		if(minutes < 10){
 			throw new IllegalArgumentException("minutes cannot be less than 10! it was: " + minutes);
 		}
 		if(minutes > 310){
 			throw new IllegalArgumentException("minutes cannot be greater than 310! it was: " + minutes);
 		}
-		setEqualizingChargingTimeRaw(minutes - 10);
+		return minutes - 10;
+	}
+	void setEqualizingChargingTimeRaw(int value);
+	default void setEqualizingChargingTimeMinutes(int minutes){
+		setEqualizingChargingTimeRaw(minutes);
 	}
 	
-	void setBoostChargingTimeRaw(int value);
-	default void setBoostChargingTimeMinutes(int minutes){
+	@Deprecated
+	static int getBoostChargingTimeRawFromMinutes(int minutes){
 		if(minutes < 20){
 			throw new IllegalArgumentException("minutes cannot be less than 20! it was: " + minutes);
 		}
 		if(minutes > 310){
 			throw new IllegalArgumentException("minutes cannot be greater than 310! it was: " + minutes);
 		}
-		setBoostChargingTimeRaw(minutes - 10);
+		return minutes - 10;
+	}
+	void setBoostChargingTimeRaw(int value);
+	default void setBoostChargingTimeMinutes(int minutes){
+		setBoostChargingTimeRaw(minutes);
 	}
 	
-	void setEqualizingChargingIntervalRaw(int value);
-	default void setEqualizingChargingIntervalDays(int days){
+	@Deprecated
+	static int getEqualizingChargingIntervalRawFromDays(int days){
 		if(days == 0){
-			setEqualizingChargingIntervalRaw(0);
+			return 0;
 		} else {
 			if(days <= 5){
 				throw new IllegalArgumentException("days cannot be less than or equal to 5! it was: " + days);
@@ -64,25 +110,33 @@ public interface RoverWriteTable extends Rover {
 			if(days > 300){
 				throw new IllegalArgumentException("days cannot be greater than 300! it was: " + days);
 			}
-			setEqualizingChargingIntervalRaw(days - 5);
+			return days - 5;
 		}
 	}
+	void setEqualizingChargingIntervalRaw(int value);
+	default void setEqualizingChargingIntervalDays(int days){
+		setEqualizingChargingIntervalRaw(days);
+	}
 	
+	@Deprecated
+	static int getTemperatureCompensationFactorRaw(int nonRaw){
+		if(nonRaw == 0){
+			return 0;
+		} else {
+			if(nonRaw <= 1){
+				throw new IllegalArgumentException("value cannot be less than or equal to 1! it was: " + nonRaw);
+			}
+			if(nonRaw > 6){
+				throw new IllegalArgumentException("value cannot be greater than 6! it was: " + nonRaw);
+			}
+			return nonRaw - 1;
+		}
+	}
 	/** NOTE: Untested */
 	void setTemperatureCompensationFactorRaw(int value);
 	/** NOTE: Untested */
-	default void setTemperatureCompensationFactor(int value){ // TODO When tested with a Renogy Rover, 30 is an allowed value. We aren't exactly sure why...
-		if(value == 0){
-			setTemperatureCompensationFactorRaw(0);
-		} else {
-			if(value <= 1){
-				throw new IllegalArgumentException("value cannot be less than or equal to 1! it was: " + value);
-			}
-			if(value > 6){
-				throw new IllegalArgumentException("value cannot be greater than 6! it was: " + value);
-			}
-			setTemperatureCompensationFactorRaw(value - 1);
-		}
+	default void setTemperatureCompensationFactor(int value){
+		setTemperatureCompensationFactorRaw(value);
 	}
 	void setOperatingDurationHours(OperatingSetting setting, int hours);
 	void setOperatingPowerPercentage(OperatingSetting setting, int operatingPowerPercentage);

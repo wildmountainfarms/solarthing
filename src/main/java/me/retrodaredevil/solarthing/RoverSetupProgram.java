@@ -410,12 +410,28 @@ public final class RoverSetupProgram {
 							break;
 					}
 					break;
-				case 3:
+				case 1 + 17:
 					// set some data
-					
+					// For testing: "set17 170 155 146 144 138 132 126 120 110 105 100 50 5 60 60 30 5"
+					if(!split[0].equalsIgnoreCase("set17")){
+						System.err.println("Not supported!");
+						break;
+					}
+					int[] data = new int[17];
+					for(int i = 0; i < data.length; i++){
+						String argument = split[i + 1];
+						data[i] = Integer.parseInt(argument);
+					}
+					write.setVoltageSetPoints(
+						data[0], data[1], data[2], data[3],
+						data[4], data[5], data[6], data[7],
+						data[8], data[9], data[10], data[11],
+						data[12], data[13], data[14], data[15],
+						data[16]
+					);
 					break;
 				default:
-					System.out.println("Only a maximum of 3 arguments are allowed!");
+					System.out.println("This isn't supported!");
 					continue loop;
 			}
 		}

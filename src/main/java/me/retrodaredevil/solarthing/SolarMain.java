@@ -176,7 +176,6 @@ public class SolarMain {
 		try(JSerialIOBundle ioBundle = JSerialIOBundle.createPort(args.getPortName(), ROVER_CONFIG)) {
 			ModbusSlave modbus = new IOModbusSlave(ioBundle, new RTUDataEncoder(300, 10));
 			RoverReadTable read = new RoverModbusSlaveRead(1, modbus);
-//			RoverWriteTable write = new RoverModbusWrite(modbus);
 			try {
 				while (!Thread.currentThread().isInterrupted()) {
 					final long startTime = System.currentTimeMillis();
@@ -231,11 +230,6 @@ public class SolarMain {
 			});
 			RoverSetupProgram.startRoverSetup(readWrite, readWrite);
 		} else {
-//			try (J2ModModbus modbus = new J2ModModbus(parameters)) {
-//				RoverReadTable read = new RoverModbusRead(modbus);
-//				RoverWriteTable write = new RoverModbusWrite(modbus);
-//				RoverSetupProgram.startRoverSetup(read, write);
-//			}
 			try(JSerialIOBundle ioBundle = JSerialIOBundle.createPort(args.getPortName(), ROVER_CONFIG)) {
 				ModbusSlave modbus = new IOModbusSlave(ioBundle, new RTUDataEncoder(300, 10));
 				RoverReadTable read = new RoverModbusSlaveRead(1, modbus);
