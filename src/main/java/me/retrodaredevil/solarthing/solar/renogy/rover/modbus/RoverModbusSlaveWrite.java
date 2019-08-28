@@ -91,7 +91,8 @@ public class RoverModbusSlaveWrite implements RoverWriteTable {
 	@Override
 	public void setOverVoltageThresholdRaw(int value) {
 		checkRange(70, 170, value);
-		write(0xE005, value);
+//		write(0xE005, value);
+		write(0x0103, value);
 	}
 	
 	@Override
