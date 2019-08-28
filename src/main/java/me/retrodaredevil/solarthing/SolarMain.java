@@ -3,14 +3,11 @@ package me.retrodaredevil.solarthing;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import me.retrodaredevil.io.IOBundle;
-import me.retrodaredevil.io.modbus.IOModbusSlave;
-import me.retrodaredevil.io.modbus.ModbusSlave;
-import me.retrodaredevil.io.modbus.RTUDataEncoder;
+import me.retrodaredevil.io.modbus.*;
 import me.retrodaredevil.io.serial.JSerialIOBundle;
 import me.retrodaredevil.io.serial.SerialConfig;
 import me.retrodaredevil.io.serial.SerialConfigBuilder;
 import me.retrodaredevil.io.serial.SerialPortException;
-import me.retrodaredevil.modbus.ModbusRuntimeException;
 import me.retrodaredevil.solarthing.commands.CommandProvider;
 import me.retrodaredevil.solarthing.commands.CommandProviderMultiplexer;
 import me.retrodaredevil.solarthing.commands.sequence.CommandSequence;
@@ -174,8 +171,9 @@ public class SolarMain {
 		PacketProvider packetProvider = getAdditionalPacketProvider(args);
 		
 		try(JSerialIOBundle ioBundle = JSerialIOBundle.createPort(args.getPortName(), ROVER_CONFIG)) {
-			ModbusSlave modbus = new IOModbusSlave(ioBundle, new RTUDataEncoder(300, 10));
-			RoverReadTable read = new RoverModbusSlaveRead(1, modbus);
+			ModbusSlaveBus modbus = new IOModbusSlaveBus(ioBundle, new RTUDataEncoder(300, 10));
+			ModbusSlave slave = new ImmutableAddressModbusSlave(args.getModbusAddress(), modbus);
+			RoverReadTable read = new RoverModbusSlaveRead(slave);
 			try {
 				while (!Thread.currentThread().isInterrupted()) {
 					final long startTime = System.currentTimeMillis();
@@ -225,15 +223,17 @@ public class SolarMain {
 			String json = new String(bytes, StandardCharsets.UTF_8);
 			JsonObject jsonPacket = new GsonBuilder().create().fromJson(json, JsonObject.class);
 			RoverStatusPacket roverStatusPacket = RoverStatusPackets.createFromJson(jsonPacket);
-			DummyRoverReadWrite readWrite = new DummyRoverReadWrite(roverStatusPacket, (fieldName, previousValue, newValue) -> {
-				System.out.println(fieldName + " changed from " + previousValue + " to " + newValue);
-			});
+			DummyRoverReadWrite readWrite = new DummyRoverReadWrite(
+				roverStatusPacket,
+				(fieldName, previousValue, newValue) -> System.out.println(fieldName + " changed from " + previousValue + " to " + newValue)
+			);
 			RoverSetupProgram.startRoverSetup(readWrite, readWrite);
 		} else {
 			try(JSerialIOBundle ioBundle = JSerialIOBundle.createPort(args.getPortName(), ROVER_CONFIG)) {
-				ModbusSlave modbus = new IOModbusSlave(ioBundle, new RTUDataEncoder(300, 10));
-				RoverReadTable read = new RoverModbusSlaveRead(1, modbus);
-				RoverWriteTable write = new RoverModbusSlaveWrite(1, modbus);
+				ModbusSlaveBus modbus = new IOModbusSlaveBus(ioBundle, new RTUDataEncoder(300, 10));
+				ModbusSlave slave = new ImmutableAddressModbusSlave(args.getModbusAddress(), modbus);
+				RoverReadTable read = new RoverModbusSlaveRead(slave);
+				RoverWriteTable write = new RoverModbusSlaveWrite(slave);
 				RoverSetupProgram.startRoverSetup(read, write);
 			} catch (SerialPortException e) {
 				e.printStackTrace();

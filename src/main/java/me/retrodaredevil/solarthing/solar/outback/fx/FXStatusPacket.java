@@ -2,7 +2,6 @@ package me.retrodaredevil.solarthing.solar.outback.fx;
 
 import me.retrodaredevil.solarthing.packets.BitmaskMode;
 import me.retrodaredevil.solarthing.packets.Modes;
-import me.retrodaredevil.solarthing.solar.SolarPacket;
 import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
 import me.retrodaredevil.solarthing.solar.outback.OutbackPacket;
 

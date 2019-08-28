@@ -2,8 +2,14 @@
   <dictionary name="josh">
     <words>
       <w>aren</w>
+      <w>chksum</w>
+      <w>couchdb</w>
+      <w>flexnet</w>
       <w>modbus</w>
+      <w>mppt</w>
+      <w>mxfm</w>
       <w>renogy</w>
+      <w>solarthing</w>
     </words>
   </dictionary>
 </component>

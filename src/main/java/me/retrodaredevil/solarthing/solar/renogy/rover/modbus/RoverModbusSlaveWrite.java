@@ -15,26 +15,24 @@ import static me.retrodaredevil.solarthing.solar.renogy.rover.special.UpperLower
 import static me.retrodaredevil.util.NumberUtil.checkRange;
 
 public class RoverModbusSlaveWrite implements RoverWriteTable {
-	private int address;
 	private final ModbusSlave modbus;
 	
-	public RoverModbusSlaveWrite(int address, ModbusSlave modbus) {
-		this.address = address;
+	public RoverModbusSlaveWrite(ModbusSlave modbus) {
 		this.modbus = modbus;
 	}
 	
 	private void write(int register, int value){
-		modbus.sendMessage(address, new SingleWriteHandler(register, value));
+		modbus.sendMessage(new SingleWriteHandler(register, value));
 	}
 	
 	@Override
 	public void factoryReset() {
-		modbus.sendMessage(address, RoverMessageHandler.createRoverFactoryReset());
+		modbus.sendMessage(RoverMessageHandler.createRoverFactoryReset());
 	}
 	
 	@Override
 	public void clearHistory() {
-		modbus.sendMessage(address, RoverMessageHandler.createRoverClearHistory());
+		modbus.sendMessage(RoverMessageHandler.createRoverClearHistory());
 	}
 	
 	@Override
@@ -77,7 +75,7 @@ public class RoverModbusSlaveWrite implements RoverWriteTable {
 		int overDischargeTimeDelaySeconds, int equalizingChargingTimeMinutes, int boostChargingTimeMinutes,
 		int equalizingChargingIntervalDays, int temperatureCompensationFactor
 	) {
-		modbus.sendMessage(address, new MultipleWriteHandler(0xE005, get8BitDataFrom16BitArray(
+		modbus.sendMessage(new MultipleWriteHandler(0xE005, get8BitDataFrom16BitArray(
 			overVoltageThreshold, chargingVoltageLimit, equalizingChargingVoltage, boostChargingVoltage,
 			floatingChargingVoltage, boostChargingRecoveryVoltage, overDischargeRecoveryVoltage,
 			underVoltageWarningLevel, overDischargeVoltage, dischargingLimitVoltage,
@@ -91,8 +89,8 @@ public class RoverModbusSlaveWrite implements RoverWriteTable {
 	@Override
 	public void setOverVoltageThresholdRaw(int value) {
 		checkRange(70, 170, value);
-//		write(0xE005, value);
-		write(0x0103, value);
+		write(0xE005, value);
+//		write(0x0103, value);
 	}
 	
 	@Override

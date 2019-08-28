@@ -11,7 +11,7 @@ public class LatestPacketHandler implements PacketHandler {
 	}
 	
 	@Override
-	public void handle(PacketCollection packetCollection, boolean wasInstant) throws PacketHandleException {
+	public void handle(PacketCollection packetCollection, boolean wasInstant) {
 		if(!instantOnly || wasInstant){
 			lastCollection = packetCollection;
 		}

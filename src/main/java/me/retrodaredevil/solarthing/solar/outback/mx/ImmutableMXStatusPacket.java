@@ -1,9 +1,8 @@
 package me.retrodaredevil.solarthing.solar.outback.mx;
 
-import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.packets.support.Support;
-import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import me.retrodaredevil.solarthing.solar.SolarPacketType;
+import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 
 @SuppressWarnings("unused")
 final class ImmutableMXStatusPacket implements MXStatusPacket {

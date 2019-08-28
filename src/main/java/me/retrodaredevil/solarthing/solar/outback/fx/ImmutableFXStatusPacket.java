@@ -1,8 +1,7 @@
 package me.retrodaredevil.solarthing.solar.outback.fx;
 
-import me.retrodaredevil.solarthing.packets.identification.Identifier;
-import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import me.retrodaredevil.solarthing.solar.SolarPacketType;
+import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 
 @SuppressWarnings("unused")
 final class ImmutableFXStatusPacket implements FXStatusPacket {

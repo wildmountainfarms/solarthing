@@ -25,7 +25,7 @@ public class SecurityPacketReceiver implements JsonPacketReceiver{
 	
 	private final Cipher cipher;
 	
-	private Map<String, Long> senderLastCommandMap = new HashMap<>();
+	private final Map<String, Long> senderLastCommandMap = new HashMap<>();
 	
 	/**
 	 *

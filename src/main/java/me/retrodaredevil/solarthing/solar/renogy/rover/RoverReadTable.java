@@ -84,10 +84,9 @@ public interface RoverReadTable extends Rover, ErrorReporter, ChargeController, 
 		if(raw.length != 16){
 			throw new IllegalStateException();
 		}
-		StringBuilder r = new StringBuilder(15);
+		StringBuilder r = new StringBuilder();
 		for(byte value : raw){
 			int intValue = ((int) value) & 0xff;
-			if(intValue < 0) throw new AssertionError();
 			if(intValue > 127) throw new IllegalStateException(intValue + " is out of normal ascii range!");
 			if(intValue == 0x20) continue; // space // really, we don't have to do this, but the documentation says we should
 			r.append((char) value);
