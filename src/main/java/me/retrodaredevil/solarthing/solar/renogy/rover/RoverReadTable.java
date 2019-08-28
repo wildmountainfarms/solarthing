@@ -267,9 +267,12 @@ public interface RoverReadTable extends Rover, ErrorReporter, ChargeController, 
 	int getRecognizedVoltageValue();
 	
 	/** @return Any voltage from {@link Voltage} representing the current voltage setting */
-	default Voltage getSystemVoltageSetting(){ return Modes.getActiveMode(Voltage.class, getSystemVoltageSettingValue()); }
-	/** @return The recognized {@link Voltage}. {@link Voltage#AUTO} will never be returned*/
-	default Voltage getRecognizedVoltage(){ return Modes.getActiveMode(Voltage.class, getRecognizedVoltageValue()); }
+	default Voltage getSystemVoltageSetting(){ return Modes.getActiveMode(Voltage.class, getSystemVoltageSettingValue(), Voltage.AUTO); }
+	/**
+	 * NOTE: On some products, this is broken. If this returns a {@link Voltage#AUTO} or null, you can assume it's not working correctly
+	 * @return The recognized {@link Voltage} or null.
+	 */
+	default Voltage getRecognizedVoltage(){ return Modes.getActiveModeOrNull(Voltage.class, getRecognizedVoltageValue()); }
 	
 	// 0xE004
 	/** Should be serialized as "batteryType" */
