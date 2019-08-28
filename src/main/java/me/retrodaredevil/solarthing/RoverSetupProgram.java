@@ -259,6 +259,20 @@ public final class RoverSetupProgram {
 					// set most data
 					String toSet = split[1].toLowerCase();
 					switch(split[0].toLowerCase()) {
+						case "factoryreset":
+							if(toSet.equals("!!")){
+								write.factoryReset();
+							} else {
+								throw new IllegalArgumentException("You must do 'factoryreset !!' to confirm!");
+							}
+							break;
+						case "clearhistory":
+							if(toSet.equals("!!")){
+								write.clearHistory();
+							} else {
+								throw new IllegalArgumentException("You must do 'clearhistory !!' to confirm!");
+							}
+							break;
 						case "controllerdeviceaddress": case "deviceaddress": case "address":
 							write.setControllerDeviceAddress(Integer.parseInt(toSet));
 							break;

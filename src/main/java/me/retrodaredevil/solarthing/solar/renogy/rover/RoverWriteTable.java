@@ -7,6 +7,9 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerContr
 
 @SuppressWarnings("unused")
 public interface RoverWriteTable extends Rover {
+	void factoryReset();
+	void clearHistory();
+	
 	void setControllerDeviceAddress(int address);
 	void setStreetLightStatus(StreetLight streetLightStatus);
 	void setStreetLightBrightnessPercent(int brightnessPercent);

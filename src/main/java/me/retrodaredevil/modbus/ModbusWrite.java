@@ -1,5 +1,6 @@
 package me.retrodaredevil.modbus;
 
+@Deprecated
 public interface ModbusWrite {
 	/**
 	 * @param register The register to write to

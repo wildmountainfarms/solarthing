@@ -1,18 +1,32 @@
-package me.retrodaredevil.solarthing.solar.renogy.rover;
+package me.retrodaredevil.solarthing.solar.renogy.rover.modbus;
 
 import me.retrodaredevil.modbus.ModbusWrite;
 import me.retrodaredevil.solarthing.solar.renogy.BatteryType;
 import me.retrodaredevil.solarthing.solar.renogy.Voltage;
+import me.retrodaredevil.solarthing.solar.renogy.rover.LoadWorkingMode;
+import me.retrodaredevil.solarthing.solar.renogy.rover.RoverWriteTable;
+import me.retrodaredevil.solarthing.solar.renogy.rover.StreetLight;
 
 import static java.util.Objects.requireNonNull;
 import static me.retrodaredevil.solarthing.solar.renogy.rover.special.UpperLower16Bit.getCombined;
 import static me.retrodaredevil.util.NumberUtil.checkRange;
 
+@Deprecated
 public class RoverModbusWrite implements RoverWriteTable {
 	private final ModbusWrite modbus;
 	
 	public RoverModbusWrite(ModbusWrite modbus) {
 		this.modbus = modbus;
+	}
+	
+	@Override
+	public void factoryReset() {
+		throw new UnsupportedOperationException("Factory reset not supported!");
+	}
+	
+	@Override
+	public void clearHistory() {
+		throw new UnsupportedOperationException("Clear history not supported!");
 	}
 	
 	@Override

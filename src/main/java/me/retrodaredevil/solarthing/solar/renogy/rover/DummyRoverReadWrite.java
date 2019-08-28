@@ -109,7 +109,15 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 		ledLoadCurrentRaw = roverReadTable.getLEDLoadCurrentRaw();
 		specialPowerControlE02DRaw = roverReadTable.getSpecialPowerControlE02DRaw();
 	}
+	@Override
+	public void factoryReset() {
+		onChange.onChange("factoryReset", "nothing", "reset called");
+	}
 	
+	@Override
+	public void clearHistory() {
+		onChange.onChange("clearHistory", "nothing", "clear history called");
+	}
 	
 	@Override
 	public RoverIdentifier getIdentifier() {

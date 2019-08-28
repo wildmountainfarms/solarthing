@@ -3,6 +3,7 @@ package me.retrodaredevil.modbus;
 import static me.retrodaredevil.util.NumberUtil.getLower;
 import static me.retrodaredevil.util.NumberUtil.getUpper;
 
+@Deprecated
 public interface ModbusRead {
 	int readRegister(int register);
 	default int readRegisterUpper8Bits(int register){

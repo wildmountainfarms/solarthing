@@ -1,5 +1,6 @@
 package me.retrodaredevil.modbus;
 
+@Deprecated
 public class ModbusRuntimeException extends RuntimeException {
 	public ModbusRuntimeException() {
 	}
