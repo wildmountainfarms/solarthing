@@ -1,7 +1,10 @@
-package me.retrodaredevil.solarthing.solar.renogy.rover;
+package me.retrodaredevil.solarthing.solar.renogy.rover.modbus;
 
 import me.retrodaredevil.modbus.ModbusRead;
+import me.retrodaredevil.solarthing.solar.renogy.rover.RoverIdentifier;
+import me.retrodaredevil.solarthing.solar.renogy.rover.RoverReadTable;
 
+@Deprecated
 public class RoverModbusRead implements RoverReadTable {
 	private static final float KWH_DIVIDER = 1_000; // units are returned in Watt Hours
 	

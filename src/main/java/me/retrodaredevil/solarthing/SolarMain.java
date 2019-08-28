@@ -1,17 +1,22 @@
 package me.retrodaredevil.solarthing;
 
-import com.ghgande.j2mod.modbus.util.SerialParameters;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import me.retrodaredevil.modbus.J2ModModbus;
+import me.retrodaredevil.io.IOBundle;
+import me.retrodaredevil.io.modbus.IOModbusSlave;
+import me.retrodaredevil.io.modbus.ModbusSlave;
+import me.retrodaredevil.io.modbus.RTUDataEncoder;
+import me.retrodaredevil.io.serial.JSerialIOBundle;
+import me.retrodaredevil.io.serial.SerialConfig;
+import me.retrodaredevil.io.serial.SerialConfigBuilder;
+import me.retrodaredevil.io.serial.SerialPortException;
 import me.retrodaredevil.modbus.ModbusRuntimeException;
+import me.retrodaredevil.solarthing.commands.CommandProvider;
+import me.retrodaredevil.solarthing.commands.CommandProviderMultiplexer;
+import me.retrodaredevil.solarthing.commands.sequence.CommandSequence;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketRetriever;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketSaver;
-import me.retrodaredevil.solarthing.io.IOBundle;
-import me.retrodaredevil.solarthing.io.JSerialIOBundle;
-import me.retrodaredevil.solarthing.io.SerialPortException;
 import me.retrodaredevil.solarthing.outhouse.OuthousePacketCreator;
-import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.HourIntervalPacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
@@ -22,18 +27,14 @@ import me.retrodaredevil.solarthing.packets.creation.TextPacketCreator;
 import me.retrodaredevil.solarthing.packets.handling.*;
 import me.retrodaredevil.solarthing.packets.handling.implementations.FileWritePacketHandler;
 import me.retrodaredevil.solarthing.packets.handling.implementations.GsonStringPacketHandler;
-import me.retrodaredevil.solarthing.packets.instance.InstanceFragmentIndicatorPacket;
 import me.retrodaredevil.solarthing.packets.instance.InstanceFragmentIndicatorPackets;
 import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePackets;
 import me.retrodaredevil.solarthing.packets.security.crypto.DirectoryKeyMap;
 import me.retrodaredevil.solarthing.solar.outback.MatePacketCreator49;
-import me.retrodaredevil.solarthing.commands.CommandProvider;
-import me.retrodaredevil.solarthing.commands.CommandProviderMultiplexer;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
-import me.retrodaredevil.solarthing.commands.sequence.CommandSequence;
-import me.retrodaredevil.solarthing.solar.renogy.BatteryType;
-import me.retrodaredevil.solarthing.solar.renogy.Voltage;
 import me.retrodaredevil.solarthing.solar.renogy.rover.*;
+import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusSlaveRead;
+import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusSlaveWrite;
 import me.retrodaredevil.util.json.JsonFile;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
@@ -47,6 +48,17 @@ import java.util.*;
 import static java.util.Objects.requireNonNull;
 
 public class SolarMain {
+	private static final SerialConfig MATE_CONFIG = new SerialConfigBuilder(19200)
+		.setDataBits(8)
+		.setParity(SerialConfig.Parity.NONE)
+		.setStopBits(SerialConfig.StopBits.ONE)
+		.setDTR(true)
+		.build();
+	private static final SerialConfig ROVER_CONFIG = new SerialConfigBuilder(9600)
+		.setDataBits(8)
+		.setParity(SerialConfig.Parity.NONE)
+		.setStopBits(SerialConfig.StopBits.ONE)
+		.build();
 	/*
 	TODO This solar command part of this file is not general at all. The command stuff was made for my specific use case and because of that, it would
 	be hard for someone else to find use of this program without customizing it to their own needs.
@@ -63,7 +75,7 @@ public class SolarMain {
 		} else {
 			final IOBundle port;
 			try {
-				port = JSerialIOBundle.createPort(args.getPortName());
+				port = JSerialIOBundle.createPort(args.getPortName(), MATE_CONFIG);
 			} catch (SerialPortException e) {
 				e.printStackTrace();
 				return 1;
@@ -161,10 +173,9 @@ public class SolarMain {
 		PacketHandler packetHandler = new PacketHandlerMultiplexer(packetHandlers);
 		PacketProvider packetProvider = getAdditionalPacketProvider(args);
 		
-		SerialParameters parameters = new SerialParameters(args.getPortName(), 9600, 0, 0, 8, 1, 0, false);
-		parameters.setEncoding("rtu");
-		try(J2ModModbus modbus = new J2ModModbus(parameters)) {
-			RoverReadTable read = new RoverModbusRead(modbus);
+		try(JSerialIOBundle ioBundle = JSerialIOBundle.createPort(args.getPortName(), ROVER_CONFIG)) {
+			ModbusSlave modbus = new IOModbusSlave(ioBundle, new RTUDataEncoder(300, 10));
+			RoverReadTable read = new RoverModbusSlaveRead(1, modbus);
 //			RoverWriteTable write = new RoverModbusWrite(modbus);
 			try {
 				while (!Thread.currentThread().isInterrupted()) {
@@ -201,6 +212,10 @@ public class SolarMain {
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
 			}
+		} catch (SerialPortException e) {
+			e.printStackTrace();
+			System.err.println("Unable to connect to rover with port: " + args.getPortName());
+			return 1;
 		}
 		return 0;
 	}
@@ -216,12 +231,20 @@ public class SolarMain {
 			});
 			RoverSetupProgram.startRoverSetup(readWrite, readWrite);
 		} else {
-			SerialParameters parameters = new SerialParameters(args.getPortName(), 9600, 0, 0, 8, 1, 0, false);
-			parameters.setEncoding("rtu");
-			try (J2ModModbus modbus = new J2ModModbus(parameters)) {
-				RoverReadTable read = new RoverModbusRead(modbus);
-				RoverWriteTable write = new RoverModbusWrite(modbus);
+//			try (J2ModModbus modbus = new J2ModModbus(parameters)) {
+//				RoverReadTable read = new RoverModbusRead(modbus);
+//				RoverWriteTable write = new RoverModbusWrite(modbus);
+//				RoverSetupProgram.startRoverSetup(read, write);
+//			}
+			try(JSerialIOBundle ioBundle = JSerialIOBundle.createPort(args.getPortName(), ROVER_CONFIG)) {
+				ModbusSlave modbus = new IOModbusSlave(ioBundle, new RTUDataEncoder(300, 10));
+				RoverReadTable read = new RoverModbusSlaveRead(1, modbus);
+				RoverWriteTable write = new RoverModbusSlaveWrite(1, modbus);
 				RoverSetupProgram.startRoverSetup(read, write);
+			} catch (SerialPortException e) {
+				e.printStackTrace();
+				System.err.println("Got serial port exception!");
+				return 1;
 			}
 		}
 		return 0;

@@ -59,6 +59,7 @@ public class SolarReader implements Runnable{
 //		System.out.println("updating");
 		// This implementation isn't perfect - we cannot detect EOF
 		// stackoverflow: https://stackoverflow.com/q/53291868/5434860
+		// TODO try this solution: https://stackoverflow.com/questions/804951/is-it-possible-to-read-from-a-inputstream-with-a-timeout
 		int len = 0;
 		try {
 			
