@@ -295,29 +295,39 @@ public interface RoverReadTable extends Rover, ErrorReporter, ChargeController, 
 	
 	int getOverDischargeTimeDelaySeconds();
 	
+	@Deprecated
+	static int getEqualizingChargingTimeMinutesFromRaw(int raw){ return raw + 10; }
 	int getEqualizingChargingTimeRaw();
-	default int getEqualizingChargingTimeMinutes(){ return getEqualizingChargingTimeRaw() + 10; }
+	default int getEqualizingChargingTimeMinutes(){ return getEqualizingChargingTimeRaw(); }
 	
+	@Deprecated
+	static int getBoostChargingTimeMinutesFromRaw(int raw){ return raw + 10; }
 	int getBoostChargingTimeRaw();
-	default int getBoostChargingTimeMinutes(){ return getBoostChargingTimeRaw() + 10; }
+	default int getBoostChargingTimeMinutes(){ return getBoostChargingTimeRaw(); }
 	
-	int getEqualizingChargingIntervalRaw();
-	default int getEqualizingChargingIntervalDays(){
-		int raw = getEqualizingChargingIntervalRaw();
+	@Deprecated
+	static int getEqualizingChargingIntervalDaysFromRaw(int raw){
 		if(raw == 0){
 			return 0;
 		}
 		return raw + 5;
 	}
+	int getEqualizingChargingIntervalRaw();
+	default int getEqualizingChargingIntervalDays(){
+		return getEqualizingChargingIntervalRaw();
+	}
 	
-	int getTemperatureCompensationFactorRaw();
-	/** Units: mV/C/2V*/
-	default int getTemperatureCompensationFactor(){
-		int raw = getTemperatureCompensationFactorRaw();
+	@Deprecated
+	static int getTemperatureCompensationFactorFromRaw(int raw){
 		if(raw == 0){
 			return 0;
 		}
 		return raw + 1;
+	}
+	int getTemperatureCompensationFactorRaw();
+	/** Units: mV/C/2V*/
+	default int getTemperatureCompensationFactor(){
+		return getTemperatureCompensationFactorRaw();
 	}
 	
 	//0xE015

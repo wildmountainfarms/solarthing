@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover.modbus;
 
 import me.retrodaredevil.io.modbus.ModbusSlave;
+import me.retrodaredevil.io.modbus.handling.MultipleWriteHandler;
 import me.retrodaredevil.io.modbus.handling.SingleWriteHandler;
 import me.retrodaredevil.solarthing.solar.renogy.BatteryType;
 import me.retrodaredevil.solarthing.solar.renogy.Voltage;
@@ -9,6 +10,7 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.RoverWriteTable;
 import me.retrodaredevil.solarthing.solar.renogy.rover.StreetLight;
 
 import static java.util.Objects.requireNonNull;
+import static me.retrodaredevil.io.modbus.ModbusMessages.get8BitDataFrom16BitArray;
 import static me.retrodaredevil.solarthing.solar.renogy.rover.special.UpperLower16Bit.getCombined;
 import static me.retrodaredevil.util.NumberUtil.checkRange;
 
@@ -66,6 +68,26 @@ public class RoverModbusSlaveWrite implements RoverWriteTable {
 		write(0xE004, batteryType.getValueCode());
 	}
 	
+	@Override
+	public void setVoltageSetPoints(
+		int overVoltageThreshold, int chargingVoltageLimit, int equalizingChargingVoltage, int boostChargingVoltage,
+		int floatingChargingVoltage, int boostChargingRecoveryVoltage, int overDischargeRecoveryVoltage,
+		int underVoltageWarningLevel, int overDischargeVoltage, int dischargingLimitVoltage,
+		int endOfChargeSOCValue, int endOfDischargeSOCValue,
+		int overDischargeTimeDelaySeconds, int equalizingChargingTimeMinutes, int boostChargingTimeMinutes,
+		int equalizingChargingIntervalDays, int temperatureCompensationFactor
+	) {
+		modbus.sendMessage(address, new MultipleWriteHandler(0xE005, get8BitDataFrom16BitArray(
+			overVoltageThreshold, chargingVoltageLimit, equalizingChargingVoltage, boostChargingVoltage,
+			floatingChargingVoltage, boostChargingRecoveryVoltage, overDischargeRecoveryVoltage,
+			underVoltageWarningLevel, overDischargeVoltage, dischargingLimitVoltage,
+			(endOfChargeSOCValue << 8) | endOfDischargeSOCValue,
+			overDischargeTimeDelaySeconds, equalizingChargingTimeMinutes, boostChargingTimeMinutes,
+			equalizingChargingIntervalDays, temperatureCompensationFactor
+		)));
+	}
+	
+	// region 17 set point values
 	@Override
 	public void setOverVoltageThresholdRaw(int value) {
 		checkRange(70, 170, value);
@@ -162,6 +184,7 @@ public class RoverModbusSlaveWrite implements RoverWriteTable {
 		checkRange(0, 5, value);
 		write(0xE014, value);
 	}
+	// endregion
 	
 	@Override
 	public void setOperatingDurationHours(OperatingSetting setting, int hours) {
