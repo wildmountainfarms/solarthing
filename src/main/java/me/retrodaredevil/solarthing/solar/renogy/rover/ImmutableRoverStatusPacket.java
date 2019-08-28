@@ -1,7 +1,6 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover;
 
 import me.retrodaredevil.solarthing.packets.Modes;
-import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.solar.SolarPacketType;
 import me.retrodaredevil.solarthing.solar.renogy.BatteryType;
 

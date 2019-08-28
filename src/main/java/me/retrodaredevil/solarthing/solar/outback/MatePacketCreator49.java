@@ -24,7 +24,7 @@ public class MatePacketCreator49 extends StartEndTextPacketCreator {
 
 	@Override
 	public Collection<Packet> create(char[] bytes) throws PacketCreationException {
-		final int value = (int) bytes[1]; // ascii value
+		final int value = bytes[1]; // ascii value
 		final Packet r;
 		if(value >= 48 && value <= 58){ // fx status
 			try {

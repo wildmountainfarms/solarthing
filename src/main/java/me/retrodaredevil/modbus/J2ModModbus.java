@@ -12,6 +12,7 @@ import java.io.Closeable;
 import static me.retrodaredevil.util.NumberUtil.getLowerByte;
 import static me.retrodaredevil.util.NumberUtil.getUpperByte;
 
+@Deprecated
 public class J2ModModbus implements ModbusReadWrite, Closeable {
 	private final AbstractModbusMaster master;
 	public J2ModModbus(AbstractModbusMaster master){

@@ -70,6 +70,9 @@ class ProgramArgs {
 	
 	@Parameter(names = {"--dummy"})
 	private String dummyFile = "dummy_rover.json";
+	
+	@Parameter(names = {"--slave", "--modbus"})
+	private int modbusAddress = 1;
 
 	public ProgramArgs(String[] args){
 		JCommander.newBuilder().addObject(this).build().parse(args);
@@ -126,6 +129,10 @@ class ProgramArgs {
 	}
 	public String getDummyFile(){
 		return dummyFile;
+	}
+	
+	public int getModbusAddress(){
+		return modbusAddress;
 	}
 
 	public void printInJson(){

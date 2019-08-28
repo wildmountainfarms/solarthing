@@ -2,7 +2,6 @@ package me.retrodaredevil.solarthing.solar.outback;
 
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.packets.identification.IntegerIdentifier;
-import me.retrodaredevil.solarthing.solar.renogy.rover.RoverIdentifier;
 
 import java.util.Objects;
 
