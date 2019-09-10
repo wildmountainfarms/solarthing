@@ -1,0 +1,8 @@
+{
+  "type": "serial",
+  "port": "/dev/ttyUSB0",
+  "serial_config": {
+    "baud": 9600,
+    "stop_bits": 1
+  }
+}
