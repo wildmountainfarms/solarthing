@@ -7,11 +7,13 @@ Because of this, you can hook up just about anything to the Mate and receive and
 commands to your mate! This program aims to be compatible with new and old Mate firmwares. This does not implement
 FlexNET DC Packets, but FX, MX/FM, and Renogy Rover communication is supported.
 
+This does not supper the Outback MATE 3. This is because the MATE3 does not have a DB9 serial port.
+
 You can look at how we parse packets for 
 [FX Here](../src/main/java/me/retrodaredevil/solarthing/solar/outback/fx/FXStatusPackets.java),
 [MX/FM Here](../src/main/java/me/retrodaredevil/solarthing/solar/outback/mx/MXStatusPackets.java),
-[Renogy Read Here](../src/main/java/me/retrodaredevil/solarthing/solar/renogy/rover/RoverModbusRead.java) and
-[Renogy Write Here](../src/main/java/me/retrodaredevil/solarthing/solar/renogy/rover/RoverModbusRead.java)
+[Renogy Read Here](../src/main/java/me/retrodaredevil/solarthing/solar/renogy/rover/modbus/RoverModbusSlaveRead.java) and
+[Renogy Write Here](../src/main/java/me/retrodaredevil/solarthing/solar/renogy/rover/modbus/RoverModbusSlaveWrite.java)
 
 ### Running
 ```
@@ -51,13 +53,9 @@ to a Raspberry Pi GPIO. I do not have experience with that.
 If you have the USB to RS232 cable that comes with the Rover, all you have to do is connect it to your computer of
 choice and it will act like a serial port!
 
-
 If you don't have that cable, you can jump through some hoops to do conversion to allow the Pi UART to read it, or you can order a nice RS232 to DB9 cable and a break out
 
-*DO NOT CONNECT THE RJ12 CABLE DIRECTLY TO YOUR PI*. Beware there is 15V in two of the pins in the RJ12 cable, plus you need
-an adapter or a way to convert the RS232 signal to something the pi can read. I recommend an adapter.
-
-TODO: Put pin out and recommenced products to buy here
+Please see [this](http://renogy.boards.net/thread/535/using-rj11-cable-connect-raspberry) thread to see my my experience on creating a DIY cable.
 
 ### Outback References
 New documentation:
@@ -76,10 +74,6 @@ Rover manual: https://www.renogy.com/template/files/Manuals/Rover%20203040%20Man
 Software download: https://www.renogy.com/template/files/Solar%20Station%20Monitor.zip
 
 Modbus protocol: renogy.boards.net/thread/266/rover-modbus
-
-
-
-https://www.overstock.com/Electronics/Renogy-RNG-CTRL-RVR20-BT-Solar-Charge-Controller-MPPT-20A-with-BT/20973007/product.html
 
 ## Products to support in the future
 

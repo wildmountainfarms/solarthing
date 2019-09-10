@@ -10,6 +10,7 @@ import me.retrodaredevil.util.json.JsonFile;
 import java.io.File;
 import java.io.IOException;
 
+@Deprecated
 public class JsonFilePacketSaver implements PacketHandler {
 	private final JsonFile jsonFile;
 
