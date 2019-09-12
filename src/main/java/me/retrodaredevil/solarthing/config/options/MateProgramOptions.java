@@ -5,7 +5,7 @@ import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
 
 public interface MateProgramOptions extends PacketHandlingOption, IOBundleOption, MasterOption {
 	
-	@Option(longName = "allow-commands")
+	@Option(longName = "allow-commands", description = "If specified, commands will be allowed")
 	boolean isAllowCommands();
 	
 	@Option(longName = "ignore-check-sum", description = "If toggled, the program will not check the checksum and will use an incorrect checksum if the checksum is incorrect. Almost never recommended.")

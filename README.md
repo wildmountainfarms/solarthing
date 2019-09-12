@@ -35,6 +35,13 @@ SolarThing Android: [Github](https://github.com/wildmountainfarms/solarthing-and
 
 [Outhouse Status readme](outhouse/README.md)
 
+## Using the program
+You can see the [Outback/Renogy Rover](solar/README.md) README for using the program with outback or renogy products.
+
+You can see the [Outhouse](outhouse/README.md) README for using the outhouse program.
+
+The [input and output](input_and_outputs.md) README is documentation for the ```--io``` option used in all of the sub programs.
+
 ### Developer Use
 [![](https://jitpack.io/v/wildmountainfarms/solarthing.svg)](https://jitpack.io/#wildmountainfarms/solarthing)
 

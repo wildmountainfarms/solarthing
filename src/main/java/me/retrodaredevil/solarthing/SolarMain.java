@@ -10,7 +10,6 @@ import com.lexicalscope.jewel.cli.CliFactory;
 import me.retrodaredevil.couchdb.CouchProperties;
 import me.retrodaredevil.io.IOBundle;
 import me.retrodaredevil.io.modbus.*;
-import me.retrodaredevil.io.serial.JSerialIOBundle;
 import me.retrodaredevil.io.serial.SerialConfig;
 import me.retrodaredevil.io.serial.SerialConfigBuilder;
 import me.retrodaredevil.io.serial.SerialPortException;
@@ -310,7 +309,7 @@ public final class SolarMain {
 			if (CouchDbDatabaseSettings.TYPE.equals(config.getType())) {
 				CouchDbDatabaseSettings settings = (CouchDbDatabaseSettings) config.getSettings();
 				CouchProperties couchProperties = settings.getCouchProperties();
-				IndividualSettings individualSettings = config.getIndividualSettingsOrDefault(DATABASE_COMMAND_DOWNLOAD_ID, null);
+				IndividualSettings individualSettings = config.getIndividualSettingsOrDefault(DATABASE_UPLOAD_ID, null);
 				FrequencySettings frequencySettings = individualSettings != null ? individualSettings.getFrequencySettings() : FrequencySettings.NORMAL_SETTINGS;
 				r.add(new ThrottleFactorPacketHandler(
 					new PrintPacketHandleExceptionWrapper(new CouchDbPacketSaver(couchProperties, couchDbDatabaseName), System.err),
@@ -325,7 +324,7 @@ public final class SolarMain {
 		return r;
 	}
 	private static List<DatabaseConfig> getDatabaseConfigs(PacketHandlingOption options){
-		List<File> files = options.getPacketHandlerConfigFiles();
+		List<File> files = options.getDatabaseConfigurationFiles();
 		List<DatabaseConfig> r = new ArrayList<>();
 		JsonParser parser = new JsonParser();
 		for(File file : files){
