@@ -3,13 +3,17 @@ package me.retrodaredevil.solarthing.config.options;
 import com.lexicalscope.jewel.cli.Option;
 
 import java.io.File;
+import java.util.List;
 
 public interface PacketHandlingOption {
-	@Option(longName = {"couch", "couchdb"}, defaultToNull = true, description = "File path to CouchDB connection configuration")
-	File getCouchPropertiesFile();
+//	@Option(longName = {"couch", "couchdb"}, defaultToNull = true, description = "File path to CouchDB connection configuration")
+//	File getCouchPropertiesFile();
+
+//	@Option(longName = {"latest", "latest-save-location"}, defaultToNull = true)
+//	File getLatestPacketJsonSaveLocation();
 	
-	@Option(longName = {"latest", "latest-save-location"}, defaultToNull = true)
-	File getLatestPacketJsonSaveLocation();
+	@Option(longName = "config", defaultValue = {})
+	List<File> getPacketHandlerConfigFiles();
 	
 	@Option(longName = "source", defaultValue = { "default" })
 	String getSourceId();

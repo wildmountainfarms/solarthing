@@ -3,6 +3,8 @@
 data.json
 authorized/
 unauthorized/
+config/*
+!config/README.md
 
 # Compiled class file
 *.class

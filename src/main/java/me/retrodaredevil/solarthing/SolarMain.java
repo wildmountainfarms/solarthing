@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing;
 
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.lexicalscope.jewel.cli.ArgumentValidationException;
@@ -17,6 +18,12 @@ import me.retrodaredevil.solarthing.commands.CommandProvider;
 import me.retrodaredevil.solarthing.commands.CommandProviderMultiplexer;
 import me.retrodaredevil.solarthing.commands.sequence.CommandSequence;
 import me.retrodaredevil.solarthing.config.JsonCouchDb;
+import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
+import me.retrodaredevil.solarthing.config.databases.DatabaseType;
+import me.retrodaredevil.solarthing.config.databases.IndividualSettings;
+import me.retrodaredevil.solarthing.packets.handling.FrequencySettings;
+import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
+import me.retrodaredevil.solarthing.config.databases.implementations.LatestFileDatabaseSettings;
 import me.retrodaredevil.solarthing.config.options.*;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketRetriever;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketSaver;
@@ -65,37 +72,32 @@ public final class SolarMain {
 		.setParity(SerialConfig.Parity.NONE)
 		.setStopBits(SerialConfig.StopBits.ONE)
 		.build();
-	/*
-	TODO This solar command part of this file is not general at all. The command stuff was made for my specific use case and because of that, it would
-	be hard for someone else to find use of this program without customizing it to their own needs.
+	private static final String DATABASE_UPLOAD_ID = "packet_upload";
+	private static final String DATABASE_COMMAND_DOWNLOAD_ID = "command_download";
 	
-	This is one thing we have to think about because while I want it to be easy for my own needs, I also want it to
-	be customizable for others as well
-	 */
 	private static int connectMate(MateProgramOptions options) {
 		PacketCollectionIdGenerator idGenerator = createIdGenerator(options.getUniqueIdsInOneHour());
-		final InputStream in;
-		final OutputStream output;
-		if(false){ // TODO if unit test
-			in = System.in;
-			output = System.out;
+		final IOBundle createdIO = createIOBundle(options.getIOBundleFile());
+		final IOBundle io;
+		if(options.isAllowCommands()){
+			io = createdIO;
 		} else {
-			final IOBundle port;
-			try {
-				port = JSerialIOBundle.createPort(null, MATE_CONFIG); // TODO null
-			} catch (SerialPortException e) {
-				e.printStackTrace();
-				return 1;
-			}
-			in = port.getInputStream();
-			output = port.getOutputStream();
+			// just a simple safe guard to stop people from accessing the OutputStream if this program becomes more complex in the future
+			io = new IOBundle() {
+				@Override public InputStream getInputStream() { return createdIO.getInputStream(); }
+				@Override public OutputStream getOutputStream() { throw new IllegalStateException("You cannot access the output stream while commands are disabled!"); }
+				@Override public void close() throws Exception { createdIO.close(); }
+			};
 		}
+		List<DatabaseConfig> databaseConfigs = getDatabaseConfigs(options);
+		
 		final OnDataReceive onDataReceive;
 		List<PacketHandler> packetHandlers = new ArrayList<>();
 		if(options.isAllowCommands()) {
 			System.out.println("Commands are allowed");
 			List<CommandProvider<MateCommand>> commandProviders = new ArrayList<>();
 			{ // InputStreamCommandProvider command_input.txt block
+				// TODO make the file path customizable through json (a DatabaseConfig)
 				InputStream fileInputStream = null;
 				try {
 					fileInputStream = new FileInputStream(new File("command_input.txt"));
@@ -107,40 +109,44 @@ public final class SolarMain {
 				}
 			}
 			
-			final PacketHandler commandRequesterHandler; // The handler to request and get new commands to send (This may block the current thread)
-			final PacketHandler commandFeedbackHandler; // The handler to handle successful command packets, usually by storing those packets somewhere (May block the current thread)
-			CouchProperties couchProperties = null; // TODO null
-			if (couchProperties == null) {
-				commandRequesterHandler = PacketHandler.Defaults.HANDLE_NOTHING;
-				commandFeedbackHandler = PacketHandler.Defaults.HANDLE_NOTHING;
-			} else {
-				LatestPacketHandler latestPacketHandler = new LatestPacketHandler(true);
-				packetHandlers.add(latestPacketHandler);
-				final CommandSequenceDataReceiver<MateCommand> commandSequenceDataReceiver;
-				{
-					CommandSequence<MateCommand> generatorShutOff = CommandSequences.createAuxGeneratorShutOff(latestPacketHandler::getLatestPacketCollection);
-					Map<String, CommandSequence<MateCommand>> map = new HashMap<>();
-					map.put("GEN OFF", generatorShutOff);
-					commandSequenceDataReceiver = new CommandSequenceDataReceiver<>(map);
+			final List<PacketHandler> commandRequesterHandlerList = new ArrayList<>(); // Handlers to request and get new commands to send (This may block the current thread)
+			final List<PacketHandler> commandFeedbackHandlerList = new ArrayList<>(); // Handlers to handle successful command packets, usually by storing those packets somewhere (May block the current thread)
+			for(DatabaseConfig config : databaseConfigs){
+				if(CouchDbDatabaseSettings.TYPE.equals(config.getType())){
+					CouchDbDatabaseSettings settings = (CouchDbDatabaseSettings) config.getSettings();
+					CouchProperties couchProperties = settings.getCouchProperties();
+					LatestPacketHandler latestPacketHandler = new LatestPacketHandler(true);
+					packetHandlers.add(latestPacketHandler);
+					final CommandSequenceDataReceiver<MateCommand> commandSequenceDataReceiver;
+					{
+						CommandSequence<MateCommand> generatorShutOff = CommandSequences.createAuxGeneratorShutOff(latestPacketHandler::getLatestPacketCollection);
+						Map<String, CommandSequence<MateCommand>> map = new HashMap<>();
+						map.put("GEN OFF", generatorShutOff);
+						commandSequenceDataReceiver = new CommandSequenceDataReceiver<>(map);
+					}
+					commandProviders.add(commandSequenceDataReceiver.getCommandProvider());
+					
+					IndividualSettings individualSettings = config.getIndividualSettingsOrDefault(DATABASE_COMMAND_DOWNLOAD_ID, null);
+					FrequencySettings frequencySettings = individualSettings != null ? individualSettings.getFrequencySettings() : FrequencySettings.NORMAL_SETTINGS;
+					commandRequesterHandlerList.add(new ThrottleFactorPacketHandler(new PrintPacketHandleExceptionWrapper(
+						new CouchDbPacketRetriever(
+							couchProperties,
+							"commands",
+							new SecurityPacketReceiver(new DirectoryKeyMap(new File("authorized")), commandSequenceDataReceiver, new DirectoryKeyMap(new File("unauthorized"))),
+							true
+						),
+						System.err
+					), frequencySettings, true));
+					commandFeedbackHandlerList.add(new CouchDbPacketSaver(couchProperties, "command_feedback"));
 				}
-				commandProviders.add(commandSequenceDataReceiver.getCommandProvider());
-				
-				commandRequesterHandler = new ThrottleFactorPacketHandler(new PrintPacketHandleExceptionWrapper(
-					new CouchDbPacketRetriever(
-						couchProperties,
-						"commands",
-						new SecurityPacketReceiver(new DirectoryKeyMap(new File("authorized")), commandSequenceDataReceiver, new DirectoryKeyMap(new File("unauthorized"))),
-						true
-					),
-					System.err
-				), 4, true); // TODO make throttle factor customizable
-				commandFeedbackHandler = new CouchDbPacketSaver(couchProperties, "command_feedback");
 			}
 			
+			final PacketHandler commandRequesterHandler = new PacketHandlerMultiplexer(commandRequesterHandlerList);
+			final PacketHandler commandFeedbackHandler = new PacketHandlerMultiplexer(commandFeedbackHandlerList);
 			Collection<MateCommand> allowedCommands = EnumSet.of(MateCommand.AUX_OFF, MateCommand.AUX_ON, MateCommand.USE, MateCommand.DROP);
 			onDataReceive = new MateCommandSender(
 				new CommandProviderMultiplexer<>(commandProviders),
-				output,
+				io.getOutputStream(),
 				allowedCommands,
 				new OnMateCommandSent(commandFeedbackHandler)
 			);
@@ -150,10 +156,10 @@ public final class SolarMain {
 			onDataReceive = OnDataReceive.Defaults.NOTHING;
 		}
 		
-		packetHandlers.addAll(getPacketHandlers(options, "solarthing"));
+		packetHandlers.addAll(getPacketHandlers(databaseConfigs, "solarthing"));
 		
 		initReader(
-			in,
+			io.getInputStream(),
 			new MatePacketCreator49(options.getIgnoreCheckSum()),
 			new PacketHandlerMultiplexer(packetHandlers),
 			idGenerator,
@@ -164,7 +170,7 @@ public final class SolarMain {
 		return 0;
 	}
 	private static int connectRover(RoverProgramOptions options){
-		List<PacketHandler> packetHandlers = getPacketHandlers(options, "solarthing");
+		List<PacketHandler> packetHandlers = getPacketHandlers(getDatabaseConfigs(options), "solarthing");
 		PacketHandler packetHandler = new PacketHandlerMultiplexer(packetHandlers);
 		PacketProvider packetProvider = getAdditionalPacketProvider(options);
 		
@@ -244,7 +250,7 @@ public final class SolarMain {
 	}
 	private static int connectOuthouse(OuthouseProgramOptions options) {
 		PacketCollectionIdGenerator idGenerator = createIdGenerator(options.getUniqueIdsInOneHour());
-		List<PacketHandler> packetHandlers = getPacketHandlers(options, "outhouse");
+		List<PacketHandler> packetHandlers = getPacketHandlers(getDatabaseConfigs(options), "outhouse");
 		initReader(
 			System.in,
 			new OuthousePacketCreator(),
@@ -268,6 +274,7 @@ public final class SolarMain {
 			Thread.currentThread().interrupt();
 		}
 	}
+	
 	private static PacketProvider getAdditionalPacketProvider(PacketHandlingOption options){
 		String source = options.getSourceId();
 		Integer fragment = options.getFragmentId();
@@ -290,32 +297,84 @@ public final class SolarMain {
 		}
 		return new HourIntervalPacketCollectionIdGenerator(uniqueIdsInOneHour, new Random().nextInt());
 	}
-	private static List<PacketHandler> getPacketHandlers(PacketHandlingOption options, String couchDbDatabaseName){
-		List<PacketHandler> packetHandlers = new ArrayList<>();
-		{
-			File latestSave = options.getLatestPacketJsonSaveLocation();
-			if(latestSave != null){
-				packetHandlers.add(new FileWritePacketHandler(latestSave, new GsonStringPacketHandler(), false));
+	private static List<PacketHandler> getPacketHandlers(List<DatabaseConfig> configs, String couchDbDatabaseName){
+		List<PacketHandler> r = new ArrayList<>();
+		for(DatabaseConfig config : configs) {
+			if (CouchDbDatabaseSettings.TYPE.equals(config.getType())) {
+				CouchDbDatabaseSettings settings = (CouchDbDatabaseSettings) config.getSettings();
+				CouchProperties couchProperties = settings.getCouchProperties();
+				IndividualSettings individualSettings = config.getIndividualSettingsOrDefault(DATABASE_COMMAND_DOWNLOAD_ID, null);
+				FrequencySettings frequencySettings = individualSettings != null ? individualSettings.getFrequencySettings() : FrequencySettings.NORMAL_SETTINGS;
+				r.add(new ThrottleFactorPacketHandler(
+					new PrintPacketHandleExceptionWrapper(new CouchDbPacketSaver(couchProperties, couchDbDatabaseName), System.err),
+					frequencySettings,
+					true
+				));
+			} else if (LatestFileDatabaseSettings.TYPE.equals(config.getType())){
+				LatestFileDatabaseSettings settings = (LatestFileDatabaseSettings) config.getSettings();
+				r.add(new FileWritePacketHandler(settings.getFile(), new GsonStringPacketHandler(), false));
 			}
 		}
-		File couchDbFile = options.getCouchPropertiesFile();
-		if(couchDbFile != null) {
+		return r;
+	}
+	private static List<DatabaseConfig> getDatabaseConfigs(PacketHandlingOption options){
+		List<File> files = options.getPacketHandlerConfigFiles();
+		List<DatabaseConfig> r = new ArrayList<>();
+		JsonParser parser = new JsonParser();
+		for(File file : files){
 			final String contents;
 			try {
-				contents = new String(Files.readAllBytes(couchDbFile.toPath()), Charset.defaultCharset());
+				contents = new String(Files.readAllBytes(file.toPath()), Charset.defaultCharset());
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
-			JsonParser parser = new JsonParser();
 			JsonObject jsonObject = parser.parse(contents).getAsJsonObject();
-			CouchProperties properties = JsonCouchDb.getCouchPropertiesFromJson(jsonObject);
-			packetHandlers.add(new ThrottleFactorPacketHandler(
-				new PrintPacketHandleExceptionWrapper(new CouchDbPacketSaver(properties, couchDbDatabaseName), System.err),
-				3, // TODO get throttle factor
-				true
-			));
+			String type = jsonObject.getAsJsonPrimitive("type").getAsString();
+			JsonElement configElement = jsonObject.get("config");
+			final DatabaseType databaseType;
+			final DatabaseSettings databaseSettings;
+			if ("couchdb".equals(type)) {
+				databaseType = CouchDbDatabaseSettings.TYPE;
+				JsonObject config = configElement.getAsJsonObject();
+				CouchProperties couchProperties = JsonCouchDb.getCouchPropertiesFromJson(config);
+				databaseSettings = new CouchDbDatabaseSettings(couchProperties);
+			} else if ("latest".equals(type)) {
+				databaseType = LatestFileDatabaseSettings.TYPE;
+				JsonObject config = configElement.getAsJsonObject();
+				String path = config.get("file").getAsString();
+				databaseSettings = new LatestFileDatabaseSettings(new File(path).getAbsoluteFile());
+			} else {
+				throw new UnsupportedOperationException("Unknown type: " + type);
+			}
+			Map<String, IndividualSettings> individualSettingsMap = parseAllIndividualSettings(jsonObject.get("settings"));
+			r.add(new DatabaseConfig(databaseType, databaseSettings, individualSettingsMap));
 		}
-		return packetHandlers;
+		return r;
+	}
+	private static Map<String, IndividualSettings> parseAllIndividualSettings(JsonElement settingsElement){
+		if(settingsElement == null){
+			return Collections.emptyMap();
+		}
+		JsonObject jsonObject = settingsElement.getAsJsonObject();
+		Map<String, IndividualSettings> r = new HashMap<>();
+		for(Map.Entry<String, JsonElement> entrySet : jsonObject.entrySet()){
+			r.put(entrySet.getKey(), parseIndividualSettings(entrySet.getValue().getAsJsonObject()));
+		}
+		return r;
+	}
+	private static IndividualSettings parseIndividualSettings(JsonObject jsonObject){
+		JsonElement throttleFactorElement = jsonObject.get("throttle_factor");
+		JsonElement initialSkipElement = jsonObject.get("initial_skip");
+		int throttleFactor = throttleFactorElement != null ? throttleFactorElement.getAsInt() : 1;
+		int initialSkip = initialSkipElement != null ? initialSkipElement.getAsInt() : 0;
+		return new IndividualSettings(new FrequencySettings(throttleFactor, initialSkip));
+	}
+	
+	private static IOBundle createIOBundle(File configFile){
+		throw new UnsupportedOperationException(); // TODO
+	}
+	public static IOBundle createIOBundle(JsonObject jsonobject){
+		throw new UnsupportedOperationException(); // TODO
 	}
 	
 	public static int doMain(String[] args){
@@ -393,7 +452,7 @@ public final class SolarMain {
 			return null;
 		}
 		switch (program.toLowerCase()) {
-			case "solar": case "mate":
+			case "mate":
 				return Program.MATE;
 			case "rover":
 				return Program.ROVER;
