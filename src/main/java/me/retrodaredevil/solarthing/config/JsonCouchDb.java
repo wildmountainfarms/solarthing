@@ -27,11 +27,11 @@ public final class JsonCouchDb {
 		}
 		JsonElement connectionTimeoutElement = jsonObject.get("connection_timeout");
 		if(connectionTimeoutElement != null && !connectionTimeoutElement.isJsonNull()){
-			builder.setConnectionTimeout(connectionTimeoutElement.getAsInt());
+			builder.setConnectionTimeout((int) (connectionTimeoutElement.getAsDouble() * 1000)); // convert seconds to milliseconds
 		}
 		JsonElement socketTimeoutElement = jsonObject.get("socket_timeout");
 		if(socketTimeoutElement != null && !socketTimeoutElement.isJsonNull()){
-			builder.setSocketTimeout(socketTimeoutElement.getAsInt());
+			builder.setSocketTimeout((int) (socketTimeoutElement.getAsDouble() * 1000));
 		}
 		return builder.build();
 	}

@@ -343,12 +343,21 @@ public final class SolarMain {
 				databaseType = CouchDbDatabaseSettings.TYPE;
 				JsonObject config = configElement.getAsJsonObject();
 				CouchProperties couchProperties = JsonCouchDb.getCouchPropertiesFromJson(config);
+//				System.out.println(
+//					"protocol: " + couchProperties.getProtocol() +
+//						"\nhost: " + couchProperties.getHost() +
+//						"\nport: " + couchProperties.getPort() +
+//						"\ncon timeo:" + couchProperties.getConnectionTimeout() +
+//						"\nsoc timeo: " + couchProperties.getSocketTimeout()
+//				);
 				databaseSettings = new CouchDbDatabaseSettings(couchProperties);
 			} else if ("latest".equals(type)) {
 				databaseType = LatestFileDatabaseSettings.TYPE;
 				JsonObject config = configElement.getAsJsonObject();
 				String path = config.get("file").getAsString();
-				databaseSettings = new LatestFileDatabaseSettings(new File(path).getAbsoluteFile());
+				File latestFile = new File(path).getAbsoluteFile();
+//				System.out.println(latestFile);
+				databaseSettings = new LatestFileDatabaseSettings(latestFile);
 			} else {
 				throw new UnsupportedOperationException("Unknown type: " + type);
 			}
