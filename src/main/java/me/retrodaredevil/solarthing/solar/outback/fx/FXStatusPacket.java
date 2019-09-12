@@ -103,6 +103,7 @@ public interface FXStatusPacket extends OutbackPacket, BatteryVoltage {
 	// endregion
 	
 	// region Adjusted Currents and Voltages
+	// TODO When these currents is divided by two (if system voltage is 230V), it's possible that this will be a value that isn't a multiple of two, so it would be truncated. Figure this out...
 	/**
 	 * Should be serialized as "inverterCurrent"
 	 * @return The inverter current
