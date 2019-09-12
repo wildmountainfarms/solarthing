@@ -1,16 +1,30 @@
 package me.retrodaredevil.solarthing;
 
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.lexicalscope.jewel.cli.ArgumentValidationException;
+import com.lexicalscope.jewel.cli.Cli;
+import com.lexicalscope.jewel.cli.CliFactory;
+import me.retrodaredevil.couchdb.CouchProperties;
 import me.retrodaredevil.io.IOBundle;
 import me.retrodaredevil.io.modbus.*;
-import me.retrodaredevil.io.serial.JSerialIOBundle;
 import me.retrodaredevil.io.serial.SerialConfig;
 import me.retrodaredevil.io.serial.SerialConfigBuilder;
 import me.retrodaredevil.io.serial.SerialPortException;
 import me.retrodaredevil.solarthing.commands.CommandProvider;
 import me.retrodaredevil.solarthing.commands.CommandProviderMultiplexer;
 import me.retrodaredevil.solarthing.commands.sequence.CommandSequence;
+import me.retrodaredevil.solarthing.config.JsonCouchDb;
+import me.retrodaredevil.solarthing.config.JsonIO;
+import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
+import me.retrodaredevil.solarthing.config.databases.DatabaseType;
+import me.retrodaredevil.solarthing.config.databases.IndividualSettings;
+import me.retrodaredevil.solarthing.packets.handling.FrequencySettings;
+import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
+import me.retrodaredevil.solarthing.config.databases.implementations.LatestFileDatabaseSettings;
+import me.retrodaredevil.solarthing.config.options.*;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketRetriever;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketSaver;
 import me.retrodaredevil.solarthing.outhouse.OuthousePacketCreator;
@@ -38,13 +52,15 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 
-public class SolarMain {
+public final class SolarMain {
+	private SolarMain(){ throw new UnsupportedOperationException(); }
 	private static final SerialConfig MATE_CONFIG = new SerialConfigBuilder(19200)
 		.setDataBits(8)
 		.setParity(SerialConfig.Parity.NONE)
@@ -56,123 +72,116 @@ public class SolarMain {
 		.setParity(SerialConfig.Parity.NONE)
 		.setStopBits(SerialConfig.StopBits.ONE)
 		.build();
-	/*
-	TODO This solar command part of this file is not general at all. The command stuff was made for my specific use case and because of that, it would
-	be hard for someone else to find use of this program without customizing it to their own needs.
+	private static final String DATABASE_UPLOAD_ID = "packet_upload";
+	private static final String DATABASE_COMMAND_DOWNLOAD_ID = "command_download";
 	
-	This is one thing we have to think about because while I want it to be easy for my own needs, I also want it to
-	be customizable for others as well
-	 */
-	private int connectMate(ProgramArgs args, PacketCollectionIdGenerator idGenerator) {
-		final InputStream in;
-		final OutputStream output;
-		if(args.isUnitTest()){
-			in = System.in;
-			output = System.out;
+	private static int connectMate(MateProgramOptions options) throws Exception {
+		PacketCollectionIdGenerator idGenerator = createIdGenerator(options.getUniqueIdsInOneHour());
+		final IOBundle createdIO = createIOBundle(options.getIOBundleFile(), MATE_CONFIG);
+		final IOBundle io;
+		if(options.isAllowCommands()){
+			io = createdIO;
 		} else {
-			final IOBundle port;
-			try {
-				port = JSerialIOBundle.createPort(args.getPortName(), MATE_CONFIG);
-			} catch (SerialPortException e) {
-				e.printStackTrace();
-				return 1;
-			}
-			in = port.getInputStream();
-			output = port.getOutputStream();
+			// just a simple safe guard to stop people from accessing the OutputStream if this program becomes more complex in the future
+			io = new IOBundle() {
+				@Override public InputStream getInputStream() { return createdIO.getInputStream(); }
+				@Override public OutputStream getOutputStream() { throw new IllegalStateException("You cannot access the output stream while commands are disabled!"); }
+				@Override public void close() throws Exception { createdIO.close(); }
+			};
 		}
-		LatestPacketHandler latestPacketHandler = new LatestPacketHandler(true);
-		List<CommandProvider<MateCommand>> commandProviders = new ArrayList<>();
-		{
-			InputStream fileInputStream = null;
-			try {
-				fileInputStream = new FileInputStream(new File("command_input.txt"));
-			} catch (FileNotFoundException e) {
-				System.out.println("no command input file!");
-			}
-			if (fileInputStream != null) {
-				commandProviders.add(InputStreamCommandProvider.createFrom(fileInputStream, "command_input.txt", EnumSet.allOf(MateCommand.class)));
-			}
-		}
+		List<DatabaseConfig> databaseConfigs = getDatabaseConfigs(options);
 		
-		final PacketHandler commandRequesterHandler;
-		final PacketHandler commandFeedbackHandler;
-		if(args.isLocal()){
-			commandRequesterHandler = PacketHandler.Defaults.HANDLE_NOTHING;
-			commandFeedbackHandler = PacketHandler.Defaults.HANDLE_NOTHING;
-		} else {
-			final CommandSequenceDataReceiver<MateCommand> commandSequenceDataReceiver;
-			{
-				CommandSequence<MateCommand> generatorShutOff = CommandSequences.createAuxGeneratorShutOff(latestPacketHandler::getLatestPacketCollection);
-				Map<String, CommandSequence<MateCommand>> map = new HashMap<>();
-				map.put("GEN OFF", generatorShutOff);
-				commandSequenceDataReceiver = new CommandSequenceDataReceiver<>(map);
-			}
-			commandProviders.add(commandSequenceDataReceiver.getCommandProvider());
-			
-			commandRequesterHandler = new ThrottleFactorPacketHandler(new PrintPacketHandleExceptionWrapper(
-				new CouchDbPacketRetriever(
-					args.createProperties(),
-					"commands",
-					new SecurityPacketReceiver(new DirectoryKeyMap(new File("authorized")), commandSequenceDataReceiver, new DirectoryKeyMap(new File("unauthorized"))),
-					true
-				),
-				System.err
-			), 4, true);
-			commandFeedbackHandler = new CouchDbPacketSaver(args.createProperties(), "command_feedback");
-		}
-		
-		Collection<MateCommand> allowedCommands = EnumSet.of(MateCommand.AUX_OFF, MateCommand.AUX_ON, MateCommand.USE, MateCommand.DROP);
-		OnDataReceive onDataReceive = new MateCommandSender(
-			new CommandProviderMultiplexer<>(commandProviders),
-			output,
-			allowedCommands,
-			new OnMateCommandSent(commandFeedbackHandler)
-		);
-		
+		final OnDataReceive onDataReceive;
 		List<PacketHandler> packetHandlers = new ArrayList<>();
-		{
-			String latestSave = args.getLatestPacketJsonSaveLocation();
-			if(latestSave != null){
-				packetHandlers.add(new FileWritePacketHandler(new File(latestSave), new GsonStringPacketHandler(), false));
+		if(options.isAllowCommands()) {
+			System.out.println("Commands are allowed");
+			List<CommandProvider<MateCommand>> commandProviders = new ArrayList<>();
+			{ // InputStreamCommandProvider command_input.txt block
+				// TODO make the file path customizable through json (a DatabaseConfig)
+				InputStream fileInputStream = null;
+				try {
+					fileInputStream = new FileInputStream(new File("command_input.txt"));
+				} catch (FileNotFoundException e) {
+					System.out.println("no command input file!");
+				}
+				if (fileInputStream != null) {
+					commandProviders.add(InputStreamCommandProvider.createFrom(fileInputStream, "command_input.txt", EnumSet.allOf(MateCommand.class)));
+				}
 			}
+			
+			final List<PacketHandler> commandRequesterHandlerList = new ArrayList<>(); // Handlers to request and get new commands to send (This may block the current thread)
+			final List<PacketHandler> commandFeedbackHandlerList = new ArrayList<>(); // Handlers to handle successful command packets, usually by storing those packets somewhere (May block the current thread)
+			for(DatabaseConfig config : databaseConfigs){
+				if(CouchDbDatabaseSettings.TYPE.equals(config.getType())){
+					CouchDbDatabaseSettings settings = (CouchDbDatabaseSettings) config.getSettings();
+					CouchProperties couchProperties = settings.getCouchProperties();
+					LatestPacketHandler latestPacketHandler = new LatestPacketHandler(true);
+					packetHandlers.add(latestPacketHandler);
+					final CommandSequenceDataReceiver<MateCommand> commandSequenceDataReceiver;
+					{
+						CommandSequence<MateCommand> generatorShutOff = CommandSequences.createAuxGeneratorShutOff(latestPacketHandler::getLatestPacketCollection);
+						Map<String, CommandSequence<MateCommand>> map = new HashMap<>();
+						map.put("GEN OFF", generatorShutOff);
+						commandSequenceDataReceiver = new CommandSequenceDataReceiver<>(map);
+					}
+					commandProviders.add(commandSequenceDataReceiver.getCommandProvider());
+					
+					IndividualSettings individualSettings = config.getIndividualSettingsOrDefault(DATABASE_COMMAND_DOWNLOAD_ID, null);
+					FrequencySettings frequencySettings = individualSettings != null ? individualSettings.getFrequencySettings() : FrequencySettings.NORMAL_SETTINGS;
+					commandRequesterHandlerList.add(new ThrottleFactorPacketHandler(new PrintPacketHandleExceptionWrapper(
+						new CouchDbPacketRetriever(
+							couchProperties,
+							"commands",
+							new SecurityPacketReceiver(new DirectoryKeyMap(new File("authorized")), commandSequenceDataReceiver, new DirectoryKeyMap(new File("unauthorized"))),
+							true
+						),
+						System.err
+					), frequencySettings, true));
+					commandFeedbackHandlerList.add(new CouchDbPacketSaver(couchProperties, "command_feedback"));
+				}
+			}
+			
+			final PacketHandler commandRequesterHandler = new PacketHandlerMultiplexer(commandRequesterHandlerList);
+			final PacketHandler commandFeedbackHandler = new PacketHandlerMultiplexer(commandFeedbackHandlerList);
+			Collection<MateCommand> allowedCommands = EnumSet.of(MateCommand.AUX_OFF, MateCommand.AUX_ON, MateCommand.USE, MateCommand.DROP);
+			onDataReceive = new MateCommandSender(
+				new CommandProviderMultiplexer<>(commandProviders),
+				io.getOutputStream(),
+				allowedCommands,
+				new OnMateCommandSent(commandFeedbackHandler)
+			);
+			packetHandlers.add(commandRequesterHandler);
+		} else {
+			System.out.println("Commands are disabled");
+			onDataReceive = OnDataReceive.Defaults.NOTHING;
 		}
 		
-		packetHandlers.addAll(Arrays.asList(
-			latestPacketHandler,
-			new ThrottleFactorPacketHandler(
-				new PrintPacketHandleExceptionWrapper(getPacketSaver(args, "solarthing"), System.err),
-				args.getThrottleFactor(),
-				args.isOnlyInstant(),
-				commandRequesterHandler
-			)
-		));
+		packetHandlers.addAll(getPacketHandlers(databaseConfigs, "solarthing"));
 		
-		initReader(
-			in,
-			new MatePacketCreator49(args.getIgnoreCheckSum()),
-			new PacketHandlerMultiplexer(packetHandlers),
-			idGenerator,
-			250,
-			onDataReceive,
-			getAdditionalPacketProvider(args)
-		);
+		try {
+			initReader(
+				io.getInputStream(),
+				new MatePacketCreator49(MateProgramOptions.getIgnoreCheckSum(options)),
+				new PacketHandlerMultiplexer(packetHandlers),
+				idGenerator,
+				250,
+				onDataReceive,
+				getAdditionalPacketProvider(options)
+			);
+		} finally {
+			io.close();
+		}
 		return 0;
 	}
-	private int connectRover(ProgramArgs args, PacketCollectionIdGenerator idGenerator){
-		List<PacketHandler> packetHandlers = new ArrayList<>();
-		{
-			String latestSave = args.getLatestPacketJsonSaveLocation();
-			if(latestSave != null){
-				packetHandlers.add(new FileWritePacketHandler(new File(latestSave), new GsonStringPacketHandler(), false));
-			}
-		}
-		packetHandlers.add(new ThrottleFactorPacketHandler(getPacketSaver(args, "solarthing"), args.getThrottleFactor(), args.isOnlyInstant()));
+	private static int connectRover(RoverProgramOptions options){
+		List<PacketHandler> packetHandlers = getPacketHandlers(getDatabaseConfigs(options), "solarthing");
 		PacketHandler packetHandler = new PacketHandlerMultiplexer(packetHandlers);
-		PacketProvider packetProvider = getAdditionalPacketProvider(args);
+		PacketProvider packetProvider = getAdditionalPacketProvider(options);
 		
-		try(JSerialIOBundle ioBundle = JSerialIOBundle.createPort(args.getPortName(), ROVER_CONFIG)) {
+		PacketCollectionIdGenerator idGenerator = createIdGenerator(options.getUniqueIdsInOneHour());
+		try(IOBundle ioBundle = createIOBundle(options.getIOBundleFile(), ROVER_CONFIG)) {
 			ModbusSlaveBus modbus = new IOModbusSlaveBus(ioBundle, new RTUDataEncoder(300, 10));
-			ModbusSlave slave = new ImmutableAddressModbusSlave(args.getModbusAddress(), modbus);
+			ModbusSlave slave = new ImmutableAddressModbusSlave(options.getModbusAddress(), modbus);
 			RoverReadTable read = new RoverModbusSlaveRead(slave);
 			try {
 				while (!Thread.currentThread().isInterrupted()) {
@@ -209,17 +218,17 @@ public class SolarMain {
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
 			}
-		} catch (SerialPortException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-			System.err.println("Unable to connect to rover with port: " + args.getPortName());
+			System.err.println("Unable to connect to rover");
 			return 1;
 		}
 		return 0;
 	}
-	private int connectRoverSetup(ProgramArgs args) throws IOException{
-		if(args.isUnitTest()){
-			File file = new File(args.getDummyFile());
-			final byte[] bytes = Files.readAllBytes(file.toPath());
+	private static int connectRoverSetup(RoverSetupProgramOptions options) throws IOException{
+		File dummyFile = options.getDummyFile();
+		if(dummyFile != null){
+			final byte[] bytes = Files.readAllBytes(dummyFile.toPath());
 			String json = new String(bytes, StandardCharsets.UTF_8);
 			JsonObject jsonPacket = new GsonBuilder().create().fromJson(json, JsonObject.class);
 			RoverStatusPacket roverStatusPacket = RoverStatusPackets.createFromJson(jsonPacket);
@@ -229,53 +238,38 @@ public class SolarMain {
 			);
 			RoverSetupProgram.startRoverSetup(readWrite, readWrite);
 		} else {
-			try(JSerialIOBundle ioBundle = JSerialIOBundle.createPort(args.getPortName(), ROVER_CONFIG)) {
+			try(IOBundle ioBundle = createIOBundle(options.getIOBundleFile(), ROVER_CONFIG)) {
 				ModbusSlaveBus modbus = new IOModbusSlaveBus(ioBundle, new RTUDataEncoder(300, 10));
-				ModbusSlave slave = new ImmutableAddressModbusSlave(args.getModbusAddress(), modbus);
+				ModbusSlave slave = new ImmutableAddressModbusSlave(options.getModbusAddress(), modbus);
 				RoverReadTable read = new RoverModbusSlaveRead(slave);
 				RoverWriteTable write = new RoverModbusSlaveWrite(slave);
 				RoverSetupProgram.startRoverSetup(read, write);
-			} catch (SerialPortException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
-				System.err.println("Got serial port exception!");
+				System.err.println("Got exception!");
 				return 1;
 			}
 		}
 		return 0;
 	}
-	private int connectOuthouse(ProgramArgs args, PacketCollectionIdGenerator idGenerator) {
-		List<PacketHandler> packetHandlers = new ArrayList<>();
-		{
-			String latestSave = args.getLatestPacketJsonSaveLocation();
-			if(latestSave != null){
-				packetHandlers.add(new FileWritePacketHandler(new File(latestSave), new GsonStringPacketHandler(), false));
-			}
+	private static int connectOuthouse(OuthouseProgramOptions options) throws Exception {
+		PacketCollectionIdGenerator idGenerator = createIdGenerator(options.getUniqueIdsInOneHour());
+		List<PacketHandler> packetHandlers = getPacketHandlers(getDatabaseConfigs(options), "outhouse");
+		try (IOBundle ioBundle = createIOBundle(options.getIOBundleFile(), new SerialConfigBuilder(9600).build())) {
+			initReader(
+				ioBundle.getInputStream(),
+				new OuthousePacketCreator(),
+				new PacketHandlerMultiplexer(packetHandlers),
+				idGenerator,
+				10,
+				OnDataReceive.Defaults.NOTHING,
+				getAdditionalPacketProvider(options)
+			);
 		}
-		
-		packetHandlers.add(new ThrottleFactorPacketHandler(getPacketSaver(args, "outhouse"), args.getThrottleFactor(), args.isOnlyInstant()));
-		initReader(
-			System.in,
-			new OuthousePacketCreator(),
-			new PacketHandlerMultiplexer(packetHandlers),
-			idGenerator,
-			10,
-			OnDataReceive.Defaults.NOTHING,
-			getAdditionalPacketProvider(args)
-		);
 		return 0;
 	}
-	private PacketHandler getPacketSaver(ProgramArgs args, String databaseName){
-		if(args.isLocal()){
-			try {
-				return new JsonFilePacketSaver(args.getFilePath());
-			} catch (IOException e) {
-				throw new RuntimeException("Incorrect file path", e);
-			}
-		}
-		return new CouchDbPacketSaver(args.createProperties(), databaseName);
-	}
 	
-	private void initReader(InputStream in, TextPacketCreator packetCreator, PacketHandler packetHandler, PacketCollectionIdGenerator idGenerator, long samePacketTime, OnDataReceive onDataReceive, PacketProvider additionalPacketProvider) {
+	private static void initReader(InputStream in, TextPacketCreator packetCreator, PacketHandler packetHandler, PacketCollectionIdGenerator idGenerator, long samePacketTime, OnDataReceive onDataReceive, PacketProvider additionalPacketProvider) {
 		Runnable run = new SolarReader(in, packetCreator, packetHandler, idGenerator, samePacketTime, onDataReceive, additionalPacketProvider);
 		try {
 			while (!Thread.currentThread().isInterrupted()) {
@@ -286,9 +280,10 @@ public class SolarMain {
 			Thread.currentThread().interrupt();
 		}
 	}
-	private PacketProvider getAdditionalPacketProvider(ProgramArgs args){
-		final String source = args.getSourceId();
-		final Integer fragment = args.getFragmentId();
+	
+	private static PacketProvider getAdditionalPacketProvider(PacketHandlingOption options){
+		String source = options.getSourceId();
+		Integer fragment = options.getFragmentId();
 		requireNonNull(source);
 		return () -> {
 			List<Packet> r = new ArrayList<>();
@@ -299,60 +294,189 @@ public class SolarMain {
 			return r;
 		};
 	}
+	private static PacketCollectionIdGenerator createIdGenerator(Integer uniqueIdsInOneHour){
+		if(uniqueIdsInOneHour == null){
+			return PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR;
+		}
+		if(uniqueIdsInOneHour <= 0){
+			throw new IllegalArgumentException("--unique must be > 0 or not specified!");
+		}
+		return new HourIntervalPacketCollectionIdGenerator(uniqueIdsInOneHour, new Random().nextInt());
+	}
+	private static List<PacketHandler> getPacketHandlers(List<DatabaseConfig> configs, String couchDbDatabaseName){
+		List<PacketHandler> r = new ArrayList<>();
+		for(DatabaseConfig config : configs) {
+			if (CouchDbDatabaseSettings.TYPE.equals(config.getType())) {
+				CouchDbDatabaseSettings settings = (CouchDbDatabaseSettings) config.getSettings();
+				CouchProperties couchProperties = settings.getCouchProperties();
+				IndividualSettings individualSettings = config.getIndividualSettingsOrDefault(DATABASE_UPLOAD_ID, null);
+				FrequencySettings frequencySettings = individualSettings != null ? individualSettings.getFrequencySettings() : FrequencySettings.NORMAL_SETTINGS;
+				r.add(new ThrottleFactorPacketHandler(
+					new PrintPacketHandleExceptionWrapper(new CouchDbPacketSaver(couchProperties, couchDbDatabaseName), System.err),
+					frequencySettings,
+					true
+				));
+			} else if (LatestFileDatabaseSettings.TYPE.equals(config.getType())){
+				LatestFileDatabaseSettings settings = (LatestFileDatabaseSettings) config.getSettings();
+				r.add(new FileWritePacketHandler(settings.getFile(), new GsonStringPacketHandler(), false));
+			}
+		}
+		return r;
+	}
+	private static List<DatabaseConfig> getDatabaseConfigs(PacketHandlingOption options){
+		List<File> files = options.getDatabaseConfigurationFiles();
+		List<DatabaseConfig> r = new ArrayList<>();
+		JsonParser parser = new JsonParser();
+		for(File file : files){
+			final String contents;
+			try {
+				contents = new String(Files.readAllBytes(file.toPath()), Charset.defaultCharset());
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+			JsonObject jsonObject = parser.parse(contents).getAsJsonObject();
+			String type = jsonObject.getAsJsonPrimitive("type").getAsString();
+			JsonElement configElement = jsonObject.get("config");
+			final DatabaseType databaseType;
+			final DatabaseSettings databaseSettings;
+			if ("couchdb".equals(type)) {
+				databaseType = CouchDbDatabaseSettings.TYPE;
+				JsonObject config = configElement.getAsJsonObject();
+				CouchProperties couchProperties = JsonCouchDb.getCouchPropertiesFromJson(config);
+				databaseSettings = new CouchDbDatabaseSettings(couchProperties);
+			} else if ("latest".equals(type)) {
+				databaseType = LatestFileDatabaseSettings.TYPE;
+				JsonObject config = configElement.getAsJsonObject();
+				String path = config.get("file").getAsString();
+				databaseSettings = new LatestFileDatabaseSettings(new File(path).getAbsoluteFile());
+			} else {
+				throw new UnsupportedOperationException("Unknown type: " + type);
+			}
+			Map<String, IndividualSettings> individualSettingsMap = parseAllIndividualSettings(jsonObject.get("settings"));
+			r.add(new DatabaseConfig(databaseType, databaseSettings, individualSettingsMap));
+		}
+		return r;
+	}
+	private static Map<String, IndividualSettings> parseAllIndividualSettings(JsonElement settingsElement){
+		if(settingsElement == null){
+			return Collections.emptyMap();
+		}
+		JsonObject jsonObject = settingsElement.getAsJsonObject();
+		Map<String, IndividualSettings> r = new HashMap<>();
+		for(Map.Entry<String, JsonElement> entrySet : jsonObject.entrySet()){
+			r.put(entrySet.getKey(), parseIndividualSettings(entrySet.getValue().getAsJsonObject()));
+		}
+		return r;
+	}
+	private static IndividualSettings parseIndividualSettings(JsonObject jsonObject){
+		JsonElement throttleFactorElement = jsonObject.get("throttle_factor");
+		JsonElement initialSkipElement = jsonObject.get("initial_skip");
+		int throttleFactor = throttleFactorElement != null ? throttleFactorElement.getAsInt() : 1;
+		int initialSkip = initialSkipElement != null ? initialSkipElement.getAsInt() : 0;
+		return new IndividualSettings(new FrequencySettings(throttleFactor, initialSkip));
+	}
+	
+	private static IOBundle createIOBundle(File configFile, SerialConfig defaultSerialConfig){
+		final String contents;
+		try {
+			contents = new String(Files.readAllBytes(configFile.toPath()), Charset.defaultCharset());
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		JsonParser parser = new JsonParser();
+		JsonObject jsonObject = parser.parse(contents).getAsJsonObject();
+		return createIOBundle(jsonObject, defaultSerialConfig);
+	}
+	public static IOBundle createIOBundle(JsonObject jsonObject, SerialConfig defaultSerialConfig){
+		String type = jsonObject.get("type").getAsString();
+		if("serial".equals(type)){
+			try {
+				return JsonIO.getSerialIOBundleFromJson(jsonObject, defaultSerialConfig);
+			} catch (SerialPortException e) {
+				throw new RuntimeException(e);
+			}
+		} else if("standard".equals(type)){
+			return IOBundle.Defaults.STANDARD_IN_OUT;
+		}
+		throw new UnsupportedOperationException("Unknown type: " + type);
+	}
+	
+	public static int doMain(String[] args){
+		if(args.length < 1){
+			System.err.println("Usage: <java -jar ...> {mate|rover|rover-setup|outhouse}");
+			return 1;
+		}
+		String programName = args[0];
+		String[] newArgs = new String[args.length - 1];
+		System.arraycopy(args, 1, newArgs, 0, newArgs.length);
+		
+		
+		Program program = getProgram(programName);
+		if(program == null){
+			System.err.println("Usage: <java -jar ...> {mate|rover|rover-setup|outhouse}");
+			return 1;
+		}
+		try {
+			if(program == Program.MATE) {
+				Cli<MateProgramOptions> cli = CliFactory.createCli(MateProgramOptions.class);
+				final MateProgramOptions options;
+				try {
+					options = cli.parseArguments(newArgs);
+				} catch(ArgumentValidationException ex){
+					System.err.println(ex.getMessage());
+					return 1;
+				}
+				return connectMate(options);
+			} else if(program == Program.ROVER){
+				Cli<RoverProgramOptions> cli = CliFactory.createCli(RoverProgramOptions.class);
+				final RoverProgramOptions options;
+				try {
+					options = cli.parseArguments(newArgs);
+				} catch(ArgumentValidationException ex){
+					System.err.println(ex.getMessage());
+					return 1;
+				}
+				return connectRover(options);
+			} else if(program == Program.OUTHOUSE){
+				Cli<OuthouseProgramOptions> cli = CliFactory.createCli(OuthouseProgramOptions.class);
+				final OuthouseProgramOptions options;
+				try {
+					options = cli.parseArguments(newArgs);
+				} catch(ArgumentValidationException ex){
+					System.err.println(ex.getMessage());
+					return 1;
+				}
+				return connectOuthouse(options);
+			} else if(program == Program.ROVER_SETUP){
+				Cli<RoverSetupProgramOptions> cli = CliFactory.createCli(RoverSetupProgramOptions.class);
+				final RoverSetupProgramOptions options;
+				try {
+					options = cli.parseArguments(newArgs);
+				} catch(ArgumentValidationException ex){
+					System.err.println(ex.getMessage());
+					return 1;
+				}
+				return connectRoverSetup(options);
+			}
+			System.out.println("Specify mate|rover|rover-setup|outhouse");
+			return 1;
+		} catch (Exception t) {
+			t.printStackTrace();
+			return 1;
+		}
+	}
 
 	public static void main(String[] args) {
 		BasicConfigurator.configure();
 		Logger.getRootLogger().setLevel(Level.INFO);
-		
-		ProgramArgs pArgs = new ProgramArgs(args);
-		Program program = getProgram(pArgs.getParameters());
-		if(pArgs.isHelp() || program == null){
-			System.out.println("<command> {mate|rover|outhouse}");
-			System.out.println("Help was called. Check ProgramArgs.java. Self explainatory. Sorry I'm lazy.\n" +
-					"Also note, as a VM argument, you should have -Djava.library.path=/usr/lib/jni");
-			System.exit(1);
-			throw new AssertionError();
-		}
-		final PacketCollectionIdGenerator idGenerator;
-		final Integer uniqueIdsInOneHour = pArgs.getUniqueIdsInOneHour();
-		if(uniqueIdsInOneHour == null){
-			idGenerator = PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR;
-		} else {
-			if(uniqueIdsInOneHour <= 0){
-				System.err.println("--unique must be > 0 or not specified!");
-				System.exit(1);
-				throw new AssertionError();
-			}
-			idGenerator = new HourIntervalPacketCollectionIdGenerator(uniqueIdsInOneHour, new Random().nextInt());
-		}
-		try {
-			int status = 1;
-			if(program == Program.MATE) {
-				status = new SolarMain().connectMate(pArgs, idGenerator);
-			} else if(program == Program.ROVER){
-				status = new SolarMain().connectRover(pArgs, idGenerator);
-			} else if(program == Program.OUTHOUSE){
-				status = new SolarMain().connectOuthouse(pArgs, idGenerator);
-			} else if(program == Program.ROVER_SETUP){
-				status = new SolarMain().connectRoverSetup(pArgs);
-			} else {
-				System.out.println("Specify mate|rover|outhouse");
-			}
-			System.exit(status);
-		} catch (Exception t) {
-			t.printStackTrace();
-
-			pArgs.printInJson();
-
-			System.exit(1);
-		}
+		System.exit(doMain(args));
 	}
-	private static Program getProgram(List<String> args) {
-		if (args.size() == 0) {
+	private static Program getProgram(String program) {
+		if(program == null){
 			return null;
 		}
-		switch (args.get(0).toLowerCase()) {
-			case "solar": case "mate":
+		switch (program.toLowerCase()) {
+			case "mate":
 				return Program.MATE;
 			case "rover":
 				return Program.ROVER;

@@ -6,26 +6,30 @@ import static java.util.Objects.requireNonNull;
 
 public class ThrottleFactorPacketHandler implements PacketHandler {
 	private final PacketHandler packetHandler;
-	private final int throttleFactor;
+	private final FrequencySettings frequencySettings;
 	private final boolean instantOnly;
-	private final PacketHandler otherPacketHandler;
 	
+	private int initialCounter = 0;
 	private int counter = 0;
 	
 	/**
 	 * @param packetHandler The packet handler
+	 * @param frequencySettings The frequency settings
+	 * @param instantOnly true if neither {@code packetHandler} nor {@code otherPacketHandler} should be called if {@code wasInstant} is false
+	 */
+	public ThrottleFactorPacketHandler(PacketHandler packetHandler, FrequencySettings frequencySettings, boolean instantOnly) {
+		this.packetHandler = requireNonNull(packetHandler);
+		this.frequencySettings = frequencySettings;
+		this.instantOnly = instantOnly;
+	}
+	/**
+	 * @param packetHandler The packet handler
 	 * @param throttleFactor The throttle factor. {@code packetHandler} will be called every nth packet, where n is this value.
 	 * @param instantOnly true if neither {@code packetHandler} nor {@code otherPacketHandler} should be called if {@code wasInstant} is false
-	 * @param otherPacketHandler This handler is called when {@code packetHandler} is not called.
 	 */
-	public ThrottleFactorPacketHandler(PacketHandler packetHandler, int throttleFactor, boolean instantOnly, PacketHandler otherPacketHandler) {
-		this.packetHandler = requireNonNull(packetHandler);
-		this.throttleFactor = throttleFactor;
-		this.instantOnly = instantOnly;
-		this.otherPacketHandler = requireNonNull(otherPacketHandler);
-	}
-	public ThrottleFactorPacketHandler(PacketHandler packetHandler, int throttleFactor, boolean instantOnly){
-		this(packetHandler, throttleFactor, instantOnly, PacketHandler.Defaults.HANDLE_NOTHING);
+	@Deprecated
+	public ThrottleFactorPacketHandler(PacketHandler packetHandler, int throttleFactor, boolean instantOnly) {
+		this(packetHandler, new FrequencySettings(throttleFactor, 0), instantOnly);
 	}
 	
 	@Override
@@ -33,10 +37,11 @@ public class ThrottleFactorPacketHandler implements PacketHandler {
 		if(instantOnly && !wasInstant){
 			return; // return and don't increment counter
 		}
-		if(counter++ % throttleFactor == 0){
+		if(initialCounter++ < frequencySettings.getInitialSkipFactor()){
+			return;
+		}
+		if(counter++ % frequencySettings.getThrottleFactor() == 0){
 			packetHandler.handle(packetCollection, wasInstant);
-		} else {
-			otherPacketHandler.handle(packetCollection, wasInstant);
 		}
 	}
 }
