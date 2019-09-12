@@ -80,7 +80,7 @@
         <dependency>
             <groupId>com.github.retrodaredevil</groupId>
             <artifactId>io-lib</artifactId>
-            <version>v1.2.0</version>
+            <version>v1.2.1</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
         <dependency>
@@ -106,13 +106,6 @@
             <groupId>org.lightcouch</groupId>
             <artifactId>lightcouch</artifactId>
             <version>0.1.8</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/com.beust/jcommander TODO remove this dependency-->
-        <dependency>
-            <groupId>com.beust</groupId>
-            <artifactId>jcommander</artifactId>
-            <version>1.72</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.lexicalscope.jewelcli/jewelcli -->
