@@ -18,6 +18,7 @@ import me.retrodaredevil.solarthing.commands.CommandProvider;
 import me.retrodaredevil.solarthing.commands.CommandProviderMultiplexer;
 import me.retrodaredevil.solarthing.commands.sequence.CommandSequence;
 import me.retrodaredevil.solarthing.config.JsonCouchDb;
+import me.retrodaredevil.solarthing.config.JsonIO;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.DatabaseType;
 import me.retrodaredevil.solarthing.config.databases.IndividualSettings;
@@ -75,9 +76,9 @@ public final class SolarMain {
 	private static final String DATABASE_UPLOAD_ID = "packet_upload";
 	private static final String DATABASE_COMMAND_DOWNLOAD_ID = "command_download";
 	
-	private static int connectMate(MateProgramOptions options) {
+	private static int connectMate(MateProgramOptions options) throws Exception {
 		PacketCollectionIdGenerator idGenerator = createIdGenerator(options.getUniqueIdsInOneHour());
-		final IOBundle createdIO = createIOBundle(options.getIOBundleFile());
+		final IOBundle createdIO = createIOBundle(options.getIOBundleFile(), MATE_CONFIG);
 		final IOBundle io;
 		if(options.isAllowCommands()){
 			io = createdIO;
@@ -158,15 +159,19 @@ public final class SolarMain {
 		
 		packetHandlers.addAll(getPacketHandlers(databaseConfigs, "solarthing"));
 		
-		initReader(
-			io.getInputStream(),
-			new MatePacketCreator49(options.getIgnoreCheckSum()),
-			new PacketHandlerMultiplexer(packetHandlers),
-			idGenerator,
-			250,
-			onDataReceive,
-			getAdditionalPacketProvider(options)
-		);
+		try {
+			initReader(
+				io.getInputStream(),
+				new MatePacketCreator49(MateProgramOptions.getIgnoreCheckSum(options)),
+				new PacketHandlerMultiplexer(packetHandlers),
+				idGenerator,
+				250,
+				onDataReceive,
+				getAdditionalPacketProvider(options)
+			);
+		} finally {
+			io.close();
+		}
 		return 0;
 	}
 	private static int connectRover(RoverProgramOptions options){
@@ -175,7 +180,7 @@ public final class SolarMain {
 		PacketProvider packetProvider = getAdditionalPacketProvider(options);
 		
 		PacketCollectionIdGenerator idGenerator = createIdGenerator(options.getUniqueIdsInOneHour());
-		try(JSerialIOBundle ioBundle = JSerialIOBundle.createPort(null, ROVER_CONFIG)) { // TODO null
+		try(IOBundle ioBundle = createIOBundle(options.getIOBundleFile(), ROVER_CONFIG)) {
 			ModbusSlaveBus modbus = new IOModbusSlaveBus(ioBundle, new RTUDataEncoder(300, 10));
 			ModbusSlave slave = new ImmutableAddressModbusSlave(options.getModbusAddress(), modbus);
 			RoverReadTable read = new RoverModbusSlaveRead(slave);
@@ -214,7 +219,7 @@ public final class SolarMain {
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
 			}
-		} catch (SerialPortException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			System.err.println("Unable to connect to rover");
 			return 1;
@@ -234,32 +239,34 @@ public final class SolarMain {
 			);
 			RoverSetupProgram.startRoverSetup(readWrite, readWrite);
 		} else {
-			try(JSerialIOBundle ioBundle = JSerialIOBundle.createPort(null, ROVER_CONFIG)) { // TODO null
+			try(IOBundle ioBundle = createIOBundle(options.getIOBundleFile(), ROVER_CONFIG)) {
 				ModbusSlaveBus modbus = new IOModbusSlaveBus(ioBundle, new RTUDataEncoder(300, 10));
 				ModbusSlave slave = new ImmutableAddressModbusSlave(options.getModbusAddress(), modbus);
 				RoverReadTable read = new RoverModbusSlaveRead(slave);
 				RoverWriteTable write = new RoverModbusSlaveWrite(slave);
 				RoverSetupProgram.startRoverSetup(read, write);
-			} catch (SerialPortException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
-				System.err.println("Got serial port exception!");
+				System.err.println("Got exception!");
 				return 1;
 			}
 		}
 		return 0;
 	}
-	private static int connectOuthouse(OuthouseProgramOptions options) {
+	private static int connectOuthouse(OuthouseProgramOptions options) throws Exception {
 		PacketCollectionIdGenerator idGenerator = createIdGenerator(options.getUniqueIdsInOneHour());
 		List<PacketHandler> packetHandlers = getPacketHandlers(getDatabaseConfigs(options), "outhouse");
-		initReader(
-			System.in,
-			new OuthousePacketCreator(),
-			new PacketHandlerMultiplexer(packetHandlers),
-			idGenerator,
-			10,
-			OnDataReceive.Defaults.NOTHING,
-			getAdditionalPacketProvider(options)
-		);
+		try (IOBundle ioBundle = createIOBundle(options.getIOBundleFile(), new SerialConfigBuilder(9600).build())) {
+			initReader(
+				ioBundle.getInputStream(),
+				new OuthousePacketCreator(),
+				new PacketHandlerMultiplexer(packetHandlers),
+				idGenerator,
+				10,
+				OnDataReceive.Defaults.NOTHING,
+				getAdditionalPacketProvider(options)
+			);
+		}
 		return 0;
 	}
 	
@@ -370,11 +377,29 @@ public final class SolarMain {
 		return new IndividualSettings(new FrequencySettings(throttleFactor, initialSkip));
 	}
 	
-	private static IOBundle createIOBundle(File configFile){
-		throw new UnsupportedOperationException(); // TODO
+	private static IOBundle createIOBundle(File configFile, SerialConfig defaultSerialConfig){
+		final String contents;
+		try {
+			contents = new String(Files.readAllBytes(configFile.toPath()), Charset.defaultCharset());
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		JsonParser parser = new JsonParser();
+		JsonObject jsonObject = parser.parse(contents).getAsJsonObject();
+		return createIOBundle(jsonObject, defaultSerialConfig);
 	}
-	public static IOBundle createIOBundle(JsonObject jsonobject){
-		throw new UnsupportedOperationException(); // TODO
+	public static IOBundle createIOBundle(JsonObject jsonObject, SerialConfig defaultSerialConfig){
+		String type = jsonObject.get("type").getAsString();
+		if("serial".equals(type)){
+			try {
+				return JsonIO.getSerialIOBundleFromJson(jsonObject, defaultSerialConfig);
+			} catch (SerialPortException e) {
+				throw new RuntimeException(e);
+			}
+		} else if("standard".equals(type)){
+			return IOBundle.Defaults.STANDARD_IN_OUT;
+		}
+		throw new UnsupportedOperationException("Unknown type: " + type);
 	}
 	
 	public static int doMain(String[] args){

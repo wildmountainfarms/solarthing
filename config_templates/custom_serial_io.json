@@ -3,6 +3,10 @@
   "port": "/dev/ttyUSB0",
   "serial_config": {
     "baud": 9600,
-    "stop_bits": 1
+    "data_bits": 8,
+    "stop_bits": 1,
+    "parity": "none",
+    "rts": false,
+    "dtr": false
   }
 }

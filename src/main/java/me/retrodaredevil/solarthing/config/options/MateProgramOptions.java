@@ -14,10 +14,10 @@ public interface MateProgramOptions extends PacketHandlingOption, IOBundleOption
 	boolean isCorrectCheckSum();
 	
 	
-	default IgnoreCheckSum getIgnoreCheckSum() {
-		if(isCorrectCheckSum()){
+	static IgnoreCheckSum getIgnoreCheckSum(MateProgramOptions options) {
+		if(options.isCorrectCheckSum()){
 			return IgnoreCheckSum.IGNORE_AND_USE_CALCULATED;
-		} else if(isIgnoreCheckSum()){
+		} else if(options.isIgnoreCheckSum()){
 			return IgnoreCheckSum.IGNORE;
 		}
 		return IgnoreCheckSum.DISABLED;
