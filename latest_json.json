@@ -1,0 +1,52 @@
+{
+  "packets": [
+    {
+      "packetType": "FX_STATUS",
+      "address": 1,
+      "inverterCurrent": 5,
+      "inverterCurrentRaw": 10,
+      "chargerCurrent": 5,
+      "chargerCurrentRaw": 10,
+      "buyCurrent": 5,
+      "buyCurrentRaw": 10,
+      "inputVoltage": 200,
+      "inputVoltageRaw": 100,
+      "outputVoltage": 200,
+      "outputVoltageRaw": 100,
+      "sellCurrent": 5,
+      "sellCurrentRaw": 10,
+      "operatingMode": 3,
+      "errorMode": 0,
+      "acMode": 0,
+      "batteryVoltage": 28.2,
+      "batteryVoltageString": "28.2",
+      "misc": 129,
+      "warningMode": 0,
+      "chksum": 34,
+      "operatingModeName": "Charge",
+      "errors": "",
+      "acModeName": "No AC",
+      "miscModes": "FX - 230V unit, AUX output ON",
+      "warnings": ""
+    },
+    {
+      "packetType": "SOURCE",
+      "sourceId": "mySource"
+    },
+    {
+      "packetType": "FRAGMENT_INDICATOR",
+      "fragmentId": 1
+    }
+  ],
+  "dateArray": [
+    2019,
+    9,
+    12,
+    12,
+    37,
+    34,
+    148
+  ],
+  "dateMillis": 1568309854148,
+  "_id": "2019,9,12,12,(38/60),[f1ffe7c0]"
+}

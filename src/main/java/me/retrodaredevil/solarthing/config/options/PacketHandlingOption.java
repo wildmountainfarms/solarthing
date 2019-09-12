@@ -6,20 +6,15 @@ import java.io.File;
 import java.util.List;
 
 public interface PacketHandlingOption {
-//	@Option(longName = {"couch", "couchdb"}, defaultToNull = true, description = "File path to CouchDB connection configuration")
-//	File getCouchPropertiesFile();
-
-//	@Option(longName = {"latest", "latest-save-location"}, defaultToNull = true)
-//	File getLatestPacketJsonSaveLocation();
 	
-	@Option(longName = "config", defaultValue = {})
-	List<File> getPacketHandlerConfigFiles();
+	@Option(longName = {"database", "databases"}, defaultValue = {}, description = "A list of configuration files representing database configurations")
+	List<File> getDatabaseConfigurationFiles();
 	
-	@Option(longName = "source", defaultValue = { "default" })
+	@Option(longName = "source", defaultValue = { "default" }, description = "The source ID representing a way to group packets together")
 	String getSourceId();
-	@Option(longName = "fragment", defaultToNull = true, minimum = 1)
+	@Option(longName = "fragment", defaultToNull = true, minimum = 1, description = "The fragment ID representing a single program instance to differentiate packets with the same source ID")
 	Integer getFragmentId();
 	
-	@Option(longName = {"unique", "unique-ids-in-one-hour"}, defaultToNull = true)
+	@Option(longName = {"unique", "unique-ids-in-one-hour"}, defaultToNull = true, description = "By default all packets have a unique ID. When specified limits the number of unique IDs used in one hour")
 	Integer getUniqueIdsInOneHour();
 }
