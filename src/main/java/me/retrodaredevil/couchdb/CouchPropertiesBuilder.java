@@ -82,11 +82,17 @@ public class CouchPropertiesBuilder {
 		return this;
 	}
 	
+	/**
+	 * @param socketTimeout Socket timeout in ms
+	 */
 	public CouchPropertiesBuilder setSocketTimeout(int socketTimeout) {
 		this.socketTimeout = socketTimeout;
 		return this;
 	}
 	
+	/**
+	 * @param connectionTimeout Connection timeout in ms
+	 */
 	public CouchPropertiesBuilder setConnectionTimeout(int connectionTimeout) {
 		this.connectionTimeout = connectionTimeout;
 		return this;

@@ -13,7 +13,13 @@ public interface CouchProperties {
 	String getUsername();
 	String getPassword();
 	
+	/**
+	 * @return The socket timeout in ms
+	 */
 	int getSocketTimeout();
+	/**
+	 * @return The connection timeout in ms
+	 */
 	int getConnectionTimeout();
 	int getMaxConnections();
 	String getProxyHost();
