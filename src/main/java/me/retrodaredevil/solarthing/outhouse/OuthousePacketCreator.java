@@ -1,10 +1,11 @@
 package me.retrodaredevil.solarthing.outhouse;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.creation.PacketCreationException;
-import me.retrodaredevil.solarthing.packets.creation.TextPacketCreator;
 import me.retrodaredevil.solarthing.packets.creation.StartEndTextPacketCreator;
-import me.retrodaredevil.util.json.JsonFile;
+import me.retrodaredevil.solarthing.packets.creation.TextPacketCreator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -13,6 +14,7 @@ import java.util.Collections;
 
 public class OuthousePacketCreator extends StartEndTextPacketCreator {
 	private static final Logger LOGGER = LogManager.getLogger(OuthousePacketCreator.class);
+	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
 	
 	public OuthousePacketCreator() {
 		super('\n', '\r', 256, 0);
@@ -39,7 +41,7 @@ public class OuthousePacketCreator extends StartEndTextPacketCreator {
 				final boolean occupied = Boolean.parseBoolean(split[1]);
 				Occupancy currentOccupancy = occupied ? Occupancy.OCCUPIED : Occupancy.VACANT;
 				Packet occupancy = new ImmutableOccupancyPacket(currentOccupancy.getValueCode());
-				LOGGER.debug(JsonFile.gson.toJson(occupancy));
+				LOGGER.debug(GSON.toJson(occupancy));
 				
 				return Collections.singleton(occupancy);
 			case "WEATHER":
@@ -56,7 +58,7 @@ public class OuthousePacketCreator extends StartEndTextPacketCreator {
 				}
 				Packet weather = new IntegerWeatherPacket(temperature, humidity);
 				
-				LOGGER.debug(JsonFile.gson.toJson(weather));
+				LOGGER.debug(GSON.toJson(weather));
 				return Collections.singleton(weather);
 			case "DOOR":
 				final boolean isOpen = Boolean.parseBoolean(split[1]);
@@ -71,7 +73,7 @@ public class OuthousePacketCreator extends StartEndTextPacketCreator {
 				} catch(NumberFormatException ex){
 				}
 				Packet door = new ImmutableDoorPacket(isOpen, lastClose, lastOpen);
-				LOGGER.debug(JsonFile.gson.toJson(door));
+				LOGGER.debug(GSON.toJson(door));
 				return Collections.singleton(door);
 			default:
 				throw new UnsupportedOperationException("unknown type: " + type);

@@ -8,13 +8,14 @@
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="${LOG_PATTERN}"/>
         </Console>
-        <RollingFile name="logAll" fileName="${logPath}/log_file.log" filePattern="${logPath}/log_debug_%d{yyyy.MM.dd}.log">
+        <RollingFile name="logAll" fileName="${logPath}/log_debug.log" filePattern="${logPath}/log_debug%d{yyyy.MM.dd}.log.gz">
             <PatternLayout pattern="${LOG_PATTERN}"/>
             <Policies>
                 <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
             </Policies>
         </RollingFile>
-        <RollingFile name="logInfo" fileName="${logPath}/log_file.log" filePattern="${logPath}/log_info_%d{yyyy.MM.dd}.log">
+        <RollingFile name="logInfo" filePattern="${logPath}/log_info_%d{yyyy.MM.dd}.log" >
             <PatternLayout pattern="${LOG_PATTERN}"/>
             <Policies>
                 <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
@@ -22,14 +23,15 @@
         </RollingFile>
     </Appenders>
     <Loggers>
-        <Root level="INFO" >
-            <AppenderRef ref="Console"/>
+        <Root level="DEBUG" >
+            <AppenderRef ref="Console" level="DEBUG"/>
         </Root>
-        <Logger name="me.retrodaredevil.solarthing" additivity="false">
-            <AppenderRef ref="fileLogger" level="DEBUG" additivity="false"/>
+        <Logger name="me.retrodaredevil.solarthing">
+            <AppenderRef ref="logAll" level="DEBUG"/>
+            <AppenderRef ref="logInfo" level="INFO"/>
         </Logger>
-        <Logger name="org.lightcouch" level="INFO" additivity="false">
-            <AppenderRef ref="fileLogger"/>
+        <Logger name="org.lightcouch" level="INFO">
+            <AppenderRef ref="logAll"/>
         </Logger>
     </Loggers>
 </Configuration>

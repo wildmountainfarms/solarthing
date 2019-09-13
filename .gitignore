@@ -1,12 +1,12 @@
 # Custom stuff:
 *.attach_pid*
 
-program/
-!program/solarthing.jar
-!program/solar/*
-!program/outhouse/*
-!program/config/README.md
-!program/README.md
+/program/
+!/program/solarthing.jar
+!/program/solar/*
+!/program/outhouse/*
+!/program/config/README.md
+!/program/README.md
 
 # Compiled class file
 *.class
@@ -38,6 +38,6 @@ hs_err_pid*
 *.iml
 
 #Idea stuff
-.idea/*
-!.idea/dictionaries/
+/.idea/*
+!/.idea/dictionaries
 

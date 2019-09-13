@@ -23,7 +23,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>me.retrodaredevil.solarthing.SolarMain</mainClass>
+                            <mainClass>me.retrodaredevil.solarthing.program.SolarMain</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -33,7 +33,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>me.retrodaredevil.solarthing.SolarMain</mainClass>
+                            <mainClass>me.retrodaredevil.solarthing.program.SolarMain</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
