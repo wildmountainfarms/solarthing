@@ -1,5 +1,6 @@
-package me.retrodaredevil.solarthing;
+package me.retrodaredevil.solarthing.program;
 
+import me.retrodaredevil.solarthing.OnDataReceive;
 import me.retrodaredevil.solarthing.commands.CommandProvider;
 import me.retrodaredevil.solarthing.commands.OnCommandExecute;
 import me.retrodaredevil.solarthing.commands.SourcedCommand;

@@ -1,18 +1,24 @@
 package me.retrodaredevil.solarthing.couchdb;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import me.retrodaredevil.couchdb.CouchProperties;
 import me.retrodaredevil.couchdb.CouchPropertiesBuilder;
+import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
-import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
-import me.retrodaredevil.util.json.JsonFile;
-import org.lightcouch.*;
+import org.lightcouch.CouchDbClient;
+import org.lightcouch.CouchDbException;
+import org.lightcouch.DocumentConflictException;
+import org.lightcouch.Response;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class CouchDbPacketSaver implements PacketHandler {
+	private static final Gson GSON = new GsonBuilder().serializeNulls().create();
+	
 	private final Map<String, String> idRevMap = new HashMap<>();
 	private final CouchProperties properties;
 	private CouchDbClient client = null;
@@ -38,7 +44,7 @@ public class CouchDbPacketSaver implements PacketHandler {
 		final String id = packetCollection.getDbId();
 		final String rev = idRevMap.get(id);
 		final Response response;
-		final JsonObject packet = JsonFile.gson.toJsonTree(packetCollection).getAsJsonObject();
+		final JsonObject packet = GSON.toJsonTree(packetCollection).getAsJsonObject();
 		try {
 			if (rev == null) {
 				response = client.save(packet);

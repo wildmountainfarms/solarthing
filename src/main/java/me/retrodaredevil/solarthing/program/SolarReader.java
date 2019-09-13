@@ -1,5 +1,6 @@
-package me.retrodaredevil.solarthing;
+package me.retrodaredevil.solarthing.program;
 
+import me.retrodaredevil.solarthing.OnDataReceive;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollections;

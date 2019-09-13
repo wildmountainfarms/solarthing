@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing;
+package me.retrodaredevil.solarthing.program;
 
 import me.retrodaredevil.solarthing.commands.Command;
 import me.retrodaredevil.solarthing.commands.CommandProvider;

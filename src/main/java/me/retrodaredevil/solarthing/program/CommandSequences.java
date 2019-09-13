@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing;
+package me.retrodaredevil.solarthing.program;
 
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.solar.outback.OutbackUtil;

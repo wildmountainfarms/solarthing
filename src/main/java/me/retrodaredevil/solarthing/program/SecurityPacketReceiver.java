@@ -1,15 +1,16 @@
-package me.retrodaredevil.solarthing;
+package me.retrodaredevil.solarthing.program;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import me.retrodaredevil.solarthing.DataReceiver;
+import me.retrodaredevil.solarthing.JsonPacketReceiver;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollections;
 import me.retrodaredevil.solarthing.packets.security.*;
 import me.retrodaredevil.solarthing.packets.security.crypto.*;
-import me.retrodaredevil.util.json.JsonFile;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lightcouch.CouchDbClient;
@@ -22,7 +23,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.util.*;
 
-public class SecurityPacketReceiver implements JsonPacketReceiver{
+public class SecurityPacketReceiver implements JsonPacketReceiver {
 	private static final Logger LOGGER = LogManager.getLogger(SecurityPacketReceiver.class);
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
 	

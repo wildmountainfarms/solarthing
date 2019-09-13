@@ -1,9 +1,6 @@
-package me.retrodaredevil.solarthing;
+package me.retrodaredevil.solarthing.program;
 
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import com.lexicalscope.jewel.cli.ArgumentValidationException;
 import com.lexicalscope.jewel.cli.Cli;
 import com.lexicalscope.jewel.cli.CliFactory;
@@ -13,6 +10,7 @@ import me.retrodaredevil.io.modbus.*;
 import me.retrodaredevil.io.serial.SerialConfig;
 import me.retrodaredevil.io.serial.SerialConfigBuilder;
 import me.retrodaredevil.io.serial.SerialPortException;
+import me.retrodaredevil.solarthing.OnDataReceive;
 import me.retrodaredevil.solarthing.commands.CommandProvider;
 import me.retrodaredevil.solarthing.commands.CommandProviderMultiplexer;
 import me.retrodaredevil.solarthing.commands.sequence.CommandSequence;
@@ -45,7 +43,6 @@ import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
 import me.retrodaredevil.solarthing.solar.renogy.rover.*;
 import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusSlaveRead;
 import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusSlaveWrite;
-import me.retrodaredevil.util.json.JsonFile;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -53,6 +50,7 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 
 import static java.util.Objects.requireNonNull;
@@ -61,6 +59,7 @@ public final class SolarMain {
 	private SolarMain(){ throw new UnsupportedOperationException(); }
 	
 	private static final Logger LOGGER = LogManager.getLogger(SolarMain.class);
+	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
 	
 	private static final SerialConfig MATE_CONFIG = new SerialConfigBuilder(19200)
 		.setDataBits(8)
@@ -99,11 +98,13 @@ public final class SolarMain {
 			List<CommandProvider<MateCommand>> commandProviders = new ArrayList<>();
 			{ // InputStreamCommandProvider command_input.txt block
 				// TODO make the file path customizable through json (a DatabaseConfig)
+				File commandInputFile = new File("command_input.txt");
+				Files.write(commandInputFile.toPath(), new byte[0], StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
 				InputStream fileInputStream = null;
 				try {
-					fileInputStream = new FileInputStream(new File("command_input.txt"));
+					fileInputStream = new FileInputStream(commandInputFile);
 				} catch (FileNotFoundException e) {
-					LOGGER.info("no command input file!");
+					LOGGER.warn("No command input file! We created the file, but for some reason it isn't there...");
 				}
 				if (fileInputStream != null) {
 					commandProviders.add(InputStreamCommandProvider.createFrom(fileInputStream, "command_input.txt", EnumSet.allOf(MateCommand.class)));
@@ -195,7 +196,7 @@ public final class SolarMain {
 						continue;
 					}
 					LOGGER.debug(
-						JsonFile.gson.toJson(packet) + "\n" +
+						GSON.toJson(packet) + "\n" +
 						packet.getSpecialPowerControlE021().getFormattedInfo().replaceAll("\n", "\n\t") + "\n" +
 						packet.getSpecialPowerControlE02D().getFormattedInfo().replaceAll("\n", "\n\t")
 					);

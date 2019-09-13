@@ -14,11 +14,13 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 
+/**
+ * @deprecated Will be removed in the future
+ */
+@Deprecated
 public class JsonFile {
-	
 
-	public static final JsonParser pa = new JsonParser();
-	public static final Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
+	private static final JsonParser pa = new JsonParser();
 	
 	private final File file;
 	private boolean isJson = true;

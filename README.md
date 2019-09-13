@@ -1,4 +1,4 @@
-# solarthing
+# SolarThing
 Parses data from an Outback MATE, communicates with a renogy rover, and uses CouchDB as a database!
 
 ## Supported Products
@@ -109,6 +109,9 @@ plan to add additional threads to the program, it will remain like this so you s
 may have one or two other identical packets from almost the same time. 
 This is where [Identifiers](src/main/java/me/retrodaredevil/solarthing/packets/identification/Identifier.java) comes in. By
 adding packets to a Map, you can make sure that there's only one packet for each unique Identifier
+
+#### Configuration
+This uses jewelcli for its configuration. Using this library makes it very easy to use interfaces with multiple inheritance. http://jewelcli.lexicalscope.com/examples.html
 
 ### Inspiration
 @eidolon1138 is the one who originally came up with the idea to collect data from his Outback Mate device. He helped
