@@ -32,14 +32,14 @@ Example command that I use while running it on a raspberry pi:
 ```
 # this is located in my /etc/rc.local
 # For getting data from outback mate:
-((cd /home/pi/solarthing && printf "" > command_input.txt 
+((cd /home/pi/solarthing/program
 && java -jar solarthing.jar mate --unique 30 --source default --fragment 1
 ) 1>output.txt 2>errors.txt) &
 
 # For getting data from Renogy rover:
-((cd /home/pi/solarthing 
+((cd /home/pi/solarthing/program
 && java -jar solarthing.jar rover --source default --fragment 2 --unique 30
-) 1>output.txt 2>errors.txt) &
+) 2>errors.txt) &
 ```
 
 ### Connecting to Outback MATE

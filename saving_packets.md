@@ -3,7 +3,7 @@ There are many ways to save packets (the way data is represented in this program
 
 ### Example Commands
 ```
-((cd /home/pi/solarthing && printf "" > command_input.txt && \
+((cd /home/pi/solarthing/program && \
 java -jar solarthing.jar mate --unique 45 --source default --fragment 1 \
 --database "config/couchdb.json" "config/latest.json" --io "config/mate_io.json" --allow-commands) 1>output.txt 2>errors.txt) &
 ```
