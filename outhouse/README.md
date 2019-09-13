@@ -14,8 +14,8 @@ temperature is in celsius (an int), humidity is a number from 0 to 100 represent
 You would normally run this command:
 ```
 # this in /etc/rc.local
-(cd /home/pi/Programming/SolarThing/solarthing 
+(cd /home/pi/solarthing/program
 && (outhouse/occupancy_weather.py 
-| java -jar solarthing.jar outhouse --unique 15 --io config_templates/standard_io.json) >output.txt 2>errors.txt) &
+| java -jar solarthing.jar outhouse --unique 15 --io config_templates/standard_io.json) 2>errors.txt) &
 ```
 

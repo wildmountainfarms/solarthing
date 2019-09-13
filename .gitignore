@@ -8,6 +8,10 @@
 !/program/config/README.md
 !/program/README.md
 
+
+
+*/__pycache__/*
+
 # Compiled class file
 *.class
 
