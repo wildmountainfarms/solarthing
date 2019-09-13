@@ -1,13 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
+    <Properties>
+        <Property name="logPath">logs</Property>
+        <Property name="LOG_PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</Property>
+    </Properties>
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
         </Console>
+        <RollingFile name="logAll" fileName="${logPath}/log_file.log" filePattern="${logPath}/log_debug_%d{yyyy.MM.dd}.log">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+        </RollingFile>
+        <RollingFile name="logInfo" fileName="${logPath}/log_file.log" filePattern="${logPath}/log_info_%d{yyyy.MM.dd}.log">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+        </RollingFile>
     </Appenders>
     <Loggers>
-        <Root level="DEBUG">
+        <Root level="INFO" >
             <AppenderRef ref="Console"/>
         </Root>
+        <Logger name="me.retrodaredevil.solarthing" additivity="false">
+            <AppenderRef ref="fileLogger" level="DEBUG" additivity="false"/>
+        </Logger>
+        <Logger name="org.lightcouch" level="INFO" additivity="false">
+            <AppenderRef ref="fileLogger"/>
+        </Logger>
     </Loggers>
 </Configuration>
