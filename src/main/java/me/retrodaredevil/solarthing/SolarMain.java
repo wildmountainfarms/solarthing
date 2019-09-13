@@ -21,7 +21,6 @@ import me.retrodaredevil.solarthing.config.JsonIO;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.DatabaseType;
 import me.retrodaredevil.solarthing.config.databases.IndividualSettings;
-import me.retrodaredevil.solarthing.packets.handling.FrequencySettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.LatestFileDatabaseSettings;
 import me.retrodaredevil.solarthing.config.options.*;
@@ -47,9 +46,8 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.*;
 import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusSlaveRead;
 import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusSlaveWrite;
 import me.retrodaredevil.util.json.JsonFile;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -61,6 +59,9 @@ import static java.util.Objects.requireNonNull;
 
 public final class SolarMain {
 	private SolarMain(){ throw new UnsupportedOperationException(); }
+	
+	private static final Logger LOGGER = LogManager.getLogger(SolarMain.class);
+	
 	private static final SerialConfig MATE_CONFIG = new SerialConfigBuilder(19200)
 		.setDataBits(8)
 		.setParity(SerialConfig.Parity.NONE)
@@ -94,7 +95,7 @@ public final class SolarMain {
 		final OnDataReceive onDataReceive;
 		List<PacketHandler> packetHandlers = new ArrayList<>();
 		if(options.isAllowCommands()) {
-			System.out.println("Commands are allowed");
+			LOGGER.info("Commands are allowed");
 			List<CommandProvider<MateCommand>> commandProviders = new ArrayList<>();
 			{ // InputStreamCommandProvider command_input.txt block
 				// TODO make the file path customizable through json (a DatabaseConfig)
@@ -102,7 +103,7 @@ public final class SolarMain {
 				try {
 					fileInputStream = new FileInputStream(new File("command_input.txt"));
 				} catch (FileNotFoundException e) {
-					System.out.println("no command input file!");
+					LOGGER.info("no command input file!");
 				}
 				if (fileInputStream != null) {
 					commandProviders.add(InputStreamCommandProvider.createFrom(fileInputStream, "command_input.txt", EnumSet.allOf(MateCommand.class)));
@@ -134,8 +135,7 @@ public final class SolarMain {
 							"commands",
 							new SecurityPacketReceiver(new DirectoryKeyMap(new File("authorized")), commandSequenceDataReceiver, new DirectoryKeyMap(new File("unauthorized"))),
 							true
-						),
-						System.err
+						)
 					), frequencySettings, true));
 					commandFeedbackHandlerList.add(new CouchDbPacketSaver(couchProperties, "command_feedback"));
 				}
@@ -152,7 +152,7 @@ public final class SolarMain {
 			);
 			packetHandlers.add(commandRequesterHandler);
 		} else {
-			System.out.println("Commands are disabled");
+			LOGGER.info("Commands are disabled");
 			onDataReceive = OnDataReceive.Defaults.NOTHING;
 		}
 		
@@ -190,37 +190,36 @@ public final class SolarMain {
 					try {
 						packet = RoverStatusPackets.createFromReadTable(read);
 					} catch(ModbusRuntimeException e){
-						e.printStackTrace();
-						System.err.println("Modbus exception above!");
+						LOGGER.error("Modbus exception", e);
 						Thread.sleep(1000);
 						continue;
 					}
-					System.out.println(JsonFile.gson.toJson(packet));
-					System.out.println(packet.getSpecialPowerControlE021().getFormattedInfo().replaceAll("\n", "\n\t"));
-					System.out.println(packet.getSpecialPowerControlE02D().getFormattedInfo().replaceAll("\n", "\n\t"));
-					System.out.println();
+					LOGGER.debug(
+						JsonFile.gson.toJson(packet) + "\n" +
+						packet.getSpecialPowerControlE021().getFormattedInfo().replaceAll("\n", "\n\t") + "\n" +
+						packet.getSpecialPowerControlE02D().getFormattedInfo().replaceAll("\n", "\n\t")
+					);
 					List<Packet> packets = new ArrayList<>();
 					packets.add(packet);
 					packets.addAll(packetProvider.createPackets());
 					PacketCollection packetCollection = PacketCollections.createFromPackets(packets, idGenerator);
 					final long readDuration = System.currentTimeMillis() - startTime;
-					System.out.println("took " + readDuration + "ms to read from Rover");
+					LOGGER.debug("took " + readDuration + "ms to read from Rover");
 					final long saveStartTime = System.currentTimeMillis();
 					try {
 						packetHandler.handle(packetCollection, true);
 					} catch (PacketHandleException e) {
-						e.printUnableToHandle(System.err, "Couldn't save a renogy rover packet!");
+						LOGGER.error("Couldn't save a renogy rover packet!", e);
 					}
 					final long saveDuration = System.currentTimeMillis() - saveStartTime;
-					System.out.println("took " + saveDuration + "ms to handle packets");
+					LOGGER.debug("took " + saveDuration + "ms to handle packets");
 					Thread.sleep(Math.max(200, 5000 - readDuration)); // allow 5 seconds to read from rover // assume saveDuration is very small
 				}
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			System.err.println("Unable to connect to rover");
+			LOGGER.error("Unable to connect to rover", e);
 			return 1;
 		}
 		return 0;
@@ -245,8 +244,7 @@ public final class SolarMain {
 				RoverWriteTable write = new RoverModbusSlaveWrite(slave);
 				RoverSetupProgram.startRoverSetup(read, write);
 			} catch (Exception e) {
-				e.printStackTrace();
-				System.err.println("Got exception!");
+				LOGGER.error("Got exception!", e);
 				return 1;
 			}
 		}
@@ -312,7 +310,7 @@ public final class SolarMain {
 				IndividualSettings individualSettings = config.getIndividualSettingsOrDefault(DATABASE_UPLOAD_ID, null);
 				FrequencySettings frequencySettings = individualSettings != null ? individualSettings.getFrequencySettings() : FrequencySettings.NORMAL_SETTINGS;
 				r.add(new ThrottleFactorPacketHandler(
-					new PrintPacketHandleExceptionWrapper(new CouchDbPacketSaver(couchProperties, couchDbDatabaseName), System.err),
+					new PrintPacketHandleExceptionWrapper(new CouchDbPacketSaver(couchProperties, couchDbDatabaseName)),
 					frequencySettings,
 					true
 				));
@@ -343,20 +341,12 @@ public final class SolarMain {
 				databaseType = CouchDbDatabaseSettings.TYPE;
 				JsonObject config = configElement.getAsJsonObject();
 				CouchProperties couchProperties = JsonCouchDb.getCouchPropertiesFromJson(config);
-//				System.out.println(
-//					"protocol: " + couchProperties.getProtocol() +
-//						"\nhost: " + couchProperties.getHost() +
-//						"\nport: " + couchProperties.getPort() +
-//						"\ncon timeo:" + couchProperties.getConnectionTimeout() +
-//						"\nsoc timeo: " + couchProperties.getSocketTimeout()
-//				);
 				databaseSettings = new CouchDbDatabaseSettings(couchProperties);
 			} else if ("latest".equals(type)) {
 				databaseType = LatestFileDatabaseSettings.TYPE;
 				JsonObject config = configElement.getAsJsonObject();
 				String path = config.get("file").getAsString();
 				File latestFile = new File(path).getAbsoluteFile();
-//				System.out.println(latestFile);
 				databaseSettings = new LatestFileDatabaseSettings(latestFile);
 			} else {
 				throw new UnsupportedOperationException("Unknown type: " + type);
@@ -476,8 +466,6 @@ public final class SolarMain {
 	}
 
 	public static void main(String[] args) {
-		BasicConfigurator.configure();
-		Logger.getRootLogger().setLevel(Level.INFO);
 		System.exit(doMain(args));
 	}
 	private static Program getProgram(String program) {

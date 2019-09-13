@@ -1,16 +1,19 @@
 package me.retrodaredevil.solarthing.packets.handling;
 
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.PrintStream;
 
 public class PrintPacketHandleExceptionWrapper implements PacketHandler {
-	private final PacketHandler packetHandler;
-	private final PrintStream printStream;
+	private static final Logger LOGGER = LogManager.getLogger(PrintPacketHandleExceptionWrapper.class);
 	
-	public PrintPacketHandleExceptionWrapper(PacketHandler packetHandler, PrintStream printStream) {
+	private final PacketHandler packetHandler;
+	
+	
+	public PrintPacketHandleExceptionWrapper(PacketHandler packetHandler) {
 		this.packetHandler = packetHandler;
-		this.printStream = printStream;
 	}
 	
 	@Override
@@ -18,7 +21,7 @@ public class PrintPacketHandleExceptionWrapper implements PacketHandler {
 		try {
 			packetHandler.handle(packetCollection, wasInstant);
 		} catch (PacketHandleException e) {
-			e.printUnableToHandle(printStream, "Caught PacketHandleException from " + packetHandler);
+			LOGGER.error("Caught PacketHandleException from " + packetHandler, e);
 		}
 	}
 }

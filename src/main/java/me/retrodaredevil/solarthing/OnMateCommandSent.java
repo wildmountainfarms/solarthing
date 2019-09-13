@@ -9,10 +9,14 @@ import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
 import me.retrodaredevil.solarthing.solar.outback.command.packets.ImmutableSuccessMateCommandPacket;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Collections;
 
 public class OnMateCommandSent implements OnCommandExecute<MateCommand> {
+	
+	private static final Logger LOGGER = LogManager.getLogger(OnMateCommandSent.class);
 	
 	private final PacketHandler packetHandler;
 	
@@ -25,7 +29,7 @@ public class OnMateCommandSent implements OnCommandExecute<MateCommand> {
 		try {
 			packetHandler.handle(PacketCollections.createFromPackets(Collections.singleton(packet), PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR), true);
 		} catch (PacketHandleException e) {
-			e.printUnableToHandle(System.err, "Couldn't save feedback packet for command: " + command.getCommand() + " from source: " + command.getSource());
+			LOGGER.error("Couldn't save feedback packet for command: " + command.getCommand() + " from source: " + command.getSource(), e);
 		}
 	}
 }

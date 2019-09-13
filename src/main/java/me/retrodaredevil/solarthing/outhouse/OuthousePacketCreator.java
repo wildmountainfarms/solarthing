@@ -5,11 +5,14 @@ import me.retrodaredevil.solarthing.packets.creation.PacketCreationException;
 import me.retrodaredevil.solarthing.packets.creation.TextPacketCreator;
 import me.retrodaredevil.solarthing.packets.creation.StartEndTextPacketCreator;
 import me.retrodaredevil.util.json.JsonFile;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Collection;
 import java.util.Collections;
 
 public class OuthousePacketCreator extends StartEndTextPacketCreator {
+	private static final Logger LOGGER = LogManager.getLogger(OuthousePacketCreator.class);
 	
 	public OuthousePacketCreator() {
 		super('\n', '\r', 256, 0);
@@ -36,7 +39,7 @@ public class OuthousePacketCreator extends StartEndTextPacketCreator {
 				final boolean occupied = Boolean.parseBoolean(split[1]);
 				Occupancy currentOccupancy = occupied ? Occupancy.OCCUPIED : Occupancy.VACANT;
 				Packet occupancy = new ImmutableOccupancyPacket(currentOccupancy.getValueCode());
-				System.out.println(JsonFile.gson.toJson(occupancy));
+				LOGGER.debug(JsonFile.gson.toJson(occupancy));
 				
 				return Collections.singleton(occupancy);
 			case "WEATHER":
@@ -53,7 +56,7 @@ public class OuthousePacketCreator extends StartEndTextPacketCreator {
 				}
 				Packet weather = new IntegerWeatherPacket(temperature, humidity);
 				
-				System.out.println(JsonFile.gson.toJson(weather));
+				LOGGER.debug(JsonFile.gson.toJson(weather));
 				return Collections.singleton(weather);
 			case "DOOR":
 				final boolean isOpen = Boolean.parseBoolean(split[1]);
@@ -68,7 +71,7 @@ public class OuthousePacketCreator extends StartEndTextPacketCreator {
 				} catch(NumberFormatException ex){
 				}
 				Packet door = new ImmutableDoorPacket(isOpen, lastClose, lastOpen);
-				System.out.println(JsonFile.gson.toJson(door));
+				LOGGER.debug(JsonFile.gson.toJson(door));
 				return Collections.singleton(door);
 			default:
 				throw new UnsupportedOperationException("unknown type: " + type);
