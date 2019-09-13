@@ -1,5 +1,7 @@
 package me.retrodaredevil.solarthing;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
@@ -8,6 +10,8 @@ import me.retrodaredevil.solarthing.packets.collection.PacketCollections;
 import me.retrodaredevil.solarthing.packets.security.*;
 import me.retrodaredevil.solarthing.packets.security.crypto.*;
 import me.retrodaredevil.util.json.JsonFile;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.lightcouch.CouchDbClient;
 
 import javax.crypto.Cipher;
@@ -19,6 +23,9 @@ import java.security.PublicKey;
 import java.util.*;
 
 public class SecurityPacketReceiver implements JsonPacketReceiver{
+	private static final Logger LOGGER = LogManager.getLogger(SecurityPacketReceiver.class);
+	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
+	
 	private final PublicKeyLookUp publicKeyLookUp;
 	private final DataReceiver dataReceiver;
 	private final PublicKeySave publicKeySave;
@@ -47,7 +54,7 @@ public class SecurityPacketReceiver implements JsonPacketReceiver{
 	
 	@Override
 	public void receivePackets(List<JsonObject> jsonPackets) {
-		System.out.println("received packets! size: " + jsonPackets.size());
+		LOGGER.debug("received packets! size: " + jsonPackets.size());
 		List<PacketCollection> packets = new ArrayList<>(jsonPackets.size());
 		long minTime = System.currentTimeMillis() - 5 * 60 * 1000; // last 5 minutes allowed
 		for(JsonObject packet : jsonPackets){
@@ -55,13 +62,11 @@ public class SecurityPacketReceiver implements JsonPacketReceiver{
 			try {
 				packetCollection = PacketCollections.createFromJson(packet, SecurityPackets::createFromJson);
 			} catch(Exception e){
-				e.printStackTrace();
-				System.err.println("tried to create a packet collection from: ");
-				System.err.println(JsonFile.gson.toJson(packet));
+				LOGGER.error("tried to create a packet collection from: " + GSON.toJson(packet), e);
 				continue;
 			}
 			if(packetCollection.getDateMillis() < minTime){
-				System.out.println("Ignoring old packet");
+				LOGGER.info("Ignoring old packet");
 				continue;
 			}
 			packets.add(packetCollection);
@@ -80,14 +85,14 @@ public class SecurityPacketReceiver implements JsonPacketReceiver{
 					String sender = integrityPacket.getSender();
 					final String invalidSenderReason = sender == null ? "sender is null!" : SenderUtil.getInvalidSenderNameReason(sender);
 					if(invalidSenderReason != null){
-						System.err.println(invalidSenderReason);
+						LOGGER.warn(invalidSenderReason);
 					} else {
 						try {
 							String data = Decrypt.decrypt(cipher, publicKeyLookUp, integrityPacket);
 							final String[] split = data.split(",", 2);
-							System.out.println("decrypted data: " + data);
+							LOGGER.debug("decrypted data: " + data);
 							if(split.length != 2){
-								System.err.println("split.length: " + split.length + " split: " + Arrays.asList(split));
+								LOGGER.warn("split.length: " + split.length + " split: " + Arrays.asList(split));
 							} else {
 								String hexMillis = split[0];
 								String message = split[1];
@@ -101,11 +106,11 @@ public class SecurityPacketReceiver implements JsonPacketReceiver{
 									Long lastCommand = senderLastCommandMap.get(sender);
 									long currentTime = System.currentTimeMillis();
 									if(dateMillis > currentTime) {
-										System.err.println("Message from " + sender + " is from the future??? dateMillis: " + dateMillis + " currentTime: " + currentTime);
+										LOGGER.warn("Message from " + sender + " is from the future??? dateMillis: " + dateMillis + " currentTime: " + currentTime);
 									} else if(dateMillis < minTime){
-										System.err.println("Message from " + sender + " was parsed, but it too old! dateMillis: " + dateMillis + " minTime: " + minTime);
+										LOGGER.warn("Message from " + sender + " was parsed, but it too old! dateMillis: " + dateMillis + " minTime: " + minTime);
 									} else if(lastCommand != null && dateMillis <= lastCommand) { // if this command is old or if someone is trying to send the exact same command twice
-										System.err.println("Message from " + sender + " was parsed, but was older than the last command they sent! dateMillis: " + dateMillis + " lastCommand: " + lastCommand);
+										LOGGER.warn("Message from " + sender + " was parsed, but was older than the last command they sent! dateMillis: " + dateMillis + " lastCommand: " + lastCommand);
 									} else {
 										lastCommands.put(sender, dateMillis);
 										dataReceiver.receiveData(sender, dateMillis, message);
@@ -113,13 +118,11 @@ public class SecurityPacketReceiver implements JsonPacketReceiver{
 								}
 							}
 						} catch (DecryptException e) {
-							e.printStackTrace();
-							System.err.println("Someone tried to impersonate " + sender + "! Or that person has a new public key.");
+							LOGGER.warn("Someone tried to impersonate " + sender + "! Or that person has a new public key.", e);
 						} catch (InvalidKeyException e) {
 							throw new RuntimeException("If there is a saved key, it should be valid! sender: " + sender, e);
 						} catch (NotAuthorizedException e) {
-							e.printStackTrace();
-							System.err.println(sender + " is not authorized!");
+							LOGGER.info(sender + " is not authorized!", e);
 						}
 					}
 				} else if(packetType == SecurityPacketType.AUTH_NEW_SENDER){
@@ -128,7 +131,7 @@ public class SecurityPacketReceiver implements JsonPacketReceiver{
 					PublicKey key = auth.getPublicKeyObject();
 					final String invalidSenderReason = sender == null ? "sender is null!" : SenderUtil.getInvalidSenderNameReason(sender);
 					if(invalidSenderReason != null){
-						System.err.println(invalidSenderReason);
+						LOGGER.warn(invalidSenderReason);
 					} else {
 						publicKeySave.putKey(sender, key);
 					}

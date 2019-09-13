@@ -1,5 +1,7 @@
 package me.retrodaredevil.solarthing.solar.outback;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.creation.PacketCreationException;
 import me.retrodaredevil.solarthing.packets.creation.StartEndTextPacketCreator;
@@ -8,12 +10,15 @@ import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPackets;
 import me.retrodaredevil.solarthing.util.CheckSumException;
 import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
 import me.retrodaredevil.solarthing.util.ParsePacketAsciiDecimalDigitException;
-import me.retrodaredevil.util.json.JsonFile;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Collection;
 import java.util.Collections;
 
 public class MatePacketCreator49 extends StartEndTextPacketCreator {
+	private static final Logger LOGGER = LogManager.getLogger(MatePacketCreator49.class);
+	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
 
 	private final IgnoreCheckSum ignoreCheckSum;
 
@@ -43,9 +48,7 @@ public class MatePacketCreator49 extends StartEndTextPacketCreator {
 		} else {
 			throw new PacketCreationException("Ascii value: " + value + " not supported. (from: '" + new String(bytes) + "')");
 		}
-		System.out.println("=====");
-		System.out.println(JsonFile.gson.toJson(r));
-		System.out.println("=====");
+		LOGGER.debug(GSON.toJson(r));
 		return Collections.singleton(r);
 	}
 

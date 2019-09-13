@@ -95,7 +95,6 @@ public class JsonFile {
 		
 		String save = obj.toString();
 		save = save.replaceAll("\\n", "\n");
-		//System.out.println("Saving: " + save);
 		write(save);
 	}
 	

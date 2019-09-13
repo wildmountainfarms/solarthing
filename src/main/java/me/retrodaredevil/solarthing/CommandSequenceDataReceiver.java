@@ -5,12 +5,15 @@ import me.retrodaredevil.solarthing.commands.CommandProvider;
 import me.retrodaredevil.solarthing.commands.sequence.CommandSequence;
 import me.retrodaredevil.solarthing.commands.sequence.CommandSequenceCommandProvider;
 import me.retrodaredevil.solarthing.commands.sequence.SourcedCommandSequence;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
 public class CommandSequenceDataReceiver<T extends Command> implements DataReceiver {
+	private static final Logger LOGGER = LogManager.getLogger(CommandSequenceDataReceiver.class);
 	private final Queue<SourcedCommandSequence<T>> queue = new LinkedList<>();
 	private final CommandProvider<T> commandProvider = new CommandSequenceCommandProvider<>(queue::poll);
 	
@@ -25,7 +28,7 @@ public class CommandSequenceDataReceiver<T extends Command> implements DataRecei
 		CommandSequence<T> requested = commandSequenceMap.get(data);
 		if(requested != null){
 			queue.add(new SourcedCommandSequence<>(new DataSource(sender, dateMillis, data).toString(), requested));
-			System.out.println(sender + " has requested command sequence: " + data);
+			LOGGER.info(sender + " has requested command sequence: " + data);
 		}
 	}
 	

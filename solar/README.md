@@ -79,6 +79,9 @@ https://www.rototron.info/raspberry-pi-solar-serial-rest-api-tutorial/
 * Tracer MT-5. Example: https://github.com/xxv/tracer
 * EPsolar Tracer BN. Example: https://github.com/kasbert/epsolar-tracer
 
+TriStar Modbus
+* https://www.stellavolta.com/content/MSCTSModbusCommunication.pdf
+
 ## Identifier Order
 Identifiers are used in SolarPackets to identify solar products and act as keys for Maps. Identifiers should
 implement Comparable<Identifier> so Identifiers have a defined order which is this:

@@ -8,11 +8,14 @@ import me.retrodaredevil.solarthing.packets.support.Support;
 import me.retrodaredevil.solarthing.util.CheckSumException;
 import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
 import me.retrodaredevil.solarthing.util.ParsePacketAsciiDecimalDigitException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import static me.retrodaredevil.util.json.JsonHelper.getOrNull;
 import static me.retrodaredevil.solarthing.util.ParseUtil.toInt;
 
 public final class MXStatusPackets {
+	private static final Logger LOGGER = LogManager.getLogger(MXStatusPackets.class);
 	private MXStatusPackets(){ throw new UnsupportedOperationException(); }
 
 	@SuppressWarnings("Duplicates")
@@ -64,18 +67,18 @@ public final class MXStatusPackets {
 			dailyAHOnes = toInt(chars, 40);
 			// , UNUSED UNUSED
 		} else { // we must be on old firmware
-			System.out.println("We must be on old firmware. 41st char(index=40): '" + char41 + "'");
+			LOGGER.debug("We must be on old firmware. 41st char(index=40): '" + char41 + "'");
 			char char37 = chars[36];
 			if(Character.isDigit(char37)){
 				// if we get inside this if statement, we know the packet is incorrect and data may be incorrect
-				System.err.println("Yep we are definitely outdated. 37nth char (index=36): " + char37);
+				LOGGER.warn("Yep we are definitely outdated. 37nth char (index=36): " + char37);
 			}
 			dailyAHThousands = 0;
 			dailyAHHundreds = toInt(chars, 37);
 			dailyAHTens = toInt(chars, 38);
 			dailyAHOnes = toInt(chars, 39);
 			if(dailyAHHundreds != 0 || dailyAHTens != 0 || dailyAHOnes != 0){
-				System.err.println("Even though we are on old firmware, dailyAH isn't 0.");
+				LOGGER.warn("Even though we are on old firmware, dailyAH isn't 0.");
 			}
 			// , UNUSED UNUSED UNUSED
 		}
