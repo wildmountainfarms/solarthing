@@ -1,10 +1,12 @@
 # Custom stuff:
 *.attach_pid*
-data.json
-authorized/
-unauthorized/
-config/*
-!config/README.md
+
+program/
+!program/solarthing.jar
+!program/solar/*
+!program/outhouse/*
+!program/config/README.md
+!program/README.md
 
 # Compiled class file
 *.class
