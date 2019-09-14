@@ -76,6 +76,7 @@ public final class SolarMain {
 	private static final String DATABASE_COMMAND_DOWNLOAD_ID = "command_download";
 	
 	private static int connectMate(MateProgramOptions options) throws Exception {
+		LOGGER.info("Beginning mate program");
 		PacketCollectionIdGenerator idGenerator = createIdGenerator(options.getUniqueIdsInOneHour());
 		final IOBundle createdIO = createIOBundle(options.getIOBundleFile(), MATE_CONFIG);
 		final IOBundle io;
@@ -175,6 +176,7 @@ public final class SolarMain {
 		return 0;
 	}
 	private static int connectRover(RoverProgramOptions options){
+		LOGGER.info("Beginning rover program");
 		List<PacketHandler> packetHandlers = getPacketHandlers(getDatabaseConfigs(options), "solarthing");
 		PacketHandler packetHandler = new PacketHandlerMultiplexer(packetHandlers);
 		PacketProvider packetProvider = getAdditionalPacketProvider(options);
@@ -252,6 +254,7 @@ public final class SolarMain {
 		return 0;
 	}
 	private static int connectOuthouse(OuthouseProgramOptions options) throws Exception {
+		LOGGER.info("Beginning outhouse program");
 		PacketCollectionIdGenerator idGenerator = createIdGenerator(options.getUniqueIdsInOneHour());
 		List<PacketHandler> packetHandlers = getPacketHandlers(getDatabaseConfigs(options), "outhouse");
 		try (IOBundle ioBundle = createIOBundle(options.getIOBundleFile(), new SerialConfigBuilder(9600).build())) {

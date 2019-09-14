@@ -19,7 +19,7 @@ to see the current battery voltage and other information along with a graph to s
 also used for an outhouse status!
 
 In the future, this project may extend to more IoT uses other than just solar and outhouse status. But the name will
-forever stick! Long live <strong>solarthing</strong>!
+forever stick! Long live <strong>SolarThing</strong>!
 
 ### Displaying
 Primarily, we are viewing the data in the Android app. Originally a web app was created. The Android app is superior 
@@ -40,7 +40,7 @@ You can see the [Outback/Renogy Rover](solar/README.md) README for using the pro
 
 You can see the [Outhouse](outhouse/README.md) README for using the outhouse program.
 
-The [input and output](input_and_outputs.md) README is documentation for the ```--io``` option used in all of the sub programs.
+The [input and output](input_and_outputs.md) README is documentation for the `--io` option used in all of the sub programs.
 
 ### Developer Use
 [![](https://jitpack.io/v/wildmountainfarms/solarthing.svg)](https://jitpack.io/#wildmountainfarms/solarthing)
@@ -68,8 +68,7 @@ Run the command
 ```
 mvn clean compile assembly:single
 ```
-Move the jar to the root folder and name the jar `solarthing.jar`
-
+Move the jar to the `program` folder and name the jar `solarthing.jar`. `./compile_and_move.sh` will do both of these automatically.
 
 ### What the database structure looks like
 The CouchDB has a few databases in it. Each database has many packets stored in the
@@ -112,6 +111,9 @@ adding packets to a Map, you can make sure that there's only one packet for each
 
 #### Configuration
 This uses jewelcli for its configuration. Using this library makes it very easy to use interfaces with multiple inheritance. http://jewelcli.lexicalscope.com/examples.html
+
+#### Logging
+This uses log4j2 to log. https://logging.apache.org/log4j/2.x/manual/appenders.html
 
 ### Inspiration
 @eidolon1138 is the one who originally came up with the idea to collect data from his Outback Mate device. He helped

@@ -71,7 +71,7 @@ public class SolarReader implements Runnable{
 			while (in.available() > 0 && (len = in.read(buffer)) > -1) {
 				String s = new String(buffer, 0, len);
 				String debugString = s.replaceAll("\n", "\\\\n").replaceAll("\r", "\\\\r");
-				LOGGER.debug("got: '" + debugString + "'. len: " + len + " at: " + System.currentTimeMillis());
+//				LOGGER.debug("got: '" + debugString + "'. len: " + len + " at: " + System.currentTimeMillis());
 				final Collection<? extends Packet> newPackets;
 				try {
 					newPackets = creator.add(s.toCharArray());
@@ -87,7 +87,6 @@ public class SolarReader implements Runnable{
 				boolean firstData = lastFirstReceivedData + samePacketTime < now;
 				if(firstData) {
 					lastFirstReceivedData = now; // set this to the first time we get bytes
-					LOGGER.debug("received first data at: " + now); // we may not need this debug in the future. Feel free to remove this if you think it's worthless
 				}
 				onDataReceive.onDataReceive(firstData, instant);
 				packetList.addAll(newPackets);
@@ -111,11 +110,11 @@ public class SolarReader implements Runnable{
 				try {
 					LOGGER.debug("handling above packet(s). packetList.size(): " + packetList.size() + " instant: " + wasInstant);
 					Collection<? extends Packet> packetsToAdd = additionalPacketProvider.createPackets();
-					LOGGER.debug("Before we handle, we are adding " + packetsToAdd.size() + " packets!");
+					LOGGER.debug("Before we handle, we are adding " + packetsToAdd.size() + " packet(s)!");
 					packetList.addAll(packetsToAdd);
 					packetHandler.handle(PacketCollections.createFromPackets(packetList, idGenerator), wasInstant);
 				} catch(PacketHandleException ex){
-					LOGGER.error("Was unable to handle " + packetList.size() + " packets.", ex);
+					LOGGER.error("Was unable to handle " + packetList.size() + " packet(s).", ex);
 				} finally {
 					packetList.clear();
 				}
