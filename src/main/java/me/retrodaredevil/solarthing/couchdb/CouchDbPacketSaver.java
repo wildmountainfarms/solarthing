@@ -53,7 +53,7 @@ public class CouchDbPacketSaver implements PacketHandler {
 				response = client.update(packet);
 			}
 		} catch(DocumentConflictException ex){
-			throw new PacketHandleException("Error while saving something to couchdb. Your throttle factor (--tf) may be too low or you recently restarted the program.", ex);
+			throw new PacketHandleException("Conflict while saving something to couchdb. id=" + id + " rev=" + rev + ". This usually means we put a packet in the database, but we weren't able to cache its rev id.", ex);
 		} catch(CouchDbException ex){
 			throw new PacketHandleException("We got a CouchDbException probably meaning we couldn't reach the database.", ex);
 		}

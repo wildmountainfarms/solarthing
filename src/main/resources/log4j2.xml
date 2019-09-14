@@ -8,10 +8,10 @@
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="${LOG_PATTERN}"/>
         </Console>
-        <RollingFile name="logAll" fileName="${logPath}/log_debug.log" filePattern="${logPath}/log_debug%d{yyyy.MM.dd}.log.gz">
+        <RollingFile name="logAll" fileName="${logPath}/log_debug.log" filePattern="${logPath}/log_debug_%d{yyyy.MM.dd}.log.gz">
             <PatternLayout pattern="${LOG_PATTERN}"/>
             <Policies>
-                <SizeBasedTriggeringPolicy size="100 MB"/>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
             </Policies>
         </RollingFile>
         <RollingFile name="logInfo" fileName="${logPath}/log_info.log" filePattern="${logPath}/log_info_%d{yyyy.MM.dd}.log" >
