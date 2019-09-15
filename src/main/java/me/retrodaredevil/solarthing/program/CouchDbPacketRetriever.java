@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing.couchdb;
+package me.retrodaredevil.solarthing.program;
 
 import com.google.gson.JsonObject;
 import me.retrodaredevil.couchdb.CouchProperties;
@@ -7,6 +7,8 @@ import me.retrodaredevil.solarthing.JsonPacketReceiver;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.lightcouch.CouchDbClient;
 import org.lightcouch.CouchDbException;
 import org.lightcouch.NoDocumentException;
@@ -15,6 +17,8 @@ import org.lightcouch.View;
 import java.util.List;
 
 public class CouchDbPacketRetriever implements PacketHandler {
+	private final Logger LOGGER = LogManager.getLogger(CouchDbPacketRetriever.class);
+	
 	private final CouchProperties properties;
 	private final JsonPacketReceiver jsonPacketReceiver;
 	private final boolean removeQueriedPackets;
@@ -55,10 +59,15 @@ public class CouchDbPacketRetriever implements PacketHandler {
 			throw new PacketHandleException("This probably means we couldn't reach the database", e);
 		}
 		for(int i = 0; i < packets.size(); i++){
-			JsonObject jsonObject = packets.get(i).getAsJsonObject("value");
+			JsonObject baseObject = packets.get(i);
+			JsonObject jsonObject = baseObject.getAsJsonObject("value");
 			packets.set(i, jsonObject);
 			if(removeQueriedPackets) {
-				client.remove(jsonObject); // TODO figure out a way to do a bulk remove
+				try {
+					client.remove(jsonObject); // TODO figure out a way to do a bulk remove
+				} catch(CouchDbException ex){
+					LOGGER.warn("Unable to remove id=" + baseObject.get("_id").getAsString() + " with rev=" + baseObject.get("_rev").getAsString(), ex);
+				}
 			}
 		}
 		jsonPacketReceiver.receivePackets(packets);

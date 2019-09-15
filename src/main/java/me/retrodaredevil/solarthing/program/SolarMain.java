@@ -22,7 +22,6 @@ import me.retrodaredevil.solarthing.config.databases.IndividualSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.LatestFileDatabaseSettings;
 import me.retrodaredevil.solarthing.config.options.*;
-import me.retrodaredevil.solarthing.couchdb.CouchDbPacketRetriever;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketSaver;
 import me.retrodaredevil.solarthing.outhouse.OuthousePacketCreator;
 import me.retrodaredevil.solarthing.packets.Packet;
@@ -222,7 +221,7 @@ public final class SolarMain {
 				Thread.currentThread().interrupt();
 			}
 		} catch (Exception e) {
-			LOGGER.error("Unable to connect to rover", e);
+			LOGGER.fatal("Unable to connect to rover", e);
 			return 1;
 		}
 		return 0;
@@ -247,7 +246,7 @@ public final class SolarMain {
 				RoverWriteTable write = new RoverModbusSlaveWrite(slave);
 				RoverSetupProgram.startRoverSetup(read, write);
 			} catch (Exception e) {
-				LOGGER.error("Got exception!", e);
+				LOGGER.fatal("Got exception!", e);
 				return 1;
 			}
 		}
@@ -407,6 +406,7 @@ public final class SolarMain {
 	public static int doMain(String[] args){
 		if(args.length < 1){
 			System.err.println("Usage: <java -jar ...> {mate|rover|rover-setup|outhouse}");
+			LOGGER.fatal("Incorrect args");
 			return 1;
 		}
 		String programName = args[0];
@@ -417,6 +417,7 @@ public final class SolarMain {
 		Program program = getProgram(programName);
 		if(program == null){
 			System.err.println("Usage: <java -jar ...> {mate|rover|rover-setup|outhouse}");
+			LOGGER.fatal("Incorrect args");
 			return 1;
 		}
 		try {
@@ -427,6 +428,7 @@ public final class SolarMain {
 					options = cli.parseArguments(newArgs);
 				} catch(ArgumentValidationException ex){
 					System.err.println(ex.getMessage());
+					LOGGER.fatal("Incorrect args");
 					return 1;
 				}
 				return connectMate(options);
@@ -437,6 +439,7 @@ public final class SolarMain {
 					options = cli.parseArguments(newArgs);
 				} catch(ArgumentValidationException ex){
 					System.err.println(ex.getMessage());
+					LOGGER.fatal("Incorrect args");
 					return 1;
 				}
 				return connectRover(options);
@@ -447,6 +450,7 @@ public final class SolarMain {
 					options = cli.parseArguments(newArgs);
 				} catch(ArgumentValidationException ex){
 					System.err.println(ex.getMessage());
+					LOGGER.fatal("Incorrect args");
 					return 1;
 				}
 				return connectOuthouse(options);
@@ -457,14 +461,16 @@ public final class SolarMain {
 					options = cli.parseArguments(newArgs);
 				} catch(ArgumentValidationException ex){
 					System.err.println(ex.getMessage());
+					LOGGER.fatal("Incorrect args");
 					return 1;
 				}
 				return connectRoverSetup(options);
 			}
 			System.out.println("Specify mate|rover|rover-setup|outhouse");
+			LOGGER.fatal("Incorrect args");
 			return 1;
 		} catch (Exception t) {
-			t.printStackTrace();
+			LOGGER.fatal("Got exception", t);
 			return 1;
 		}
 	}

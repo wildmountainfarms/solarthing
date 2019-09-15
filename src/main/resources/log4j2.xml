@@ -14,7 +14,7 @@
                 <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
             </Policies>
         </RollingFile>
-        <RollingFile name="logInfo" fileName="${logPath}/log_info.log" filePattern="${logPath}/log_info_%d{yyyy.MM.dd}.log" >
+        <RollingFile name="logInfo" fileName="${logPath}/log_info.log" filePattern="${logPath}/log_info_%d{yyyy.MM.dd}.log.gz" >
             <PatternLayout pattern="${LOG_PATTERN}"/>
             <Policies>
                 <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
@@ -30,6 +30,9 @@
             <AppenderRef ref="logInfo" level="INFO"/>
         </Logger>
         <Logger name="org.lightcouch" level="INFO">
+            <AppenderRef ref="logAll"/>
+        </Logger>
+        <Logger name="org.apache.http" level="INFO">
             <AppenderRef ref="logAll"/>
         </Logger>
     </Loggers>
