@@ -81,6 +81,7 @@ https://www.rototron.info/raspberry-pi-solar-serial-rest-api-tutorial/
 
 TriStar Modbus
 * https://www.stellavolta.com/content/MSCTSModbusCommunication.pdf
+* http://www.hardysolar.com/charge-controller/dl/morningstar-charge-controller-sunsaver-mppt.pdf
 
 ## Identifier Order
 Identifiers are used in SolarPackets to identify solar products and act as keys for Maps. Identifiers should

@@ -35,6 +35,10 @@
                         <manifest>
                             <mainClass>me.retrodaredevil.solarthing.program.SolarMain</mainClass>
                         </manifest>
+                        <manifestEntries>
+                            <!--This helps make it compatible with Java 11 https://stackoverflow.com/a/57616897/5434860-->
+                            <Multi-Release>true</Multi-Release>
+                        </manifestEntries>
                     </archive>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
@@ -81,6 +85,11 @@
             <groupId>com.github.retrodaredevil</groupId>
             <artifactId>io-lib</artifactId>
             <version>v1.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver-sync</artifactId>
+            <version>3.11.0</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
         <dependency>
