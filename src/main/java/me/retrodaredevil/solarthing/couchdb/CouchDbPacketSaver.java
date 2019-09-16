@@ -1,8 +1,6 @@
 package me.retrodaredevil.solarthing.couchdb;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import me.retrodaredevil.couchdb.CouchProperties;
 import me.retrodaredevil.couchdb.CouchPropertiesBuilder;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
@@ -61,7 +59,7 @@ public class CouchDbPacketSaver implements PacketHandler {
 				String actualRev = document.get("_rev").getAsString();
 				idRevMap.put(id, actualRev);
 				LOGGER.info("We were able to get the actual Revision ID for id=" + id + " actual rev=" + actualRev);
-			} catch(CouchDbException revEx){
+			} catch(CouchDbException | JsonSyntaxException | JsonIOException revEx){ // We have to catch these json related exceptions because of a bug in CouchDB
 				LOGGER.warn("Unable to get the actual Revision ID for id=" + id, revEx);
 			}
 			throw new PacketHandleException("Conflict while saving something to couchdb. id=" + id + " rev=" + rev + ". This usually means we put a packet in the database, but we weren't able to cache its rev id.", ex);
