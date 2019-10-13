@@ -1,0 +1,25 @@
+version "0.0.1-SNAPSHOT"
+description = """SolarThing"""
+
+subprojects {
+    apply plugin: 'java-library'
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+    repositories {
+        maven { url "https://jitpack.io" }
+        maven { url "https://repo.maven.apache.org/maven2" }
+    }
+    dependencies {
+        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.4.2'
+        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.4.2'
+    }
+    test {
+        useJUnitPlatform()
+    }
+}
+project(":client"){
+    apply plugin: 'java'
+    dependencies {
+        api project(":core")
+    }
+}

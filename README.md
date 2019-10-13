@@ -69,7 +69,7 @@ This project requires Java 8+. However Java 8 API additions aren't used to remai
 ### Compiling
 Run the command
 ```
-mvn clean compile assembly:single
+./gradlew client:dist
 ```
 Move the jar to the `program` folder and name the jar `solarthing.jar`. `./compile_and_move.sh` will do both of these automatically.
 

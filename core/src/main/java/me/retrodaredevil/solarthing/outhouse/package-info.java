@@ -1,0 +1,5 @@
+/**
+ * This package represents {@link me.retrodaredevil.solarthing.outhouse.OuthousePacket}s with lots of different kinds of
+ * data to make the craziest outhouse imaginable! This mostly contains misc. packets that don't belong in their own package.
+ */
+package me.retrodaredevil.solarthing.outhouse;

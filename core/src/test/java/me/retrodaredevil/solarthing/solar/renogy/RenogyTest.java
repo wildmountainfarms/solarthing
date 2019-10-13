@@ -1,0 +1,154 @@
+package me.retrodaredevil.solarthing.solar.renogy;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import me.retrodaredevil.solarthing.solar.renogy.rover.*;
+import me.retrodaredevil.solarthing.solar.renogy.rover.special.MutableSpecialPowerControl_E021;
+import me.retrodaredevil.solarthing.solar.renogy.rover.special.MutableSpecialPowerControl_E02D;
+import org.junit.jupiter.api.Test;
+
+import java.nio.charset.StandardCharsets;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+final class RenogyTest {
+	@Test
+	void temperatureConvertTest(){
+		assertEquals(2, RoverReadTable.convertRawTemperature(2));
+		assertEquals(-2, RoverReadTable.convertRawTemperature(2 | (1 << 7)));
+		assertEquals(-30, RoverReadTable.convertRawTemperature(30 | (1 << 7)));
+	}
+	@Test
+	void testStreetLight(){
+		assertThrows(IllegalArgumentException.class, () -> StreetLight.OFF.isActive(256));
+		
+		assertTrue(StreetLight.OFF.isActive(0b01111111));
+		assertTrue(StreetLight.OFF.isActive(0b01111011));
+		assertTrue(StreetLight.OFF.isActive(0b00111011));
+		assertTrue(StreetLight.OFF.isActive(0b00111010));
+		
+		assertTrue(StreetLight.ON.isActive(0b11111111));
+		assertTrue(StreetLight.ON.isActive(0b11111011));
+		assertTrue(StreetLight.ON.isActive(0b10111011));
+		assertTrue(StreetLight.ON.isActive(0b10111010));
+		
+		assertEquals(100, StreetLight.getBrightnessValue(100));
+		assertEquals(100, StreetLight.getBrightnessValue(100 | (1 << 7)));
+		assertEquals(49, StreetLight.getBrightnessValue(49));
+		assertEquals(49, StreetLight.getBrightnessValue(49 | (1 << 7)));
+	}
+	@Test
+	void testSpecialPower_E021(){
+		MutableSpecialPowerControl_E021 power = new MutableSpecialPowerControl_E021();
+		
+		power.setChargingModeControlledByVoltage(true);
+		assertTrue(power.isChargingModeControlledByVoltage());
+		power.setChargingModeControlledByVoltage(false);
+		assertFalse(power.isChargingModeControlledByVoltage());
+		
+		power.setSpecialPowerControlEnabled(true);
+		assertTrue(power.isSpecialPowerControlEnabled());
+		power.setSpecialPowerControlEnabled(false);
+		assertFalse(power.isSpecialPowerControlEnabled());
+		
+		power.setEachNightOnEnabled(true);
+		assertTrue(power.isEachNightOnEnabled());
+		power.setEachNightOnEnabled(false);
+		assertFalse(power.isEachNightOnEnabled());
+		
+		power.setNoChargingBelow0CEnabled(true);
+		assertTrue(power.isNoChargingBelow0CEnabled());
+		power.setNoChargingBelow0CEnabled(false);
+		assertFalse(power.isNoChargingBelow0CEnabled());
+		
+		power.setChargingMethod(ChargingMethod.DIRECT);
+		assertEquals(ChargingMethod.DIRECT, power.getChargingMethod().getChargingMethod());
+		power.setChargingMethod(ChargingMethod.PWM);
+		assertEquals(ChargingMethod.PWM, power.getChargingMethod().getChargingMethod());
+		
+		assertFalse(power.isChargingModeControlledByVoltage());
+		assertFalse(power.isSpecialPowerControlEnabled());
+		assertFalse(power.isEachNightOnEnabled());
+		assertFalse(power.isNoChargingBelow0CEnabled());
+		assertEquals(ChargingMethod.PWM, power.getChargingMethod().getChargingMethod());
+	}
+	@Test
+	void testSpecialPower_E02D(){
+		MutableSpecialPowerControl_E02D power = new MutableSpecialPowerControl_E02D();
+		
+		power.setIntelligentPowerEnabled(true);
+		assertTrue(power.isIntelligentPowerEnabled());
+		power.setIntelligentPowerEnabled(false);
+		assertFalse(power.isIntelligentPowerEnabled());
+		
+		power.setEachNightOnEnabled(true);
+		assertTrue(power.isEachNightOnEnabled());
+		power.setEachNightOnEnabled(false);
+		assertFalse(power.isEachNightOnEnabled());
+		
+		power.setIsLithiumBattery(true);
+		assertTrue(power.isLithiumBattery());
+		power.setIsLithiumBattery(false);
+		assertFalse(power.isLithiumBattery());
+		
+		power.setChargingMethod(ChargingMethod.DIRECT);
+		assertEquals(ChargingMethod.DIRECT, power.getChargingMethod().getChargingMethod());
+		power.setChargingMethod(ChargingMethod.PWM);
+		assertEquals(ChargingMethod.PWM, power.getChargingMethod().getChargingMethod());
+		
+		power.setNoChargingBelow0CEnabled(true);
+		assertTrue(power.isNoChargingBelow0CEnabled());
+		power.setNoChargingBelow0CEnabled(false);
+		assertFalse(power.isNoChargingBelow0CEnabled());
+		
+		power.setIs24VSystem(true);
+		assertTrue(power.is24VSystem());
+		power.setIs24VSystem(false);
+		assertFalse(power.is24VSystem());
+		
+		assertFalse(power.isIntelligentPowerEnabled());
+		assertFalse(power.isEachNightOnEnabled());
+		assertFalse(power.isLithiumBattery());
+		assertEquals(ChargingMethod.PWM, power.getChargingMethod().getChargingMethod());
+		assertFalse(power.isNoChargingBelow0CEnabled());
+		assertFalse(power.is24VSystem());
+	}
+	@Test
+	void testPacket(){
+		Rover.OperatingSettingBundle operating = new Rover.OperatingSettingBundle(0, 0);
+		Rover.SensingBundle sensing = new Rover.SensingBundle(0, 0, 0);
+		RoverStatusPacket packet = new ImmutableRoverStatusPacket(
+			0,0,0,0,
+			"     HI         ".getBytes(StandardCharsets.UTF_8),
+			0,0,
+			0,0,0,26.2f,0,
+			0,0,0,0,0,0,0,
+			0,0,0,0,0,0,
+			0,0,0,0,0,
+			0,0,0,0,0,0,
+			0,0,0,0,0,0,0,
+			BatteryType.OPEN.getValueCode(),0,0,0,0,0,
+			0,0,0,0,0,
+			0,0,0,0,0,0,
+			0, operating, operating, operating, operating, 0,0,0,0,
+			0, sensing, sensing, sensing, 0,0,0
+		);
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		String json = gson.toJson(packet);
+		System.out.println(json);
+		JsonObject object = gson.fromJson(json, JsonObject.class);
+		RoverStatusPacket parsed = RoverStatusPackets.createFromJson(object);
+		
+		String json2 = gson.toJson(parsed);
+		assertEquals(json, json2);
+		
+		assertFalse(parsed.isNewDay(parsed)); // because they're the same, just do a quick check to make sure this method returns false. Maybe we'll add another test for it later...
+	}
+	@Test
+	void productModelTest(){
+		assertTrue(ProductModelUtil.isPositiveGround("RNG-CTRL-RVRPG40"));
+		assertTrue(ProductModelUtil.isRover("RNG-CTRL-RVRPG40"));
+		assertFalse(ProductModelUtil.isWanderer("RNG-CTRL-RVRPG40"));
+	}
+}
