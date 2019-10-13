@@ -6,18 +6,18 @@ import me.retrodaredevil.couchdb.CouchPropertiesBuilder;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.lightcouch.CouchDbClient;
 import org.lightcouch.CouchDbException;
 import org.lightcouch.DocumentConflictException;
 import org.lightcouch.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class CouchDbPacketSaver implements PacketHandler {
-	private static final Logger LOGGER = LogManager.getLogger(CouchDbPacketSaver.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CouchDbPacketSaver.class);
 	private static final Gson GSON = new GsonBuilder().serializeNulls().create();
 	
 	private final Map<String, String> idRevMap = new HashMap<>(); // TODO we could probably figure out a way to clear old values

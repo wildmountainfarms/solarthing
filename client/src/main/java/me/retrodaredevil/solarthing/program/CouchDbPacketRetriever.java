@@ -7,17 +7,17 @@ import me.retrodaredevil.solarthing.JsonPacketReceiver;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.lightcouch.CouchDbClient;
 import org.lightcouch.CouchDbException;
 import org.lightcouch.NoDocumentException;
 import org.lightcouch.View;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public class CouchDbPacketRetriever implements PacketHandler {
-	private final Logger LOGGER = LogManager.getLogger(CouchDbPacketRetriever.class);
+	private final Logger LOGGER = LoggerFactory.getLogger(CouchDbPacketRetriever.class);
 	
 	private final CouchProperties properties;
 	private final JsonPacketReceiver jsonPacketReceiver;

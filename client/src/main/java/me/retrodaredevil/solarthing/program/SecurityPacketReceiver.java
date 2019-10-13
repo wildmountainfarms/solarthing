@@ -11,9 +11,9 @@ import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerat
 import me.retrodaredevil.solarthing.packets.collection.PacketCollections;
 import me.retrodaredevil.solarthing.packets.security.*;
 import me.retrodaredevil.solarthing.packets.security.crypto.*;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.lightcouch.CouchDbClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
@@ -24,7 +24,7 @@ import java.security.PublicKey;
 import java.util.*;
 
 public class SecurityPacketReceiver implements JsonPacketReceiver {
-	private static final Logger LOGGER = LogManager.getLogger(SecurityPacketReceiver.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SecurityPacketReceiver.class);
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
 	
 	private final PublicKeyLookUp publicKeyLookUp;

@@ -7,15 +7,15 @@ import me.retrodaredevil.solarthing.commands.CommandProvider;
 import me.retrodaredevil.solarthing.commands.sequence.CommandSequence;
 import me.retrodaredevil.solarthing.commands.sequence.CommandSequenceCommandProvider;
 import me.retrodaredevil.solarthing.commands.sequence.SourcedCommandSequence;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
 public class CommandSequenceDataReceiver<T extends Command> implements DataReceiver {
-	private static final Logger LOGGER = LogManager.getLogger(CommandSequenceDataReceiver.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CommandSequenceDataReceiver.class);
 	private final Queue<SourcedCommandSequence<T>> queue = new LinkedList<>();
 	private final CommandProvider<T> commandProvider = new CommandSequenceCommandProvider<>(queue::poll);
 	

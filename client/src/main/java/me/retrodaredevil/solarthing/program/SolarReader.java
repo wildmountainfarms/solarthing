@@ -9,8 +9,8 @@ import me.retrodaredevil.solarthing.packets.creation.PacketProvider;
 import me.retrodaredevil.solarthing.packets.creation.TextPacketCreator;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -23,7 +23,7 @@ import static java.util.Objects.requireNonNull;
 
 public class SolarReader {
 	
-	private static final Logger LOGGER = LogManager.getLogger(SolarReader.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SolarReader.class);
 	
 	private final InputStream in;
 	private final TextPacketCreator creator;

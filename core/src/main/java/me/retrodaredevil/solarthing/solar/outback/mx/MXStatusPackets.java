@@ -8,14 +8,14 @@ import me.retrodaredevil.solarthing.packets.support.Support;
 import me.retrodaredevil.solarthing.util.CheckSumException;
 import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
 import me.retrodaredevil.solarthing.util.ParsePacketAsciiDecimalDigitException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static me.retrodaredevil.util.json.JsonHelper.getOrNull;
 import static me.retrodaredevil.solarthing.util.ParseUtil.toInt;
 
 public final class MXStatusPackets {
-	private static final Logger LOGGER = LogManager.getLogger(MXStatusPackets.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(MXStatusPackets.class);
 	private MXStatusPackets(){ throw new UnsupportedOperationException(); }
 
 	@SuppressWarnings("Duplicates")

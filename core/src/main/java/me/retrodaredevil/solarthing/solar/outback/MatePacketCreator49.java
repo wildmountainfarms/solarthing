@@ -10,14 +10,14 @@ import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPackets;
 import me.retrodaredevil.solarthing.util.CheckSumException;
 import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
 import me.retrodaredevil.solarthing.util.ParsePacketAsciiDecimalDigitException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.Collections;
 
 public class MatePacketCreator49 extends StartEndTextPacketCreator {
-	private static final Logger LOGGER = LogManager.getLogger(MatePacketCreator49.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(MatePacketCreator49.class);
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
 
 	private final IgnoreCheckSum ignoreCheckSum;
