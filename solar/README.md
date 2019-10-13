@@ -17,7 +17,7 @@ You can look at how we parse packets for
 
 ### Running
 ```
-solar/virtual_mate.sh | java -jar solarthing.jar solar --cc --unit-test --unique 60 --io config_templates/standard_io.json
+solar/virtual_mate.sh | java -jar solarthing.jar solar --cc --unique 60 --io config_templates/standard_io.json
 ```
 Note the `--cc`. This stands for correct checksum. To make it easy in `virtual_mate.sh` to change values, using `--cc`
 makes it quicker to change values without calculating the checksum ourselves and just have the program do it for us.
@@ -25,7 +25,7 @@ Obviously you don't want to use that when you are getting reliable data from a s
 
 If you are running this on a Pi with a serial port connected, you would probably run
 ```
-java -jar solarthing.jar solar --unique 60 --io config_templates/mate_io.json
+java -jar solarthing.jar mate --unique 60 --io config_templates/mate_io.json
 ```
 
 Example command that I use while running it on a raspberry pi:

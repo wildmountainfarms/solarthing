@@ -19,7 +19,10 @@ public final class DatabaseConfig {
 		this.settings = settings;
 		this.individualSettingsMap = Collections.unmodifiableMap(new HashMap<>(frequencySettingsMap));
 	}
-	
+
+	/**
+	 * @return The {@link DatabaseType}. This determines what type {@link #getSettings()} will return
+	 */
 	public DatabaseType getType() {
 		return type;
 	}
