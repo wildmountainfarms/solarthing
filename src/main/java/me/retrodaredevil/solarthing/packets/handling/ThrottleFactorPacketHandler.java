@@ -22,16 +22,7 @@ public class ThrottleFactorPacketHandler implements PacketHandler {
 		this.frequencySettings = frequencySettings;
 		this.instantOnly = instantOnly;
 	}
-	/**
-	 * @param packetHandler The packet handler
-	 * @param throttleFactor The throttle factor. {@code packetHandler} will be called every nth packet, where n is this value.
-	 * @param instantOnly true if neither {@code packetHandler} nor {@code otherPacketHandler} should be called if {@code wasInstant} is false
-	 */
-	@Deprecated
-	public ThrottleFactorPacketHandler(PacketHandler packetHandler, int throttleFactor, boolean instantOnly) {
-		this(packetHandler, new FrequencySettings(throttleFactor, 0), instantOnly);
-	}
-	
+
 	@Override
 	public void handle(PacketCollection packetCollection, boolean wasInstant) throws PacketHandleException {
 		if(instantOnly && !wasInstant){

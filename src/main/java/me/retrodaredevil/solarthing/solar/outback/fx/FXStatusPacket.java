@@ -58,8 +58,6 @@ public interface FXStatusPacket extends OutbackPacket, BatteryVoltage {
 	 * @return The operating mode code which represents a single OperationalMode
 	 */
 	int getOperatingModeValue();
-	@Deprecated
-	default int getOperatingMode(){ return getOperatingModeValue(); }
 	default OperationalMode getOperationalMode(){ return Modes.getActiveMode(OperationalMode.class, getOperatingModeValue()); }
 	
 	/**
@@ -77,8 +75,6 @@ public interface FXStatusPacket extends OutbackPacket, BatteryVoltage {
 	 * @return The AC mode code which represents a single ACMode
 	 */
 	int getACModeValue();
-	@Deprecated
-	default int getACMode(){ return getACModeValue(); }
 	default ACMode getACModeMode(){ return Modes.getActiveMode(ACMode.class, getACModeValue()); }
 	
 	/**

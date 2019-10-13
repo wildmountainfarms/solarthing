@@ -24,31 +24,37 @@ public final class PacketGroups {
 	public static InstancePacketGroup createInstancePacketGroup(Collection<? extends Packet> groups, long dateMillis, String sourceId, Integer fragmentId, Map<? extends Packet, Long> dateMillisPacketMap){
 		return new ImmutableInstancePacketGroup(groups, dateMillis, dateMillisPacketMap, sourceId, fragmentId);
 	}
+	public static InstancePacketGroup parseToInstancePacketGroup(PacketGroup group){
+		List<Packet> packets = new ArrayList<>();
+		String sourceId = InstanceSourcePacket.DEFAULT_SOURCE_ID;
+		Integer fragmentId = null;
+		for(Packet packet : group.getPackets()){
+			if (packet instanceof InstancePacket) {
+				InstancePacket instancePacket = (InstancePacket) packet;
+				switch(instancePacket.getPacketType()){
+					case SOURCE: sourceId = ((InstanceSourcePacket) instancePacket).getSourceId(); break;
+					case FRAGMENT_INDICATOR: fragmentId = ((InstanceFragmentIndicatorPacket) instancePacket).getFragmentId(); break;
+					default: break;
+				}
+			} else {
+				packets.add(packet);
+			}
+		}
+		return createInstancePacketGroup(packets, group.getDateMillis(), sourceId, fragmentId);
+	}
 	public static Map<String, List<InstancePacketGroup>> parsePackets(Collection<? extends PacketGroup> groups){
 		Map<String, List<InstancePacketGroup>> map = new HashMap<>();
 		for(PacketGroup group : groups){
-			List<Packet> packets = new ArrayList<>();
-			String sourceId = InstanceSourcePacket.DEFAULT_SOURCE_ID;
-			Integer fragmentId = null;
-			for(Packet packet : group.getPackets()){
-				if (packet instanceof InstancePacket) {
-					InstancePacket instancePacket = (InstancePacket) packet;
-					switch(instancePacket.getPacketType()){
-						case SOURCE: sourceId = ((InstanceSourcePacket) instancePacket).getSourceId(); break;
-						case FRAGMENT_INDICATOR: fragmentId = ((InstanceFragmentIndicatorPacket) instancePacket).getFragmentId(); break;
-						default: break;
-					}
-				} else {
-					packets.add(packet);
-				}
-			}
+			InstancePacketGroup instancePacketGroup = parseToInstancePacketGroup(group);
+			String sourceId = instancePacketGroup.getSourceId();
 			List<InstancePacketGroup> list = map.get(sourceId);
+
 			//noinspection Java8MapApi // This library must remain compatible with Android SDK 19
 			if(list == null){
 				list = new ArrayList<>();
 				map.put(sourceId, list);
 			}
-			list.add(createInstancePacketGroup(packets, group.getDateMillis(), sourceId, fragmentId));
+			list.add(instancePacketGroup);
 		}
 		return map;
 	}

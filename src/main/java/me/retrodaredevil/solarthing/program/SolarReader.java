@@ -12,6 +12,7 @@ import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
-public class SolarReader implements Runnable{
+public class SolarReader {
 	
 	private static final Logger LOGGER = LogManager.getLogger(SolarReader.class);
 	
@@ -59,49 +60,55 @@ public class SolarReader implements Runnable{
 	/**
 	 * Should be called continuously
 	 */
-	@Override
-	public void run() {
-		// This implementation isn't perfect - we cannot detect EOF
+	public void update() throws IOException {
+		// As of 2019.10.13, we can now detect EOF
 		// stackoverflow: https://stackoverflow.com/q/53291868/5434860
-		// TODO try this solution: https://stackoverflow.com/questions/804951/is-it-possible-to-read-from-a-inputstream-with-a-timeout
-		int len = 0;
-		try {
-			
-			// ======= read bytes, append to packetList =======
-			while (in.available() > 0 && (len = in.read(buffer)) > -1) {
-				String s = new String(buffer, 0, len);
-				String debugString = s.replaceAll("\n", "\\\\n").replaceAll("\r", "\\\\r");
-//				LOGGER.debug("got: '" + debugString + "'. len: " + len + " at: " + System.currentTimeMillis());
-				final Collection<? extends Packet> newPackets;
-				try {
-					newPackets = creator.add(s.toCharArray());
-				} catch (PacketCreationException e) {
-					e.printStackTrace();
-					LOGGER.warn("Got a garbled packet! got: '" + debugString + "'");
-					packetList.clear();
-					instant = false; // because we check instant to see if data is reliable, set it to false because it's not reliable right now
-					break;
+		// thanks to this solutionsolution: https://stackoverflow.com/questions/804951/is-it-possible-to-read-from-a-inputstream-with-a-timeout
+
+		boolean readAny = false;
+		// ======= read bytes, append to packetList =======
+		while (true) {
+			int available = in.available();
+			if(available < 0) throw new AssertionError("available cannot be less than 0! available: " + available);
+			final int len;
+			if(available == 0){
+				boolean isEOF = in.read(buffer, 0, 0) == -1;
+				if(isEOF) {
+					throw new EOFException();
 				}
-				
-				long now = System.currentTimeMillis();
-				boolean firstData = lastFirstReceivedData + samePacketTime < now;
-				if(firstData) {
-					lastFirstReceivedData = now; // set this to the first time we get bytes
-				}
-				onDataReceive.onDataReceive(firstData, instant);
-				packetList.addAll(newPackets);
+				break;
+			} else {
+				len = in.read(buffer);
+				if(len == -1) throw new AssertionError("Because we call in.available(), len should never be -1. Did we change the code?");
+				readAny = true;
 			}
-		} catch (IOException e) {
-			LOGGER.error("We got an IOException which doesn't happen often. We are going to try again so hopefully this works.", e);
-			return;
+			String s = new String(buffer, 0, len);
+			final Collection<? extends Packet> newPackets;
+			try {
+				newPackets = creator.add(s.toCharArray());
+			} catch (PacketCreationException e) {
+				e.printStackTrace();
+				String debugString = s.replaceAll("\n", "\\\\n").replaceAll("\r", "\\\\r");
+				LOGGER.warn("Got a garbled packet! got: '" + debugString + "'");
+				packetList.clear();
+				instant = false; // because we check instant to see if data is reliable, set it to false because it's not reliable right now
+				break;
+			}
+
+			long now = System.currentTimeMillis();
+			boolean firstData = lastFirstReceivedData + samePacketTime < now;
+			if(firstData) {
+				lastFirstReceivedData = now; // set this to the first time we get bytes
+			}
+			onDataReceive.onDataReceive(firstData, instant);
+			packetList.addAll(newPackets);
 		}
-		if(len == -1) throw new AssertionError("Because we call in.available(), len should never be -1. Did we change the code?");
-		
+
 		// ======= Handle data if needed =======
 		long now = System.currentTimeMillis();
 		if (lastFirstReceivedData + samePacketTime < now) { // if there's no new packets coming any time soon
 			if (packetList.isEmpty()) {
-				if(len == 0) {
+				if(!readAny) {
 					instant = true;
 				}
 			} else {

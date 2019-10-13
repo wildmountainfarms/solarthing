@@ -1,23 +1,15 @@
 package me.retrodaredevil.solarthing.packets.collection;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import me.retrodaredevil.solarthing.packets.Packet;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.GregorianCalendar;
-import java.util.List;
+import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 
 class ImmutablePacketCollection implements PacketCollection {
 	private final List<Packet> packets;
-	/** An array that represents the date [year, day, month, hour, minute, second, millisecond] (local time)*/
-	private final int[] dateArray;
 	/** The UTC date represented in milliseconds */
 	private final long dateMillis;
 	/** A special field that's used when serializing an object into a couchdb database to uniquely identify it*/
@@ -32,17 +24,6 @@ class ImmutablePacketCollection implements PacketCollection {
 	ImmutablePacketCollection(Collection<? extends Packet> packets, PacketCollectionIdGenerator idGenerator){
 		this.packets = Collections.unmodifiableList(new ArrayList<>(packets));
 		final Calendar cal = new GregorianCalendar();
-		final int year = cal.get(Calendar.YEAR);
-		final int month = cal.get(Calendar.MONTH) + 1; // [1..12]
-		final int day = cal.get(Calendar.DAY_OF_MONTH);
-		final int hour = cal.get(Calendar.HOUR_OF_DAY);
-		final int minute = cal.get(Calendar.MINUTE);
-		final int second = cal.get(Calendar.SECOND);
-		final int millisecond = cal.get(Calendar.MILLISECOND);
-		this.dateArray = new int[] {
-				year, month, day,
-				hour, minute, second, millisecond
-		};
 		dateMillis = cal.getTimeInMillis(); // in UTC
 		this._id = idGenerator.generateId(cal);
 	}
@@ -54,11 +35,6 @@ class ImmutablePacketCollection implements PacketCollection {
 			packets.add(packetGetter.createFromJson(elementPacket.getAsJsonObject()));
 		}
 		this.packets = Collections.unmodifiableList(packets);
-		this.dateArray = new int[7];
-		JsonArray jsonDateArray = object.getAsJsonArray("dateArray");
-		for(int i = 0; i < dateArray.length; i++){
-			dateArray[i] = jsonDateArray.get(i).getAsInt();
-		}
 		this.dateMillis = object.get("dateMillis").getAsLong();
 		this._id = object.get("_id").getAsString();
 	}
@@ -66,11 +42,6 @@ class ImmutablePacketCollection implements PacketCollection {
 	@Override
 	public List<Packet> getPackets() {
 		return packets;
-	}
-
-	@Override
-	public int[] getDateArray() {
-		return dateArray;
 	}
 
 	@Override

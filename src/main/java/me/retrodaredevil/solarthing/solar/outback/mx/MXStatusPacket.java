@@ -24,7 +24,7 @@ public interface MXStatusPacket extends OutbackPacket, ChargeController, DailyDa
 	 * <p>
 	 * The DC current the MX is delivering to the batteries in Amps
 	 * @return [0..99] representing the charger current in Amps
-	 * @deprecated Deprecated to encourage use of {@link #getChargingCurrent()}
+	 * @deprecated Deprecated to encourage use of {@link #getChargingCurrent()}. This, however, will not be removed in a future release.
 	 */
 	@Deprecated
 	int getChargerCurrent();
@@ -33,7 +33,7 @@ public interface MXStatusPacket extends OutbackPacket, ChargeController, DailyDa
 	 * <p>
 	 * Only applies to newer firmware using FlexMAX 80 or FlexMAX 60
 	 * @return [0..0.9] The current to add to {@link #getChargerCurrent()} to get current displayed on FM80 or FM60
-	 * @deprecated Deprecated to encourage use of {@link #getChargingCurrent()}
+	 * @deprecated Deprecated to encourage use of {@link #getChargingCurrent()}. This, however, will not be removed in a future release
 	 */
 	@Deprecated
 	float getAmpChargerCurrent();
@@ -41,9 +41,11 @@ public interface MXStatusPacket extends OutbackPacket, ChargeController, DailyDa
 	@Override
 	default Number getChargingCurrent(){
 		/*
-		In the future, if we decide to detect and store if we are on old firmware or a non-FM device, we may want to
+		TODO In the future, if we decide to detect and store if we are on old firmware or a non-FM device, we may want to
 		explicitly return either an Integer or Float so the caller can decide how they want to display the number.
 		(They may display the number differently if it is a Integer rather than a Float)
+
+		OR even better, have a method that returns whether or not it is supported using the Support class
 		 */
 		return getChargerCurrent() + getAmpChargerCurrent();
 	}

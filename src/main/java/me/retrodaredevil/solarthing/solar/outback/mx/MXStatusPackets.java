@@ -117,17 +117,14 @@ public final class MXStatusPackets {
 		final int inputVoltage = inputVoltageHundreds * 100 + inputVoltageTens * 10 + inputVoltageOnes;
 
 		final float dailyKWH = dailyKWHTens * 10 + dailyKWHOnes + (dailyKWHTenths / 10.0f);
-		final String dailyKWHString = dailyKWHTens + "" + dailyKWHOnes + "." + dailyKWHTenths;
 		final float ampChargerCurrent = ampChargerCurrentTenths / 10.0f;
-		final String ampChargerCurrentString = "0." + ampChargerCurrentTenths;
 
 		final int auxMode = auxModeTens * 10 + auxModeOnes;
 		final int errorMode = errorModeHundreds * 100 + errorModeTens * 10 + errorModeOnes;
 		final int chargerMode = chargerModeTens * 10 + chargerModeOnes;
 
 		final float batteryVoltage = batteryVoltageTens * 10 + batteryVoltageOnes + (batteryVoltageTenths / 10.0f);
-		final String batteryVoltageString = batteryVoltageTens + "" + batteryVoltageOnes + "." + batteryVoltageTenths;
-		
+
 		final int dailyAH = dailyAHThousands * 1000 + dailyAHHundreds * 100 + dailyAHTens * 10 + dailyAHOnes; // will be 9999 if MX60
 		final Support dailyAHSupported;
 		if(oldFirmware || dailyAH == 9999){
@@ -149,8 +146,8 @@ public final class MXStatusPackets {
 		// ==== Charge Mode stuff ====
 		final String chargerModeName = Modes.getActiveMode(ChargerMode.class, chargerMode).getModeName();
 		return new ImmutableMXStatusPacket(address, chargerCurrent, pvCurrent, inputVoltage, dailyKWH,
-				dailyKWHString, ampChargerCurrent, ampChargerCurrentString, auxMode, errorMode, chargerMode,
-				batteryVoltage, batteryVoltageString, dailyAH, dailyAHSupported, chksum, auxModeName, errors, chargerModeName);
+				ampChargerCurrent, auxMode, errorMode, chargerMode,
+				batteryVoltage, dailyAH, dailyAHSupported, chksum, auxModeName, errors, chargerModeName);
 	}
 
 	public static MXStatusPacket createFromJson(JsonObject object) {
@@ -197,8 +194,8 @@ public final class MXStatusPackets {
 		final String chargerModeName = storedChargerModeName != null ? storedChargerModeName : Modes.getActiveMode(ChargerMode.class, chargerMode).getModeName();
 
 
-		return new ImmutableMXStatusPacket(address, chargerCurrent, pvCurrent, inputVoltage, dailyKWH, dailyKWHString,
-				ampChargerCurrent, ampChargerCurrentString, auxMode, errorMode, chargerMode, batteryVoltage, batteryVoltageString,
+		return new ImmutableMXStatusPacket(address, chargerCurrent, pvCurrent, inputVoltage, dailyKWH,
+				ampChargerCurrent, auxMode, errorMode, chargerMode, batteryVoltage,
 				dailyAH, dailyAHSupport, chksum, auxModeName, errors, chargerModeName);
 	}
 }
