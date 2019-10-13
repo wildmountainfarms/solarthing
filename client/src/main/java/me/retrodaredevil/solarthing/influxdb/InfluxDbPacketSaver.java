@@ -11,7 +11,7 @@ import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
-import me.retrodaredevil.solarthing.packets.identification.IntegerIdentifier;
+import okhttp3.OkHttpClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.influxdb.InfluxDB;
@@ -33,7 +33,7 @@ public class InfluxDbPacketSaver implements PacketHandler {
 		This piece of code uses the asynchronous features of the influxdb-java library. Because of this, PacketHandlerExceptions are
 		not thrown. We will just log errors.
 		 */
-		InfluxDB db = InfluxDBFactory.connect("http://localhost:8086", "root", "root");
+		InfluxDB db = InfluxDBFactory.connect("http://localhost:8086", "root", "root", new OkHttpClient.Builder(), InfluxDB.ResponseFormat.JSON);
 //		db.enableBatch(BatchOptions.DEFAULTS.exceptionHandler(((points, throwable) -> {
 //
 //		})));

@@ -1,0 +1,24 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '5.1.0'
+    id 'java'
+}
+
+version '0.0.1-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+project.ext.mainClassName = "me.retrodaredevil.solarthing.program.SolarMain"
+
+dependencies {
+    implementation group: 'com.lexicalscope.jewelcli', name: 'jewelcli', version: '0.8.9'
+    implementation group: 'org.influxdb', name: 'influxdb-java', version: '2.15'
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-jcl', version: '2.12.1'
+    implementation group: 'org.mongodb', name: 'mongodb-driver-sync', version: '3.11.0'
+}
+
+shadowJar {
+    manifest {
+        attributes 'Main-Class': project.mainClassName
+    }
+}
+
