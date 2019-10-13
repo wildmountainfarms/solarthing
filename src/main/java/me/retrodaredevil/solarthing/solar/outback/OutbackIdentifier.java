@@ -19,7 +19,17 @@ public class OutbackIdentifier implements IntegerIdentifier, Comparable<Identifi
 	public int getIntegerIdentifier() {
 		return address;
 	}
-	
+
+	@Override
+	public String toString() {
+		return getRepresentation();
+	}
+
+	@Override
+	public String getRepresentation() {
+		return "OutbackIdentifier(address=" + address + ")";
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;

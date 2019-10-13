@@ -154,7 +154,7 @@ public final class FXStatusPackets {
 		return new ImmutableFXStatusPacket(address, inverterCurrent, inverterCurrentRaw, chargerCurrent,
 				chargerCurrentRaw, buyCurrent, buyCurrentRaw, inputVoltage, inputVoltageRaw, outputVoltage,
 				outputVoltageRaw, sellCurrent, sellCurrentRaw, operatingMode, errorMode, acMode, batteryVoltage,
-				batteryVoltageString, misc, warningMode, chksum, operatingModeName, errors, acModeName, miscModes, warnings);
+				misc, warningMode, chksum, operatingModeName, errors, acModeName, miscModes, warnings);
 	}
 
 	public static FXStatusPacket createFromJson(JsonObject object){
@@ -222,7 +222,7 @@ public final class FXStatusPackets {
 		return new ImmutableFXStatusPacket(address, inverterCurrent, inverterCurrentRaw,
 				chargerCurrent, chargerCurrentRaw, buyCurrent, buyCurrentRaw,
 				inputVoltage, inputVoltageRaw, outputVoltage, outputVoltageRaw,
-				sellCurrent, sellCurrentRaw, operatingMode, errorMode, acMode, batteryVoltage, batteryVoltageString,
+				sellCurrent, sellCurrentRaw, operatingMode, errorMode, acMode, batteryVoltage,
 				misc, warningMode, chksum, operatingModeName, errors, acModeName, miscModes, warnings);
 	}
 }

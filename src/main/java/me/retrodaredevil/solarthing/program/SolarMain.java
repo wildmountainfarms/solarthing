@@ -273,10 +273,16 @@ public final class SolarMain {
 	}
 	
 	private static void initReader(InputStream in, TextPacketCreator packetCreator, PacketHandler packetHandler, PacketCollectionIdGenerator idGenerator, long samePacketTime, OnDataReceive onDataReceive, PacketProvider additionalPacketProvider) {
-		Runnable run = new SolarReader(in, packetCreator, packetHandler, idGenerator, samePacketTime, onDataReceive, additionalPacketProvider);
+		SolarReader run = new SolarReader(in, packetCreator, packetHandler, idGenerator, samePacketTime, onDataReceive, additionalPacketProvider);
 		try {
 			while (!Thread.currentThread().isInterrupted()) {
-				run.run();
+				try {
+					run.update();
+				} catch (EOFException e) {
+					break;
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
 				Thread.sleep(5);
 			}
 		} catch (InterruptedException e) {

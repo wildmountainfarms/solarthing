@@ -4,7 +4,9 @@ import com.google.gson.*;
 import me.retrodaredevil.solarthing.packets.DocumentedPacket;
 import me.retrodaredevil.solarthing.packets.DocumentedPacketType;
 import me.retrodaredevil.solarthing.packets.Packet;
+import me.retrodaredevil.solarthing.packets.collection.InstancePacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
+import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
@@ -38,9 +40,14 @@ public class InfluxDbPacketSaver implements PacketHandler {
 		String database = "solar_data";
 		db.query(new Query("CREATE DATABASE " + database));
 		long time = packetCollection.getDateMillis();
-		BatchPoints points = BatchPoints.database(database).build();
+		InstancePacketGroup packetGroup = PacketGroups.parseToInstancePacketGroup(packetCollection);
+		BatchPoints points = BatchPoints.database(database)
+			.tag("sourceId", packetGroup.getSourceId())
+			.tag("fragmentId", "" + packetGroup.getFragmentId())
+			.consistency(InfluxDB.ConsistencyLevel.ALL)
+			.build();
 		int packetsWritten = 0;
-		for(Packet packet : packetCollection.getPackets()){
+		for(Packet packet : packetGroup.getPackets()){
 			final Point.Builder pointBuilder;
 			String debugMeasurement = null;
 			if(packet instanceof DocumentedPacket){
@@ -49,11 +56,7 @@ public class InfluxDbPacketSaver implements PacketHandler {
 				debugMeasurement = type.toString();
 				if(packet instanceof Identifiable){
 					Identifier identifier = ((Identifiable) packet).getIdentifier();
-					if(identifier instanceof IntegerIdentifier){ // TODO make identifiers implement toString
-						pointBuilder = Point.measurement(type.toString()).tag("identifier", ((IntegerIdentifier) identifier).getIntegerIdentifier() + "");
-					} else {
-						pointBuilder = Point.measurement(type.toString()).tag("identifier", identifier.toString());
-					}
+					pointBuilder = Point.measurement(type.toString()).tag("identifier", identifier.getRepresentation());
 				} else {
 					pointBuilder = Point.measurement(type.toString());
 				}

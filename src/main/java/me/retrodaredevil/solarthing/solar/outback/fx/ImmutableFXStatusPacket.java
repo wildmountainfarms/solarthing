@@ -18,7 +18,6 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 	private final int operatingMode, errorMode, acMode;
 
 	private final float batteryVoltage;
-	private final String batteryVoltageString;
 
 	private final int misc, warningMode, chksum;
 
@@ -39,7 +38,7 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 			int outputVoltage, int outputVoltageRaw,
 			int sellCurrent, int sellCurrentRaw,
 			int operatingMode, int errorMode, int acMode,
-			float batteryVoltage, String batteryVoltageString,
+			float batteryVoltage,
 			int misc, int warningMode, int chksum,
 			String operatingModeName, String errors, String acModeName, String miscModes, String warnings
 	) {
@@ -60,7 +59,6 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 		this.errorMode = errorMode;
 		this.acMode = acMode;
 		this.batteryVoltage = batteryVoltage;
-		this.batteryVoltageString = batteryVoltageString;
 		this.misc = misc;
 		this.warningMode = warningMode;
 		this.chksum = chksum;
@@ -155,15 +153,6 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 		return batteryVoltage;
 	}
 	
-	/**
-	 * Should be serialized as "batteryVoltageString" if serialized at all
-	 * @return The battery voltage as a String
-	 */
-	@Deprecated
-	public String getBatteryVoltageString() {
-		return batteryVoltageString;
-	}
-
 	@Override
 	public int getMisc() {
 		return misc;

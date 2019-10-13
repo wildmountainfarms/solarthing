@@ -48,17 +48,13 @@ public interface RoverReadTable extends Rover, ErrorReporter, ChargeController, 
 	 * @return The rated charging current
 	 */
 	int getRatedChargingCurrentValue();
-	@Deprecated
-	default RatedCurrent getRatedChargingCurrent(){ return Modes.getActiveMode(RatedCurrent.class, getRatedChargingCurrentValue()); }
-	
+
 	/**
 	 * Should be serialized as "ratedDischargingCurrent"
 	 * @return The rated discharging current
 	 */
 	int getRatedDischargingCurrentValue();
-	@Deprecated
-	default RatedCurrent getRatedDischargingCurrent(){ return Modes.getActiveMode(RatedCurrent.class, getRatedDischargingCurrentValue()); }
-	
+
 	/**
 	 * Should be serialized as "productType"
 	 * @return The int value representing the product type
@@ -242,8 +238,6 @@ public interface RoverReadTable extends Rover, ErrorReporter, ChargeController, 
 	default int getStreetLightBrightnessPercent(){ return StreetLight.getBrightnessValue(getStreetLightValue()); }
 	
 	int getChargingStateValue();
-	@Deprecated
-	default ChargingState getChargingState(){ return getChargingMode(); }
 	@Override
 	default ChargingState getChargingMode(){ return Modes.getActiveMode(ChargingState.class, getChargingStateValue()); }
 	

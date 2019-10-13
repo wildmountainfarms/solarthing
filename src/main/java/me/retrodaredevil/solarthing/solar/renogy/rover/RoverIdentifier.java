@@ -8,7 +8,17 @@ import java.util.Objects;
 
 public final class RoverIdentifier implements IntegerIdentifier, Comparable<Identifier> {
 	private final int serialNumber;
-	
+
+	@Override
+	public String toString() {
+		return getRepresentation();
+	}
+
+	@Override
+	public String getRepresentation() {
+		return "RoverIdentifier(serialNumber=" + serialNumber + ")";
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -25,11 +35,7 @@ public final class RoverIdentifier implements IntegerIdentifier, Comparable<Iden
 	public RoverIdentifier(int serialNumber) {
 		this.serialNumber = serialNumber;
 	}
-	@Deprecated
-	public RoverIdentifier(int hardwareVersion, int serialNumber, int controllerDeviceAddress) {
-		this(serialNumber);
-	}
-	
+
 	public int getProductSerialNumber(){
 		return serialNumber;
 	}
