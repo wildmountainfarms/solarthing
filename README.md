@@ -30,6 +30,9 @@ SolarThing Android: [Github](https://github.com/wildmountainfarms/solarthing-and
 [Google Play](https://play.google.com/store/apps/details?id=me.retrodaredevil.solarthing.android)
 
 [SolarThing Web](https://github.com/wildmountainfarms/solarthing-web)
+
+Eventually, we would like to use open source dashboard software, such as Grafana. However, when we choose
+what software will be used, we would like it to be open source and easily replicated.
 ### Individual documentation
 [Solar readme](solar/README.md)
 
@@ -129,14 +132,15 @@ had to be done about this first world problem.
 After learning perl for a day. I went straight back to Java, which I am more familiar with.
 
 ### TODO
-* Add better logging with timestamps
-* Create a PacketHandler that saves json data to a file location that can be easily accessed using a Apache web server
 * Figure out how to use https://emoncms.org/ to graph data
+    * Or maybe use dashboard software such as Grafana
 * Implement Outback FlexNet DC Packets
-* Add field to MX Status Packet to indicate whether it supports dailyAH and field to indicate the version of the MX or if it is a FM
 * Cache some data from Renogy Rover that won't be updated
 * Create Arduino program to simulate MATE or Rover
 
 ### Completed TODO:
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
     * Done by using fragmented packets. Will be stored in the same database but uses InstancePackets to indicate source and fragment ids
+* Add field to MX Status Packet to indicate whether it supports dailyAH and field to indicate the version of the MX or if it is a FM
+* Create a PacketHandler that saves json data to a file location that can be easily accessed using a Apache web server
+* Add better logging with timestamps
