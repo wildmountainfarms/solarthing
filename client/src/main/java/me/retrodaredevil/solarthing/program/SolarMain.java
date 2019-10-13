@@ -44,8 +44,8 @@ import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
 import me.retrodaredevil.solarthing.solar.renogy.rover.*;
 import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusSlaveRead;
 import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusSlaveWrite;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -59,7 +59,7 @@ import static java.util.Objects.requireNonNull;
 public final class SolarMain {
 	private SolarMain(){ throw new UnsupportedOperationException(); }
 	
-	private static final Logger LOGGER = LogManager.getLogger(SolarMain.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SolarMain.class);
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
 	
 	private static final SerialConfig MATE_CONFIG = new SerialConfigBuilder(19200)
@@ -223,7 +223,7 @@ public final class SolarMain {
 				Thread.currentThread().interrupt();
 			}
 		} catch (Exception e) {
-			LOGGER.fatal("Unable to connect to rover", e);
+			LOGGER.error("(Fatal)Unable to connect to rover", e);
 			return 1;
 		}
 		return 0;
@@ -248,7 +248,7 @@ public final class SolarMain {
 				RoverWriteTable write = new RoverModbusSlaveWrite(slave);
 				RoverSetupProgram.startRoverSetup(read, write);
 			} catch (Exception e) {
-				LOGGER.fatal("Got exception!", e);
+				LOGGER.error("(Fatal)Got exception!", e);
 				return 1;
 			}
 		}
@@ -428,7 +428,7 @@ public final class SolarMain {
 	public static int doMain(String[] args){
 		if(args.length < 1){
 			System.err.println("Usage: <java -jar ...> {mate|rover|rover-setup|outhouse}");
-			LOGGER.fatal("Incorrect args");
+			LOGGER.error("(Fatal)Incorrect args");
 			return 1;
 		}
 		String programName = args[0];
@@ -439,7 +439,7 @@ public final class SolarMain {
 		Program program = getProgram(programName);
 		if(program == null){
 			System.err.println("Usage: <java -jar ...> {mate|rover|rover-setup|outhouse}");
-			LOGGER.fatal("Incorrect args");
+			LOGGER.error("(Fatal)Incorrect args");
 			return 1;
 		}
 		try {
@@ -450,7 +450,7 @@ public final class SolarMain {
 					options = cli.parseArguments(newArgs);
 				} catch(ArgumentValidationException ex){
 					System.err.println(ex.getMessage());
-					LOGGER.fatal("Incorrect args");
+					LOGGER.error("(Fatal)Incorrect args");
 					return 1;
 				}
 				return connectMate(options);
@@ -461,7 +461,7 @@ public final class SolarMain {
 					options = cli.parseArguments(newArgs);
 				} catch(ArgumentValidationException ex){
 					System.err.println(ex.getMessage());
-					LOGGER.fatal("Incorrect args");
+					LOGGER.error("(Fatal)Incorrect args");
 					return 1;
 				}
 				return connectRover(options);
@@ -472,7 +472,7 @@ public final class SolarMain {
 					options = cli.parseArguments(newArgs);
 				} catch(ArgumentValidationException ex){
 					System.err.println(ex.getMessage());
-					LOGGER.fatal("Incorrect args");
+					LOGGER.error("(Fatal)Incorrect args");
 					return 1;
 				}
 				return connectOuthouse(options);
@@ -483,16 +483,16 @@ public final class SolarMain {
 					options = cli.parseArguments(newArgs);
 				} catch(ArgumentValidationException ex){
 					System.err.println(ex.getMessage());
-					LOGGER.fatal("Incorrect args");
+					LOGGER.error("(Fatal)Incorrect args");
 					return 1;
 				}
 				return connectRoverSetup(options);
 			}
 			System.out.println("Specify mate|rover|rover-setup|outhouse");
-			LOGGER.fatal("Incorrect args");
+			LOGGER.error("(Fatal)Incorrect args");
 			return 1;
 		} catch (Exception t) {
-			LOGGER.fatal("Got exception", t);
+			LOGGER.error("(Fatal)Got exception", t);
 			return 1;
 		}
 	}

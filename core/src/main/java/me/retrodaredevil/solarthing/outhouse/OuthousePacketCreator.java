@@ -6,14 +6,14 @@ import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.creation.PacketCreationException;
 import me.retrodaredevil.solarthing.packets.creation.StartEndTextPacketCreator;
 import me.retrodaredevil.solarthing.packets.creation.TextPacketCreator;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.Collections;
 
 public class OuthousePacketCreator extends StartEndTextPacketCreator {
-	private static final Logger LOGGER = LogManager.getLogger(OuthousePacketCreator.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(OuthousePacketCreator.class);
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
 	
 	public OuthousePacketCreator() {

@@ -9,14 +9,14 @@ import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
 import me.retrodaredevil.solarthing.solar.outback.command.packets.ImmutableSuccessMateCommandPacket;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 
 public class OnMateCommandSent implements OnCommandExecute<MateCommand> {
 	
-	private static final Logger LOGGER = LogManager.getLogger(OnMateCommandSent.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(OnMateCommandSent.class);
 	
 	private final PacketHandler packetHandler;
 	

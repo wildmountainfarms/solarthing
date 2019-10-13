@@ -1,13 +1,12 @@
 package me.retrodaredevil.solarthing.packets.handling;
 
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.PrintStream;
 
 public class PrintPacketHandleExceptionWrapper implements PacketHandler {
-	private static final Logger LOGGER = LogManager.getLogger(PrintPacketHandleExceptionWrapper.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PrintPacketHandleExceptionWrapper.class);
 	
 	private final PacketHandler packetHandler;
 	
