@@ -10,13 +10,14 @@ FlexNET DC Packets, but FX, MX/FM, and Renogy Rover communication is supported.
 This does not supper the Outback MATE 3. This is because the MATE3 does not have a DB9 serial port.
 
 You can look at how we parse packets for 
-[FX Here](../src/main/java/me/retrodaredevil/solarthing/solar/outback/fx/FXStatusPackets.java),
-[MX/FM Here](../src/main/java/me/retrodaredevil/solarthing/solar/outback/mx/MXStatusPackets.java),
-[Renogy Read Here](../src/main/java/me/retrodaredevil/solarthing/solar/renogy/rover/modbus/RoverModbusSlaveRead.java) and
-[Renogy Write Here](../src/main/java/me/retrodaredevil/solarthing/solar/renogy/rover/modbus/RoverModbusSlaveWrite.java)
+[FX Here](../core/src/main/java/me/retrodaredevil/solarthing/solar/outback/fx/FXStatusPackets.java),
+[MX/FM Here](../core/src/main/java/me/retrodaredevil/solarthing/solar/outback/mx/MXStatusPackets.java),
+[Renogy Read Here](../core/src/main/java/me/retrodaredevil/solarthing/solar/renogy/rover/modbus/RoverModbusSlaveRead.java) and
+[Renogy Write Here](../core/src/main/java/me/retrodaredevil/solarthing/solar/renogy/rover/modbus/RoverModbusSlaveWrite.java)
 
 ### Running
 ```
+cd program/
 solar/virtual_mate.sh | java -jar solarthing.jar solar --cc --unique 60 --io config_templates/standard_io.json
 ```
 Note the `--cc`. This stands for correct checksum. To make it easy in `virtual_mate.sh` to change values, using `--cc`
