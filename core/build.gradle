@@ -12,5 +12,6 @@ dependencies {
     api group: 'org.lightcouch', name: 'lightcouch', version: '0.1.8'
 
     implementation 'org.apache.logging.log4j:log4j-core:2.12.1'
+    implementation 'org.apache.logging.log4j:log4j-jcl:2.12.1'
 }
 
