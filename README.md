@@ -89,9 +89,8 @@ Run `./compile_and_move.sh`. Make sure your working directory is in the root of 
 ### Database Setup
 [CouchDB setup](couchdb.md)
 
-__InfluxDB__ setup: None!<br/>
+[InfluxDB setup](influxdb_config.md): (Basically None)<br/>
 *Please note that InfluxDB is not supported by the web application or Android application. Use this if you only want to use Grafana*
-__
 ### [Technical](technical.md)
 
 #### Configuration
@@ -102,7 +101,6 @@ This uses slf4j to log and uses log4j2 as the main implementation. https://loggi
 
 ### TODO
 * Figure out how to use https://emoncms.org/ to graph data
-    * Or maybe use dashboard software such as Grafana
 * Implement Outback FlexNet DC Packets
 * Cache some data from Renogy Rover that won't be updated
 * Create Arduino program to simulate MATE or Rover
@@ -113,5 +111,6 @@ This uses slf4j to log and uses log4j2 as the main implementation. https://loggi
 * Add field to MX Status Packet to indicate whether it supports dailyAH and field to indicate the version of the MX or if it is a FM
 * Create a PacketHandler that saves json data to a file location that can be easily accessed using a Apache web server
 * Add better logging with timestamps
+* Make Grafana easy to use by supporting InfluxDB as a database
 
 ### [History](history.md)

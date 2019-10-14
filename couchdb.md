@@ -12,6 +12,10 @@ You must create each database if you wish to use the features they come with
 "solarthing", "command_feedback", and "outhouse" should be password protected. "commands" is not required to be password
 protected because data in it is protected by encryption to provide integrity.
 
+However, in my situation, I do not password protect any of these databases because it makes it hard to have anyone read the database.
+You should ALWAYS password protect databases such as the `_users` database. You can do that by adding a member to that database.
+In my opinion, securing CouchDB is not super easy because everything is public by default.
+
 ## Creating it
 Each database must have the same "_design/packets/_view/millis" view
 
