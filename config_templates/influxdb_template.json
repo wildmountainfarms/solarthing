@@ -1,4 +1,15 @@
 {
   "type": "influxdb",
-  "config": null
+  "config": {
+    "url": "http://localhost:8086",
+    "username": "root",
+    "password": "root",
+
+    "retry_on_connection_failure": true,
+    "call_timeout": 0.0,
+    "connection_timeout": 10.0,
+    "read_timeout": 10.0,
+    "write_timeout": 10.0,
+    "ping_interval": 0.0
+  }
 }
