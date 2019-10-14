@@ -11,12 +11,15 @@ Parses data from an Outback MATE, communicates with a renogy rover, and uses Cou
 * Display data in Web Application
 * Use as an API for your own uses!
 
+# Why should you use this?
+This program supports communication with more solar products than any other open source program. The program
+was built to reliably store data in a database while running 24-7. You can customize this program to fit your
+needs without programming. But, if you are a programmer, this API will make your life a lot easier.
+
 ## What This is currently used for
 This program is run on a raspberry pi at Wild Mountain Farms (www.wildmountainfarms.com).
 That program uploads packets to a CouchDB database on a separate computer which hosts the web portion
-found here: https://github.com/wildmountainfarms/solarthing-web . With each of these combined we are able
-to see the current battery voltage and other information along with a graph to see past data. This application is
-also used for an outhouse status!
+found here: [solarthing-web](https://github.com/wildmountainfarms/solarthing-web). 
 
 In the future, this project may extend to more IoT uses other than just solar and outhouse status. But the name will
 forever stick! Long live <strong>SolarThing</strong>!
@@ -31,8 +34,8 @@ SolarThing Android: [Github](https://github.com/wildmountainfarms/solarthing-and
 
 [SolarThing Web](https://github.com/wildmountainfarms/solarthing-web)
 
-Eventually, we would like to use open source dashboard software, such as Grafana. However, when we choose
-what software will be used, we would like it to be open source and easily replicated.
+If you decide to use InfluxDB, you can easily create your own Dashboard with Grafana.
+
 ### Individual documentation
 [Solar readme](solar/README.md)
 
@@ -53,9 +56,23 @@ You can import the most current release by using www.jitpack.io.
 * You can parse Outback Mate packets directly
 * You can read and write to a Renogy Rover easily
 
+Import it like this:
+```groovy
+allprojects {
+    repositories {
+        maven { url 'https://www.jitpack.io' }
+    }
+}
+dependencies {
+    implementation 'com.github.wildmountainfarms.solarthing:core:<CURRENT VERSION HERE>'
+}
+```
+
 ### Customizing
-This project doesn't have too many options because it was primarily set up to store packets in CouchDB. If you want
-to store data in another database, you can create your own implementation of [PacketHandler](src/main/java/me/retrodaredevil/solarthing/packets/handling/PacketHandler.java)
+The different command line options give you may ways to receive data and export data. CouchDB and InfluxDB
+are both supported.
+
+If you want to store data in another database, you can create your own implementation of [PacketHandler](src/main/java/me/retrodaredevil/solarthing/packets/handling/PacketHandler.java)
 
 If your implementation is general enough, submit a pull request so others can use your implementation as well!
 
@@ -67,69 +84,21 @@ sure if it will be accepted.
 This project requires Java 8+. However Java 8 API additions aren't used to remain compatible with Android SDK level 19.
 
 ### Compiling
-Run the command
-```
-./gradlew client:dist
-```
-Move the jar to the `program` folder and name the jar `solarthing.jar`. `./compile_and_move.sh` will do both of these automatically.
+Run `./compile_and_move.sh`. Make sure your working directory is in the root of this project. ([this directory](.))
 
-### What the database structure looks like
-The CouchDB has a few databases in it. Each database has many packets stored in the
-"PacketCollection" format. Each packet in the database holds other packets that were saved at the same time. This makes
-it simple to link FX1 FX2 and MX3 packets to one single packet. By default the program links packets together by saving
-packets when it's been 250 ms after the first data received from a packet. 
+### Database Setup
+[CouchDB setup](couchdb.md)
 
-Example:
-
-* We receive 10% of Packet 1 so we start the 250ms timer
-* We receive 90% of Packet 1 and 80% of Packet 2
-* We receive 20% of Packet 2 and 99% of Packet 3
-* 250ms is up so Packet 1 and 2 are saved together, Packet 3 will be saved next time
-
-Usually packets aren't cut off like this, but sometimes it happens
-
-You can see how to set up the views and design documents for each database [here](couchdb.md)
-
-### Fragmented Packets
-Sometimes, an instance needs multiple packets to come from different sub-sources (different computers or different programs).
-When this happens, you can set up packets to be stored in the database fragmented. The way this works is simple. One
-program is the "master fragment", indicated by the lowest fragment-id. Other programs have higher fragment IDs. Each program
-has its own fragment ID, allowing you to distinguish between them in the database.
-
-When you read from the database, you iterate through master packets and find the nearest fragment for all the other
-fragment IDs.
-
-Example: <br/>
-Fragment 1: FX1, FX2, MX3, MX4 <br/>
-Fragment 2: Renogy Rover
-
-### Duplicate Packets in a single PacketCollection
-It is expected that if the program falls behind trying to save packets, that what should be two or three PacketCollections
-are put into one. I have a simple way to try to filter these packets, "instant-only". This works most of the time, but not 100%.
-Without adding additional threads to the program, it is difficult to completely solve this. Because I do not
-plan to add additional threads to the program, it will remain like this so you should expect that a packet in the database
-may have one or two other identical packets from almost the same time. 
-This is where [Identifiers](src/main/java/me/retrodaredevil/solarthing/packets/identification/Identifier.java) comes in. By
-adding packets to a Map, you can make sure that there's only one packet for each unique Identifier
+__InfluxDB__ setup: None!<br/>
+*Please note that InfluxDB is not supported by the web application or Android application. Use this if you only want to use Grafana*
+__
+### [Technical](technical.md)
 
 #### Configuration
 This uses jewelcli for its configuration. Using this library makes it very easy to use interfaces with multiple inheritance. http://jewelcli.lexicalscope.com/examples.html
 
 #### Logging
-This uses log4j2 to log. https://logging.apache.org/log4j/2.x/manual/appenders.html
-
-### Inspiration
-@eidolon1138 is the one who originally came up with the idea to collect data from his Outback Mate device. He helped
-set up the database and @retrodaredevil did the rest. Eventually @retrodaredevil created an android app making it much
-more convenient than a website.
-
-@retrodaredevil came up with the idea of the outhouse status when he walked all the way out to the outhouse only to find
-that it was occupied! He walked all the way back inside, then went back out a few minutes later. He knew that something
-had to be done about this first world problem.
-
-### Legacy
-[The perl script](helloworld.pl) is a legacy program. It was the program that started solarthing.
-After learning perl for a day. I went straight back to Java, which I am more familiar with.
+This uses slf4j to log and uses log4j2 as the main implementation. https://logging.apache.org/log4j/2.x/manual/appenders.html
 
 ### TODO
 * Figure out how to use https://emoncms.org/ to graph data
@@ -144,3 +113,5 @@ After learning perl for a day. I went straight back to Java, which I am more fam
 * Add field to MX Status Packet to indicate whether it supports dailyAH and field to indicate the version of the MX or if it is a FM
 * Create a PacketHandler that saves json data to a file location that can be easily accessed using a Apache web server
 * Add better logging with timestamps
+
+### [History](history.md)

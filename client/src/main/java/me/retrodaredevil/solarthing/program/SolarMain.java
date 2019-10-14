@@ -5,6 +5,7 @@ import com.lexicalscope.jewel.cli.ArgumentValidationException;
 import com.lexicalscope.jewel.cli.Cli;
 import com.lexicalscope.jewel.cli.CliFactory;
 import me.retrodaredevil.couchdb.CouchProperties;
+import me.retrodaredevil.influxdb.InfluxProperties;
 import me.retrodaredevil.io.IOBundle;
 import me.retrodaredevil.io.modbus.*;
 import me.retrodaredevil.io.serial.SerialConfig;
@@ -16,6 +17,7 @@ import me.retrodaredevil.solarthing.commands.CommandProviderMultiplexer;
 import me.retrodaredevil.solarthing.commands.sequence.CommandSequence;
 import me.retrodaredevil.solarthing.config.JsonCouchDb;
 import me.retrodaredevil.solarthing.config.JsonIO;
+import me.retrodaredevil.solarthing.config.JsonInfluxDb;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.DatabaseType;
 import me.retrodaredevil.solarthing.config.databases.IndividualSettings;
@@ -312,7 +314,7 @@ public final class SolarMain {
 		}
 		return new HourIntervalPacketCollectionIdGenerator(uniqueIdsInOneHour, new Random().nextInt());
 	}
-	private static List<PacketHandler> getPacketHandlers(List<DatabaseConfig> configs, String couchDbDatabaseName){
+	private static List<PacketHandler> getPacketHandlers(List<DatabaseConfig> configs, String databaseName){
 		List<PacketHandler> r = new ArrayList<>();
 		for(DatabaseConfig config : configs) {
 			IndividualSettings individualSettings = config.getIndividualSettingsOrDefault(DATABASE_UPLOAD_ID, null);
@@ -321,14 +323,14 @@ public final class SolarMain {
 				CouchDbDatabaseSettings settings = (CouchDbDatabaseSettings) config.getSettings();
 				CouchProperties couchProperties = settings.getCouchProperties();
 				r.add(new ThrottleFactorPacketHandler(
-					new PrintPacketHandleExceptionWrapper(new CouchDbPacketSaver(couchProperties, couchDbDatabaseName)),
+					new PrintPacketHandleExceptionWrapper(new CouchDbPacketSaver(couchProperties, databaseName)),
 					frequencySettings,
 					true
 				));
 			} else if(InfluxDbDatabaseSettings.TYPE.equals(config.getType())) {
 				InfluxDbDatabaseSettings settings = (InfluxDbDatabaseSettings) config.getSettings();
 				r.add(new ThrottleFactorPacketHandler(
-					new InfluxDbPacketSaver(),
+					new InfluxDbPacketSaver(settings.getInfluxProperties(), databaseName),
 					frequencySettings,
 					true
 				));
@@ -363,10 +365,14 @@ public final class SolarMain {
 				databaseType = CouchDbDatabaseSettings.TYPE;
 				JsonObject config = configElement.getAsJsonObject();
 				CouchProperties couchProperties = JsonCouchDb.getCouchPropertiesFromJson(config);
+				LOGGER.debug("Debugging couchProperties: {}", GSON.toJson(couchProperties));
 				databaseSettings = new CouchDbDatabaseSettings(couchProperties);
 			} else if("influxdb".equals(type)) {
 				databaseType = InfluxDbDatabaseSettings.TYPE;
-				databaseSettings = new InfluxDbDatabaseSettings();
+				JsonObject config = configElement.getAsJsonObject();
+				InfluxProperties influxProperties = JsonInfluxDb.getInfluxPropertiesFromJson(config);
+				LOGGER.debug("Debugging influxProperties: {}", GSON.toJson(influxProperties));
+				databaseSettings = new InfluxDbDatabaseSettings(influxProperties);
 			} else if ("latest".equals(type)) {
 				databaseType = LatestFileDatabaseSettings.TYPE;
 				JsonObject config = configElement.getAsJsonObject();

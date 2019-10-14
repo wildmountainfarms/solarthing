@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.influxdb;
 
 import com.google.gson.*;
+import me.retrodaredevil.influxdb.InfluxProperties;
 import me.retrodaredevil.solarthing.packets.DocumentedPacket;
 import me.retrodaredevil.solarthing.packets.DocumentedPacketType;
 import me.retrodaredevil.solarthing.packets.Packet;
@@ -12,6 +13,7 @@ import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import org.influxdb.InfluxDB;
 import org.influxdb.InfluxDBFactory;
 import org.influxdb.dto.BatchPoints;
@@ -23,9 +25,20 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static java.util.Objects.requireNonNull;
+
 public class InfluxDbPacketSaver implements PacketHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(InfluxDbPacketSaver.class);
+	private static final Logger INFLUX_LOGGER = LoggerFactory.getLogger("org.influxdb");
 	private static final Gson GSON = new GsonBuilder().serializeNulls().create();
+
+	private final InfluxProperties properties;
+	private final String database;
+
+	public InfluxDbPacketSaver(InfluxProperties properties, String database) {
+		this.properties = requireNonNull(properties);
+		this.database = requireNonNull(database);
+	}
 
 	@Override
 	public void handle(PacketCollection packetCollection, boolean wasInstant) throws PacketHandleException {
@@ -33,11 +46,25 @@ public class InfluxDbPacketSaver implements PacketHandler {
 		This piece of code uses the asynchronous features of the influxdb-java library. Because of this, PacketHandlerExceptions are
 		not thrown. We will just log errors.
 		 */
-		InfluxDB db = InfluxDBFactory.connect("http://localhost:8086", "root", "root", new OkHttpClient.Builder(), InfluxDB.ResponseFormat.JSON);
+//		InfluxDB db = InfluxDBFactory.connect("http://localhost:8086", "root", "root", new OkHttpClient.Builder(), InfluxDB.ResponseFormat.JSON);
+		InfluxDB db = InfluxDBFactory.connect(
+			properties.getUrl(),
+			properties.getUsername(),
+			properties.getPassword(),
+			new OkHttpClient.Builder()
+				.retryOnConnectionFailure(properties.isRetryOnConnectionFailure())
+				.callTimeout(properties.getCallTimeoutMillis(), TimeUnit.MILLISECONDS)
+				.connectTimeout(properties.getConnectTimeoutMillis(), TimeUnit.MILLISECONDS)
+				.readTimeout(properties.getReadTimeoutMillis(), TimeUnit.MILLISECONDS)
+				.writeTimeout(properties.getWriteTimeoutMillis(), TimeUnit.MILLISECONDS)
+				.pingInterval(properties.getPingIntervalMillis(), TimeUnit.MILLISECONDS)
+				.addInterceptor(new HttpLoggingInterceptor(INFLUX_LOGGER::debug).setLevel(HttpLoggingInterceptor.Level.BASIC)),
+			InfluxDB.ResponseFormat.JSON
+		);
+		db.setLogLevel(InfluxDB.LogLevel.NONE); // we have our own way of doing this
 //		db.enableBatch(BatchOptions.DEFAULTS.exceptionHandler(((points, throwable) -> {
 //
 //		})));
-		String database = "solar_data";
 		db.query(new Query("CREATE DATABASE " + database));
 		long time = packetCollection.getDateMillis();
 		InstancePacketGroup packetGroup = PacketGroups.parseToInstancePacketGroup(packetCollection);
