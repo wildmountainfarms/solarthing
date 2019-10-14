@@ -35,5 +35,8 @@
         <Logger name="org.apache.http" level="INFO">
             <AppenderRef ref="logAll"/>
         </Logger>
+        <Logger name="org.influxdb" level="INFO">
+            <AppenderRef ref="logAll"/>
+        </Logger>
     </Loggers>
 </Configuration>

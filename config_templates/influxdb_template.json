@@ -4,6 +4,8 @@
     "url": "http://localhost:8086",
     "username": "root",
     "password": "root",
+    "database": "default_database",
+    "measurement": null,
 
     "retry_on_connection_failure": true,
     "call_timeout": 0.0,

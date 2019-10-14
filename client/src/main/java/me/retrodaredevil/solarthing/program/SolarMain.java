@@ -11,6 +11,7 @@ import me.retrodaredevil.io.modbus.*;
 import me.retrodaredevil.io.serial.SerialConfig;
 import me.retrodaredevil.io.serial.SerialConfigBuilder;
 import me.retrodaredevil.io.serial.SerialPortException;
+import me.retrodaredevil.okhttp3.OkHttpProperties;
 import me.retrodaredevil.solarthing.OnDataReceive;
 import me.retrodaredevil.solarthing.commands.CommandProvider;
 import me.retrodaredevil.solarthing.commands.CommandProviderMultiplexer;
@@ -18,6 +19,7 @@ import me.retrodaredevil.solarthing.commands.sequence.CommandSequence;
 import me.retrodaredevil.solarthing.config.JsonCouchDb;
 import me.retrodaredevil.solarthing.config.JsonIO;
 import me.retrodaredevil.solarthing.config.JsonInfluxDb;
+import me.retrodaredevil.solarthing.config.JsonOkHttp;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.DatabaseType;
 import me.retrodaredevil.solarthing.config.databases.IndividualSettings;
@@ -26,7 +28,7 @@ import me.retrodaredevil.solarthing.config.databases.implementations.InfluxDbDat
 import me.retrodaredevil.solarthing.config.databases.implementations.LatestFileDatabaseSettings;
 import me.retrodaredevil.solarthing.config.options.*;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketSaver;
-import me.retrodaredevil.solarthing.influxdb.InfluxDbPacketSaver;
+import me.retrodaredevil.solarthing.influxdb.*;
 import me.retrodaredevil.solarthing.outhouse.OuthousePacketCreator;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.HourIntervalPacketCollectionIdGenerator;
@@ -314,7 +316,7 @@ public final class SolarMain {
 		}
 		return new HourIntervalPacketCollectionIdGenerator(uniqueIdsInOneHour, new Random().nextInt());
 	}
-	private static List<PacketHandler> getPacketHandlers(List<DatabaseConfig> configs, String databaseName){
+	private static List<PacketHandler> getPacketHandlers(List<DatabaseConfig> configs, String uniqueName){
 		List<PacketHandler> r = new ArrayList<>();
 		for(DatabaseConfig config : configs) {
 			IndividualSettings individualSettings = config.getIndividualSettingsOrDefault(DATABASE_UPLOAD_ID, null);
@@ -323,14 +325,28 @@ public final class SolarMain {
 				CouchDbDatabaseSettings settings = (CouchDbDatabaseSettings) config.getSettings();
 				CouchProperties couchProperties = settings.getCouchProperties();
 				r.add(new ThrottleFactorPacketHandler(
-					new PrintPacketHandleExceptionWrapper(new CouchDbPacketSaver(couchProperties, databaseName)),
+					new PrintPacketHandleExceptionWrapper(new CouchDbPacketSaver(couchProperties, uniqueName)),
 					frequencySettings,
 					true
 				));
 			} else if(InfluxDbDatabaseSettings.TYPE.equals(config.getType())) {
 				InfluxDbDatabaseSettings settings = (InfluxDbDatabaseSettings) config.getSettings();
+				String databaseName = settings.getDatabaseName();
+				String measurementName = settings.getMeasurementName();
 				r.add(new ThrottleFactorPacketHandler(
-					new InfluxDbPacketSaver(settings.getInfluxProperties(), databaseName),
+					new InfluxDbPacketSaver(
+						settings.getInfluxProperties(),
+						settings.getOkHttpProperties(),
+						databaseName != null
+							? new ConstantDatabaseNameGetter(databaseName)
+							: new ConstantDatabaseNameGetter(uniqueName),
+						measurementName != null
+							? new ConstantMeasurementPacketPointCreator(measurementName)
+							: (databaseName != null
+								? new ConstantMeasurementPacketPointCreator(uniqueName) // A constant database name was specified unrelated to the uniqueName
+								: DocumentedMeasurementPacketPointCreator.INSTANCE
+							)
+					),
 					frequencySettings,
 					true
 				));
@@ -371,8 +387,19 @@ public final class SolarMain {
 				databaseType = InfluxDbDatabaseSettings.TYPE;
 				JsonObject config = configElement.getAsJsonObject();
 				InfluxProperties influxProperties = JsonInfluxDb.getInfluxPropertiesFromJson(config);
+				OkHttpProperties okHttpProperties = JsonOkHttp.getOkHttpPropertiesFromJson(config);
 				LOGGER.debug("Debugging influxProperties: {}", GSON.toJson(influxProperties));
-				databaseSettings = new InfluxDbDatabaseSettings(influxProperties);
+				LOGGER.debug("Debugging okHttpProperties: {}", GSON.toJson(okHttpProperties));
+				JsonElement databaseNameElement = config.get("database");
+				final String databaseName = databaseNameElement == null || databaseNameElement.isJsonNull()
+					? null
+					: databaseNameElement.getAsString();
+				JsonElement measurementNameElement = config.get("measurement");
+				final String measurementName = measurementNameElement == null || measurementNameElement.isJsonNull()
+					? null
+					: measurementNameElement.getAsString();
+				LOGGER.debug("Debugging databaseName: {}, measurementName: {}", databaseName, measurementName);
+				databaseSettings = new InfluxDbDatabaseSettings(influxProperties, okHttpProperties, databaseName, measurementName);
 			} else if ("latest".equals(type)) {
 				databaseType = LatestFileDatabaseSettings.TYPE;
 				JsonObject config = configElement.getAsJsonObject();
