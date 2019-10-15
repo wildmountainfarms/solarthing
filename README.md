@@ -16,6 +16,9 @@ This program supports communication with more solar products than any other open
 was built to reliably store data in a database while running 24-7. You can customize this program to fit your
 needs without programming. But, if you are a programmer, this API will make your life a lot easier.
 
+Out of the box, this supports lots of configuration options. These options include configuring CouchDB and InfluxDB. There is
+currently three different ways to view the data that is stored in your database of choice.
+
 ## What This is currently used for
 This program is run on a raspberry pi at Wild Mountain Farms (www.wildmountainfarms.com).
 That program uploads packets to a CouchDB database on a separate computer which hosts the web portion
