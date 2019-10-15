@@ -12,6 +12,7 @@ import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.influxdb.InfluxDB;
+import org.influxdb.InfluxDBException;
 import org.influxdb.InfluxDBFactory;
 import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
@@ -43,11 +44,56 @@ public class InfluxDbPacketSaver implements PacketHandler {
 
 	@Override
 	public void handle(PacketCollection packetCollection, boolean wasInstant) throws PacketHandleException {
-		/*
-		This piece of code uses the asynchronous features of the influxdb-java library. Because of this, PacketHandlerExceptions are
-		not thrown. We will just log errors.
-		 */
-		InfluxDB db = InfluxDBFactory.connect(
+		try(InfluxDB db = createDatabase()) {
+			InstancePacketGroup packetGroup = PacketGroups.parseToInstancePacketGroup(packetCollection);
+			String database = databaseNameGetter.getDatabaseName(packetGroup);
+			try {
+				db.query(new Query("CREATE DATABASE " + database));
+			} catch (InfluxDBException ex) {
+				throw new PacketHandleException("Unable to query the database!", ex);
+			}
+			long time = packetCollection.getDateMillis();
+			BatchPoints points = BatchPoints.database(database)
+				.tag("sourceId", packetGroup.getSourceId())
+				.tag("fragmentId", "" + packetGroup.getFragmentId())
+				.consistency(InfluxDB.ConsistencyLevel.ALL)
+				.retentionPolicy(null) // TODO
+				.build();
+			int packetsWritten = 0;
+			for (Packet packet : packetGroup.getPackets()) {
+				Point.Builder pointBuilder = pointCreator.createBuilder(packet).time(time, TimeUnit.MILLISECONDS);
+
+				JsonObject json = GSON.toJsonTree(packet).getAsJsonObject();
+				for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
+					String key = entry.getKey();
+					JsonElement element = entry.getValue();
+					if (element.isJsonPrimitive()) {
+						JsonPrimitive prim = element.getAsJsonPrimitive();
+						if (prim.isNumber()) {
+							pointBuilder.addField(key, prim.getAsNumber());
+						} else if (prim.isString()) {
+							pointBuilder.addField(key, prim.getAsString());
+						} else if (prim.isBoolean()) {
+							pointBuilder.addField(key, prim.getAsBoolean());
+						} else
+							throw new AssertionError("This primitive isn't a number, string or boolean! It's: " + prim);
+					} else {
+						LOGGER.debug("Key: " + key + " in packet: " + packet + "+ is not a json primitive! string: " + element);
+					}
+				}
+				points.point(pointBuilder.build());
+				packetsWritten++;
+			}
+			try {
+				db.write(points);
+			} catch (InfluxDBException ex) {
+				throw new PacketHandleException("We were able to query the database, but unable to write the points to it!", ex);
+			}
+			LOGGER.debug("Wrote {} packets to InfluxDB!", packetsWritten);
+		}
+	}
+	private InfluxDB createDatabase() {
+		return InfluxDBFactory.connect(
 			properties.getUrl(),
 			properties.getUsername(),
 			properties.getPassword(),
@@ -60,46 +106,7 @@ public class InfluxDbPacketSaver implements PacketHandler {
 				.pingInterval(okHttpProperties.getPingIntervalMillis(), TimeUnit.MILLISECONDS)
 				.addInterceptor(new HttpLoggingInterceptor(INFLUX_LOGGER::info).setLevel(HttpLoggingInterceptor.Level.BASIC)),
 			InfluxDB.ResponseFormat.JSON
-		);
-		db.setLogLevel(InfluxDB.LogLevel.NONE); // we have our own way of doing this
-//		db.enableBatch(BatchOptions.DEFAULTS.exceptionHandler(((points, throwable) -> {
-//
-//		})));
-		InstancePacketGroup packetGroup = PacketGroups.parseToInstancePacketGroup(packetCollection);
-		String database = databaseNameGetter.getDatabaseName(packetGroup);
-		db.query(new Query("CREATE DATABASE " + database));
-		long time = packetCollection.getDateMillis();
-		BatchPoints points = BatchPoints.database(database)
-			.tag("sourceId", packetGroup.getSourceId())
-			.tag("fragmentId", "" + packetGroup.getFragmentId())
-			.consistency(InfluxDB.ConsistencyLevel.ALL)
-			.build();
-		int packetsWritten = 0;
-		for(Packet packet : packetGroup.getPackets()){
-			Point.Builder pointBuilder = pointCreator.createBuilder(packet)
-				.time(time, TimeUnit.MILLISECONDS);
-
-			JsonObject json = GSON.toJsonTree(packet).getAsJsonObject();
-			for(Map.Entry<String, JsonElement> entry : json.entrySet()){
-				String key = entry.getKey();
-				JsonElement element = entry.getValue();
-				if(element.isJsonPrimitive()){
-					JsonPrimitive prim = element.getAsJsonPrimitive();
-					if(prim.isNumber()){
-						pointBuilder.addField(key, prim.getAsNumber());
-					} else if(prim.isString()){
-						pointBuilder.addField(key, prim.getAsString());
-					} else if(prim.isBoolean()){
-						pointBuilder.addField(key, prim.getAsBoolean());
-					} else throw new AssertionError("This primitive isn't a number, string or boolean! It's: " + prim);
-				} else {
-					LOGGER.debug("Key: " + key + " in packet: " + packet + "+ is not a json primitive! string: " + element);
-				}
-			}
-			points.point(pointBuilder.build());
-			packetsWritten++;
-		}
-		db.write(points);
-		LOGGER.debug("Wrote {} packets to InfluxDB!", packetsWritten);
+		).setLogLevel(InfluxDB.LogLevel.NONE);
 	}
+
 }
