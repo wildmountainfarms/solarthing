@@ -31,20 +31,23 @@ found here: [solarthing-web](https://github.com/wildmountainfarms/solarthing-web
 In the future, this project may extend to more IoT uses other than just solar and outhouse status. But the name will
 forever stick! Long live <strong>SolarThing</strong>!
 
-### Displaying
-Primarily, we are viewing the data in the Android app. Originally a web app was created. The Android app is superior 
-and more convenient.
-
+### Displaying the Data!
 SolarThing Android: [Github](https://github.com/wildmountainfarms/solarthing-android)
 |
 [Google Play](https://play.google.com/store/apps/details?id=me.retrodaredevil.solarthing.android)
+
 ![alt text](docs/solarthing-android-example.jpg "SolarThing Android Notification")
+<hr/>
 
 [SolarThing Web](https://github.com/wildmountainfarms/solarthing-web)
-![alt text](docs/solarthing-web-example.png "SolarThing Web")
 
-If you decide to use InfluxDB, you can easily create your own Dashboard with Grafana.
+![alt text](docs/solarthing-web-example.png "SolarThing Web")
+<hr/>
+If you decide to use InfluxDB, you can easily create your own Dashboard with Grafana. This is the most customizable!
+
 ![alt text](docs/grafana-example.png "SolarThing with Grafana")
+
+<hr/>
 
 ### Individual documentation
 [Solar readme](solar/README.md)
@@ -105,6 +108,7 @@ This uses slf4j to log and uses log4j2 as the main implementation. https://loggi
 * Implement Outback FlexNet DC Packets
 * Cache some data from Renogy Rover that won't be updated
 * Create Arduino program to simulate MATE or Rover
+* Move from CouchDB to MongoDB
 
 ### Completed TODO:
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
