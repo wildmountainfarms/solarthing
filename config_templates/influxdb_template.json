@@ -7,6 +7,38 @@
     "database": "default_database",
     "measurement": null,
 
+    "retention_policies": [
+      {
+        "frequency": 7,
+        "name": "inf-8cec0e8f927f8f0d",
+        "duration": "INF",
+        "replication": null,
+        "shard_duration": null,
+        "set_as_default": false,
+        "auto_alter": false
+      },
+      {
+        "frequency": 13,
+        "name": "1y-2537d8c55ff56a22",
+        "duration": "1y"
+      },
+      {
+        "frequency": 17,
+        "name": "1m-asdfasdf",
+        "duration": "1m"
+      },
+      {
+        "frequency": 19,
+        "name": "1w-asdfasdf",
+        "duration": "1w"
+      },
+      {
+        "frequency": null,
+        "name": "2d-default",
+        "duration": "2d"
+      }
+    ],
+
     "retry_on_connection_failure": true,
     "call_timeout": 0.0,
     "connection_timeout": 10.0,

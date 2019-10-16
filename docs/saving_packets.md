@@ -11,7 +11,7 @@ In the above example, the program will use the configurations located at "config
 example is also the exact command I use in /etc/rc.local on my Raspberry Pi that listen to a MATE.
 
 ### Example Configurations
-You can see [this](config_templates) directory for some examples
+You can see [this](../config_templates) directory for some examples
 
 This is for couchdb
 ```

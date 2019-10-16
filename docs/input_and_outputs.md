@@ -10,7 +10,7 @@ java -jar solarthing.jar <sub program> --io my_io_file.json
 ```
 
 ### Examples
-You can see some examples in [this](config_templates) directory
+You can see some examples in [this](../config_templates) directory
 
 #### stdin/stdout example
 ```
