@@ -17,14 +17,22 @@ import org.influxdb.InfluxDBFactory;
 import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
 import org.influxdb.dto.Query;
+import org.influxdb.dto.QueryResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * A {@link PacketHandler} that saves packets to InfluxDB.
+ * <p>
+ * Note that when saving, with the current implementation, integers are not stored. Only floats are stored.
+ */
 public class InfluxDbPacketSaver implements PacketHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(InfluxDbPacketSaver.class);
 	private static final Logger INFLUX_LOGGER = LoggerFactory.getLogger("org.influxdb");
@@ -48,7 +56,10 @@ public class InfluxDbPacketSaver implements PacketHandler {
 			InstancePacketGroup packetGroup = PacketGroups.parseToInstancePacketGroup(packetCollection);
 			String database = databaseNameGetter.getDatabaseName(packetGroup);
 			try {
-				db.query(new Query("CREATE DATABASE " + database));
+				QueryResult result = db.query(new Query("CREATE DATABASE " + database));
+				if(result.hasError()){
+					throw new PacketHandleException("Result got error! error: " + result.getError());
+				}
 			} catch (InfluxDBException ex) {
 				throw new PacketHandleException("Unable to query the database!", ex);
 			}
@@ -64,22 +75,16 @@ public class InfluxDbPacketSaver implements PacketHandler {
 				Point.Builder pointBuilder = pointCreator.createBuilder(packet).time(time, TimeUnit.MILLISECONDS);
 
 				JsonObject json = GSON.toJsonTree(packet).getAsJsonObject();
-				for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
+				for (Map.Entry<String, JsonPrimitive> entry : flattenJsonObject(json)) {
 					String key = entry.getKey();
-					JsonElement element = entry.getValue();
-					if (element.isJsonPrimitive()) {
-						JsonPrimitive prim = element.getAsJsonPrimitive();
-						if (prim.isNumber()) {
-							pointBuilder.addField(key, prim.getAsNumber());
-						} else if (prim.isString()) {
-							pointBuilder.addField(key, prim.getAsString());
-						} else if (prim.isBoolean()) {
-							pointBuilder.addField(key, prim.getAsBoolean());
-						} else
-							throw new AssertionError("This primitive isn't a number, string or boolean! It's: " + prim);
-					} else {
-						LOGGER.debug("Key: " + key + " in packet: " + packet + "+ is not a json primitive! string: " + element);
-					}
+					JsonPrimitive prim = entry.getValue();
+					if (prim.isNumber()) {
+						pointBuilder.addField(key, prim.getAsDouble()); // always store as float datatype
+					} else if (prim.isString()) {
+						pointBuilder.addField(key, prim.getAsString());
+					} else if (prim.isBoolean()) {
+						pointBuilder.addField(key, prim.getAsBoolean());
+					} else throw new AssertionError("This primitive isn't a number, string or boolean! It's: " + prim);
 				}
 				points.point(pointBuilder.build());
 				packetsWritten++;
@@ -108,5 +113,22 @@ public class InfluxDbPacketSaver implements PacketHandler {
 			InfluxDB.ResponseFormat.JSON
 		).setLogLevel(InfluxDB.LogLevel.NONE);
 	}
-
+	private Set<Map.Entry<String, JsonPrimitive>> flattenJsonObject(JsonObject jsonObject) throws PacketHandleException {
+		Map<String, JsonPrimitive> r = new LinkedHashMap<>();
+		for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
+			String key = entry.getKey();
+			JsonElement element = entry.getValue();
+			if (element.isJsonPrimitive()) {
+				r.put(key, element.getAsJsonPrimitive());
+			} else if(element.isJsonObject()){
+				Set<Map.Entry<String, JsonPrimitive>> flat = flattenJsonObject(element.getAsJsonObject());
+				for(Map.Entry<String, JsonPrimitive> subEntry : flat){
+					r.put(key + "." + subEntry.getKey(), subEntry.getValue());
+				}
+			} else if(!element.isJsonNull()){
+				throw new PacketHandleException("This does not support JSON arrays! element: " + element);
+			}
+		}
+		return r.entrySet();
+	}
 }
