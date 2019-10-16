@@ -16,6 +16,11 @@ subprojects {
     test {
         useJUnitPlatform()
     }
+    gradle.projectsEvaluated {
+        tasks.withType(JavaCompile){
+            options.compilerArgs << "-Xlint:deprecation"
+        }
+    }
 }
 project(":client"){
     apply plugin: 'java'

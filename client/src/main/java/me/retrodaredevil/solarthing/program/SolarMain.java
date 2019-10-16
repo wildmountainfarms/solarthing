@@ -180,17 +180,15 @@ public final class SolarMain {
 		}
 		return 0;
 	}
-	private static int connectRover(RoverProgramOptions options){
+	private static int connectRover(RoverProgramOptions options) throws IOException {
 		LOGGER.info("Beginning rover program");
 		List<PacketHandler> packetHandlers = getPacketHandlers(getDatabaseConfigs(options), "solarthing");
 		PacketHandler packetHandler = new PacketHandlerMultiplexer(packetHandlers);
 		PacketProvider packetProvider = getAdditionalPacketProvider(options);
-		
+
+
 		PacketCollectionIdGenerator idGenerator = createIdGenerator(options.getUniqueIdsInOneHour());
-		try(IOBundle ioBundle = createIOBundle(options.getIOBundleFile(), ROVER_CONFIG)) {
-			ModbusSlaveBus modbus = new IOModbusSlaveBus(ioBundle, new RTUDataEncoder(300, 10));
-			ModbusSlave slave = new ImmutableAddressModbusSlave(options.getModbusAddress(), modbus);
-			RoverReadTable read = new RoverModbusSlaveRead(slave);
+		return doRoverProgram(options, (read, write) -> {
 			try {
 				while (!Thread.currentThread().isInterrupted()) {
 					final long startTime = System.currentTimeMillis();
@@ -204,8 +202,8 @@ public final class SolarMain {
 					}
 					LOGGER.debug(
 						GSON.toJson(packet) + "\n" +
-						packet.getSpecialPowerControlE021().getFormattedInfo().replaceAll("\n", "\n\t") + "\n" +
-						packet.getSpecialPowerControlE02D().getFormattedInfo().replaceAll("\n", "\n\t")
+							packet.getSpecialPowerControlE021().getFormattedInfo().replaceAll("\n", "\n\t") + "\n" +
+							packet.getSpecialPowerControlE02D().getFormattedInfo().replaceAll("\n", "\n\t")
 					);
 					List<Packet> packets = new ArrayList<>();
 					packets.add(packet);
@@ -226,13 +224,12 @@ public final class SolarMain {
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
 			}
-		} catch (Exception e) {
-			LOGGER.error("(Fatal)Unable to connect to rover", e);
-			return 1;
-		}
-		return 0;
+		});
 	}
 	private static int connectRoverSetup(RoverSetupProgramOptions options) throws IOException{
+		return doRoverProgram(options, RoverSetupProgram::startRoverSetup);
+	}
+	private static int doRoverProgram(RoverOption options, RoverProgramRunner runner) throws IOException {
 		File dummyFile = options.getDummyFile();
 		if(dummyFile != null){
 			final byte[] bytes = Files.readAllBytes(dummyFile.toPath());
@@ -243,20 +240,24 @@ public final class SolarMain {
 				roverStatusPacket,
 				(fieldName, previousValue, newValue) -> System.out.println(fieldName + " changed from " + previousValue + " to " + newValue)
 			);
-			RoverSetupProgram.startRoverSetup(readWrite, readWrite);
+			runner.doProgram(readWrite, readWrite);
+			return 0;
 		} else {
 			try(IOBundle ioBundle = createIOBundle(options.getIOBundleFile(), ROVER_CONFIG)) {
 				ModbusSlaveBus modbus = new IOModbusSlaveBus(ioBundle, new RTUDataEncoder(300, 10));
 				ModbusSlave slave = new ImmutableAddressModbusSlave(options.getModbusAddress(), modbus);
 				RoverReadTable read = new RoverModbusSlaveRead(slave);
 				RoverWriteTable write = new RoverModbusSlaveWrite(slave);
-				RoverSetupProgram.startRoverSetup(read, write);
+				runner.doProgram(read, write);
+				return 0;
 			} catch (Exception e) {
 				LOGGER.error("(Fatal)Got exception!", e);
 				return 1;
 			}
 		}
-		return 0;
+	}
+	private interface RoverProgramRunner {
+		void doProgram(RoverReadTable read, RoverWriteTable write);
 	}
 	private static int connectOuthouse(OuthouseProgramOptions options) throws Exception {
 		LOGGER.info("Beginning outhouse program");

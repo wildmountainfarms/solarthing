@@ -84,7 +84,8 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 	public OutbackIdentifier getIdentifier() {
 		return identifier;
 	}
-	
+
+	@SuppressWarnings("deprecation")
 	@Override
 	public int getChargerCurrent() {
 		return chargerCurrent;
@@ -106,6 +107,7 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 	}
 
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public float getAmpChargerCurrent() {
 		return ampChargerCurrent;
