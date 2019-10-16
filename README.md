@@ -11,6 +11,9 @@ Parses data from an Outback MATE, communicates with a renogy rover, and uses Cou
 * Display data in Web Application
 * Use as an API for your own uses!
 
+## Quickstart
+[MATE Quickstart](docs/quickstart_mate.md)
+
 # Why should you use this?
 This program supports communication with more solar products than any other open source program. The program
 was built to reliably store data in a database while running 24-7. You can customize this program to fit your
@@ -22,7 +25,8 @@ currently three different ways to view the data that is stored in your database 
 ## What This is currently used for
 This program is run on a raspberry pi at Wild Mountain Farms (www.wildmountainfarms.com).
 That program uploads packets to a CouchDB database on a separate computer which hosts the web portion
-found here: [solarthing-web](https://github.com/wildmountainfarms/solarthing-web). 
+found here: [solarthing-web](https://github.com/wildmountainfarms/solarthing-web). We also use InfluxDB to make using Grafana easy:
+
 
 In the future, this project may extend to more IoT uses other than just solar and outhouse status. But the name will
 forever stick! Long live <strong>SolarThing</strong>!
@@ -34,10 +38,13 @@ and more convenient.
 SolarThing Android: [Github](https://github.com/wildmountainfarms/solarthing-android)
 |
 [Google Play](https://play.google.com/store/apps/details?id=me.retrodaredevil.solarthing.android)
+![alt text](docs/solarthing-android-example.jpg "SolarThing Android Notification")
 
 [SolarThing Web](https://github.com/wildmountainfarms/solarthing-web)
+![alt text](docs/solarthing-web-example.png "SolarThing Web")
 
 If you decide to use InfluxDB, you can easily create your own Dashboard with Grafana.
+![alt text](docs/grafana-example.png "SolarThing with Grafana")
 
 ### Individual documentation
 [Solar readme](solar/README.md)
@@ -49,7 +56,7 @@ You can see the [Outback/Renogy Rover](solar/README.md) README for using the pro
 
 You can see the [Outhouse](outhouse/README.md) README for using the outhouse program.
 
-The [input and output](input_and_outputs.md) README is documentation for the `--io` option used in all of the sub programs.
+The [input and output](docs/input_and_outputs.md) README is documentation for the `--io` option used in all of the sub programs.
 
 ### Developer Use
 [![](https://jitpack.io/v/wildmountainfarms/solarthing.svg)](https://jitpack.io/#wildmountainfarms/solarthing)
@@ -71,17 +78,8 @@ dependencies {
 }
 ```
 
-### Customizing
-The different command line options give you may ways to receive data and export data. CouchDB and InfluxDB
-are both supported.
 
-If you want to store data in another database, you can create your own implementation of [PacketHandler](src/main/java/me/retrodaredevil/solarthing/packets/handling/PacketHandler.java)
-
-If your implementation is general enough, submit a pull request so others can use your implementation as well!
-
-### Contributing
-Contributions are welcome! Feel free to submit an issue to check to see if you want to start working on a feature but aren't
-sure if it will be accepted.
+### [Contributing](CONTRIBUTING.md)
 
 ### Conventions
 This project requires Java 8+. However Java 8 API additions aren't used to remain compatible with Android SDK level 19.
@@ -90,11 +88,11 @@ This project requires Java 8+. However Java 8 API additions aren't used to remai
 Run `./compile_and_move.sh`. Make sure your working directory is in the root of this project. ([this directory](.))
 
 ### Database Setup
-[CouchDB setup](couchdb.md)
+[CouchDB setup](docs/couchdb.md)
 
-[InfluxDB setup](influxdb_config.md): (Basically None)<br/>
+[InfluxDB setup](docs/influxdb_config.md): (Basically None)<br/>
 *Please note that InfluxDB is not supported by the web application or Android application. Use this if you only want to use Grafana*
-### [Technical](technical.md)
+### [Technical](docs/technical.md)
 
 #### Configuration
 This uses jewelcli for its configuration. Using this library makes it very easy to use interfaces with multiple inheritance. http://jewelcli.lexicalscope.com/examples.html
@@ -116,4 +114,4 @@ This uses slf4j to log and uses log4j2 as the main implementation. https://loggi
 * Add better logging with timestamps
 * Make Grafana easy to use by supporting InfluxDB as a database
 
-### [History](history.md)
+### [History](docs/history.md)
