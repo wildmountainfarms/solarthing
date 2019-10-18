@@ -5,9 +5,13 @@ import java.util.Objects;
 public final class FrequentObject<T> {
 	private final T object;
 
-
 	private final Integer frequency;
 
+	/**
+	 *
+	 * @param object The object/value. May be null, or may not be. You decide.
+	 * @param frequency The frequency or null, to indicate default
+	 */
 	public FrequentObject(T object, Integer frequency) {
 		this.object = object;
 		this.frequency = frequency;

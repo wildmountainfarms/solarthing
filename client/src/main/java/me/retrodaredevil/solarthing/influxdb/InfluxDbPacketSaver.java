@@ -73,31 +73,48 @@ public class InfluxDbPacketSaver implements PacketHandler {
 			}
 			final RetentionPolicySetting retentionPolicySetting = retentionPolicyGetter.getRetentionPolicySetting();
 			final String retentionPolicyName;
+
+			// region Retention Policy Creation Logic
 			if(retentionPolicySetting != null){
 				retentionPolicyName = retentionPolicySetting.getName();
 				if(retentionPolicyName != null){
 					final RetentionPolicy policy = retentionPolicySetting.getRetentionPolicy();
-					if(policy != null && retentionPolicySetting.isTryToCreate()){
+					if(policy != null){
 						final String policyString = policy.toPolicyString(retentionPolicyName, database);
-						final QueryResult result;
-						try {
-							result = db.query(new Query("CREATE " + policyString));
-						} catch(InfluxDBException ex){
-							throw new PacketHandleException("Unable to query database to create retention policy: " + retentionPolicyName);
-						}
-						if(result.hasError()){
-							if(retentionPolicySetting.isAutomaticallyAlter()){
-								final QueryResult alterResult;
-								try {
-									alterResult = db.query(new Query("ALTER " + policyString));
-								} catch(InfluxDBException ex){
-									throw new PacketHandleException("Unable to query database to alter retention policy: " + retentionPolicyName);
+						final boolean needsAlter;
+						if(retentionPolicySetting.isTryToCreate()){
+							final QueryResult result;
+							final String query = "CREATE " + policyString;
+							try {
+								result = db.query(new Query(query));
+							} catch(InfluxDBException ex){
+								throw new PacketHandleException("Unable to query database to create retention policy: " + retentionPolicyName + " query: " + query, ex);
+							}
+							boolean hasError = result.hasError();
+							if(retentionPolicySetting.isIgnoreUnsuccessfulCreate()){
+								if(hasError){
+									LOGGER.debug("We're going to ignore this error we got while trying to create a retention policy.");
 								}
-								if(alterResult.hasError()){
-									throw new PacketHandleException("Unable to alter retention policy: " + retentionPolicyName + ". Error: " + alterResult.getError());
-								}
+								needsAlter = false;
 							} else {
+								needsAlter = hasError;
+							}
+							if(needsAlter && !retentionPolicySetting.isAutomaticallyAlter()){
 								throw new PacketHandleException("Got error while trying to create retention policy: " + retentionPolicyName + ". Error: " + result.getError());
+							}
+						} else {
+							needsAlter = true;
+						}
+						if (needsAlter && retentionPolicySetting.isAutomaticallyAlter()) {
+							final QueryResult alterResult;
+							try {
+								alterResult = db.query(new Query("ALTER " + policyString));
+								LOGGER.info("Successfully altered {} retention policy!", retentionPolicyName);
+							} catch (InfluxDBException ex) {
+								throw new PacketHandleException("Unable to query database to alter retention policy: " + retentionPolicyName, ex);
+							}
+							if (alterResult.hasError()) {
+								throw new PacketHandleException("Unable to alter retention policy: " + retentionPolicyName + ". Error: " + alterResult.getError());
 							}
 						}
 					}
@@ -105,12 +122,14 @@ public class InfluxDbPacketSaver implements PacketHandler {
 			} else {
 				retentionPolicyName = null;
 			}
+			// endregion
+
 			final long time = packetCollection.getDateMillis();
 			final BatchPoints points = BatchPoints.database(database)
 				.tag("sourceId", packetGroup.getSourceId())
 				.tag("fragmentId", "" + packetGroup.getFragmentId())
 				.consistency(InfluxDB.ConsistencyLevel.ALL)
-				.retentionPolicy(retentionPolicyName)
+				.retentionPolicy(retentionPolicyName) // may be null, but that's OK
 				.build();
 
 			int packetsWritten = 0;
