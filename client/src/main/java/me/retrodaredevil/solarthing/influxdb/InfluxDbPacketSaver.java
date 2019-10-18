@@ -65,8 +65,9 @@ public class InfluxDbPacketSaver implements PacketHandler {
 			final String database = databaseNameGetter.getDatabaseName(packetGroup);
 			try {
 				QueryResult result = db.query(new Query("CREATE DATABASE " + database));
-				if(result.hasError()){
-					throw new PacketHandleException("Result got error! error: " + result.getError());
+				String error = getError(result);
+				if(error != null){
+					throw new PacketHandleException("Result got error! error: " + result);
 				}
 			} catch (InfluxDBException ex) {
 				throw new PacketHandleException("Unable to query the database!", ex);
@@ -90,31 +91,39 @@ public class InfluxDbPacketSaver implements PacketHandler {
 							} catch(InfluxDBException ex){
 								throw new PacketHandleException("Unable to query database to create retention policy: " + retentionPolicyName + " query: " + query, ex);
 							}
-							boolean hasError = result.hasError();
+							String error = getError(result);
 							if(retentionPolicySetting.isIgnoreUnsuccessfulCreate()){
-								if(hasError){
-									LOGGER.debug("We're going to ignore this error we got while trying to create a retention policy.");
+								if(error != null){
+									LOGGER.debug("We're going to ignore this error we got while trying to create a retention policy. Error: {}", error);
 								}
 								needsAlter = false;
 							} else {
-								needsAlter = hasError;
+								if(error != null){
+									LOGGER.debug("Got error while trying to create! Error: " + error);
+								}
+								needsAlter = error != null;
 							}
 							if(needsAlter && !retentionPolicySetting.isAutomaticallyAlter()){
-								throw new PacketHandleException("Got error while trying to create retention policy: " + retentionPolicyName + ". Error: " + result.getError());
+								throw new PacketHandleException("Got error while trying to create retention policy: " + retentionPolicyName + ". Error: " + error);
 							}
 						} else {
 							needsAlter = true;
 						}
-						if (needsAlter && retentionPolicySetting.isAutomaticallyAlter()) {
-							final QueryResult alterResult;
-							try {
-								alterResult = db.query(new Query("ALTER " + policyString));
-								LOGGER.info("Successfully altered {} retention policy!", retentionPolicyName);
-							} catch (InfluxDBException ex) {
-								throw new PacketHandleException("Unable to query database to alter retention policy: " + retentionPolicyName, ex);
-							}
-							if (alterResult.hasError()) {
-								throw new PacketHandleException("Unable to alter retention policy: " + retentionPolicyName + ". Error: " + alterResult.getError());
+						if (needsAlter) {
+							if (retentionPolicySetting.isAutomaticallyAlter()) {
+								final QueryResult alterResult;
+								try {
+									alterResult = db.query(new Query("ALTER " + policyString));
+									LOGGER.info("Successfully altered {} retention policy!", retentionPolicyName);
+								} catch (InfluxDBException ex) {
+									throw new PacketHandleException("Unable to query database to alter retention policy: " + retentionPolicyName, ex);
+								}
+								String error = getError(alterResult);
+								if (error != null) {
+									throw new PacketHandleException("Unable to alter retention policy: " + retentionPolicyName + ". Error: " + error);
+								}
+							} else {
+								throw new PacketHandleException("Retention policy: " + retentionPolicyName + " needs to be altered but automatically alter is false!");
 							}
 						}
 					}
@@ -170,6 +179,18 @@ public class InfluxDbPacketSaver implements PacketHandler {
 			}
 			LOGGER.debug("Wrote {} packets to InfluxDB! database={} retention policy={}", packetsWritten, database, retentionPolicyName);
 		}
+	}
+	private String getError(QueryResult queryResult){
+		if(queryResult.hasError()){
+			return queryResult.getError();
+		}
+		List<QueryResult.Result> results = queryResult.getResults();
+		for(QueryResult.Result result : results){
+			if(result.hasError()){
+				return result.getError();
+			}
+		}
+		return null;
 	}
 	private InfluxDB createDatabase() {
 		return InfluxDBFactory.connect(
