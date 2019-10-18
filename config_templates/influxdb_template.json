@@ -34,8 +34,8 @@
       },
       {
         "frequency": null,
-        "name": "2d-default",
-        "duration": "2d"
+        "name": "normal-short-retention-policy",
+        "duration": "1h"
       }
     ],
 

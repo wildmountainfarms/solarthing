@@ -3,6 +3,9 @@ package me.retrodaredevil.solarthing.influxdb;
 import com.google.gson.*;
 import me.retrodaredevil.influxdb.InfluxProperties;
 import me.retrodaredevil.okhttp3.OkHttpProperties;
+import me.retrodaredevil.solarthing.influxdb.retention.RetentionPolicy;
+import me.retrodaredevil.solarthing.influxdb.retention.RetentionPolicyGetter;
+import me.retrodaredevil.solarthing.influxdb.retention.RetentionPolicySetting;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.InstancePacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
@@ -21,9 +24,7 @@ import org.influxdb.dto.QueryResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.Objects.requireNonNull;
@@ -42,19 +43,26 @@ public class InfluxDbPacketSaver implements PacketHandler {
 	private final OkHttpProperties okHttpProperties;
 	private final DatabaseNameGetter databaseNameGetter;
 	private final PacketPointCreator pointCreator;
+	private final RetentionPolicyGetter retentionPolicyGetter;
 
-	public InfluxDbPacketSaver(InfluxProperties properties, OkHttpProperties okHttpProperties, DatabaseNameGetter databaseNameGetter, PacketPointCreator pointCreator) {
+	public InfluxDbPacketSaver(
+		InfluxProperties properties,
+		OkHttpProperties okHttpProperties,
+		DatabaseNameGetter databaseNameGetter,
+		PacketPointCreator pointCreator,
+		RetentionPolicyGetter retentionPolicyGetter) {
 		this.properties = requireNonNull(properties);
 		this.okHttpProperties = requireNonNull(okHttpProperties);
 		this.databaseNameGetter = requireNonNull(databaseNameGetter);
 		this.pointCreator = requireNonNull(pointCreator);
+		this.retentionPolicyGetter = retentionPolicyGetter;
 	}
 
 	@Override
 	public void handle(PacketCollection packetCollection, boolean wasInstant) throws PacketHandleException {
 		try(InfluxDB db = createDatabase()) {
-			InstancePacketGroup packetGroup = PacketGroups.parseToInstancePacketGroup(packetCollection);
-			String database = databaseNameGetter.getDatabaseName(packetGroup);
+			final InstancePacketGroup packetGroup = PacketGroups.parseToInstancePacketGroup(packetCollection);
+			final String database = databaseNameGetter.getDatabaseName(packetGroup);
 			try {
 				QueryResult result = db.query(new Query("CREATE DATABASE " + database));
 				if(result.hasError()){
@@ -63,13 +71,48 @@ public class InfluxDbPacketSaver implements PacketHandler {
 			} catch (InfluxDBException ex) {
 				throw new PacketHandleException("Unable to query the database!", ex);
 			}
-			long time = packetCollection.getDateMillis();
-			BatchPoints points = BatchPoints.database(database)
+			final RetentionPolicySetting retentionPolicySetting = retentionPolicyGetter.getRetentionPolicySetting();
+			final String retentionPolicyName;
+			if(retentionPolicySetting != null){
+				retentionPolicyName = retentionPolicySetting.getName();
+				if(retentionPolicyName != null){
+					final RetentionPolicy policy = retentionPolicySetting.getRetentionPolicy();
+					if(policy != null && retentionPolicySetting.isTryToCreate()){
+						final String policyString = policy.toPolicyString(retentionPolicyName, database);
+						final QueryResult result;
+						try {
+							result = db.query(new Query("CREATE " + policyString));
+						} catch(InfluxDBException ex){
+							throw new PacketHandleException("Unable to query database to create retention policy: " + retentionPolicyName);
+						}
+						if(result.hasError()){
+							if(retentionPolicySetting.isAutomaticallyAlter()){
+								final QueryResult alterResult;
+								try {
+									alterResult = db.query(new Query("ALTER " + policyString));
+								} catch(InfluxDBException ex){
+									throw new PacketHandleException("Unable to query database to alter retention policy: " + retentionPolicyName);
+								}
+								if(alterResult.hasError()){
+									throw new PacketHandleException("Unable to alter retention policy: " + retentionPolicyName + ". Error: " + alterResult.getError());
+								}
+							} else {
+								throw new PacketHandleException("Got error while trying to create retention policy: " + retentionPolicyName + ". Error: " + result.getError());
+							}
+						}
+					}
+				}
+			} else {
+				retentionPolicyName = null;
+			}
+			final long time = packetCollection.getDateMillis();
+			final BatchPoints points = BatchPoints.database(database)
 				.tag("sourceId", packetGroup.getSourceId())
 				.tag("fragmentId", "" + packetGroup.getFragmentId())
 				.consistency(InfluxDB.ConsistencyLevel.ALL)
-				.retentionPolicy(null) // TODO
+				.retentionPolicy(retentionPolicyName)
 				.build();
+
 			int packetsWritten = 0;
 			for (Packet packet : packetGroup.getPackets()) {
 				Point.Builder pointBuilder = pointCreator.createBuilder(packet).time(time, TimeUnit.MILLISECONDS);
@@ -79,7 +122,19 @@ public class InfluxDbPacketSaver implements PacketHandler {
 					String key = entry.getKey();
 					JsonPrimitive prim = entry.getValue();
 					if (prim.isNumber()) {
-						pointBuilder.addField(key, prim.getAsDouble()); // always store as float datatype
+						// always store as float datatype
+						Number number = prim.getAsNumber();
+						if(number instanceof Float){
+							pointBuilder.addField(key, prim.getAsDouble());
+						} else {
+							/*
+							The idea behind this is to use a float instead of a double so if the InfluxDB implementation
+							that creates the query treats floats differently than doubles, it may be able to store it more accurately.
+							At the time of doing this, I don't think it treats it differently, but might as well have it light this
+							because why not.
+							 */
+							pointBuilder.addField(key, (Number) prim.getAsFloat());
+						}
 					} else if (prim.isString()) {
 						pointBuilder.addField(key, prim.getAsString());
 					} else if (prim.isBoolean()) {
@@ -94,7 +149,7 @@ public class InfluxDbPacketSaver implements PacketHandler {
 			} catch (InfluxDBException ex) {
 				throw new PacketHandleException("We were able to query the database, but unable to write the points to it!", ex);
 			}
-			LOGGER.debug("Wrote {} packets to InfluxDB!", packetsWritten);
+			LOGGER.debug("Wrote {} packets to InfluxDB! database={} retention policy={}", packetsWritten, database, retentionPolicyName);
 		}
 	}
 	private InfluxDB createDatabase() {

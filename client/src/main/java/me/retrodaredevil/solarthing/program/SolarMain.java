@@ -29,6 +29,9 @@ import me.retrodaredevil.solarthing.config.databases.implementations.LatestFileD
 import me.retrodaredevil.solarthing.config.options.*;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketSaver;
 import me.retrodaredevil.solarthing.influxdb.*;
+import me.retrodaredevil.solarthing.influxdb.retention.ConstantRetentionPolicyGetter;
+import me.retrodaredevil.solarthing.influxdb.retention.FrequentRetentionPolicyGetter;
+import me.retrodaredevil.solarthing.influxdb.retention.RetentionPolicySetting;
 import me.retrodaredevil.solarthing.outhouse.OuthousePacketCreator;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.HourIntervalPacketCollectionIdGenerator;
@@ -48,6 +51,8 @@ import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
 import me.retrodaredevil.solarthing.solar.renogy.rover.*;
 import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusSlaveRead;
 import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusSlaveWrite;
+import me.retrodaredevil.solarthing.util.frequency.FrequentHandler;
+import me.retrodaredevil.solarthing.util.frequency.FrequentObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -338,15 +343,14 @@ public final class SolarMain {
 					new InfluxDbPacketSaver(
 						settings.getInfluxProperties(),
 						settings.getOkHttpProperties(),
-						databaseName != null
-							? new ConstantDatabaseNameGetter(databaseName)
-							: new ConstantDatabaseNameGetter(uniqueName),
+						new ConstantDatabaseNameGetter(databaseName != null ? databaseName : uniqueName),
 						measurementName != null
 							? new ConstantMeasurementPacketPointCreator(measurementName)
 							: (databaseName != null
 								? new ConstantMeasurementPacketPointCreator(uniqueName) // A constant database name was specified unrelated to the uniqueName
 								: DocumentedMeasurementPacketPointCreator.INSTANCE
-							)
+							),
+						new FrequentRetentionPolicyGetter(new FrequentHandler<>(settings.getFrequentRetentionPolicyList()))
 					),
 					frequencySettings,
 					true
@@ -400,7 +404,11 @@ public final class SolarMain {
 					? null
 					: measurementNameElement.getAsString();
 				LOGGER.debug("Debugging databaseName: {}, measurementName: {}", databaseName, measurementName);
-				databaseSettings = new InfluxDbDatabaseSettings(influxProperties, okHttpProperties, databaseName, measurementName);
+				databaseSettings = new InfluxDbDatabaseSettings(
+					influxProperties, okHttpProperties,
+					databaseName, measurementName,
+					Collections.singleton(new FrequentObject<>(RetentionPolicySetting.DEFAULT_POLICY, null))
+				);
 			} else if ("latest".equals(type)) {
 				databaseType = LatestFileDatabaseSettings.TYPE;
 				JsonObject config = configElement.getAsJsonObject();
