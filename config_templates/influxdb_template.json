@@ -10,7 +10,7 @@
     "retention_policies": [
       {
         "frequency": 7,
-        "name": "inf-8cec0e8f927f8f0d",
+        "name": "normal_forever_retention",
         "duration": "INF",
         "replication": null,
         "shard_duration": null,
@@ -19,29 +19,23 @@
         "ignore_unsuccessful_create": false
       },
       {
-        "frequency": 10,
-        "name": "my-policy-with-default-duration",
-        "duration": "365d",
-        "ignore_unsuccessful_create": true
-      },
-      {
         "frequency": 13,
-        "name": "1y-2537d8c55ff56a22",
+        "name": "long_duration_retention",
         "duration": "365d"
       },
       {
         "frequency": 17,
-        "name": "1m-asdfasdf",
+        "name": "medium_duration_retention",
         "duration": "4w"
       },
       {
         "frequency": 19,
-        "name": "1w-asdfasdf",
+        "name": "shorter_medium_duration_retention",
         "duration": "1w"
       },
       {
         "frequency": null,
-        "name": "normal-short-retention-policy",
+        "name": "normal_short_retention",
         "duration": "1h"
       }
     ],
