@@ -15,17 +15,24 @@
         "replication": null,
         "shard_duration": null,
         "set_as_default": false,
-        "auto_alter": false
+        "auto_alter": false,
+        "ignore_unsuccessful_create": false
+      },
+      {
+        "frequency": 10,
+        "name": "my-policy-with-default-duration",
+        "duration": "365d",
+        "ignore_unsuccessful_create": true
       },
       {
         "frequency": 13,
         "name": "1y-2537d8c55ff56a22",
-        "duration": "1y"
+        "duration": "365d"
       },
       {
         "frequency": 17,
         "name": "1m-asdfasdf",
-        "duration": "1m"
+        "duration": "4w"
       },
       {
         "frequency": 19,
@@ -38,6 +45,7 @@
         "duration": "1h"
       }
     ],
+
 
     "retry_on_connection_failure": true,
     "call_timeout": 0.0,

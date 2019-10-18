@@ -90,6 +90,9 @@ This does not apply to the `client` module.
 
 You can set your editor up with [Editor Config](https://www.editorconfig.org) to work with the [.editorconfig file](.editorconfig)
 
+Use standard Java naming conventions. Use `myCoolId` instead of `myCoolID` and use `myCoolDb` instead of `myCoolDB`. The exception
+here is that you SHOULD use `myIODevice` instead of `myIoDevice`.
+
 ### Compiling
 Run `./compile_and_move.sh`. Make sure your working directory is in the root of this project. ([this directory](.))
 

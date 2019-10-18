@@ -9,7 +9,8 @@ import java.util.GregorianCalendar;
 public class FrequentRetentionPolicyGetter implements RetentionPolicyGetter {
 	private final FrequentHandler<RetentionPolicySetting> handler;
 
-	private int lastMillis = 0;
+	private Long startMillis = null;
+	private double lastProgress = 0;
 
 	public FrequentRetentionPolicyGetter(FrequentHandler<RetentionPolicySetting> handler) {
 		this.handler = handler;
@@ -17,14 +18,21 @@ public class FrequentRetentionPolicyGetter implements RetentionPolicyGetter {
 
 	@Override
 	public RetentionPolicySetting getRetentionPolicySetting() {
-		Calendar calendar = new GregorianCalendar();
-		int millis = calendar.get(Calendar.MINUTE) * 60 * 1000 + calendar.get(Calendar.SECOND) * 1000 + calendar.get(Calendar.MILLISECOND);
-		if(lastMillis > millis){
+		long now = System.currentTimeMillis();
+		Long startMillis = this.startMillis;
+		if(startMillis == null){
+			startMillis = now;
+			this.startMillis = now;
+		}
+		long elapsed = now - startMillis;
+		double progress = (elapsed / (60.0 * 60.0 * 1000.0)) % 1;
+		if(lastProgress > progress){
 			handler.reset();
 		}
-		lastMillis = millis;
-		double progress = millis / (60.0 * 60.0 * 1000.0);
 		FrequentObject<RetentionPolicySetting> object = handler.get(progress);
+		if(object == null){
+			return null;
+		}
 		handler.use(object);
 		return object.getObject();
 	}

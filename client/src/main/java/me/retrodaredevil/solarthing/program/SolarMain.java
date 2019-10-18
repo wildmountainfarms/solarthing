@@ -31,6 +31,7 @@ import me.retrodaredevil.solarthing.couchdb.CouchDbPacketSaver;
 import me.retrodaredevil.solarthing.influxdb.*;
 import me.retrodaredevil.solarthing.influxdb.retention.ConstantRetentionPolicyGetter;
 import me.retrodaredevil.solarthing.influxdb.retention.FrequentRetentionPolicyGetter;
+import me.retrodaredevil.solarthing.influxdb.retention.RetentionPolicy;
 import me.retrodaredevil.solarthing.influxdb.retention.RetentionPolicySetting;
 import me.retrodaredevil.solarthing.outhouse.OuthousePacketCreator;
 import me.retrodaredevil.solarthing.packets.Packet;
@@ -404,10 +405,20 @@ public final class SolarMain {
 					? null
 					: measurementNameElement.getAsString();
 				LOGGER.debug("Debugging databaseName: {}, measurementName: {}", databaseName, measurementName);
+				List<FrequentObject<RetentionPolicySetting>> frequentRetentionPolicies = JsonInfluxDb.getRetentionPolicySettings(config);
+				if(frequentRetentionPolicies.isEmpty()){
+					LOGGER.debug("No retention policies specified!");
+				}
+				for(FrequentObject<RetentionPolicySetting> frequentObject : frequentRetentionPolicies){
+					RetentionPolicySetting setting = requireNonNull(frequentObject.getObject());
+					RetentionPolicy policy = setting.getRetentionPolicy();
+					String policyString = policy == null ? "null" : policy.toPolicyString("<policy name>", "<database name>");
+					LOGGER.debug("Debugging retention policy. Name={} Frequency={} try to create={} auto alter={} ignore unsuccessful create={} policy={}", setting.getName(), frequentObject.getFrequency(), setting.isTryToCreate(), setting.isAutomaticallyAlter(), setting.isIgnoreUnsuccessfulCreate(), policyString);
+				}
 				databaseSettings = new InfluxDbDatabaseSettings(
 					influxProperties, okHttpProperties,
 					databaseName, measurementName,
-					Collections.singleton(new FrequentObject<>(RetentionPolicySetting.DEFAULT_POLICY, null))
+					frequentRetentionPolicies
 				);
 			} else if ("latest".equals(type)) {
 				databaseType = LatestFileDatabaseSettings.TYPE;

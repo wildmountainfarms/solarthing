@@ -18,6 +18,7 @@ public class FrequentHandler<T> {
 
 	public FrequentObject<T> get(double progress){
 		if(progress < 0 || progress >= 1) throw new IllegalArgumentException("progress must be between 0 and 1. range: [0..1)");
+
 		FrequentObject<T> defaultObject = null;
 		for(FrequentObject<T> object : frequentObjectList){
 			Integer frequency = object.getFrequency();
@@ -30,7 +31,7 @@ public class FrequentHandler<T> {
 			}
 			int amount = frequentMap.getOrDefault(object, 0);
 			double objectProgress = ((double)amount) / frequency;
-			if(objectProgress < progress){
+			if(objectProgress <= progress){
 				return object;
 			}
 		}
