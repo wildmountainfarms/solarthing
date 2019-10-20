@@ -24,7 +24,10 @@ import org.influxdb.dto.QueryResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.Objects.requireNonNull;
@@ -64,7 +67,7 @@ public class InfluxDbPacketSaver implements PacketHandler {
 			final InstancePacketGroup packetGroup = PacketGroups.parseToInstancePacketGroup(packetCollection);
 			final String database = databaseNameGetter.getDatabaseName(packetGroup);
 			try {
-				QueryResult result = db.query(new Query("CREATE DATABASE " + database));
+				QueryResult result = db.query(new Query("CREATE DATABASE " + database, null, true));
 				String error = getError(result);
 				if(error != null){
 					throw new PacketHandleException("Result got error! error: " + result);
@@ -87,7 +90,7 @@ public class InfluxDbPacketSaver implements PacketHandler {
 							final QueryResult result;
 							final String query = "CREATE " + policyString;
 							try {
-								result = db.query(new Query(query));
+								result = db.query(new Query(query, null, true));
 							} catch(InfluxDBException ex){
 								throw new PacketHandleException("Unable to query database to create retention policy: " + retentionPolicyName + " query: " + query, ex);
 							}
@@ -204,7 +207,7 @@ public class InfluxDbPacketSaver implements PacketHandler {
 				.readTimeout(okHttpProperties.getReadTimeoutMillis(), TimeUnit.MILLISECONDS)
 				.writeTimeout(okHttpProperties.getWriteTimeoutMillis(), TimeUnit.MILLISECONDS)
 				.pingInterval(okHttpProperties.getPingIntervalMillis(), TimeUnit.MILLISECONDS)
-				.addInterceptor(new HttpLoggingInterceptor(INFLUX_LOGGER::info).setLevel(HttpLoggingInterceptor.Level.BASIC)),
+				.addInterceptor(new HttpLoggingInterceptor(INFLUX_LOGGER::info).setLevel(HttpLoggingInterceptor.Level.BODY)),
 			InfluxDB.ResponseFormat.JSON
 		).setLogLevel(InfluxDB.LogLevel.NONE);
 	}

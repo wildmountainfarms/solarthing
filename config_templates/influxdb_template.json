@@ -9,6 +9,13 @@
 
     "retention_policies": [
       {
+        "frequency": 29,
+        "name": "medium_duration_retention",
+        "duration": "4w",
+        "auto_alter": true,
+        "set_as_default": true
+      },
+      {
         "frequency": 7,
         "name": "normal_forever_retention",
         "duration": "INF",
@@ -17,21 +24,6 @@
         "set_as_default": false,
         "auto_alter": false,
         "ignore_unsuccessful_create": false
-      },
-      {
-        "frequency": 13,
-        "name": "long_duration_retention",
-        "duration": "365d"
-      },
-      {
-        "frequency": 17,
-        "name": "medium_duration_retention",
-        "duration": "4w"
-      },
-      {
-        "frequency": 19,
-        "name": "shorter_medium_duration_retention",
-        "duration": "1w"
       },
       {
         "frequency": null,
