@@ -29,6 +29,7 @@ public class FrequentRetentionPolicyGetter implements RetentionPolicyGetter {
 		if(lastProgress > progress){
 			handler.reset();
 		}
+		lastProgress = progress;
 		FrequentObject<RetentionPolicySetting> object = handler.get(progress);
 		if(object == null){
 			return null;
