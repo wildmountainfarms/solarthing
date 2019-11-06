@@ -115,7 +115,8 @@ This uses slf4j to log and uses log4j2 as the main implementation. https://loggi
 * Cache some data from Renogy Rover that won't be updated
 * Create Arduino program to simulate MATE or Rover
 * Move from CouchDB to MongoDB
-* Look into supporting Elasticsearch, MongoDB, Graphite, Prometheus
+* Log CPU temperature, ram, etc into a database and logs
+* Detect when Mate packets go from address 4->1 or 1->1 to detect a new collection of packets
 
 ### Completed TODO:
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
@@ -126,3 +127,11 @@ This uses slf4j to log and uses log4j2 as the main implementation. https://loggi
 * Make Grafana easy to use by supporting InfluxDB as a database
 
 ### [History](docs/history.md)
+
+### TODO Look into
+* Look into supporting Elasticsearch, MongoDB, Graphite, Prometheus
+* Log data to https://pvoutput.org
+* Do something with https://www.home-assistant.io/ somehow
+* Log data to https://solcast.com.au/
+* Support freeboard
+* Support https://dweet.io

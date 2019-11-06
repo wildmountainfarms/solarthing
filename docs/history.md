@@ -10,6 +10,22 @@ more convenient than a website.
 that it was occupied! He walked all the way back inside, then went back out a few minutes later. He knew that something
 had to be done about this first world problem.
 
+
+#### 2017
+* A perl script was created in a single day to collect data from an Outback Mate serial port
+* The terrible perl script was ditched to start on the Java program. The program allowed packets to be added to a CouchDB database
+#### 2018
+* This continued in the summer of 2018. The formatting of the packets was completely rethought. The web application
+was created and completed in less than a week.
+* An Android app was created to see the data continuously updated in a status notification
+#### 2019
+* Outhouse status was added
+* Renogy rover support was added
+* To maintain compatibility with the previous packet structure, Source and Fragment packets types were added to
+have the ability to have multiple instances uploading packets to a single database
+* InfluxDB support was added allowing for easy configuration of a Grafana dashboard
+* Raspberry Pi running the outhouse program didn't survive the freezing temperatures (RIP outhousepi 2019-2019)
+
 ### Legacy
 [The perl script](../helloworld.pl) is a legacy program. It was the program that started solarthing.
 After learning perl for a day. I went straight back to Java, which I am more familiar with.

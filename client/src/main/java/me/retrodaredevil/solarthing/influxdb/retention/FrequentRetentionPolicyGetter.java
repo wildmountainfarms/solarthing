@@ -3,9 +3,6 @@ package me.retrodaredevil.solarthing.influxdb.retention;
 import me.retrodaredevil.solarthing.util.frequency.FrequentHandler;
 import me.retrodaredevil.solarthing.util.frequency.FrequentObject;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-
 public class FrequentRetentionPolicyGetter implements RetentionPolicyGetter {
 	private final FrequentHandler<RetentionPolicySetting> handler;
 
