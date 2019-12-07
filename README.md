@@ -11,15 +11,15 @@ Parses data from an Outback MATE, communicates with a renogy rover, and uses Cou
 * Display data in Web Application
 * Use as an API for your own uses!
 
-## Quickstart
-[MATE Quickstart](docs/quickstart_mate.md)
+# Quickstart
+Ready to install? Use the [Quickstart](docs/quickstart.md)!
 
 # Why should you use this?
 This program supports communication with more solar products than any other open source program. The program
 was built to reliably store data in a database while running 24-7. You can customize this program to fit your
 needs without programming. But, if you are a programmer, this API will make your life a lot easier.
 
-Out of the box, this supports lots of configuration options. These options include configuring CouchDB and InfluxDB. There is
+Out of the box, this supports lots of configuration options. These options include configuring CouchDB, InfluxDB and  local json file exporting. There is
 currently three different ways to view the data that is stored in your database of choice.
 
 ## What This is currently used for
@@ -85,7 +85,7 @@ dependencies {
 ### [Contributing](CONTRIBUTING.md)
 
 ### Compiling
-Run `./compile_and_move.sh`. Make sure your working directory is in the root of this project. ([this directory](.))
+Run `./compile_and_move.sh`.
 
 ### Database Setup
 [CouchDB setup](docs/couchdb.md)
@@ -96,6 +96,8 @@ Run `./compile_and_move.sh`. Make sure your working directory is in the root of 
 
 #### Configuration
 This uses all JSON for configuring everything. The files you edit are all in one place unless you decide to move them.
+
+See [Quickstart](docs/quickstart.md) to see how to set them up
 
 #### Logging
 This uses slf4j to log and uses log4j2 as the main implementation. https://logging.apache.org/log4j/2.x/manual/appenders.html

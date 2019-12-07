@@ -7,6 +7,7 @@ import java.io.File;
 
 import static java.util.Objects.requireNonNull;
 
+@SuppressWarnings("FieldCanBeLocal")
 public class MateProgramOptions extends PacketHandlingOptionBase implements IOBundleOption {
 
 	@SerializedName("allow_commands")

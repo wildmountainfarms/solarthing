@@ -14,6 +14,7 @@ public class ConstantMeasurementPacketPointCreator implements PacketPointCreator
 		this.measurement = measurement;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Point.Builder createBuilder(Packet packet) {
 		Point.Builder r = Point.measurement(measurement);

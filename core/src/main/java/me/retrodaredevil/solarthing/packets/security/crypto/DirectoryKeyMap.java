@@ -40,6 +40,7 @@ public class DirectoryKeyMap implements PublicKeyLookUp, PublicKeySave {
 	public void putKey(String sender, PublicKey key) {
 		String fileName = senderFileName.getFileName(requireNonNull(sender));
 		File file = new File(directory, fileName);
+		//noinspection ResultOfMethodCallIgnored
 		directory.mkdirs();
 		final OutputStream output;
 		try {

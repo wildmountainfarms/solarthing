@@ -7,7 +7,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PacketHandlingOptionBase implements PacketHandlingOption {
+@SuppressWarnings("FieldCanBeLocal")
+class PacketHandlingOptionBase implements PacketHandlingOption {
 	private JsonArray databases = null;
 	private String source = "default";
 	private Integer fragment = null;

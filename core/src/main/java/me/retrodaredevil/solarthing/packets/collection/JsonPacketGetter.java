@@ -6,8 +6,8 @@ import me.retrodaredevil.solarthing.packets.Packet;
 public interface JsonPacketGetter {
 	/**
 	 *
-	 * @param packetObject
-	 * @return
+	 * @param packetObject The {@link JsonObject} representing the packet
+	 * @return The {@link Packet} represented by {@code packetObject}
 	 * @throws me.retrodaredevil.solarthing.packets.UnknownPacketTypeException
 	 */
 	Packet createFromJson(JsonObject packetObject);

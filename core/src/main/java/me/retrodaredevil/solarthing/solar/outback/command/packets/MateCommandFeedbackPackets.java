@@ -14,11 +14,9 @@ public final class MateCommandFeedbackPackets {
 		} catch(IllegalArgumentException e){
 			throw new UnknownPacketTypeException("packet type name: " + packetName, e);
 		}
-		switch(packetType){
-			case SUCCESS:
-				return SuccessMateCommandPackets.createFromJson(jsonObject);
-			default:
-				throw new UnsupportedOperationException();
+		if (packetType == MateCommandFeedbackPacketType.SUCCESS) {
+			return SuccessMateCommandPackets.createFromJson(jsonObject);
 		}
+		throw new UnsupportedOperationException();
 	}
 }

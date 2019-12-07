@@ -5,7 +5,7 @@ public interface InstanceSourcePacket extends InstancePacket {
 	
 	/**
 	 * Should be serialized as "sourceId"
-	 * @return
+	 * @return The source id
 	 */
 	String getSourceId();
 }

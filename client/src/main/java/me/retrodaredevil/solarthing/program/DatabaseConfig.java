@@ -3,7 +3,6 @@ package me.retrodaredevil.solarthing.program;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.DatabaseType;
 import me.retrodaredevil.solarthing.config.databases.IndividualSettings;
-import me.retrodaredevil.solarthing.packets.handling.FrequencySettings;
 
 import java.util.Collections;
 import java.util.HashMap;
