@@ -6,6 +6,8 @@
       <w>couchdb</w>
       <w>flexnet</w>
       <w>gson</w>
+      <w>influxdb</w>
+      <w>lightcouch</w>
       <w>modbus</w>
       <w>mppt</w>
       <w>mxfm</w>

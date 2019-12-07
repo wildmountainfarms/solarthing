@@ -1,5 +1,6 @@
 package me.retrodaredevil.okhttp3;
 
+@SuppressWarnings("UnusedReturnValue")
 public class OkHttpPropertiesBuilder implements OkHttpProperties {
 
 	private boolean isRetryOnConnectionFailure = true;

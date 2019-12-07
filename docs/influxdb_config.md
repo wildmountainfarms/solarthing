@@ -1,5 +1,5 @@
 # Configuring InfluxDB Database
-When running SolarThing, you can specify databases using JSON files. An example of a configuration can be found [here](../config_templates/influxdb_template.json)
+When running SolarThing, you can specify databases using JSON files. An example of a configuration can be found [here](../config_templates/databases/influxdb_template.json)
 
 ### Specifying `database` and `measurement`
 Note that dashes (`-`) and other special characters cannot be used in either of these.

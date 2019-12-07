@@ -88,6 +88,7 @@ public final class SolarMain {
 	private static final String DATABASE_UPLOAD_ID = "packet_upload";
 	private static final String DATABASE_COMMAND_DOWNLOAD_ID = "command_download";
 	
+	@SuppressWarnings("SameReturnValue")
 	private static int connectMate(MateProgramOptions options) throws Exception {
 		LOGGER.info("Beginning mate program");
 		PacketCollectionIdGenerator idGenerator = createIdGenerator(options.getUniqueIdsInOneHour());
@@ -268,6 +269,7 @@ public final class SolarMain {
 	private interface RoverProgramRunner {
 		void doProgram(RoverReadTable read, RoverWriteTable write);
 	}
+	@SuppressWarnings("SameReturnValue")
 	private static int connectOuthouse(OuthouseProgramOptions options) throws Exception {
 		LOGGER.info("Beginning outhouse program");
 		PacketCollectionIdGenerator idGenerator = createIdGenerator(options.getUniqueIdsInOneHour());

@@ -1,0 +1,11 @@
+{
+  "type": "rover",
+  "source": "default",
+  "fragment": 2,
+  "unique": 30,
+  "databases": [
+    "config/couchdb.json",
+    "config/influxdb.json"
+  ],
+  "io": "config/serial.json"
+}

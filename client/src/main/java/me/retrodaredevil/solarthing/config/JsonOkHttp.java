@@ -2,8 +2,6 @@ package me.retrodaredevil.solarthing.config;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import me.retrodaredevil.influxdb.InfluxProperties;
-import me.retrodaredevil.influxdb.InfluxPropertiesBuilder;
 import me.retrodaredevil.okhttp3.OkHttpProperties;
 import me.retrodaredevil.okhttp3.OkHttpPropertiesBuilder;
 

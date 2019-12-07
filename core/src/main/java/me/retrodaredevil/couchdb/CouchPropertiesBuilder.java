@@ -1,5 +1,6 @@
 package me.retrodaredevil.couchdb;
 
+@SuppressWarnings({"UnusedReturnValue", "unused"})
 public class CouchPropertiesBuilder {
 	private String database;
 	private boolean createIfNotExist;

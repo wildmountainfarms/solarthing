@@ -5,7 +5,7 @@ public final class NumberUtil {
 	
 	/**
 	 *
-	 * @param raw16BitNumber
+	 * @param raw16BitNumber The raw 16 bit number
 	 * @return The upper 8 bits from {@code raw16BitNumber}
 	 */
 	public static int getUpper(int raw16BitNumber){

@@ -9,6 +9,7 @@ import org.influxdb.dto.Point;
 
 public enum DocumentedMeasurementPacketPointCreator implements PacketPointCreator {
 	INSTANCE;
+	@SuppressWarnings("unchecked")
 	@Override
 	public Point.Builder createBuilder(Packet packet) {
 		if(packet instanceof DocumentedPacket){

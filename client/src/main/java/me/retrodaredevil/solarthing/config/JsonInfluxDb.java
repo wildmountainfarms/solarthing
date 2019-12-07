@@ -31,7 +31,7 @@ public final class JsonInfluxDb {
 	/**
 	 *
 	 * @param config The root config
-	 * @return
+	 * @return A list of frequency objects that represent the frequency that {@link RetentionPolicySetting} are used
 	 */
 	public static List<FrequentObject<RetentionPolicySetting>> getRetentionPolicySettings(JsonObject config) {
 		JsonElement retentionPolicyElement = config.get("retention_policies");

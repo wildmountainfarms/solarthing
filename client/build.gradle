@@ -10,7 +10,6 @@ sourceCompatibility = 1.8
 project.ext.mainClassName = "me.retrodaredevil.solarthing.program.SolarMain"
 
 dependencies {
-//    implementation group: 'com.lexicalscope.jewelcli', name: 'jewelcli', version: '0.8.9'
     implementation group: 'org.influxdb', name: 'influxdb-java', version: '2.15'
     implementation group: 'org.mongodb', name: 'mongodb-driver-sync', version: '3.11.0'
 
