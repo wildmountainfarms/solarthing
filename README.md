@@ -84,15 +84,6 @@ dependencies {
 
 ### [Contributing](CONTRIBUTING.md)
 
-### Conventions
-This project requires Java 8+. However Java 8 API additions aren't used in the `core` module to remain compatible with Android SDK level 19.
-This does not apply to the `client` module.
-
-You can set your editor up with [Editor Config](https://www.editorconfig.org) to work with the [.editorconfig file](.editorconfig)
-
-Use standard Java naming conventions. Use `myCoolId` instead of `myCoolID` and use `myCoolDb` instead of `myCoolDB`. The exception
-here is that you SHOULD use `myIODevice` instead of `myIoDevice`.
-
 ### Compiling
 Run `./compile_and_move.sh`. Make sure your working directory is in the root of this project. ([this directory](.))
 
@@ -110,13 +101,17 @@ This uses jewelcli for its configuration. Using this library makes it very easy 
 This uses slf4j to log and uses log4j2 as the main implementation. https://logging.apache.org/log4j/2.x/manual/appenders.html
 
 ### TODO
-* Figure out how to use https://emoncms.org/ to graph data
 * Implement Outback FlexNet DC Packets
 * Cache some data from Renogy Rover that won't be updated
 * Create Arduino program to simulate MATE or Rover
-* Move from CouchDB to MongoDB
 * Log CPU temperature, ram, etc into a database and logs
 * Detect when Mate packets go from address 4->1 or 1->1 to detect a new collection of packets
+* Integrate power usage
+* Have packets for inverters going on/off, AC Drop/AC Use, Daily kWH->0, etc
+* Add readable string alongside identifier tag for InfluxDB
+* Restart rover program if a ModbusTimeoutException is received
+* Add a basic file for a systemd service
+* Stop requiring command line parameters and have option to use all JSON configs
 
 ### Completed TODO:
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
@@ -129,6 +124,7 @@ This uses slf4j to log and uses log4j2 as the main implementation. https://loggi
 ### [History](docs/history.md)
 
 ### TODO Look into
+* Figure out how to use https://emoncms.org/ to graph data
 * Look into supporting Elasticsearch, MongoDB, Graphite, Prometheus
 * Log data to https://pvoutput.org
 * Do something with https://www.home-assistant.io/ somehow

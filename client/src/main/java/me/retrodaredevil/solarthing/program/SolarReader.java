@@ -32,8 +32,9 @@ public class SolarReader {
 	private final long samePacketTime;
 	private final OnDataReceive onDataReceive;
 	private final PacketProvider additionalPacketProvider;
-	
-	private final List<Packet> packetList = new ArrayList<>(); // a list that piles up SolarPackets and handles when needed // may be cleared
+
+	/** A list that piles up SolarPackets and handles when needed. May be cleared */
+	private final List<Packet> packetList = new ArrayList<>(); //
 	private long lastFirstReceivedData = Long.MIN_VALUE; // the last time a packet was added to packetList
 	private boolean instant = false;
 	private final byte[] buffer = new byte[1024];
@@ -56,7 +57,44 @@ public class SolarReader {
 		this.onDataReceive = requireNonNull(onDataReceive);
 		this.additionalPacketProvider = requireNonNull(additionalPacketProvider);
 	}
-	
+
+	private boolean readData() throws IOException {
+		int available = in.available();
+		if(available < 0) throw new AssertionError("available cannot be less than 0! available: " + available);
+		final int len;
+		if(available == 0){ // if nothing is available, we want to try to see if we've reached the end of the file
+			boolean isEOF = in.read(buffer, 0, 0) == -1;
+			if(isEOF) {
+				throw new EOFException();
+			}
+			return false;
+		} else {
+			len = in.read(buffer); // read as much as possible
+			if(len == -1) throw new AssertionError("Because we call in.available(), len should never be -1. Did we change the code?");
+		}
+		String s = new String(buffer, 0, len);
+		final Collection<? extends Packet> newPackets;
+		try {
+			newPackets = creator.add(s.toCharArray());
+		} catch (PacketCreationException e) {
+			e.printStackTrace();
+			String debugString = s.replaceAll("\n", "\\\\n").replaceAll("\r", "\\\\r");
+			LOGGER.warn("Got a garbled packet! got: '" + debugString + "'");
+			packetList.clear();
+			instant = false; // because we check instant to see if data is reliable, set it to false because it's not reliable right now
+			return true;
+		}
+
+		long now = System.currentTimeMillis();
+		boolean firstData = lastFirstReceivedData + samePacketTime < now;
+		if(firstData) {
+			lastFirstReceivedData = now; // set this to the first time we get bytes
+		}
+		onDataReceive.onDataReceive(firstData, instant);
+		packetList.addAll(newPackets);
+		return true;
+	}
+
 	/**
 	 * Should be called continuously
 	 */
@@ -65,44 +103,7 @@ public class SolarReader {
 		// stackoverflow: https://stackoverflow.com/q/53291868/5434860
 		// thanks to this solutionsolution: https://stackoverflow.com/questions/804951/is-it-possible-to-read-from-a-inputstream-with-a-timeout
 
-		boolean readAny = false;
-		// ======= read bytes, append to packetList =======
-		while (true) {
-			int available = in.available();
-			if(available < 0) throw new AssertionError("available cannot be less than 0! available: " + available);
-			final int len;
-			if(available == 0){
-				boolean isEOF = in.read(buffer, 0, 0) == -1;
-				if(isEOF) {
-					throw new EOFException();
-				}
-				break;
-			} else {
-				len = in.read(buffer);
-				if(len == -1) throw new AssertionError("Because we call in.available(), len should never be -1. Did we change the code?");
-				readAny = true;
-			}
-			String s = new String(buffer, 0, len);
-			final Collection<? extends Packet> newPackets;
-			try {
-				newPackets = creator.add(s.toCharArray());
-			} catch (PacketCreationException e) {
-				e.printStackTrace();
-				String debugString = s.replaceAll("\n", "\\\\n").replaceAll("\r", "\\\\r");
-				LOGGER.warn("Got a garbled packet! got: '" + debugString + "'");
-				packetList.clear();
-				instant = false; // because we check instant to see if data is reliable, set it to false because it's not reliable right now
-				break;
-			}
-
-			long now = System.currentTimeMillis();
-			boolean firstData = lastFirstReceivedData + samePacketTime < now;
-			if(firstData) {
-				lastFirstReceivedData = now; // set this to the first time we get bytes
-			}
-			onDataReceive.onDataReceive(firstData, instant);
-			packetList.addAll(newPackets);
-		}
+		boolean readAny = readData();
 
 		// ======= Handle data if needed =======
 		long now = System.currentTimeMillis();
@@ -118,7 +119,7 @@ public class SolarReader {
 					LOGGER.debug("handling above packet(s). packetList.size(): " + packetList.size() + " instant: " + wasInstant);
 					Collection<? extends Packet> packetsToAdd = additionalPacketProvider.createPackets();
 					LOGGER.debug("Before we handle, we are adding " + packetsToAdd.size() + " packet(s)!");
-					packetList.addAll(packetsToAdd);
+					packetList.addAll(packetsToAdd); // add additional packets to the list
 					packetHandler.handle(PacketCollections.createFromPackets(packetList, idGenerator), wasInstant);
 				} catch(PacketHandleException ex){
 					LOGGER.error("Was unable to handle " + packetList.size() + " packet(s).", ex);

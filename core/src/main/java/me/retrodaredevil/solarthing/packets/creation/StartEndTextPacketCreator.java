@@ -2,10 +2,7 @@ package me.retrodaredevil.solarthing.packets.creation;
 
 import me.retrodaredevil.solarthing.packets.Packet;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public abstract class StartEndTextPacketCreator implements TextPacketCreator {
 	private final char start, end;
@@ -91,8 +88,7 @@ public abstract class StartEndTextPacketCreator implements TextPacketCreator {
 	
 	private void reset(){
 		amount = 0;
-		for(int i = 0; i < bytes.length; i++){
-			bytes[i] = 0; // reset bytes array
-		}
+		// reset bytes array
+		Arrays.fill(bytes, (char) 0);
 	}
 }
