@@ -1,6 +1,14 @@
 version "0.0.1-SNAPSHOT"
 description = """SolarThing"""
 
+buildscript {
+    ext {
+        junit5Version = '5.5.2'
+        slf4jVersion = '1.7.29'
+        log4jVersion = '2.12.1'
+    }
+}
+
 subprojects {
     apply plugin: 'java-library'
     sourceCompatibility = 1.8
@@ -10,8 +18,8 @@ subprojects {
         maven { url "https://repo.maven.apache.org/maven2" }
     }
     dependencies {
-        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.4.2'
-        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.4.2'
+        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit5Version
+        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit5Version
     }
     test {
         useJUnitPlatform()

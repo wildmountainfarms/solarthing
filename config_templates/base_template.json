@@ -1,0 +1,10 @@
+{
+  "type": "mate",
+  "source": "default",
+  "fragment": 1,
+  "unique": 60,
+  "databases": [
+    "config/couchdb.json"
+  ],
+  "io": "../config_templates/mate_io.json"
+}

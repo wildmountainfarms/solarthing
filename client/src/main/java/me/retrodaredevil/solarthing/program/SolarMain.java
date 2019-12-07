@@ -28,8 +28,10 @@ import me.retrodaredevil.solarthing.config.databases.implementations.InfluxDbDat
 import me.retrodaredevil.solarthing.config.databases.implementations.LatestFileDatabaseSettings;
 import me.retrodaredevil.solarthing.config.options.*;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketSaver;
-import me.retrodaredevil.solarthing.influxdb.*;
-import me.retrodaredevil.solarthing.influxdb.retention.ConstantRetentionPolicyGetter;
+import me.retrodaredevil.solarthing.influxdb.ConstantDatabaseNameGetter;
+import me.retrodaredevil.solarthing.influxdb.ConstantMeasurementPacketPointCreator;
+import me.retrodaredevil.solarthing.influxdb.DocumentedMeasurementPacketPointCreator;
+import me.retrodaredevil.solarthing.influxdb.InfluxDbPacketSaver;
 import me.retrodaredevil.solarthing.influxdb.retention.FrequentRetentionPolicyGetter;
 import me.retrodaredevil.solarthing.influxdb.retention.RetentionPolicy;
 import me.retrodaredevil.solarthing.influxdb.retention.RetentionPolicySetting;
@@ -370,7 +372,6 @@ public final class SolarMain {
 	private static List<DatabaseConfig> getDatabaseConfigs(PacketHandlingOption options){
 		List<File> files = options.getDatabaseConfigurationFiles();
 		List<DatabaseConfig> r = new ArrayList<>();
-		JsonParser parser = new JsonParser();
 		for(File file : files){
 			final String contents;
 			try {
@@ -378,7 +379,7 @@ public final class SolarMain {
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
-			JsonObject jsonObject = parser.parse(contents).getAsJsonObject();
+			JsonObject jsonObject = JsonParser.parseString(contents).getAsJsonObject();
 			String type = jsonObject.getAsJsonPrimitive("type").getAsString();
 			JsonElement configElement = jsonObject.get("config");
 			final DatabaseType databaseType;
@@ -460,8 +461,7 @@ public final class SolarMain {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		JsonParser parser = new JsonParser();
-		JsonObject jsonObject = parser.parse(contents).getAsJsonObject();
+		JsonObject jsonObject = JsonParser.parseString(contents).getAsJsonObject();
 		return createIOBundle(jsonObject, defaultSerialConfig);
 	}
 	public static IOBundle createIOBundle(JsonObject jsonObject, SerialConfig defaultSerialConfig){
