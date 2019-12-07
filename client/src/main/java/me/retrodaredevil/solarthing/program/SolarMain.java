@@ -1,9 +1,9 @@
 package me.retrodaredevil.solarthing.program;
 
 import com.google.gson.*;
-import com.lexicalscope.jewel.cli.ArgumentValidationException;
-import com.lexicalscope.jewel.cli.Cli;
-import com.lexicalscope.jewel.cli.CliFactory;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
+import com.google.gson.stream.JsonWriter;
 import me.retrodaredevil.couchdb.CouchProperties;
 import me.retrodaredevil.influxdb.InfluxProperties;
 import me.retrodaredevil.io.IOBundle;
@@ -91,6 +91,7 @@ public final class SolarMain {
 	private static int connectMate(MateProgramOptions options) throws Exception {
 		LOGGER.info("Beginning mate program");
 		PacketCollectionIdGenerator idGenerator = createIdGenerator(options.getUniqueIdsInOneHour());
+		LOGGER.info("IO Bundle File: " + options.getIOBundleFile());
 		final IOBundle createdIO = createIOBundle(options.getIOBundleFile(), MATE_CONFIG);
 		final IOBundle io;
 		if(options.isAllowCommands()){
@@ -480,70 +481,93 @@ public final class SolarMain {
 	
 	public static int doMain(String[] args){
 		if(args.length < 1){
-			System.err.println("Usage: <java -jar ...> {mate|rover|rover-setup|outhouse}");
+			System.err.println("Usage: <java -jar ...> {base config file}");
 			LOGGER.error("(Fatal)Incorrect args");
 			return 1;
 		}
-		String programName = args[0];
-		String[] newArgs = new String[args.length - 1];
-		System.arraycopy(args, 1, newArgs, 0, newArgs.length);
-		
-		
+		File baseConfigFile = new File(args[0]);
+		final Gson deserializer = new GsonBuilder()
+				.registerTypeAdapter(File.class, new TypeAdapter<File>() {
+					@Override
+					public void write(JsonWriter out, File value) throws IOException {
+						if(value == null){
+							out.nullValue();
+							return;
+						}
+						out.value(value.toString());
+					}
+
+					@Override
+					public File read(JsonReader in) throws IOException {
+						if(in.peek() == JsonToken.NULL){
+							in.nextNull();
+							return null;
+						}
+						return new File(in.nextString());
+					}
+				})
+				.create();
+		final FileReader fileReader;
+		try {
+			fileReader = new FileReader(baseConfigFile);
+		} catch(FileNotFoundException ex){
+			LOGGER.error("(Fatal)File not found", ex);
+			return 1;
+		}
+		JsonObject baseConfig = deserializer.fromJson(fileReader, JsonObject.class);
+		JsonElement programNameElement = baseConfig.get("type");
+		if(programNameElement == null){
+			System.err.println("Program type not declared!");
+			LOGGER.error("(Fatal)The program type was not declared in the base config file! baseConfig: {}", baseConfig);
+			return 1;
+		}
+		String programName = programNameElement.getAsString();
+
 		Program program = getProgram(programName);
 		if(program == null){
-			System.err.println("Usage: <java -jar ...> {mate|rover|rover-setup|outhouse}");
-			LOGGER.error("(Fatal)Incorrect args");
+			System.err.println("Valid program types: {mate|rover|rover-setup|outhouse}");
+			LOGGER.error("(Fatal)Incorrect args. baseConfig: {}", baseConfig);
 			return 1;
 		}
 		try {
 			if(program == Program.MATE) {
-				Cli<MateProgramOptions> cli = CliFactory.createCli(MateProgramOptions.class);
 				final MateProgramOptions options;
 				try {
-					options = cli.parseArguments(newArgs);
-				} catch(ArgumentValidationException ex){
-					System.err.println(ex.getMessage());
-					LOGGER.error("(Fatal)Incorrect args");
+					options = deserializer.fromJson(baseConfig, MateProgramOptions.class);
+				} catch(JsonSyntaxException ex){
+					LOGGER.error("(Fatal)Invalid json syntax!", ex);
 					return 1;
 				}
 				return connectMate(options);
 			} else if(program == Program.ROVER){
-				Cli<RoverProgramOptions> cli = CliFactory.createCli(RoverProgramOptions.class);
 				final RoverProgramOptions options;
 				try {
-					options = cli.parseArguments(newArgs);
-				} catch(ArgumentValidationException ex){
-					System.err.println(ex.getMessage());
-					LOGGER.error("(Fatal)Incorrect args");
+					options = deserializer.fromJson(baseConfig, RoverProgramOptions.class);
+				} catch(JsonSyntaxException ex){
+					LOGGER.error("(Fatal)Invalid json syntax!", ex);
 					return 1;
 				}
 				return connectRover(options);
 			} else if(program == Program.OUTHOUSE){
-				Cli<OuthouseProgramOptions> cli = CliFactory.createCli(OuthouseProgramOptions.class);
 				final OuthouseProgramOptions options;
 				try {
-					options = cli.parseArguments(newArgs);
-				} catch(ArgumentValidationException ex){
-					System.err.println(ex.getMessage());
-					LOGGER.error("(Fatal)Incorrect args");
+					options = deserializer.fromJson(baseConfig, OuthouseProgramOptions.class);
+				} catch(JsonSyntaxException ex){
+					LOGGER.error("(Fatal)Invalid json syntax!", ex);
 					return 1;
 				}
 				return connectOuthouse(options);
 			} else if(program == Program.ROVER_SETUP){
-				Cli<RoverSetupProgramOptions> cli = CliFactory.createCli(RoverSetupProgramOptions.class);
 				final RoverSetupProgramOptions options;
 				try {
-					options = cli.parseArguments(newArgs);
-				} catch(ArgumentValidationException ex){
-					System.err.println(ex.getMessage());
-					LOGGER.error("(Fatal)Incorrect args");
+					options = deserializer.fromJson(baseConfig, RoverSetupProgramOptions.class);
+				} catch(JsonSyntaxException ex){
+					LOGGER.error("(Fatal)Invalid json syntax!", ex);
 					return 1;
 				}
 				return connectRoverSetup(options);
 			}
-			System.out.println("Specify mate|rover|rover-setup|outhouse");
-			LOGGER.error("(Fatal)Incorrect args");
-			return 1;
+			throw new AssertionError("Unknown program type... type=" + program);
 		} catch (Exception t) {
 			LOGGER.error("(Fatal)Got exception", t);
 			return 1;
@@ -570,9 +594,15 @@ public final class SolarMain {
 		return null;
 	}
 	private enum Program {
-		MATE,
-		ROVER,
-		ROVER_SETUP,
-		OUTHOUSE
+		MATE("mate"),
+		ROVER("rover"),
+		ROVER_SETUP("rover-setup"),
+		OUTHOUSE("outhouse");
+		@SuppressWarnings({"unused", "FieldCanBeLocal"})
+		private final String name;
+
+		Program(String name) {
+			this.name = name;
+		}
 	}
 }

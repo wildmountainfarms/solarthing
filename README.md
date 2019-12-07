@@ -95,7 +95,7 @@ Run `./compile_and_move.sh`. Make sure your working directory is in the root of 
 ### [Technical](docs/technical.md)
 
 #### Configuration
-This uses jewelcli for its configuration. Using this library makes it very easy to use interfaces with multiple inheritance. http://jewelcli.lexicalscope.com/examples.html
+This uses all JSON for configuring everything. The files you edit are all in one place unless you decide to move them.
 
 #### Logging
 This uses slf4j to log and uses log4j2 as the main implementation. https://logging.apache.org/log4j/2.x/manual/appenders.html
@@ -110,8 +110,6 @@ This uses slf4j to log and uses log4j2 as the main implementation. https://loggi
 * Have packets for inverters going on/off, AC Drop/AC Use, Daily kWH->0, etc
 * Add readable string alongside identifier tag for InfluxDB
 * Restart rover program if a ModbusTimeoutException is received
-* Add a basic file for a systemd service
-* Stop requiring command line parameters and have option to use all JSON configs
 
 ### Completed TODO:
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
@@ -120,6 +118,8 @@ This uses slf4j to log and uses log4j2 as the main implementation. https://loggi
 * Create a PacketHandler that saves json data to a file location that can be easily accessed using a Apache web server
 * Add better logging with timestamps
 * Make Grafana easy to use by supporting InfluxDB as a database
+* Add a basic file for a systemd service
+* Stop requiring command line parameters and have option to use all JSON configs
 
 ### [History](docs/history.md)
 

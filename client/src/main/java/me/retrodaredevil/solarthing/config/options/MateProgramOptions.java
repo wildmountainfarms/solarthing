@@ -1,20 +1,40 @@
 package me.retrodaredevil.solarthing.config.options;
 
-import com.lexicalscope.jewel.cli.Option;
+import com.google.gson.annotations.SerializedName;
 import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
 
-public interface MateProgramOptions extends PacketHandlingOption, IOBundleOption, MasterOption {
+import java.io.File;
+
+import static java.util.Objects.requireNonNull;
+
+public class MateProgramOptions extends PacketHandlingOptionBase implements IOBundleOption {
+
+	@SerializedName("allow_commands")
+	private boolean allowCommands = false;
+	@SerializedName("ignore_check_sum")
+	private boolean ignoreCheckSum = false;
+	@SerializedName("correct_check_sum")
+	private boolean correctCheckSum = false;
+
+	private File io;
 	
-	@Option(longName = "allow-commands", description = "If specified, commands will be allowed")
-	boolean isAllowCommands();
+	public boolean isAllowCommands() {
+		return allowCommands;
+	}
 	
-	@Option(longName = "ignore-check-sum", description = "If toggled, the program will not check the checksum and will use an incorrect checksum if the checksum is incorrect. Almost never recommended.")
-	boolean isIgnoreCheckSum();
-	@Option(longName = {"cc", "correct-checksum"}, description = "If toggled, the program will not check the checksum and will use a calculated checksum that is correct. Recommended for testing mock output.")
-	boolean isCorrectCheckSum();
-	
-	
-	static IgnoreCheckSum getIgnoreCheckSum(MateProgramOptions options) {
+	public boolean isIgnoreCheckSum() {
+		return ignoreCheckSum;
+	}
+	public boolean isCorrectCheckSum() {
+		return correctCheckSum;
+	}
+
+	@Override
+	public File getIOBundleFile() {
+		return requireNonNull(io, "io is required!");
+	}
+
+	public static IgnoreCheckSum getIgnoreCheckSum(MateProgramOptions options) {
 		if(options.isCorrectCheckSum()){
 			return IgnoreCheckSum.IGNORE_AND_USE_CALCULATED;
 		} else if(options.isIgnoreCheckSum()){
