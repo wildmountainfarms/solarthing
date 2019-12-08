@@ -123,8 +123,12 @@ public final class PacketGroups {
 				subListList.add(masterList.subList(lastIndex, index));
 				lastIndex = index;
 			}
-			InstancePacketGroup firstPacket = subListList.get(0).get(0);
+			subListList.add(masterList.subList(lastIndex, masterList.size()));
+
 			List<? extends Integer> subFragmentIds = fragmentIds.subList(1, fragmentIds.size());
+			InstancePacketGroup firstPacket = subListList
+					.get(0) // we know this won't fail because we added at least one element above
+					.get(0); // we're going to infer that this won't fail because it should never be empty
 			addToPacketGroups(
 					maxTimeDistance, masterIdIgnoreDistance,
 					Long.MIN_VALUE, firstPacket.getDateMillis() - masterIdIgnoreDistance,
