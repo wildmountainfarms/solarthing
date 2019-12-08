@@ -5,11 +5,11 @@
 sleep 4
 while true
 do
-    sleep 4
+    sleep 2
     printf "\n1,10,10,10,100,100,10,03,000,00,282,129,000,999\r"  # No AC
-    sleep 4
+    sleep 2
     printf "\n1,10,10,10,100,100,10,03,000,00,282,129,000,999\r"  # No AC
 
-    sleep 6
+    #sleep 2
 done
 

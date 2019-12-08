@@ -105,6 +105,9 @@ public final class PacketGroups {
 			Map<Integer, ? extends List<? extends InstancePacketGroup>> fragmentMap,
 			List<? super PacketGroup> packetGroupsOut
 	){
+		if(minTime > maxTime){
+			return;
+		}
 		Integer masterFragmentId = fragmentIds.get(0);
 		List<? extends InstancePacketGroup> masterList = requireNonNull(fragmentMap.get(masterFragmentId));
 		if(masterIdIgnoreDistance != null && fragmentIds.size() > 1){
@@ -139,7 +142,7 @@ public final class PacketGroups {
 				if(lastTime != null){
 					addToPacketGroups(
 							maxTimeDistance, masterIdIgnoreDistance,
-							lastTime, subList.get(0).getDateMillis(),
+							lastTime + masterIdIgnoreDistance, subList.get(0).getDateMillis() - masterIdIgnoreDistance,
 							subFragmentIds, fragmentMap, packetGroupsOut
 					);
 				}
@@ -155,7 +158,7 @@ public final class PacketGroups {
 			List<? extends InstancePacketGroup> lastSubList = subListList.get(subListList.size() - 1);
 			addToPacketGroups(
 					maxTimeDistance, masterIdIgnoreDistance,
-					lastSubList.get(lastSubList.size() - 1).getDateMillis(), Long.MAX_VALUE,
+					lastSubList.get(lastSubList.size() - 1).getDateMillis() + masterIdIgnoreDistance, Long.MAX_VALUE,
 					subFragmentIds, fragmentMap, packetGroupsOut
 			);
 			return;
