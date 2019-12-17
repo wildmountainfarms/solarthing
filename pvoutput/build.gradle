@@ -1,0 +1,12 @@
+plugins {
+    id 'java'
+}
+
+version "0.0.1-SNAPSHOT"
+
+sourceCompatibility = 1.8
+
+dependencies {
+    // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
+    compile group: 'com.squareup.okhttp3', name: 'okhttp', version: '3.14.4'
+}

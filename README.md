@@ -106,12 +106,15 @@ This uses slf4j to log and uses log4j2 as the main implementation. https://loggi
 * Implement Outback FlexNet DC Packets
 * Cache some data from Renogy Rover that won't be updated
 * Create Arduino program to simulate MATE or Rover
-* Log CPU temperature, ram, etc into a database and logs
+* Log CPU temperature, ram, etc into a database and logs.
+  * Use the `vcgencmd measure_temp` available on Raspberry Pis
 * Detect when Mate packets go from address 4->1 or 1->1 to detect a new collection of packets
 * Integrate power usage
 * Have packets for inverters going on/off, AC Drop/AC Use, Daily kWH->0, etc
 * Add readable string alongside identifier tag for InfluxDB
 * Restart rover program if a ModbusTimeoutException is received
+* Create 'exporter' module which will have a Prometheus exporter that runs and gets data from CouchDB
+* Create a calendar program to be able to view daily kWH on a calendar interface
 
 ### Completed TODO:
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)

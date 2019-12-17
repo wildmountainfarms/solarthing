@@ -1,4 +1,5 @@
 rootProject.name = 'solarthing'
 include 'core'
 include 'client'
+include 'pvoutput'
 

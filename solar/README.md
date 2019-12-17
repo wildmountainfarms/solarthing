@@ -16,9 +16,11 @@ You can look at how we parse packets for
 [Renogy Write Here](../core/src/main/java/me/retrodaredevil/solarthing/solar/renogy/rover/modbus/RoverModbusSlaveWrite.java)
 
 ### Running
+##### The documentation is still in progress ever since we moved from command line paramters to all JSON configuration
+Some of this is outdated.
 ```
 cd program/
-solar/virtual_mate.sh | java -jar solarthing.jar solar --cc --unique 60 --io config_templates/standard_io.json
+solar/virtual_mate.sh | java -jar solarthing.jar "config/base.json"
 ```
 Note the `--cc`. This stands for correct checksum. To make it easy in `virtual_mate.sh` to change values, using `--cc`
 makes it quicker to change values without calculating the checksum ourselves and just have the program do it for us.
@@ -26,21 +28,7 @@ Obviously you don't want to use that when you are getting reliable data from a s
 
 If you are running this on a Pi with a serial port connected, you would probably run
 ```
-java -jar solarthing.jar mate --unique 60 --io config_templates/mate_io.json
-```
-
-Example command that I use while running it on a raspberry pi:
-```
-# this is located in my /etc/rc.local
-# For getting data from outback mate:
-((cd /home/pi/solarthing/program
-&& java -jar solarthing.jar mate --unique 30 --source default --fragment 1
-) 1>output.txt 2>errors.txt) &
-
-# For getting data from Renogy rover:
-((cd /home/pi/solarthing/program
-&& java -jar solarthing.jar rover --source default --fragment 2 --unique 30
-) 2>errors.txt) &
+java -jar solarthing.jar "config/base.json"
 ```
 
 ### Connecting to Outback MATE

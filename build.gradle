@@ -36,3 +36,9 @@ project(":client"){
         api project(":core")
     }
 }
+project(":pvoutput"){
+    apply plugin: 'java'
+    dependencies {
+        api project(":core")
+    }
+}
