@@ -5,8 +5,7 @@ import me.retrodaredevil.solarthing.pvoutput.SimpleTime;
 
 import static java.util.Objects.requireNonNull;
 
-@SuppressWarnings("unused")
-public class OutputServiceDataBuilder {
+public class OutputServiceDataBuilder implements OutputServiceData {
 	private final SimpleDate date;
 	private Number generated;
 	private Number exported;
@@ -30,9 +29,19 @@ public class OutputServiceDataBuilder {
 		return new ImmutableOutputServiceData(date, generated, exported, peakPower, peakTime, condition, minimumTemperatureCelsius, maximumTemperatureCelsius, comments, importPeak, importOffPeak, importShoulder, importHighShoulder, consumption);
 	}
 
+	@Override
+	public SimpleDate getOutputDate() {
+		return date;
+	}
+
 	public OutputServiceDataBuilder setGenerated(Number generated) {
 		this.generated = generated;
 		return this;
+	}
+
+	@Override
+	public Number getGenerated() {
+		return generated;
 	}
 
 	public OutputServiceDataBuilder setExported(Number exported) {
@@ -40,9 +49,19 @@ public class OutputServiceDataBuilder {
 		return this;
 	}
 
+	@Override
+	public Number getExported() {
+		return exported;
+	}
+
 	public OutputServiceDataBuilder setPeakPower(Number peakPower) {
 		this.peakPower = peakPower;
 		return this;
+	}
+
+	@Override
+	public Number getPeakPower() {
+		return peakPower;
 	}
 
 	public OutputServiceDataBuilder setPeakTime(SimpleTime peakTime) {
@@ -50,10 +69,21 @@ public class OutputServiceDataBuilder {
 		return this;
 	}
 
-	public OutputServiceDataBuilder setCondition(String condition) {
+	@Override
+	public SimpleTime getPeakTime() {
+		return peakTime;
+	}
+
+	public OutputServiceDataBuilder setConditionValue(String condition) {
 		this.condition = condition;
 		return this;
 	}
+
+	@Override
+	public String getConditionValue() {
+		return condition;
+	}
+
 	public OutputServiceDataBuilder setCondition(WeatherCondition condition){
 		this.condition = condition.toPVOutputString();
 		return this;
@@ -64,14 +94,34 @@ public class OutputServiceDataBuilder {
 		return this;
 	}
 
+	@Override
+	public Float getMinimumTemperatureCelsius() {
+		return minimumTemperatureCelsius;
+	}
+
 	public OutputServiceDataBuilder setMaximumTemperatureCelsius(Float maximumTemperatureCelsius) {
 		this.maximumTemperatureCelsius = maximumTemperatureCelsius;
 		return this;
 	}
 
+	@Override
+	public Float getMaximumTemperatureCelsius() {
+		return maximumTemperatureCelsius;
+	}
+
 	public OutputServiceDataBuilder setComments(String comments) {
+		if(comments != null){
+			if(comments.length() > 30){
+				throw new IllegalArgumentException("comments.length() cannot be greater than 30! comments=" + comments);
+			}
+		}
 		this.comments = comments;
 		return this;
+	}
+
+	@Override
+	public String getComments() {
+		return comments;
 	}
 
 	public OutputServiceDataBuilder setImportPeak(Number importPeak) {
@@ -79,9 +129,19 @@ public class OutputServiceDataBuilder {
 		return this;
 	}
 
+	@Override
+	public Number getImportPeak() {
+		return importPeak;
+	}
+
 	public OutputServiceDataBuilder setImportOffPeak(Number importOffPeak) {
 		this.importOffPeak = importOffPeak;
 		return this;
+	}
+
+	@Override
+	public Number getImportOffPeak() {
+		return importOffPeak;
 	}
 
 	public OutputServiceDataBuilder setImportShoulder(Number importShoulder) {
@@ -89,9 +149,19 @@ public class OutputServiceDataBuilder {
 		return this;
 	}
 
+	@Override
+	public Number getImportShoulder() {
+		return importShoulder;
+	}
+
 	public OutputServiceDataBuilder setImportHighShoulder(Number importHighShoulder) {
 		this.importHighShoulder = importHighShoulder;
 		return this;
+	}
+
+	@Override
+	public Number getImportHighShoulder() {
+		return importHighShoulder;
 	}
 
 	public OutputServiceDataBuilder setConsumption(Number consumption) {
@@ -99,6 +169,10 @@ public class OutputServiceDataBuilder {
 		return this;
 	}
 
+	@Override
+	public Number getConsumption() {
+		return consumption;
+	}
 
 	private static final class ImmutableOutputServiceData implements OutputServiceData {
 		private final SimpleDate date;

@@ -177,13 +177,15 @@ public final class SolarMain {
 		
 		try {
 			initReader(
-				requireNonNull(io.getInputStream()),
-				new MatePacketCreator49(MateProgramOptions.getIgnoreCheckSum(options)),
-				new PacketHandlerMultiplexer(packetHandlers),
-				idGenerator,
-				250,
-				onDataReceive,
-				getAdditionalPacketProvider(options)
+					requireNonNull(io.getInputStream()),
+					new MatePacketCreator49(MateProgramOptions.getIgnoreCheckSum(options)),
+					new TimedPacketReceiver(
+							new PacketHandlerMultiplexer(packetHandlers),
+							idGenerator,
+							250,
+							onDataReceive,
+							getAdditionalPacketProvider(options)
+					)
 			);
 		} finally {
 			io.close();
@@ -276,20 +278,22 @@ public final class SolarMain {
 		List<PacketHandler> packetHandlers = getPacketHandlers(getDatabaseConfigs(options), "outhouse");
 		try (IOBundle ioBundle = createIOBundle(options.getIOBundleFile(), new SerialConfigBuilder(9600).build())) {
 			initReader(
-				ioBundle.getInputStream(),
-				new OuthousePacketCreator(),
-				new PacketHandlerMultiplexer(packetHandlers),
-				idGenerator,
-				10,
-				OnDataReceive.Defaults.NOTHING,
-				getAdditionalPacketProvider(options)
+					ioBundle.getInputStream(),
+					new OuthousePacketCreator(),
+					new TimedPacketReceiver(
+							new PacketHandlerMultiplexer(packetHandlers),
+							idGenerator,
+							10,
+							OnDataReceive.Defaults.NOTHING,
+							getAdditionalPacketProvider(options)
+					)
 			);
 		}
 		return 0;
 	}
 	
-	private static void initReader(InputStream in, TextPacketCreator packetCreator, PacketHandler packetHandler, PacketCollectionIdGenerator idGenerator, long samePacketTime, OnDataReceive onDataReceive, PacketProvider additionalPacketProvider) {
-		SolarReader run = new SolarReader(in, packetCreator, packetHandler, idGenerator, samePacketTime, onDataReceive, additionalPacketProvider);
+	private static void initReader(InputStream in, TextPacketCreator packetCreator, RawPacketReceiver rawPacketReceiver) {
+		SolarReader run = new SolarReader(in, packetCreator, rawPacketReceiver);
 		try {
 			while (!Thread.currentThread().isInterrupted()) {
 				try {
