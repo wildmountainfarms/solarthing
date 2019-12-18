@@ -49,11 +49,11 @@ public class InfluxDbPacketSaver implements PacketHandler {
 	private final RetentionPolicyGetter retentionPolicyGetter;
 
 	public InfluxDbPacketSaver(
-		InfluxProperties properties,
-		OkHttpProperties okHttpProperties,
-		DatabaseNameGetter databaseNameGetter,
-		PacketPointCreator pointCreator,
-		RetentionPolicyGetter retentionPolicyGetter) {
+			InfluxProperties properties,
+			OkHttpProperties okHttpProperties,
+			DatabaseNameGetter databaseNameGetter,
+			PacketPointCreator pointCreator,
+			RetentionPolicyGetter retentionPolicyGetter) {
 		this.properties = requireNonNull(properties);
 		this.okHttpProperties = requireNonNull(okHttpProperties);
 		this.databaseNameGetter = requireNonNull(databaseNameGetter);
@@ -138,11 +138,11 @@ public class InfluxDbPacketSaver implements PacketHandler {
 
 			final long time = packetCollection.getDateMillis();
 			final BatchPoints points = BatchPoints.database(database)
-				.tag("sourceId", packetGroup.getSourceId())
-				.tag("fragmentId", "" + packetGroup.getFragmentId())
-				.consistency(InfluxDB.ConsistencyLevel.ALL)
-				.retentionPolicy(retentionPolicyName) // may be null, but that's OK
-				.build();
+					.tag("sourceId", packetGroup.getSourceId())
+					.tag("fragmentId", "" + packetGroup.getFragmentId())
+					.consistency(InfluxDB.ConsistencyLevel.ALL)
+					.retentionPolicy(retentionPolicyName) // may be null, but that's OK
+					.build();
 
 			int packetsWritten = 0;
 			for (Packet packet : packetGroup.getPackets()) {
@@ -154,18 +154,7 @@ public class InfluxDbPacketSaver implements PacketHandler {
 					JsonPrimitive prim = entry.getValue();
 					if (prim.isNumber()) {
 						// always store as float datatype
-						Number number = prim.getAsNumber();
-						if(number instanceof Float){
-							pointBuilder.addField(key, prim.getAsDouble());
-						} else {
-							/*
-							The idea behind this is to use a float instead of a double so if the InfluxDB implementation
-							that creates the query treats floats differently than doubles, it may be able to store it more accurately.
-							At the time of doing this, I don't think it treats it differently, but might as well have it light this
-							because why not.
-							 */
-							pointBuilder.addField(key, (Number) prim.getAsFloat());
-						}
+						pointBuilder.addField(key, prim.getAsDouble());
 					} else if (prim.isString()) {
 						pointBuilder.addField(key, prim.getAsString());
 					} else if (prim.isBoolean()) {
@@ -197,21 +186,21 @@ public class InfluxDbPacketSaver implements PacketHandler {
 	}
 	private InfluxDB createDatabase() {
 		return InfluxDBFactory.connect(
-			properties.getUrl(),
-			properties.getUsername(),
-			properties.getPassword(),
-			new OkHttpClient.Builder()
-				.retryOnConnectionFailure(okHttpProperties.isRetryOnConnectionFailure())
-				.callTimeout(okHttpProperties.getCallTimeoutMillis(), TimeUnit.MILLISECONDS)
-				.connectTimeout(okHttpProperties.getConnectTimeoutMillis(), TimeUnit.MILLISECONDS)
-				.readTimeout(okHttpProperties.getReadTimeoutMillis(), TimeUnit.MILLISECONDS)
-				.writeTimeout(okHttpProperties.getWriteTimeoutMillis(), TimeUnit.MILLISECONDS)
-				.pingInterval(okHttpProperties.getPingIntervalMillis(), TimeUnit.MILLISECONDS)
-				.addInterceptor(new HttpLoggingInterceptor(INFLUX_LOGGER::info).setLevel(HttpLoggingInterceptor.Level.BODY)),
-			InfluxDB.ResponseFormat.JSON
+				properties.getUrl(),
+				properties.getUsername(),
+				properties.getPassword(),
+				new OkHttpClient.Builder()
+						.retryOnConnectionFailure(okHttpProperties.isRetryOnConnectionFailure())
+						.callTimeout(okHttpProperties.getCallTimeoutMillis(), TimeUnit.MILLISECONDS)
+						.connectTimeout(okHttpProperties.getConnectTimeoutMillis(), TimeUnit.MILLISECONDS)
+						.readTimeout(okHttpProperties.getReadTimeoutMillis(), TimeUnit.MILLISECONDS)
+						.writeTimeout(okHttpProperties.getWriteTimeoutMillis(), TimeUnit.MILLISECONDS)
+						.pingInterval(okHttpProperties.getPingIntervalMillis(), TimeUnit.MILLISECONDS)
+						.addInterceptor(new HttpLoggingInterceptor(INFLUX_LOGGER::info).setLevel(HttpLoggingInterceptor.Level.BODY)),
+				InfluxDB.ResponseFormat.JSON
 		).setLogLevel(InfluxDB.LogLevel.NONE);
 	}
-	private Set<Map.Entry<String, JsonPrimitive>> flattenJsonObject(JsonObject jsonObject) throws PacketHandleException {
+	private Set<Map.Entry<String, JsonPrimitive>> flattenJsonObject(JsonObject jsonObject) {
 		Map<String, JsonPrimitive> r = new LinkedHashMap<>();
 		for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
 			String key = entry.getKey();
@@ -223,9 +212,8 @@ public class InfluxDbPacketSaver implements PacketHandler {
 				for(Map.Entry<String, JsonPrimitive> subEntry : flat){
 					r.put(key + "." + subEntry.getKey(), subEntry.getValue());
 				}
-			} else if(!element.isJsonNull()){
-				throw new PacketHandleException("This does not support JSON arrays! element: " + element);
 			}
+			// ignore nulls and arrays
 		}
 		return r.entrySet();
 	}
