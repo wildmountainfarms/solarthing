@@ -3,7 +3,9 @@ package me.retrodaredevil.solarthing.packets.creation;
 import me.retrodaredevil.solarthing.packets.Packet;
 
 import java.util.Collection;
+import java.util.List;
 
-public interface PacketProvider {
-	Collection<? extends Packet> createPackets();
+@FunctionalInterface
+public interface PacketListUpdater {
+	void updatePackets(List<Packet> packets);
 }

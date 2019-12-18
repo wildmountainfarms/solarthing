@@ -4,7 +4,7 @@ import me.retrodaredevil.solarthing.OnDataReceive;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollections;
-import me.retrodaredevil.solarthing.packets.creation.PacketProvider;
+import me.retrodaredevil.solarthing.packets.creation.PacketListUpdater;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
 import me.retrodaredevil.solarthing.packets.handling.RawPacketReceiver;
@@ -24,7 +24,7 @@ public class TimedPacketReceiver implements RawPacketReceiver {
 	private final PacketCollectionIdGenerator idGenerator;
 	private final long samePacketTime;
 	private final OnDataReceive onDataReceive;
-	private final PacketProvider additionalPacketProvider;
+	private final PacketListUpdater packetListUpdater;
 
 	private long lastFirstReceivedData = Long.MIN_VALUE; // the last time a packet was added to packetList
 
@@ -38,14 +38,14 @@ public class TimedPacketReceiver implements RawPacketReceiver {
 	 * @param idGenerator The {@link PacketCollectionIdGenerator} used to get the id to save packets with
 	 * @param samePacketTime The maximum amount of time allowed between packets that will be grouped together in a {@link me.retrodaredevil.solarthing.packets.collection.PacketCollection}
 	 * @param onDataReceive This is called whenever data is received from {@code in}
-	 * @param additionalPacketProvider A {@link PacketProvider} which provides additional packets before saving
+	 * @param packetListUpdater A {@link PacketListUpdater} which adds additional packets before saving
 	 */
-	public TimedPacketReceiver(PacketHandler packetHandler, PacketCollectionIdGenerator idGenerator, long samePacketTime, OnDataReceive onDataReceive, PacketProvider additionalPacketProvider){
+	public TimedPacketReceiver(PacketHandler packetHandler, PacketCollectionIdGenerator idGenerator, long samePacketTime, OnDataReceive onDataReceive, PacketListUpdater packetListUpdater){
 		this.packetHandler = requireNonNull(packetHandler);
 		this.idGenerator = requireNonNull(idGenerator);
 		this.samePacketTime = samePacketTime;
 		this.onDataReceive = requireNonNull(onDataReceive);
-		this.additionalPacketProvider = requireNonNull(additionalPacketProvider);
+		this.packetListUpdater = requireNonNull(packetListUpdater);
 	}
 
 	@Override
@@ -76,9 +76,8 @@ public class TimedPacketReceiver implements RawPacketReceiver {
 				instant = false;
 				try {
 					LOGGER.debug("handling above packet(s). packetList.size(): " + packetList.size() + " instant: " + wasInstant);
-					Collection<? extends Packet> packetsToAdd = additionalPacketProvider.createPackets();
-					LOGGER.debug("Before we handle, we are adding " + packetsToAdd.size() + " packet(s)!");
-					packetList.addAll(packetsToAdd); // add additional packets to the list
+					packetListUpdater.updatePackets(packetList);
+					LOGGER.debug("We may have added some packets. packetList.size(): " + packetList.size());
 					packetHandler.handle(PacketCollections.createFromPackets(packetList, idGenerator), wasInstant);
 				} catch(PacketHandleException ex){
 					LOGGER.error("Was unable to handle " + packetList.size() + " packet(s).", ex);

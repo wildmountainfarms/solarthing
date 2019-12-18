@@ -113,7 +113,6 @@ public final class FXStatusPackets {
 		final int acMode = acModeTens * 10 + acModeOnes; // high and low
 
 		final float batteryVoltage = batteryVoltageTens * 10 + batteryVoltageOnes + (batteryVoltageTenths / 10.0f);
-		final String batteryVoltageString = batteryVoltageTens + "" + batteryVoltageOnes + "." + batteryVoltageTenths;
 
 		final int misc = miscHundreds * 100 + miscTens * 10 + miscOnes;
 		final int warningMode = warningModeHundreds * 100 + warningModeTens * 10 + warningModeOnes;
@@ -129,15 +128,16 @@ public final class FXStatusPackets {
 		final String acModeName = Modes.getActiveMode(ACMode.class, acMode).getModeName();
 
 		// ==== Misc Stuff ====
-		final int inputVoltage, outputVoltage, inverterCurrent, chargerCurrent, buyCurrent, sellCurrent;
+		final int inputVoltage, outputVoltage;
+		final float inverterCurrent, chargerCurrent, buyCurrent, sellCurrent;
 		if(MiscMode.FX_230V_UNIT.isActive(misc)){
 			inputVoltage = inputVoltageRaw * 2;
 			outputVoltage = inputVoltageRaw * 2;
 
-			inverterCurrent = inverterCurrentRaw / 2;
-			chargerCurrent = chargerCurrentRaw / 2;
-			buyCurrent = buyCurrentRaw / 2;
-			sellCurrent = sellCurrentRaw / 2;
+			inverterCurrent = inverterCurrentRaw / 2f;
+			chargerCurrent = chargerCurrentRaw / 2f;
+			buyCurrent = buyCurrentRaw / 2f;
+			sellCurrent = sellCurrentRaw / 2f;
 		} else {
 			inputVoltage = inputVoltageRaw;
 			outputVoltage = outputVoltageRaw;
@@ -162,16 +162,16 @@ public final class FXStatusPackets {
 //		JsonFile.gson.fromJson
 		final int address = object.get("address").getAsInt();
 
-		final int inverterCurrent = object.get("inverterCurrent").getAsInt();
+		final float inverterCurrent = object.get("inverterCurrent").getAsFloat();
 		final Integer storedInverterCurrentRaw = getOrNull(object, "inverterCurrentRaw", JsonElement::getAsInt);
 
-		final int chargerCurrent = object.get("chargerCurrent").getAsInt();
+		final float chargerCurrent = object.get("chargerCurrent").getAsFloat();
 		final Integer storedChargerCurrentRaw = getOrNull(object, "chargerCurrentRaw", JsonElement::getAsInt);
 
-		final int buyCurrent = object.get("buyCurrent").getAsInt();
+		final float buyCurrent = object.get("buyCurrent").getAsFloat();
 		final Integer storedBuyCurrentRaw = getOrNull(object, "buyCurrentRaw", JsonElement::getAsInt);
 
-		final int sellCurrent = object.get("sellCurrent").getAsInt();
+		final float sellCurrent = object.get("sellCurrent").getAsFloat();
 		final Integer storedSellCurrentRaw = getOrNull(object, "sellCurrentRaw", JsonElement::getAsInt);
 
 		final int inputVoltage = object.get("inputVoltage").getAsInt();
@@ -185,8 +185,6 @@ public final class FXStatusPackets {
 		final int acMode = object.get("acMode").getAsInt();
 
 		final float batteryVoltage = object.get("batteryVoltage").getAsFloat();
-		final String storedBatteryVoltageString = getOrNull(object, "batteryVoltageString", JsonElement::getAsString);
-		final String batteryVoltageString = storedBatteryVoltageString != null ? storedBatteryVoltageString : Float.toString(batteryVoltage);
 
 		final int misc = object.get("misc").getAsInt();
 		final int warningMode = object.get("warningMode").getAsInt();
@@ -204,10 +202,10 @@ public final class FXStatusPackets {
 			inputVoltageRaw = storedInputVoltageRaw != null ? storedInputVoltageRaw : inputVoltage / number;
 			outputVoltageRaw = storedOutputVoltageRaw != null ? storedOutputVoltageRaw : outputVoltage / number;
 
-			inverterCurrentRaw = storedInverterCurrentRaw != null ? storedInverterCurrentRaw : inverterCurrent * number;
-			chargerCurrentRaw = storedChargerCurrentRaw != null ? storedChargerCurrentRaw : chargerCurrent * number;
-			buyCurrentRaw = storedBuyCurrentRaw != null ? storedBuyCurrentRaw : buyCurrent * number;
-			sellCurrentRaw = storedSellCurrentRaw != null ? storedSellCurrentRaw : sellCurrent * number;
+			inverterCurrentRaw = storedInverterCurrentRaw != null ? storedInverterCurrentRaw : Math.round(inverterCurrent * number);
+			chargerCurrentRaw = storedChargerCurrentRaw != null ? storedChargerCurrentRaw : Math.round(chargerCurrent * number);
+			buyCurrentRaw = storedBuyCurrentRaw != null ? storedBuyCurrentRaw : Math.round(buyCurrent * number);
+			sellCurrentRaw = storedSellCurrentRaw != null ? storedSellCurrentRaw : Math.round(sellCurrent * number);
 		}
 
 		final String operatingModeName, errors, acModeName, miscModes, warnings;
