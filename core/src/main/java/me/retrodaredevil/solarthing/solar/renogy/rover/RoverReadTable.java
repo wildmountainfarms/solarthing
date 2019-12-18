@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.solar.renogy.rover;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 import me.retrodaredevil.solarthing.solar.common.ChargeController;
+import me.retrodaredevil.solarthing.solar.common.DailyBatteryVoltage;
 import me.retrodaredevil.solarthing.solar.common.DailyData;
 import me.retrodaredevil.solarthing.solar.common.ErrorReporter;
 import me.retrodaredevil.solarthing.solar.renogy.*;
@@ -14,7 +15,7 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerContr
 import java.util.Collection;
 
 @SuppressWarnings("unused")
-public interface RoverReadTable extends Rover, ErrorReporter, ChargeController, DailyData, Identifiable {
+public interface RoverReadTable extends Rover, ErrorReporter, ChargeController, DailyData, DailyBatteryVoltage, Identifiable {
 	
 	@Override
 	RoverIdentifier getIdentifier();
@@ -200,8 +201,10 @@ public interface RoverReadTable extends Rover, ErrorReporter, ChargeController, 
 	Float getPVCurrent();
 	@Override
 	Integer getChargingPower();
-	
+
+	@Override
 	float getDailyMinBatteryVoltage();
+	@Override
 	float getDailyMaxBatteryVoltage();
 	
 	/**

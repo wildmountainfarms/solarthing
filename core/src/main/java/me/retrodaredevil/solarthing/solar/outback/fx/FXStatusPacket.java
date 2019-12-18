@@ -75,8 +75,11 @@ public interface FXStatusPacket extends OutbackPacket, BatteryVoltage {
 	 * @return The AC mode code which represents a single ACMode
 	 */
 	int getACModeValue();
-	default ACMode getACModeMode(){ return Modes.getActiveMode(ACMode.class, getACModeValue()); }
-	
+	default ACMode getACMode(){ return Modes.getActiveMode(ACMode.class, getACModeValue()); }
+	/** @see #getACMode()*/
+	@Deprecated
+	default ACMode getACModeMode(){ return getACMode(); }
+
 	/**
 	 * Should be serialized as "misc"
 	 * @return The misc mode bitmask which represents a varying number of MiscModes
@@ -99,24 +102,23 @@ public interface FXStatusPacket extends OutbackPacket, BatteryVoltage {
 	// endregion
 	
 	// region Adjusted Currents and Voltages
-	// TODO When these currents is divided by two (if system voltage is 230V), it's possible that this will be a value that isn't a multiple of two, so it would be truncated. Figure this out...
 	/**
 	 * Should be serialized as "inverterCurrent"
 	 * @return The inverter current
 	 */
-	int getInverterCurrent();
+	float getInverterCurrent();
 
 	/**
 	 * Should be serialized as "chargerCurrent"
 	 * @return The charger current
 	 */
-	int getChargerCurrent();
+	float getChargerCurrent();
 
 	/**
 	 * Should be serialized as "buyCurrent"
 	 * @return The buy current
 	 */
-	int getBuyCurrent();
+	float getBuyCurrent();
 
 	/**
 	 * Should be serialized as "inputVoltage"
@@ -134,7 +136,7 @@ public interface FXStatusPacket extends OutbackPacket, BatteryVoltage {
 	 * Should be serialized as "sellCurrent"
 	 * @return The sell current
 	 */
-	int getSellCurrent();
+	float getSellCurrent();
 	// endregion
 
 	// region Convenience Strings
@@ -168,5 +170,20 @@ public interface FXStatusPacket extends OutbackPacket, BatteryVoltage {
 	 * @return The warning modes represented as a string
 	 */
 	String getWarningsString();
+	// endregion
+
+	// region Default Power Getters
+	default int getInverterWattage(){
+		return getInverterCurrentRaw() * getOutputVoltageRaw();
+	}
+	default int getChargerWattage(){
+		return getChargerCurrentRaw() * getInputVoltageRaw();
+	}
+	default int getBuyWattage(){
+		return getBuyCurrentRaw() * getInputVoltageRaw();
+	}
+	default int getSellWattage(){
+		return getSellCurrentRaw() * getOutputVoltageRaw();
+	}
 	// endregion
 }

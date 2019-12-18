@@ -41,7 +41,7 @@ import me.retrodaredevil.solarthing.packets.collection.HourIntervalPacketCollect
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollections;
-import me.retrodaredevil.solarthing.packets.creation.PacketProvider;
+import me.retrodaredevil.solarthing.packets.creation.PacketListUpdater;
 import me.retrodaredevil.solarthing.packets.creation.TextPacketCreator;
 import me.retrodaredevil.solarthing.packets.handling.*;
 import me.retrodaredevil.solarthing.packets.handling.implementations.FileWritePacketHandler;
@@ -184,7 +184,7 @@ public final class SolarMain {
 							idGenerator,
 							250,
 							onDataReceive,
-							getAdditionalPacketProvider(options)
+							getPacketListUpdater(options)
 					)
 			);
 		} finally {
@@ -196,7 +196,7 @@ public final class SolarMain {
 		LOGGER.info("Beginning rover program");
 		List<PacketHandler> packetHandlers = getPacketHandlers(getDatabaseConfigs(options), "solarthing");
 		PacketHandler packetHandler = new PacketHandlerMultiplexer(packetHandlers);
-		PacketProvider packetProvider = getAdditionalPacketProvider(options);
+		PacketListUpdater packetListUpdater = getPacketListUpdater(options);
 
 
 		PacketCollectionIdGenerator idGenerator = createIdGenerator(options.getUniqueIdsInOneHour());
@@ -219,7 +219,7 @@ public final class SolarMain {
 					);
 					List<Packet> packets = new ArrayList<>();
 					packets.add(packet);
-					packets.addAll(packetProvider.createPackets());
+					packetListUpdater.updatePackets(packets);
 					PacketCollection packetCollection = PacketCollections.createFromPackets(packets, idGenerator);
 					final long readDuration = System.currentTimeMillis() - startTime;
 					LOGGER.debug("took " + readDuration + "ms to read from Rover");
@@ -268,6 +268,7 @@ public final class SolarMain {
 			}
 		}
 	}
+	@FunctionalInterface
 	private interface RoverProgramRunner {
 		void doProgram(RoverReadTable read, RoverWriteTable write);
 	}
@@ -285,7 +286,7 @@ public final class SolarMain {
 							idGenerator,
 							10,
 							OnDataReceive.Defaults.NOTHING,
-							getAdditionalPacketProvider(options)
+							getPacketListUpdater(options)
 					)
 			);
 		}
@@ -310,17 +311,15 @@ public final class SolarMain {
 		}
 	}
 	
-	private static PacketProvider getAdditionalPacketProvider(PacketHandlingOption options){
+	private static PacketListUpdater getPacketListUpdater(PacketHandlingOption options){
 		String source = options.getSourceId();
 		Integer fragment = options.getFragmentId();
 		requireNonNull(source);
-		return () -> {
-			List<Packet> r = new ArrayList<>();
-			r.add(InstanceSourcePackets.create(source));
+		return (list) -> {
+			list.add(InstanceSourcePackets.create(source));
 			if(fragment != null){
-				r.add(InstanceFragmentIndicatorPackets.create(fragment));
+				list.add(InstanceFragmentIndicatorPackets.create(fragment));
 			}
-			return r;
 		};
 	}
 	private static PacketCollectionIdGenerator createIdGenerator(Integer uniqueIdsInOneHour){

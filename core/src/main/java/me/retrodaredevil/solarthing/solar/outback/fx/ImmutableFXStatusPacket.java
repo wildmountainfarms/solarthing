@@ -9,12 +9,16 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 
 	private final int address;
 
-	private final int inverterCurrent, inverterCurrentRaw;
-	private final int chargerCurrent, chargerCurrentRaw;
-	private final int buyCurrent, buyCurrentRaw;
+	private final float inverterCurrent;
+	private final int inverterCurrentRaw;
+	private final float chargerCurrent;
+	private final int chargerCurrentRaw;
+	private final float buyCurrent;
+	private final int buyCurrentRaw;
 	private final int inputVoltage, inputVoltageRaw;
 	private final int outputVoltage, outputVoltageRaw;
-	private final int sellCurrent, sellCurrentRaw;
+	private final float sellCurrent;
+	private final int sellCurrentRaw;
 	private final int operatingMode, errorMode, acMode;
 
 	private final float batteryVoltage;
@@ -31,12 +35,12 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 
 	ImmutableFXStatusPacket(
 			int address,
-			int inverterCurrent, int inverterCurrentRaw,
-			int chargerCurrent, int chargerCurrentRaw,
-			int buyCurrent, int buyCurrentRaw,
+			float inverterCurrent, int inverterCurrentRaw,
+			float chargerCurrent, int chargerCurrentRaw,
+			float buyCurrent, int buyCurrentRaw,
 			int inputVoltage, int inputVoltageRaw,
 			int outputVoltage, int outputVoltageRaw,
-			int sellCurrent, int sellCurrentRaw,
+			float sellCurrent, int sellCurrentRaw,
 			int operatingMode, int errorMode, int acMode,
 			float batteryVoltage,
 			int misc, int warningMode, int chksum,
@@ -74,7 +78,7 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 
 
 	@Override
-	public int getInverterCurrent() {
+	public float getInverterCurrent() {
 		return inverterCurrent;
 	}
 
@@ -84,7 +88,7 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 	}
 
 	@Override
-	public int getChargerCurrent() {
+	public float getChargerCurrent() {
 		return chargerCurrent;
 	}
 
@@ -94,7 +98,7 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 	}
 
 	@Override
-	public int getBuyCurrent() {
+	public float getBuyCurrent() {
 		return buyCurrent;
 	}
 
@@ -124,7 +128,7 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 	}
 
 	@Override
-	public int getSellCurrent() {
+	public float getSellCurrent() {
 		return sellCurrent;
 	}
 
