@@ -1,12 +1,9 @@
 package me.retrodaredevil.solarthing.solar.outback.fx.supplementary;
 
-import me.retrodaredevil.solarthing.packets.DocumentedPacket;
 import me.retrodaredevil.solarthing.packets.Modes;
-import me.retrodaredevil.solarthing.packets.identification.Identifiable;
-import me.retrodaredevil.solarthing.solar.supplementary.SupplementarySolarPacket;
-import me.retrodaredevil.solarthing.solar.supplementary.SupplementarySolarPacketType;
 import me.retrodaredevil.solarthing.solar.common.DailyBatteryVoltage;
 import me.retrodaredevil.solarthing.solar.outback.fx.*;
+import me.retrodaredevil.solarthing.solar.supplementary.SupplementarySolarPacket;
 
 import java.util.Collection;
 import java.util.Set;

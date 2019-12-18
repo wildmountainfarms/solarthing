@@ -58,6 +58,7 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusSlaveRe
 import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusSlaveWrite;
 import me.retrodaredevil.solarthing.util.frequency.FrequentHandler;
 import me.retrodaredevil.solarthing.util.frequency.FrequentObject;
+import me.retrodaredevil.solarthing.util.scheduler.MidnightIterativeScheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -187,7 +188,7 @@ public final class SolarMain {
 							250,
 							onDataReceive,
 							new PacketListUpdaterMultiplexer(
-									new DailyFXListUpdater(),
+									new DailyFXListUpdater(new MidnightIterativeScheduler()),
 									packets -> {
 										LOGGER.debug("Debugging all packets");
 										LOGGER.debug(GSON.toJson(packets));

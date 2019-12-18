@@ -1,7 +1,5 @@
 package me.retrodaredevil.solarthing.solar.outback.fx.supplementary;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import me.retrodaredevil.solarthing.packets.DocumentedPacket;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.creation.PacketListUpdater;
@@ -10,12 +8,22 @@ import me.retrodaredevil.solarthing.solar.SolarPacketType;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 import me.retrodaredevil.solarthing.util.integration.MutableIntegral;
 import me.retrodaredevil.solarthing.util.integration.TrapezoidalRuleAccumulator;
+import me.retrodaredevil.solarthing.util.scheduler.IterativeScheduler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 public class DailyFXListUpdater implements PacketListUpdater {
+	private static final Logger LOGGER = LoggerFactory.getLogger(DailyFXListUpdater.class);
+
+	private final IterativeScheduler iterativeScheduler;
 
 	private final Map<Identifier, ListUpdater> map = new HashMap<>();
+
+	public DailyFXListUpdater(IterativeScheduler iterativeScheduler) {
+		this.iterativeScheduler = iterativeScheduler;
+	}
 
 	@Override
 	public void updatePackets(List<Packet> packets) {
@@ -37,7 +45,7 @@ public class DailyFXListUpdater implements PacketListUpdater {
 	private static MutableIntegral createMutableIntegral(){
 		return new TrapezoidalRuleAccumulator();
 	}
-	private static final class ListUpdater {
+	private final class ListUpdater {
 		private Float minimumBatteryVoltage = null;
 		private Float maximumBatteryVoltage = null;
 
@@ -53,6 +61,9 @@ public class DailyFXListUpdater implements PacketListUpdater {
 		private final Set<Integer> acModeValues = new HashSet<>();
 
 		private void update(List<? super Packet> packets, FXStatusPacket fx){
+			if(iterativeScheduler.shouldRun()){
+				reset();
+			}
 			double hours = getHours();
 
 			float batteryVoltage = fx.getBatteryVoltage();
@@ -86,6 +97,7 @@ public class DailyFXListUpdater implements PacketListUpdater {
 		}
 
 		private void reset(){
+			LOGGER.info("Resetting daily fx values");
 			inverterWH.reset();
 			chargerWH.reset();
 			buyWH.reset();
