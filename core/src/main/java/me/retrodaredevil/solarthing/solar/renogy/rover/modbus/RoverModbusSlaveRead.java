@@ -218,7 +218,7 @@ public class RoverModbusSlaveRead implements RoverReadTable {
 	}
 	
 	private static final MessageHandler<int[]> STREET_LIGHT_AND_CHARGING_STATE = new ReadRegistersHandler(0x0120, 2);
-	@Override public int getStreetLightValue() {
+	@Override public int getRawStreetLightValue() {
 		return upper(oneRegister(STREET_LIGHT_AND_CHARGING_STATE));
 	}
 	@Override public int getChargingStateValue() {

@@ -1,11 +1,9 @@
 package me.retrodaredevil.solarthing.solar.outback.fx;
 
-import me.retrodaredevil.solarthing.packets.BitmaskMode;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
 import me.retrodaredevil.solarthing.solar.outback.OutbackPacket;
 
-import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -53,12 +51,15 @@ public interface FXStatusPacket extends OutbackPacket, BatteryVoltage {
 	
 	/**
 	 * Should be serialized as "operatingMode"
-	 *
-	 * AKA FX operational mode
+	 * <p>
+	 * FX Operational Mode is the same thing as FX Operating Mode. Although the serialized name is "operatingMode",
+	 * "operationalMode" is the recommended name to use
 	 * @return The operating mode code which represents a single OperationalMode
 	 */
-	int getOperatingModeValue();
-	default OperationalMode getOperationalMode(){ return Modes.getActiveMode(OperationalMode.class, getOperatingModeValue()); }
+	int getOperationalModeValue();
+	@Deprecated
+	default int getOperatingModeValue(){ return getOperationalModeValue(); }
+	default OperationalMode getOperationalMode(){ return Modes.getActiveMode(OperationalMode.class, getOperationalModeValue()); }
 	
 	/**
 	 * Should be serialized as "errorMode"
@@ -66,7 +67,7 @@ public interface FXStatusPacket extends OutbackPacket, BatteryVoltage {
 	 */
 	int getErrorMode();
 	@Override
-	default Collection<? extends BitmaskMode> getActiveErrors(){
+	default Set<FXErrorMode> getActiveErrors(){
 		return Modes.getActiveModes(FXErrorMode.class, getErrorMode());
 	}
 	

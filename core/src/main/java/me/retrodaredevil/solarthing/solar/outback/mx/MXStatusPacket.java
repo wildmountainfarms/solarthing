@@ -89,8 +89,11 @@ public interface MXStatusPacket extends OutbackPacket, ChargeController, DailyDa
 	 * Right now, the range should only be [0..10] as there are no documented aux modes other than those 11
 	 * @return [0..99] representing the {@link AuxMode}
 	 */
-	int getAuxMode();
-	default AuxMode getAuxModeMode(){ return Modes.getActiveMode(AuxMode.class, getAuxMode());}
+	int getRawAuxModeValue();
+	default int getAuxModeValue() {
+		return ~AuxMode.IGNORED_BITS & getRawAuxModeValue();
+	}
+	default AuxMode getAuxModeMode(){ return Modes.getActiveMode(AuxMode.class, getRawAuxModeValue());}
 	
 	/**
 	 * Should be serialized as "errorMode"

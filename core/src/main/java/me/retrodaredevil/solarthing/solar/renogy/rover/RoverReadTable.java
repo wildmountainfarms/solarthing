@@ -236,9 +236,12 @@ public interface RoverReadTable extends Rover, ErrorReporter, ChargeController, 
 	float getCumulativeKWH();
 	float getCumulativeKWHConsumption();
 	
-	int getStreetLightValue();
-	default StreetLight getStreetLightStatus(){ return Modes.getActiveMode(StreetLight.class, getStreetLightValue()); }
-	default int getStreetLightBrightnessPercent(){ return StreetLight.getBrightnessValue(getStreetLightValue()); }
+	int getRawStreetLightValue();
+	default int getStreetLightStatusValue(){
+		return ~StreetLight.IGNORED_BITS & getRawStreetLightValue();
+	}
+	default StreetLight getStreetLightStatus(){ return Modes.getActiveMode(StreetLight.class, getStreetLightStatusValue()); }
+	default int getStreetLightBrightnessPercent(){ return StreetLight.getBrightnessValue(getRawStreetLightValue()); }
 	
 	int getChargingStateValue();
 	@Override

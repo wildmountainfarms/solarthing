@@ -36,9 +36,10 @@ public interface SpecialPowerControl_E02D extends UpperLower16Bit {
 			default: throw new UnsupportedOperationException();
 		}
 	}
-	default int getChargingMethodValueCode(){
-		return (0b1000 & getLower()) >>> 3;
+	default int getRawChargingMethodValueCode(){
+		return (0b1000 & getLower()) >>> 3; // TODO determine if this is correct and if we need a raw/non-raw getter
 	}
+	default int getChargingMethodValueCode(){ return ~ChargingMethod_E02D.IGNORED_BITS & getRawChargingMethodValueCode(); }
 	default ChargingMethod_E02D getChargingMethod(){
 		return Modes.getActiveMode(ChargingMethod_E02D.class, getChargingMethodValueCode());
 	}
@@ -86,6 +87,7 @@ public interface SpecialPowerControl_E02D extends UpperLower16Bit {
 		PWM(0, ChargingMethod.PWM),
 		DIRECT(1, ChargingMethod.DIRECT),
 		;
+		private static final int IGNORED_BITS = 0b11111100;
 		
 		private final int value;
 		private final ChargingMethod chargingMethod;
@@ -102,11 +104,6 @@ public interface SpecialPowerControl_E02D extends UpperLower16Bit {
 		@Override
 		public int getValueCode() {
 			return value;
-		}
-		
-		@Override
-		public int getIgnoredBits() {
-			return 0b11111100;
 		}
 		
 		@Override

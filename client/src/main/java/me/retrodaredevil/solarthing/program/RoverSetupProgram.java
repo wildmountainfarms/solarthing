@@ -147,7 +147,7 @@ public final class RoverSetupProgram {
 							System.out.println(read.getCumulativeKWHConsumption());
 							break;
 						case "streetlightvalue":
-							System.out.println(read.getStreetLightValue());
+							System.out.println(read.getRawStreetLightValue());
 							break;
 						case "streetlight":
 							System.out.println(read.getStreetLightStatus().getModeName());

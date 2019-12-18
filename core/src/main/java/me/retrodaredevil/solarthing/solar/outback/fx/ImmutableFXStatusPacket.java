@@ -138,7 +138,7 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 	}
 
 	@Override
-	public int getOperatingModeValue() {
+	public int getOperationalModeValue() {
 		return operatingMode;
 	}
 
