@@ -8,7 +8,7 @@ abstract class MutableIntegralAccumulator implements MutableIntegral {
 
 	@Override
 	public final void add(double x, double y) {
-		Double lastX = this.lastX;
+		final Double lastX = this.lastX;
 		if(lastX == null){
 			this.lastX = x;
 			this.lastY = y;
@@ -19,6 +19,7 @@ abstract class MutableIntegralAccumulator implements MutableIntegral {
 			throw new IllegalArgumentException("x cannot be less than the last x value! x=" + x + " lastX=" + lastX);
 		}
 		integral += getAmountToAdd(delta, lastY, y);
+		this.lastX = x;
 		lastY = y;
 	}
 	protected abstract double getAmountToAdd(double deltaX, double lastY, double y);

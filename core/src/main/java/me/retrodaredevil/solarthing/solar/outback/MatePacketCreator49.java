@@ -1,7 +1,5 @@
 package me.retrodaredevil.solarthing.solar.outback;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.creation.PacketCreationException;
 import me.retrodaredevil.solarthing.packets.creation.StartEndTextPacketCreator;
@@ -18,7 +16,6 @@ import java.util.Collections;
 
 public class MatePacketCreator49 extends StartEndTextPacketCreator {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MatePacketCreator49.class);
-	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
 
 	private final IgnoreCheckSum ignoreCheckSum;
 
@@ -30,7 +27,7 @@ public class MatePacketCreator49 extends StartEndTextPacketCreator {
 	@Override
 	public Collection<Packet> create(char[] bytes) throws PacketCreationException {
 		final int value = bytes[1]; // ascii value
-		final Packet r;
+		final OutbackPacket r;
 		if(value >= 48 && value <= 58){ // fx status
 			try {
 				r = FXStatusPackets.createFromChars(bytes, ignoreCheckSum);
@@ -48,7 +45,7 @@ public class MatePacketCreator49 extends StartEndTextPacketCreator {
 		} else {
 			throw new PacketCreationException("Ascii value: " + value + " not supported. (from: '" + new String(bytes) + "')");
 		}
-		LOGGER.debug(GSON.toJson(r));
+		LOGGER.debug("Created outback packet address=" + r.getAddress());
 		return Collections.singleton(r);
 	}
 

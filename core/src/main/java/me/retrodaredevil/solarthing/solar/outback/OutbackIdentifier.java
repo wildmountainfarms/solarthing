@@ -48,9 +48,6 @@ public class OutbackIdentifier implements IntegerIdentifier, Comparable<Identifi
 		if(o instanceof OutbackIdentifier){
 			return address - ((OutbackIdentifier) o).address;
 		}
-//		if(o instanceof RoverIdentifier){
-//			return -1; // Outback devices should show up before Renogy devices
-//		}
 		return -1; // whatever is is should show up after us no matter what
 	}
 }

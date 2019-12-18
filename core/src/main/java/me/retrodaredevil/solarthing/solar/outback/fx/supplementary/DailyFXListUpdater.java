@@ -1,5 +1,7 @@
 package me.retrodaredevil.solarthing.solar.outback.fx.supplementary;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import me.retrodaredevil.solarthing.packets.DocumentedPacket;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.creation.PacketListUpdater;
@@ -17,7 +19,7 @@ public class DailyFXListUpdater implements PacketListUpdater {
 
 	@Override
 	public void updatePackets(List<Packet> packets) {
-		for(Packet packet : packets){
+		for(Packet packet : new ArrayList<>(packets)){
 			if(packet instanceof DocumentedPacket){
 				if(((DocumentedPacket<?>) packet).getPacketType() == SolarPacketType.FX_STATUS){
 					FXStatusPacket fx = (FXStatusPacket) packet;
@@ -36,26 +38,22 @@ public class DailyFXListUpdater implements PacketListUpdater {
 		return new TrapezoidalRuleAccumulator();
 	}
 	private static final class ListUpdater {
+		private Float minimumBatteryVoltage = null;
+		private Float maximumBatteryVoltage = null;
+
 		private final MutableIntegral inverterWH = createMutableIntegral();
 		private final MutableIntegral chargerWH = createMutableIntegral();
 		private final MutableIntegral buyWH = createMutableIntegral();
 		private final MutableIntegral sellWH = createMutableIntegral();
 
-		private Float minimumBatteryVoltage = null;
-		private Float maximumBatteryVoltage = null;
-
 		private final Set<Integer> operationalModeValues = new HashSet<>();
 		private int errorMode = 0;
-		private final Set<Integer> acModeValues = new HashSet<>();
-		private int misc = 0;
 		private int warningMode = 0;
+		private int misc = 0;
+		private final Set<Integer> acModeValues = new HashSet<>();
 
 		private void update(List<? super Packet> packets, FXStatusPacket fx){
 			double hours = getHours();
-			inverterWH.add(hours, fx.getInverterWattage());
-			chargerWH.add(hours, fx.getChargerWattage());
-			buyWH.add(hours, fx.getBuyWattage());
-			sellWH.add(hours, fx.getSellWattage());
 
 			float batteryVoltage = fx.getBatteryVoltage();
 			Float currentMin = minimumBatteryVoltage;
@@ -67,11 +65,24 @@ public class DailyFXListUpdater implements PacketListUpdater {
 				maximumBatteryVoltage = batteryVoltage;
 			}
 
+			inverterWH.add(hours, fx.getInverterWattage());
+			chargerWH.add(hours, fx.getChargerWattage());
+			buyWH.add(hours, fx.getBuyWattage());
+			sellWH.add(hours, fx.getSellWattage());
+
 			operationalModeValues.add(fx.getOperationalModeValue());
 			errorMode |= fx.getErrorMode();
-			acModeValues.add(fx.getACModeValue());
-			misc |= fx.getMisc();
 			warningMode |= fx.getWarningMode();
+			misc |= fx.getMisc();
+			acModeValues.add(fx.getACModeValue());
+			Packet packet = new ImmutableDailyFXPacket(
+					minimumBatteryVoltage, maximumBatteryVoltage,
+					(float) (inverterWH.getIntegral() / 1000), (float) (chargerWH.getIntegral() / 1000),
+					(float) (buyWH.getIntegral() / 1000), (float) (sellWH.getIntegral() / 1000),
+					operationalModeValues, errorMode, warningMode, misc, acModeValues,
+					fx.getIdentifier()
+			);
+			packets.add(packet);
 		}
 
 		private void reset(){

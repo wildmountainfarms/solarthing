@@ -42,6 +42,7 @@ import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollections;
 import me.retrodaredevil.solarthing.packets.creation.PacketListUpdater;
+import me.retrodaredevil.solarthing.packets.creation.PacketListUpdaterMultiplexer;
 import me.retrodaredevil.solarthing.packets.creation.TextPacketCreator;
 import me.retrodaredevil.solarthing.packets.handling.*;
 import me.retrodaredevil.solarthing.packets.handling.implementations.FileWritePacketHandler;
@@ -51,6 +52,7 @@ import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePackets;
 import me.retrodaredevil.solarthing.packets.security.crypto.DirectoryKeyMap;
 import me.retrodaredevil.solarthing.solar.outback.MatePacketCreator49;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
+import me.retrodaredevil.solarthing.solar.outback.fx.supplementary.DailyFXListUpdater;
 import me.retrodaredevil.solarthing.solar.renogy.rover.*;
 import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusSlaveRead;
 import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusSlaveWrite;
@@ -184,7 +186,14 @@ public final class SolarMain {
 							idGenerator,
 							250,
 							onDataReceive,
-							getPacketListUpdater(options)
+							new PacketListUpdaterMultiplexer(
+									new DailyFXListUpdater(),
+									packets -> {
+										LOGGER.debug("Debugging all packets");
+										LOGGER.debug(GSON.toJson(packets));
+									},
+									getSourceAndFragmentUpdater(options)
+							)
 					)
 			);
 		} finally {
@@ -196,7 +205,7 @@ public final class SolarMain {
 		LOGGER.info("Beginning rover program");
 		List<PacketHandler> packetHandlers = getPacketHandlers(getDatabaseConfigs(options), "solarthing");
 		PacketHandler packetHandler = new PacketHandlerMultiplexer(packetHandlers);
-		PacketListUpdater packetListUpdater = getPacketListUpdater(options);
+		PacketListUpdater packetListUpdater = getSourceAndFragmentUpdater(options);
 
 
 		PacketCollectionIdGenerator idGenerator = createIdGenerator(options.getUniqueIdsInOneHour());
@@ -286,7 +295,7 @@ public final class SolarMain {
 							idGenerator,
 							10,
 							OnDataReceive.Defaults.NOTHING,
-							getPacketListUpdater(options)
+							getSourceAndFragmentUpdater(options)
 					)
 			);
 		}
@@ -311,7 +320,7 @@ public final class SolarMain {
 		}
 	}
 	
-	private static PacketListUpdater getPacketListUpdater(PacketHandlingOption options){
+	private static PacketListUpdater getSourceAndFragmentUpdater(PacketHandlingOption options){
 		String source = options.getSourceId();
 		Integer fragment = options.getFragmentId();
 		requireNonNull(source);
