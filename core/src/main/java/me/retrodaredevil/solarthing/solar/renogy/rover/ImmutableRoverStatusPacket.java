@@ -424,7 +424,7 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	}
 	
 	@Override
-	public int getStreetLightValue() {
+	public int getRawStreetLightValue() {
 		return streetLightValue;
 	}
 	

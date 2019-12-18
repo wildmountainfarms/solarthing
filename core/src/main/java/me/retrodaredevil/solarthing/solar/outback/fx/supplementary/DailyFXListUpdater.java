@@ -9,9 +9,7 @@ import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 import me.retrodaredevil.solarthing.util.integration.MutableIntegral;
 import me.retrodaredevil.solarthing.util.integration.TrapezoidalRuleAccumulator;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DailyFXListUpdater implements PacketListUpdater {
 
@@ -38,16 +36,58 @@ public class DailyFXListUpdater implements PacketListUpdater {
 		return new TrapezoidalRuleAccumulator();
 	}
 	private static final class ListUpdater {
-		private final MutableIntegral inverter = createMutableIntegral();
-		private final MutableIntegral charger = createMutableIntegral();
-		private final MutableIntegral buy = createMutableIntegral();
-		private final MutableIntegral sell = createMutableIntegral();
+		private final MutableIntegral inverterWH = createMutableIntegral();
+		private final MutableIntegral chargerWH = createMutableIntegral();
+		private final MutableIntegral buyWH = createMutableIntegral();
+		private final MutableIntegral sellWH = createMutableIntegral();
+
+		private Float minimumBatteryVoltage = null;
+		private Float maximumBatteryVoltage = null;
+
+		private final Set<Integer> operationalModeValues = new HashSet<>();
+		private int errorMode = 0;
+		private final Set<Integer> acModeValues = new HashSet<>();
+		private int misc = 0;
+		private int warningMode = 0;
+
 		private void update(List<? super Packet> packets, FXStatusPacket fx){
 			double hours = getHours();
-			inverter.add(hours, fx.getInverterWattage());
-			charger.add(hours, fx.getChargerWattage());
-			buy.add(hours, fx.getBuyWattage());
-			sell.add(hours, fx.getSellWattage());
+			inverterWH.add(hours, fx.getInverterWattage());
+			chargerWH.add(hours, fx.getChargerWattage());
+			buyWH.add(hours, fx.getBuyWattage());
+			sellWH.add(hours, fx.getSellWattage());
+
+			float batteryVoltage = fx.getBatteryVoltage();
+			Float currentMin = minimumBatteryVoltage;
+			Float currentMax = maximumBatteryVoltage;
+			if(currentMin == null || batteryVoltage < currentMin){
+				minimumBatteryVoltage = batteryVoltage;
+			}
+			if(currentMax == null || batteryVoltage > currentMax){
+				maximumBatteryVoltage = batteryVoltage;
+			}
+
+			operationalModeValues.add(fx.getOperationalModeValue());
+			errorMode |= fx.getErrorMode();
+			acModeValues.add(fx.getACModeValue());
+			misc |= fx.getMisc();
+			warningMode |= fx.getWarningMode();
+		}
+
+		private void reset(){
+			inverterWH.reset();
+			chargerWH.reset();
+			buyWH.reset();
+			sellWH.reset();
+
+			minimumBatteryVoltage = null;
+			maximumBatteryVoltage = null;
+
+			operationalModeValues.clear();
+			errorMode = 0;
+			acModeValues.clear();
+			misc = 0;
+			warningMode = 0;
 		}
 
 		private double getHours(){

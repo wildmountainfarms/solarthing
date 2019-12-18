@@ -12,18 +12,6 @@ public interface CodeMode extends Mode {
 
 	@Override
 	default boolean isActive(int valueCode){
-		Integer max = getMaximumAllowedValue();
-		if(max != null && valueCode > max){
-			throw new IllegalArgumentException("valueCode cannot be greater than " + max + "! it was: " + valueCode);
-		}
-		return getValueCode() == (~getIgnoredBits() & valueCode);
+		return getValueCode() == valueCode;
 	}
-	
-	default int getIgnoredBits(){
-		return 0;
-	}
-	default Integer getMaximumAllowedValue(){
-		return null;
-	}
-
 }

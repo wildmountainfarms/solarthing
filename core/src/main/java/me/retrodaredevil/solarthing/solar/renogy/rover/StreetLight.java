@@ -24,17 +24,7 @@ public enum StreetLight implements CodeMode {
 		this.name = name;
 		this.code = code;
 	}
-	
-	@Override
-	public Integer getMaximumAllowedValue() {
-		return 255;
-	}
-	
-	@Override
-	public int getIgnoredBits() {
-		return IGNORED_BITS;
-	}
-	
+
 	@Override
 	public int getValueCode() {
 		return code;

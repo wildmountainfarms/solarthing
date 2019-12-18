@@ -64,7 +64,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 		this.onChange = onChange;
 		
 		controllerDeviceAddress = roverReadTable.getControllerDeviceAddress();
-		streetLightValue = roverReadTable.getStreetLightValue();
+		streetLightValue = roverReadTable.getRawStreetLightValue();
 		systemVoltageSetting = roverReadTable.getSystemVoltageSetting();
 		batteryType = roverReadTable.getBatteryType();
 		
@@ -173,7 +173,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 	@Override public float getCumulativeKWHConsumption() { return roverReadTable.getCumulativeKWHConsumption(); }
 	
 	@Override
-	public int getStreetLightValue() {
+	public int getRawStreetLightValue() {
 		return streetLightValue;
 	}
 	@Override

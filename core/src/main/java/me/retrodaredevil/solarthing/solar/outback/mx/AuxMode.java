@@ -25,6 +25,7 @@ public enum AuxMode implements CodeMode {
 	PWM_DIVERSION(9, "PWM Diversion"),
 	/** Only used on FLEXmax80/FLEXmax60*/
 	LOW_BATTERY(10, "Low Battery");
+	public static final int IGNORED_BITS = 0b01000000;
 
 	private final int value;
 	private final String name;
@@ -47,12 +48,7 @@ public enum AuxMode implements CodeMode {
 	public int getValueCode() {
 		return value;
 	}
-	
-	@Override
-	public int getIgnoredBits() {
-		return 0b01000000;
-	}
-	
+
 	/**
 	 * Checks to see if bit 7 is set. Only works on FLEXmax80 and FLEXmax60
 	 * @param valueCode The value code

@@ -115,7 +115,7 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 
 
 	@Override
-	public int getAuxMode() {
+	public int getRawAuxModeValue() {
 		return auxMode;
 	}
 

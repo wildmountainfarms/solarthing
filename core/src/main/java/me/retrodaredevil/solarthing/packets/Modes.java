@@ -87,6 +87,26 @@ public final class Modes {
 		return r;
 	}
 	// endregion
+
+	// region CodeMode multiple
+	public static <T extends CodeMode> void getActiveModes(Collection<? extends T> possibleValues, Collection<Integer> valueCodes, Collection<? super T> mutableActiveModes){
+		for(T t : possibleValues){
+			if(valueCodes.contains(t.getValueCode())){
+				mutableActiveModes.add(t);
+			}
+		}
+	}
+	public static <T extends Enum<T> & CodeMode> Set<T> getActiveModes(Class<T> tEnum, Collection<Integer> valueCodes){
+		final Set<T> set = EnumSet.noneOf(tEnum);
+		getActiveModes(EnumSet.allOf(tEnum), valueCodes, set);
+		return set;
+	}
+	public static <T extends CodeMode> Set<T> getActiveModes(Collection<? extends T> possibleValues, Collection<Integer> valueCodes){
+		final Set<T> set = new HashSet<>();
+		getActiveModes(possibleValues, valueCodes, set);
+		return set;
+	}
+	// endregion
 	
 	// region BitmaskMode
 	/**
@@ -126,7 +146,26 @@ public final class Modes {
 	}
 	// endregion
 	
-	// region BitmaskMode toString
+	// region toString
+
+	public static <T extends CodeMode> String toString(Collection<? extends T> possibleValues, Collection<Integer> valueCodes){
+		StringBuilder builder = new StringBuilder();
+		boolean empty = true;
+		for(T value : possibleValues){
+			if(valueCodes.contains(value.getValueCode())){
+				if(!empty){
+					builder.append(", ");
+				}
+				builder.append(value.getModeName());
+				empty = false;
+			}
+		}
+		return builder.toString();
+	}
+	public static <T extends Enum<T> & CodeMode> String toString(Class<T> tEnum, Collection<Integer> valueCodes){
+		return toString(EnumSet.allOf(tEnum), valueCodes);
+	}
+
 	/**
 	 * @see #toString(Collection, int)
 	 */
