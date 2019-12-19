@@ -28,6 +28,9 @@ public class DailyFXListUpdater implements PacketListUpdater {
 	@Override
 	public void updatePackets(List<Packet> packets) {
 		// TODO what if there are duplicate packets?
+		if(iterativeScheduler.shouldRun()){
+			map.clear();
+		}
 		for(Packet packet : new ArrayList<>(packets)){
 			if(packet instanceof DocumentedPacket){
 				if(((DocumentedPacket<?>) packet).getPacketType() == SolarPacketType.FX_STATUS){
@@ -46,7 +49,7 @@ public class DailyFXListUpdater implements PacketListUpdater {
 	private static MutableIntegral createMutableIntegral(){
 		return new TrapezoidalRuleAccumulator();
 	}
-	private final class ListUpdater {
+	private static final class ListUpdater {
 		private Long startDateMillis = null;
 		private Float minimumBatteryVoltage = null;
 		private Float maximumBatteryVoltage = null;
@@ -63,9 +66,6 @@ public class DailyFXListUpdater implements PacketListUpdater {
 		private final Set<Integer> acModeValues = new HashSet<>();
 
 		private void update(List<? super Packet> packets, FXStatusPacket fx){
-			if(iterativeScheduler.shouldRun()){
-				reset();
-			}
 			Long startDateMillis = this.startDateMillis;
 			if(startDateMillis == null){
 				startDateMillis = System.currentTimeMillis();
@@ -102,24 +102,6 @@ public class DailyFXListUpdater implements PacketListUpdater {
 					fx.getIdentifier()
 			);
 			packets.add(packet);
-		}
-
-		private void reset(){
-			LOGGER.info("Resetting daily fx values");
-			startDateMillis = null;
-			inverterWH.reset();
-			chargerWH.reset();
-			buyWH.reset();
-			sellWH.reset();
-
-			minimumBatteryVoltage = null;
-			maximumBatteryVoltage = null;
-
-			operationalModeValues.clear();
-			errorMode = 0;
-			acModeValues.clear();
-			misc = 0;
-			warningMode = 0;
 		}
 
 		private double getHours(){
