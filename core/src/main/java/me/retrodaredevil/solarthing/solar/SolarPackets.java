@@ -12,7 +12,7 @@ public final class SolarPackets {
 	/**
 	 * @param jsonObject The {@link JsonObject} to create the {@link SolarPacket} from
 	 * @return The {@link SolarPacket} created from {@code jsonObject}
-	 * @throws IllegalArgumentException thrown if {@code jsonObject} isn't a {@link SolarPacket}
+	 * @throws UnknownPacketTypeException thrown if {@code jsonObject} isn't a {@link SolarPacket}
 	 */
 	public static SolarPacket createFromJson(JsonObject jsonObject) {
 		final String packetName = jsonObject.getAsJsonPrimitive("packetType").getAsString();
