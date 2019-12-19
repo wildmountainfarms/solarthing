@@ -1,11 +1,11 @@
 package me.retrodaredevil.solarthing.solar.outback.fx;
 
-import me.retrodaredevil.solarthing.solar.SolarPacketType;
+import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 
 @SuppressWarnings("unused")
 final class ImmutableFXStatusPacket implements FXStatusPacket {
-	private final SolarPacketType packetType = SolarPacketType.FX_STATUS;
+	private final SolarStatusPacketType packetType = SolarStatusPacketType.FX_STATUS;
 
 	private final int address;
 
@@ -198,7 +198,7 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 	}
 
 	@Override
-	public SolarPacketType getPacketType() {
+	public SolarStatusPacketType getPacketType() {
 		return packetType;
 	}
 

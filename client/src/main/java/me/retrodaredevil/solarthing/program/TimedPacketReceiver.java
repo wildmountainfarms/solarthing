@@ -28,7 +28,7 @@ public class TimedPacketReceiver implements RawPacketReceiver {
 
 	private long lastFirstReceivedData = Long.MIN_VALUE; // the last time a packet was added to packetList
 
-	/** A list that piles up SolarPackets and handles when needed. May be cleared */
+	/** A list that piles up packets and handles when needed. May be cleared */
 	private final List<Packet> packetList = new ArrayList<>(); //
 	private boolean instant = false;
 

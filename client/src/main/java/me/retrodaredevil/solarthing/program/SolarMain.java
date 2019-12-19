@@ -52,7 +52,7 @@ import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePackets;
 import me.retrodaredevil.solarthing.packets.security.crypto.DirectoryKeyMap;
 import me.retrodaredevil.solarthing.solar.outback.MatePacketCreator49;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
-import me.retrodaredevil.solarthing.solar.outback.fx.supplementary.DailyFXListUpdater;
+import me.retrodaredevil.solarthing.solar.outback.fx.extra.DailyFXListUpdater;
 import me.retrodaredevil.solarthing.solar.renogy.rover.*;
 import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusSlaveRead;
 import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusSlaveWrite;

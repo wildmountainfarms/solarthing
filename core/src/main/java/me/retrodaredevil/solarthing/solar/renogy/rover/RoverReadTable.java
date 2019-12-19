@@ -12,7 +12,7 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerContr
 import java.util.Collection;
 
 @SuppressWarnings("unused")
-public interface RoverReadTable extends Rover, ErrorReporter, ChargeController, DailyChargeController, DailyBatteryVoltage, Identifiable {
+public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeController, DailyChargeController, DailyBatteryVoltage, Identifiable {
 	
 	@Override
 	RoverIdentifier getIdentifier();
