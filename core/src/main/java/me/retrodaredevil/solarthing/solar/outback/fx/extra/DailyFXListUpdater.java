@@ -1,10 +1,10 @@
-package me.retrodaredevil.solarthing.solar.outback.fx.supplementary;
+package me.retrodaredevil.solarthing.solar.outback.fx.extra;
 
 import me.retrodaredevil.solarthing.packets.DocumentedPacket;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.creation.PacketListUpdater;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
-import me.retrodaredevil.solarthing.solar.SolarPacketType;
+import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 import me.retrodaredevil.solarthing.util.integration.MutableIntegral;
 import me.retrodaredevil.solarthing.util.integration.TrapezoidalRuleAccumulator;
@@ -33,7 +33,7 @@ public class DailyFXListUpdater implements PacketListUpdater {
 		}
 		for(Packet packet : new ArrayList<>(packets)){
 			if(packet instanceof DocumentedPacket){
-				if(((DocumentedPacket<?>) packet).getPacketType() == SolarPacketType.FX_STATUS){
+				if(((DocumentedPacket<?>) packet).getPacketType() == SolarStatusPacketType.FX_STATUS){
 					FXStatusPacket fx = (FXStatusPacket) packet;
 					Identifier identifier = fx.getIdentifier();
 					ListUpdater updater = map.get(identifier);

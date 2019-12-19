@@ -1,15 +1,15 @@
-package me.retrodaredevil.solarthing.solar.outback.fx.supplementary;
+package me.retrodaredevil.solarthing.solar.outback.fx.extra;
 
 import me.retrodaredevil.solarthing.packets.identification.DefaultSupplementaryIdentifier;
 import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
-import me.retrodaredevil.solarthing.solar.supplementary.SupplementarySolarPacketType;
+import me.retrodaredevil.solarthing.solar.extra.SolarExtraPacketType;
 
 import java.util.Collection;
 
 class ImmutableDailyFXPacket implements DailyFXPacket {
-	private static final String SUPPLEMENTARY_TYPE = SupplementarySolarPacketType.FX_DAILY.toString();
-	private final SupplementarySolarPacketType packetType = SupplementarySolarPacketType.FX_DAILY;
+	private static final String SUPPLEMENTARY_TYPE = SolarExtraPacketType.FX_DAILY.toString();
+	private final SolarExtraPacketType packetType = SolarExtraPacketType.FX_DAILY;
 
 	@SuppressWarnings({"unused", "FieldCanBeLocal"})
 	private final int address; // Necessary when parsing data
@@ -62,7 +62,7 @@ class ImmutableDailyFXPacket implements DailyFXPacket {
 	}
 
 	@Override
-	public SupplementarySolarPacketType getPacketType() {
+	public SolarExtraPacketType getPacketType() {
 		return packetType;
 	}
 

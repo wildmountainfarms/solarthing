@@ -10,7 +10,7 @@ import me.retrodaredevil.solarthing.packets.DocumentedPacketType;
  * <p>
  * NOTE: This enum may have more values added to it in the future
  */
-public enum SolarPacketType implements DocumentedPacketType {
+public enum SolarStatusPacketType implements DocumentedPacketType {
 	/**
 	 * FX Status Packets
 	 */

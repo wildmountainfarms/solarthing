@@ -2,7 +2,7 @@ package me.retrodaredevil.solarthing.solar.common;
 
 import me.retrodaredevil.solarthing.packets.support.Support;
 
-public interface DailyChargeController extends DailyData {
+public interface DailyChargeController extends ChargeController, DailyData {
 	float getDailyKWH();
 	int getDailyAH();
 

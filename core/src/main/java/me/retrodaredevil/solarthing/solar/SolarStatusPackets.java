@@ -6,19 +6,19 @@ import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPackets;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPackets;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPackets;
 
-public final class SolarPackets {
-	private SolarPackets(){ throw new UnsupportedOperationException(); }
+public final class SolarStatusPackets {
+	private SolarStatusPackets(){ throw new UnsupportedOperationException(); }
 	
 	/**
-	 * @param jsonObject The {@link JsonObject} to create the {@link SolarPacket} from
-	 * @return The {@link SolarPacket} created from {@code jsonObject}
-	 * @throws UnknownPacketTypeException thrown if {@code jsonObject} isn't a {@link SolarPacket}
+	 * @param jsonObject The {@link JsonObject} to create the {@link SolarStatusPacket} from
+	 * @return The {@link SolarStatusPacket} created from {@code jsonObject}
+	 * @throws UnknownPacketTypeException thrown if {@code jsonObject} isn't a {@link SolarStatusPacket}
 	 */
-	public static SolarPacket createFromJson(JsonObject jsonObject) {
+	public static SolarStatusPacket createFromJson(JsonObject jsonObject) {
 		final String packetName = jsonObject.getAsJsonPrimitive("packetType").getAsString();
-		final SolarPacketType packetType;
+		final SolarStatusPacketType packetType;
 		try {
-			packetType = SolarPacketType.valueOf(packetName);
+			packetType = SolarStatusPacketType.valueOf(packetName);
 		} catch(IllegalArgumentException e){
 			throw new UnknownPacketTypeException("packet type name: " + packetName, e);
 		}

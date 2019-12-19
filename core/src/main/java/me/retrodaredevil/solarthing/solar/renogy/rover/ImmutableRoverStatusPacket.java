@@ -1,13 +1,13 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover;
 
 import me.retrodaredevil.solarthing.packets.Modes;
-import me.retrodaredevil.solarthing.solar.SolarPacketType;
+import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import me.retrodaredevil.solarthing.solar.renogy.BatteryType;
 
 import java.util.Base64;
 
 public class ImmutableRoverStatusPacket implements RoverStatusPacket {
-	private final SolarPacketType packetType = SolarPacketType.RENOGY_ROVER_STATUS;
+	private final SolarStatusPacketType packetType = SolarStatusPacketType.RENOGY_ROVER_STATUS;
 	private transient final RoverIdentifier identifier;
 	private final int maxVoltage;
 	private final int ratedChargingCurrent;
@@ -234,7 +234,7 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	}
 	
 	@Override
-	public SolarPacketType getPacketType() {
+	public SolarStatusPacketType getPacketType() {
 		return packetType;
 	}
 	

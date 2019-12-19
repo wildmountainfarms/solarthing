@@ -1,15 +1,15 @@
-package me.retrodaredevil.solarthing.solar.outback.fx.supplementary;
+package me.retrodaredevil.solarthing.solar.outback.fx.extra;
 
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.solar.common.DailyBatteryVoltage;
 import me.retrodaredevil.solarthing.solar.common.DailyData;
+import me.retrodaredevil.solarthing.solar.extra.SupplementarySolarExtraPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.*;
-import me.retrodaredevil.solarthing.solar.supplementary.SupplementarySolarPacket;
 
 import java.util.Collection;
 import java.util.Set;
 
-public interface DailyFXPacket extends SupplementarySolarPacket, DailyData, DailyBatteryVoltage {
+public interface DailyFXPacket extends SupplementarySolarExtraPacket, DailyData, DailyBatteryVoltage {
 
 	@Override
 	default boolean isNewDay(DailyData previousDailyData){

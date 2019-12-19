@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing.solar.outback.fx.supplementary;
+package me.retrodaredevil.solarthing.solar.outback.fx.extra;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

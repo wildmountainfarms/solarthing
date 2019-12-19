@@ -1,12 +1,12 @@
 package me.retrodaredevil.solarthing.solar.outback.mx;
 
 import me.retrodaredevil.solarthing.packets.support.Support;
-import me.retrodaredevil.solarthing.solar.SolarPacketType;
+import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 
 @SuppressWarnings("unused")
 final class ImmutableMXStatusPacket implements MXStatusPacket {
-	private final SolarPacketType packetType = SolarPacketType.MXFM_STATUS;
+	private final SolarStatusPacketType packetType = SolarStatusPacketType.MXFM_STATUS;
 
 	private final int address;
 	private final int chargerCurrent, pvCurrent, inputVoltage;
@@ -71,7 +71,7 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 	}
 
 	@Override
-	public SolarPacketType getPacketType() {
+	public SolarStatusPacketType getPacketType() {
 		return packetType;
 	}
 

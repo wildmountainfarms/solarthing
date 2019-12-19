@@ -20,6 +20,7 @@ subprojects {
     dependencies {
         testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit5Version
         testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit5Version
+//        implementation 'org.jetbrains:annotations:15.0' if we decide to use NotNull or Nullable, we can use this
     }
     test {
         useJUnitPlatform()
