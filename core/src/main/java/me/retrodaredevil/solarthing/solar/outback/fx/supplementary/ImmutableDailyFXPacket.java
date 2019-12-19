@@ -11,6 +11,11 @@ class ImmutableDailyFXPacket implements DailyFXPacket {
 	private static final String SUPPLEMENTARY_TYPE = SupplementarySolarPacketType.FX_DAILY.toString();
 	private final SupplementarySolarPacketType packetType = SupplementarySolarPacketType.FX_DAILY;
 
+	@SuppressWarnings({"unused", "FieldCanBeLocal"})
+	private final int address; // Necessary when parsing data
+
+	private final Long startDateMillis;
+
 	private final float dailyMinBatteryVoltage;
 	private final float dailyMaxBatteryVoltage;
 
@@ -25,15 +30,16 @@ class ImmutableDailyFXPacket implements DailyFXPacket {
 	private final int miscValue;
 	private final Collection<Integer> acModeValues;
 
-	private final int address;
 
 	private final transient SupplementaryIdentifier supplementaryIdentifier;
 
 	public ImmutableDailyFXPacket(
+			Long startDateMillis,
 			float dailyMinBatteryVoltage, float dailyMaxBatteryVoltage, float inverterKWH, float chargerKWH, float buyKWH, float sellKWH,
 			Collection<Integer> operationalModeValues, int errorModeValue, int warningModeValue, int miscValue, Collection<Integer> acModeValues,
 			OutbackIdentifier outbackIdentifier
 	) {
+		this.startDateMillis = startDateMillis;
 		this.dailyMinBatteryVoltage = dailyMinBatteryVoltage;
 		this.dailyMaxBatteryVoltage = dailyMaxBatteryVoltage;
 		this.inverterKWH = inverterKWH;
@@ -58,6 +64,11 @@ class ImmutableDailyFXPacket implements DailyFXPacket {
 	@Override
 	public SupplementarySolarPacketType getPacketType() {
 		return packetType;
+	}
+
+	@Override
+	public Long getStartDateMillis() {
+		return startDateMillis;
 	}
 
 	@Override public float getDailyMinBatteryVoltage() { return dailyMinBatteryVoltage; }

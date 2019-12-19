@@ -2,10 +2,7 @@ package me.retrodaredevil.solarthing.solar.renogy.rover;
 
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
-import me.retrodaredevil.solarthing.solar.common.ChargeController;
-import me.retrodaredevil.solarthing.solar.common.DailyBatteryVoltage;
-import me.retrodaredevil.solarthing.solar.common.DailyData;
-import me.retrodaredevil.solarthing.solar.common.ErrorReporter;
+import me.retrodaredevil.solarthing.solar.common.*;
 import me.retrodaredevil.solarthing.solar.renogy.*;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.ImmutableSpecialPowerControl_E021;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.ImmutableSpecialPowerControl_E02D;
@@ -15,24 +12,22 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerContr
 import java.util.Collection;
 
 @SuppressWarnings("unused")
-public interface RoverReadTable extends Rover, ErrorReporter, ChargeController, DailyData, DailyBatteryVoltage, Identifiable {
+public interface RoverReadTable extends Rover, ErrorReporter, ChargeController, DailyChargeController, DailyBatteryVoltage, Identifiable {
 	
 	@Override
 	RoverIdentifier getIdentifier();
 	
 	@Override
 	default boolean isNewDay(DailyData previousDailyData) {
-		if(DailyData.super.isNewDay(previousDailyData)){
-			return true;
-		}
 		if (!(previousDailyData instanceof RoverReadTable)) {
 			throw new IllegalArgumentException("previousDailyData is not a RoverReadTable! It's: " + previousDailyData.getClass().getName());
 		}
 		RoverReadTable previous = (RoverReadTable) previousDailyData;
-		return getDailyMinBatteryVoltage() > previous.getDailyMinBatteryVoltage() || // the min voltage was reset to a larger number
-			getDailyMaxBatteryVoltage() < previous.getDailyMaxBatteryVoltage() || // the max voltage was reset to a smaller number
-			getOperatingDaysCount() > previous.getOperatingDaysCount() || // The
-			getDailyMaxChargingPower() < previous.getDailyMaxChargingPower(); // The max charging power was reset to a smaller number
+		return getDailyKWH() < previous.getDailyKWH() || getDailyAH() < previous.getDailyAH() ||
+				getDailyMinBatteryVoltage() > previous.getDailyMinBatteryVoltage() || // the min voltage was reset to a larger number
+				getDailyMaxBatteryVoltage() < previous.getDailyMaxBatteryVoltage() || // the max voltage was reset to a smaller number
+				getOperatingDaysCount() > previous.getOperatingDaysCount() || // The day increased
+				getDailyMaxChargingPower() < previous.getDailyMaxChargingPower(); // The max charging power was reset to a smaller number
 	}
 	
 	/**

@@ -27,6 +27,7 @@ public class DailyFXListUpdater implements PacketListUpdater {
 
 	@Override
 	public void updatePackets(List<Packet> packets) {
+		// TODO what if there are duplicate packets?
 		for(Packet packet : new ArrayList<>(packets)){
 			if(packet instanceof DocumentedPacket){
 				if(((DocumentedPacket<?>) packet).getPacketType() == SolarPacketType.FX_STATUS){
@@ -46,6 +47,7 @@ public class DailyFXListUpdater implements PacketListUpdater {
 		return new TrapezoidalRuleAccumulator();
 	}
 	private final class ListUpdater {
+		private Long startDateMillis = null;
 		private Float minimumBatteryVoltage = null;
 		private Float maximumBatteryVoltage = null;
 
@@ -64,7 +66,11 @@ public class DailyFXListUpdater implements PacketListUpdater {
 			if(iterativeScheduler.shouldRun()){
 				reset();
 			}
-			double hours = getHours();
+			Long startDateMillis = this.startDateMillis;
+			if(startDateMillis == null){
+				startDateMillis = System.currentTimeMillis();
+				this.startDateMillis = startDateMillis;
+			}
 
 			float batteryVoltage = fx.getBatteryVoltage();
 			Float currentMin = minimumBatteryVoltage;
@@ -76,6 +82,7 @@ public class DailyFXListUpdater implements PacketListUpdater {
 				maximumBatteryVoltage = batteryVoltage;
 			}
 
+			double hours = getHours();
 			inverterWH.add(hours, fx.getInverterWattage());
 			chargerWH.add(hours, fx.getChargerWattage());
 			buyWH.add(hours, fx.getBuyWattage());
@@ -87,6 +94,7 @@ public class DailyFXListUpdater implements PacketListUpdater {
 			misc |= fx.getMisc();
 			acModeValues.add(fx.getACModeValue());
 			Packet packet = new ImmutableDailyFXPacket(
+					startDateMillis,
 					minimumBatteryVoltage, maximumBatteryVoltage,
 					(float) (inverterWH.getIntegral() / 1000), (float) (chargerWH.getIntegral() / 1000),
 					(float) (buyWH.getIntegral() / 1000), (float) (sellWH.getIntegral() / 1000),
@@ -98,6 +106,7 @@ public class DailyFXListUpdater implements PacketListUpdater {
 
 		private void reset(){
 			LOGGER.info("Resetting daily fx values");
+			startDateMillis = null;
 			inverterWH.reset();
 			chargerWH.reset();
 			buyWH.reset();

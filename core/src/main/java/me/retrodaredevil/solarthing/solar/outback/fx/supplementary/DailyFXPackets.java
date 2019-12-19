@@ -7,10 +7,15 @@ import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import java.util.Collection;
 import java.util.HashSet;
 
+import static me.retrodaredevil.util.json.JsonHelper.getOrNull;
+
 public final class DailyFXPackets {
 	private DailyFXPackets(){ throw new UnsupportedOperationException(); }
 
 	public static DailyFXPacket createFromJson(JsonObject object){
+		// This isn't something we can calculate, so if someone wants to re-serialize it, it may be serialized as null,
+		// and when deserializing it again, we want that to be valid // This is why we have treatJsonNullAsUndefined = true
+		final Long startDateMillis = getOrNull(object, "startDateMillis", JsonElement::getAsLong, true);
 		final float dailyMinBatteryVoltage = object.get("dailyMinBatteryVoltage").getAsFloat();
 		final float dailyMaxBatteryVoltage = object.get("dailyMaxBatteryVoltage").getAsFloat();
 
@@ -36,6 +41,7 @@ public final class DailyFXPackets {
 		final int address = object.get("address").getAsInt();
 
 		return new ImmutableDailyFXPacket(
+				startDateMillis,
 				dailyMinBatteryVoltage, dailyMaxBatteryVoltage,
 				inverterKWH, chargerKWH, buyKWH, sellKWH,
 				operationalModeValues,

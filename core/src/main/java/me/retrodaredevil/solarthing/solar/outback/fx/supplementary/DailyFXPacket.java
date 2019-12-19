@@ -2,13 +2,32 @@ package me.retrodaredevil.solarthing.solar.outback.fx.supplementary;
 
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.solar.common.DailyBatteryVoltage;
+import me.retrodaredevil.solarthing.solar.common.DailyData;
 import me.retrodaredevil.solarthing.solar.outback.fx.*;
 import me.retrodaredevil.solarthing.solar.supplementary.SupplementarySolarPacket;
 
 import java.util.Collection;
 import java.util.Set;
 
-public interface DailyFXPacket extends SupplementarySolarPacket, DailyBatteryVoltage {
+public interface DailyFXPacket extends SupplementarySolarPacket, DailyData, DailyBatteryVoltage {
+
+	@Override
+	default boolean isNewDay(DailyData previousDailyData){
+		if (!(previousDailyData instanceof DailyFXPacket)) {
+			throw new IllegalArgumentException("previousDailyData is not a DailyFXPacket! It's: " + previousDailyData.getClass().getName());
+		}
+		DailyFXPacket previous = (DailyFXPacket) previousDailyData;
+		Long dateMillis = getStartDateMillis();
+		Long previousMillis = previous.getStartDateMillis();
+		if(dateMillis != null && previousMillis != null){
+			return dateMillis > previousMillis;
+		}
+		return getInverterKWH() < previous.getInverterKWH() ||
+				getChargerKWH() < previous.getChargerKWH() ||
+				getBuyKWH() < previous.getBuyKWH() ||
+				getSellKWH() < previous.getSellKWH();
+	}
+
 	float getInverterKWH();
 	float getChargerKWH();
 	float getBuyKWH();
