@@ -4,6 +4,7 @@ import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.packets.support.Support;
 import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
 import me.retrodaredevil.solarthing.solar.common.ChargeController;
+import me.retrodaredevil.solarthing.solar.common.DailyChargeController;
 import me.retrodaredevil.solarthing.solar.common.DailyData;
 import me.retrodaredevil.solarthing.solar.outback.OutbackPacket;
 
@@ -15,8 +16,16 @@ import java.util.Set;
  * In previous version, it was just "MX" instead of "MXFM" so MX is the same as MXFM in the documentation. FM stands for FLEXmax.
  */
 @SuppressWarnings("unused")
-public interface MXStatusPacket extends OutbackPacket, ChargeController, DailyData, BatteryVoltage {
-	
+public interface MXStatusPacket extends OutbackPacket, ChargeController, DailyChargeController, BatteryVoltage {
+	@Override
+	default boolean isNewDay(DailyData previousDailyData){
+		if (!(previousDailyData instanceof MXStatusPacket)) {
+			throw new IllegalArgumentException("previousDailyData is not a MXStatusPacket! It's: " + previousDailyData.getClass().getName());
+		}
+		MXStatusPacket previous = (MXStatusPacket) previousDailyData;
+		return getDailyKWH() < previous.getDailyKWH() || getDailyAH() < previous.getDailyAH();
+	}
+
 	// region Packet Values
 	
 	/**
