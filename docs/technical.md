@@ -25,11 +25,13 @@ Example: <br/>
 Fragment 1: FX1, FX2, MX3, MX4 <br/>
 Fragment 2: Renogy Rover
 
-### Duplicate Packets in a single PacketCollection
-It is expected that if the program falls behind trying to save packets, that what should be two or three PacketCollections
-are put into one. I have a simple way to try to filter these packets, "instant-only". This works most of the time, but not 100%.
-Without adding additional threads to the program, it is difficult to completely solve this. Because I do not
-plan to add additional threads to the program, it will remain like this so you should expect that a packet in the database
-may have one or two other identical packets from almost the same time. 
-This is where [Identifiers](src/main/java/me/retrodaredevil/solarthing/packets/identification/Identifier.java) comes in. By
+### Duplicate Packets
+As of 2019.12.20, duplicate packets are no longer something we have to worry about.
+
+In a "mate" type program, it is possible that packets will pile up. When this happens, the `instant` boolean is usually set to false.
+Even if this fails, [OutbackDuplicatePacketRemover](../core/src/main/java/me/retrodaredevil/solarthing/solar/outback/OutbackDuplicatePacketRemover.java) will
+remove duplicate packets.
+
+For old solarthing versions, you can expect that a PacketCollection may have one or two other identical packets from almost the same time. 
+This is where [Identifiers](../core/src/main/java/me/retrodaredevil/solarthing/packets/identification/Identifier.java) comes in. By
 adding packets to a Map, you can make sure that there's only one packet for each unique Identifier
