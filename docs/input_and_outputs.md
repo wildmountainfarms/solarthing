@@ -5,15 +5,18 @@ as stdin and stdout or can get as complex as a custom serial port configuration.
 ### Specifying
 Specifying the file that has the configuration for the input/output is simple:
 
-```
-java -jar solarthing.jar <sub program> --io my_io_file.json
+```json
+{
+  "type": "my program type",
+  "io": "<my io file relative to the 'program' directory>"
+}
 ```
 
 ### Examples
 You can see some examples in [this](../config_templates) directory
 
 #### stdin/stdout example
-```
+```json
 {
   "type": "standard"
 }
@@ -21,7 +24,7 @@ You can see some examples in [this](../config_templates) directory
 
 #### Simple serial port example
 In this example the serial_config is automatically determined based on which program you choose. You should never have to change it
-```
+```json
 {
   "type": "serial",
   "port": "/dev/ttyUSB0",
@@ -29,7 +32,7 @@ In this example the serial_config is automatically determined based on which pro
 }
 ```
 If you need to change the serial_config, you can do this:
-```
+```json
 {
   "type": "serial",
   "port": "/dev/ttyUSB0",

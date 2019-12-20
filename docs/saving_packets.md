@@ -1,14 +1,5 @@
-# Saving Packets
+# Saving Packets (The `io` JSON property)
 There are many ways to save packets (the way data is represented in this program)
-
-### Example Commands
-```
-((cd /home/pi/solarthing/program && \
-java -jar solarthing.jar mate --unique 45 --source default --fragment 1 \
---database "config/couchdb.json" "config/latest.json" --io "config/mate_io.json" --allow-commands) 1>output.txt 2>errors.txt) &
-```
-In the above example, the program will use the configurations located at "config/couchdb.json" and "config/latest.json". The above
-example is also the exact command I use in /etc/rc.local on my Raspberry Pi that listen to a MATE.
 
 ### Example Configurations
 You can see [this](../config_templates) directory for some examples

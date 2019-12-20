@@ -59,7 +59,7 @@ You can see the [Outback/Renogy Rover](solar/README.md) README for using the pro
 
 You can see the [Outhouse](outhouse/README.md) README for using the outhouse program.
 
-The [input and output](docs/input_and_outputs.md) README is documentation for the `--io` option used in all of the sub programs.
+The [input and output](docs/input_and_outputs.md) README is documentation for the `io` JSON property option used in all of the sub programs.
 
 ### Developer Use
 [![](https://jitpack.io/v/wildmountainfarms/solarthing.svg)](https://jitpack.io/#wildmountainfarms/solarthing)

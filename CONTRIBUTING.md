@@ -7,10 +7,19 @@ This project requires Java 8+. However Java 8 API additions aren't used in the `
 This does not apply to the `client` module.
 
 You can set your editor up with [Editor Config](https://www.editorconfig.org) to work with the [.editorconfig file](.editorconfig)
+* Use 1 tab for identation
+* 2 tabs for a continuation indent
 
-Use standard Java naming conventions. Use `myCoolId` instead of `myCoolID` and use `myCoolDb` instead of `myCoolDB`. The exception
-here is that you SHOULD use `myIODevice` instead of `myIoDevice`. You should also use `myPVCurrent` instead of `myPvCurrent`
+Use standard Java naming conventions. Use `myCoolId` instead of `myCoolID` and use `myCoolDb` instead of `myCoolDB`. 
 
+Exceptions:
+* `myIODevice` not `myIoDevice`
+* `myPVCurrent` not `myPvCurrent`
+* `myKWH` not `myKwh`
+* `myAH` not `myAh`
+* There may be more exceptions already present
+
+Although I wish that some of these conventions could be changed, changing them would result in confusion and more inconsistencies.
 
 ### Customizing
 The different command line options give you may ways to receive data and export data. CouchDB and InfluxDB
