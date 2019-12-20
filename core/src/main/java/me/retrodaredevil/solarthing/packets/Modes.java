@@ -2,7 +2,6 @@ package me.retrodaredevil.solarthing.packets;
 
 import java.util.*;
 
-@SuppressWarnings("unused")
 public final class Modes {
 	private Modes(){ throw new UnsupportedOperationException(); }
 	
@@ -66,6 +65,7 @@ public final class Modes {
 	 * @return A value from {@code values} with the {@link CodeMode} matching {@code valueCode} or returns null if not found.
 	 * @throws NullPointerException optional. May be thrown if {@code values} contains a null element
 	 */
+	@SuppressWarnings("unused")
 	public static <T extends CodeMode> T getActiveModeOrNull(Collection<? extends T> values, int valueCode){
 		return getActiveMode(values, valueCode, null);
 	}
@@ -101,6 +101,7 @@ public final class Modes {
 		getActiveModes(EnumSet.allOf(tEnum), valueCodes, set);
 		return set;
 	}
+	@SuppressWarnings("unused")
 	public static <T extends CodeMode> Set<T> getActiveModes(Collection<? extends T> possibleValues, Collection<Integer> valueCodes){
 		final Set<T> set = new HashSet<>();
 		getActiveModes(possibleValues, valueCodes, set);
@@ -126,6 +127,7 @@ public final class Modes {
 	 * @param <T> The enum that has all the possible modes
 	 * @return A new set with all of the modes that are active in tEnum
 	 */
+	@SuppressWarnings("unused")
 	public static <T extends BitmaskMode> Set<T> getActiveModes(Collection<? extends T> possibleValues, int code){
 		final Set<T> set = new HashSet<>();
 		getActiveModes(possibleValues, code, set);

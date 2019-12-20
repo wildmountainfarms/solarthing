@@ -2,20 +2,22 @@ package me.retrodaredevil.solarthing.solar.outback.fx.extra;
 
 import me.retrodaredevil.solarthing.packets.DocumentedPacket;
 import me.retrodaredevil.solarthing.packets.Packet;
-import me.retrodaredevil.solarthing.packets.creation.PacketListUpdater;
+import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 import me.retrodaredevil.solarthing.util.integration.MutableIntegral;
 import me.retrodaredevil.solarthing.util.integration.TrapezoidalRuleAccumulator;
 import me.retrodaredevil.solarthing.util.scheduler.IterativeScheduler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-public class DailyFXListUpdater implements PacketListUpdater {
-	private static final Logger LOGGER = LoggerFactory.getLogger(DailyFXListUpdater.class);
+/**
+ * Takes a list of {@link Packet}s and will add an {@link DailyFXPacket} for each {@link FXStatusPacket}.
+ * <p>
+ * This expects that there are no duplicate packets. If there are duplicate packets, the behaviour is undefined.
+ */
+public class DailyFXListUpdater implements PacketListReceiver {
 
 	private final IterativeScheduler iterativeScheduler;
 
@@ -26,8 +28,7 @@ public class DailyFXListUpdater implements PacketListUpdater {
 	}
 
 	@Override
-	public void updatePackets(List<Packet> packets) {
-		// TODO what if there are duplicate packets?
+	public void receive(List<Packet> packets, boolean wasInstant) {
 		if(iterativeScheduler.shouldRun()){
 			map.clear();
 		}

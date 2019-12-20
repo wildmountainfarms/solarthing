@@ -41,16 +41,19 @@ import me.retrodaredevil.solarthing.packets.collection.HourIntervalPacketCollect
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollections;
-import me.retrodaredevil.solarthing.packets.creation.PacketListUpdater;
-import me.retrodaredevil.solarthing.packets.creation.PacketListUpdaterMultiplexer;
+import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
+import me.retrodaredevil.solarthing.packets.handling.PacketListReceiverMultiplexer;
 import me.retrodaredevil.solarthing.packets.creation.TextPacketCreator;
 import me.retrodaredevil.solarthing.packets.handling.*;
 import me.retrodaredevil.solarthing.packets.handling.implementations.FileWritePacketHandler;
 import me.retrodaredevil.solarthing.packets.handling.implementations.GsonStringPacketHandler;
+import me.retrodaredevil.solarthing.packets.handling.implementations.PacketHandlerPacketListReceiver;
+import me.retrodaredevil.solarthing.packets.handling.implementations.TimedPacketReceiver;
 import me.retrodaredevil.solarthing.packets.instance.InstanceFragmentIndicatorPackets;
 import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePackets;
 import me.retrodaredevil.solarthing.packets.security.crypto.DirectoryKeyMap;
 import me.retrodaredevil.solarthing.solar.outback.MatePacketCreator49;
+import me.retrodaredevil.solarthing.solar.outback.OutbackDuplicatePacketRemover;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
 import me.retrodaredevil.solarthing.solar.outback.fx.extra.DailyFXListUpdater;
 import me.retrodaredevil.solarthing.solar.renogy.rover.*;
@@ -183,18 +186,17 @@ public final class SolarMain {
 					requireNonNull(io.getInputStream()),
 					new MatePacketCreator49(MateProgramOptions.getIgnoreCheckSum(options)),
 					new TimedPacketReceiver(
-							new PacketHandlerMultiplexer(packetHandlers),
-							idGenerator,
 							250,
-							onDataReceive,
-							new PacketListUpdaterMultiplexer(
+							new PacketListReceiverMultiplexer(
+									OutbackDuplicatePacketRemover.INSTANCE,
 									new DailyFXListUpdater(new MidnightIterativeScheduler()),
-									packets -> {
+									(packets, wasInstant) -> {
 										LOGGER.debug("Debugging all packets");
 										LOGGER.debug(GSON.toJson(packets));
 									},
-									getSourceAndFragmentUpdater(options)
-							)
+									getSourceAndFragmentUpdater(options),
+									new PacketHandlerPacketListReceiver(new PacketHandlerMultiplexer(packetHandlers), idGenerator)
+							), onDataReceive
 					)
 			);
 		} finally {
@@ -206,7 +208,7 @@ public final class SolarMain {
 		LOGGER.info("Beginning rover program");
 		List<PacketHandler> packetHandlers = getPacketHandlers(getDatabaseConfigs(options), "solarthing");
 		PacketHandler packetHandler = new PacketHandlerMultiplexer(packetHandlers);
-		PacketListUpdater packetListUpdater = getSourceAndFragmentUpdater(options);
+		PacketListReceiver packetListReceiver = getSourceAndFragmentUpdater(options);
 
 
 		PacketCollectionIdGenerator idGenerator = createIdGenerator(options.getUniqueIdsInOneHour());
@@ -228,7 +230,7 @@ public final class SolarMain {
 					);
 					List<Packet> packets = new ArrayList<>();
 					packets.add(packet);
-					packetListUpdater.updatePackets(packets);
+					packetListReceiver.receive(packets, true);
 					PacketCollection packetCollection = PacketCollections.createFromPackets(packets, idGenerator);
 					final long readDuration = System.currentTimeMillis() - startTime;
 					LOGGER.debug("took " + readDuration + "ms to read from Rover");
@@ -291,11 +293,11 @@ public final class SolarMain {
 					ioBundle.getInputStream(),
 					new OuthousePacketCreator(),
 					new TimedPacketReceiver(
-							new PacketHandlerMultiplexer(packetHandlers),
-							idGenerator,
 							10,
-							OnDataReceive.Defaults.NOTHING,
-							getSourceAndFragmentUpdater(options)
+							new PacketListReceiverMultiplexer(
+									getSourceAndFragmentUpdater(options),
+									new PacketHandlerPacketListReceiver(new PacketHandlerMultiplexer(packetHandlers), idGenerator)
+							), OnDataReceive.Defaults.NOTHING
 					)
 			);
 		}
@@ -320,11 +322,11 @@ public final class SolarMain {
 		}
 	}
 	
-	private static PacketListUpdater getSourceAndFragmentUpdater(PacketHandlingOption options){
+	private static PacketListReceiver getSourceAndFragmentUpdater(PacketHandlingOption options){
 		String source = options.getSourceId();
 		Integer fragment = options.getFragmentId();
 		requireNonNull(source);
-		return (list) -> {
+		return (list, wasInstant) -> {
 			list.add(InstanceSourcePackets.create(source));
 			if(fragment != null){
 				list.add(InstanceFragmentIndicatorPackets.create(fragment));
@@ -612,7 +614,7 @@ public final class SolarMain {
 		ROVER("rover"),
 		ROVER_SETUP("rover-setup"),
 		OUTHOUSE("outhouse");
-		@SuppressWarnings({"unused", "FieldCanBeLocal"})
+		@SuppressWarnings({"unused", "FieldCanBeLocal"}) // this may be used in the future, however it is not necessary as of now
 		private final String name;
 
 		Program(String name) {

@@ -6,7 +6,6 @@ import me.retrodaredevil.solarthing.packets.CodeMode;
 /**
  * The AC Mode for the FX
  */
-@SuppressWarnings("unused")
 public enum ACMode implements CodeMode { // one must be active
 	NO_AC(0, "No AC"),
 	AC_DROP(1, "AC Drop"),

@@ -5,7 +5,6 @@ import me.retrodaredevil.solarthing.packets.BitmaskMode;
 /**
  * The warning modes for the fx
  */
-@SuppressWarnings("unused")
 public enum WarningMode implements BitmaskMode { // multiple can be active (or 0)
 	AC_INPUT_FREQ_HIGH(1, "AC Input Freq High"),
 	AC_INPUT_FREQ_LOW(2, "AC Input Freq Low"),

@@ -6,7 +6,6 @@ import me.retrodaredevil.solarthing.packets.CodeMode;
 /**
  * The FX Operational Mode
  */
-@SuppressWarnings("unused")
 public enum OperationalMode implements CodeMode { // one must be active
 	INV_OFF(0, "Inv Off"),
 	SEARCH(1, "Search"),
