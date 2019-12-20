@@ -16,20 +16,27 @@ You can look at how we parse packets for
 [Renogy Write Here](../core/src/main/java/me/retrodaredevil/solarthing/solar/renogy/rover/modbus/RoverModbusSlaveWrite.java)
 
 ### Running
-##### The documentation is still in progress ever since we moved from command line paramters to all JSON configuration
 Some of this is outdated.
 ```
 cd program/
 solar/virtual_mate.sh | java -jar solarthing.jar "config/base.json"
 ```
-Note the `--cc`. This stands for correct checksum. To make it easy in `virtual_mate.sh` to change values, using `--cc`
-makes it quicker to change values without calculating the checksum ourselves and just have the program do it for us.
-Obviously you don't want to use that when you are getting reliable data from a serial port.
-
 If you are running this on a Pi with a serial port connected, you would probably run
 ```
 java -jar solarthing.jar "config/base.json"
 ```
+
+#### Mate Configuration
+```json
+{
+  "type": "mate",
+  "correct_check_sum": true,
+  "io": "<your io config file here>"
+}
+```
+The mate configuration has the unique property `correct_check_sum`. This makes it easy to change values in `virtual_mate.sh`. By using this,
+we can change values quicker values without calculating the checksum ourselves and just have the program do it for us.
+Obviously you don't want to use that when you are getting reliable data from a serial port.
 
 ### Connecting to Outback MATE
 Connecting a Raspberry Pi or any device to an Outback MATE's serial port is pretty simple. For the easiest solution,

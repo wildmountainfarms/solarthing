@@ -13,10 +13,20 @@ cp ../config_templates/mate_io.json config/
 cp ../config_templates/base/mate_template.json config/base.json
 ```
 Edit `base.json`
+```json
+{
+  "type": "mate",
+  "io": "config/mate_io.json"
+}
+```
 
 Once your configuration is how you want it, you can go back to the [quickstart](quickstart.md) to enable and start the service.
 
 Run the program for the first time
+```shell script
+./solarthing.sh
 ```
-java -jar solarthing.jar mate --unique 60 --io config/mate_io.json --database config/influxdb.json
+Or you will have to run it manually if you are on windows
+```shell script
+java -jar solarthing.jar base.json
 ```

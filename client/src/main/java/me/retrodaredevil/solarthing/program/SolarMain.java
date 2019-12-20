@@ -219,11 +219,10 @@ public final class SolarMain {
 						packet = RoverStatusPackets.createFromReadTable(read);
 					} catch(ModbusRuntimeException e){
 						LOGGER.error("Modbus exception", e);
-						Thread.sleep(1000);
+						Thread.sleep(5000);
 						continue;
 					}
-					LOGGER.debug(
-						GSON.toJson(packet) + "\n" +
+					LOGGER.debug(GSON.toJson(packet) + "\n" +
 							packet.getSpecialPowerControlE021().getFormattedInfo().replaceAll("\n", "\n\t") + "\n" +
 							packet.getSpecialPowerControlE02D().getFormattedInfo().replaceAll("\n", "\n\t")
 					);
@@ -241,7 +240,7 @@ public final class SolarMain {
 					}
 					final long saveDuration = System.currentTimeMillis() - saveStartTime;
 					LOGGER.debug("took " + saveDuration + "ms to handle packets");
-					Thread.sleep(Math.max(200, 5000 - readDuration)); // allow 5 seconds to read from rover // assume saveDuration is very small
+					Thread.sleep(Math.max(1000, 6000 - readDuration)); // allow 5 seconds to read from rover
 				}
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
@@ -266,7 +265,7 @@ public final class SolarMain {
 			return 0;
 		} else {
 			try(IOBundle ioBundle = createIOBundle(options.getIOBundleFile(), ROVER_CONFIG)) {
-				ModbusSlaveBus modbus = new IOModbusSlaveBus(ioBundle, new RTUDataEncoder(300, 10));
+				ModbusSlaveBus modbus = new IOModbusSlaveBus(ioBundle, new RTUDataEncoder(2000, 20, 4));
 				ModbusSlave slave = new ImmutableAddressModbusSlave(options.getModbusAddress(), modbus);
 				RoverReadTable read = new RoverModbusSlaveRead(slave);
 				RoverWriteTable write = new RoverModbusSlaveWrite(slave);
@@ -337,7 +336,7 @@ public final class SolarMain {
 			return PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR;
 		}
 		if(uniqueIdsInOneHour <= 0){
-			throw new IllegalArgumentException("--unique must be > 0 or not specified!");
+			throw new IllegalArgumentException("unique must be > 0 or not specified!");
 		}
 		return new HourIntervalPacketCollectionIdGenerator(uniqueIdsInOneHour, new Random().nextInt());
 	}
