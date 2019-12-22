@@ -22,6 +22,14 @@ needs without programming. But, if you are a programmer, this API will make your
 Out of the box, this supports lots of configuration options. These options include configuring CouchDB, InfluxDB and  local json file exporting. There is
 currently three different ways to view the data that is stored in your database of choice.
 
+## Supported Databases
+* CouchDB
+  * Allows for [solarthing-web](https://github.com/wildmountainfarms/solarthing-web) and [solarthing-android](https://github.com/wildmountainfarms/solarthing-android) to function
+  * Once [json-webserver](./json-webserver) is complete, data from CouchDB can be viewed in Grafana
+* InfluxDB
+  * Allows for viewing of data in Grafana
+* [PVOutput.org](https://pvoutput.org) Coming soon!
+
 ## What This is currently used for
 This program is run on a raspberry pi at Wild Mountain Farms (www.wildmountainfarms.com).
 That program uploads packets to a CouchDB database on a separate computer which hosts the web portion
@@ -108,14 +116,14 @@ This uses slf4j to log and uses log4j2 as the main implementation. https://loggi
 * Create Arduino program to simulate MATE or Rover
 * Log CPU temperature, ram, etc into a database and logs.
   * Use the `vcgencmd measure_temp` available on Raspberry Pis
-* Detect when Mate packets go from address 4->1 or 1->1 to detect a new collection of packets
-* Integrate power usage
 * Have packets for inverters going on/off, AC Drop/AC Use, Daily kWH->0, etc
 * Add readable string alongside identifier tag for InfluxDB
 * Restart rover program if a ModbusTimeoutException is received
 * Create 'exporter' module which will have a Prometheus exporter that runs and gets data from CouchDB
 * Create a calendar program to be able to view daily kWH on a calendar interface
-* Report hash of the jar file https://stackoverflow.com/questions/20814539/get-checksum-of-a-jar-file
+  * If we do something with a calendar, we could use google calendar https://developers.google.com/calendar/create-events/
+* Have unique identifier for each jar file
+* Save DailyFX data to a file so if the program restarts mid-day, accumulated data is not reset
 
 ### Completed TODO:
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
@@ -126,6 +134,9 @@ This uses slf4j to log and uses log4j2 as the main implementation. https://loggi
 * Make Grafana easy to use by supporting InfluxDB as a database
 * Add a basic file for a systemd service
 * Stop requiring command line parameters and have option to use all JSON configs
+* Integrate power usage
+* Detect when Mate packets go from address 4->1 or 1->1 to detect a new collection of packets
+  * This was done by just removing duplicate packets. Not ideal, but it works.
 
 ### [History](docs/history.md)
 

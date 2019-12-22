@@ -1,3 +1,8 @@
+buildscript {
+    ext {
+        retrofitVersion = "2.6.3"
+    }
+}
 plugins {
     id 'java'
 }
@@ -7,6 +12,9 @@ version "0.0.1-SNAPSHOT"
 sourceCompatibility = 1.8
 
 dependencies {
+    // TODO use retrofit https://howtoprogram.xyz/2016/10/17/java-rest-client-example-retrofit-2/
     // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
     compile group: 'com.squareup.okhttp3', name: 'okhttp', version: '3.14.4'
+    compile "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    compile "com.squareup.retrofit2:converter-gson:$retrofitVersion"
 }

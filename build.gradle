@@ -8,6 +8,16 @@ buildscript {
         log4jVersion = '2.12.1'
     }
 }
+allprojects {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "https://plugins.gradle.org/m2/" }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        jcenter()
+        google()
+    }
+}
 
 subprojects {
     apply plugin: 'java-library'
