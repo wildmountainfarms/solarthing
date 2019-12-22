@@ -109,12 +109,10 @@ public class OutputServiceDataBuilder implements OutputServiceData {
 		return maximumTemperatureCelsius;
 	}
 
+	/**
+	 * @param comments The comments string. It is recommended to be less than 30 characters
+	 */
 	public OutputServiceDataBuilder setComments(String comments) {
-		if(comments != null){
-			if(comments.length() > 30){
-				throw new IllegalArgumentException("comments.length() cannot be greater than 30! comments=" + comments);
-			}
-		}
 		this.comments = comments;
 		return this;
 	}

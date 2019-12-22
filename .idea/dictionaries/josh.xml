@@ -1,10 +1,12 @@
 <component name="ProjectDictionaryState">
   <dictionary name="josh">
     <words>
+      <w>arduino</w>
       <w>aren</w>
       <w>chksum</w>
       <w>couchdb</w>
       <w>flexnet</w>
+      <w>grafana</w>
       <w>gson</w>
       <w>influxdb</w>
       <w>lightcouch</w>
@@ -13,6 +15,8 @@
       <w>mxfm</w>
       <w>renogy</w>
       <w>solarthing</w>
+      <w>systemd</w>
+      <w>webserver</w>
     </words>
   </dictionary>
 </component>

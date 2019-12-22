@@ -1,0 +1,49 @@
+buildscript {
+    ext {
+        jettyVersion = "3.0.1"
+        jerseyVersion = "2.14"
+    }
+    repositories {
+        jcenter()
+    }
+}
+plugins {
+    id 'com.github.johnrengelman.shadow' version '5.1.0'
+    id 'java'
+    id 'war'
+    id "org.gretty" version "$jettyVersion"
+}
+
+version '0.0.1-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+project.ext.mainClassName = "me.retrodaredevil.solarthing.datasource.DatasourceApplication"
+
+dependencies {
+//    implementation "org.apache.logging.log4j:log4j-jcl:$log4jVersion"
+    implementation "org.apache.logging.log4j:log4j-slf4j-impl:$log4jVersion"
+
+
+    // https://mvnrepository.com/artifact/javax.ws.rs/javax.ws.rs-api
+    implementation group: 'javax.ws.rs', name: 'javax.ws.rs-api', version: '2.1.1'
+
+    // https://mvnrepository.com/artifact/org.glassfish.jersey.media/jersey-media-json-jackson
+    implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-json-jackson', version: jerseyVersion
+    implementation "org.glassfish.jersey.containers:jersey-container-servlet:$jerseyVersion"
+
+    // https://mvnrepository.com/artifact/org.gretty/gretty-runner-jetty
+    implementation group: 'org.gretty', name: 'gretty-runner-jetty', version: jettyVersion
+
+//    if (JavaVersion.current() > JavaVersion.VERSION_1_8) { // TODO test on Java 8
+
+    // JAX-B dependencies for JDK 9+ // thanks https://stackoverflow.com/a/43574427/5434860
+    implementation "jakarta.xml.bind:jakarta.xml.bind-api:2.3.2"
+    implementation "org.glassfish.jaxb:jaxb-runtime:2.3.2"
+}
+
+shadowJar {
+    manifest {
+        attributes 'Main-Class': project.mainClassName
+    }
+}
