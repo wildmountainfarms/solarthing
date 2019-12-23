@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing.datasource.endpoint.search;
+package me.retrodaredevil.grafana.datasource.endpoint.search;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
