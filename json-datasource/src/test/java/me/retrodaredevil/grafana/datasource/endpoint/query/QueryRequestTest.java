@@ -1,7 +1,6 @@
-package me.retrodaredevil.solarthing.datasource.endpoint.query;
+package me.retrodaredevil.grafana.datasource.endpoint.query;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
