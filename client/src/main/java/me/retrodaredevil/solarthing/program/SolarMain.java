@@ -153,12 +153,12 @@ public final class SolarMain {
 					IndividualSettings individualSettings = config.getIndividualSettingsOrDefault(DATABASE_COMMAND_DOWNLOAD_ID, null);
 					FrequencySettings frequencySettings = individualSettings != null ? individualSettings.getFrequencySettings() : FrequencySettings.NORMAL_SETTINGS;
 					commandRequesterHandlerList.add(new ThrottleFactorPacketHandler(new PrintPacketHandleExceptionWrapper(
-						new CouchDbPacketRetriever(
-							couchProperties,
-							"commands",
-							new SecurityPacketReceiver(new DirectoryKeyMap(new File("authorized")), commandSequenceDataReceiver, new DirectoryKeyMap(new File("unauthorized"))),
-							true
-						)
+							new CouchDbPacketRetriever(
+									couchProperties,
+									"commands",
+									new SecurityPacketReceiver(new DirectoryKeyMap(new File("authorized")), commandSequenceDataReceiver, new DirectoryKeyMap(new File("unauthorized"))),
+								  true
+							)
 					), frequencySettings, true));
 					commandFeedbackHandlerList.add(new CouchDbPacketSaver(couchProperties, "command_feedback"));
 				}
