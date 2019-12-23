@@ -4,7 +4,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
-@Path("/root")
+@Path("/")
 public class RootResource {
 	@GET
 	public Response get(){
