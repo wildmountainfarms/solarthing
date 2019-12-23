@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing.datasource.util;
+package me.retrodaredevil.grafana.datasource.util;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;

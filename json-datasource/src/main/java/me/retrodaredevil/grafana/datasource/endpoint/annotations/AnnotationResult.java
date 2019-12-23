@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing.datasource.endpoint.annotations;
+package me.retrodaredevil.grafana.datasource.endpoint.annotations;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

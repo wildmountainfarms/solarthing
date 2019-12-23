@@ -1,12 +1,9 @@
-package me.retrodaredevil.solarthing.datasource.endpoint.query;
+package me.retrodaredevil.grafana.datasource.endpoint.query;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import me.retrodaredevil.solarthing.datasource.endpoint.Range;
-import me.retrodaredevil.solarthing.datasource.endpoint.Target;
+import me.retrodaredevil.grafana.datasource.endpoint.Range;
+import me.retrodaredevil.grafana.datasource.endpoint.Target;
 
 import java.util.List;
 
@@ -46,11 +43,12 @@ public class QueryRequest {
 
 	@Override
 	public String toString() {
+		String format = this.format == null ? "null" : "'" + this.format + "'";
 		return "QueryRequest(" +
 				"range=" + range +
 				", intervalMs=" + intervalMs +
 				", targets=" + targets +
-				", format='" + format + '\'' +
+				", format=" + format +
 				", maxDataPoints=" + maxDataPoints +
 				')';
 	}

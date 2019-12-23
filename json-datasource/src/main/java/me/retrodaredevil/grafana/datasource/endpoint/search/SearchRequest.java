@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing.datasource.endpoint.search;
+package me.retrodaredevil.grafana.datasource.endpoint.search;
 
 import java.beans.ConstructorProperties;
 

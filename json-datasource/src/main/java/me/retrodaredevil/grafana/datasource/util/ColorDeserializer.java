@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing.datasource.util;
+package me.retrodaredevil.grafana.datasource.util;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
