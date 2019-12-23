@@ -25,7 +25,8 @@ currently three different ways to view the data that is stored in your database 
 ## Supported Databases
 * CouchDB
   * Allows for [solarthing-web](https://github.com/wildmountainfarms/solarthing-web) and [solarthing-android](https://github.com/wildmountainfarms/solarthing-android) to function
-  * Once [json-webserver](./json-webserver) is complete, data from CouchDB can be viewed in Grafana
+  * [json-datasource](./json-datasource) will be a way to get data from CouchDB into Grafana
+    * This option may not be completed or usable for a while
 * InfluxDB
   * Allows for viewing of data in Grafana
 * [PVOutput.org](https://pvoutput.org) Coming soon!
@@ -127,6 +128,7 @@ This uses slf4j to log and uses log4j2 as the main implementation. https://loggi
 * Use @ConstructorProperties more often
 * Change command_feedback to something generic and use that database for "event"-like data
   * Also upload this to InfluxDB
+* AC Use->AC Drop, turn on AUX until NO AC. (GEN OFF) command using MATE's built in AC Use/Drop.
 
 ### Completed TODO:
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
