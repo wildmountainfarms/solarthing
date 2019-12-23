@@ -1,4 +1,4 @@
 package me.retrodaredevil.solarthing.datasource.endpoint.query;
 
-public interface QueryResponse {
+public class TableResult implements QueryResult {
 }

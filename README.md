@@ -124,6 +124,7 @@ This uses slf4j to log and uses log4j2 as the main implementation. https://loggi
   * If we do something with a calendar, we could use google calendar https://developers.google.com/calendar/create-events/
 * Have unique identifier for each jar file
 * Save DailyFX data to a file so if the program restarts mid-day, accumulated data is not reset
+* Use @ConstructorProperties more often
 
 ### Completed TODO:
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
