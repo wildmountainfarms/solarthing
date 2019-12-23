@@ -1,8 +1,8 @@
-package me.retrodaredevil.solarthing.datasource.endpoint.annotations;
+package me.retrodaredevil.grafana.datasource.endpoint.annotations;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import me.retrodaredevil.solarthing.datasource.endpoint.Range;
+import me.retrodaredevil.grafana.datasource.endpoint.Range;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AnnotationRequest {

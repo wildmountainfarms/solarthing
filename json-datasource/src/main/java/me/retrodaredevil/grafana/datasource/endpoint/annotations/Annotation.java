@@ -1,7 +1,7 @@
-package me.retrodaredevil.solarthing.datasource.endpoint.annotations;
+package me.retrodaredevil.grafana.datasource.endpoint.annotations;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import me.retrodaredevil.solarthing.datasource.util.ColorDeserializer;
+import me.retrodaredevil.grafana.datasource.util.ColorDeserializer;
 
 import java.awt.*;
 

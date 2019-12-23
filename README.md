@@ -101,6 +101,7 @@ Run `./compile_and_move.sh`.
 [InfluxDB setup](docs/influxdb_config.md): (Basically None)<br/>
 *Please note that InfluxDB is not supported by the web application or Android application. Use this if you only want to use Grafana*
 ### [Technical](docs/technical.md)
+### [Project Structure](docs/project_structure.md)
 
 #### Configuration
 This uses all JSON for configuring everything. The files you edit are all in one place unless you decide to move them.
@@ -119,12 +120,13 @@ This uses slf4j to log and uses log4j2 as the main implementation. https://loggi
 * Have packets for inverters going on/off, AC Drop/AC Use, Daily kWH->0, etc
 * Add readable string alongside identifier tag for InfluxDB
 * Restart rover program if a ModbusTimeoutException is received
-* Create 'exporter' module which will have a Prometheus exporter that runs and gets data from CouchDB
 * Create a calendar program to be able to view daily kWH on a calendar interface
   * If we do something with a calendar, we could use google calendar https://developers.google.com/calendar/create-events/
 * Have unique identifier for each jar file
 * Save DailyFX data to a file so if the program restarts mid-day, accumulated data is not reset
 * Use @ConstructorProperties more often
+* Change command_feedback to something generic and use that database for "event"-like data
+  * Also upload this to InfluxDB
 
 ### Completed TODO:
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
@@ -143,9 +145,10 @@ This uses slf4j to log and uses log4j2 as the main implementation. https://loggi
 
 ### TODO Look into
 * Figure out how to use https://emoncms.org/ to graph data
-* Look into supporting Elasticsearch, MongoDB, Graphite, Prometheus
-* Log data to https://pvoutput.org
+* Look into supporting Elasticsearch, MongoDB, Graphite
+* Create 'exporter' module which will have a Prometheus exporter that runs and gets data from CouchDB
+  * This is not useful to me, but anyone else is welcome to do this
 * Do something with https://www.home-assistant.io/ somehow
 * Log data to https://solcast.com.au/
-* Support freeboard
 * Support https://dweet.io
+  * Will make using freeboard easy

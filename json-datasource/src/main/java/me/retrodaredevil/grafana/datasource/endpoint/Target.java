@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing.datasource.endpoint;
+package me.retrodaredevil.grafana.datasource.endpoint;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -25,6 +25,10 @@ public class Target {
 		this.data = data;
 		this.refId = refId;
 		this.target = target;
+	}
+
+	public Map<String, Object> getAdditionalData(){
+		return data;
 	}
 
 	public String getRefId() {
