@@ -434,7 +434,7 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	}
 	
 	@Override
-	public int getErrorMode() {
+	public int getErrorModeValue() {
 		return errorMode;
 	}
 	

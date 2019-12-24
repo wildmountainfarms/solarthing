@@ -7,7 +7,7 @@ import me.retrodaredevil.solarthing.solar.outback.fx.common.FXDailyData;
 
 import java.util.Collection;
 
-class ImmutableDailyFXPacket extends BaseFXDailyData implements DailyFXPacket {
+public class ImmutableDailyFXPacket extends BaseFXDailyData implements DailyFXPacket {
 
 	public ImmutableDailyFXPacket(FXDailyData fxDailyData, OutbackIdentifier outbackIdentifier) {
 		super(SolarExtraPacketType.FX_DAILY, fxDailyData, outbackIdentifier);

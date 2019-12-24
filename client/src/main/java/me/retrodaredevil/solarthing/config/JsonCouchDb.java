@@ -7,7 +7,8 @@ import me.retrodaredevil.couchdb.CouchPropertiesBuilder;
 
 public final class JsonCouchDb {
 	private JsonCouchDb(){ throw new UnsupportedOperationException(); }
-	
+
+	@Deprecated
 	public static CouchProperties getCouchPropertiesFromJson(JsonObject jsonObject){
 		CouchPropertiesBuilder builder = new CouchPropertiesBuilder(null, false, "http", null, -1, null, null);
 		builder.setProtocol(jsonObject.get("protocol").getAsString());
@@ -27,11 +28,11 @@ public final class JsonCouchDb {
 		}
 		JsonElement connectionTimeoutElement = jsonObject.get("connection_timeout");
 		if(connectionTimeoutElement != null && !connectionTimeoutElement.isJsonNull()){
-			builder.setConnectionTimeout((int) (connectionTimeoutElement.getAsDouble() * 1000)); // convert seconds to milliseconds
+			builder.setConnectionTimeoutMillis((int) (connectionTimeoutElement.getAsDouble() * 1000)); // convert seconds to milliseconds
 		}
 		JsonElement socketTimeoutElement = jsonObject.get("socket_timeout");
 		if(socketTimeoutElement != null && !socketTimeoutElement.isJsonNull()){
-			builder.setSocketTimeout((int) (socketTimeoutElement.getAsDouble() * 1000));
+			builder.setSocketTimeoutMillis((int) (socketTimeoutElement.getAsDouble() * 1000));
 		}
 		return builder.build();
 	}

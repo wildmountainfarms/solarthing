@@ -1,5 +1,7 @@
 package me.retrodaredevil.couchdb;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @SuppressWarnings({"UnusedReturnValue", "unused"})
 public class CouchPropertiesBuilder {
 	private String database;
@@ -36,13 +38,14 @@ public class CouchPropertiesBuilder {
 		port = properties.getPort();
 		username = properties.getUsername();
 		password = properties.getPassword();
-		socketTimeout = properties.getSocketTimeout();
-		connectionTimeout = properties.getConnectionTimeout();
+		socketTimeout = properties.getSocketTimeoutMillis();
+		connectionTimeout = properties.getConnectionTimeoutMillis();
 		maxConnections = properties.getMaxConnections();
 		proxyHost = properties.getProxyHost();
 		proxyPort = properties.getProxyPort();
 	}
-	
+
+	@JsonProperty(value = "database")
 	public CouchPropertiesBuilder setDatabase(String database) {
 		this.database = database;
 		return this;
@@ -86,7 +89,7 @@ public class CouchPropertiesBuilder {
 	/**
 	 * @param socketTimeout Socket timeout in ms
 	 */
-	public CouchPropertiesBuilder setSocketTimeout(int socketTimeout) {
+	public CouchPropertiesBuilder setSocketTimeoutMillis(int socketTimeout) {
 		this.socketTimeout = socketTimeout;
 		return this;
 	}
@@ -94,7 +97,7 @@ public class CouchPropertiesBuilder {
 	/**
 	 * @param connectionTimeout Connection timeout in ms
 	 */
-	public CouchPropertiesBuilder setConnectionTimeout(int connectionTimeout) {
+	public CouchPropertiesBuilder setConnectionTimeoutMillis(int connectionTimeout) {
 		this.connectionTimeout = connectionTimeout;
 		return this;
 	}

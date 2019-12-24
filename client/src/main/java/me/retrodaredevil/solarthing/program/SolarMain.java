@@ -1,5 +1,7 @@
 package me.retrodaredevil.solarthing.program;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
@@ -55,10 +57,11 @@ import me.retrodaredevil.solarthing.packets.security.crypto.DirectoryKeyMap;
 import me.retrodaredevil.solarthing.solar.outback.MatePacketCreator49;
 import me.retrodaredevil.solarthing.solar.outback.OutbackDuplicatePacketRemover;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
-import me.retrodaredevil.solarthing.solar.outback.fx.extra.DailyFXListUpdater;
+import me.retrodaredevil.solarthing.solar.outback.fx.DailyFXListUpdater;
 import me.retrodaredevil.solarthing.solar.renogy.rover.*;
 import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusSlaveRead;
 import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusSlaveWrite;
+import me.retrodaredevil.solarthing.util.JacksonUtil;
 import me.retrodaredevil.solarthing.util.frequency.FrequentHandler;
 import me.retrodaredevil.solarthing.util.frequency.FrequentObject;
 import me.retrodaredevil.solarthing.util.scheduler.MidnightIterativeScheduler;
@@ -78,7 +81,9 @@ public final class SolarMain {
 	private SolarMain(){ throw new UnsupportedOperationException(); }
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(SolarMain.class);
+	@Deprecated
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
+	private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.defaultMapper(new ObjectMapper());
 	
 	private static final SerialConfig MATE_CONFIG = new SerialConfigBuilder(19200)
 		.setDataBits(8)
@@ -192,7 +197,11 @@ public final class SolarMain {
 									new DailyFXListUpdater(new MidnightIterativeScheduler()),
 									(packets, wasInstant) -> {
 										LOGGER.debug("Debugging all packets");
-										LOGGER.debug(GSON.toJson(packets));
+										try {
+											LOGGER.debug(OBJECT_MAPPER.writeValueAsString(packets));
+										} catch (JsonProcessingException e) {
+											LOGGER.debug("Never mind about that...", e);
+										}
 									},
 									getSourceAndFragmentUpdater(options),
 									new PacketHandlerPacketListReceiver(new PacketHandlerMultiplexer(packetHandlers), idGenerator)
@@ -224,10 +233,14 @@ public final class SolarMain {
 						Thread.sleep(5000);
 						continue;
 					}
-					LOGGER.debug(GSON.toJson(packet) + "\n" +
-							packet.getSpecialPowerControlE021().getFormattedInfo().replaceAll("\n", "\n\t") + "\n" +
-							packet.getSpecialPowerControlE02D().getFormattedInfo().replaceAll("\n", "\n\t")
-					);
+					try {
+						LOGGER.debug(OBJECT_MAPPER.writeValueAsString(packet) + "\n" +
+								packet.getSpecialPowerControlE021().getFormattedInfo().replaceAll("\n", "\n\t") + "\n" +
+								packet.getSpecialPowerControlE02D().getFormattedInfo().replaceAll("\n", "\n\t")
+						);
+					} catch (JsonProcessingException e) {
+						LOGGER.debug("Tried debugging value...", e);
+					}
 					List<Packet> packets = new ArrayList<>();
 					packets.add(packet);
 					packetListReceiver.receive(packets, true);
@@ -396,7 +409,7 @@ public final class SolarMain {
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
-			JsonObject jsonObject = JsonParser.parseString(contents).getAsJsonObject();
+			JsonObject jsonObject = JsonParser.parseString(contents).getAsJsonObject(); // TODO use Jackson instead of Gson
 			String type = jsonObject.getAsJsonPrimitive("type").getAsString();
 			JsonElement configElement = jsonObject.get("config");
 			final DatabaseType databaseType;
@@ -416,12 +429,12 @@ public final class SolarMain {
 				LOGGER.debug("Debugging okHttpProperties: {}", GSON.toJson(okHttpProperties));
 				JsonElement databaseNameElement = config.get("database");
 				final String databaseName = databaseNameElement == null || databaseNameElement.isJsonNull()
-					? null
-					: databaseNameElement.getAsString();
+						? null
+						: databaseNameElement.getAsString();
 				JsonElement measurementNameElement = config.get("measurement");
 				final String measurementName = measurementNameElement == null || measurementNameElement.isJsonNull()
-					? null
-					: measurementNameElement.getAsString();
+						? null
+						: measurementNameElement.getAsString();
 				LOGGER.debug("Debugging databaseName: {}, measurementName: {}", databaseName, measurementName);
 				List<FrequentObject<RetentionPolicySetting>> frequentRetentionPolicies = JsonInfluxDb.getRetentionPolicySettings(config);
 				if(frequentRetentionPolicies.isEmpty()){
@@ -434,9 +447,9 @@ public final class SolarMain {
 					LOGGER.debug("Debugging retention policy. Name={} Frequency={} try to create={} auto alter={} ignore unsuccessful create={} policy={}", setting.getName(), frequentObject.getFrequency(), setting.isTryToCreate(), setting.isAutomaticallyAlter(), setting.isIgnoreUnsuccessfulCreate(), policyString);
 				}
 				databaseSettings = new InfluxDbDatabaseSettings(
-					influxProperties, okHttpProperties,
-					databaseName, measurementName,
-					frequentRetentionPolicies
+						influxProperties, okHttpProperties,
+						databaseName, measurementName,
+						frequentRetentionPolicies
 				);
 			} else if ("latest".equals(type)) {
 				databaseType = LatestFileDatabaseSettings.TYPE;

@@ -47,9 +47,9 @@ public interface FXDailyData extends DailyBatteryVoltage, ErrorReporter, FXWarni
 	 * @return The bit-masked value representing all the error modes that were active during one day
 	 */
 	@Override
-	int getErrorMode();
+	int getErrorModeValue();
 	@Override
-	default Set<FXErrorMode> getErrorModes(){ return Modes.getActiveModes(FXErrorMode.class, getErrorMode()); }
+	default Set<FXErrorMode> getErrorModes(){ return Modes.getActiveModes(FXErrorMode.class, getErrorModeValue()); }
 
 	@Override
 	int getWarningModeValue();

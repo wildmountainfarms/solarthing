@@ -159,7 +159,7 @@ public final class RoverSetupProgram {
 							System.out.println(read.getChargingMode().getModeName());
 							break;
 						case "errormode": case "errors":
-							System.out.println(Modes.toString(RoverErrorMode.class, read.getErrorMode()));
+							System.out.println(Modes.toString(RoverErrorMode.class, read.getErrorModeValue()));
 							break;
 						case "nominalbatterycapacity": case "batterycapacity": case "batteryah":
 							System.out.println(read.getNominalBatteryCapacity());

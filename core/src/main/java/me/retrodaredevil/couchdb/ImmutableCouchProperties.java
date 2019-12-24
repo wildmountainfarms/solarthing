@@ -42,9 +42,9 @@ class ImmutableCouchProperties implements CouchProperties {
 	
 	@Override public String getPassword() { return password; }
 	
-	@Override public int getSocketTimeout() { return socketTimeout; }
+	@Override public int getSocketTimeoutMillis() { return socketTimeout; }
 	
-	@Override public int getConnectionTimeout() { return connectionTimeout; }
+	@Override public int getConnectionTimeoutMillis() { return connectionTimeout; }
 	
 	@Override public int getMaxConnections() { return maxConnections; }
 	

@@ -73,7 +73,7 @@ class OutbackDuplicatePacketRemoverTest {
 			}
 
 			@Override
-			public int getErrorMode() {
+			public int getErrorModeValue() {
 				throw new UnsupportedOperationException();
 			}
 

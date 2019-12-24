@@ -30,7 +30,7 @@ public final class RoverStatusPackets {
 			read.getChargingAmpHoursOfBatteryCount(), read.getDischargingAmpHoursOfBatteryCount(),
 			read.getCumulativeKWH(), read.getCumulativeKWHConsumption(),
 			read.getRawStreetLightValue(), read.getChargingStateValue(),
-			read.getErrorMode(), read.getNominalBatteryCapacity(),
+			read.getErrorModeValue(), read.getNominalBatteryCapacity(),
 			read.getSystemVoltageSettingValue(), read.getRecognizedVoltageValue(),
 			read.getBatteryTypeValue(),
 			read.getOverVoltageThresholdRaw(), read.getChargingVoltageLimitRaw(),
