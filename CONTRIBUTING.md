@@ -21,6 +21,12 @@ Exceptions:
 
 Although I wish that some of these conventions could be changed, changing them would result in confusion and more inconsistencies.
 
+### Using Nullable and NotNull
+General rule of thumb:
+* Do not use Nullable and NotNull religiously
+* If something is Nullable, you should probably annotate it with Nullable
+* Just because something is NotNull doesn't mean you need to annotate it and everything else with NotNull
+
 ### Customizing
 The different command line options give you may ways to receive data and export data. CouchDB and InfluxDB
 are both supported.

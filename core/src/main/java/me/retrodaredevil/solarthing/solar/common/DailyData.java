@@ -1,5 +1,7 @@
 package me.retrodaredevil.solarthing.solar.common;
 
+import org.jetbrains.annotations.Nullable;
+
 public interface DailyData {
 	/**
 	 * NOTE: If {@code previousDailyData} is data from a {@link DailyData} generated after this, the returned result is
@@ -16,5 +18,6 @@ public interface DailyData {
 	 *
 	 * @return The start time in UTC millis or null if not supported/not yet implemented.
 	 */
+	@Nullable
 	default Long getStartDateMillis() { return null; }
 }

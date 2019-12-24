@@ -6,6 +6,7 @@ import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
+import me.retrodaredevil.solarthing.solar.outback.fx.common.ImmutableFXDailyData;
 import me.retrodaredevil.solarthing.util.integration.MutableIntegral;
 import me.retrodaredevil.solarthing.util.integration.TrapezoidalRuleAccumulator;
 import me.retrodaredevil.solarthing.util.scheduler.IterativeScheduler;
@@ -91,15 +92,17 @@ public class DailyFXListUpdater implements PacketListReceiver {
 
 			operationalModeValues.add(fx.getOperationalModeValue());
 			errorMode |= fx.getErrorMode();
-			warningMode |= fx.getWarningMode();
-			misc |= fx.getMisc();
+			warningMode |= fx.getWarningModeValue();
+			misc |= fx.getMiscValue();
 			acModeValues.add(fx.getACModeValue());
 			Packet packet = new ImmutableDailyFXPacket(
-					startDateMillis,
-					minimumBatteryVoltage, maximumBatteryVoltage,
-					(float) (inverterWH.getIntegral() / 1000), (float) (chargerWH.getIntegral() / 1000),
-					(float) (buyWH.getIntegral() / 1000), (float) (sellWH.getIntegral() / 1000),
-					operationalModeValues, errorMode, warningMode, misc, acModeValues,
+					new ImmutableFXDailyData(
+							startDateMillis,
+							minimumBatteryVoltage, maximumBatteryVoltage,
+							(float) (inverterWH.getIntegral() / 1000), (float) (chargerWH.getIntegral() / 1000),
+							(float) (buyWH.getIntegral() / 1000), (float) (sellWH.getIntegral() / 1000),
+							operationalModeValues, errorMode, warningMode, misc, acModeValues
+					),
 					fx.getIdentifier()
 			);
 			packets.add(packet);

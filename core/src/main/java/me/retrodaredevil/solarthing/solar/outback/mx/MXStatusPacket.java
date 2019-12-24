@@ -100,9 +100,10 @@ public interface MXStatusPacket extends OutbackPacket, BasicChargeController, Da
 	 */
 	int getRawAuxModeValue();
 	default int getAuxModeValue() {
-		return ~AuxMode.IGNORED_BITS & getRawAuxModeValue();
+		return AuxMode.getActualValueCode(getRawAuxModeValue());
 	}
-	default AuxMode getAuxModeMode(){ return Modes.getActiveMode(AuxMode.class, getRawAuxModeValue());}
+	default AuxMode getAuxModeMode(){ return Modes.getActiveMode(AuxMode.class, getAuxModeValue());}
+	default boolean isAuxBitActive(){ return AuxMode.isAuxModeActive(getRawAuxModeValue()); }
 	
 	/**
 	 * Should be serialized as "errorMode"
@@ -111,11 +112,13 @@ public interface MXStatusPacket extends OutbackPacket, BasicChargeController, Da
 	@Override
 	int getErrorMode();
 	@Override
-	default Set<MXErrorMode> getActiveErrors(){
+	default Set<MXErrorMode> getErrorModes(){
 		return Modes.getActiveModes(MXErrorMode.class, getErrorMode());
 	}
 	
 	/**
+	 * Should be serialized as "chargerMode"
+	 *
 	 * Right now, the range should only be [0..4] as there are no documented charger modes other than those 5
 	 * @return [0..99] representing the MX's {@link ChargerMode}
 	 */

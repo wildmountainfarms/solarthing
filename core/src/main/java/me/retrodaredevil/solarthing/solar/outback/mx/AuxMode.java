@@ -25,7 +25,6 @@ public enum AuxMode implements CodeMode {
 	PWM_DIVERSION(9, "PWM Diversion"),
 	/** Only used on FLEXmax80/FLEXmax60*/
 	LOW_BATTERY(10, "Low Battery");
-	public static final int IGNORED_BITS = 0b01000000;
 
 	private final int value;
 	private final String name;
@@ -51,14 +50,14 @@ public enum AuxMode implements CodeMode {
 
 	/**
 	 * Checks to see if bit 7 is set. Only works on FLEXmax80 and FLEXmax60
-	 * @param valueCode The value code
+	 * @param rawValueCode The value code
 	 * @return true if aux mode is active, false otherwise
 	 */
-	public static boolean isAuxModeActive(int valueCode){
-		return (valueCode & 0b01000000) != 0; // if bit 7 is set
+	public static boolean isAuxModeActive(int rawValueCode){
+		return (rawValueCode & 0b01000000) != 0; // if bit 7 is set
 	}
-	public static int getActualValueCode(int valueCode){
-		return valueCode & 0b00111111; // the lower 6 bits
+	public static int getActualValueCode(int rawValueCode){
+		return rawValueCode & 0b00111111; // the lower 6 bits
 	}
 
 }

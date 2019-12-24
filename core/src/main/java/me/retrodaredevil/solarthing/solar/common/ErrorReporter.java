@@ -6,5 +6,7 @@ import java.util.Collection;
 
 public interface ErrorReporter {
 	int getErrorMode();
-	Collection<? extends BitmaskMode> getActiveErrors();
+	Collection<? extends BitmaskMode> getErrorModes();
+	@Deprecated
+	default Collection<? extends BitmaskMode> getActiveErrors(){ return getErrorModes(); }
 }
