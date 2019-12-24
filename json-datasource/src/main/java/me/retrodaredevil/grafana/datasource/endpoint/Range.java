@@ -14,6 +14,7 @@ import java.util.Date;
 
 @JsonDeserialize(using = Range.Deserializer.class)
 public class Range {
+	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'");
 	private final Date from;
 	private final Date to;
 
@@ -43,14 +44,13 @@ public class Range {
 		@Override
 		public Range deserialize(JsonParser p, DeserializationContext context) throws IOException, JsonProcessingException {
 			JsonNode node = p.getCodec().readTree(p);
-			String from = node.get("from").asText().replace('T', ' ').replace("Z", "");
-			String to = node.get("to").asText().replace('T', ' ').replace("Z", "");
-			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+			String from = node.get("from").asText();
+			String to = node.get("to").asText();
 			final Date fromDate;
 			final Date toDate;
 			try {
-				fromDate = format.parse(from);
-				toDate = format.parse(to);
+				fromDate = DATE_FORMAT.parse(from);
+				toDate = DATE_FORMAT.parse(to);
 			} catch (ParseException e) {
 				throw new IOException(e);
 			}

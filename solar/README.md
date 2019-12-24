@@ -16,13 +16,16 @@ You can look at how we parse packets for
 [Renogy Write Here](../core/src/main/java/me/retrodaredevil/solarthing/solar/renogy/rover/modbus/RoverModbusSlaveWrite.java)
 
 ### Running
-Some of this is outdated.
+```shell script
+# The program directory is always the working directory when running Solarthing
+cd program
 ```
-cd program/
+Testing SolarThing:
+```shell script
 solar/virtual_mate.sh | java -jar solarthing.jar "config/base.json"
 ```
-If you are running this on a Pi with a serial port connected, you would probably run
-```
+Running SolarThing for Real:
+```shell script
 java -jar solarthing.jar "config/base.json"
 ```
 

@@ -1,4 +1,9 @@
-# Configuring InfluxDB Database
+# Setting up InfluxDB Database
+### Installing
+Click [here](https://docs.influxdata.com/influxdb/v1.7/introduction/installation/) to go to the install page.
+Once installed, you don't need to do anything to the installation itself, it's ready to go!
+
+### Configuring SolarThing
 When running SolarThing, you can specify databases using JSON files. An example of a configuration can be found [here](../config_templates/databases/influxdb_template.json)
 
 ### Specifying `database` and `measurement`
@@ -16,8 +21,21 @@ do not specify `measurement`, one of two things will happen. If the database was
 the type of program running, just like above. If the database was not specified, `measurement` will be set to
 the type of packets that is being saved.
 
-#### Recommended
+#### Recommended Setup #1
 It is recommended to have `database` set to `"default_database"` and to have `measurement` set to `null`, or unspecified.
 
 When you do this, all the packets will go into `"default_database"` and the `measurement` will be determined by
 the type of program you are running.
+
+With this configuration, it makes it easy to write queries to get data however, if you have many different packet types,
+the auto-complete won't be so nice to you. This configuration has the advantage of being able to query multiple packet types
+in a single query (**this makes graphing battery voltages of all your devices a lot easier than Recommended Setup #2**).
+
+#### Recommended Setup #2
+This option is the option that is probably better if you want a database structure that is easier to be
+viewed as a whole. In Recommended Setup #1, all of the data is stuffed into a single measurement. In this setup,
+we have a different measurement for each packet type. This makes some queries more difficult, but makes auto complete a lot better.
+
+Set `database` to `"default_database"` or leave it unspecified. Leave `measurement` unspecified.
+
+Now each packet type will be put in its own measurement, just like measurements were intended to be used.

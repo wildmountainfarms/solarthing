@@ -99,7 +99,7 @@ Run `./compile_and_move.sh`.
 ### Database Setup
 [CouchDB setup](docs/couchdb.md)
 
-[InfluxDB setup](docs/influxdb_config.md): (Basically None)<br/>
+[InfluxDB setup](docs/influxdb_config.md):<br/>
 *Please note that InfluxDB is not supported by the web application or Android application. Use this if you only want to use Grafana*
 ### [Technical](docs/technical.md)
 ### [Project Structure](docs/project_structure.md)
@@ -113,7 +113,6 @@ See [Quickstart](docs/quickstart.md) to see how to set them up
 This uses slf4j to log and uses log4j2 as the main implementation. https://logging.apache.org/log4j/2.x/manual/appenders.html
 
 ### TODO
-* Implement Outback FlexNet DC Packets
 * Cache some data from Renogy Rover that won't be updated
 * Create Arduino program to simulate MATE or Rover
 * Log CPU temperature, ram, etc into a database and logs.
@@ -148,9 +147,13 @@ This uses slf4j to log and uses log4j2 as the main implementation. https://loggi
 ### TODO Look into
 * Figure out how to use https://emoncms.org/ to graph data
 * Look into supporting Elasticsearch, MongoDB, Graphite
-* Create 'exporter' module which will have a Prometheus exporter that runs and gets data from CouchDB
-  * This is not useful to me, but anyone else is welcome to do this
 * Do something with https://www.home-assistant.io/ somehow
 * Log data to https://solcast.com.au/
 * Support https://dweet.io
   * Will make using freeboard easy
+
+#### TODO - Additions I'm not going to work on
+These might be useful to some people. I will not implement these in the future, but pull requests are welcome!
+* Implement Outback FlexNet DC Packets
+* Create 'exporter' module which will have a Prometheus exporter that runs and gets data from CouchDB
+  * This is not useful to me, but anyone else is welcome to do this

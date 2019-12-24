@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.solar.outback.fx;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
 import me.retrodaredevil.solarthing.solar.outback.OutbackPacket;
+import me.retrodaredevil.solarthing.solar.outback.fx.common.FXWarningReporter;
 
 import java.util.Set;
 
@@ -10,7 +11,7 @@ import java.util.Set;
  * Represents an FX Status Packet from an Outback Mate
  */
 @SuppressWarnings("unused")
-public interface FXStatusPacket extends OutbackPacket, BatteryVoltage {
+public interface FXStatusPacket extends OutbackPacket, BatteryVoltage, FXWarningReporter {
 	
 	// region Packet Values
 	/**
@@ -57,8 +58,6 @@ public interface FXStatusPacket extends OutbackPacket, BatteryVoltage {
 	 * @return The operating mode code which represents a single OperationalMode
 	 */
 	int getOperationalModeValue();
-	@Deprecated
-	default int getOperatingModeValue(){ return getOperationalModeValue(); }
 	default OperationalMode getOperationalMode(){ return Modes.getActiveMode(OperationalMode.class, getOperationalModeValue()); }
 	
 	/**
@@ -67,33 +66,36 @@ public interface FXStatusPacket extends OutbackPacket, BatteryVoltage {
 	 */
 	int getErrorMode();
 	@Override
-	default Set<FXErrorMode> getActiveErrors(){
+	default Set<FXErrorMode> getErrorModes(){
 		return Modes.getActiveModes(FXErrorMode.class, getErrorMode());
 	}
-	
+	@Override
+	@Deprecated
+	default Set<FXErrorMode> getActiveErrors() { return getErrorModes(); }
+
 	/**
 	 * Should be serialized as "acMode"
 	 * @return The AC mode code which represents a single ACMode
 	 */
 	int getACModeValue();
 	default ACMode getACMode(){ return Modes.getActiveMode(ACMode.class, getACModeValue()); }
-	/** @see #getACMode()*/
-	@Deprecated
-	default ACMode getACModeMode(){ return getACMode(); }
 
 	/**
 	 * Should be serialized as "misc"
 	 * @return The misc mode bitmask which represents a varying number of MiscModes
 	 */
-	int getMisc();
-	default Set<MiscMode> getActiveMiscModes(){ return Modes.getActiveModes(MiscMode.class, getMisc()); }
+	int getMiscValue();
+	@Deprecated
+	default Set<MiscMode> getActiveMiscModes(){ return Modes.getActiveModes(MiscMode.class, getMiscValue()); }
 	
 	/**
 	 * Should be serialized as "warningMode"
 	 * @return The warning mode bitmask which represents a varying number of WarningModes
 	 */
-	int getWarningMode();
-	default Set<WarningMode> getActiveWarningModes(){ return Modes.getActiveModes(WarningMode.class, getWarningMode()); }
+	@Override
+	int getWarningModeValue();
+	@Deprecated
+	default Set<WarningMode> getActiveWarningModes(){ return getWarningModes(); }
 	
 	/**
 	 * Should be serialized as "chksum"

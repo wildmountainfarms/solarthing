@@ -158,12 +158,12 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 	}
 	
 	@Override
-	public int getMisc() {
+	public int getMiscValue() {
 		return misc;
 	}
 
 	@Override
-	public int getWarningMode() {
+	public int getWarningModeValue() {
 		return warningMode;
 	}
 
