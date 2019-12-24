@@ -150,6 +150,7 @@ public final class MXStatusPackets {
 				batteryVoltage, dailyAH, dailyAHSupported, chksum, auxModeName, errors, chargerModeName);
 	}
 
+	@Deprecated
 	public static MXStatusPacket createFromJson(JsonObject object) {
 
 		final int address = object.get("address").getAsInt();

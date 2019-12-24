@@ -9,6 +9,7 @@ import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import java.util.Collection;
 
 public abstract class BaseFXDailyData implements FXDailyData, SupplementaryIdentifiable {
+	@SuppressWarnings({"unused", "FieldCanBeLocal"})
 	private final DocumentedPacketType packetType;
 
 	@SuppressWarnings({"unused", "FieldCanBeLocal"})
@@ -29,7 +30,6 @@ public abstract class BaseFXDailyData implements FXDailyData, SupplementaryIdent
 	private final int warningModeValue;
 	private final int miscValue;
 	private final Collection<Integer> acModeValues;
-
 
 	private final transient SupplementaryIdentifier supplementaryIdentifier;
 
@@ -75,7 +75,7 @@ public abstract class BaseFXDailyData implements FXDailyData, SupplementaryIdent
 	@Override public float getSellKWH() { return sellKWH; }
 
 	@Override public Collection<Integer> getOperationalModeValues() { return operationalModeValues; }
-	@Override public int getErrorMode() { return errorModeValue; }
+	@Override public int getErrorModeValue() { return errorModeValue; }
 	@Override public int getWarningModeValue() { return warningModeValue; }
 	@Override public int getMiscValue() { return miscValue; }
 	@Override public Collection<Integer> getACModeValues() { return acModeValues; }

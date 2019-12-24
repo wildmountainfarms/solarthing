@@ -1,11 +1,17 @@
 package me.retrodaredevil.solarthing.couchdb;
 
-import com.google.gson.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import me.retrodaredevil.couchdb.CouchProperties;
 import me.retrodaredevil.couchdb.CouchPropertiesBuilder;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
+import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.lightcouch.CouchDbClient;
 import org.lightcouch.CouchDbException;
 import org.lightcouch.DocumentConflictException;
@@ -18,8 +24,8 @@ import java.util.Map;
 
 public class CouchDbPacketSaver implements PacketHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CouchDbPacketSaver.class);
-	private static final Gson GSON = new GsonBuilder().serializeNulls().create();
-	
+	private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.defaultMapper(new ObjectMapper());
+
 	private final Map<String, String> idRevMap = new HashMap<>(); // TODO we could probably figure out a way to clear old values
 	private final CouchProperties properties;
 	private CouchDbClient client = null;
@@ -45,7 +51,13 @@ public class CouchDbPacketSaver implements PacketHandler {
 		final String id = packetCollection.getDbId();
 		final String rev = idRevMap.get(id);
 		final Response response;
-		final JsonObject packet = GSON.toJsonTree(packetCollection).getAsJsonObject();
+		final String jsonPacket;
+		try {
+			jsonPacket = OBJECT_MAPPER.writeValueAsString(packetCollection); // use jackson
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException("This should not happen!", e);
+		}
+		final JsonObject packet = JsonParser.parseString(jsonPacket).getAsJsonObject(); // convert to GSON
 		try {
 			if (rev == null) {
 				response = client.save(packet);

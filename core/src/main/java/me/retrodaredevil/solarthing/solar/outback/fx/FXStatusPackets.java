@@ -157,6 +157,7 @@ public final class FXStatusPackets {
 				misc, warningMode, chksum, operatingModeName, errors, acModeName, miscModes, warnings);
 	}
 
+	@Deprecated
 	public static FXStatusPacket createFromJson(JsonObject object){
 		Objects.requireNonNull(object);
 //		JsonFile.gson.fromJson

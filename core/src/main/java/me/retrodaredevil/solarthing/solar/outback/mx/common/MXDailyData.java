@@ -9,8 +9,8 @@ import java.util.Set;
 
 public interface MXDailyData extends DailyChargeController, ErrorReporter {
 	@Override
-	int getErrorMode();
+	int getErrorModeValue();
 	@Override
-	default Set<MXErrorMode> getErrorModes(){ return Modes.getActiveModes(MXErrorMode.class, getErrorMode()); }
+	default Set<MXErrorMode> getErrorModes(){ return Modes.getActiveModes(MXErrorMode.class, getErrorModeValue()); }
 }
 

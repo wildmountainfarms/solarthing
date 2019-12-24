@@ -243,10 +243,10 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	default ChargingState getChargingMode(){ return Modes.getActiveMode(ChargingState.class, getChargingStateValue()); }
 	
 	@Override
-	int getErrorMode();
+	int getErrorModeValue();
 	@Override
 	default Collection<RoverErrorMode> getErrorModes(){
-		return Modes.getActiveModes(RoverErrorMode.class, getErrorMode());
+		return Modes.getActiveModes(RoverErrorMode.class, getErrorModeValue());
 	}
 	
 	/**

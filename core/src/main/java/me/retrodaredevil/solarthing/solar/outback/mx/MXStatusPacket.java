@@ -110,10 +110,10 @@ public interface MXStatusPacket extends OutbackPacket, BasicChargeController, Da
 	 * @return [0..256] represents a varying number of active {@link MXErrorMode}s
 	 */
 	@Override
-	int getErrorMode();
+	int getErrorModeValue();
 	@Override
 	default Set<MXErrorMode> getErrorModes(){
-		return Modes.getActiveModes(MXErrorMode.class, getErrorMode());
+		return Modes.getActiveModes(MXErrorMode.class, getErrorModeValue());
 	}
 	
 	/**

@@ -1,9 +1,21 @@
 package me.retrodaredevil.solarthing.solar.outback.fx;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 
-@SuppressWarnings("unused")
+import java.io.IOException;
+
+import static me.retrodaredevil.util.json.JacksonHelper.require;
+
+@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE)
+@JsonDeserialize(using = ImmutableFXStatusPacket.Deserializer.class)
 final class ImmutableFXStatusPacket implements FXStatusPacket {
 	private final SolarStatusPacketType packetType = SolarStatusPacketType.FX_STATUS;
 
@@ -31,7 +43,7 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 	private final String miscModes;
 	private final String warnings;
 	
-	private final transient OutbackIdentifier identifier;
+	private final OutbackIdentifier identifier;
 
 	ImmutableFXStatusPacket(
 			int address,
@@ -143,7 +155,7 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 	}
 
 	@Override
-	public int getErrorMode() {
+	public int getErrorModeValue() {
 		return errorMode;
 	}
 
@@ -210,5 +222,66 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 	@Override
 	public OutbackIdentifier getIdentifier() {
 		return identifier;
+	}
+
+	public static class Deserializer extends JsonDeserializer<ImmutableFXStatusPacket> {
+
+		@Override
+		public ImmutableFXStatusPacket deserialize(JsonParser p, DeserializationContext context) throws IOException {
+			JsonNode object = p.getCodec().readTree(p);
+			final int address = require(context, object, "address", JsonNode::isInt).asInt();
+
+			final float inverterCurrent = require(context, object, "inverterCurrent", JsonNode::isNumber).floatValue();
+			final float chargerCurrent = require(context, object , "chargerCurrent", JsonNode::isNumber).floatValue();
+			final float buyCurrent = require(context, object, "buyCurrent", JsonNode::isNumber).floatValue();
+			final float sellCurrent = require(context, object, "sellCurrent", JsonNode::isNumber).floatValue();
+			final int inputVoltage = require(context, object, "inputVoltage", JsonNode::isInt).intValue();
+			final int outputVoltage = require(context, object, "outputVoltage", JsonNode::isInt).intValue();
+
+			final int operatingMode = require(context, object, "operatingMode", JsonNode::isInt).intValue();
+			final int errorMode = require(context, object, "errorMode", JsonNode::isInt).asInt();
+			final int acMode = require(context, object, "acMode", JsonNode::isInt).asInt();
+
+			final float batteryVoltage = require(context, object, "batteryVoltage", JsonNode::isNumber).floatValue();
+
+			final int misc = require(context, object, "misc", JsonNode::isInt).asInt();
+			final int warningMode = require(context, object, "warningMode", JsonNode::isInt).asInt();
+			final int chksum = require(context, object, "chksum", JsonNode::isInt).asInt();
+
+			final JsonNode storedOperatingModeName = object.get("operatingModeName");
+			final JsonNode storedErrors = object.get("errors");
+			final JsonNode storedACModeName = object.get("acModeName");
+			final JsonNode storedMiscModes = object.get("miscModes");
+			final JsonNode storedWarnings = object.get("warnings");
+
+			final int inverterCurrentRaw, chargerCurrentRaw, buyCurrentRaw, sellCurrentRaw, inputVoltageRaw, outputVoltageRaw;
+			{
+				final int number = MiscMode.FX_230V_UNIT.isActive(misc) ? 2 : 1;
+				inputVoltageRaw = object.get("inputVoltageRaw").asInt(inputVoltage / number);
+				outputVoltageRaw = object.get("outputVoltageRaw").asInt(outputVoltage / number);
+
+				inverterCurrentRaw = object.get("inverterCurrentRaw").asInt(Math.round(inverterCurrent * number));
+				chargerCurrentRaw = object.get("chargerCurrentRaw").asInt(Math.round(chargerCurrent * number));
+				buyCurrentRaw = object.get("buyCurrentRaw").asInt(Math.round(buyCurrent * number));
+				sellCurrentRaw = object.get("sellCurrentRaw").asInt(Math.round(sellCurrent * number));
+			}
+
+			final String operatingModeName, errors, acModeName, miscModes, warnings;
+			{
+				operatingModeName = storedOperatingModeName.isTextual() ? storedOperatingModeName.asText() : Modes.getActiveMode(OperationalMode.class, operatingMode).getModeName();
+				errors = storedErrors.isTextual() ? storedErrors.asText() : Modes.toString(FXErrorMode.class, errorMode);
+				acModeName = storedACModeName.isTextual() ? storedACModeName.asText() : Modes.getActiveMode(ACMode.class, acMode).getModeName();
+				miscModes = storedMiscModes.isTextual() ? storedMiscModes.asText() : Modes.toString(MiscMode.class, misc);
+				warnings = storedWarnings.isTextual() ? storedWarnings.asText() : Modes.toString(WarningMode.class, warningMode);
+			}
+
+			return new ImmutableFXStatusPacket(
+					address, inverterCurrent, inverterCurrentRaw,
+					chargerCurrent, chargerCurrentRaw, buyCurrent, buyCurrentRaw,
+					inputVoltage, inputVoltageRaw, outputVoltage, outputVoltageRaw,
+					sellCurrent, sellCurrentRaw, operatingMode, errorMode, acMode, batteryVoltage,
+					misc, warningMode, chksum, operatingModeName, errors, acModeName, miscModes, warnings
+			);
+		}
 	}
 }

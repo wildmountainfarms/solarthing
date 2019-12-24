@@ -16,11 +16,11 @@ public interface CouchProperties {
 	/**
 	 * @return The socket timeout in ms
 	 */
-	int getSocketTimeout();
+	int getSocketTimeoutMillis();
 	/**
 	 * @return The connection timeout in ms
 	 */
-	int getConnectionTimeout();
+	int getConnectionTimeoutMillis();
 	int getMaxConnections();
 	String getProxyHost();
 	int getProxyPort();
@@ -41,8 +41,8 @@ public interface CouchProperties {
 			.setPort(getPort())
 			.setUsername(getUsername())
 			.setPassword(getPassword())
-			.setSocketTimeout(getSocketTimeout())
-			.setConnectionTimeout(getConnectionTimeout())
+			.setSocketTimeout(getSocketTimeoutMillis())
+			.setConnectionTimeout(getConnectionTimeoutMillis())
 			.setMaxConnections(getMaxConnections())
 			.setProxyHost(getProxyHost())
 			.setProxyPort(getProxyPort())

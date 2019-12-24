@@ -6,6 +6,7 @@ buildscript {
         junit5Version = '5.5.2'
         slf4jVersion = '1.7.29'
         log4jVersion = '2.12.1'
+        jacksonVersion = '2.10.1'
     }
 }
 allprojects {
