@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import java.io.File;
 
-@SuppressWarnings("FieldCanBeLocal")
 @JsonTypeName("rover-setup")
 @JsonIgnoreProperties
 public class RoverSetupProgramOptions implements ProgramOptions, RoverOption {

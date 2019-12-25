@@ -1,7 +1,10 @@
 package me.retrodaredevil.solarthing.config.databases.implementations;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.influxdb.InfluxProperties;
 import me.retrodaredevil.okhttp3.OkHttpProperties;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
@@ -21,14 +24,26 @@ import static java.util.Objects.requireNonNull;
 public final class InfluxDbDatabaseSettings implements DatabaseSettings {
 	public static final DatabaseType TYPE = new SimpleDatabaseType("influxdb");
 
+	@JsonUnwrapped
 	private final InfluxProperties influxProperties;
+	@JsonUnwrapped
 	private final OkHttpProperties okHttpProperties;
 	@JsonProperty("database")
 	private final String databaseName;
 	@JsonProperty("measurement")
 	private final String measurementName;
 	@JsonProperty("retention_policies")
+	@JsonDeserialize(as = ArrayList.class)
 	private final List<FrequentObject<RetentionPolicySetting>> frequentRetentionPolicyList;
+
+	private InfluxDbDatabaseSettings(){
+		// Constructor that Jackson calls when deserializing
+		influxProperties = null;
+		okHttpProperties = null;
+		databaseName = null;
+		measurementName = null;
+		frequentRetentionPolicyList = null;
+	}
 
 	public InfluxDbDatabaseSettings(InfluxProperties influxProperties, OkHttpProperties okHttpProperties, String databaseName, String measurementName, Collection<FrequentObject<RetentionPolicySetting>> frequentRetentionPolicies) {
 		this.influxProperties = requireNonNull(influxProperties);

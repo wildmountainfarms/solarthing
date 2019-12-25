@@ -412,83 +412,24 @@ public final class SolarMain {
 				LatestFileDatabaseSettings.class
 		);
 		for(File file : files){
-			final String contents;
+			FileInputStream reader;
 			try {
-				contents = new String(Files.readAllBytes(file.toPath()), Charset.defaultCharset());
-			} catch (IOException e) {
+				reader = new FileInputStream(file);
+			} catch (FileNotFoundException e) {
 				throw new RuntimeException(e);
 			}
-			JsonObject jsonObject = JsonParser.parseString(contents).getAsJsonObject(); // TODO use Jackson instead of Gson
-			String type = jsonObject.getAsJsonPrimitive("type").getAsString();
-			JsonElement configElement = jsonObject.get("config");
-			final DatabaseSettings databaseSettings;
-			if ("couchdb".equals(type)) {
-				JsonObject config = configElement.getAsJsonObject();
-				CouchProperties couchProperties = JsonCouchDb.getCouchPropertiesFromJson(config);
-				LOGGER.debug("Debugging couchProperties: {}", GSON.toJson(couchProperties));
-				databaseSettings = new CouchDbDatabaseSettings(couchProperties);
-			} else if("influxdb".equals(type)) {
-				JsonObject config = configElement.getAsJsonObject();
-				InfluxProperties influxProperties = JsonInfluxDb.getInfluxPropertiesFromJson(config);
-				OkHttpProperties okHttpProperties = JsonOkHttp.getOkHttpPropertiesFromJson(config);
-				LOGGER.debug("Debugging influxProperties: {}", GSON.toJson(influxProperties));
-				LOGGER.debug("Debugging okHttpProperties: {}", GSON.toJson(okHttpProperties));
-				JsonElement databaseNameElement = config.get("database");
-				final String databaseName = databaseNameElement == null || databaseNameElement.isJsonNull()
-						? null
-						: databaseNameElement.getAsString();
-				JsonElement measurementNameElement = config.get("measurement");
-				final String measurementName = measurementNameElement == null || measurementNameElement.isJsonNull()
-						? null
-						: measurementNameElement.getAsString();
-				LOGGER.debug("Debugging databaseName: {}, measurementName: {}", databaseName, measurementName);
-				List<FrequentObject<RetentionPolicySetting>> frequentRetentionPolicies = JsonInfluxDb.getRetentionPolicySettings(config);
-				if(frequentRetentionPolicies.isEmpty()){
-					LOGGER.debug("No retention policies specified!");
-				}
-				databaseSettings = new InfluxDbDatabaseSettings(
-						influxProperties, okHttpProperties,
-						databaseName, measurementName,
-						frequentRetentionPolicies
-				);
-				for(FrequentObject<RetentionPolicySetting> frequentObject : frequentRetentionPolicies){ // this is for debugging purposes only
-					RetentionPolicySetting setting = requireNonNull(frequentObject.getObject());
-					RetentionPolicy policy = setting.getRetentionPolicy();
-					String policyString = policy == null ? "null" : policy.toPolicyString("<policy name>", "<database name>");
-					LOGGER.debug("Debugging retention policy. Name={} Frequency={} try to create={} auto alter={} ignore unsuccessful create={} policy={}", setting.getName(), frequentObject.getFrequency(), setting.isTryToCreate(), setting.isAutomaticallyAlter(), setting.isIgnoreUnsuccessfulCreate(), policyString);
-				}
-			} else if ("latest".equals(type)) {
-				JsonObject config = configElement.getAsJsonObject();
-				String path = config.get("file").getAsString();
-				File latestFile = new File(path).getAbsoluteFile();
-				databaseSettings = new LatestFileDatabaseSettings(latestFile);
-			} else {
-				throw new UnsupportedOperationException("Unknown type: " + type);
+			final DatabaseConfig databaseConfig;
+			try {
+				databaseConfig = mapper.readValue(reader, DatabaseConfig.class);
+			} catch (IOException e) {
+				throw new RuntimeException("Couldn't parse data!", e);
 			}
-			Map<String, IndividualSettings> individualSettingsMap = parseAllIndividualSettings(jsonObject.get("settings"));
-			r.add(new DatabaseConfig(databaseSettings, individualSettingsMap));// TODO null datatype
+//			Map<String, IndividualSettings> individualSettingsMap = parseAllIndividualSettings(jsonObject.get("settings"));
+			r.add(databaseConfig);
 		}
 		return r;
 	}
-	private static Map<String, IndividualSettings> parseAllIndividualSettings(JsonElement settingsElement){
-		if(settingsElement == null){
-			return Collections.emptyMap();
-		}
-		JsonObject jsonObject = settingsElement.getAsJsonObject();
-		Map<String, IndividualSettings> r = new HashMap<>();
-		for(Map.Entry<String, JsonElement> entrySet : jsonObject.entrySet()){
-			r.put(entrySet.getKey(), parseIndividualSettings(entrySet.getValue().getAsJsonObject()));
-		}
-		return r;
-	}
-	private static IndividualSettings parseIndividualSettings(JsonObject jsonObject){
-		JsonElement throttleFactorElement = jsonObject.get("throttle_factor");
-		JsonElement initialSkipElement = jsonObject.get("initial_skip");
-		int throttleFactor = throttleFactorElement != null ? throttleFactorElement.getAsInt() : 1;
-		int initialSkip = initialSkipElement != null ? initialSkipElement.getAsInt() : 0;
-		return new IndividualSettings(new FrequencySettings(throttleFactor, initialSkip));
-	}
-	
+
 	private static IOBundle createIOBundle(File configFile, SerialConfig defaultSerialConfig){
 		final String contents;
 		try {

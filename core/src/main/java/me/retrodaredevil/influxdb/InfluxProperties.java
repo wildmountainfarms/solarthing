@@ -2,7 +2,9 @@ package me.retrodaredevil.influxdb;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
+@JsonDeserialize(as = ImmutableInfluxProperties.class)
 @JsonIgnoreProperties
 public interface InfluxProperties {
 	/**
