@@ -1,5 +1,8 @@
 package me.retrodaredevil.okhttp3;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+@JsonDeserialize(builder = OkHttpPropertiesBuilder.class)
 public interface OkHttpProperties {
 	boolean isRetryOnConnectionFailure(); // = true;
 	int getCallTimeoutMillis(); // = 0;

@@ -9,7 +9,7 @@ public interface OccupancyPacket extends OuthousePacket {
 	/**
 	 * @return The occupancy code representing the {@link Occupancy}
 	 */
-	@JsonProperty(value = "occupancy")
+	@JsonProperty("occupancy")
 	int getOccupancy();
 
 	@SuppressWarnings("unused")

@@ -2,11 +2,8 @@ package me.retrodaredevil.influxdb;
 
 public class ImmutableInfluxProperties implements InfluxProperties {
 	private final String url;
-
 	private final String username;
-
 	private final String password;
-
 
 	public ImmutableInfluxProperties(InfluxProperties influxProperties){
 		url = influxProperties.getUrl();

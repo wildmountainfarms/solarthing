@@ -7,6 +7,7 @@ import me.retrodaredevil.okhttp3.OkHttpPropertiesBuilder;
 
 public final class JsonOkHttp {
 	private JsonOkHttp(){ throw new UnsupportedOperationException(); }
+	@Deprecated
 	public static OkHttpProperties getOkHttpPropertiesFromJson(JsonObject config) {
 		OkHttpPropertiesBuilder builder = new OkHttpPropertiesBuilder();
 

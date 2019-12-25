@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.solar.outback.fx.common;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.solar.common.DailyBatteryVoltage;
 import me.retrodaredevil.solarthing.solar.common.DailyData;
@@ -34,11 +35,16 @@ public interface FXDailyData extends DailyBatteryVoltage, ErrorReporter, FXWarni
 				getSellKWH() < previous.getSellKWH();
 	}
 
+	@JsonProperty("inverterKWH")
 	float getInverterKWH();
+	@JsonProperty("chargerKWH")
 	float getChargerKWH();
+	@JsonProperty("buyKWH")
 	float getBuyKWH();
+	@JsonProperty("sellKWH")
 	float getSellKWH();
 
+	@JsonProperty("operationalModeValues")
 	Collection<Integer> getOperationalModeValues();
 	default Set<OperationalMode> getOperationalModes(){ return Modes.getActiveModes(OperationalMode.class, getOperationalModeValues()); }
 
@@ -46,17 +52,21 @@ public interface FXDailyData extends DailyBatteryVoltage, ErrorReporter, FXWarni
 	 * Should be serialized as "errorModeValue"
 	 * @return The bit-masked value representing all the error modes that were active during one day
 	 */
+	@JsonProperty("errorModeValue")
 	@Override
 	int getErrorModeValue();
 	@Override
 	default Set<FXErrorMode> getErrorModes(){ return Modes.getActiveModes(FXErrorMode.class, getErrorModeValue()); }
 
+	@JsonProperty("warningModeValue")
 	@Override
 	int getWarningModeValue();
 
+	@JsonProperty("miscValue")
 	@Override
 	int getMiscValue();
 
+	@JsonProperty("acModeValues")
 	Collection<Integer> getACModeValues();
 	default Set<ACMode> getACModes(){ return Modes.getActiveModes(ACMode.class, getACModeValues()); }
 }

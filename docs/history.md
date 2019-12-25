@@ -26,6 +26,18 @@ have the ability to have multiple instances uploading packets to a single databa
 * InfluxDB support was added allowing for easy configuration of a Grafana dashboard
 * Raspberry Pi running the outhouse program didn't survive the freezing temperatures (RIP outhousepi 2019-2019)
 
+
+### Moving from Gson to Jackson
+This project started out with Jackson, but as of 2019.12.24, I have started to move to Gson. I originally chose Gson for its
+simplicity. It has served this project very well and is very user friendly. However, I got tired of writing custom
+deserializing functions to deserialize advanced packets. Jackson is very annotation orientated and is very
+feature rich. The added complexity of Jackson is worth the speed of development it brings.
+
+Useful links:
+* https://www.baeldung.com/jackson-field-serializable-deserializable-or-not
+* https://www.baeldung.com/jackson-deserialize-immutable-objects
+* https://github.com/FasterXML/jackson-docs/wiki/JacksonPolymorphicDeserialization
+
 ### Legacy
 [The perl script](../helloworld.pl) is a legacy program. It was the program that started solarthing.
 After learning perl for a day. I went straight back to Java, which I am more familiar with.

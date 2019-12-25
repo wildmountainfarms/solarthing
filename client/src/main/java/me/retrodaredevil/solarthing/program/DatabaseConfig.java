@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.program;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.DatabaseType;
 import me.retrodaredevil.solarthing.config.databases.IndividualSettings;
@@ -9,12 +10,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class DatabaseConfig {
-	private final DatabaseType type;
+//	private final DatabaseType type;
+	@JsonProperty("settings")
 	private final DatabaseSettings settings;
 	private final Map<String, IndividualSettings> individualSettingsMap;
 	
-	public DatabaseConfig(DatabaseType type, DatabaseSettings settings, Map<String, IndividualSettings> frequencySettingsMap) {
-		this.type = type;
+	public DatabaseConfig(DatabaseSettings settings, Map<String, IndividualSettings> frequencySettingsMap) {
 		this.settings = settings;
 		this.individualSettingsMap = Collections.unmodifiableMap(new HashMap<>(frequencySettingsMap));
 	}
@@ -23,7 +24,7 @@ public final class DatabaseConfig {
 	 * @return The {@link DatabaseType}. This determines what type {@link #getSettings()} will return
 	 */
 	public DatabaseType getType() {
-		return type;
+		return settings.getDatabaseType();
 	}
 	
 	public DatabaseSettings getSettings() {

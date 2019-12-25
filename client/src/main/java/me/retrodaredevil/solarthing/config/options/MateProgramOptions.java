@@ -1,6 +1,6 @@
 package me.retrodaredevil.solarthing.config.options;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
 
 import java.io.File;
@@ -10,11 +10,11 @@ import static java.util.Objects.requireNonNull;
 @SuppressWarnings("FieldCanBeLocal")
 public class MateProgramOptions extends PacketHandlingOptionBase implements IOBundleOption {
 
-	@SerializedName("allow_commands")
+	@JsonProperty("allow_commands")
 	private boolean allowCommands = false;
-	@SerializedName("ignore_check_sum")
+	@JsonProperty("ignore_check_sum")
 	private boolean ignoreCheckSum = false;
-	@SerializedName("correct_check_sum")
+	@JsonProperty("correct_check_sum")
 	private boolean correctCheckSum = false;
 
 	private File io;

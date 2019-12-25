@@ -24,7 +24,7 @@ import java.util.Map;
 
 public class CouchDbPacketSaver implements PacketHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CouchDbPacketSaver.class);
-	private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.defaultMapper(new ObjectMapper());
+	private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.defaultMapper();
 
 	private final Map<String, String> idRevMap = new HashMap<>(); // TODO we could probably figure out a way to clear old values
 	private final CouchProperties properties;

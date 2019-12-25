@@ -6,9 +6,9 @@ import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPacket;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
 
 @JsonSubTypes({
-		@JsonSubTypes.Type(value = FXStatusPacket.class),
-		@JsonSubTypes.Type(value = MXStatusPacket.class),
-		@JsonSubTypes.Type(value = RoverStatusPacket.class),
+		@JsonSubTypes.Type(FXStatusPacket.class),
+		@JsonSubTypes.Type(MXStatusPacket.class),
+		@JsonSubTypes.Type(RoverStatusPacket.class),
 })
 public interface SolarStatusPacket extends SolarPacket<SolarStatusPacketType> {
 }

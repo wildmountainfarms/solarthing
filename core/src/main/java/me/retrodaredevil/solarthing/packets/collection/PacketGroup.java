@@ -10,14 +10,14 @@ public interface PacketGroup {
 	 * Should be serialized as "packets"
 	 * @return An unmodifiable list of packets
 	 */
-	@JsonProperty(value = "packets")
+	@JsonProperty("packets")
 	List<? extends Packet> getPackets();
 	
 	/**
 	 * Should be serialized as "dateMillis"
 	 * @return The date this packet collection was created in milliseconds (UTC)
 	 */
-	@JsonProperty(value = "dateMillis")
+	@JsonProperty("dateMillis")
 	long getDateMillis();
 	
 	/**
