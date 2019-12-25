@@ -1,7 +1,5 @@
 package me.retrodaredevil.solarthing.solar.outback.fx.common;
 
-import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
-
 import java.util.Collection;
 
 public class ImmutableFXDailyData implements FXDailyData {

@@ -1,5 +1,7 @@
 package me.retrodaredevil.solarthing.solar.outback.fx.common;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import me.retrodaredevil.solarthing.packets.DocumentedPacketType;
 import me.retrodaredevil.solarthing.packets.identification.DefaultSupplementaryIdentifier;
 import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifiable;
@@ -9,11 +11,9 @@ import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import java.util.Collection;
 
 public abstract class BaseFXDailyData implements FXDailyData, SupplementaryIdentifiable {
-	@SuppressWarnings({"unused", "FieldCanBeLocal"})
-	private final DocumentedPacketType packetType;
 
-	@SuppressWarnings({"unused", "FieldCanBeLocal"})
-	private final int address; // Necessary when parsing data
+	@JsonSerialize
+	private final int address;
 
 	private final Long startDateMillis;
 
@@ -38,7 +38,6 @@ public abstract class BaseFXDailyData implements FXDailyData, SupplementaryIdent
 			FXDailyData dailyData,
 			OutbackIdentifier outbackIdentifier
 	) {
-		this.packetType = packetType;
 		this.startDateMillis = dailyData.getStartDateMillis();
 		this.dailyMinBatteryVoltage = dailyData.getDailyMinBatteryVoltage();
 		this.dailyMaxBatteryVoltage = dailyData.getDailyMaxBatteryVoltage();
@@ -61,6 +60,7 @@ public abstract class BaseFXDailyData implements FXDailyData, SupplementaryIdent
 		return supplementaryIdentifier;
 	}
 
+	@JsonProperty("startDateMillis")
 	@Override
 	public Long getStartDateMillis() {
 		return startDateMillis;

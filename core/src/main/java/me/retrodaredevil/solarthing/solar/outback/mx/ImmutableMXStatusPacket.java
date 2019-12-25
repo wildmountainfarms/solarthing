@@ -4,10 +4,9 @@ import me.retrodaredevil.solarthing.packets.support.Support;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 
-@SuppressWarnings("unused")
-final class ImmutableMXStatusPacket implements MXStatusPacket {
-	private final SolarStatusPacketType packetType = SolarStatusPacketType.MXFM_STATUS;
+import java.beans.ConstructorProperties;
 
+final class ImmutableMXStatusPacket implements MXStatusPacket {
 	private final int address;
 	private final int chargerCurrent, pvCurrent, inputVoltage;
 	private final float dailyKWH;
@@ -20,20 +19,20 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 	private final Support dailyAHSupport;
 	private final int chksum;
 
-	private final String auxModeName;
-	private final String errors;
-	private final String chargerModeName;
-	
-	private final transient OutbackIdentifier identifier;
-	
+	private final OutbackIdentifier identifier;
+
+	@ConstructorProperties({
+			"address", "chargerCurrent", "pvCurrent", "inputVoltage", "dailyKWH", "ampChargerCurrent",
+			"auxMode", "errorMode", "chargerMode", "batteryVoltage", "dailyAH", "dailyAHSupport", "chksum"
+	})
 	ImmutableMXStatusPacket(
-		int address, int chargerCurrent, int pvCurrent, int inputVoltage,
-		float dailyKWH,
-		float ampChargerCurrent,
-		int auxMode, int errorMode, int chargerMode,
-		float batteryVoltage,
-		int dailyAH, Support dailyAHSupport,
-		int chksum, String auxModeName, String errors, String chargerModeName
+			int address, int chargerCurrent, int pvCurrent, int inputVoltage,
+			float dailyKWH,
+			float ampChargerCurrent,
+			int auxMode, int errorMode, int chargerMode,
+			float batteryVoltage,
+			int dailyAH, Support dailyAHSupport,
+			int chksum
 	) {
 		this.address = address;
 		this.chargerCurrent = chargerCurrent;
@@ -46,33 +45,15 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 		this.chargerMode = chargerMode;
 		this.batteryVoltage = batteryVoltage;
 		this.dailyAH = dailyAH;
-		this.dailyAHSupport = dailyAHSupport;
+		this.dailyAHSupport = dailyAHSupport == null ? Support.UNKNOWN : dailyAHSupport;
 		this.chksum = chksum;
-		this.auxModeName = auxModeName;
-		this.errors = errors;
-		this.chargerModeName = chargerModeName;
-		
+
 		this.identifier = new OutbackIdentifier(address);
 	}
 
 	@Override
-	public String getAuxModeName() {
-		return auxModeName;
-	}
-
-	@Override
-	public String getErrorsString() {
-		return errors;
-	}
-
-	@Override
-	public String getChargerModeName() {
-		return chargerModeName;
-	}
-
-	@Override
 	public SolarStatusPacketType getPacketType() {
-		return packetType;
+		return SolarStatusPacketType.MXFM_STATUS;
 	}
 
 	@Override
@@ -85,12 +66,12 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 		return identifier;
 	}
 
-	@SuppressWarnings("deprecation")
+	@Deprecated
 	@Override
 	public int getChargerCurrent() {
 		return chargerCurrent;
 	}
-	
+
 	@Override
 	public Integer getPVCurrent() {
 		return pvCurrent;
@@ -107,7 +88,7 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 	}
 
 
-	@SuppressWarnings("deprecation")
+	@Deprecated
 	@Override
 	public float getAmpChargerCurrent() {
 		return ampChargerCurrent;

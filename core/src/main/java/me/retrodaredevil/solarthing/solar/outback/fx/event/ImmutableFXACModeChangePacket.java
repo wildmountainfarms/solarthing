@@ -12,7 +12,6 @@ import java.beans.ConstructorProperties;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class ImmutableFXACModeChangePacket implements FXACModeChangePacket {
-	private final SolarEventPacketType packetType = SolarEventPacketType.FX_AC_MODE_CHANGE;
 	private final int address;
 	private final int acModeValue;
 	private final Integer previousACModeValue;
@@ -44,7 +43,7 @@ public class ImmutableFXACModeChangePacket implements FXACModeChangePacket {
 
 	@Override
 	public SolarEventPacketType getPacketType() {
-		return packetType;
+		return SolarEventPacketType.FX_AC_MODE_CHANGE;
 	}
 
 	@Override

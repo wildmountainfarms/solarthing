@@ -1,17 +1,20 @@
 package me.retrodaredevil.solarthing.config.options;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import java.io.File;
 
 import static java.util.Objects.requireNonNull;
 
 @SuppressWarnings("FieldCanBeLocal")
+@JsonTypeName("rover")
 public class RoverProgramOptions extends PacketHandlingOptionBase implements RoverOption {
-	@SerializedName(value = "modbus")
+	@JsonProperty("modbus")
 	private int modbusAddress = 1;
-	@SerializedName("dummy")
+	@JsonProperty("dummy")
 	private File dummyFile = null;
+	@JsonProperty("io")
 	private File io;
 
 	@Override

@@ -7,10 +7,7 @@ import me.retrodaredevil.solarthing.JsonPacketReceiver;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
-import org.lightcouch.CouchDbClient;
-import org.lightcouch.CouchDbException;
-import org.lightcouch.NoDocumentException;
-import org.lightcouch.View;
+import org.lightcouch.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,10 +60,18 @@ public class CouchDbPacketRetriever implements PacketHandler {
 			JsonObject jsonObject = baseObject.getAsJsonObject("value");
 			packets.set(i, jsonObject);
 			if(removeQueriedPackets) {
+				String id = jsonObject.get("_id").getAsString();
+				String rev = jsonObject.get("_rev").getAsString();
 				try {
-					client.remove(jsonObject); // TODO figure out a way to do a bulk remove
+//					client.remove(jsonObject);
+					// TODO figure out a way to do a bulk remove
+					Response response = client.remove(id, rev);
+					String error = response.getError();
+					if(response.getError() != null){
+						LOGGER.warn("Got error while removing! error='" + error + "'. Reason='" + response.getReason() + "' id='" + response.getId() + "' rev='" + response.getRev() + "'");
+					}
 				} catch(CouchDbException ex){
-					LOGGER.warn("Unable to remove id=" + baseObject.get("_id").getAsString() + " with rev=" + baseObject.get("_rev").getAsString(), ex);
+					LOGGER.warn("Unable to remove id='" + id + "' with rev='" + rev + "'", ex);
 				}
 			}
 		}

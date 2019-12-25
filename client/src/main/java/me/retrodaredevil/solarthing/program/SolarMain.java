@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.program;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
@@ -83,7 +84,7 @@ public final class SolarMain {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SolarMain.class);
 	@Deprecated
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
-	private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.defaultMapper(new ObjectMapper());
+	private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.defaultMapper();
 	
 	private static final SerialConfig MATE_CONFIG = new SerialConfigBuilder(19200)
 		.setDataBits(8)
@@ -297,6 +298,7 @@ public final class SolarMain {
 		void doProgram(RoverReadTable read, RoverWriteTable write);
 	}
 	@SuppressWarnings("SameReturnValue")
+	@Deprecated
 	private static int connectOuthouse(OuthouseProgramOptions options) throws Exception {
 		LOGGER.info("Beginning outhouse program");
 		PacketCollectionIdGenerator idGenerator = createIdGenerator(options.getUniqueIdsInOneHour());
@@ -402,6 +404,13 @@ public final class SolarMain {
 	private static List<DatabaseConfig> getDatabaseConfigs(PacketHandlingOption options){
 		List<File> files = options.getDatabaseConfigurationFiles();
 		List<DatabaseConfig> r = new ArrayList<>();
+		ObjectMapper mapper = JacksonUtil.defaultMapper();
+		mapper.getSubtypeResolver().registerSubtypes(
+				DatabaseSettings.class,
+				CouchDbDatabaseSettings.class,
+				InfluxDbDatabaseSettings.class,
+				LatestFileDatabaseSettings.class
+		);
 		for(File file : files){
 			final String contents;
 			try {
@@ -412,16 +421,13 @@ public final class SolarMain {
 			JsonObject jsonObject = JsonParser.parseString(contents).getAsJsonObject(); // TODO use Jackson instead of Gson
 			String type = jsonObject.getAsJsonPrimitive("type").getAsString();
 			JsonElement configElement = jsonObject.get("config");
-			final DatabaseType databaseType;
 			final DatabaseSettings databaseSettings;
 			if ("couchdb".equals(type)) {
-				databaseType = CouchDbDatabaseSettings.TYPE;
 				JsonObject config = configElement.getAsJsonObject();
 				CouchProperties couchProperties = JsonCouchDb.getCouchPropertiesFromJson(config);
 				LOGGER.debug("Debugging couchProperties: {}", GSON.toJson(couchProperties));
 				databaseSettings = new CouchDbDatabaseSettings(couchProperties);
 			} else if("influxdb".equals(type)) {
-				databaseType = InfluxDbDatabaseSettings.TYPE;
 				JsonObject config = configElement.getAsJsonObject();
 				InfluxProperties influxProperties = JsonInfluxDb.getInfluxPropertiesFromJson(config);
 				OkHttpProperties okHttpProperties = JsonOkHttp.getOkHttpPropertiesFromJson(config);
@@ -440,19 +446,18 @@ public final class SolarMain {
 				if(frequentRetentionPolicies.isEmpty()){
 					LOGGER.debug("No retention policies specified!");
 				}
-				for(FrequentObject<RetentionPolicySetting> frequentObject : frequentRetentionPolicies){
-					RetentionPolicySetting setting = requireNonNull(frequentObject.getObject());
-					RetentionPolicy policy = setting.getRetentionPolicy();
-					String policyString = policy == null ? "null" : policy.toPolicyString("<policy name>", "<database name>");
-					LOGGER.debug("Debugging retention policy. Name={} Frequency={} try to create={} auto alter={} ignore unsuccessful create={} policy={}", setting.getName(), frequentObject.getFrequency(), setting.isTryToCreate(), setting.isAutomaticallyAlter(), setting.isIgnoreUnsuccessfulCreate(), policyString);
-				}
 				databaseSettings = new InfluxDbDatabaseSettings(
 						influxProperties, okHttpProperties,
 						databaseName, measurementName,
 						frequentRetentionPolicies
 				);
+				for(FrequentObject<RetentionPolicySetting> frequentObject : frequentRetentionPolicies){ // this is for debugging purposes only
+					RetentionPolicySetting setting = requireNonNull(frequentObject.getObject());
+					RetentionPolicy policy = setting.getRetentionPolicy();
+					String policyString = policy == null ? "null" : policy.toPolicyString("<policy name>", "<database name>");
+					LOGGER.debug("Debugging retention policy. Name={} Frequency={} try to create={} auto alter={} ignore unsuccessful create={} policy={}", setting.getName(), frequentObject.getFrequency(), setting.isTryToCreate(), setting.isAutomaticallyAlter(), setting.isIgnoreUnsuccessfulCreate(), policyString);
+				}
 			} else if ("latest".equals(type)) {
-				databaseType = LatestFileDatabaseSettings.TYPE;
 				JsonObject config = configElement.getAsJsonObject();
 				String path = config.get("file").getAsString();
 				File latestFile = new File(path).getAbsoluteFile();
@@ -461,7 +466,7 @@ public final class SolarMain {
 				throw new UnsupportedOperationException("Unknown type: " + type);
 			}
 			Map<String, IndividualSettings> individualSettingsMap = parseAllIndividualSettings(jsonObject.get("settings"));
-			r.add(new DatabaseConfig(databaseType, databaseSettings, individualSettingsMap));
+			r.add(new DatabaseConfig(databaseSettings, individualSettingsMap));// TODO null datatype
 		}
 		return r;
 	}
@@ -515,27 +520,6 @@ public final class SolarMain {
 			return 1;
 		}
 		File baseConfigFile = new File(args[0]);
-		final Gson deserializer = new GsonBuilder()
-				.registerTypeAdapter(File.class, new TypeAdapter<File>() {
-					@Override
-					public void write(JsonWriter out, File value) throws IOException {
-						if(value == null){
-							out.nullValue();
-							return;
-						}
-						out.value(value.toString());
-					}
-
-					@Override
-					public File read(JsonReader in) throws IOException {
-						if(in.peek() == JsonToken.NULL){
-							in.nextNull();
-							return null;
-						}
-						return new File(in.nextString());
-					}
-				})
-				.create();
 		final FileReader fileReader;
 		try {
 			fileReader = new FileReader(baseConfigFile);
@@ -543,60 +527,26 @@ public final class SolarMain {
 			LOGGER.error("(Fatal)File not found", ex);
 			return 1;
 		}
-		JsonObject baseConfig = deserializer.fromJson(fileReader, JsonObject.class);
-		JsonElement programNameElement = baseConfig.get("type");
-		if(programNameElement == null){
-			System.err.println("Program type not declared!");
-			LOGGER.error("(Fatal)The program type was not declared in the base config file! baseConfig: {}", baseConfig);
-			return 1;
-		}
-		String programName = programNameElement.getAsString();
-
-		Program program = getProgram(programName);
-		if(program == null){
-			System.err.println("Valid program types: {mate|rover|rover-setup|outhouse}");
-			LOGGER.error("(Fatal)Incorrect args. baseConfig: {}", baseConfig);
-			return 1;
-		}
+		final ProgramOptions options;
 		try {
-			if(program == Program.MATE) {
-				final MateProgramOptions options;
-				try {
-					options = deserializer.fromJson(baseConfig, MateProgramOptions.class);
-				} catch(JsonSyntaxException ex){
-					LOGGER.error("(Fatal)Invalid json syntax!", ex);
-					return 1;
-				}
-				return connectMate(options);
-			} else if(program == Program.ROVER){
-				final RoverProgramOptions options;
-				try {
-					options = deserializer.fromJson(baseConfig, RoverProgramOptions.class);
-				} catch(JsonSyntaxException ex){
-					LOGGER.error("(Fatal)Invalid json syntax!", ex);
-					return 1;
-				}
-				return connectRover(options);
-			} else if(program == Program.OUTHOUSE){
-				final OuthouseProgramOptions options;
-				try {
-					options = deserializer.fromJson(baseConfig, OuthouseProgramOptions.class);
-				} catch(JsonSyntaxException ex){
-					LOGGER.error("(Fatal)Invalid json syntax!", ex);
-					return 1;
-				}
-				return connectOuthouse(options);
-			} else if(program == Program.ROVER_SETUP){
-				final RoverSetupProgramOptions options;
-				try {
-					options = deserializer.fromJson(baseConfig, RoverSetupProgramOptions.class);
-				} catch(JsonSyntaxException ex){
-					LOGGER.error("(Fatal)Invalid json syntax!", ex);
-					return 1;
-				}
-				return connectRoverSetup(options);
+			options = OBJECT_MAPPER.readValue(fileReader, ProgramOptions.class);
+		} catch (IOException e) {
+			LOGGER.error("(Fatal)Error while parsing ProgramOptions. args=" + Arrays.toString(args), e);
+			return 1;
+		}
+		final ProgramType programType = options.getProgramType();
+		try {
+			if(programType == ProgramType.MATE) {
+				return connectMate((MateProgramOptions) options);
+			} else if(programType == ProgramType.ROVER){
+				return connectRover((RoverProgramOptions) options);
+			} else if(programType == ProgramType.OUTHOUSE){
+				//noinspection deprecation
+				return connectOuthouse((OuthouseProgramOptions) options);
+			} else if(programType == ProgramType.ROVER_SETUP){
+				return connectRoverSetup((RoverSetupProgramOptions) options);
 			}
-			throw new AssertionError("Unknown program type... type=" + program);
+			throw new AssertionError("Unknown program type... type=" + programType + " programOptions=" + options);
 		} catch (Exception t) {
 			LOGGER.error("(Fatal)Got exception", t);
 			return 1;
@@ -605,33 +555,5 @@ public final class SolarMain {
 
 	public static void main(String[] args) {
 		System.exit(doMain(args));
-	}
-	private static Program getProgram(String program) {
-		if(program == null){
-			return null;
-		}
-		switch (program.toLowerCase()) {
-			case "mate":
-				return Program.MATE;
-			case "rover":
-				return Program.ROVER;
-			case "rover-setup":
-				return Program.ROVER_SETUP;
-			case "outhouse":
-				return Program.OUTHOUSE;
-		}
-		return null;
-	}
-	private enum Program {
-		MATE("mate"),
-		ROVER("rover"),
-		ROVER_SETUP("rover-setup"),
-		OUTHOUSE("outhouse");
-		@SuppressWarnings({"unused", "FieldCanBeLocal"}) // this may be used in the future, however it is not necessary as of now
-		private final String name;
-
-		Program(String name) {
-			this.name = name;
-		}
 	}
 }

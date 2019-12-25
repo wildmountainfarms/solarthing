@@ -14,7 +14,7 @@ import java.io.IOException;
 
 import static me.retrodaredevil.util.json.JacksonHelper.require;
 
-@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE)
+@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE) // for serializing. Getters must be explicit
 @JsonDeserialize(using = ImmutableFXStatusPacket.Deserializer.class)
 final class ImmutableFXStatusPacket implements FXStatusPacket {
 	private final SolarStatusPacketType packetType = SolarStatusPacketType.FX_STATUS;

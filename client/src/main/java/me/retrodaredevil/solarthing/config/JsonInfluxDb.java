@@ -20,6 +20,7 @@ public final class JsonInfluxDb {
 		throw new UnsupportedOperationException();
 	}
 
+	@Deprecated
 	public static InfluxProperties getInfluxPropertiesFromJson(JsonObject config) {
 		return new InfluxPropertiesBuilder()
 			.setUrl(config.get("url").getAsString())
@@ -33,6 +34,7 @@ public final class JsonInfluxDb {
 	 * @param config The root config
 	 * @return A list of frequency objects that represent the frequency that {@link RetentionPolicySetting} are used
 	 */
+	@Deprecated
 	public static List<FrequentObject<RetentionPolicySetting>> getRetentionPolicySettings(JsonObject config) {
 		JsonElement retentionPolicyElement = config.get("retention_policies");
 		if(retentionPolicyElement == null || retentionPolicyElement.isJsonNull()){
