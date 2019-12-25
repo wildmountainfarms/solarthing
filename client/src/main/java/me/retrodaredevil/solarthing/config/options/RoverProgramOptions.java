@@ -7,14 +7,13 @@ import java.io.File;
 
 import static java.util.Objects.requireNonNull;
 
-@SuppressWarnings("FieldCanBeLocal")
 @JsonTypeName("rover")
 public class RoverProgramOptions extends PacketHandlingOptionBase implements RoverOption {
 	@JsonProperty("modbus")
 	private int modbusAddress = 1;
 	@JsonProperty("dummy")
 	private File dummyFile = null;
-	@JsonProperty("io")
+	@JsonProperty(value = "io", required = true)
 	private File io;
 
 	@Override

@@ -37,4 +37,5 @@ class PacketHandlingOptionBase implements PacketHandlingOption {
 	public Integer getUniqueIdsInOneHour() {
 		return unique;
 	}
+
 }

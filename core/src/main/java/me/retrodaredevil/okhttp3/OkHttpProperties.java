@@ -1,9 +1,13 @@
 package me.retrodaredevil.okhttp3;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 @JsonDeserialize(builder = OkHttpPropertiesBuilder.class)
+@JsonIgnoreProperties
 public interface OkHttpProperties {
+	@JsonProperty("retry_on_connection_failure")
 	boolean isRetryOnConnectionFailure(); // = true;
 	int getCallTimeoutMillis(); // = 0;
 	int getConnectTimeoutMillis();// = 10_000;
@@ -20,4 +24,16 @@ public interface OkHttpProperties {
 	 * @return The ping interval in milliseconds
 	 */
 	int getPingIntervalMillis();// = 0;
+
+	@JsonProperty("call_timeout")
+	default float getCallTimeoutSeconds(){ return getCallTimeoutMillis() / 1000f; }
+	@JsonProperty("connect_timeout")
+	default float getConnectTimeoutSeconds() { return getConnectTimeoutMillis() / 1000f; }
+	@JsonProperty("read_timeout")
+	default float getReadTimeoutSeconds() { return getReadTimeoutMillis() / 1000f; }
+	@JsonProperty("write_timeout")
+	default float getWriteTimeoutSeconds() { return getWriteTimeoutMillis() / 1000f; }
+
+	@JsonProperty("ping_interval")
+	default float getPingIntervalSeconds(){ return getPingIntervalMillis() / 1000f; }
 }

@@ -1,5 +1,8 @@
 package me.retrodaredevil.influxdb;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+@JsonDeserialize(builder = InfluxPropertiesBuilder.class)
 public class ImmutableInfluxProperties implements InfluxProperties {
 	private final String url;
 	private final String username;

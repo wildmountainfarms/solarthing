@@ -14,4 +14,9 @@ public class SimpleDatabaseType implements DatabaseType {
 	public String getName() {
 		return name;
 	}
+
+	@Override
+	public String toString() {
+		return name;
+	}
 }

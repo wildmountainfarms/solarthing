@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
-@SuppressWarnings("UnusedReturnValue")
 @JsonPOJOBuilder(buildMethodName = "build")
 @JsonIgnoreProperties
 public class OkHttpPropertiesBuilder implements OkHttpProperties {
