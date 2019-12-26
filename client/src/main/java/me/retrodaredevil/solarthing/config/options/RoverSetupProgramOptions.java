@@ -1,13 +1,13 @@
 package me.retrodaredevil.solarthing.config.options;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 
 import java.io.File;
 
 @JsonTypeName("rover-setup")
-@JsonIgnoreProperties
+@JsonExplicit
 public class RoverSetupProgramOptions implements ProgramOptions, RoverOption {
 	@JsonProperty("modbus")
 	private int modbusAddress = 1;

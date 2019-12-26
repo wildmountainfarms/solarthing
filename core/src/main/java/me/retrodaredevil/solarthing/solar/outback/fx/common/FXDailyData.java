@@ -1,6 +1,8 @@
 package me.retrodaredevil.solarthing.solar.outback.fx.common;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.solar.common.DailyBatteryVoltage;
 import me.retrodaredevil.solarthing.solar.common.DailyData;
@@ -13,6 +15,7 @@ import me.retrodaredevil.solarthing.solar.outback.fx.extra.DailyFXPacket;
 import java.util.Collection;
 import java.util.Set;
 
+@JsonExplicit
 public interface FXDailyData extends DailyBatteryVoltage, ErrorReporter, FXWarningReporter, FXMiscReporter {
 	@Override
 	default boolean isNewDay(DailyData previousDailyData){

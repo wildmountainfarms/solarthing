@@ -1,11 +1,11 @@
 package me.retrodaredevil.okhttp3;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 
 @JsonDeserialize(builder = OkHttpPropertiesBuilder.class)
-@JsonIgnoreProperties
+@JsonExplicit
 public interface OkHttpProperties {
 	@JsonProperty("retry_on_connection_failure")
 	boolean isRetryOnConnectionFailure(); // = true;

@@ -21,6 +21,9 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 
 	private final OutbackIdentifier identifier;
 
+	/*
+	The structure of MXStatusPackets has not changed much, so we don't need a complex way to deserialize them.
+	 */
 	@ConstructorProperties({
 			"address", "chargerCurrent", "pvCurrent", "inputVoltage", "dailyKWH", "ampChargerCurrent",
 			"auxMode", "errorMode", "chargerMode", "batteryVoltage", "dailyAH", "dailyAHSupport", "chksum"

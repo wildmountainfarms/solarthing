@@ -6,11 +6,10 @@ import me.retrodaredevil.solarthing.packets.security.crypto.KeyUtil;
 import java.security.PublicKey;
 
 public final class ImmutableAuthNewSenderPacket implements AuthNewSenderPacket {
-	private final SecurityPacketType packetType = SecurityPacketType.AUTH_NEW_SENDER;
-	
+
 	private final String sender;
 	private final String publicKey;
-	private final transient PublicKey publicKeyObject;
+	private final PublicKey publicKeyObject;
 	
 	public ImmutableAuthNewSenderPacket(String sender, String publicKey) throws InvalidKeyException {
 		this.sender = sender;
@@ -30,7 +29,7 @@ public final class ImmutableAuthNewSenderPacket implements AuthNewSenderPacket {
 	
 	@Override
 	public SecurityPacketType getPacketType() {
-		return packetType;
+		return SecurityPacketType.AUTH_NEW_SENDER;
 	}
 	
 	@Override

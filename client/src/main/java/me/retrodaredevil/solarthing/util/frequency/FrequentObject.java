@@ -1,12 +1,13 @@
 package me.retrodaredevil.solarthing.util.frequency;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 
 import java.util.Objects;
 
-@JsonIgnoreProperties
+@JsonExplicit
 public final class FrequentObject<T> {
 	@JsonUnwrapped
 	private final T object;

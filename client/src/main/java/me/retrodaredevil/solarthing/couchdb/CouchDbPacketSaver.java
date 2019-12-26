@@ -2,10 +2,9 @@ package me.retrodaredevil.solarthing.couchdb;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.JsonIOException;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
 import me.retrodaredevil.couchdb.CouchProperties;
 import me.retrodaredevil.couchdb.CouchPropertiesBuilder;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
@@ -19,6 +18,8 @@ import org.lightcouch.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -67,11 +68,12 @@ public class CouchDbPacketSaver implements PacketHandler {
 			}
 		} catch(DocumentConflictException ex){
 			try {
-				JsonObject document = client.find(JsonObject.class, id);
-				String actualRev = document.get("_rev").getAsString();
+				InputStream documentStream = client.find(id);
+				final ObjectNode document = OBJECT_MAPPER.readValue(documentStream, ObjectNode.class);
+				String actualRev = document.get("_rev").asText();
 				idRevMap.put(id, actualRev);
 				LOGGER.info("We were able to get the actual Revision ID for id=" + id + " actual rev=" + actualRev);
-			} catch(CouchDbException | JsonSyntaxException | JsonIOException revEx){ // We have to catch these json related exceptions because of a bug in CouchDB
+			} catch(CouchDbException | IOException revEx){ // We have to catch these json related exceptions because of a bug in CouchDB
 				LOGGER.warn("Unable to get the actual Revision ID for id=" + id, revEx);
 			}
 			throw new PacketHandleException("Conflict while saving something to couchdb. id=" + id + " rev=" + rev + ". This usually means we put a packet in the database, but we weren't able to cache its rev id.", ex);

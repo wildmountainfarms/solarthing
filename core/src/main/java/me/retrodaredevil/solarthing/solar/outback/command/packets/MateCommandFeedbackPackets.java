@@ -5,7 +5,8 @@ import me.retrodaredevil.solarthing.packets.UnknownPacketTypeException;
 
 public final class MateCommandFeedbackPackets {
 	private MateCommandFeedbackPackets(){ throw new UnsupportedOperationException(); }
-	
+
+	@Deprecated
 	public static MateCommandFeedbackPacket createFromJson(JsonObject jsonObject){
 		final String packetName = jsonObject.getAsJsonPrimitive("packetType").getAsString();
 		final MateCommandFeedbackPacketType packetType;

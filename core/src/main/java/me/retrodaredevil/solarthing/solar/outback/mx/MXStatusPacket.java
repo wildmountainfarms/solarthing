@@ -1,9 +1,9 @@
 package me.retrodaredevil.solarthing.solar.outback.mx;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.packets.support.Support;
 import me.retrodaredevil.solarthing.solar.common.BasicChargeController;
@@ -19,10 +19,9 @@ import java.util.Set;
  * <p>
  * In previous version, it was just "MX" instead of "MXFM" so MX is the same as MXFM in the documentation. FM stands for FLEXmax.
  */
-@SuppressWarnings("unused")
 @JsonDeserialize(as = ImmutableMXStatusPacket.class)
-@JsonTypeName("MX_STATUS")
-@JsonIgnoreProperties
+@JsonTypeName("MXFM_STATUS")
+@JsonExplicit
 public interface MXStatusPacket extends OutbackPacket, BasicChargeController, DailyChargeController, BatteryVoltage {
 	@Override
 	default boolean isNewDay(DailyData previousDailyData){
@@ -179,7 +178,7 @@ public interface MXStatusPacket extends OutbackPacket, BasicChargeController, Da
 	
 	// region Convenience Strings
 	@JsonProperty("auxModeName")
-	default String getAuxModeName(){ return getAuxModeMode().getModeName(); }
+	default String getAuxModeName(){ return getAuxMode().getModeName(); }
 	@JsonProperty("errors")
 	default String getErrorsString(){ return Modes.toString(MXErrorMode.class, getErrorModeValue()); }
 	@JsonProperty("chargerModeName")
