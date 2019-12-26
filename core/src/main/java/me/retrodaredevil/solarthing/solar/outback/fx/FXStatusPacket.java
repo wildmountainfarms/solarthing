@@ -1,9 +1,9 @@
 package me.retrodaredevil.solarthing.solar.outback.fx;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
 import me.retrodaredevil.solarthing.solar.outback.OutbackPacket;
@@ -18,7 +18,7 @@ import java.util.Set;
 @SuppressWarnings("unused")
 @JsonDeserialize(using = ImmutableFXStatusPacket.Deserializer.class)
 @JsonTypeName("FX_STATUS")
-@JsonIgnoreProperties // explicit
+@JsonExplicit
 public interface FXStatusPacket extends OutbackPacket, BatteryVoltage, FXWarningReporter, FXMiscReporter {
 	
 	// region Packet Values

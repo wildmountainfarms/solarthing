@@ -1,11 +1,11 @@
 package me.retrodaredevil.okhttp3;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 
-@JsonPOJOBuilder(buildMethodName = "build")
-@JsonIgnoreProperties
+@JsonPOJOBuilder
+@JsonExplicit
 public class OkHttpPropertiesBuilder implements OkHttpProperties {
 
 	private boolean isRetryOnConnectionFailure = true;

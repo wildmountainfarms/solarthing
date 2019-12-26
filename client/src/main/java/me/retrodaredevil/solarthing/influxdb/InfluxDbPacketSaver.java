@@ -1,6 +1,9 @@
 package me.retrodaredevil.solarthing.influxdb;
 
-import com.google.gson.*;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ValueNode;
 import me.retrodaredevil.influxdb.InfluxProperties;
 import me.retrodaredevil.okhttp3.OkHttpProperties;
 import me.retrodaredevil.solarthing.influxdb.retention.RetentionPolicy;
@@ -12,6 +15,7 @@ import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
+import me.retrodaredevil.solarthing.util.JacksonUtil;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.influxdb.InfluxDB;
@@ -24,10 +28,7 @@ import org.influxdb.dto.QueryResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.Objects.requireNonNull;
@@ -40,7 +41,7 @@ import static java.util.Objects.requireNonNull;
 public class InfluxDbPacketSaver implements PacketHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(InfluxDbPacketSaver.class);
 	private static final Logger INFLUX_LOGGER = LoggerFactory.getLogger("org.influxdb");
-	private static final Gson GSON = new GsonBuilder().serializeNulls().create();
+	private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.defaultMapper();
 
 	private final InfluxProperties properties;
 	private final OkHttpProperties okHttpProperties;
@@ -148,17 +149,17 @@ public class InfluxDbPacketSaver implements PacketHandler {
 			for (Packet packet : packetGroup.getPackets()) {
 				Point.Builder pointBuilder = pointCreator.createBuilder(packet).time(time, TimeUnit.MILLISECONDS);
 
-				JsonObject json = GSON.toJsonTree(packet).getAsJsonObject();
-				for (Map.Entry<String, JsonPrimitive> entry : flattenJsonObject(json)) {
+				ObjectNode json = OBJECT_MAPPER.valueToTree(packet);
+				for (Map.Entry<String, ValueNode> entry : flattenJsonObject(json)) {
 					String key = entry.getKey();
-					JsonPrimitive prim = entry.getValue();
+					ValueNode prim = entry.getValue();
 					if (prim.isNumber()) {
 						// always store as float datatype
-						pointBuilder.addField(key, prim.getAsDouble());
-					} else if (prim.isString()) {
-						pointBuilder.addField(key, prim.getAsString());
+						pointBuilder.addField(key, prim.asDouble());
+					} else if (prim.isTextual()) {
+						pointBuilder.addField(key, prim.asText());
 					} else if (prim.isBoolean()) {
-						pointBuilder.addField(key, prim.getAsBoolean());
+						pointBuilder.addField(key, prim.asBoolean());
 					} else throw new AssertionError("This primitive isn't a number, string or boolean! It's: " + prim);
 				}
 				points.point(pointBuilder.build());
@@ -200,16 +201,17 @@ public class InfluxDbPacketSaver implements PacketHandler {
 				InfluxDB.ResponseFormat.JSON
 		).setLogLevel(InfluxDB.LogLevel.NONE);
 	}
-	private Set<Map.Entry<String, JsonPrimitive>> flattenJsonObject(JsonObject jsonObject) {
-		Map<String, JsonPrimitive> r = new LinkedHashMap<>();
-		for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
+	private Set<Map.Entry<String, ValueNode>> flattenJsonObject(ObjectNode object) {
+		Map<String, ValueNode> r = new LinkedHashMap<>();
+		for (Iterator<Map.Entry<String, JsonNode>> it = object.fields(); it.hasNext(); ) {
+			Map.Entry<String, JsonNode> entry = it.next();
 			String key = entry.getKey();
-			JsonElement element = entry.getValue();
-			if (element.isJsonPrimitive()) {
-				r.put(key, element.getAsJsonPrimitive());
-			} else if(element.isJsonObject()){
-				Set<Map.Entry<String, JsonPrimitive>> flat = flattenJsonObject(element.getAsJsonObject());
-				for(Map.Entry<String, JsonPrimitive> subEntry : flat){
+			JsonNode element = entry.getValue();
+			if (element.isValueNode() && !element.isNull()) {
+				r.put(key, (ValueNode) element);
+			} else if(element.isObject()){
+				Set<Map.Entry<String, ValueNode>> flat = flattenJsonObject((ObjectNode) element);
+				for(Map.Entry<String, ValueNode> subEntry : flat){
 					r.put(key + "." + subEntry.getKey(), subEntry.getValue());
 				}
 			}

@@ -1,34 +1,24 @@
 package me.retrodaredevil.solarthing.program;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.jsontype.NamedType;
-import com.google.gson.*;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
-import com.google.gson.stream.JsonWriter;
 import me.retrodaredevil.couchdb.CouchProperties;
-import me.retrodaredevil.influxdb.InfluxProperties;
 import me.retrodaredevil.io.IOBundle;
 import me.retrodaredevil.io.modbus.*;
 import me.retrodaredevil.io.serial.SerialConfig;
 import me.retrodaredevil.io.serial.SerialConfigBuilder;
-import me.retrodaredevil.io.serial.SerialPortException;
-import me.retrodaredevil.okhttp3.OkHttpProperties;
 import me.retrodaredevil.solarthing.OnDataReceive;
 import me.retrodaredevil.solarthing.commands.CommandProvider;
 import me.retrodaredevil.solarthing.commands.CommandProviderMultiplexer;
 import me.retrodaredevil.solarthing.commands.sequence.CommandSequence;
-import me.retrodaredevil.solarthing.config.JsonCouchDb;
-import me.retrodaredevil.solarthing.config.JsonIO;
-import me.retrodaredevil.solarthing.config.JsonInfluxDb;
-import me.retrodaredevil.solarthing.config.JsonOkHttp;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
-import me.retrodaredevil.solarthing.config.databases.DatabaseType;
 import me.retrodaredevil.solarthing.config.databases.IndividualSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.InfluxDbDatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.LatestFileDatabaseSettings;
+import me.retrodaredevil.solarthing.config.io.IOConfig;
+import me.retrodaredevil.solarthing.config.io.SerialIOConfig;
 import me.retrodaredevil.solarthing.config.options.*;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketSaver;
 import me.retrodaredevil.solarthing.influxdb.ConstantDatabaseNameGetter;
@@ -36,20 +26,16 @@ import me.retrodaredevil.solarthing.influxdb.ConstantMeasurementPacketPointCreat
 import me.retrodaredevil.solarthing.influxdb.DocumentedMeasurementPacketPointCreator;
 import me.retrodaredevil.solarthing.influxdb.InfluxDbPacketSaver;
 import me.retrodaredevil.solarthing.influxdb.retention.FrequentRetentionPolicyGetter;
-import me.retrodaredevil.solarthing.influxdb.retention.RetentionPolicy;
-import me.retrodaredevil.solarthing.influxdb.retention.RetentionPolicySetting;
 import me.retrodaredevil.solarthing.outhouse.OuthousePacketCreator;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.HourIntervalPacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollections;
-import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
-import me.retrodaredevil.solarthing.packets.handling.PacketListReceiverMultiplexer;
 import me.retrodaredevil.solarthing.packets.creation.TextPacketCreator;
 import me.retrodaredevil.solarthing.packets.handling.*;
 import me.retrodaredevil.solarthing.packets.handling.implementations.FileWritePacketHandler;
-import me.retrodaredevil.solarthing.packets.handling.implementations.GsonStringPacketHandler;
+import me.retrodaredevil.solarthing.packets.handling.implementations.JacksonStringPacketHandler;
 import me.retrodaredevil.solarthing.packets.handling.implementations.PacketHandlerPacketListReceiver;
 import me.retrodaredevil.solarthing.packets.handling.implementations.TimedPacketReceiver;
 import me.retrodaredevil.solarthing.packets.instance.InstanceFragmentIndicatorPackets;
@@ -64,14 +50,11 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusSlaveRe
 import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusSlaveWrite;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import me.retrodaredevil.solarthing.util.frequency.FrequentHandler;
-import me.retrodaredevil.solarthing.util.frequency.FrequentObject;
 import me.retrodaredevil.solarthing.util.scheduler.MidnightIterativeScheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
@@ -82,10 +65,8 @@ public final class SolarMain {
 	private SolarMain(){ throw new UnsupportedOperationException(); }
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(SolarMain.class);
-	@Deprecated
-	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
 	private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.defaultMapper();
-	
+
 	private static final SerialConfig MATE_CONFIG = new SerialConfigBuilder(19200)
 		.setDataBits(8)
 		.setParity(SerialConfig.Parity.NONE)
@@ -199,7 +180,7 @@ public final class SolarMain {
 									(packets, wasInstant) -> {
 										LOGGER.debug("Debugging all packets");
 										try {
-											LOGGER.debug(OBJECT_MAPPER.writeValueAsString(packets));
+											LOGGER.debug(OBJECT_MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(packets));
 										} catch (JsonProcessingException e) {
 											LOGGER.debug("Never mind about that...", e);
 										}
@@ -263,16 +244,24 @@ public final class SolarMain {
 			}
 		});
 	}
-	private static int connectRoverSetup(RoverSetupProgramOptions options) throws IOException{
+	private static int connectRoverSetup(RoverSetupProgramOptions options) {
 		return doRoverProgram(options, RoverSetupProgram::startRoverSetup);
 	}
-	private static int doRoverProgram(RoverOption options, RoverProgramRunner runner) throws IOException {
+	private static int doRoverProgram(RoverOption options, RoverProgramRunner runner) {
 		File dummyFile = options.getDummyFile();
 		if(dummyFile != null){
-			final byte[] bytes = Files.readAllBytes(dummyFile.toPath());
-			String json = new String(bytes, StandardCharsets.UTF_8);
-			JsonObject jsonPacket = new GsonBuilder().create().fromJson(json, JsonObject.class);
-			RoverStatusPacket roverStatusPacket = RoverStatusPackets.createFromJson(jsonPacket);
+			final FileInputStream fileInputStream;
+			try {
+				fileInputStream = new FileInputStream(dummyFile);
+			} catch (FileNotFoundException e) {
+				throw new RuntimeException("The dummy file was not found!", e);
+			}
+			final RoverStatusPacket roverStatusPacket;
+			try {
+				roverStatusPacket = OBJECT_MAPPER.readValue(fileInputStream, RoverStatusPacket.class);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
 			DummyRoverReadWrite readWrite = new DummyRoverReadWrite(
 				roverStatusPacket,
 				(fieldName, previousValue, newValue) -> System.out.println(fieldName + " changed from " + previousValue + " to " + newValue)
@@ -366,34 +355,34 @@ public final class SolarMain {
 				CouchDbDatabaseSettings settings = (CouchDbDatabaseSettings) config.getSettings();
 				CouchProperties couchProperties = settings.getCouchProperties();
 				r.add(new ThrottleFactorPacketHandler(
-					new PrintPacketHandleExceptionWrapper(new CouchDbPacketSaver(couchProperties, uniqueName)),
-					frequencySettings,
-					true
+						new PrintPacketHandleExceptionWrapper(new CouchDbPacketSaver(couchProperties, uniqueName)),
+						frequencySettings,
+						true
 				));
 			} else if(InfluxDbDatabaseSettings.TYPE.equals(config.getType())) {
 				InfluxDbDatabaseSettings settings = (InfluxDbDatabaseSettings) config.getSettings();
 				String databaseName = settings.getDatabaseName();
 				String measurementName = settings.getMeasurementName();
 				r.add(new ThrottleFactorPacketHandler(
-					new InfluxDbPacketSaver(
-						settings.getInfluxProperties(),
-						settings.getOkHttpProperties(),
-						new ConstantDatabaseNameGetter(databaseName != null ? databaseName : uniqueName),
-						measurementName != null
-							? new ConstantMeasurementPacketPointCreator(measurementName)
-							: (databaseName != null
-								? new ConstantMeasurementPacketPointCreator(uniqueName) // A constant database name was specified unrelated to the uniqueName
-								: DocumentedMeasurementPacketPointCreator.INSTANCE
-							),
-						new FrequentRetentionPolicyGetter(new FrequentHandler<>(settings.getFrequentRetentionPolicyList()))
-					),
-					frequencySettings,
-					true
+						new InfluxDbPacketSaver(
+								settings.getInfluxProperties(),
+								settings.getOkHttpProperties(),
+								new ConstantDatabaseNameGetter(databaseName != null ? databaseName : uniqueName),
+								measurementName != null
+										? new ConstantMeasurementPacketPointCreator(measurementName)
+										: (databaseName != null
+												? new ConstantMeasurementPacketPointCreator(uniqueName) // A constant database name was specified unrelated to the uniqueName
+												: DocumentedMeasurementPacketPointCreator.INSTANCE
+										),
+								new FrequentRetentionPolicyGetter(new FrequentHandler<>(settings.getFrequentRetentionPolicyList()))
+						),
+						frequencySettings,
+						true
 				));
 			} else if (LatestFileDatabaseSettings.TYPE.equals(config.getType())){
 				LatestFileDatabaseSettings settings = (LatestFileDatabaseSettings) config.getSettings();
 				r.add(new ThrottleFactorPacketHandler(
-					new FileWritePacketHandler(settings.getFile(), new GsonStringPacketHandler(), false),
+					new FileWritePacketHandler(settings.getFile(), new JacksonStringPacketHandler(OBJECT_MAPPER), false),
 					frequencySettings,
 					false
 				));
@@ -424,36 +413,32 @@ public final class SolarMain {
 			} catch (IOException e) {
 				throw new RuntimeException("Couldn't parse data!", e);
 			}
-//			Map<String, IndividualSettings> individualSettingsMap = parseAllIndividualSettings(jsonObject.get("settings"));
 			r.add(databaseConfig);
 		}
 		return r;
 	}
 
-	private static IOBundle createIOBundle(File configFile, SerialConfig defaultSerialConfig){
-		final String contents;
+	private static IOBundle createIOBundle(File configFile, SerialConfig defaultSerialConfig) throws Exception {
+		final FileInputStream inputStream;
 		try {
-			contents = new String(Files.readAllBytes(configFile.toPath()), Charset.defaultCharset());
+			inputStream = new FileInputStream(configFile);
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException(e);
+		}
+		InjectableValues.Std iv = new InjectableValues.Std();
+		iv.addValue(SerialIOConfig.DEFAULT_SERIAL_CONFIG_KEY, defaultSerialConfig);
+
+		ObjectMapper mapper = JacksonUtil.defaultMapper();
+		mapper.setInjectableValues(iv);
+		final IOConfig config;
+		try {
+			config = mapper.readValue(inputStream, IOConfig.class);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		JsonObject jsonObject = JsonParser.parseString(contents).getAsJsonObject();
-		return createIOBundle(jsonObject, defaultSerialConfig);
+		return config.createIOBundle();
 	}
-	public static IOBundle createIOBundle(JsonObject jsonObject, SerialConfig defaultSerialConfig){
-		String type = jsonObject.get("type").getAsString();
-		if("serial".equals(type)){
-			try {
-				return JsonIO.getSerialIOBundleFromJson(jsonObject, defaultSerialConfig);
-			} catch (SerialPortException e) {
-				throw new RuntimeException(e);
-			}
-		} else if("standard".equals(type)){
-			return IOBundle.Defaults.STANDARD_IN_OUT;
-		}
-		throw new UnsupportedOperationException("Unknown type: " + type);
-	}
-	
+
 	public static int doMain(String[] args){
 		if(args.length < 1){
 			System.err.println("Usage: <java -jar ...> {base config file}");

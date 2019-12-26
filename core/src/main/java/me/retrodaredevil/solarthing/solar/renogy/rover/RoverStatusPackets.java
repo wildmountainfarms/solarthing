@@ -53,7 +53,8 @@ public final class RoverStatusPackets {
 			read.getSpecialPowerControlE02DRaw()
 		);
 	}
-	
+
+	@Deprecated
 	public static RoverStatusPacket createFromJson(JsonObject object){
 		return new ImmutableRoverStatusPacket(
 			getInt(object, "maxVoltage"), getInt(object, "ratedChargingCurrent"),

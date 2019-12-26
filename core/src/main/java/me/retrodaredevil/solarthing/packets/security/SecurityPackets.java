@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import me.retrodaredevil.solarthing.packets.security.crypto.InvalidKeyException;
 
 public final class SecurityPackets {
+	@Deprecated
 	public static SecurityPacket createFromJson(JsonObject jsonObject){
 		final String packetName = jsonObject.getAsJsonPrimitive("packetType").getAsString();
 		final SecurityPacketType packetType;

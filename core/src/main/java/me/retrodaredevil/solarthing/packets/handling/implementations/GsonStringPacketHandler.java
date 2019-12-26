@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 
+@Deprecated
 public class GsonStringPacketHandler implements StringPacketHandler {
 	private final Gson gson;
 	
