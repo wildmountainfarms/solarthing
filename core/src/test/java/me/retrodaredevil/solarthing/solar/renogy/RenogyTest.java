@@ -1,11 +1,12 @@
 package me.retrodaredevil.solarthing.solar.renogy;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 import me.retrodaredevil.solarthing.solar.renogy.rover.*;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.MutableSpecialPowerControl_E021;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.MutableSpecialPowerControl_E02D;
+import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
@@ -113,7 +114,7 @@ final class RenogyTest {
 		assertFalse(power.is24VSystem());
 	}
 	@Test
-	void testPacket(){
+	void testPacket() throws JsonProcessingException {
 		Rover.OperatingSettingBundle operating = new Rover.OperatingSettingBundle(0, 0);
 		Rover.SensingBundle sensing = new Rover.SensingBundle(0, 0, 0);
 		RoverStatusPacket packet = new ImmutableRoverStatusPacket(
@@ -132,13 +133,12 @@ final class RenogyTest {
 			0, operating, operating, operating, operating, 0,0,0,0,
 			0, sensing, sensing, sensing, 0,0,0
 		);
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		String json = gson.toJson(packet);
+		ObjectMapper mapper = JacksonUtil.defaultMapper();
+		String json = mapper.writeValueAsString(packet);
 		System.out.println(json);
-		JsonObject object = gson.fromJson(json, JsonObject.class);
-		RoverStatusPacket parsed = RoverStatusPackets.createFromJson(object);
-		
-		String json2 = gson.toJson(parsed);
+		RoverStatusPacket parsed = mapper.readValue(json, RoverStatusPacket.class);
+
+		String json2 = mapper.writeValueAsString(parsed);
 		assertEquals(json, json2);
 		
 		assertFalse(parsed.isNewDay(parsed)); // because they're the same, just do a quick check to make sure this method returns false. Maybe we'll add another test for it later...

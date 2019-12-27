@@ -1,17 +1,27 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 import me.retrodaredevil.solarthing.solar.common.*;
-import me.retrodaredevil.solarthing.solar.renogy.*;
+import me.retrodaredevil.solarthing.solar.renogy.BatteryType;
+import me.retrodaredevil.solarthing.solar.renogy.ProductType;
+import me.retrodaredevil.solarthing.solar.renogy.Version;
+import me.retrodaredevil.solarthing.solar.renogy.Voltage;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.ImmutableSpecialPowerControl_E021;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.ImmutableSpecialPowerControl_E02D;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerControl_E021;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerControl_E02D;
+import org.apache.commons.codec.binary.Base64;
 
 import java.util.Collection;
 
 @SuppressWarnings("unused")
+@JsonExplicit
+@JsonIgnoreProperties({"productModelString", "hardwareVersionString", "softwareVersionString", "streetLightBrightness", "streetLightOn", "chargingStateName", "errors", "batteryTypeName", "loadWorkingModeName"})
 public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeController, DailyChargeController, DailyBatteryVoltage, Identifiable {
 	
 	@Override
@@ -34,6 +44,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	 * Should be serialized as "maxVoltage"
 	 * @return The int value of the max voltage
 	 */
+	@JsonProperty("maxVoltage")
 	int getMaxVoltageValue();
 	
 	/** @return The enum value representing the max voltage */
@@ -43,18 +54,21 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	 * Should be serialized as "ratedChargingCurrent"
 	 * @return The rated charging current
 	 */
+	@JsonProperty("ratedChargingCurrent")
 	int getRatedChargingCurrentValue();
 
 	/**
 	 * Should be serialized as "ratedDischargingCurrent"
 	 * @return The rated discharging current
 	 */
+	@JsonProperty("ratedDischargingCurrent")
 	int getRatedDischargingCurrentValue();
 
 	/**
 	 * Should be serialized as "productType"
 	 * @return The int value representing the product type
 	 */
+	@JsonProperty("productType")
 	int getProductTypeValue();
 	/**
 	 * @return The enum value representing the product type
@@ -66,11 +80,16 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	 * @return An array of 16 bytes in length representing the product model
 	 */
 	byte[] getProductModelValue();
+
+	@Deprecated
+	@JsonProperty("productModelEncoded") // jackson should encode and decode as this as base64 when serializing and deserializing
+	default String getProductModelEncoded() { return Base64.encodeBase64String(getProductModelValue()); }
 	
 	/**
 	 * Should be serialized as "productModelString"
 	 * @return The string representing the product model
 	 */
+	@JsonProperty("productModelString")
 	default String getProductModel(){
 		byte[] raw = getProductModelValue();
 		if(raw.length != 16){
@@ -90,39 +109,48 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	 * Should be serialized as "softwareVersion"
 	 * @return The int value representing the software version
 	 */
+	@JsonProperty("softwareVersion")
 	int getSoftwareVersionValue();
 	/**
 	 * If serialized, should be serialized as "softwareVersionString" using {@link Version#toString()}
 	 * @return The {@link Version} object representing the software version
 	 */
+	@JsonSerialize(using = Version.StringOnlySerializer.class)
+	@JsonProperty("softwareVersionString")
 	default Version getSoftwareVersion(){ return new Version(getSoftwareVersionValue()); }
 	
 	/**
 	 * Should be serialized as "hardwareVersion"
 	 * @return The int value representing the hardware version
 	 */
+	@JsonProperty("hardwareVersion")
 	int getHardwareVersionValue();
 	/**
 	 * If serialized, should be serialized as "hardwareVersionString" using {@link Version#toString()}
 	 * @return The {@link Version} object representing the hardware version
 	 */
+	@JsonSerialize(using = Version.StringOnlySerializer.class)
+	@JsonProperty("hardwareVersionString")
 	default Version getHardwareVersion() { return new Version(getHardwareVersionValue()); }
 	
 	/**
 	 * Should be serialized as "productSerialNumber"
 	 * @return The serial number
 	 */
+	@JsonProperty("productSerialNumber")
 	int getProductSerialNumber();
 	
 	/**
-	 * Should be serialized as "address"
+	 * Should be serialized as "controllerDeviceAddress"
 	 * @return A number in range [1..247] representing the controller device address
 	 */
+	@JsonProperty("controllerDeviceAddress")
 	int getControllerDeviceAddress();
 	
 	/**
 	 * @return A number in range [0..100] representing the current battery capacity value (The battery percentage)
 	 */
+	@JsonProperty("batteryCapacitySOC")
 	int getBatteryCapacitySOC();
 	
 	@Override
@@ -132,6 +160,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	 * Should be serialized as "chargingCurrent"
 	 * @return The charging current
 	 */
+	@JsonProperty("chargingCurrent")
 	@Override
 	Float getChargingCurrent();
 	
@@ -139,11 +168,13 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	 * Should be serialized as "controllerTemperatureRaw"
 	 * @return The raw controller temperature
 	 */
+	@JsonProperty("controllerTemperatureRaw")
 	int getControllerTemperatureRaw();
 	/**
 	 * Should be serialized as "batteryTemperatureRaw"
 	 * @return The raw battery temperature
 	 */
+	@JsonProperty("batteryTemperatureRaw")
 	int getBatteryTemperatureRaw();
 	
 	/**
@@ -171,6 +202,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	 * AKA street light voltage
 	 * @return The load/street light voltage in volts
 	 */
+	@JsonProperty("loadVoltage")
 	float getLoadVoltage();
 	
 	/**
@@ -179,6 +211,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	 * AKA street light current
 	 * @return The load/street light current in amps
 	 */
+	@JsonProperty("loadCurrent")
 	float getLoadCurrent();
 	
 	/**
@@ -187,13 +220,17 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	 * AKA street light power
 	 * @return The load/street light power in watts
 	 */
+	@JsonProperty("loadPower")
 	int getLoadPower();
 	
 	/** AKA PV/Solar Panel voltage*/
+	@JsonProperty("inputVoltage")
 	@Override
 	Float getInputVoltage();
+	@JsonProperty("pvCurrent")
 	@Override
 	Float getPVCurrent();
+	@JsonProperty("chargingPower")
 	@Override
 	Integer getChargingPower();
 
@@ -201,63 +238,92 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	float getDailyMinBatteryVoltage();
 	@Override
 	float getDailyMaxBatteryVoltage();
-	
+
 	/**
 	 * @return The daily record for the maximum charger current
 	 */
+	@JsonProperty("dailyMaxChargingCurrent")
 	float getDailyMaxChargingCurrent();
 	
 	/**
 	 * @return The daily record for the maximum discharging current
 	 */
+	@JsonProperty("dailyMaxDischargingCurrent")
 	float getDailyMaxDischargingCurrent();
+	@JsonProperty("dailyMaxChargingPower")
 	int getDailyMaxChargingPower();
+	@JsonProperty("dailyMaxDischargingPower")
 	int getDailyMaxDischargingPower();
-	
+
+	@JsonProperty("dailyAH")
 	@Override
 	int getDailyAH();
+	@JsonProperty("dailyAHDischarging")
 	int getDailyAHDischarging();
 	
 	// 0x0113
 	@Override
 	float getDailyKWH();
+	@JsonProperty("dailyKWHConsumption")
 	float getDailyKWHConsumption();
-	
+
+	@JsonProperty("operatingDaysCount")
 	int getOperatingDaysCount();
+	@JsonProperty("batteryOverDischargesCount")
 	int getBatteryOverDischargesCount();
+	@JsonProperty("batteryFullChargesCount")
 	int getBatteryFullChargesCount();
+	@JsonProperty("chargingAmpHoursOfBatteryCount")
 	int getChargingAmpHoursOfBatteryCount();
+	@JsonProperty("dischargingAmpHoursOfBatteryCount")
 	int getDischargingAmpHoursOfBatteryCount();
+	@JsonProperty("cumulativeKWH")
 	float getCumulativeKWH();
+	@JsonProperty("cumulativeKWHConsumption")
 	float getCumulativeKWHConsumption();
-	
+
+	@JsonProperty("streetLightValue")
 	int getRawStreetLightValue();
 	default int getStreetLightStatusValue(){
 		return ~StreetLight.IGNORED_BITS & getRawStreetLightValue();
 	}
 	default StreetLight getStreetLightStatus(){ return Modes.getActiveMode(StreetLight.class, getStreetLightStatusValue()); }
+	@JsonProperty("streetLightBrightness") // convenient
 	default int getStreetLightBrightnessPercent(){ return StreetLight.getBrightnessValue(getRawStreetLightValue()); }
-	
+	@JsonProperty("streetLightOn") // convenient
+	default boolean isStreetLightOn(){ return getStreetLightStatus() == StreetLight.ON; }
+
+	@JsonProperty("chargingState")
 	int getChargingStateValue();
 	@Override
 	default ChargingState getChargingMode(){ return Modes.getActiveMode(ChargingState.class, getChargingStateValue()); }
-	
+	@JsonProperty("chargingStateName") // convenient
+	default String getChargingStateName(){ return getChargingMode().getModeName(); }
+
+	@JsonProperty("errorMode")
 	@Override
 	int getErrorModeValue();
 	@Override
 	default Collection<RoverErrorMode> getErrorModes(){
 		return Modes.getActiveModes(RoverErrorMode.class, getErrorModeValue());
 	}
+	@JsonProperty("errors")
+	default String getErrorsString(){
+		return Modes.toString(RoverErrorMode.class, getErrorModeValue());
+	}
 	
 	/**
 	 *
 	 * @return The nominal battery capacity in AmpHours (AH)
 	 */
+	@JsonProperty("nominalBatteryCapacity")
 	int getNominalBatteryCapacity();
 	
 	/** Should be serialized as "systemVoltageSetting" */
+	@JsonProperty("systemVoltageSetting")
 	int getSystemVoltageSettingValue();
 	/** Should be serialized as "recognizedVoltage" */
+	@JsonProperty("recognizedVoltage")
 	int getRecognizedVoltageValue();
 	
 	/** @return Any voltage from {@link Voltage} representing the current voltage setting */
@@ -270,35 +336,53 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	
 	// 0xE004
 	/** Should be serialized as "batteryType" */
+	@JsonProperty("batteryType")
 	int getBatteryTypeValue();
 	default BatteryType getBatteryType(){ return Modes.getActiveMode(BatteryType.class, getBatteryTypeValue()); }
-	
+	@JsonProperty("batteryTypeName") // convenient
+	default String getBatteryTypeName(){ return getBatteryType().getModeName(); }
+
+	@JsonProperty("overVoltageThresholdRaw")
 	int getOverVoltageThresholdRaw();
+	@JsonProperty("chargingVoltageLimitRaw")
 	int getChargingVoltageLimitRaw();
+	@JsonProperty("equalizingChargingVoltageRaw")
 	int getEqualizingChargingVoltageRaw();
 	/** AKA overcharge voltage (for lithium batteries) */
+	@JsonProperty("boostChargingVoltageRaw")
 	int getBoostChargingVoltageRaw();
 	/** AKA overcharge recovery voltage (for lithium batteries) */
+	@JsonProperty("floatingChargingVoltageRaw")
 	int getFloatingChargingVoltageRaw();
+	@JsonProperty("boostChargingRecoveryVoltageRaw")
 	int getBoostChargingRecoveryVoltageRaw();
+	@JsonProperty("overDischargeRecoveryVoltageRaw")
 	int getOverDischargeRecoveryVoltageRaw();
+	@JsonProperty("underVoltageWarningLevelRaw")
 	int getUnderVoltageWarningLevelRaw();
+	@JsonProperty("overDischargeVoltageRaw")
 	int getOverDischargeVoltageRaw();
+	@JsonProperty("dischargingLimitVoltageRaw")
 	int getDischargingLimitVoltageRaw();
 	
 	// 0xE00F
+	@JsonProperty("endOfChargeSOC")
 	int getEndOfChargeSOC();
+	@JsonProperty("endOfDischargeSOC")
 	int getEndOfDischargeSOC();
-	
+
+	@JsonProperty("overDischargeTimeDelaySeconds")
 	int getOverDischargeTimeDelaySeconds();
 	
 	@Deprecated
 	static int getEqualizingChargingTimeMinutesFromRaw(int raw){ return raw + 10; }
+	@JsonProperty("equalizingChargingTimeRaw")
 	int getEqualizingChargingTimeRaw();
 	default int getEqualizingChargingTimeMinutes(){ return getEqualizingChargingTimeRaw(); }
 	
 	@Deprecated
 	static int getBoostChargingTimeMinutesFromRaw(int raw){ return raw + 10; }
+	@JsonProperty("boostChargingTimeRaw")
 	int getBoostChargingTimeRaw();
 	default int getBoostChargingTimeMinutes(){ return getBoostChargingTimeRaw(); }
 	
@@ -309,6 +393,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 		}
 		return raw + 5;
 	}
+	@JsonProperty("equalizingChargingIntervalRaw")
 	int getEqualizingChargingIntervalRaw();
 	default int getEqualizingChargingIntervalDays(){
 		return getEqualizingChargingIntervalRaw();
@@ -321,6 +406,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 		}
 		return raw + 1;
 	}
+	@JsonProperty("temperatureCompensationFactorRaw")
 	int getTemperatureCompensationFactorRaw();
 	/** Units: mV/C/2V*/
 	default int getTemperatureCompensationFactor(){
@@ -333,19 +419,34 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	default OperatingSettingBundle getOperatingSettingBundle(OperatingSetting setting){
 		return new OperatingSettingBundle(getOperatingDurationHours(setting), getOperatingPowerPercentage(setting));
 	}
-	
+	@JsonProperty("operatingStage1")
+	default OperatingSettingBundle getOperatingStage1(){ return getOperatingSettingBundle(OperatingSetting.STAGE_1); }
+	@JsonProperty("operatingStage2")
+	default OperatingSettingBundle getOperatingStage2(){ return getOperatingSettingBundle(OperatingSetting.STAGE_2); }
+	@JsonProperty("operatingStage3")
+	default OperatingSettingBundle getOperatingStage3(){ return getOperatingSettingBundle(OperatingSetting.STAGE_3); }
+	@JsonProperty("operatingMorningOn")
+	default OperatingSettingBundle getOperatingMorningOn(){ return getOperatingSettingBundle(OperatingSetting.MORNING_ON); }
+
 	/** Should be serialized as "loadWorkingMode" */
+	@JsonProperty("loadWorkingMode")
 	int getLoadWorkingModeValue();
 	default LoadWorkingMode getLoadWorkingMode() { return Modes.getActiveMode(LoadWorkingMode.class, getLoadWorkingModeValue()); }
-	
+	@JsonProperty("loadWorkingModeName") // convenient string
+	default String getLoadWorkingModeName() { return getLoadWorkingMode().getModeName(); }
+
+	@JsonProperty("lightControlDelayMinutes")
 	int getLightControlDelayMinutes();
+	@JsonProperty("lightControlVoltage")
 	int getLightControlVoltage();
 	
 	// 0xE020
+	@JsonProperty("ledLoadCurrentSettingRaw")
 	int getLEDLoadCurrentSettingRaw();
 	/** Units: mA */
 	default int getLEDLoadCurrentSettingMilliAmps(){ return getLEDLoadCurrentSettingRaw() * 10; }
-	
+
+	@JsonProperty("specialPowerControlE021Raw")
 	int getSpecialPowerControlE021Raw();
 	default SpecialPowerControl_E021 getSpecialPowerControlE021(){ return new ImmutableSpecialPowerControl_E021(getSpecialPowerControlE021Raw()); }
 	
@@ -358,15 +459,24 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	default SensingBundle getSensingBundle(Sensing sensing){
 		return new SensingBundle(getWorkingHoursRaw(sensing), getPowerWithPeopleSensedRaw(sensing), getPowerWithNoPeopleSensedRaw(sensing));
 	}
-	
-	
+	@JsonProperty("sensed1")
+	default SensingBundle getSensed1(){ return getSensingBundle(Sensing.SENSING_1); }
+	@JsonProperty("sensed2")
+	default SensingBundle getSensed2(){ return getSensingBundle(Sensing.SENSING_2); }
+	@JsonProperty("sensed3")
+	default SensingBundle getSensed3(){ return getSensingBundle(Sensing.SENSING_3); }
+
+
+	@JsonProperty("sensingTimeDelayRaw")
 	int getSensingTimeDelayRaw();
 	default int getSensingTimeDelaySeconds(){ return getSensingTimeDelayRaw() + 10; }
-	
+
+	@JsonProperty("ledLoadCurrentRaw")
 	int getLEDLoadCurrentRaw();
 	/** Units: mA */
 	default int getLEDLoadCurrentMilliAmps(){ return getLEDLoadCurrentRaw() * 10; }
-	
+
+	@JsonProperty("specialPowerControlE02DRaw")
 	int getSpecialPowerControlE02DRaw();
 	default SpecialPowerControl_E02D getSpecialPowerControlE02D(){ return new ImmutableSpecialPowerControl_E02D(getSpecialPowerControlE02DRaw()); }
 	
