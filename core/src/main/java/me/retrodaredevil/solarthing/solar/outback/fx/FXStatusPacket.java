@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.Modes;
+import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
 import me.retrodaredevil.solarthing.solar.outback.OutbackPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.FXMiscReporter;
@@ -16,11 +17,15 @@ import java.util.Set;
  * Represents an FX Status Packet from an Outback Mate
  */
 @SuppressWarnings("unused")
-@JsonDeserialize(using = ImmutableFXStatusPacket.Deserializer.class)
+@JsonDeserialize(as = ImmutableFXStatusPacket.class)
 @JsonTypeName("FX_STATUS")
 @JsonExplicit
 public interface FXStatusPacket extends OutbackPacket, BatteryVoltage, FXWarningReporter, FXMiscReporter {
-	
+	@Override
+	default SolarStatusPacketType getPacketType(){
+		return SolarStatusPacketType.FX_STATUS;
+	}
+
 	// region Packet Values
 	/**
 	 * Should be serialized as "inverterCurrentRaw" if serialized at all
@@ -175,35 +180,37 @@ public interface FXStatusPacket extends OutbackPacket, BatteryVoltage, FXWarning
 	 * @return The name of the operating mode
 	 */
 	@JsonProperty("operatingModeName")
-	String getOperatingModeName();
+	default String getOperatingModeName(){
+		return getOperationalMode().getModeName();
+	}
 
 	/**
 	 * Should be serialized as "errors"
 	 * @return The errors represented as a string
 	 */
 	@JsonProperty("errors")
-	String getErrorsString();
+	default String getErrorsString() { return Modes.toString(FXErrorMode.class, getErrorModeValue()); }
 
 	/**
 	 * Should be serialized as "acModeName"
 	 * @return The name of the ac mode
 	 */
 	@JsonProperty("acModeName")
-	String getACModeName();
+	default String getACModeName() { return getACMode().getModeName(); }
 
 	/**
 	 * Should be serialized as "miscModes"
 	 * @return The misc modes represented as a string
 	 */
 	@JsonProperty("miscModes")
-	String getMiscModesString();
+	default String getMiscModesString() { return Modes.toString(MiscMode.class, getMiscValue()); }
 
 	/**
 	 * Should be serialized as "warnings"
 	 * @return The warning modes represented as a string
 	 */
 	@JsonProperty("warnings")
-	String getWarningsString();
+	default String getWarningsString() { return Modes.toString(WarningMode.class, getWarningModeValue()); }
 	// endregion
 
 	// region Default Power Getters

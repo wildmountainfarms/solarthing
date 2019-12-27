@@ -1,11 +1,13 @@
 package me.retrodaredevil.solarthing.solar.outback.mx;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.packets.support.Support;
+import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import me.retrodaredevil.solarthing.solar.common.BasicChargeController;
 import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
 import me.retrodaredevil.solarthing.solar.common.DailyChargeController;
@@ -23,6 +25,11 @@ import java.util.Set;
 @JsonTypeName("MXFM_STATUS")
 @JsonExplicit
 public interface MXStatusPacket extends OutbackPacket, BasicChargeController, DailyChargeController, BatteryVoltage {
+	@Override
+	default SolarStatusPacketType getPacketType(){
+		return SolarStatusPacketType.MXFM_STATUS;
+	}
+
 	@Override
 	default boolean isNewDay(DailyData previousDailyData){
 		if (!(previousDailyData instanceof MXStatusPacket)) {
@@ -98,7 +105,6 @@ public interface MXStatusPacket extends OutbackPacket, BasicChargeController, Da
 	 * This number is reset every morning when the MX wakes up
 	 * @return [0..99.9] representing the running total of KWatt Hours produced by the PV array
 	 */
-	@JsonProperty("dailyKWH")
 	@Override
 	float getDailyKWH();
 	
@@ -157,7 +163,6 @@ public interface MXStatusPacket extends OutbackPacket, BasicChargeController, Da
 	 * 0 is always returned if this is on old firmware. (this only works on FLEXmax80 and FLEXmax60)
 	 * @return [0..2000]u[9999] The running daily total of amp hours produced by the charge controller
 	 */
-	@JsonProperty("dailyAH")
 	@Override
 	int getDailyAH();
 	/**

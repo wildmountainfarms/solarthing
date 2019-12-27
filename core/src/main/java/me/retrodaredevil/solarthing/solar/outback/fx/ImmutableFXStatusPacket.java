@@ -1,24 +1,20 @@
 package me.retrodaredevil.solarthing.solar.outback.fx;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import me.retrodaredevil.solarthing.packets.Modes;
-import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 
 import java.io.IOException;
 
 import static me.retrodaredevil.util.json.JacksonHelper.require;
 
-@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE) // for serializing. Getters must be explicit
-@JsonDeserialize(using = ImmutableFXStatusPacket.Deserializer.class)
+@JsonIgnoreProperties({"operatingModeName", "errors", "acModeName", "miscModes", "warnings"})
 final class ImmutableFXStatusPacket implements FXStatusPacket {
-	private final SolarStatusPacketType packetType = SolarStatusPacketType.FX_STATUS;
-
 	private final int address;
 
 	private final float inverterCurrent;
@@ -37,12 +33,6 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 
 	private final int misc, warningMode, chksum;
 
-	private final String operatingModeName;
-	private final String errors;
-	private final String acModeName;
-	private final String miscModes;
-	private final String warnings;
-	
 	private final OutbackIdentifier identifier;
 
 	ImmutableFXStatusPacket(
@@ -55,8 +45,7 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 			float sellCurrent, int sellCurrentRaw,
 			int operatingMode, int errorMode, int acMode,
 			float batteryVoltage,
-			int misc, int warningMode, int chksum,
-			String operatingModeName, String errors, String acModeName, String miscModes, String warnings
+			int misc, int warningMode, int chksum
 	) {
 		this.address = address;
 		this.inverterCurrent = inverterCurrent;
@@ -78,16 +67,43 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 		this.misc = misc;
 		this.warningMode = warningMode;
 		this.chksum = chksum;
-		this.operatingModeName = operatingModeName;
-		this.errors = errors;
-		this.acModeName = acModeName;
-		this.miscModes = miscModes;
-		this.warnings = warnings;
-		
+
 		this.identifier = new OutbackIdentifier(address);
 	}
 
+	@JsonCreator
+	private static ImmutableFXStatusPacket jacksonCreator(
+			@JsonProperty(value = "address", required = true) int address,
+			@JsonProperty(value = "inverterCurrent", required = true) float inverterCurrent, @JsonProperty(value = "inverterCurrentRaw") Integer inverterCurrentRawNullable,
+			@JsonProperty(value = "chargerCurrent", required = true) float chargerCurrent, @JsonProperty(value = "chargerCurrentRaw") Integer chargerCurrentRawNullable,
+			@JsonProperty(value = "buyCurrent", required = true) float buyCurrent, @JsonProperty("buyCurrentRaw") Integer buyCurrentRawNullable,
+			@JsonProperty(value = "inputVoltage", required = true) int inputVoltage, @JsonProperty("inputVoltageRaw") Integer inputVoltageRawNullable,
+			@JsonProperty(value = "outputVoltage", required = true) int outputVoltage, @JsonProperty("outputVoltageRaw") Integer outputVoltageRawNullable,
+			@JsonProperty(value = "sellCurrent", required = true) float sellCurrent, @JsonProperty("sellCurrentRaw") Integer sellCurrentRawNullable,
+			@JsonProperty(value = "operatingMode", required = true) int operatingMode, @JsonProperty(value = "errorMode", required = true) int errorMode, @JsonProperty(value = "acMode", required = true) int acMode,
+			@JsonProperty(value = "batteryVoltage", required = true) float batteryVoltage,
+			@JsonProperty(value = "misc", required = true) int misc, @JsonProperty(value = "warningMode", required = true) int warningMode, @JsonProperty(value = "chksum", required = true) int chksum
+	) {
 
+		final int inverterCurrentRaw, chargerCurrentRaw, buyCurrentRaw, sellCurrentRaw, inputVoltageRaw, outputVoltageRaw;
+		{
+			final int number = MiscMode.FX_230V_UNIT.isActive(misc) ? 2 : 1;
+			inverterCurrentRaw = inverterCurrentRawNullable == null ? Math.round(inverterCurrent * number) : inverterCurrentRawNullable;
+			chargerCurrentRaw = chargerCurrentRawNullable == null ? Math.round(chargerCurrent * number) : chargerCurrentRawNullable;
+			buyCurrentRaw = buyCurrentRawNullable == null ? Math.round(buyCurrent * number) : buyCurrentRawNullable;
+			sellCurrentRaw = sellCurrentRawNullable == null ? Math.round(sellCurrent * number) : sellCurrentRawNullable;
+
+			inputVoltageRaw = inputVoltageRawNullable == null ? inputVoltage / number : inputVoltageRawNullable;
+			outputVoltageRaw = outputVoltageRawNullable == null ? outputVoltage / number : outputVoltageRawNullable;
+		}
+		return new ImmutableFXStatusPacket(
+				address, inverterCurrent, inverterCurrentRaw,
+				chargerCurrent, chargerCurrentRaw, buyCurrent, buyCurrentRaw,
+				inputVoltage, inputVoltageRaw, outputVoltage, outputVoltageRaw,
+				sellCurrent, sellCurrentRaw, operatingMode, errorMode, acMode, batteryVoltage,
+				misc, warningMode, chksum
+		);
+	}
 
 	@Override
 	public float getInverterCurrent() {
@@ -185,36 +201,6 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 	}
 
 	@Override
-	public String getOperatingModeName() {
-		return operatingModeName;
-	}
-
-	@Override
-	public String getErrorsString() {
-		return errors;
-	}
-
-	@Override
-	public String getACModeName() {
-		return acModeName;
-	}
-
-	@Override
-	public String getMiscModesString() {
-		return miscModes;
-	}
-
-	@Override
-	public String getWarningsString() {
-		return warnings;
-	}
-
-	@Override
-	public SolarStatusPacketType getPacketType() {
-		return packetType;
-	}
-
-	@Override
 	public int getAddress() {
 		return address;
 	}
@@ -224,6 +210,7 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 		return identifier;
 	}
 
+	@Deprecated
 	public static class Deserializer extends JsonDeserializer<ImmutableFXStatusPacket> {
 
 		@Override
@@ -248,12 +235,6 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 			final int warningMode = require(context, object, "warningMode", JsonNode::isInt).asInt();
 			final int chksum = require(context, object, "chksum", JsonNode::isInt).asInt();
 
-			final JsonNode storedOperatingModeName = object.get("operatingModeName");
-			final JsonNode storedErrors = object.get("errors");
-			final JsonNode storedACModeName = object.get("acModeName");
-			final JsonNode storedMiscModes = object.get("miscModes");
-			final JsonNode storedWarnings = object.get("warnings");
-
 			final int inverterCurrentRaw, chargerCurrentRaw, buyCurrentRaw, sellCurrentRaw, inputVoltageRaw, outputVoltageRaw;
 			{
 				final int number = MiscMode.FX_230V_UNIT.isActive(misc) ? 2 : 1;
@@ -266,21 +247,12 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 				sellCurrentRaw = object.get("sellCurrentRaw").asInt(Math.round(sellCurrent * number));
 			}
 
-			final String operatingModeName, errors, acModeName, miscModes, warnings;
-			{
-				operatingModeName = storedOperatingModeName.isTextual() ? storedOperatingModeName.asText() : Modes.getActiveMode(OperationalMode.class, operatingMode).getModeName();
-				errors = storedErrors.isTextual() ? storedErrors.asText() : Modes.toString(FXErrorMode.class, errorMode);
-				acModeName = storedACModeName.isTextual() ? storedACModeName.asText() : Modes.getActiveMode(ACMode.class, acMode).getModeName();
-				miscModes = storedMiscModes.isTextual() ? storedMiscModes.asText() : Modes.toString(MiscMode.class, misc);
-				warnings = storedWarnings.isTextual() ? storedWarnings.asText() : Modes.toString(WarningMode.class, warningMode);
-			}
-
 			return new ImmutableFXStatusPacket(
 					address, inverterCurrent, inverterCurrentRaw,
 					chargerCurrent, chargerCurrentRaw, buyCurrent, buyCurrentRaw,
 					inputVoltage, inputVoltageRaw, outputVoltage, outputVoltageRaw,
 					sellCurrent, sellCurrentRaw, operatingMode, errorMode, acMode, batteryVoltage,
-					misc, warningMode, chksum, operatingModeName, errors, acModeName, miscModes, warnings
+					misc, warningMode, chksum
 			);
 		}
 	}

@@ -3,6 +3,7 @@ package me.retrodaredevil.util.json;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+@Deprecated
 public final class JsonHelper {
 	private JsonHelper(){ throw new UnsupportedOperationException(); }
 	

@@ -6,6 +6,7 @@ import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPackets;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPackets;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPackets;
 
+@Deprecated
 public final class SolarStatusPackets {
 	private SolarStatusPackets(){ throw new UnsupportedOperationException(); }
 	
