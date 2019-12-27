@@ -1,7 +1,9 @@
 package me.retrodaredevil.couchdb;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.lightcouch.CouchDbProperties;
 
+@JsonDeserialize(as = ImmutableCouchProperties.class)
 public interface CouchProperties {
 	String getDatabase();
 	boolean isCreateIfNotExist();

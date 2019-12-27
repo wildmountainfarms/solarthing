@@ -1,5 +1,8 @@
 package me.retrodaredevil.couchdb;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+@JsonDeserialize(builder = CouchPropertiesBuilder.class)
 class ImmutableCouchProperties implements CouchProperties {
 	private final String database;
 	private final boolean createIfNotExist;

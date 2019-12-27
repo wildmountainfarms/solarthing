@@ -1,10 +1,13 @@
 package me.retrodaredevil.solarthing.solar.outback.fx.extra;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.ImmutableFXDailyData;
+import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
@@ -13,13 +16,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class DailyFXPacketTest {
 	@Test
-	void test(){
-		DailyFXPacket packet = new ImmutableDailyFXPacket(new ImmutableFXDailyData(System.currentTimeMillis(), 22, 22.3f, 0, 0, 0, 0, Collections.emptySet(), 0, 0, 0, Collections.emptySet()), new OutbackIdentifier(0));
+	void test() throws JsonProcessingException {
+		DailyFXPacket packet = new ImmutableDailyFXPacket(new ImmutableFXDailyData(0, System.currentTimeMillis(), 22, 22.3f, 0, 0, 0, 0, Collections.emptySet(), 0, 0, 0, Collections.emptySet()));
 		assertEquals(22, packet.getDailyMinBatteryVoltage());
-		Gson gson = new GsonBuilder().serializeNulls().create();
-		String json = gson.toJson(packet);
-		DailyFXPacket output = DailyFXPackets.createFromJson(JsonParser.parseString(json).getAsJsonObject());
-		String json2 = gson.toJson(output);
+		ObjectMapper mapper = JacksonUtil.defaultMapper();
+		String json = mapper.writeValueAsString(packet);
+		System.out.println(json);
+		DailyFXPacket output = mapper.readValue(json, DailyFXPacket.class);
+		String json2 = mapper.writeValueAsString(output);
 		assertEquals(json, json2);
 	}
 }

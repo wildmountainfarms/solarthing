@@ -2,11 +2,11 @@
 This program started in the summer of 2017.
 
 ### Inspiration
-@eidolon1138 is the one who originally came up with the idea to collect data from his Outback Mate device. He helped
-set up the database and @retrodaredevil did the rest. Eventually @retrodaredevil created an android app making it much
+[@eidolon1138](https://github.com/eidolon1138) is the one who originally came up with the idea to collect data from his Outback Mate device. He helped
+set up the database and [@retrodaredevil](https://github.com/retrodaredevil) did the rest. Eventually [@retrodaredevil](https://github.com/retrodaredevil) created an android app making it much
 more convenient than a website.
 
-@retrodaredevil came up with the idea of the outhouse status when he walked all the way out to the outhouse only to find
+[@retrodaredevil](https://github.com/retrodaredevil) came up with the idea of the outhouse status when he walked all the way out to the outhouse only to find
 that it was occupied! He walked all the way back inside, then went back out a few minutes later. He knew that something
 had to be done about this first world problem.
 
@@ -28,7 +28,7 @@ have the ability to have multiple instances uploading packets to a single databa
 
 
 ### Moving from Gson to Jackson
-This project started out with Jackson, but as of 2019.12.24, I have started to move to Gson. I originally chose Gson for its
+This project started out with Gson, but as of 2019.12.24, I have started to move to Jackson. I originally chose Gson for its
 simplicity. It has served this project very well and is very user friendly. However, I got tired of writing custom
 deserializing functions to deserialize advanced packets. Jackson is very annotation orientated and is very
 feature rich. The added complexity of Jackson is worth the speed of development it brings.
@@ -39,5 +39,5 @@ Useful links:
 * https://github.com/FasterXML/jackson-docs/wiki/JacksonPolymorphicDeserialization
 
 ### Legacy
-[The perl script](../helloworld.pl) is a legacy program. It was the program that started solarthing.
+[The perl script](../legacy/helloworld.pl) is a legacy program. It was the program that started solarthing.
 After learning perl for a day. I went straight back to Java, which I am more familiar with.

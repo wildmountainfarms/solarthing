@@ -5,7 +5,8 @@ import com.google.gson.JsonObject;
 
 public final class DoorPackets {
 	private DoorPackets(){ throw new UnsupportedOperationException(); }
-	
+
+	@Deprecated
 	public static DoorPacket createFromJson(JsonObject jsonObject){
 		return new ImmutableDoorPacket(
 			jsonObject.getAsJsonPrimitive("isOpen").getAsBoolean(),

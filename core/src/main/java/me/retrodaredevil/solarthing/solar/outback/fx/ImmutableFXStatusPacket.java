@@ -13,7 +13,7 @@ import java.io.IOException;
 
 import static me.retrodaredevil.util.json.JacksonHelper.require;
 
-@JsonIgnoreProperties({"operatingModeName", "errors", "acModeName", "miscModes", "warnings"})
+@JsonIgnoreProperties(value = {"operatingModeName", "errors", "acModeName", "miscModes", "warnings"}, allowGetters = true)
 final class ImmutableFXStatusPacket implements FXStatusPacket {
 	private final int address;
 

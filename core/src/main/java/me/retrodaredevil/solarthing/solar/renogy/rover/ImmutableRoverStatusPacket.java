@@ -3,16 +3,8 @@ package me.retrodaredevil.solarthing.solar.renogy.rover;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.exc.MismatchedInputException;
-import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
-import java.io.IOException;
-
+@JsonIgnoreProperties(value = {"productModelString", "hardwareVersionString", "softwareVersionString", "streetLightBrightness", "streetLightOn", "chargingStateName", "errors", "batteryTypeName", "loadWorkingModeName"}, allowGetters = true)
 public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	private final RoverIdentifier identifier;
 	private final int maxVoltage;
@@ -94,30 +86,31 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	private final int specialPowerControlE02DRaw;
 
 
+	@JsonCreator
 	public ImmutableRoverStatusPacket(
-		int maxVoltage, int ratedChargingCurrent, int ratedDischargingCurrent, int productType, byte[] productModel,
-		int softwareVersion, int hardwareVersion, int productSerialNumber,
-		int controllerDeviceAddress,
-		int batteryCapacitySOC, float batteryVoltage, float chargingCurrent, int controllerTemperatureRaw, int batteryTemperatureRaw,
-		float loadVoltage, float loadCurrent, int loadPower, float inputVoltage, float pvCurrent,
-		int chargingPower, float dailyMinBatteryVoltage, float dailyMaxBatteryVoltage,
-		float dailyMaxChargingCurrent, float dailyMaxDischargingCurrent, int dailyMaxChargingPower, int dailyMaxDischargingPower,
-		int dailyAH, int dailyAHDischarging,
-		float dailyKWH, float dailyKWHConsumption,
-		int operatingDaysCount, int batteryOverDischargesCount, int batteryFullChargesCount,
-		int chargingAmpHoursOfBatteryCount, int dischargingAmpHoursOfBatteryCount,
-		float cumulativeKWH, float cumulativeKWHConsumption,
-		int streetLightValue, int chargingState, int errorMode, int nominalBatteryCapacity,
-		int systemVoltageSetting, int recognizedVoltage, int batteryType,
-		int overVoltageThresholdRaw, int chargingVoltageLimitRaw, int equalizingChargingVoltageRaw,
-		int boostChargingVoltageRaw, int floatingChargingVoltageRaw, int boostChargingRecoveryVoltageRaw,
-		int overDischargeRecoveryVoltageRaw, int underVoltageWarningLevelRaw, int overDischargeVoltageRaw,
-		int dischargingLimitVoltageRaw,
-		int endOfChargeSOC, int endOfDischargeSOC,
-		int overDischargeTimeDelaySeconds, int equalizingChargingTimeRaw,
-		int boostChargingTimeRaw, int equalizingChargingIntervalRaw, int temperatureCompensationFactorRaw,
-		OperatingSettingBundle operatingStage1, OperatingSettingBundle operatingStage2, OperatingSettingBundle operatingStage3, OperatingSettingBundle operatingMorningOn, int loadWorkingMode, int lightControlDelayMinutes, int lightControlVoltage, int ledLoadCurrentSettingRaw,
-		int specialPowerControlE021Raw, SensingBundle sensed1, SensingBundle sensed2, SensingBundle sensed3, int sensingTimeDelayRaw, int ledLoadCurrentRaw, int specialPowerControlE02DRaw
+			@JsonProperty(value = "maxVoltage", required = true) int maxVoltage, @JsonProperty(value = "ratedChargingCurrent", required = true) int ratedChargingCurrent, @JsonProperty(value = "ratedDischargingCurrent", required = true) int ratedDischargingCurrent, @JsonProperty(value = "productType", required = true) int productType, @JsonProperty(value = "productModelEncoded", required = true) byte[] productModel,
+			@JsonProperty(value = "softwareVersion", required = true) int softwareVersion, @JsonProperty(value = "hardwareVersion", required = true) int hardwareVersion, @JsonProperty(value = "productSerialNumber", required = true) int productSerialNumber,
+			@JsonProperty(value = "controllerDeviceAddress", required = true) int controllerDeviceAddress,
+			@JsonProperty(value = "batteryCapacitySOC", required = true) int batteryCapacitySOC, @JsonProperty(value = "batteryVoltage", required = true) float batteryVoltage, @JsonProperty(value = "chargingCurrent", required = true) float chargingCurrent, @JsonProperty(value = "controllerTemperatureRaw", required = true) int controllerTemperatureRaw, @JsonProperty(value = "batteryTemperatureRaw", required = true) int batteryTemperatureRaw,
+			@JsonProperty(value = "loadVoltage", required = true) float loadVoltage, @JsonProperty(value = "loadCurrent", required = true) float loadCurrent, @JsonProperty(value = "loadPower", required = true) int loadPower, @JsonProperty(value = "inputVoltage", required = true) float inputVoltage, @JsonProperty(value = "pvCurrent", required = true) float pvCurrent,
+			@JsonProperty(value = "chargingPower", required = true) int chargingPower, @JsonProperty(value = "dailyMinBatteryVoltage", required = true) float dailyMinBatteryVoltage, @JsonProperty(value = "dailyMaxBatteryVoltage", required = true) float dailyMaxBatteryVoltage,
+			@JsonProperty(value = "dailyMaxChargingCurrent", required = true) float dailyMaxChargingCurrent, @JsonProperty(value = "dailyMaxDischargingCurrent", required = true) float dailyMaxDischargingCurrent, @JsonProperty(value = "dailyMaxChargingPower", required = true) int dailyMaxChargingPower, @JsonProperty(value = "dailyMaxDischargingPower", required = true) int dailyMaxDischargingPower,
+			@JsonProperty(value = "dailyAH", required = true) int dailyAH, @JsonProperty(value = "dailyAHDischarging", required = true) int dailyAHDischarging,
+			@JsonProperty(value = "dailyKWH", required = true) float dailyKWH, @JsonProperty(value = "dailyKWHConsumption", required = true) float dailyKWHConsumption,
+			@JsonProperty(value = "operatingDaysCount", required = true) int operatingDaysCount, @JsonProperty(value = "batteryOverDischargesCount", required = true) int batteryOverDischargesCount, @JsonProperty(value = "batteryFullChargesCount", required = true) int batteryFullChargesCount,
+			@JsonProperty(value = "chargingAmpHoursOfBatteryCount", required = true) int chargingAmpHoursOfBatteryCount, @JsonProperty(value = "dischargingAmpHoursOfBatteryCount", required = true) int dischargingAmpHoursOfBatteryCount,
+			@JsonProperty(value = "cumulativeKWH", required = true) float cumulativeKWH, @JsonProperty(value = "cumulativeKWHConsumption", required = true) float cumulativeKWHConsumption,
+			@JsonProperty(value = "streetLightValue", required = true) int streetLightValue, @JsonProperty(value = "chargingState", required = true) int chargingState, @JsonProperty(value = "errorMode", required = true) int errorMode, @JsonProperty(value = "nominalBatteryCapacity", required = true) int nominalBatteryCapacity,
+			@JsonProperty(value = "systemVoltageSetting", required = true) int systemVoltageSetting, @JsonProperty(value = "recognizedVoltage", required = true) int recognizedVoltage, @JsonProperty(value = "batteryType", required = true) int batteryType,
+			@JsonProperty(value = "overVoltageThresholdRaw", required = true) int overVoltageThresholdRaw, @JsonProperty(value = "chargingVoltageLimitRaw", required = true) int chargingVoltageLimitRaw, @JsonProperty(value = "equalizingChargingVoltageRaw", required = true) int equalizingChargingVoltageRaw,
+			@JsonProperty(value = "boostChargingVoltageRaw", required = true) int boostChargingVoltageRaw, @JsonProperty(value = "floatingChargingVoltageRaw", required = true) int floatingChargingVoltageRaw, @JsonProperty(value = "boostChargingRecoveryVoltageRaw", required = true) int boostChargingRecoveryVoltageRaw,
+			@JsonProperty(value = "overDischargeRecoveryVoltageRaw", required = true) int overDischargeRecoveryVoltageRaw, @JsonProperty(value = "underVoltageWarningLevelRaw", required = true) int underVoltageWarningLevelRaw, @JsonProperty(value = "overDischargeVoltageRaw", required = true) int overDischargeVoltageRaw,
+			@JsonProperty(value = "dischargingLimitVoltageRaw", required = true) int dischargingLimitVoltageRaw,
+			@JsonProperty(value = "endOfChargeSOC", required = true) int endOfChargeSOC, @JsonProperty(value = "endOfDischargeSOC", required = true) int endOfDischargeSOC,
+			@JsonProperty(value = "overDischargeTimeDelaySeconds", required = true) int overDischargeTimeDelaySeconds, @JsonProperty(value = "equalizingChargingTimeRaw", required = true) int equalizingChargingTimeRaw,
+			@JsonProperty(value = "boostChargingTimeRaw", required = true) int boostChargingTimeRaw, @JsonProperty(value = "equalizingChargingIntervalRaw", required = true) int equalizingChargingIntervalRaw, @JsonProperty(value = "temperatureCompensationFactorRaw", required = true) int temperatureCompensationFactorRaw,
+			@JsonProperty(value = "operatingStage1", required = true) OperatingSettingBundle operatingStage1, @JsonProperty(value = "operatingStage2", required = true) OperatingSettingBundle operatingStage2, @JsonProperty(value = "operatingStage3", required = true) OperatingSettingBundle operatingStage3, @JsonProperty(value = "operatingMorningOn", required = true) OperatingSettingBundle operatingMorningOn, @JsonProperty(value = "loadWorkingMode", required = true) int loadWorkingMode, @JsonProperty(value = "lightControlDelayMinutes", required = true) int lightControlDelayMinutes, @JsonProperty(value = "lightControlVoltage", required = true) int lightControlVoltage, @JsonProperty(value = "ledLoadCurrentSettingRaw", required = true) int ledLoadCurrentSettingRaw,
+			@JsonProperty(value = "specialPowerControlE021Raw", required = true) int specialPowerControlE021Raw, @JsonProperty(value = "sensed1", required = true) SensingBundle sensed1, @JsonProperty(value = "sensed2", required = true) SensingBundle sensed2, @JsonProperty(value = "sensed3", required = true) SensingBundle sensed3, @JsonProperty(value = "sensingTimeDelayRaw", required = true) int sensingTimeDelayRaw, @JsonProperty(value = "ledLoadCurrentRaw", required = true) int ledLoadCurrentRaw, @JsonProperty(value = "specialPowerControlE02DRaw", required = true) int specialPowerControlE02DRaw
 	) {
 		// region initialization
 		this.maxVoltage = maxVoltage;
@@ -199,35 +192,6 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 		// endregion
 		
 		identifier = new RoverIdentifier(productSerialNumber);
-	}
-
-	@JsonCreator
-	private static ImmutableRoverStatusPacket jacksonCreate(
-			@JsonProperty(value = "maxVoltage", required = true) int maxVoltage, @JsonProperty(value = "ratedChargingCurrent", required = true) int ratedChargingCurrent, @JsonProperty(value = "ratedDischargingCurrent", required = true) int ratedDischargingCurrent, @JsonProperty(value = "productType", required = true) int productType, @JsonProperty(value = "productModelEncoded", required = true) byte[] productModelEncoded,
-			@JsonProperty(value = "softwareVersion", required = true) int softwareVersion, @JsonProperty(value = "hardwareVersion", required = true) int hardwareVersion, @JsonProperty(value = "productSerialNumber", required = true) int productSerialNumber,
-			@JsonProperty(value = "controllerDeviceAddress", required = true) int controllerDeviceAddress,
-			@JsonProperty(value = "batteryCapacitySOC", required = true) int batteryCapacitySOC, @JsonProperty(value = "batteryVoltage", required = true) float batteryVoltage, @JsonProperty(value = "chargingCurrent", required = true) float chargingCurrent, @JsonProperty(value = "controllerTemperatureRaw", required = true) int controllerTemperatureRaw, @JsonProperty(value = "batteryTemperatureRaw", required = true) int batteryTemperatureRaw,
-			@JsonProperty(value = "loadVoltage", required = true) float loadVoltage, @JsonProperty(value = "loadCurrent", required = true) float loadCurrent, @JsonProperty(value = "loadPower", required = true) int loadPower, @JsonProperty(value = "inputVoltage", required = true) float inputVoltage, @JsonProperty(value = "pvCurrent", required = true) float pvCurrent,
-			@JsonProperty(value = "chargingPower", required = true) int chargingPower, @JsonProperty(value = "dailyMinBatteryVoltage", required = true) float dailyMinBatteryVoltage, @JsonProperty(value = "dailyMaxBatteryVoltage", required = true) float dailyMaxBatteryVoltage,
-			@JsonProperty(value = "dailyMaxChargingCurrent", required = true) float dailyMaxChargingCurrent, @JsonProperty(value = "dailyMaxDischargingCurrent", required = true) float dailyMaxDischargingCurrent, @JsonProperty(value = "dailyMaxChargingPower", required = true) int dailyMaxChargingPower, @JsonProperty(value = "dailyMaxDischargingPower", required = true) int dailyMaxDischargingPower,
-			@JsonProperty(value = "dailyAH", required = true) int dailyAH, @JsonProperty(value = "dailyAHDischarging", required = true) int dailyAHDischarging,
-			@JsonProperty(value = "dailyKWH", required = true) float dailyKWH, @JsonProperty(value = "dailyKWHConsumption", required = true) float dailyKWHConsumption,
-			@JsonProperty(value = "operatingDaysCount", required = true) int operatingDaysCount, @JsonProperty(value = "batteryOverDischargesCount", required = true) int batteryOverDischargesCount, @JsonProperty(value = "batteryFullChargesCount", required = true) int batteryFullChargesCount,
-			@JsonProperty(value = "chargingAmpHoursOfBatteryCount", required = true) int chargingAmpHoursOfBatteryCount, @JsonProperty(value = "dischargingAmpHoursOfBatteryCount", required = true) int dischargingAmpHoursOfBatteryCount,
-			@JsonProperty(value = "cumulativeKWH", required = true) float cumulativeKWH, @JsonProperty(value = "cumulativeKWHConsumption", required = true) float cumulativeKWHConsumption,
-			@JsonProperty(value = "streetLightValue", required = true) int streetLightValue, @JsonProperty(value = "chargingState", required = true) int chargingState, @JsonProperty(value = "errorMode", required = true) int errorMode, @JsonProperty(value = "nominalBatteryCapacity", required = true) int nominalBatteryCapacity,
-			@JsonProperty(value = "systemVoltageSetting", required = true) int systemVoltageSetting, @JsonProperty(value = "recognizedVoltage", required = true) int recognizedVoltage, @JsonProperty(value = "batteryType", required = true) int batteryType,
-			@JsonProperty(value = "overVoltageThresholdRaw", required = true) int overVoltageThresholdRaw, @JsonProperty(value = "chargingVoltageLimitRaw", required = true) int chargingVoltageLimitRaw, @JsonProperty(value = "equalizingChargingVoltageRaw", required = true) int equalizingChargingVoltageRaw,
-			@JsonProperty(value = "boostChargingVoltageRaw", required = true) int boostChargingVoltageRaw, @JsonProperty(value = "floatingChargingVoltageRaw", required = true) int floatingChargingVoltageRaw, @JsonProperty(value = "boostChargingRecoveryVoltageRaw", required = true) int boostChargingRecoveryVoltageRaw,
-			@JsonProperty(value = "overDischargeRecoveryVoltageRaw", required = true) int overDischargeRecoveryVoltageRaw, @JsonProperty(value = "underVoltageWarningLevelRaw", required = true) int underVoltageWarningLevelRaw, @JsonProperty(value = "overDischargeVoltageRaw", required = true) int overDischargeVoltageRaw,
-			@JsonProperty(value = "dischargingLimitVoltageRaw", required = true) int dischargingLimitVoltageRaw,
-			@JsonProperty(value = "endOfChargeSOC", required = true) int endOfChargeSOC, @JsonProperty(value = "endOfDischargeSOC", required = true) int endOfDischargeSOC,
-			@JsonProperty(value = "overDischargeTimeDelaySeconds", required = true) int overDischargeTimeDelaySeconds, @JsonProperty(value = "equalizingChargingTimeRaw", required = true) int equalizingChargingTimeRaw,
-			@JsonProperty(value = "boostChargingTimeRaw", required = true) int boostChargingTimeRaw, @JsonProperty(value = "equalizingChargingIntervalRaw", required = true) int equalizingChargingIntervalRaw, @JsonProperty(value = "temperatureCompensationFactorRaw", required = true) int temperatureCompensationFactorRaw,
-			@JsonProperty(value = "operatingStage1", required = true) OperatingSettingBundle operatingStage1, @JsonProperty(value = "operatingStage2", required = true) OperatingSettingBundle operatingStage2, @JsonProperty(value = "operatingStage3", required = true) OperatingSettingBundle operatingStage3, @JsonProperty(value = "operatingMorningOn", required = true) OperatingSettingBundle operatingMorningOn, @JsonProperty(value = "loadWorkingMode", required = true) int loadWorkingMode, @JsonProperty(value = "lightControlDelayMinutes", required = true) int lightControlDelayMinutes, @JsonProperty(value = "lightControlVoltage", required = true) int lightControlVoltage, @JsonProperty(value = "ledLoadCurrentSettingRaw", required = true) int ledLoadCurrentSettingRaw,
-			@JsonProperty(value = "specialPowerControlE021Raw", required = true) int specialPowerControlE021Raw, @JsonProperty(value = "sensed1", required = true) SensingBundle sensed1, @JsonProperty(value = "sensed2", required = true) SensingBundle sensed2, @JsonProperty(value = "sensed3", required = true) SensingBundle sensed3, @JsonProperty(value = "sensingTimeDelayRaw", required = true) int sensingTimeDelayRaw, @JsonProperty(value = "ledLoadCurrentRaw", required = true) int ledLoadCurrentRaw, @JsonProperty(value = "specialPowerControlE02DRaw", required = true) int specialPowerControlE02DRaw
-	) {
-		return new ImmutableRoverStatusPacket(maxVoltage, ratedChargingCurrent, ratedDischargingCurrent, productType, productModelEncoded, softwareVersion, hardwareVersion, productSerialNumber, controllerDeviceAddress, batteryCapacitySOC, batteryVoltage, chargingCurrent, controllerTemperatureRaw, batteryTemperatureRaw, loadVoltage, loadCurrent, loadPower, inputVoltage, pvCurrent, chargingPower, dailyMinBatteryVoltage, dailyMaxBatteryVoltage, dailyMaxChargingCurrent, dailyMaxDischargingCurrent, dailyMaxChargingPower, dailyMaxDischargingPower, dailyAH, dailyAHDischarging, dailyKWH, dailyKWHConsumption, operatingDaysCount, batteryOverDischargesCount, batteryFullChargesCount, chargingAmpHoursOfBatteryCount, dischargingAmpHoursOfBatteryCount, cumulativeKWH, cumulativeKWHConsumption, streetLightValue, chargingState, errorMode, nominalBatteryCapacity, systemVoltageSetting, recognizedVoltage, batteryType, overVoltageThresholdRaw, chargingVoltageLimitRaw, equalizingChargingVoltageRaw, boostChargingVoltageRaw, floatingChargingVoltageRaw, boostChargingRecoveryVoltageRaw, overDischargeRecoveryVoltageRaw, underVoltageWarningLevelRaw, overDischargeVoltageRaw, dischargingLimitVoltageRaw, endOfChargeSOC, endOfDischargeSOC, overDischargeTimeDelaySeconds, equalizingChargingTimeRaw, boostChargingTimeRaw, equalizingChargingIntervalRaw, temperatureCompensationFactorRaw, operatingStage1, operatingStage2, operatingStage3, operatingMorningOn, loadWorkingMode, lightControlDelayMinutes, lightControlVoltage, ledLoadCurrentSettingRaw, specialPowerControlE021Raw, sensed1, sensed2, sensed3, sensingTimeDelayRaw, ledLoadCurrentRaw, specialPowerControlE02DRaw);
 	}
 
 	@Override
@@ -656,16 +620,4 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 		return specialPowerControlE02DRaw;
 	}
 
-	static class Base64ByteArrayDeserializer extends JsonDeserializer<byte[]> {
-
-		@Override
-		public byte[] deserialize(JsonParser p, DeserializationContext context) throws IOException, JsonProcessingException {
-			JsonNode node = p.getCodec().readTree(p);
-			if(!node.isTextual()){
-				throw MismatchedInputException.from(p, context.getContextualType(), "The node was not textual! node=" + node);
-			}
-			String string = node.asText();
-			return Base64.decode(string);
-		}
-	}
 }

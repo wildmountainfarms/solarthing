@@ -5,7 +5,8 @@ import me.retrodaredevil.solarthing.packets.UnknownPacketTypeException;
 
 public final class InstancePackets {
 	private InstancePackets(){ throw new UnsupportedOperationException(); }
-	
+
+	@Deprecated
 	public static InstancePacket createFromJson(JsonObject jsonObject){
 		final String packetName = jsonObject.getAsJsonPrimitive("packetType").getAsString();
 		final InstancePacketType packetType;

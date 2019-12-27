@@ -11,6 +11,7 @@ public final class PacketCollections {
 	public static PacketCollection createFromPackets(Collection<Packet> packets, PacketCollectionIdGenerator idGenerator){
 		return new ImmutablePacketCollection(packets, idGenerator);
 	}
+	@Deprecated
 	public static PacketCollection createFromJson(JsonObject object, JsonPacketGetter packetGetter){
 		return new ImmutablePacketCollection(object, packetGetter);
 	}

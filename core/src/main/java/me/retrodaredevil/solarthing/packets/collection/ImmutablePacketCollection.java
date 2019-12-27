@@ -27,6 +27,8 @@ class ImmutablePacketCollection implements PacketCollection {
 		dateMillis = cal.getTimeInMillis(); // in UTC
 		this._id = idGenerator.generateId(cal);
 	}
+	// TODO We need a way for PacketCollections to be deserialized
+	@Deprecated
 	ImmutablePacketCollection(JsonObject object, JsonPacketGetter packetGetter){
 		requireNonNull(object);
 		requireNonNull(packetGetter);
