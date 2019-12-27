@@ -19,9 +19,7 @@ import org.apache.commons.codec.binary.Base64;
 
 import java.util.Collection;
 
-@SuppressWarnings("unused")
 @JsonExplicit
-@JsonIgnoreProperties({"productModelString", "hardwareVersionString", "softwareVersionString", "streetLightBrightness", "streetLightOn", "chargingStateName", "errors", "batteryTypeName", "loadWorkingModeName"})
 public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeController, DailyChargeController, DailyBatteryVoltage, Identifiable {
 	
 	@Override

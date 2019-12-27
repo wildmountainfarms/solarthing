@@ -99,6 +99,7 @@ public class DailyFXListUpdater implements PacketListReceiver {
 			acModeValues.add(fx.getACModeValue());
 			Packet packet = new ImmutableDailyFXPacket(
 					new ImmutableFXDailyData(
+							fx.getAddress(),
 							startDateMillis,
 							minimumBatteryVoltage, maximumBatteryVoltage,
 							(float) (inverterWH.getIntegral() / 1000), (float) (chargerWH.getIntegral() / 1000),

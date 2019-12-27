@@ -2,8 +2,6 @@ package me.retrodaredevil.solarthing.solar.outback.mx;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-
-import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.packets.support.Support;
 import me.retrodaredevil.solarthing.util.CheckSumException;
 import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
@@ -11,8 +9,8 @@ import me.retrodaredevil.solarthing.util.ParsePacketAsciiDecimalDigitException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static me.retrodaredevil.util.json.JsonHelper.getOrNull;
 import static me.retrodaredevil.solarthing.util.ParseUtil.toInt;
+import static me.retrodaredevil.util.json.JsonHelper.getOrNull;
 
 public final class MXStatusPackets {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MXStatusPackets.class);

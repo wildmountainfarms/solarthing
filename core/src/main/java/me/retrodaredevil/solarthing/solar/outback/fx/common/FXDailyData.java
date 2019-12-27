@@ -1,22 +1,23 @@
 package me.retrodaredevil.solarthing.solar.outback.fx.common;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.solar.common.DailyBatteryVoltage;
 import me.retrodaredevil.solarthing.solar.common.DailyData;
 import me.retrodaredevil.solarthing.solar.common.ErrorReporter;
+import me.retrodaredevil.solarthing.solar.outback.OutbackData;
 import me.retrodaredevil.solarthing.solar.outback.fx.ACMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXErrorMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.OperationalMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.extra.DailyFXPacket;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Set;
 
 @JsonExplicit
-public interface FXDailyData extends DailyBatteryVoltage, ErrorReporter, FXWarningReporter, FXMiscReporter {
+public interface FXDailyData extends OutbackData, DailyBatteryVoltage, ErrorReporter, FXWarningReporter, FXMiscReporter {
 	@Override
 	default boolean isNewDay(DailyData previousDailyData){
 		if (!(previousDailyData instanceof FXDailyData)) {
@@ -25,7 +26,7 @@ public interface FXDailyData extends DailyBatteryVoltage, ErrorReporter, FXWarni
 		DailyFXPacket previous = (DailyFXPacket) previousDailyData;
 		/*
 		In the early versions of DailyFXPacket, startDateMillis was not serialized. In new versions, they are always serialized.
-		This is why we have to perform a null check and deal with either one being null.
+		This is why we have to perform a null check and deal with either one being null. (One could be a packet from a previous version)
 		 */
 		Long dateMillis = getStartDateMillis();
 		Long previousMillis = previous.getStartDateMillis();
@@ -37,6 +38,11 @@ public interface FXDailyData extends DailyBatteryVoltage, ErrorReporter, FXWarni
 				getBuyKWH() < previous.getBuyKWH() ||
 				getSellKWH() < previous.getSellKWH();
 	}
+
+	@JsonProperty("startDateMillis")
+	@Override
+	@Nullable
+	Long getStartDateMillis();
 
 	@JsonProperty("inverterKWH")
 	float getInverterKWH();

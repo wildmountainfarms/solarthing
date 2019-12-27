@@ -4,7 +4,8 @@ import com.google.gson.JsonObject;
 
 public final class WeatherPackets {
 	private WeatherPackets(){ throw new UnsupportedOperationException(); }
-	
+
+	@Deprecated
 	public static WeatherPacket createFromJson(JsonObject jsonObject){
 		int temperatureCelsius = jsonObject.getAsJsonPrimitive("temperatureCelsius").getAsInt();
 		int humidityPercent = jsonObject.getAsJsonPrimitive("humidityPercent").getAsInt();

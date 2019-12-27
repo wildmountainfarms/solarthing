@@ -8,6 +8,7 @@ public final class InstanceFragmentIndicatorPackets {
 	public static InstanceFragmentIndicatorPacket create(int fragmentId){
 		return new ImmutableInstanceFragmentIndicatorPacket(fragmentId);
 	}
+	@Deprecated
 	public static InstanceFragmentIndicatorPacket createFromJson(JsonObject jsonObject){
 		return new ImmutableInstanceFragmentIndicatorPacket(jsonObject.getAsJsonPrimitive("fragmentId").getAsInt());
 	}

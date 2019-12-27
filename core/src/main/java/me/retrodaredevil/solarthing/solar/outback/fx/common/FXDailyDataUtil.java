@@ -11,6 +11,7 @@ import static me.retrodaredevil.util.json.JsonHelper.getOrNull;
 public final class FXDailyDataUtil {
 	private FXDailyDataUtil(){ throw new UnsupportedOperationException(); }
 
+	@Deprecated
 	public static FXDailyData createFromJson(JsonObject object){
 		// This isn't something we can calculate, so if someone wants to re-serialize it, it may be serialized as null,
 		// and when deserializing it again, we want that to be valid // This is why we have treatJsonNullAsUndefined = true
@@ -39,6 +40,7 @@ public final class FXDailyDataUtil {
 
 
 		return new ImmutableFXDailyData(
+				object.get("address").getAsInt(),
 				startDateMillis,
 				dailyMinBatteryVoltage, dailyMaxBatteryVoltage,
 				inverterKWH, chargerKWH, buyKWH, sellKWH,

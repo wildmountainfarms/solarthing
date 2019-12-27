@@ -59,6 +59,7 @@ public class CouchDbPacketSaver implements PacketHandler {
 			throw new RuntimeException("This should not happen!", e);
 		}
 		final JsonObject packet = JsonParser.parseString(jsonPacket).getAsJsonObject(); // convert to GSON
+		packet.addProperty("_id", id);
 		try {
 			if (rev == null) {
 				response = client.save(packet);

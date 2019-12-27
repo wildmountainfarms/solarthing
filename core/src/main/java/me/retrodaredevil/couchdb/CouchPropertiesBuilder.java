@@ -2,8 +2,10 @@ package me.retrodaredevil.couchdb;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 @SuppressWarnings({"UnusedReturnValue", "unused"})
+@JsonPOJOBuilder
 public class CouchPropertiesBuilder {
 	private String database;
 	private boolean createIfNotExist;

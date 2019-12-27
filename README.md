@@ -61,12 +61,12 @@ If you decide to use InfluxDB, you can easily create your own Dashboard with Gra
 ### Individual documentation
 [Solar readme](solar/README.md)
 
-[Outhouse Status readme](outhouse/README.md)
+[Outhouse Status readme](legacy/outhouse/README.md)
 
 ## Using the program
 You can see the [Outback/Renogy Rover](solar/README.md) README for using the program with outback or renogy products.
 
-You can see the [Outhouse](outhouse/README.md) README for using the outhouse program.
+You can see the [Outhouse](legacy/outhouse/README.md) README for using the outhouse program.
 
 The [input and output](docs/input_and_outputs.md) README is documentation for the `io` JSON property option used in all of the sub programs.
 

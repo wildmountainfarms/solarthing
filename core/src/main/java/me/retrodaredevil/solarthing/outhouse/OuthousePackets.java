@@ -11,6 +11,7 @@ public final class OuthousePackets {
 	 * @return The {@link OuthousePacket} created from {@code jsonObject}
 	 * @throws UnknownPacketTypeException thrown if {@code jsonObject} isn't a known {@link OuthousePacket}
 	 */
+	@Deprecated
 	public static OuthousePacket createFromJson(JsonObject jsonObject) {
 		final String packetName = jsonObject.getAsJsonPrimitive("packetType").getAsString();
 		final OuthousePacketType packetType;

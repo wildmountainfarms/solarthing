@@ -1,11 +1,12 @@
 package me.retrodaredevil.solarthing.outhouse;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.creation.PacketCreationException;
 import me.retrodaredevil.solarthing.packets.creation.StartEndTextPacketCreator;
 import me.retrodaredevil.solarthing.packets.creation.TextPacketCreator;
+import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,8 +15,8 @@ import java.util.Collections;
 
 public class OuthousePacketCreator extends StartEndTextPacketCreator {
 	private static final Logger LOGGER = LoggerFactory.getLogger(OuthousePacketCreator.class);
-	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
-	
+	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
+
 	public OuthousePacketCreator() {
 		super('\n', '\r', 256, 0);
 	}
@@ -41,8 +42,12 @@ public class OuthousePacketCreator extends StartEndTextPacketCreator {
 				final boolean occupied = Boolean.parseBoolean(split[1]);
 				Occupancy currentOccupancy = occupied ? Occupancy.OCCUPIED : Occupancy.VACANT;
 				Packet occupancy = new ImmutableOccupancyPacket(currentOccupancy.getValueCode());
-				LOGGER.debug(GSON.toJson(occupancy));
-				
+				try {
+					LOGGER.debug(MAPPER.writeValueAsString(occupancy));
+				} catch (JsonProcessingException e) {
+					LOGGER.info("Couldn't convert packet to JSON!", e);
+				}
+
 				return Collections.singleton(occupancy);
 			case "WEATHER":
 				if(split.length != 3){
@@ -57,8 +62,12 @@ public class OuthousePacketCreator extends StartEndTextPacketCreator {
 					throw new PacketCreationException("debugBytes: " + escape(new String(bytes)), ex);
 				}
 				Packet weather = new IntegerWeatherPacket(temperature, humidity);
-				
-				LOGGER.debug(GSON.toJson(weather));
+
+				try {
+					LOGGER.debug(MAPPER.writeValueAsString(weather));
+				} catch (JsonProcessingException e) {
+					LOGGER.info("Couldn't convert packet to JSON!", e);
+				}
 				return Collections.singleton(weather);
 			case "DOOR":
 				final boolean isOpen = Boolean.parseBoolean(split[1]);
@@ -73,7 +82,11 @@ public class OuthousePacketCreator extends StartEndTextPacketCreator {
 				} catch(NumberFormatException ex){
 				}
 				Packet door = new ImmutableDoorPacket(isOpen, lastClose, lastOpen);
-				LOGGER.debug(GSON.toJson(door));
+				try {
+					LOGGER.debug(MAPPER.writeValueAsString(door));
+				} catch (JsonProcessingException e) {
+					LOGGER.info("Couldn't convert packet to JSON!", e);
+				}
 				return Collections.singleton(door);
 			default:
 				throw new UnsupportedOperationException("unknown type: " + type);

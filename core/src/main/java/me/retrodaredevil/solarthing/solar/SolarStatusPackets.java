@@ -37,16 +37,4 @@ public final class SolarStatusPackets {
 				throw new UnsupportedOperationException();
 		}
 	}
-	/*
-	public static void main(String[] args){
-		CouchDbClient client = new CouchDbClient(new CouchDbProperties("solarthing", false, "http", "localhost", 5984, "admin", "relax"));
-		for(JsonObject object : client.view("packets/millis").startKey(0).query(JsonObject.class)){
-			JsonObject value = object.getAsJsonObject("value");
-			GregorianCalendar calendar = new GregorianCalendar();
-			calendar.setTimeInMillis(value.get("dateMillis").getAsLong());
-			PacketCollection packetCollection = PacketCollections.createFromJson(value, SolarPackets::createFromJson);
-			System.out.println(JsonFile.gson.toJson(packetCollection));
-		}
-	}
-	 */
 }

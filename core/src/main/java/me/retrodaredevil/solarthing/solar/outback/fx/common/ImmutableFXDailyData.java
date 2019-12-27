@@ -1,9 +1,13 @@
 package me.retrodaredevil.solarthing.solar.outback.fx.common;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Collection;
 
 public class ImmutableFXDailyData implements FXDailyData {
 
+	private final int address;
 
 	private final Long startDateMillis;
 
@@ -21,11 +25,14 @@ public class ImmutableFXDailyData implements FXDailyData {
 	private final int miscValue;
 	private final Collection<Integer> acModeValues;
 
+	@JsonCreator
 	public ImmutableFXDailyData(
-			Long startDateMillis,
-			float dailyMinBatteryVoltage, float dailyMaxBatteryVoltage, float inverterKWH, float chargerKWH, float buyKWH, float sellKWH,
-			Collection<Integer> operationalModeValues, int errorModeValue, int warningModeValue, int miscValue, Collection<Integer> acModeValues
+			@JsonProperty(value = "address", required = true) int address,
+			@JsonProperty(value = "startDateMillis") Long startDateMillis,
+			@JsonProperty(value = "dailyMinBatteryVoltage", required = true) float dailyMinBatteryVoltage, @JsonProperty(value = "dailyMaxBatteryVoltage", required = true) float dailyMaxBatteryVoltage, @JsonProperty(value = "inverterKWH", required = true) float inverterKWH, @JsonProperty(value = "chargerKWH", required = true) float chargerKWH, @JsonProperty(value = "buyKWH", required = true) float buyKWH, @JsonProperty(value = "sellKWH", required = true) float sellKWH,
+			@JsonProperty(value = "operationalModeValues", required = true) Collection<Integer> operationalModeValues, @JsonProperty(value = "errorModeValue", required = true) int errorModeValue, @JsonProperty(value = "warningModeValue", required = true) int warningModeValue, @JsonProperty(value = "miscValue", required = true) int miscValue, @JsonProperty(value = "acModeValues", required = true) Collection<Integer> acModeValues
 	) {
+		this.address = address;
 		this.startDateMillis = startDateMillis;
 		this.dailyMinBatteryVoltage = dailyMinBatteryVoltage;
 		this.dailyMaxBatteryVoltage = dailyMaxBatteryVoltage;
@@ -38,6 +45,11 @@ public class ImmutableFXDailyData implements FXDailyData {
 		this.warningModeValue = warningModeValue;
 		this.miscValue = miscValue;
 		this.acModeValues = acModeValues;
+	}
+
+	@Override
+	public int getAddress() {
+		return address;
 	}
 
 	@Override

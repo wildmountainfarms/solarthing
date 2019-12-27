@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+@Deprecated
 public class JsonPacketGetterMultiplexer implements JsonPacketGetter {
 	private final List<JsonPacketGetter> getters;
 	

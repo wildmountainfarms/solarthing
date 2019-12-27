@@ -7,6 +7,7 @@ public final class InstanceTargetPackets {
 	public static InstanceTargetPacket create(String targetId){
 		return new ImmutableInstanceTargetPacket(targetId);
 	}
+	@Deprecated
 	public static InstanceTargetPacket createFromJson(JsonObject jsonObject){
 		return create(jsonObject.getAsJsonPrimitive("targetId").getAsString());
 	}

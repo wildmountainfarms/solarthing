@@ -9,6 +9,7 @@ public final class FXDayEndPackets {
 	private FXDayEndPackets(){ throw new UnsupportedOperationException(); }
 
 
+	@Deprecated
 	public static FXDayEndPacket createFromJson(JsonObject object){
 		FXDailyData fxDailyData = FXDailyDataUtil.createFromJson(object);
 

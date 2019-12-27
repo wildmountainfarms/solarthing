@@ -18,7 +18,7 @@
 * A directory that contains configuration templates that should be copied to [program/config](../program/config)
 ### [solar](../solar)
 * A directory that contains documentation for this project relating to solar data
-### [outhouse](../outhouse)
+### [outhouse](../legacy/outhouse)
 * A directory that contains documentation for this project relating to outhouse data
 ### [systemd](../systemd)
 * A directory that contains files for installing the solarthing service to a system that uses systemd

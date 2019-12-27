@@ -11,6 +11,7 @@ public final class SolarExtraPackets {
 	 * @return The {@link SolarExtraPacket} created from {@code jsonObject}
 	 * @throws UnknownPacketTypeException thrown if {@code jsonObject} isn't a {@link SolarExtraPacket}
 	 */
+	@Deprecated
 	public static SolarExtraPacket createFromJson(JsonObject jsonObject) {
 		final String packetName = jsonObject.getAsJsonPrimitive("packetType").getAsString();
 		final SolarExtraPacketType packetType;

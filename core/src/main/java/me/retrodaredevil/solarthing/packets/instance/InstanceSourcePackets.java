@@ -7,6 +7,7 @@ public final class InstanceSourcePackets {
 	public static InstanceSourcePacket create(String sourceId){
 		return new ImmutableInstanceSourcePacket(sourceId);
 	}
+	@Deprecated
 	public static InstanceSourcePacket createFromJson(JsonObject jsonObject){
 		return create(jsonObject.getAsJsonPrimitive("sourceId").getAsString());
 	}

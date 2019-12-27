@@ -1,11 +1,13 @@
 package me.retrodaredevil.solarthing.solar.outback.mx;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.packets.support.Support;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 
-import java.beans.ConstructorProperties;
-
+@JsonIgnoreProperties(value = {"auxModeName", "errors", "chargerModeName"}, allowGetters = true)
 final class ImmutableMXStatusPacket implements MXStatusPacket {
 	private final int address;
 	private final int chargerCurrent, pvCurrent, inputVoltage;
@@ -21,21 +23,15 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 
 	private final OutbackIdentifier identifier;
 
-	/*
-	The structure of MXStatusPackets has not changed much, so we don't need a complex way to deserialize them.
-	 */
-	@ConstructorProperties({
-			"address", "chargerCurrent", "pvCurrent", "inputVoltage", "dailyKWH", "ampChargerCurrent",
-			"auxMode", "errorMode", "chargerMode", "batteryVoltage", "dailyAH", "dailyAHSupport", "chksum"
-	})
+	@JsonCreator
 	ImmutableMXStatusPacket(
-			int address, int chargerCurrent, int pvCurrent, int inputVoltage,
-			float dailyKWH,
-			float ampChargerCurrent,
-			int auxMode, int errorMode, int chargerMode,
-			float batteryVoltage,
-			int dailyAH, Support dailyAHSupport,
-			int chksum
+			@JsonProperty(value = "address", required = true) int address, @JsonProperty(value = "chargerCurrent", required = true) int chargerCurrent, @JsonProperty(value = "pvCurrent", required = true) int pvCurrent, @JsonProperty(value = "inputVoltage", required = true) int inputVoltage,
+			@JsonProperty(value = "dailyKWH", required = true) float dailyKWH,
+			@JsonProperty(value = "ampChargerCurrent", required = true) float ampChargerCurrent,
+			@JsonProperty(value = "auxMode", required = true) int auxMode, @JsonProperty(value = "errorMode", required = true) int errorMode, @JsonProperty(value = "chargerMode", required = true) int chargerMode,
+			@JsonProperty(value = "batteryVoltage", required = true) float batteryVoltage,
+			@JsonProperty(value = "dailyAH", required = true) int dailyAH, @JsonProperty(value = "dailyAHSupport") Support dailyAHSupport,
+			@JsonProperty(value = "chksum", required = true) int chksum
 	) {
 		this.address = address;
 		this.chargerCurrent = chargerCurrent;

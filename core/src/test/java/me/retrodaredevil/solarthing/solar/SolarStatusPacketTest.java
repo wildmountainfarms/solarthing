@@ -30,5 +30,8 @@ class SolarStatusPacketTest {
 
 		// We have to use ArrayList and not just List so Jackson knows what implementation to use
 		mapper.readValue(FX_ARRAY, mapper.getTypeFactory().constructCollectionType(ArrayList.class, SolarStatusPacket.class));
+
+		// Now let's see if it can parse MX packets as well
+		mapper.readValue(OUTBACK_JSON, mapper.getTypeFactory().constructCollectionType(ArrayList.class, SolarStatusPacket.class));
 	}
 }
