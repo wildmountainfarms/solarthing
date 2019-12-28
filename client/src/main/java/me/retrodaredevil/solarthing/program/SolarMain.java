@@ -20,6 +20,7 @@ import me.retrodaredevil.solarthing.config.databases.implementations.LatestFileD
 import me.retrodaredevil.solarthing.config.io.IOConfig;
 import me.retrodaredevil.solarthing.config.io.SerialIOConfig;
 import me.retrodaredevil.solarthing.config.options.*;
+import me.retrodaredevil.solarthing.couchdb.CouchDbPacketRetriever;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketSaver;
 import me.retrodaredevil.solarthing.influxdb.ConstantDatabaseNameGetter;
 import me.retrodaredevil.solarthing.influxdb.ConstantMeasurementPacketPointCreator;
@@ -86,17 +87,19 @@ public final class SolarMain {
 		LOGGER.info("Beginning mate program");
 		PacketCollectionIdGenerator idGenerator = createIdGenerator(options.getUniqueIdsInOneHour());
 		LOGGER.info("IO Bundle File: " + options.getIOBundleFile());
-		final IOBundle createdIO = createIOBundle(options.getIOBundleFile(), MATE_CONFIG);
 		final IOBundle io;
-		if(options.isAllowCommands()){
-			io = createdIO;
-		} else {
-			// just a simple safe guard to stop people from accessing the OutputStream if this program becomes more complex in the future
-			io = new IOBundle() {
-				@Override public InputStream getInputStream() { return createdIO.getInputStream(); }
-				@Override public OutputStream getOutputStream() { throw new IllegalStateException("You cannot access the output stream while commands are disabled!"); }
-				@Override public void close() throws Exception { createdIO.close(); }
-			};
+		{
+			final IOBundle createdIO = createIOBundle(options.getIOBundleFile(), MATE_CONFIG);
+			if(options.isAllowCommands()){
+				io = createdIO;
+			} else {
+				// just a simple safe guard to stop people from accessing the OutputStream if this program becomes more complex in the future
+				io = new IOBundle() {
+					@Override public InputStream getInputStream() { return createdIO.getInputStream(); }
+					@Override public OutputStream getOutputStream() { throw new IllegalStateException("You cannot access the output stream while commands are disabled!"); }
+					@Override public void close() throws Exception { createdIO.close(); }
+				};
+			}
 		}
 		List<DatabaseConfig> databaseConfigs = getDatabaseConfigs(options);
 		
@@ -155,10 +158,10 @@ public final class SolarMain {
 			final PacketHandler commandFeedbackHandler = new PacketHandlerMultiplexer(commandFeedbackHandlerList);
 			Collection<MateCommand> allowedCommands = EnumSet.of(MateCommand.AUX_OFF, MateCommand.AUX_ON, MateCommand.USE, MateCommand.DROP);
 			onDataReceive = new MateCommandSender(
-				new CommandProviderMultiplexer<>(commandProviders),
-				io.getOutputStream(),
-				allowedCommands,
-				new OnMateCommandSent(commandFeedbackHandler)
+					new CommandProviderMultiplexer<>(commandProviders),
+					io.getOutputStream(),
+					allowedCommands,
+					new OnMateCommandSent(commandFeedbackHandler)
 			);
 			packetHandlers.add(commandRequesterHandler);
 		} else {
@@ -187,7 +190,8 @@ public final class SolarMain {
 									},
 									getSourceAndFragmentUpdater(options),
 									new PacketHandlerPacketListReceiver(new PacketHandlerMultiplexer(packetHandlers), idGenerator)
-							), onDataReceive
+							),
+							onDataReceive
 					)
 			);
 		} finally {
@@ -440,6 +444,8 @@ public final class SolarMain {
 	}
 
 	public static int doMain(String[] args){
+		LOGGER.info("[LOG] Beginning main");
+		System.out.println("[stdout] Beginning main");
 		if(args.length < 1){
 			System.err.println("Usage: <java -jar ...> {base config file}");
 			LOGGER.error("(Fatal)Incorrect args");

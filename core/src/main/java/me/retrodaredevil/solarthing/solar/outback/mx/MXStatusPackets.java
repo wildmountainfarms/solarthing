@@ -1,7 +1,5 @@
 package me.retrodaredevil.solarthing.solar.outback.mx;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import me.retrodaredevil.solarthing.packets.support.Support;
 import me.retrodaredevil.solarthing.util.CheckSumException;
 import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
@@ -10,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static me.retrodaredevil.solarthing.util.ParseUtil.toInt;
-import static me.retrodaredevil.util.json.JsonHelper.getOrNull;
 
 public final class MXStatusPackets {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MXStatusPackets.class);
@@ -134,49 +131,10 @@ public final class MXStatusPackets {
 			dailyAHSupported = Support.FULLY_SUPPORTED;
 		}
 
-		// ==== Aux Mode stuff ====
-
-
 		return new ImmutableMXStatusPacket(
 				address, chargerCurrent, pvCurrent, inputVoltage, dailyKWH,
 				ampChargerCurrent, auxMode, errorMode, chargerMode,
 				batteryVoltage, dailyAH, dailyAHSupported, chksum
-		);
-	}
-
-	@Deprecated
-	public static MXStatusPacket createFromJson(JsonObject object) {
-
-		final int address = object.get("address").getAsInt();
-
-		final int chargerCurrent = object.get("chargerCurrent").getAsInt();
-		final int pvCurrent = object.get("pvCurrent").getAsInt();
-		final int inputVoltage = object.get("inputVoltage").getAsInt();
-
-		final float dailyKWH = object.get("dailyKWH").getAsFloat();
-
-		final float ampChargerCurrent = object.get("ampChargerCurrent").getAsFloat();
-
-		final int auxMode = object.get("auxMode").getAsInt();
-		final int errorMode = object.get("errorMode").getAsInt();
-		final int chargerMode = object.get("chargerMode").getAsInt();
-
-		final float batteryVoltage = object.get("batteryVoltage").getAsFloat();
-
-		final int dailyAH = object.get("dailyAH").getAsInt();
-		final String dailyAHSupportString = getOrNull(object, "dailyAHSupport", JsonElement::getAsString);
-		final Support dailyAHSupport;
-		if(dailyAHSupportString == null){
-			dailyAHSupport = Support.UNKNOWN;
-		} else {
-			dailyAHSupport = Support.valueOf(dailyAHSupportString);
-		}
-		final int chksum = object.get("chksum").getAsInt();
-
-		return new ImmutableMXStatusPacket(
-				address, chargerCurrent, pvCurrent, inputVoltage, dailyKWH,
-				ampChargerCurrent, auxMode, errorMode, chargerMode, batteryVoltage,
-				dailyAH, dailyAHSupport, chksum
 		);
 	}
 }
