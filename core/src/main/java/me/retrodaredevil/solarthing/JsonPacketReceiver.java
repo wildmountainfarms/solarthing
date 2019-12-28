@@ -1,10 +1,9 @@
 package me.retrodaredevil.solarthing;
 
-import com.google.gson.JsonObject;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.util.List;
 
-@Deprecated
 public interface JsonPacketReceiver {
-	void receivePackets(List<JsonObject> jsonPackets);
+	void receivePackets(List<ObjectNode> jsonPackets);
 }

@@ -3,12 +3,19 @@ package me.retrodaredevil.solarthing.packets.security;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 
 import java.security.PublicKey;
 
 @JsonDeserialize(as = ImmutableAuthNewSenderPacket.class)
 @JsonTypeName("AUTH_NEW_SENDER")
+@JsonExplicit
 public interface AuthNewSenderPacket extends SecurityPacket, SenderPacket {
+	@Override
+	default SecurityPacketType getPacketType() {
+		return SecurityPacketType.AUTH_NEW_SENDER;
+	}
+
 	/**
 	 * Should be serialized as "publicKey"
 	 *
