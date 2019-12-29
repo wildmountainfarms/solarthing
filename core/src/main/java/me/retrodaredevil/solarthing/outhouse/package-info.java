@@ -4,5 +4,4 @@
  *
  * This package is no longer being maintained. If you find it useful, feel free to start maintaining it! This was deprecated when we moved from Gson to Jackson.
  */
-@Deprecated
 package me.retrodaredevil.solarthing.outhouse;
