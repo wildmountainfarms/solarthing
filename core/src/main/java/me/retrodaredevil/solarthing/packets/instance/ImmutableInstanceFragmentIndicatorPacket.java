@@ -1,12 +1,13 @@
 package me.retrodaredevil.solarthing.packets.instance;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 final class ImmutableInstanceFragmentIndicatorPacket implements InstanceFragmentIndicatorPacket {
-	
-	private final InstancePacketType packetType = InstancePacketType.FRAGMENT_INDICATOR;
-	
 	private final int fragmentId;
-	
-	public ImmutableInstanceFragmentIndicatorPacket(int fragmentId) {
+
+	@JsonCreator
+	ImmutableInstanceFragmentIndicatorPacket(@JsonProperty(value = "fragmentId", required = true) int fragmentId) {
 		this.fragmentId = fragmentId;
 	}
 	
@@ -15,8 +16,4 @@ final class ImmutableInstanceFragmentIndicatorPacket implements InstanceFragment
 		return fragmentId;
 	}
 	
-	@Override
-	public InstancePacketType getPacketType() {
-		return packetType;
-	}
 }

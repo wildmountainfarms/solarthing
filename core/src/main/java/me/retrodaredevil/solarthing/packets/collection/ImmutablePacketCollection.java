@@ -1,12 +1,8 @@
 package me.retrodaredevil.solarthing.packets.collection;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import me.retrodaredevil.solarthing.packets.Packet;
 
 import java.util.*;
-
-import static java.util.Objects.requireNonNull;
 
 class ImmutablePacketCollection implements PacketCollection {
 	private final List<Packet> packets;
@@ -26,17 +22,6 @@ class ImmutablePacketCollection implements PacketCollection {
 		final Calendar cal = new GregorianCalendar();
 		dateMillis = cal.getTimeInMillis(); // in UTC
 		this._id = idGenerator.generateId(cal);
-	}
-	ImmutablePacketCollection(JsonObject object, JsonPacketGetter packetGetter){
-		requireNonNull(object);
-		requireNonNull(packetGetter);
-		final List<Packet> packets = new ArrayList<>();
-		for(JsonElement elementPacket : object.getAsJsonArray("packets")){
-			packets.add(packetGetter.createFromJson(elementPacket.getAsJsonObject()));
-		}
-		this.packets = Collections.unmodifiableList(packets);
-		this.dateMillis = object.get("dateMillis").getAsLong();
-		this._id = object.get("_id").getAsString();
 	}
 
 	@Override

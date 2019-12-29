@@ -1,18 +1,23 @@
 package me.retrodaredevil.solarthing.solar.outback.fx.common;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.solar.common.DailyBatteryVoltage;
 import me.retrodaredevil.solarthing.solar.common.DailyData;
 import me.retrodaredevil.solarthing.solar.common.ErrorReporter;
+import me.retrodaredevil.solarthing.solar.outback.OutbackData;
 import me.retrodaredevil.solarthing.solar.outback.fx.ACMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXErrorMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.OperationalMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.extra.DailyFXPacket;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Set;
 
-public interface FXDailyData extends DailyBatteryVoltage, ErrorReporter, FXWarningReporter, FXMiscReporter {
+@JsonExplicit
+public interface FXDailyData extends OutbackData, DailyBatteryVoltage, ErrorReporter, FXWarningReporter, FXMiscReporter {
 	@Override
 	default boolean isNewDay(DailyData previousDailyData){
 		if (!(previousDailyData instanceof FXDailyData)) {
@@ -21,7 +26,7 @@ public interface FXDailyData extends DailyBatteryVoltage, ErrorReporter, FXWarni
 		DailyFXPacket previous = (DailyFXPacket) previousDailyData;
 		/*
 		In the early versions of DailyFXPacket, startDateMillis was not serialized. In new versions, they are always serialized.
-		This is why we have to perform a null check and deal with either one being null.
+		This is why we have to perform a null check and deal with either one being null. (One could be a packet from a previous version)
 		 */
 		Long dateMillis = getStartDateMillis();
 		Long previousMillis = previous.getStartDateMillis();
@@ -34,11 +39,21 @@ public interface FXDailyData extends DailyBatteryVoltage, ErrorReporter, FXWarni
 				getSellKWH() < previous.getSellKWH();
 	}
 
+	@JsonProperty("startDateMillis")
+	@Override
+	@Nullable
+	Long getStartDateMillis();
+
+	@JsonProperty("inverterKWH")
 	float getInverterKWH();
+	@JsonProperty("chargerKWH")
 	float getChargerKWH();
+	@JsonProperty("buyKWH")
 	float getBuyKWH();
+	@JsonProperty("sellKWH")
 	float getSellKWH();
 
+	@JsonProperty("operationalModeValues")
 	Collection<Integer> getOperationalModeValues();
 	default Set<OperationalMode> getOperationalModes(){ return Modes.getActiveModes(OperationalMode.class, getOperationalModeValues()); }
 
@@ -46,17 +61,21 @@ public interface FXDailyData extends DailyBatteryVoltage, ErrorReporter, FXWarni
 	 * Should be serialized as "errorModeValue"
 	 * @return The bit-masked value representing all the error modes that were active during one day
 	 */
+	@JsonProperty("errorModeValue")
 	@Override
-	int getErrorMode();
+	int getErrorModeValue();
 	@Override
-	default Set<FXErrorMode> getErrorModes(){ return Modes.getActiveModes(FXErrorMode.class, getErrorMode()); }
+	default Set<FXErrorMode> getErrorModes(){ return Modes.getActiveModes(FXErrorMode.class, getErrorModeValue()); }
 
+	@JsonProperty("warningModeValue")
 	@Override
 	int getWarningModeValue();
 
+	@JsonProperty("miscValue")
 	@Override
 	int getMiscValue();
 
+	@JsonProperty("acModeValues")
 	Collection<Integer> getACModeValues();
 	default Set<ACMode> getACModes(){ return Modes.getActiveModes(ACMode.class, getACModeValues()); }
 }

@@ -1,9 +1,12 @@
 package me.retrodaredevil.solarthing.solar.common;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.packets.support.Support;
 
 public interface DailyChargeController extends ChargeController, DailyData {
+	@JsonProperty("dailyKWH")
 	float getDailyKWH();
+	@JsonProperty("dailyAH")
 	int getDailyAH();
 
 	/**

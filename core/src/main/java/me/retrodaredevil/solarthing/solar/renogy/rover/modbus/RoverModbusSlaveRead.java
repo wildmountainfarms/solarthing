@@ -226,7 +226,7 @@ public class RoverModbusSlaveRead implements RoverReadTable {
 	}
 	
 	private static final MessageHandler<int[]> ERROR_MODE = new ReadRegistersHandler(0x0121, 2);
-	@Override public int getErrorMode() {
+	@Override public int getErrorModeValue() {
 		return twoRegistersAsInt(ERROR_MODE);
 	}
 	

@@ -1,13 +1,14 @@
 package me.retrodaredevil.solarthing.solar.outback.mx;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.packets.support.Support;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 
-@SuppressWarnings("unused")
+@JsonIgnoreProperties(value = {"auxModeName", "errors", "chargerModeName"}, allowGetters = true)
 final class ImmutableMXStatusPacket implements MXStatusPacket {
-	private final SolarStatusPacketType packetType = SolarStatusPacketType.MXFM_STATUS;
-
 	private final int address;
 	private final int chargerCurrent, pvCurrent, inputVoltage;
 	private final float dailyKWH;
@@ -20,20 +21,17 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 	private final Support dailyAHSupport;
 	private final int chksum;
 
-	private final String auxModeName;
-	private final String errors;
-	private final String chargerModeName;
-	
-	private final transient OutbackIdentifier identifier;
-	
+	private final OutbackIdentifier identifier;
+
+	@JsonCreator
 	ImmutableMXStatusPacket(
-		int address, int chargerCurrent, int pvCurrent, int inputVoltage,
-		float dailyKWH,
-		float ampChargerCurrent,
-		int auxMode, int errorMode, int chargerMode,
-		float batteryVoltage,
-		int dailyAH, Support dailyAHSupport,
-		int chksum, String auxModeName, String errors, String chargerModeName
+			@JsonProperty(value = "address", required = true) int address, @JsonProperty(value = "chargerCurrent", required = true) int chargerCurrent, @JsonProperty(value = "pvCurrent", required = true) int pvCurrent, @JsonProperty(value = "inputVoltage", required = true) int inputVoltage,
+			@JsonProperty(value = "dailyKWH", required = true) float dailyKWH,
+			@JsonProperty(value = "ampChargerCurrent", required = true) float ampChargerCurrent,
+			@JsonProperty(value = "auxMode", required = true) int auxMode, @JsonProperty(value = "errorMode", required = true) int errorMode, @JsonProperty(value = "chargerMode", required = true) int chargerMode,
+			@JsonProperty(value = "batteryVoltage", required = true) float batteryVoltage,
+			@JsonProperty(value = "dailyAH", required = true) int dailyAH, @JsonProperty(value = "dailyAHSupport") Support dailyAHSupport,
+			@JsonProperty(value = "chksum", required = true) int chksum
 	) {
 		this.address = address;
 		this.chargerCurrent = chargerCurrent;
@@ -46,33 +44,15 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 		this.chargerMode = chargerMode;
 		this.batteryVoltage = batteryVoltage;
 		this.dailyAH = dailyAH;
-		this.dailyAHSupport = dailyAHSupport;
+		this.dailyAHSupport = dailyAHSupport == null ? Support.UNKNOWN : dailyAHSupport;
 		this.chksum = chksum;
-		this.auxModeName = auxModeName;
-		this.errors = errors;
-		this.chargerModeName = chargerModeName;
-		
+
 		this.identifier = new OutbackIdentifier(address);
 	}
 
 	@Override
-	public String getAuxModeName() {
-		return auxModeName;
-	}
-
-	@Override
-	public String getErrorsString() {
-		return errors;
-	}
-
-	@Override
-	public String getChargerModeName() {
-		return chargerModeName;
-	}
-
-	@Override
 	public SolarStatusPacketType getPacketType() {
-		return packetType;
+		return SolarStatusPacketType.MXFM_STATUS;
 	}
 
 	@Override
@@ -85,12 +65,12 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 		return identifier;
 	}
 
-	@SuppressWarnings("deprecation")
+	@Deprecated
 	@Override
 	public int getChargerCurrent() {
 		return chargerCurrent;
 	}
-	
+
 	@Override
 	public Integer getPVCurrent() {
 		return pvCurrent;
@@ -107,7 +87,7 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 	}
 
 
-	@SuppressWarnings("deprecation")
+	@Deprecated
 	@Override
 	public float getAmpChargerCurrent() {
 		return ampChargerCurrent;
@@ -120,7 +100,7 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 	}
 
 	@Override
-	public int getErrorMode() {
+	public int getErrorModeValue() {
 		return errorMode;
 	}
 

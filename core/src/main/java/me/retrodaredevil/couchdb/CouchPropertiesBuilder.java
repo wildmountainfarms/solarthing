@@ -1,6 +1,11 @@
 package me.retrodaredevil.couchdb;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+
 @SuppressWarnings({"UnusedReturnValue", "unused"})
+@JsonPOJOBuilder
 public class CouchPropertiesBuilder {
 	private String database;
 	private boolean createIfNotExist;
@@ -36,13 +41,14 @@ public class CouchPropertiesBuilder {
 		port = properties.getPort();
 		username = properties.getUsername();
 		password = properties.getPassword();
-		socketTimeout = properties.getSocketTimeout();
-		connectionTimeout = properties.getConnectionTimeout();
+		socketTimeout = properties.getSocketTimeoutMillis();
+		connectionTimeout = properties.getConnectionTimeoutMillis();
 		maxConnections = properties.getMaxConnections();
 		proxyHost = properties.getProxyHost();
 		proxyPort = properties.getProxyPort();
 	}
-	
+
+	@JsonProperty("database")
 	public CouchPropertiesBuilder setDatabase(String database) {
 		this.database = database;
 		return this;
@@ -52,32 +58,38 @@ public class CouchPropertiesBuilder {
 		this.createIfNotExist = createIfNotExist;
 		return this;
 	}
-	
+
+	@JsonSetter("protocol")
 	public CouchPropertiesBuilder setProtocol(String protocol) {
 		this.protocol = protocol;
 		return this;
 	}
-	
+
+	@JsonSetter("host")
 	public CouchPropertiesBuilder setHost(String host) {
 		this.host = host;
 		return this;
 	}
-	
+
+	@JsonSetter("path")
 	public CouchPropertiesBuilder setPath(String path) {
 		this.path = path;
 		return this;
 	}
-	
+
+	@JsonSetter("port")
 	public CouchPropertiesBuilder setPort(int port) {
 		this.port = port;
 		return this;
 	}
-	
+
+	@JsonSetter("username")
 	public CouchPropertiesBuilder setUsername(String username) {
 		this.username = username;
 		return this;
 	}
-	
+
+	@JsonSetter("password")
 	public CouchPropertiesBuilder setPassword(String password) {
 		this.password = password;
 		return this;
@@ -86,29 +98,42 @@ public class CouchPropertiesBuilder {
 	/**
 	 * @param socketTimeout Socket timeout in ms
 	 */
-	public CouchPropertiesBuilder setSocketTimeout(int socketTimeout) {
+	public CouchPropertiesBuilder setSocketTimeoutMillis(int socketTimeout) {
 		this.socketTimeout = socketTimeout;
+		return this;
+	}
+	@JsonSetter("socket_timeout")
+	public CouchPropertiesBuilder setSocketTimeoutSeconds(float seconds) {
+		this.socketTimeout = Math.round(seconds * 1000);
 		return this;
 	}
 	
 	/**
 	 * @param connectionTimeout Connection timeout in ms
 	 */
-	public CouchPropertiesBuilder setConnectionTimeout(int connectionTimeout) {
+	public CouchPropertiesBuilder setConnectionTimeoutMillis(int connectionTimeout) {
 		this.connectionTimeout = connectionTimeout;
 		return this;
 	}
-	
+	@JsonSetter("connection_timeout")
+	public CouchPropertiesBuilder setConnectionTimeoutSeconds(float seconds) {
+		this.connectionTimeout = Math.round(seconds * 1000);
+		return this;
+	}
+
+	@JsonSetter("max_connections")
 	public CouchPropertiesBuilder setMaxConnections(int maxConnections) {
 		this.maxConnections = maxConnections;
 		return this;
 	}
-	
+
+	@JsonSetter("proxy_host")
 	public CouchPropertiesBuilder setProxyHost(String proxyHost) {
 		this.proxyHost = proxyHost;
 		return this;
 	}
-	
+
+	@JsonSetter("proxy_port")
 	public CouchPropertiesBuilder setProxyPort(int proxyPort) {
 		this.proxyPort = proxyPort;
 		return this;

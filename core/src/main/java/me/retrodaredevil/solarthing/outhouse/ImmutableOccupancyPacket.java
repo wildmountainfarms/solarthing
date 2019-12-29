@@ -1,8 +1,7 @@
 package me.retrodaredevil.solarthing.outhouse;
 
 public class ImmutableOccupancyPacket implements OccupancyPacket {
-	private final OuthousePacketType packetType = OuthousePacketType.OCCUPANCY;
-	
+
 	private final int occupancy;
 	
 	public ImmutableOccupancyPacket(int occupancy) {
@@ -16,6 +15,6 @@ public class ImmutableOccupancyPacket implements OccupancyPacket {
 	
 	@Override
 	public OuthousePacketType getPacketType() {
-		return packetType;
+		return OuthousePacketType.OCCUPANCY;
 	}
 }

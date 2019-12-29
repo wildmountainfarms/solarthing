@@ -1,29 +1,19 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover;
 
-import me.retrodaredevil.solarthing.packets.Modes;
-import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
-import me.retrodaredevil.solarthing.solar.renogy.BatteryType;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Base64;
-
+@JsonIgnoreProperties(value = {"productModelString", "hardwareVersionString", "softwareVersionString", "streetLightBrightness", "streetLightOn", "chargingStateName", "errors", "batteryTypeName", "loadWorkingModeName"}, allowGetters = true)
 public class ImmutableRoverStatusPacket implements RoverStatusPacket {
-	private final SolarStatusPacketType packetType = SolarStatusPacketType.RENOGY_ROVER_STATUS;
-	private transient final RoverIdentifier identifier;
+	private final RoverIdentifier identifier;
 	private final int maxVoltage;
 	private final int ratedChargingCurrent;
 	private final int ratedDischargingCurrent;
 	private final int productType;
-	private transient final byte[] productModel;
-	@SuppressWarnings({"unused", "FieldCanBeLocal"})
-	private final String productModelEncoded;
-	@SuppressWarnings({"unused", "FieldCanBeLocal"})
-	private final String productModelString;
+	private final byte[] productModel;
 	private final int softwareVersion;
-	@SuppressWarnings({"unused", "FieldCanBeLocal"})
-	private final String softwareVersionString;
 	private final int hardwareVersion;
-	@SuppressWarnings({"unused", "FieldCanBeLocal"})
-	private final String hardwareVersionString;
 	private final int productSerialNumber;
 	private final int controllerDeviceAddress;
 	private final int batteryCapacitySOC;
@@ -55,23 +45,13 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	private final float cumulativeKWH;
 	private final float cumulativeKWHConsumption;
 	private final int streetLightValue;
-	@SuppressWarnings({"unused", "FieldCanBeLocal"})
-	private final boolean streetLightOn; // convenient
-	@SuppressWarnings({"unused", "FieldCanBeLocal"})
-	private final int streetLightBrightness; // convenient
 	private final int chargingState;
-	@SuppressWarnings({"unused", "FieldCanBeLocal"})
-	private final String chargingStateName;
 	private final int errorMode;
-	@SuppressWarnings({"unused", "FieldCanBeLocal"})
-	private final String errors; // convenient
 	private final int nominalBatteryCapacity;
 	private final int systemVoltageSetting;
 	private final int recognizedVoltage;
 	private final int batteryType;
-	@SuppressWarnings({"unused", "FieldCanBeLocal"})
-	private final String batteryTypeName; // convenient
-	
+
 	private final int overVoltageThresholdRaw;
 	private final int chargingVoltageLimitRaw;
 	private final int equalizingChargingVoltageRaw;
@@ -94,8 +74,6 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	private final OperatingSettingBundle operatingStage1, operatingStage2, operatingStage3, operatingMorningOn;
 	
 	private final int loadWorkingMode;
-	@SuppressWarnings({"unused", "FieldCanBeLocal"})
-	private final String loadWorkingModeName; // convenient
 	private final int lightControlDelayMinutes;
 	private final int lightControlVoltage;
 	private final int ledLoadCurrentSettingRaw;
@@ -106,32 +84,33 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	private final int sensingTimeDelayRaw;
 	private final int ledLoadCurrentRaw;
 	private final int specialPowerControlE02DRaw;
-	
-	
+
+
+	@JsonCreator
 	public ImmutableRoverStatusPacket(
-		int maxVoltage, int ratedChargingCurrent, int ratedDischargingCurrent, int productType, byte[] productModel,
-		int softwareVersion, int hardwareVersion, int productSerialNumber,
-		int controllerDeviceAddress,
-		int batteryCapacitySOC, float batteryVoltage, float chargingCurrent, int controllerTemperatureRaw, int batteryTemperatureRaw,
-		float loadVoltage, float loadCurrent, int loadPower, float inputVoltage, float pvCurrent,
-		int chargingPower, float dailyMinBatteryVoltage, float dailyMaxBatteryVoltage,
-		float dailyMaxChargingCurrent, float dailyMaxDischargingCurrent, int dailyMaxChargingPower, int dailyMaxDischargingPower,
-		int dailyAH, int dailyAHDischarging,
-		float dailyKWH, float dailyKWHConsumption,
-		int operatingDaysCount, int batteryOverDischargesCount, int batteryFullChargesCount,
-		int chargingAmpHoursOfBatteryCount, int dischargingAmpHoursOfBatteryCount,
-		float cumulativeKWH, float cumulativeKWHConsumption,
-		int streetLightValue, int chargingState, int errorMode, int nominalBatteryCapacity,
-		int systemVoltageSetting, int recognizedVoltage, int batteryType,
-		int overVoltageThresholdRaw, int chargingVoltageLimitRaw, int equalizingChargingVoltageRaw,
-		int boostChargingVoltageRaw, int floatingChargingVoltageRaw, int boostChargingRecoveryVoltageRaw,
-		int overDischargeRecoveryVoltageRaw, int underVoltageWarningLevelRaw, int overDischargeVoltageRaw,
-		int dischargingLimitVoltageRaw,
-		int endOfChargeSOC, int endOfDischargeSOC,
-		int overDischargeTimeDelaySeconds, int equalizingChargingTimeRaw,
-		int boostChargingTimeRaw, int equalizingChargingIntervalRaw, int temperatureCompensationFactorRaw,
-		OperatingSettingBundle operatingStage1, OperatingSettingBundle operatingStage2, OperatingSettingBundle operatingStage3, OperatingSettingBundle operatingMorningOn, int loadWorkingMode, int lightControlDelayMinutes, int lightControlVoltage, int ledLoadCurrentSettingRaw,
-		int specialPowerControlE021Raw, SensingBundle sensed1, SensingBundle sensed2, SensingBundle sensed3, int sensingTimeDelayRaw, int ledLoadCurrentRaw, int specialPowerControlE02DRaw
+			@JsonProperty(value = "maxVoltage", required = true) int maxVoltage, @JsonProperty(value = "ratedChargingCurrent", required = true) int ratedChargingCurrent, @JsonProperty(value = "ratedDischargingCurrent", required = true) int ratedDischargingCurrent, @JsonProperty(value = "productType", required = true) int productType, @JsonProperty(value = "productModelEncoded", required = true) byte[] productModel,
+			@JsonProperty(value = "softwareVersion", required = true) int softwareVersion, @JsonProperty(value = "hardwareVersion", required = true) int hardwareVersion, @JsonProperty(value = "productSerialNumber", required = true) int productSerialNumber,
+			@JsonProperty(value = "controllerDeviceAddress", required = true) int controllerDeviceAddress,
+			@JsonProperty(value = "batteryCapacitySOC", required = true) int batteryCapacitySOC, @JsonProperty(value = "batteryVoltage", required = true) float batteryVoltage, @JsonProperty(value = "chargingCurrent", required = true) float chargingCurrent, @JsonProperty(value = "controllerTemperatureRaw", required = true) int controllerTemperatureRaw, @JsonProperty(value = "batteryTemperatureRaw", required = true) int batteryTemperatureRaw,
+			@JsonProperty(value = "loadVoltage", required = true) float loadVoltage, @JsonProperty(value = "loadCurrent", required = true) float loadCurrent, @JsonProperty(value = "loadPower", required = true) int loadPower, @JsonProperty(value = "inputVoltage", required = true) float inputVoltage, @JsonProperty(value = "pvCurrent", required = true) float pvCurrent,
+			@JsonProperty(value = "chargingPower", required = true) int chargingPower, @JsonProperty(value = "dailyMinBatteryVoltage", required = true) float dailyMinBatteryVoltage, @JsonProperty(value = "dailyMaxBatteryVoltage", required = true) float dailyMaxBatteryVoltage,
+			@JsonProperty(value = "dailyMaxChargingCurrent", required = true) float dailyMaxChargingCurrent, @JsonProperty(value = "dailyMaxDischargingCurrent", required = true) float dailyMaxDischargingCurrent, @JsonProperty(value = "dailyMaxChargingPower", required = true) int dailyMaxChargingPower, @JsonProperty(value = "dailyMaxDischargingPower", required = true) int dailyMaxDischargingPower,
+			@JsonProperty(value = "dailyAH", required = true) int dailyAH, @JsonProperty(value = "dailyAHDischarging", required = true) int dailyAHDischarging,
+			@JsonProperty(value = "dailyKWH", required = true) float dailyKWH, @JsonProperty(value = "dailyKWHConsumption", required = true) float dailyKWHConsumption,
+			@JsonProperty(value = "operatingDaysCount", required = true) int operatingDaysCount, @JsonProperty(value = "batteryOverDischargesCount", required = true) int batteryOverDischargesCount, @JsonProperty(value = "batteryFullChargesCount", required = true) int batteryFullChargesCount,
+			@JsonProperty(value = "chargingAmpHoursOfBatteryCount", required = true) int chargingAmpHoursOfBatteryCount, @JsonProperty(value = "dischargingAmpHoursOfBatteryCount", required = true) int dischargingAmpHoursOfBatteryCount,
+			@JsonProperty(value = "cumulativeKWH", required = true) float cumulativeKWH, @JsonProperty(value = "cumulativeKWHConsumption", required = true) float cumulativeKWHConsumption,
+			@JsonProperty(value = "streetLightValue", required = true) int streetLightValue, @JsonProperty(value = "chargingState", required = true) int chargingState, @JsonProperty(value = "errorMode", required = true) int errorMode, @JsonProperty(value = "nominalBatteryCapacity", required = true) int nominalBatteryCapacity,
+			@JsonProperty(value = "systemVoltageSetting", required = true) int systemVoltageSetting, @JsonProperty(value = "recognizedVoltage", required = true) int recognizedVoltage, @JsonProperty(value = "batteryType", required = true) int batteryType,
+			@JsonProperty(value = "overVoltageThresholdRaw", required = true) int overVoltageThresholdRaw, @JsonProperty(value = "chargingVoltageLimitRaw", required = true) int chargingVoltageLimitRaw, @JsonProperty(value = "equalizingChargingVoltageRaw", required = true) int equalizingChargingVoltageRaw,
+			@JsonProperty(value = "boostChargingVoltageRaw", required = true) int boostChargingVoltageRaw, @JsonProperty(value = "floatingChargingVoltageRaw", required = true) int floatingChargingVoltageRaw, @JsonProperty(value = "boostChargingRecoveryVoltageRaw", required = true) int boostChargingRecoveryVoltageRaw,
+			@JsonProperty(value = "overDischargeRecoveryVoltageRaw", required = true) int overDischargeRecoveryVoltageRaw, @JsonProperty(value = "underVoltageWarningLevelRaw", required = true) int underVoltageWarningLevelRaw, @JsonProperty(value = "overDischargeVoltageRaw", required = true) int overDischargeVoltageRaw,
+			@JsonProperty(value = "dischargingLimitVoltageRaw", required = true) int dischargingLimitVoltageRaw,
+			@JsonProperty(value = "endOfChargeSOC", required = true) int endOfChargeSOC, @JsonProperty(value = "endOfDischargeSOC", required = true) int endOfDischargeSOC,
+			@JsonProperty(value = "overDischargeTimeDelaySeconds", required = true) int overDischargeTimeDelaySeconds, @JsonProperty(value = "equalizingChargingTimeRaw", required = true) int equalizingChargingTimeRaw,
+			@JsonProperty(value = "boostChargingTimeRaw", required = true) int boostChargingTimeRaw, @JsonProperty(value = "equalizingChargingIntervalRaw", required = true) int equalizingChargingIntervalRaw, @JsonProperty(value = "temperatureCompensationFactorRaw", required = true) int temperatureCompensationFactorRaw,
+			@JsonProperty(value = "operatingStage1", required = true) OperatingSettingBundle operatingStage1, @JsonProperty(value = "operatingStage2", required = true) OperatingSettingBundle operatingStage2, @JsonProperty(value = "operatingStage3", required = true) OperatingSettingBundle operatingStage3, @JsonProperty(value = "operatingMorningOn", required = true) OperatingSettingBundle operatingMorningOn, @JsonProperty(value = "loadWorkingMode", required = true) int loadWorkingMode, @JsonProperty(value = "lightControlDelayMinutes", required = true) int lightControlDelayMinutes, @JsonProperty(value = "lightControlVoltage", required = true) int lightControlVoltage, @JsonProperty(value = "ledLoadCurrentSettingRaw", required = true) int ledLoadCurrentSettingRaw,
+			@JsonProperty(value = "specialPowerControlE021Raw", required = true) int specialPowerControlE021Raw, @JsonProperty(value = "sensed1", required = true) SensingBundle sensed1, @JsonProperty(value = "sensed2", required = true) SensingBundle sensed2, @JsonProperty(value = "sensed3", required = true) SensingBundle sensed3, @JsonProperty(value = "sensingTimeDelayRaw", required = true) int sensingTimeDelayRaw, @JsonProperty(value = "ledLoadCurrentRaw", required = true) int ledLoadCurrentRaw, @JsonProperty(value = "specialPowerControlE02DRaw", required = true) int specialPowerControlE02DRaw
 	) {
 		// region initialization
 		this.maxVoltage = maxVoltage;
@@ -139,7 +118,6 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 		this.ratedDischargingCurrent = ratedDischargingCurrent;
 		this.productType = productType;
 		this.productModel = productModel;
-		this.productModelEncoded = Base64.getEncoder().encodeToString(productModel);
 		this.softwareVersion = softwareVersion;
 		this.hardwareVersion = hardwareVersion;
 		this.productSerialNumber = productSerialNumber;
@@ -214,28 +192,11 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 		// endregion
 		
 		identifier = new RoverIdentifier(productSerialNumber);
-		
-		hardwareVersionString = getHardwareVersion().toString();
-		softwareVersionString = getSoftwareVersion().toString();
-		productModelString = getProductModel();
-		
-		streetLightOn = StreetLight.ON.isActive(streetLightValue);
-		streetLightBrightness = StreetLight.getBrightnessValue(streetLightValue);
-		errors = Modes.toString(RoverErrorMode.class, errorMode);
-		batteryTypeName = Modes.getActiveMode(BatteryType.class, batteryType).getModeName();
-		chargingStateName = Modes.getActiveMode(ChargingState.class, chargingState).getModeName();
-		loadWorkingModeName = Modes.getActiveMode(LoadWorkingMode.class, loadWorkingMode).getModeName();
 	}
-	
-	
+
 	@Override
 	public RoverIdentifier getIdentifier() {
 		return identifier;
-	}
-	
-	@Override
-	public SolarStatusPacketType getPacketType() {
-		return packetType;
 	}
 	
 	@Override
@@ -434,7 +395,7 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	}
 	
 	@Override
-	public int getErrorMode() {
+	public int getErrorModeValue() {
 		return errorMode;
 	}
 	
@@ -457,7 +418,7 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	public int getBatteryTypeValue() {
 		return batteryType;
 	}
-	
+
 	@Override
 	public int getOverVoltageThresholdRaw() {
 		return overVoltageThresholdRaw;
@@ -564,7 +525,18 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 			default: throw new UnsupportedOperationException(setting.toString());
 		}
 	}
-	
+
+	@Override
+	public OperatingSettingBundle getOperatingSettingBundle(OperatingSetting setting) {
+		switch(setting){
+			case STAGE_1: return operatingStage1;
+			case STAGE_2: return operatingStage2;
+			case STAGE_3: return operatingStage3;
+			case MORNING_ON: return operatingMorningOn;
+			default: throw new UnsupportedOperationException(setting.toString());
+		}
+	}
+
 	@Override
 	public int getLoadWorkingModeValue() {
 		return loadWorkingMode;
@@ -619,7 +591,20 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 			default: throw new UnsupportedOperationException(sensing.toString());
 		}
 	}
-	
+
+	@Override
+	public SensingBundle getSensingBundle(Sensing sensing) {
+		switch(sensing){
+			case SENSING_1: return sensed1;
+			case SENSING_2: return sensed2;
+			case SENSING_3: return sensed3;
+			default: throw new UnsupportedOperationException(sensing.toString());
+		}
+	}
+	@Override public SensingBundle getSensed1() { return sensed1; }
+	@Override public SensingBundle getSensed2() { return sensed2; }
+	@Override public SensingBundle getSensed3() { return sensed3; }
+
 	@Override
 	public int getSensingTimeDelayRaw() {
 		return sensingTimeDelayRaw;
@@ -634,5 +619,5 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	public int getSpecialPowerControlE02DRaw() {
 		return specialPowerControlE02DRaw;
 	}
-	
+
 }

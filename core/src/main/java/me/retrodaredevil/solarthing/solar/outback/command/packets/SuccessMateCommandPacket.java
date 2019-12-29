@@ -1,12 +1,23 @@
 package me.retrodaredevil.solarthing.solar.outback.command.packets;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
 
+@JsonTypeName("SUCCESS")
+@JsonExplicit
 public interface SuccessMateCommandPacket extends MateCommandFeedbackPacket {
+	@Override
+	default MateCommandFeedbackPacketType getPacketType() {
+		return MateCommandFeedbackPacketType.SUCCESS;
+	}
+
 	/**
 	 * Should be serialized as "command" (as a String)
 	 * @return The {@link MateCommand} that was successfully sent to the MATE
 	 */
+	@JsonProperty("command")
 	MateCommand getCommand();
 	
 	/**
@@ -14,5 +25,6 @@ public interface SuccessMateCommandPacket extends MateCommandFeedbackPacket {
 	 *
 	 * @return The string representing the source of the command
 	 */
+	@JsonProperty("source")
 	String getSource();
 }

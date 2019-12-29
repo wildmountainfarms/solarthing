@@ -4,6 +4,8 @@ for solarthing and outhouse.
 
 CouchDB takes some initial setup to make it usable before you can configure SolarThing.
 
+**NOTE**: In the future, I plan to make CouchDB easier to configure by removing the need to setup the `millis` view as described below. (We might be changing to Ektorp instead of LightCouch)
+
 ## Databases
 You must create each database if you wish to use the features they come with
 * `solarthing` Stores status packets from the Outback MATE and Renogy Rover

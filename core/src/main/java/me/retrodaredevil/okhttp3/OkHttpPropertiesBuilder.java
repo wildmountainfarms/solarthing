@@ -1,6 +1,11 @@
 package me.retrodaredevil.okhttp3;
 
-@SuppressWarnings("UnusedReturnValue")
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import me.retrodaredevil.solarthing.annotations.JsonExplicit;
+
+@JsonPOJOBuilder
+@JsonExplicit
 public class OkHttpPropertiesBuilder implements OkHttpProperties {
 
 	private boolean isRetryOnConnectionFailure = true;
@@ -16,6 +21,7 @@ public class OkHttpPropertiesBuilder implements OkHttpProperties {
 	public boolean isRetryOnConnectionFailure() {
 		return isRetryOnConnectionFailure;
 	}
+	@JsonSetter("retry_on_connection_failure")
 	public OkHttpPropertiesBuilder setRetryOnConnectionFailure(boolean isRetryOnConnectionFailure){
 		this.isRetryOnConnectionFailure = isRetryOnConnectionFailure;
 		return this;
@@ -30,6 +36,11 @@ public class OkHttpPropertiesBuilder implements OkHttpProperties {
 		return this;
 	}
 
+	@JsonSetter("call_timeout")
+	public OkHttpPropertiesBuilder setCallTimeoutSeconds(float seconds){
+		return setCallTimeoutMillis(Math.round(seconds * 1000));
+	}
+
 	@Override
 	public int getConnectTimeoutMillis() {
 		return connectTimeoutMillis;
@@ -37,6 +48,11 @@ public class OkHttpPropertiesBuilder implements OkHttpProperties {
 	public OkHttpPropertiesBuilder setConnectTimeoutMillis(int connectTimeoutMillis){
 		this.connectTimeoutMillis = connectTimeoutMillis;
 		return this;
+	}
+
+	@JsonSetter("connect_timeout")
+	public OkHttpPropertiesBuilder setConnectTimeoutSeconds(float seconds){
+		return setConnectTimeoutMillis(Math.round(seconds * 1000));
 	}
 
 	@Override
@@ -47,6 +63,10 @@ public class OkHttpPropertiesBuilder implements OkHttpProperties {
 		this.readTimeoutMillis = readTimeoutMillis;
 		return this;
 	}
+	@JsonSetter("read_timeout")
+	public OkHttpPropertiesBuilder setReadTimeoutSeconds(float seconds){
+		return setReadTimeoutMillis(Math.round(seconds * 1000));
+	}
 
 	@Override
 	public int getWriteTimeoutMillis() {
@@ -56,6 +76,10 @@ public class OkHttpPropertiesBuilder implements OkHttpProperties {
 		this.writeTimeoutMillis = writeTimeoutMillis;
 		return this;
 	}
+	@JsonSetter("write_timeout")
+	public OkHttpProperties setWriteTimeoutSeconds(float seconds){
+		return setWriteTimeoutMillis(Math.round(seconds * 1000));
+	}
 
 	@Override
 	public int getPingIntervalMillis() {
@@ -64,5 +88,9 @@ public class OkHttpPropertiesBuilder implements OkHttpProperties {
 	public OkHttpPropertiesBuilder setPingIntervalMillis(int pingIntervalMillis){
 		this.pingIntervalMillis = pingIntervalMillis;
 		return this;
+	}
+	@JsonSetter("ping_interval")
+	public OkHttpPropertiesBuilder setPingIntervalSeconds(float seconds){
+		return setPingIntervalMillis(Math.round(seconds * 1000));
 	}
 }
