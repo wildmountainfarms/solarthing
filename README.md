@@ -120,7 +120,6 @@ This uses slf4j to log and uses log4j2 as the main implementation. https://loggi
   * If we do something with a calendar, we could use google calendar https://developers.google.com/calendar/create-events/
 * Have unique identifier for each jar file
 * Save DailyFX data to a file so if the program restarts mid-day, accumulated data is not reset
-* Use @ConstructorProperties more often
 * Change command_feedback to something generic and use that database for "event"-like data
   * Also upload this to InfluxDB
 * AC Use->AC Drop, turn on AUX until NO AC. (GEN OFF) command using MATE's built in AC Use/Drop.

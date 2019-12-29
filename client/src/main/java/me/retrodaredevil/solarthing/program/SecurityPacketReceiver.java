@@ -34,7 +34,7 @@ public class SecurityPacketReceiver implements JsonPacketReceiver {
 	private static final PacketGroupParser PARSER = new SimplePacketGroupParser(new PacketParserMultiplexer(Arrays.asList(
 			new ObjectMapperPacketConverter(MAPPER, SecurityPacket.class),
 			new ObjectMapperPacketConverter(MAPPER, InstancePacket.class)
-	), PacketParserMultiplexer.LenientType.FAIL_WHEN_UNHANDLED));
+	), PacketParserMultiplexer.LenientType.FAIL_WHEN_UNHANDLED)); // This parser will fail if there's a packet it doesn't recognize
 
 	private final PublicKeyLookUp publicKeyLookUp;
 	private final DataReceiver dataReceiver;
