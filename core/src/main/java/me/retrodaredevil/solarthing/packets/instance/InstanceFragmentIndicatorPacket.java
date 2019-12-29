@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.packets.instance;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 
 /**
@@ -12,6 +13,7 @@ import me.retrodaredevil.solarthing.annotations.JsonExplicit;
  * NOTE: This packet should be supplemented by a {@link InstanceSourcePacket} in the same packet collection
  */
 @JsonTypeName("FRAGMENT_INDICATOR")
+@JsonDeserialize(as = ImmutableInstanceFragmentIndicatorPacket.class)
 @JsonExplicit
 public interface InstanceFragmentIndicatorPacket extends InstancePacket {
 

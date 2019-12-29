@@ -15,7 +15,6 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.special.ImmutableSpecialP
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerControl_E021;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerControl_E02D;
 
-import java.util.Base64;
 import java.util.Collection;
 
 @JsonExplicit
