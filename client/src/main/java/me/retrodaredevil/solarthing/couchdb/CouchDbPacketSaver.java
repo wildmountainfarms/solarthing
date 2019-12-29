@@ -1,15 +1,20 @@
 package me.retrodaredevil.solarthing.couchdb;
 
-import com.google.gson.*;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import me.retrodaredevil.couchdb.CouchProperties;
-import me.retrodaredevil.couchdb.CouchPropertiesBuilder;
+import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
-import org.lightcouch.CouchDbClient;
-import org.lightcouch.CouchDbException;
-import org.lightcouch.DocumentConflictException;
-import org.lightcouch.Response;
+import org.ektorp.CouchDbConnector;
+import org.ektorp.CouchDbInstance;
+import org.ektorp.DbAccessException;
+import org.ektorp.UpdateConflictException;
+import org.ektorp.http.HttpClient;
+import org.ektorp.impl.StdCouchDbConnector;
+import org.ektorp.impl.StdCouchDbInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,55 +23,82 @@ import java.util.Map;
 
 public class CouchDbPacketSaver implements PacketHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CouchDbPacketSaver.class);
-	private static final Gson GSON = new GsonBuilder().serializeNulls().create();
-	
-	private final Map<String, String> idRevMap = new HashMap<>(); // TODO we could probably figure out a way to clear old values
-	private final CouchProperties properties;
-	private CouchDbClient client = null;
+//	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
+
+	private final Map<String, ObjectWrapper> idMap = new HashMap<>(); // TODO we could probably figure out a way to clear old values
+	private final CouchDbConnector client;
+
 
 	public CouchDbPacketSaver(CouchProperties properties, String databaseName){
-		this.properties = new CouchPropertiesBuilder(properties).setDatabase(databaseName).build();
+		final HttpClient httpClient = EktorpUtil.createHttpClient(properties);
+		CouchDbInstance instance = new StdCouchDbInstance(httpClient);
+		client = new StdCouchDbConnector(databaseName, instance);
 	}
 
 	@Override
 	public void handle(PacketCollection packetCollection, boolean wasInstant) throws PacketHandleException {
-		final CouchDbClient currentClient = this.client;
-		final CouchDbClient client;
-		if(currentClient == null){
-			try {
-				client = new CouchDbClient(properties.createProperties());
-			} catch(CouchDbException ex) {
-				throw new PacketHandleException("We couldn't connect to the database for the first time!", ex);
-			}
-			this.client = client;
-		} else {
-			client = currentClient;
-		}
-		final String id = packetCollection.getDbId();
-		final String rev = idRevMap.get(id);
-		final Response response;
-		final JsonObject packet = GSON.toJsonTree(packetCollection).getAsJsonObject();
 		try {
-			if (rev == null) {
-				response = client.save(packet);
+			client.createDatabaseIfNotExists();
+		} catch(DbAccessException ex){
+			throw new PacketHandleException("Could not establish connection", ex);
+		}
+
+		final String id = packetCollection.getDbId();
+		final ObjectWrapper object;
+		{
+			final ObjectWrapper currentValue = idMap.get(id);
+			if(currentValue == null){
+				object = new ObjectWrapper(id);
+				idMap.put(id, object);
 			} else {
-				packet.addProperty("_rev", rev);
-				response = client.update(packet);
+				object = currentValue;
 			}
-		} catch(DocumentConflictException ex){
+		}
+		object.object = packetCollection;
+		try {
+			if (object.rev == null) {
+				client.create(object);
+			} else {
+				client.update(object);
+			}
+		} catch(UpdateConflictException ex){
 			try {
-				JsonObject document = client.find(JsonObject.class, id);
-				String actualRev = document.get("_rev").getAsString();
-				idRevMap.put(id, actualRev);
+				String actualRev = client.getCurrentRevision(id);
+				object.setRevision(actualRev);
 				LOGGER.info("We were able to get the actual Revision ID for id=" + id + " actual rev=" + actualRev);
-			} catch(CouchDbException | JsonSyntaxException | JsonIOException revEx){ // We have to catch these json related exceptions because of a bug in CouchDB
+			} catch(DbAccessException revEx){
 				LOGGER.warn("Unable to get the actual Revision ID for id=" + id, revEx);
 			}
-			throw new PacketHandleException("Conflict while saving something to couchdb. id=" + id + " rev=" + rev + ". This usually means we put a packet in the database, but we weren't able to cache its rev id.", ex);
-		} catch(CouchDbException ex){
-			throw new PacketHandleException("We got a CouchDbException probably meaning we couldn't reach the database.", ex);
+			throw new PacketHandleException("Conflict while saving something to couchdb. id=" + id + " rev=" + object.getRevision() + ". This usually means we put a packet in the database, but we weren't able to cache its rev id.", ex);
+		} catch(DbAccessException ex){
+			throw new PacketHandleException("We got a DbAccessException probably meaning we couldn't reach the database.", ex);
 		}
-		idRevMap.put(id, response.getRev());
 	}
 
+	@JsonExplicit
+	private static class ObjectWrapper {
+		private final String id;
+		private String rev = null;
+
+		@JsonUnwrapped
+		private PacketCollection object = null;
+
+		private ObjectWrapper(String id) {
+			this.id = id;
+		}
+
+		@JsonGetter("_id")
+		public String getId(){
+			return id;
+		}
+
+		@JsonGetter("_rev")
+		public String getRevision(){
+			return rev;
+		}
+		@JsonSetter("_rev")
+		public void setRevision(String rev){
+			this.rev = rev;
+		}
+	}
 }

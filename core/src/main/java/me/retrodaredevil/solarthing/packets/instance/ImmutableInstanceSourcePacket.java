@@ -1,11 +1,13 @@
 package me.retrodaredevil.solarthing.packets.instance;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 final class ImmutableInstanceSourcePacket implements InstanceSourcePacket {
-	private final InstancePacketType packetType = InstancePacketType.SOURCE;
-	
 	private final String sourceId;
-	
-	ImmutableInstanceSourcePacket(String sourceId) {
+
+	@JsonCreator
+	ImmutableInstanceSourcePacket(@JsonProperty(value = "sourceId", required = true) String sourceId) {
 		this.sourceId = sourceId;
 	}
 	
@@ -14,8 +16,4 @@ final class ImmutableInstanceSourcePacket implements InstanceSourcePacket {
 		return sourceId;
 	}
 	
-	@Override
-	public InstancePacketType getPacketType() {
-		return packetType;
-	}
 }

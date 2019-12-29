@@ -2,7 +2,7 @@ package me.retrodaredevil.solarthing.config.options;
 
 import java.io.File;
 
-public interface RoverOption extends IOBundleOption{
+public interface RoverOption extends IOBundleOption {
 	/**
 	 * @return The modbus address of the rover
 	 */

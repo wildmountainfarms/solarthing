@@ -201,7 +201,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 	}
 	
 	@Override public int getChargingStateValue() { return roverReadTable.getChargingStateValue(); }
-	@Override public int getErrorMode() { return roverReadTable.getErrorMode(); }
+	@Override public int getErrorModeValue() { return roverReadTable.getErrorModeValue(); }
 	@Override public int getNominalBatteryCapacity() { return 0; }
 	@Override
 	public int getSystemVoltageSettingValue() {

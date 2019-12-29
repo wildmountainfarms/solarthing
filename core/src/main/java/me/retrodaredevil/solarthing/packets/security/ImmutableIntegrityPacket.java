@@ -1,12 +1,17 @@
 package me.retrodaredevil.solarthing.packets.security;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public final class ImmutableIntegrityPacket implements IntegrityPacket {
-	private final SecurityPacketType packetType = SecurityPacketType.INTEGRITY_PACKET;
-	
 	private final String sender;
 	private final String encryptedData;
-	
-	public ImmutableIntegrityPacket(String sender, String encryptedData) {
+
+	@JsonCreator
+	public ImmutableIntegrityPacket(
+			@JsonProperty(value = "sender", required = true) String sender,
+			@JsonProperty(value = "encryptedData", required = true) String encryptedData
+	) {
 		this.sender = sender;
 		this.encryptedData = encryptedData;
 	}
@@ -21,8 +26,4 @@ public final class ImmutableIntegrityPacket implements IntegrityPacket {
 		return encryptedData;
 	}
 	
-	@Override
-	public SecurityPacketType getPacketType() {
-		return packetType;
-	}
 }

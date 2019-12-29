@@ -1,5 +1,13 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import me.retrodaredevil.solarthing.annotations.JsonExplicit;
+
+import java.beans.ConstructorProperties;
+
+import static java.util.Objects.requireNonNull;
+
 /**
  * An interface that indicates that an object is somehow associated by a rover either by providing data or by setting data
  */
@@ -28,19 +36,26 @@ public interface Rover {
 			return operatingPowerPercentageRegister;
 		}
 	}
+	@JsonExplicit
 	final class OperatingSettingBundle {
 		private final int durationHours;
 		private final int operatingPowerPercentage;
-		
+
+		@ConstructorProperties({"durationHours", "operatingPowerPercentage"})
+		private OperatingSettingBundle(Integer durationHours, Integer operatingPowerPercentage){
+			this((int) requireNonNull(durationHours), (int) requireNonNull(operatingPowerPercentage));
+		}
 		public OperatingSettingBundle(int durationHours, int operatingPowerPercentage) {
 			this.durationHours = durationHours;
 			this.operatingPowerPercentage = operatingPowerPercentage;
 		}
-		
+
+		@JsonProperty("durationHours")
 		public int getDurationHours() {
 			return durationHours;
 		}
-		
+
+		@JsonProperty("operatingPowerPercentage")
 		public int getOperatingPowerPercentage() {
 			return operatingPowerPercentage;
 		}
@@ -77,8 +92,13 @@ public interface Rover {
 		private final int workingHoursRaw;
 		private final int powerWithPeopleSensedRaw;
 		private final int powerWithNoPeopleSensedRaw;
-		
-		public SensingBundle(int workingHoursRaw, int powerWithPeopleSensedRaw, int powerWithNoPeopleSensedRaw) {
+
+		@JsonCreator
+		public SensingBundle(
+				@JsonProperty(value = "workingHoursRaw", required = true) int workingHoursRaw,
+				@JsonProperty(value = "powerWithPeopleSensedRaw", required = true) int powerWithPeopleSensedRaw,
+				@JsonProperty(value = "powerWithNoPeopleSensedRaw", required = true) int powerWithNoPeopleSensedRaw
+		) {
 			this.workingHoursRaw = workingHoursRaw;
 			this.powerWithPeopleSensedRaw = powerWithPeopleSensedRaw;
 			this.powerWithNoPeopleSensedRaw = powerWithNoPeopleSensedRaw;

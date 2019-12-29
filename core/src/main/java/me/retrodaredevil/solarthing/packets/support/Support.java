@@ -1,5 +1,7 @@
 package me.retrodaredevil.solarthing.packets.support;
 
+import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
+
 /**
  * Represents whether or not something is fully supported
  * <p>
@@ -8,5 +10,6 @@ package me.retrodaredevil.solarthing.packets.support;
 public enum Support {
 	FULLY_SUPPORTED,
 	NOT_SUPPORTED,
+	@JsonEnumDefaultValue
 	UNKNOWN
 }

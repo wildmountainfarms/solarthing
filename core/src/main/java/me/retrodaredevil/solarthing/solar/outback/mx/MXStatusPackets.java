@@ -1,9 +1,5 @@
 package me.retrodaredevil.solarthing.solar.outback.mx;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
-import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.packets.support.Support;
 import me.retrodaredevil.solarthing.util.CheckSumException;
 import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
@@ -11,7 +7,6 @@ import me.retrodaredevil.solarthing.util.ParsePacketAsciiDecimalDigitException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static me.retrodaredevil.util.json.JsonHelper.getOrNull;
 import static me.retrodaredevil.solarthing.util.ParseUtil.toInt;
 
 public final class MXStatusPackets {
@@ -111,7 +106,6 @@ public final class MXStatusPackets {
 				throw new RuntimeException("Unknown IgnoreCheckSum enum value: " + ignoreCheckSum);
 		}
 
-
 		final int chargerCurrent = chargerCurrentTens * 10 + chargerCurrentOnes;
 		final int pvCurrent = pvCurrentTens * 10 + pvCurrentOnes;
 		final int inputVoltage = inputVoltageHundreds * 100 + inputVoltageTens * 10 + inputVoltageOnes;
@@ -137,65 +131,10 @@ public final class MXStatusPackets {
 			dailyAHSupported = Support.FULLY_SUPPORTED;
 		}
 
-		// ==== Aux Mode stuff ====
-		final String auxModeName = Modes.getActiveMode(AuxMode.class, auxMode).getModeName();
-
-		// ==== Error Mode stuff ====
-		final String errors = Modes.toString(MXErrorMode.class, errorMode);
-
-		// ==== Charge Mode stuff ====
-		final String chargerModeName = Modes.getActiveMode(ChargerMode.class, chargerMode).getModeName();
-		return new ImmutableMXStatusPacket(address, chargerCurrent, pvCurrent, inputVoltage, dailyKWH,
+		return new ImmutableMXStatusPacket(
+				address, chargerCurrent, pvCurrent, inputVoltage, dailyKWH,
 				ampChargerCurrent, auxMode, errorMode, chargerMode,
-				batteryVoltage, dailyAH, dailyAHSupported, chksum, auxModeName, errors, chargerModeName);
-	}
-
-	public static MXStatusPacket createFromJson(JsonObject object) {
-
-		final int address = object.get("address").getAsInt();
-
-		final int chargerCurrent = object.get("chargerCurrent").getAsInt();
-		final int pvCurrent = object.get("pvCurrent").getAsInt();
-		final int inputVoltage = object.get("inputVoltage").getAsInt();
-
-		final float dailyKWH = object.get("dailyKWH").getAsFloat();
-		final String storedDailyKWHString = getOrNull(object, "dailyKWHString", JsonElement::getAsString);
-
-		final float ampChargerCurrent = object.get("ampChargerCurrent").getAsFloat();
-		final String storedAmpChargerCurrentString = getOrNull(object, "ampChargerCurrentString", JsonElement::getAsString);
-
-		final int auxMode = object.get("auxMode").getAsInt();
-		final int errorMode = object.get("errorMode").getAsInt();
-		final int chargerMode = object.get("chargerMode").getAsInt();
-
-		final float batteryVoltage = object.get("batteryVoltage").getAsFloat();
-		final String storedBatteryVoltageString = getOrNull(object, "batteryVoltageString", JsonElement::getAsString);
-
-		final String dailyKWHString = storedDailyKWHString != null ? storedDailyKWHString : Float.toString(dailyKWH);
-		final String ampChargerCurrentString = storedAmpChargerCurrentString != null ? storedAmpChargerCurrentString : Float.toString(ampChargerCurrent);
-		final String batteryVoltageString = storedBatteryVoltageString != null ? storedBatteryVoltageString : Float.toString(batteryVoltage);
-
-		final int dailyAH = object.get("dailyAH").getAsInt();
-		final String dailyAHSupportString = getOrNull(object, "dailyAHSupport", JsonElement::getAsString);
-		final Support dailyAHSupport;
-		if(dailyAHSupportString == null){
-			dailyAHSupport = Support.UNKNOWN;
-		} else {
-			dailyAHSupport = Support.valueOf(dailyAHSupportString);
-		}
-		final int chksum = object.get("chksum").getAsInt();
-
-		final String storedAuxModeName = getOrNull(object, "auxModeName", JsonElement::getAsString);
-		final String storedErrors = getOrNull(object, "error", JsonElement::getAsString);
-		final String storedChargerModeName = getOrNull(object, "chargerModeName", JsonElement::getAsString);
-
-		final String auxModeName = storedAuxModeName != null ? storedAuxModeName : Modes.getActiveMode(AuxMode.class, auxMode).getModeName();
-		final String errors = storedErrors != null ? storedErrors : Modes.toString(MXErrorMode.class, errorMode);
-		final String chargerModeName = storedChargerModeName != null ? storedChargerModeName : Modes.getActiveMode(ChargerMode.class, chargerMode).getModeName();
-
-
-		return new ImmutableMXStatusPacket(address, chargerCurrent, pvCurrent, inputVoltage, dailyKWH,
-				ampChargerCurrent, auxMode, errorMode, chargerMode, batteryVoltage,
-				dailyAH, dailyAHSupport, chksum, auxModeName, errors, chargerModeName);
+				batteryVoltage, dailyAH, dailyAHSupported, chksum
+		);
 	}
 }

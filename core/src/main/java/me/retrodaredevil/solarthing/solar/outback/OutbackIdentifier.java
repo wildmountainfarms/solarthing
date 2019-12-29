@@ -2,16 +2,18 @@ package me.retrodaredevil.solarthing.solar.outback;
 
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.packets.identification.IntegerIdentifier;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-public class OutbackIdentifier implements IntegerIdentifier, Comparable<Identifier> {
+public class OutbackIdentifier implements IntegerIdentifier, OutbackData, Comparable<Identifier> {
 	private final int address;
 	
 	public OutbackIdentifier(int address) {
 		this.address = address;
 	}
-	
+
+	@Override
 	public int getAddress(){
 		return address;
 	}
@@ -44,7 +46,7 @@ public class OutbackIdentifier implements IntegerIdentifier, Comparable<Identifi
 	}
 	
 	@Override
-	public int compareTo(Identifier o) {
+	public int compareTo(@NotNull Identifier o) {
 		if(o instanceof OutbackIdentifier){
 			return address - ((OutbackIdentifier) o).address;
 		}

@@ -1,11 +1,14 @@
 package me.retrodaredevil.solarthing.config.databases;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import me.retrodaredevil.solarthing.packets.handling.FrequencySettings;
 
 public final class IndividualSettings {
 	private final FrequencySettings frequencySettings;
-	
-	public IndividualSettings(FrequencySettings frequencySettings) {
+
+	@JsonCreator
+	public IndividualSettings(@JsonUnwrapped FrequencySettings frequencySettings) {
 		this.frequencySettings = frequencySettings;
 	}
 	

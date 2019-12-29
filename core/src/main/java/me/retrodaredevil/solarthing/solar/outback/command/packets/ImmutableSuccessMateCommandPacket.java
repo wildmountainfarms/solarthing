@@ -1,17 +1,21 @@
 package me.retrodaredevil.solarthing.solar.outback.command.packets;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
 
 import static java.util.Objects.requireNonNull;
 
 public class ImmutableSuccessMateCommandPacket implements SuccessMateCommandPacket {
 	
-	private final MateCommandFeedbackPacketType packetType = MateCommandFeedbackPacketType.SUCCESS;
-	
 	private final MateCommand command;
 	private final String source;
-	
-	public ImmutableSuccessMateCommandPacket(MateCommand command, String source) {
+
+	@JsonCreator
+	public ImmutableSuccessMateCommandPacket(
+			@JsonProperty(value = "command", required = true) MateCommand command,
+			@JsonProperty(value = "source", required = true) String source
+	) {
 		this.command = requireNonNull(command);
 		this.source = requireNonNull(source);
 	}
@@ -26,8 +30,4 @@ public class ImmutableSuccessMateCommandPacket implements SuccessMateCommandPack
 		return source;
 	}
 	
-	@Override
-	public MateCommandFeedbackPacketType getPacketType() {
-		return packetType;
-	}
 }

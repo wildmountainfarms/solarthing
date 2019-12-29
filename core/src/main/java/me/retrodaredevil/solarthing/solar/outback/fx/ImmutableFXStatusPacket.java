@@ -1,12 +1,20 @@
 package me.retrodaredevil.solarthing.solar.outback.fx;
 
-import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonNode;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 
-@SuppressWarnings("unused")
-final class ImmutableFXStatusPacket implements FXStatusPacket {
-	private final SolarStatusPacketType packetType = SolarStatusPacketType.FX_STATUS;
+import java.io.IOException;
 
+import static me.retrodaredevil.util.json.JacksonHelper.require;
+
+@JsonIgnoreProperties(value = {"operatingModeName", "errors", "acModeName", "miscModes", "warnings"}, allowGetters = true)
+final class ImmutableFXStatusPacket implements FXStatusPacket {
 	private final int address;
 
 	private final float inverterCurrent;
@@ -25,13 +33,7 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 
 	private final int misc, warningMode, chksum;
 
-	private final String operatingModeName;
-	private final String errors;
-	private final String acModeName;
-	private final String miscModes;
-	private final String warnings;
-	
-	private final transient OutbackIdentifier identifier;
+	private final OutbackIdentifier identifier;
 
 	ImmutableFXStatusPacket(
 			int address,
@@ -43,8 +45,7 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 			float sellCurrent, int sellCurrentRaw,
 			int operatingMode, int errorMode, int acMode,
 			float batteryVoltage,
-			int misc, int warningMode, int chksum,
-			String operatingModeName, String errors, String acModeName, String miscModes, String warnings
+			int misc, int warningMode, int chksum
 	) {
 		this.address = address;
 		this.inverterCurrent = inverterCurrent;
@@ -66,16 +67,43 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 		this.misc = misc;
 		this.warningMode = warningMode;
 		this.chksum = chksum;
-		this.operatingModeName = operatingModeName;
-		this.errors = errors;
-		this.acModeName = acModeName;
-		this.miscModes = miscModes;
-		this.warnings = warnings;
-		
+
 		this.identifier = new OutbackIdentifier(address);
 	}
 
+	@JsonCreator
+	private static ImmutableFXStatusPacket jacksonCreator(
+			@JsonProperty(value = "address", required = true) int address,
+			@JsonProperty(value = "inverterCurrent", required = true) float inverterCurrent, @JsonProperty(value = "inverterCurrentRaw") Integer inverterCurrentRawNullable,
+			@JsonProperty(value = "chargerCurrent", required = true) float chargerCurrent, @JsonProperty(value = "chargerCurrentRaw") Integer chargerCurrentRawNullable,
+			@JsonProperty(value = "buyCurrent", required = true) float buyCurrent, @JsonProperty("buyCurrentRaw") Integer buyCurrentRawNullable,
+			@JsonProperty(value = "inputVoltage", required = true) int inputVoltage, @JsonProperty("inputVoltageRaw") Integer inputVoltageRawNullable,
+			@JsonProperty(value = "outputVoltage", required = true) int outputVoltage, @JsonProperty("outputVoltageRaw") Integer outputVoltageRawNullable,
+			@JsonProperty(value = "sellCurrent", required = true) float sellCurrent, @JsonProperty("sellCurrentRaw") Integer sellCurrentRawNullable,
+			@JsonProperty(value = "operatingMode", required = true) int operatingMode, @JsonProperty(value = "errorMode", required = true) int errorMode, @JsonProperty(value = "acMode", required = true) int acMode,
+			@JsonProperty(value = "batteryVoltage", required = true) float batteryVoltage,
+			@JsonProperty(value = "misc", required = true) int misc, @JsonProperty(value = "warningMode", required = true) int warningMode, @JsonProperty(value = "chksum", required = true) int chksum
+	) {
 
+		final int inverterCurrentRaw, chargerCurrentRaw, buyCurrentRaw, sellCurrentRaw, inputVoltageRaw, outputVoltageRaw;
+		{
+			final int number = MiscMode.FX_230V_UNIT.isActive(misc) ? 2 : 1;
+			inverterCurrentRaw = inverterCurrentRawNullable == null ? Math.round(inverterCurrent * number) : inverterCurrentRawNullable;
+			chargerCurrentRaw = chargerCurrentRawNullable == null ? Math.round(chargerCurrent * number) : chargerCurrentRawNullable;
+			buyCurrentRaw = buyCurrentRawNullable == null ? Math.round(buyCurrent * number) : buyCurrentRawNullable;
+			sellCurrentRaw = sellCurrentRawNullable == null ? Math.round(sellCurrent * number) : sellCurrentRawNullable;
+
+			inputVoltageRaw = inputVoltageRawNullable == null ? inputVoltage / number : inputVoltageRawNullable;
+			outputVoltageRaw = outputVoltageRawNullable == null ? outputVoltage / number : outputVoltageRawNullable;
+		}
+		return new ImmutableFXStatusPacket(
+				address, inverterCurrent, inverterCurrentRaw,
+				chargerCurrent, chargerCurrentRaw, buyCurrent, buyCurrentRaw,
+				inputVoltage, inputVoltageRaw, outputVoltage, outputVoltageRaw,
+				sellCurrent, sellCurrentRaw, operatingMode, errorMode, acMode, batteryVoltage,
+				misc, warningMode, chksum
+		);
+	}
 
 	@Override
 	public float getInverterCurrent() {
@@ -143,7 +171,7 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 	}
 
 	@Override
-	public int getErrorMode() {
+	public int getErrorModeValue() {
 		return errorMode;
 	}
 
@@ -173,36 +201,6 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 	}
 
 	@Override
-	public String getOperatingModeName() {
-		return operatingModeName;
-	}
-
-	@Override
-	public String getErrorsString() {
-		return errors;
-	}
-
-	@Override
-	public String getACModeName() {
-		return acModeName;
-	}
-
-	@Override
-	public String getMiscModesString() {
-		return miscModes;
-	}
-
-	@Override
-	public String getWarningsString() {
-		return warnings;
-	}
-
-	@Override
-	public SolarStatusPacketType getPacketType() {
-		return packetType;
-	}
-
-	@Override
 	public int getAddress() {
 		return address;
 	}
@@ -210,5 +208,52 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 	@Override
 	public OutbackIdentifier getIdentifier() {
 		return identifier;
+	}
+
+	@Deprecated
+	public static class Deserializer extends JsonDeserializer<ImmutableFXStatusPacket> {
+
+		@Override
+		public ImmutableFXStatusPacket deserialize(JsonParser p, DeserializationContext context) throws IOException {
+			JsonNode object = p.getCodec().readTree(p);
+			final int address = require(context, object, "address", JsonNode::isInt).asInt();
+
+			final float inverterCurrent = require(context, object, "inverterCurrent", JsonNode::isNumber).floatValue();
+			final float chargerCurrent = require(context, object , "chargerCurrent", JsonNode::isNumber).floatValue();
+			final float buyCurrent = require(context, object, "buyCurrent", JsonNode::isNumber).floatValue();
+			final float sellCurrent = require(context, object, "sellCurrent", JsonNode::isNumber).floatValue();
+			final int inputVoltage = require(context, object, "inputVoltage", JsonNode::isInt).intValue();
+			final int outputVoltage = require(context, object, "outputVoltage", JsonNode::isInt).intValue();
+
+			final int operatingMode = require(context, object, "operatingMode", JsonNode::isInt).intValue();
+			final int errorMode = require(context, object, "errorMode", JsonNode::isInt).asInt();
+			final int acMode = require(context, object, "acMode", JsonNode::isInt).asInt();
+
+			final float batteryVoltage = require(context, object, "batteryVoltage", JsonNode::isNumber).floatValue();
+
+			final int misc = require(context, object, "misc", JsonNode::isInt).asInt();
+			final int warningMode = require(context, object, "warningMode", JsonNode::isInt).asInt();
+			final int chksum = require(context, object, "chksum", JsonNode::isInt).asInt();
+
+			final int inverterCurrentRaw, chargerCurrentRaw, buyCurrentRaw, sellCurrentRaw, inputVoltageRaw, outputVoltageRaw;
+			{
+				final int number = MiscMode.FX_230V_UNIT.isActive(misc) ? 2 : 1;
+				inputVoltageRaw = object.get("inputVoltageRaw").asInt(inputVoltage / number);
+				outputVoltageRaw = object.get("outputVoltageRaw").asInt(outputVoltage / number);
+
+				inverterCurrentRaw = object.get("inverterCurrentRaw").asInt(Math.round(inverterCurrent * number));
+				chargerCurrentRaw = object.get("chargerCurrentRaw").asInt(Math.round(chargerCurrent * number));
+				buyCurrentRaw = object.get("buyCurrentRaw").asInt(Math.round(buyCurrent * number));
+				sellCurrentRaw = object.get("sellCurrentRaw").asInt(Math.round(sellCurrent * number));
+			}
+
+			return new ImmutableFXStatusPacket(
+					address, inverterCurrent, inverterCurrentRaw,
+					chargerCurrent, chargerCurrentRaw, buyCurrent, buyCurrentRaw,
+					inputVoltage, inputVoltageRaw, outputVoltage, outputVoltageRaw,
+					sellCurrent, sellCurrentRaw, operatingMode, errorMode, acMode, batteryVoltage,
+					misc, warningMode, chksum
+			);
+		}
 	}
 }

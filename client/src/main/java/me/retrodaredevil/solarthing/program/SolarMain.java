@@ -1,52 +1,42 @@
 package me.retrodaredevil.solarthing.program;
 
-import com.google.gson.*;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
-import com.google.gson.stream.JsonWriter;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.InjectableValues;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.couchdb.CouchProperties;
-import me.retrodaredevil.influxdb.InfluxProperties;
 import me.retrodaredevil.io.IOBundle;
 import me.retrodaredevil.io.modbus.*;
 import me.retrodaredevil.io.serial.SerialConfig;
 import me.retrodaredevil.io.serial.SerialConfigBuilder;
-import me.retrodaredevil.io.serial.SerialPortException;
-import me.retrodaredevil.okhttp3.OkHttpProperties;
 import me.retrodaredevil.solarthing.OnDataReceive;
 import me.retrodaredevil.solarthing.commands.CommandProvider;
 import me.retrodaredevil.solarthing.commands.CommandProviderMultiplexer;
 import me.retrodaredevil.solarthing.commands.sequence.CommandSequence;
-import me.retrodaredevil.solarthing.config.JsonCouchDb;
-import me.retrodaredevil.solarthing.config.JsonIO;
-import me.retrodaredevil.solarthing.config.JsonInfluxDb;
-import me.retrodaredevil.solarthing.config.JsonOkHttp;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
-import me.retrodaredevil.solarthing.config.databases.DatabaseType;
 import me.retrodaredevil.solarthing.config.databases.IndividualSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.InfluxDbDatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.LatestFileDatabaseSettings;
+import me.retrodaredevil.solarthing.config.io.IOConfig;
+import me.retrodaredevil.solarthing.config.io.SerialIOConfig;
 import me.retrodaredevil.solarthing.config.options.*;
+import me.retrodaredevil.solarthing.couchdb.CouchDbPacketRetriever;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketSaver;
 import me.retrodaredevil.solarthing.influxdb.ConstantDatabaseNameGetter;
 import me.retrodaredevil.solarthing.influxdb.ConstantMeasurementPacketPointCreator;
 import me.retrodaredevil.solarthing.influxdb.DocumentedMeasurementPacketPointCreator;
 import me.retrodaredevil.solarthing.influxdb.InfluxDbPacketSaver;
 import me.retrodaredevil.solarthing.influxdb.retention.FrequentRetentionPolicyGetter;
-import me.retrodaredevil.solarthing.influxdb.retention.RetentionPolicy;
-import me.retrodaredevil.solarthing.influxdb.retention.RetentionPolicySetting;
 import me.retrodaredevil.solarthing.outhouse.OuthousePacketCreator;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.HourIntervalPacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollections;
-import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
-import me.retrodaredevil.solarthing.packets.handling.PacketListReceiverMultiplexer;
 import me.retrodaredevil.solarthing.packets.creation.TextPacketCreator;
 import me.retrodaredevil.solarthing.packets.handling.*;
 import me.retrodaredevil.solarthing.packets.handling.implementations.FileWritePacketHandler;
-import me.retrodaredevil.solarthing.packets.handling.implementations.GsonStringPacketHandler;
+import me.retrodaredevil.solarthing.packets.handling.implementations.JacksonStringPacketHandler;
 import me.retrodaredevil.solarthing.packets.handling.implementations.PacketHandlerPacketListReceiver;
 import me.retrodaredevil.solarthing.packets.handling.implementations.TimedPacketReceiver;
 import me.retrodaredevil.solarthing.packets.instance.InstanceFragmentIndicatorPackets;
@@ -55,19 +45,17 @@ import me.retrodaredevil.solarthing.packets.security.crypto.DirectoryKeyMap;
 import me.retrodaredevil.solarthing.solar.outback.MatePacketCreator49;
 import me.retrodaredevil.solarthing.solar.outback.OutbackDuplicatePacketRemover;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
-import me.retrodaredevil.solarthing.solar.outback.fx.extra.DailyFXListUpdater;
+import me.retrodaredevil.solarthing.solar.outback.fx.DailyFXListUpdater;
 import me.retrodaredevil.solarthing.solar.renogy.rover.*;
 import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusSlaveRead;
 import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusSlaveWrite;
+import me.retrodaredevil.solarthing.util.JacksonUtil;
 import me.retrodaredevil.solarthing.util.frequency.FrequentHandler;
-import me.retrodaredevil.solarthing.util.frequency.FrequentObject;
 import me.retrodaredevil.solarthing.util.scheduler.MidnightIterativeScheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
@@ -78,8 +66,8 @@ public final class SolarMain {
 	private SolarMain(){ throw new UnsupportedOperationException(); }
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(SolarMain.class);
-	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
-	
+	private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.defaultMapper();
+
 	private static final SerialConfig MATE_CONFIG = new SerialConfigBuilder(19200)
 		.setDataBits(8)
 		.setParity(SerialConfig.Parity.NONE)
@@ -99,17 +87,19 @@ public final class SolarMain {
 		LOGGER.info("Beginning mate program");
 		PacketCollectionIdGenerator idGenerator = createIdGenerator(options.getUniqueIdsInOneHour());
 		LOGGER.info("IO Bundle File: " + options.getIOBundleFile());
-		final IOBundle createdIO = createIOBundle(options.getIOBundleFile(), MATE_CONFIG);
 		final IOBundle io;
-		if(options.isAllowCommands()){
-			io = createdIO;
-		} else {
-			// just a simple safe guard to stop people from accessing the OutputStream if this program becomes more complex in the future
-			io = new IOBundle() {
-				@Override public InputStream getInputStream() { return createdIO.getInputStream(); }
-				@Override public OutputStream getOutputStream() { throw new IllegalStateException("You cannot access the output stream while commands are disabled!"); }
-				@Override public void close() throws Exception { createdIO.close(); }
-			};
+		{
+			final IOBundle createdIO = createIOBundle(options.getIOBundleFile(), MATE_CONFIG);
+			if(options.isAllowCommands()){
+				io = createdIO;
+			} else {
+				// just a simple safe guard to stop people from accessing the OutputStream if this program becomes more complex in the future
+				io = new IOBundle() {
+					@Override public InputStream getInputStream() { return createdIO.getInputStream(); }
+					@Override public OutputStream getOutputStream() { throw new IllegalStateException("You cannot access the output stream while commands are disabled!"); }
+					@Override public void close() throws Exception { createdIO.close(); }
+				};
+			}
 		}
 		List<DatabaseConfig> databaseConfigs = getDatabaseConfigs(options);
 		
@@ -168,10 +158,10 @@ public final class SolarMain {
 			final PacketHandler commandFeedbackHandler = new PacketHandlerMultiplexer(commandFeedbackHandlerList);
 			Collection<MateCommand> allowedCommands = EnumSet.of(MateCommand.AUX_OFF, MateCommand.AUX_ON, MateCommand.USE, MateCommand.DROP);
 			onDataReceive = new MateCommandSender(
-				new CommandProviderMultiplexer<>(commandProviders),
-				io.getOutputStream(),
-				allowedCommands,
-				new OnMateCommandSent(commandFeedbackHandler)
+					new CommandProviderMultiplexer<>(commandProviders),
+					io.getOutputStream(),
+					allowedCommands,
+					new OnMateCommandSent(commandFeedbackHandler)
 			);
 			packetHandlers.add(commandRequesterHandler);
 		} else {
@@ -192,11 +182,16 @@ public final class SolarMain {
 									new DailyFXListUpdater(new MidnightIterativeScheduler()),
 									(packets, wasInstant) -> {
 										LOGGER.debug("Debugging all packets");
-										LOGGER.debug(GSON.toJson(packets));
+										try {
+											LOGGER.debug(OBJECT_MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(packets));
+										} catch (JsonProcessingException e) {
+											LOGGER.debug("Never mind about that...", e);
+										}
 									},
 									getSourceAndFragmentUpdater(options),
 									new PacketHandlerPacketListReceiver(new PacketHandlerMultiplexer(packetHandlers), idGenerator)
-							), onDataReceive
+							),
+							onDataReceive
 					)
 			);
 		} finally {
@@ -224,10 +219,14 @@ public final class SolarMain {
 						Thread.sleep(5000);
 						continue;
 					}
-					LOGGER.debug(GSON.toJson(packet) + "\n" +
-							packet.getSpecialPowerControlE021().getFormattedInfo().replaceAll("\n", "\n\t") + "\n" +
-							packet.getSpecialPowerControlE02D().getFormattedInfo().replaceAll("\n", "\n\t")
-					);
+					try {
+						LOGGER.debug(OBJECT_MAPPER.writeValueAsString(packet) + "\n" +
+								packet.getSpecialPowerControlE021().getFormattedInfo().replaceAll("\n", "\n\t") + "\n" +
+								packet.getSpecialPowerControlE02D().getFormattedInfo().replaceAll("\n", "\n\t")
+						);
+					} catch (JsonProcessingException e) {
+						LOGGER.debug("Tried debugging value...", e);
+					}
 					List<Packet> packets = new ArrayList<>();
 					packets.add(packet);
 					packetListReceiver.receive(packets, true);
@@ -249,16 +248,24 @@ public final class SolarMain {
 			}
 		});
 	}
-	private static int connectRoverSetup(RoverSetupProgramOptions options) throws IOException{
+	private static int connectRoverSetup(RoverSetupProgramOptions options) {
 		return doRoverProgram(options, RoverSetupProgram::startRoverSetup);
 	}
-	private static int doRoverProgram(RoverOption options, RoverProgramRunner runner) throws IOException {
+	private static int doRoverProgram(RoverOption options, RoverProgramRunner runner) {
 		File dummyFile = options.getDummyFile();
 		if(dummyFile != null){
-			final byte[] bytes = Files.readAllBytes(dummyFile.toPath());
-			String json = new String(bytes, StandardCharsets.UTF_8);
-			JsonObject jsonPacket = new GsonBuilder().create().fromJson(json, JsonObject.class);
-			RoverStatusPacket roverStatusPacket = RoverStatusPackets.createFromJson(jsonPacket);
+			final FileInputStream fileInputStream;
+			try {
+				fileInputStream = new FileInputStream(dummyFile);
+			} catch (FileNotFoundException e) {
+				throw new RuntimeException("The dummy file was not found!", e);
+			}
+			final RoverStatusPacket roverStatusPacket;
+			try {
+				roverStatusPacket = OBJECT_MAPPER.readValue(fileInputStream, RoverStatusPacket.class);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
 			DummyRoverReadWrite readWrite = new DummyRoverReadWrite(
 				roverStatusPacket,
 				(fieldName, previousValue, newValue) -> System.out.println(fieldName + " changed from " + previousValue + " to " + newValue)
@@ -284,6 +291,7 @@ public final class SolarMain {
 		void doProgram(RoverReadTable read, RoverWriteTable write);
 	}
 	@SuppressWarnings("SameReturnValue")
+	@Deprecated
 	private static int connectOuthouse(OuthouseProgramOptions options) throws Exception {
 		LOGGER.info("Beginning outhouse program");
 		PacketCollectionIdGenerator idGenerator = createIdGenerator(options.getUniqueIdsInOneHour());
@@ -351,34 +359,34 @@ public final class SolarMain {
 				CouchDbDatabaseSettings settings = (CouchDbDatabaseSettings) config.getSettings();
 				CouchProperties couchProperties = settings.getCouchProperties();
 				r.add(new ThrottleFactorPacketHandler(
-					new PrintPacketHandleExceptionWrapper(new CouchDbPacketSaver(couchProperties, uniqueName)),
-					frequencySettings,
-					true
+						new PrintPacketHandleExceptionWrapper(new CouchDbPacketSaver(couchProperties, uniqueName)),
+						frequencySettings,
+						true
 				));
 			} else if(InfluxDbDatabaseSettings.TYPE.equals(config.getType())) {
 				InfluxDbDatabaseSettings settings = (InfluxDbDatabaseSettings) config.getSettings();
 				String databaseName = settings.getDatabaseName();
 				String measurementName = settings.getMeasurementName();
 				r.add(new ThrottleFactorPacketHandler(
-					new InfluxDbPacketSaver(
-						settings.getInfluxProperties(),
-						settings.getOkHttpProperties(),
-						new ConstantDatabaseNameGetter(databaseName != null ? databaseName : uniqueName),
-						measurementName != null
-							? new ConstantMeasurementPacketPointCreator(measurementName)
-							: (databaseName != null
-								? new ConstantMeasurementPacketPointCreator(uniqueName) // A constant database name was specified unrelated to the uniqueName
-								: DocumentedMeasurementPacketPointCreator.INSTANCE
-							),
-						new FrequentRetentionPolicyGetter(new FrequentHandler<>(settings.getFrequentRetentionPolicyList()))
-					),
-					frequencySettings,
-					true
+						new InfluxDbPacketSaver(
+								settings.getInfluxProperties(),
+								settings.getOkHttpProperties(),
+								new ConstantDatabaseNameGetter(databaseName != null ? databaseName : uniqueName),
+								measurementName != null
+										? new ConstantMeasurementPacketPointCreator(measurementName)
+										: (databaseName != null
+												? new ConstantMeasurementPacketPointCreator(uniqueName) // A constant database name was specified unrelated to the uniqueName
+												: DocumentedMeasurementPacketPointCreator.INSTANCE
+										),
+								new FrequentRetentionPolicyGetter(new FrequentHandler<>(settings.getFrequentRetentionPolicyList()))
+						),
+						frequencySettings,
+						true
 				));
 			} else if (LatestFileDatabaseSettings.TYPE.equals(config.getType())){
 				LatestFileDatabaseSettings settings = (LatestFileDatabaseSettings) config.getSettings();
 				r.add(new ThrottleFactorPacketHandler(
-					new FileWritePacketHandler(settings.getFile(), new GsonStringPacketHandler(), false),
+					new FileWritePacketHandler(settings.getFile(), new JacksonStringPacketHandler(OBJECT_MAPPER), false),
 					frequencySettings,
 					false
 				));
@@ -389,140 +397,61 @@ public final class SolarMain {
 	private static List<DatabaseConfig> getDatabaseConfigs(PacketHandlingOption options){
 		List<File> files = options.getDatabaseConfigurationFiles();
 		List<DatabaseConfig> r = new ArrayList<>();
+		ObjectMapper mapper = JacksonUtil.defaultMapper();
+		mapper.getSubtypeResolver().registerSubtypes(
+				DatabaseSettings.class,
+				CouchDbDatabaseSettings.class,
+				InfluxDbDatabaseSettings.class,
+				LatestFileDatabaseSettings.class
+		);
 		for(File file : files){
-			final String contents;
+			FileInputStream reader;
 			try {
-				contents = new String(Files.readAllBytes(file.toPath()), Charset.defaultCharset());
-			} catch (IOException e) {
+				reader = new FileInputStream(file);
+			} catch (FileNotFoundException e) {
 				throw new RuntimeException(e);
 			}
-			JsonObject jsonObject = JsonParser.parseString(contents).getAsJsonObject();
-			String type = jsonObject.getAsJsonPrimitive("type").getAsString();
-			JsonElement configElement = jsonObject.get("config");
-			final DatabaseType databaseType;
-			final DatabaseSettings databaseSettings;
-			if ("couchdb".equals(type)) {
-				databaseType = CouchDbDatabaseSettings.TYPE;
-				JsonObject config = configElement.getAsJsonObject();
-				CouchProperties couchProperties = JsonCouchDb.getCouchPropertiesFromJson(config);
-				LOGGER.debug("Debugging couchProperties: {}", GSON.toJson(couchProperties));
-				databaseSettings = new CouchDbDatabaseSettings(couchProperties);
-			} else if("influxdb".equals(type)) {
-				databaseType = InfluxDbDatabaseSettings.TYPE;
-				JsonObject config = configElement.getAsJsonObject();
-				InfluxProperties influxProperties = JsonInfluxDb.getInfluxPropertiesFromJson(config);
-				OkHttpProperties okHttpProperties = JsonOkHttp.getOkHttpPropertiesFromJson(config);
-				LOGGER.debug("Debugging influxProperties: {}", GSON.toJson(influxProperties));
-				LOGGER.debug("Debugging okHttpProperties: {}", GSON.toJson(okHttpProperties));
-				JsonElement databaseNameElement = config.get("database");
-				final String databaseName = databaseNameElement == null || databaseNameElement.isJsonNull()
-					? null
-					: databaseNameElement.getAsString();
-				JsonElement measurementNameElement = config.get("measurement");
-				final String measurementName = measurementNameElement == null || measurementNameElement.isJsonNull()
-					? null
-					: measurementNameElement.getAsString();
-				LOGGER.debug("Debugging databaseName: {}, measurementName: {}", databaseName, measurementName);
-				List<FrequentObject<RetentionPolicySetting>> frequentRetentionPolicies = JsonInfluxDb.getRetentionPolicySettings(config);
-				if(frequentRetentionPolicies.isEmpty()){
-					LOGGER.debug("No retention policies specified!");
-				}
-				for(FrequentObject<RetentionPolicySetting> frequentObject : frequentRetentionPolicies){
-					RetentionPolicySetting setting = requireNonNull(frequentObject.getObject());
-					RetentionPolicy policy = setting.getRetentionPolicy();
-					String policyString = policy == null ? "null" : policy.toPolicyString("<policy name>", "<database name>");
-					LOGGER.debug("Debugging retention policy. Name={} Frequency={} try to create={} auto alter={} ignore unsuccessful create={} policy={}", setting.getName(), frequentObject.getFrequency(), setting.isTryToCreate(), setting.isAutomaticallyAlter(), setting.isIgnoreUnsuccessfulCreate(), policyString);
-				}
-				databaseSettings = new InfluxDbDatabaseSettings(
-					influxProperties, okHttpProperties,
-					databaseName, measurementName,
-					frequentRetentionPolicies
-				);
-			} else if ("latest".equals(type)) {
-				databaseType = LatestFileDatabaseSettings.TYPE;
-				JsonObject config = configElement.getAsJsonObject();
-				String path = config.get("file").getAsString();
-				File latestFile = new File(path).getAbsoluteFile();
-				databaseSettings = new LatestFileDatabaseSettings(latestFile);
-			} else {
-				throw new UnsupportedOperationException("Unknown type: " + type);
+			final DatabaseConfig databaseConfig;
+			try {
+				databaseConfig = mapper.readValue(reader, DatabaseConfig.class);
+			} catch (IOException e) {
+				throw new RuntimeException("Couldn't parse data!", e);
 			}
-			Map<String, IndividualSettings> individualSettingsMap = parseAllIndividualSettings(jsonObject.get("settings"));
-			r.add(new DatabaseConfig(databaseType, databaseSettings, individualSettingsMap));
+			r.add(databaseConfig);
 		}
 		return r;
 	}
-	private static Map<String, IndividualSettings> parseAllIndividualSettings(JsonElement settingsElement){
-		if(settingsElement == null){
-			return Collections.emptyMap();
-		}
-		JsonObject jsonObject = settingsElement.getAsJsonObject();
-		Map<String, IndividualSettings> r = new HashMap<>();
-		for(Map.Entry<String, JsonElement> entrySet : jsonObject.entrySet()){
-			r.put(entrySet.getKey(), parseIndividualSettings(entrySet.getValue().getAsJsonObject()));
-		}
-		return r;
-	}
-	private static IndividualSettings parseIndividualSettings(JsonObject jsonObject){
-		JsonElement throttleFactorElement = jsonObject.get("throttle_factor");
-		JsonElement initialSkipElement = jsonObject.get("initial_skip");
-		int throttleFactor = throttleFactorElement != null ? throttleFactorElement.getAsInt() : 1;
-		int initialSkip = initialSkipElement != null ? initialSkipElement.getAsInt() : 0;
-		return new IndividualSettings(new FrequencySettings(throttleFactor, initialSkip));
-	}
-	
-	private static IOBundle createIOBundle(File configFile, SerialConfig defaultSerialConfig){
-		final String contents;
+
+	private static IOBundle createIOBundle(File configFile, SerialConfig defaultSerialConfig) throws Exception {
+		final FileInputStream inputStream;
 		try {
-			contents = new String(Files.readAllBytes(configFile.toPath()), Charset.defaultCharset());
+			inputStream = new FileInputStream(configFile);
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException(e);
+		}
+		InjectableValues.Std iv = new InjectableValues.Std();
+		iv.addValue(SerialIOConfig.DEFAULT_SERIAL_CONFIG_KEY, defaultSerialConfig);
+
+		ObjectMapper mapper = JacksonUtil.defaultMapper();
+		mapper.setInjectableValues(iv);
+		final IOConfig config;
+		try {
+			config = mapper.readValue(inputStream, IOConfig.class);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		JsonObject jsonObject = JsonParser.parseString(contents).getAsJsonObject();
-		return createIOBundle(jsonObject, defaultSerialConfig);
+		return config.createIOBundle();
 	}
-	public static IOBundle createIOBundle(JsonObject jsonObject, SerialConfig defaultSerialConfig){
-		String type = jsonObject.get("type").getAsString();
-		if("serial".equals(type)){
-			try {
-				return JsonIO.getSerialIOBundleFromJson(jsonObject, defaultSerialConfig);
-			} catch (SerialPortException e) {
-				throw new RuntimeException(e);
-			}
-		} else if("standard".equals(type)){
-			return IOBundle.Defaults.STANDARD_IN_OUT;
-		}
-		throw new UnsupportedOperationException("Unknown type: " + type);
-	}
-	
+
 	public static int doMain(String[] args){
+		LOGGER.info("[LOG] Beginning main");
+		System.out.println("[stdout] Beginning main");
 		if(args.length < 1){
 			System.err.println("Usage: <java -jar ...> {base config file}");
 			LOGGER.error("(Fatal)Incorrect args");
 			return 1;
 		}
 		File baseConfigFile = new File(args[0]);
-		final Gson deserializer = new GsonBuilder()
-				.registerTypeAdapter(File.class, new TypeAdapter<File>() {
-					@Override
-					public void write(JsonWriter out, File value) throws IOException {
-						if(value == null){
-							out.nullValue();
-							return;
-						}
-						out.value(value.toString());
-					}
-
-					@Override
-					public File read(JsonReader in) throws IOException {
-						if(in.peek() == JsonToken.NULL){
-							in.nextNull();
-							return null;
-						}
-						return new File(in.nextString());
-					}
-				})
-				.create();
 		final FileReader fileReader;
 		try {
 			fileReader = new FileReader(baseConfigFile);
@@ -530,60 +459,26 @@ public final class SolarMain {
 			LOGGER.error("(Fatal)File not found", ex);
 			return 1;
 		}
-		JsonObject baseConfig = deserializer.fromJson(fileReader, JsonObject.class);
-		JsonElement programNameElement = baseConfig.get("type");
-		if(programNameElement == null){
-			System.err.println("Program type not declared!");
-			LOGGER.error("(Fatal)The program type was not declared in the base config file! baseConfig: {}", baseConfig);
-			return 1;
-		}
-		String programName = programNameElement.getAsString();
-
-		Program program = getProgram(programName);
-		if(program == null){
-			System.err.println("Valid program types: {mate|rover|rover-setup|outhouse}");
-			LOGGER.error("(Fatal)Incorrect args. baseConfig: {}", baseConfig);
-			return 1;
-		}
+		final ProgramOptions options;
 		try {
-			if(program == Program.MATE) {
-				final MateProgramOptions options;
-				try {
-					options = deserializer.fromJson(baseConfig, MateProgramOptions.class);
-				} catch(JsonSyntaxException ex){
-					LOGGER.error("(Fatal)Invalid json syntax!", ex);
-					return 1;
-				}
-				return connectMate(options);
-			} else if(program == Program.ROVER){
-				final RoverProgramOptions options;
-				try {
-					options = deserializer.fromJson(baseConfig, RoverProgramOptions.class);
-				} catch(JsonSyntaxException ex){
-					LOGGER.error("(Fatal)Invalid json syntax!", ex);
-					return 1;
-				}
-				return connectRover(options);
-			} else if(program == Program.OUTHOUSE){
-				final OuthouseProgramOptions options;
-				try {
-					options = deserializer.fromJson(baseConfig, OuthouseProgramOptions.class);
-				} catch(JsonSyntaxException ex){
-					LOGGER.error("(Fatal)Invalid json syntax!", ex);
-					return 1;
-				}
-				return connectOuthouse(options);
-			} else if(program == Program.ROVER_SETUP){
-				final RoverSetupProgramOptions options;
-				try {
-					options = deserializer.fromJson(baseConfig, RoverSetupProgramOptions.class);
-				} catch(JsonSyntaxException ex){
-					LOGGER.error("(Fatal)Invalid json syntax!", ex);
-					return 1;
-				}
-				return connectRoverSetup(options);
+			options = OBJECT_MAPPER.readValue(fileReader, ProgramOptions.class);
+		} catch (IOException e) {
+			LOGGER.error("(Fatal)Error while parsing ProgramOptions. args=" + Arrays.toString(args), e);
+			return 1;
+		}
+		final ProgramType programType = options.getProgramType();
+		try {
+			if(programType == ProgramType.MATE) {
+				return connectMate((MateProgramOptions) options);
+			} else if(programType == ProgramType.ROVER){
+				return connectRover((RoverProgramOptions) options);
+			} else if(programType == ProgramType.OUTHOUSE){
+				//noinspection deprecation
+				return connectOuthouse((OuthouseProgramOptions) options);
+			} else if(programType == ProgramType.ROVER_SETUP){
+				return connectRoverSetup((RoverSetupProgramOptions) options);
 			}
-			throw new AssertionError("Unknown program type... type=" + program);
+			throw new AssertionError("Unknown program type... type=" + programType + " programOptions=" + options);
 		} catch (Exception t) {
 			LOGGER.error("(Fatal)Got exception", t);
 			return 1;
@@ -592,33 +487,5 @@ public final class SolarMain {
 
 	public static void main(String[] args) {
 		System.exit(doMain(args));
-	}
-	private static Program getProgram(String program) {
-		if(program == null){
-			return null;
-		}
-		switch (program.toLowerCase()) {
-			case "mate":
-				return Program.MATE;
-			case "rover":
-				return Program.ROVER;
-			case "rover-setup":
-				return Program.ROVER_SETUP;
-			case "outhouse":
-				return Program.OUTHOUSE;
-		}
-		return null;
-	}
-	private enum Program {
-		MATE("mate"),
-		ROVER("rover"),
-		ROVER_SETUP("rover-setup"),
-		OUTHOUSE("outhouse");
-		@SuppressWarnings({"unused", "FieldCanBeLocal"}) // this may be used in the future, however it is not necessary as of now
-		private final String name;
-
-		Program(String name) {
-			this.name = name;
-		}
 	}
 }

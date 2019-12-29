@@ -1,5 +1,8 @@
 package me.retrodaredevil.couchdb;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+@JsonDeserialize(builder = CouchPropertiesBuilder.class)
 class ImmutableCouchProperties implements CouchProperties {
 	private final String database;
 	private final boolean createIfNotExist;
@@ -42,9 +45,9 @@ class ImmutableCouchProperties implements CouchProperties {
 	
 	@Override public String getPassword() { return password; }
 	
-	@Override public int getSocketTimeout() { return socketTimeout; }
+	@Override public int getSocketTimeoutMillis() { return socketTimeout; }
 	
-	@Override public int getConnectionTimeout() { return connectionTimeout; }
+	@Override public int getConnectionTimeoutMillis() { return connectionTimeout; }
 	
 	@Override public int getMaxConnections() { return maxConnections; }
 	

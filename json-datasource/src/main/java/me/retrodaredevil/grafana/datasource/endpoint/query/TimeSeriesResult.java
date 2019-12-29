@@ -11,7 +11,7 @@ public class TimeSeriesResult implements QueryResult {
 	@JsonSerialize
 	private final String target;
 	@SuppressWarnings("SpellCheckingInspection")
-	@JsonSerialize @JsonProperty(value = "datapoints")
+	@JsonSerialize @JsonProperty("datapoints")
 	private final List<DataPoint> dataPoints;
 
 	public TimeSeriesResult(String target, List<DataPoint> dataPoints) {

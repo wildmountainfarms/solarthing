@@ -1,32 +1,41 @@
 package me.retrodaredevil.solarthing.program;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import me.retrodaredevil.solarthing.DataReceiver;
 import me.retrodaredevil.solarthing.JsonPacketReceiver;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
-import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
-import me.retrodaredevil.solarthing.packets.collection.PacketCollections;
-import me.retrodaredevil.solarthing.packets.security.*;
+import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
+import me.retrodaredevil.solarthing.packets.collection.parsing.ObjectMapperPacketConverter;
+import me.retrodaredevil.solarthing.packets.collection.parsing.PacketGroupParser;
+import me.retrodaredevil.solarthing.packets.collection.parsing.PacketParserMultiplexer;
+import me.retrodaredevil.solarthing.packets.collection.parsing.SimplePacketGroupParser;
+import me.retrodaredevil.solarthing.packets.instance.InstancePacket;
+import me.retrodaredevil.solarthing.packets.security.AuthNewSenderPacket;
+import me.retrodaredevil.solarthing.packets.security.IntegrityPacket;
+import me.retrodaredevil.solarthing.packets.security.SecurityPacket;
+import me.retrodaredevil.solarthing.packets.security.SecurityPacketType;
 import me.retrodaredevil.solarthing.packets.security.crypto.*;
-import org.lightcouch.CouchDbClient;
+import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
-import java.io.File;
-import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.util.*;
 
 public class SecurityPacketReceiver implements JsonPacketReceiver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SecurityPacketReceiver.class);
-	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
-	
+	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
+
+	private static final PacketGroupParser PARSER = new SimplePacketGroupParser(new PacketParserMultiplexer(Arrays.asList(
+			new ObjectMapperPacketConverter(MAPPER, SecurityPacket.class),
+			new ObjectMapperPacketConverter(MAPPER, InstancePacket.class)
+	), PacketParserMultiplexer.LenientType.FAIL_WHEN_UNHANDLED));
+
 	private final PublicKeyLookUp publicKeyLookUp;
 	private final DataReceiver dataReceiver;
 	private final PublicKeySave publicKeySave;
@@ -54,31 +63,31 @@ public class SecurityPacketReceiver implements JsonPacketReceiver {
 	}
 	
 	@Override
-	public void receivePackets(List<JsonObject> jsonPackets) {
+	public void receivePackets(List<ObjectNode> jsonPackets) {
 		LOGGER.debug("received packets! size: " + jsonPackets.size());
-		List<PacketCollection> packets = new ArrayList<>(jsonPackets.size());
+		List<PacketGroup> packets = new ArrayList<>(jsonPackets.size());
 		long minTime = System.currentTimeMillis() - 5 * 60 * 1000; // last 5 minutes allowed
-		for(JsonObject packet : jsonPackets){
-			final PacketCollection packetCollection;
+		for(ObjectNode packet : jsonPackets){
+			final PacketGroup packetGroup;
 			try {
-				packetCollection = PacketCollections.createFromJson(packet, SecurityPackets::createFromJson);
+				packetGroup = PARSER.parse(packet);
 			} catch(Exception e){
-				LOGGER.error("tried to create a packet collection from: " + GSON.toJson(packet), e);
+				LOGGER.error("tried to create a packet collection from: " + packet, e);
 				continue;
 			}
-			if(packetCollection.getDateMillis() < minTime){
+			if(packetGroup.getDateMillis() < minTime){
 				LOGGER.info("Ignoring old packet");
 				continue;
 			}
-			packets.add(packetCollection);
+			packets.add(packetGroup);
 		}
 		/*
 		 * If someone sends multiple commands in a single PacketCollection, those commands might have the same time in millis,
 		 * which we want to allow. If we just updated senderLastCommandMap directly, this would not be allowed.
 		 */
 		Map<String, Long> lastCommands = new HashMap<>();
-		for(PacketCollection packetCollection : packets){
-			for(Packet packet : packetCollection.getPackets()){
+		for(PacketGroup packetGroup : packets){
+			for(Packet packet : packetGroup.getPackets()){
 				SecurityPacket securityPacket = (SecurityPacket) packet;
 				SecurityPacketType packetType = securityPacket.getPacketType();
 				if(packetType == SecurityPacketType.INTEGRITY_PACKET){
@@ -140,18 +149,5 @@ public class SecurityPacketReceiver implements JsonPacketReceiver {
 			}
 		}
 		senderLastCommandMap.putAll(lastCommands);
-	}
-	public static void main(String[] args) throws NoSuchPaddingException, NoSuchAlgorithmException, EncryptException, InvalidKeyException {
-		CouchDbClient client = new CouchDbClient("commands", false, "http", "192.168.10.104", 5984, "admin", "relax");
-		KeyPair pair = KeyUtil.generateKeyPair();
-		String data = Long.toHexString(System.currentTimeMillis()) + ",GEN OFF";
-		Cipher cipher = Cipher.getInstance(KeyUtil.CIPHER_TRANSFORMATION);
-		String encryptedData = Encrypt.encrypt(cipher, pair.getPrivate(), data);
-		client.save(PacketCollections.createFromPackets(
-			Arrays.asList(new ImmutableIntegrityPacket("josh", encryptedData)),
-//			Arrays.asList(new ImmutableAuthNewSenderPacket("josh", KeyUtil.encodePublicKey(pair.getPublic()))),
-			PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR
-		));
-		new DirectoryKeyMap(new File("authorized")).putKey("josh", pair.getPublic());
 	}
 }
