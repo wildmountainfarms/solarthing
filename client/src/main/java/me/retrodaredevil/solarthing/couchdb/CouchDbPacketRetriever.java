@@ -59,6 +59,8 @@ public class CouchDbPacketRetriever implements PacketHandler {
 					client.delete(id, rev);
 				} catch (UpdateConflictException ex) {
 					LOGGER.warn("Unable to remove id='" + id + "' with rev='" + rev + "'", ex);
+				} catch(DbAccessException ex){
+					LOGGER.warn("Unable to connect to remove id='" + id + "' with rev='" + rev + "'", ex);
 				}
 			}
 		}

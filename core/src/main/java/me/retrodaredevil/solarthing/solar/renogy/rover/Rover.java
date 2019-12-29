@@ -4,10 +4,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 
-import java.beans.ConstructorProperties;
-
-import static java.util.Objects.requireNonNull;
-
 /**
  * An interface that indicates that an object is somehow associated by a rover either by providing data or by setting data
  */
@@ -41,11 +37,11 @@ public interface Rover {
 		private final int durationHours;
 		private final int operatingPowerPercentage;
 
-		@ConstructorProperties({"durationHours", "operatingPowerPercentage"})
-		private OperatingSettingBundle(Integer durationHours, Integer operatingPowerPercentage){
-			this((int) requireNonNull(durationHours), (int) requireNonNull(operatingPowerPercentage));
-		}
-		public OperatingSettingBundle(int durationHours, int operatingPowerPercentage) {
+		@JsonCreator
+		public OperatingSettingBundle(
+				@JsonProperty(value = "durationHours", required = true) int durationHours,
+				@JsonProperty(value = "operatingPowerPercentage", required = true) int operatingPowerPercentage
+		) {
 			this.durationHours = durationHours;
 			this.operatingPowerPercentage = operatingPowerPercentage;
 		}
