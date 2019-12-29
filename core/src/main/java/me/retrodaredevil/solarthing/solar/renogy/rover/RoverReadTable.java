@@ -14,8 +14,8 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.special.ImmutableSpecialP
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.ImmutableSpecialPowerControl_E02D;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerControl_E021;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerControl_E02D;
-import org.apache.commons.codec.binary.Base64;
 
+import java.util.Base64;
 import java.util.Collection;
 
 @JsonExplicit
@@ -76,12 +76,9 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	 * If serialized in JSON, should first be converted to Base64, then stored as "productModelEncoded"
 	 * @return An array of 16 bytes in length representing the product model
 	 */
+	@JsonProperty("productModelEncoded") // jackson should encode and decode as this as base64 when serializing and deserializing
 	byte[] getProductModelValue();
 
-	@Deprecated
-	@JsonProperty("productModelEncoded") // jackson should encode and decode as this as base64 when serializing and deserializing
-	default String getProductModelEncoded() { return Base64.encodeBase64String(getProductModelValue()); }
-	
 	/**
 	 * Should be serialized as "productModelString"
 	 * @return The string representing the product model
