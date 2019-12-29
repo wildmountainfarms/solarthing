@@ -6,6 +6,12 @@ import me.retrodaredevil.solarthing.DataReceiver;
 import me.retrodaredevil.solarthing.JsonPacketReceiver;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
+import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
+import me.retrodaredevil.solarthing.packets.collection.parsing.ObjectMapperPacketConverter;
+import me.retrodaredevil.solarthing.packets.collection.parsing.PacketGroupParser;
+import me.retrodaredevil.solarthing.packets.collection.parsing.PacketParserMultiplexer;
+import me.retrodaredevil.solarthing.packets.collection.parsing.SimplePacketGroupParser;
+import me.retrodaredevil.solarthing.packets.instance.InstancePacket;
 import me.retrodaredevil.solarthing.packets.security.AuthNewSenderPacket;
 import me.retrodaredevil.solarthing.packets.security.IntegrityPacket;
 import me.retrodaredevil.solarthing.packets.security.SecurityPacket;
@@ -24,6 +30,11 @@ import java.util.*;
 public class SecurityPacketReceiver implements JsonPacketReceiver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SecurityPacketReceiver.class);
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
+
+	private static final PacketGroupParser PARSER = new SimplePacketGroupParser(new PacketParserMultiplexer(Arrays.asList(
+			new ObjectMapperPacketConverter(MAPPER, SecurityPacket.class),
+			new ObjectMapperPacketConverter(MAPPER, InstancePacket.class)
+	), PacketParserMultiplexer.LenientType.FAIL_WHEN_UNHANDLED));
 
 	private final PublicKeyLookUp publicKeyLookUp;
 	private final DataReceiver dataReceiver;
@@ -54,29 +65,29 @@ public class SecurityPacketReceiver implements JsonPacketReceiver {
 	@Override
 	public void receivePackets(List<ObjectNode> jsonPackets) {
 		LOGGER.debug("received packets! size: " + jsonPackets.size());
-		List<PacketCollection> packets = new ArrayList<>(jsonPackets.size());
+		List<PacketGroup> packets = new ArrayList<>(jsonPackets.size());
 		long minTime = System.currentTimeMillis() - 5 * 60 * 1000; // last 5 minutes allowed
 		for(ObjectNode packet : jsonPackets){
-			final PacketCollection packetCollection;
+			final PacketGroup packetGroup;
 			try {
-				packetCollection = MAPPER.convertValue(packet, PacketCollection.class);
+				packetGroup = PARSER.parse(packet);
 			} catch(Exception e){
 				LOGGER.error("tried to create a packet collection from: " + packet, e);
 				continue;
 			}
-			if(packetCollection.getDateMillis() < minTime){
+			if(packetGroup.getDateMillis() < minTime){
 				LOGGER.info("Ignoring old packet");
 				continue;
 			}
-			packets.add(packetCollection);
+			packets.add(packetGroup);
 		}
 		/*
 		 * If someone sends multiple commands in a single PacketCollection, those commands might have the same time in millis,
 		 * which we want to allow. If we just updated senderLastCommandMap directly, this would not be allowed.
 		 */
 		Map<String, Long> lastCommands = new HashMap<>();
-		for(PacketCollection packetCollection : packets){
-			for(Packet packet : packetCollection.getPackets()){
+		for(PacketGroup packetGroup : packets){
+			for(Packet packet : packetGroup.getPackets()){
 				SecurityPacket securityPacket = (SecurityPacket) packet;
 				SecurityPacketType packetType = securityPacket.getPacketType();
 				if(packetType == SecurityPacketType.INTEGRITY_PACKET){
