@@ -22,11 +22,3 @@ Edit `base.json`
 
 Once your configuration is how you want it, you can go back to the [quickstart](quickstart.md) to enable and start the service.
 
-Run the program for the first time
-```shell script
-./solarthing.sh
-```
-Or you will have to run it manually if you are on windows
-```shell script
-java -jar solarthing.jar base.json
-```
