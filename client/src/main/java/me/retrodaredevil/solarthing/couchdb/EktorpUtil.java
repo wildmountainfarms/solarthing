@@ -14,10 +14,13 @@ public final class EktorpUtil {
 		int connectionTimeout = properties.getConnectionTimeoutMillis();
 		int socketTimeout = properties.getSocketTimeoutMillis();
 		try {
+			String rawPath = properties.getPath();
+			String path = rawPath == null ? "" : rawPath;
 			StdHttpClient.Builder builder = new StdHttpClient.Builder()
-					.url(properties.getProtocol() + "://" + properties.getHost() + ":" + properties.getPort())
-					.username(properties.getUsername())
-					.password(properties.getPassword())
+					.url(properties.getProtocol() + "://" + properties.getHost() + ":" + properties.getPort() + path)
+					.username(properties.getUsername()) // may be null
+					.password(properties.getPassword()) // may be null
+					.proxy(properties.getProxyHost()) // may be null
 					;
 			if(connectionTimeout != 0){
 				builder.connectionTimeout(connectionTimeout);

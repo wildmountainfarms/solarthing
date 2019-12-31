@@ -35,3 +35,6 @@ remove duplicate packets.
 For old solarthing versions, you can expect that a PacketCollection may have one or two other identical packets from almost the same time. 
 This is where [Identifiers](../core/src/main/java/me/retrodaredevil/solarthing/packets/identification/Identifier.java) comes in. By
 adding packets to a Map, you can make sure that there's only one packet for each unique Identifier
+
+#### Logging
+This uses slf4j to log and uses log4j2 as the main implementation. https://logging.apache.org/log4j/2.x/manual/appenders.html

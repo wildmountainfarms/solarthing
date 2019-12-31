@@ -4,6 +4,9 @@ import me.retrodaredevil.solarthing.packets.Packet;
 
 import java.util.List;
 
+/**
+ * Represents something that accepts a list of packets. This is a broad interface, so its behaviour is NOT strictly defined.
+ */
 @FunctionalInterface
 public interface PacketListReceiver {
 	/**

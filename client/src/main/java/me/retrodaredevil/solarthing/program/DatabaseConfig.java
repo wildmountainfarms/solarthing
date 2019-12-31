@@ -31,7 +31,7 @@ public final class DatabaseConfig {
 		settings = null;
 		individualSettingsMap = Collections.emptyMap();
 	}
-	
+
 	public DatabaseConfig(DatabaseSettings settings, Map<String, IndividualSettings> frequencySettingsMap) {
 		this.settings = settings;
 		this.individualSettingsMap = Collections.unmodifiableMap(new HashMap<>(frequencySettingsMap));
@@ -44,11 +44,11 @@ public final class DatabaseConfig {
 	public DatabaseType getType() {
 		return settings.getDatabaseType();
 	}
-	
+
 	public DatabaseSettings getSettings() {
 		return settings;
 	}
-	
+
 	public Map<String, IndividualSettings> getIndividualSettingsMap() {
 		return individualSettingsMap;
 	}
@@ -58,5 +58,14 @@ public final class DatabaseConfig {
 			r = defaultSettings;
 		}
 		return r;
+	}
+
+	@Override
+	public String toString() {
+		return "DatabaseConfig(" +
+				"type='" + type + '\'' +
+				", settings=" + settings +
+				", individualSettingsMap=" + individualSettingsMap +
+				')';
 	}
 }

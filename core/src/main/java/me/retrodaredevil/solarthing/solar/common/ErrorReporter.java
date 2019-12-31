@@ -11,6 +11,4 @@ public interface ErrorReporter {
 	 */
 	int getErrorModeValue();
 	Collection<? extends BitmaskMode> getErrorModes();
-	@Deprecated
-	default Collection<? extends BitmaskMode> getActiveErrors(){ return getErrorModes(); }
 }

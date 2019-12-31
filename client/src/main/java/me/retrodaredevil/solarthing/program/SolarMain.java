@@ -9,6 +9,7 @@ import me.retrodaredevil.io.modbus.*;
 import me.retrodaredevil.io.serial.SerialConfig;
 import me.retrodaredevil.io.serial.SerialConfigBuilder;
 import me.retrodaredevil.solarthing.OnDataReceive;
+import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.commands.CommandProvider;
 import me.retrodaredevil.solarthing.commands.CommandProviderMultiplexer;
 import me.retrodaredevil.solarthing.commands.sequence.CommandSequence;
@@ -21,12 +22,6 @@ import me.retrodaredevil.solarthing.config.io.IOConfig;
 import me.retrodaredevil.solarthing.config.io.SerialIOConfig;
 import me.retrodaredevil.solarthing.config.options.*;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketRetriever;
-import me.retrodaredevil.solarthing.couchdb.CouchDbPacketSaver;
-import me.retrodaredevil.solarthing.influxdb.ConstantDatabaseNameGetter;
-import me.retrodaredevil.solarthing.influxdb.ConstantMeasurementPacketPointCreator;
-import me.retrodaredevil.solarthing.influxdb.DocumentedMeasurementPacketPointCreator;
-import me.retrodaredevil.solarthing.influxdb.InfluxDbPacketSaver;
-import me.retrodaredevil.solarthing.influxdb.retention.FrequentRetentionPolicyGetter;
 import me.retrodaredevil.solarthing.outhouse.OuthousePacketCreator;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.HourIntervalPacketCollectionIdGenerator;
@@ -35,8 +30,6 @@ import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerat
 import me.retrodaredevil.solarthing.packets.collection.PacketCollections;
 import me.retrodaredevil.solarthing.packets.creation.TextPacketCreator;
 import me.retrodaredevil.solarthing.packets.handling.*;
-import me.retrodaredevil.solarthing.packets.handling.implementations.FileWritePacketHandler;
-import me.retrodaredevil.solarthing.packets.handling.implementations.JacksonStringPacketHandler;
 import me.retrodaredevil.solarthing.packets.handling.implementations.PacketHandlerPacketListReceiver;
 import me.retrodaredevil.solarthing.packets.handling.implementations.TimedPacketReceiver;
 import me.retrodaredevil.solarthing.packets.instance.InstanceFragmentIndicatorPackets;
@@ -50,7 +43,6 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.*;
 import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusSlaveRead;
 import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusSlaveWrite;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
-import me.retrodaredevil.solarthing.util.frequency.FrequentHandler;
 import me.retrodaredevil.solarthing.util.scheduler.MidnightIterativeScheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,24 +56,22 @@ import static java.util.Objects.requireNonNull;
 
 public final class SolarMain {
 	private SolarMain(){ throw new UnsupportedOperationException(); }
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(SolarMain.class);
-	private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.defaultMapper();
+	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
 
 	private static final SerialConfig MATE_CONFIG = new SerialConfigBuilder(19200)
-		.setDataBits(8)
-		.setParity(SerialConfig.Parity.NONE)
-		.setStopBits(SerialConfig.StopBits.ONE)
-		.setDTR(true)
-		.build();
+			.setDataBits(8)
+			.setParity(SerialConfig.Parity.NONE)
+			.setStopBits(SerialConfig.StopBits.ONE)
+			.setDTR(true)
+			.build();
 	private static final SerialConfig ROVER_CONFIG = new SerialConfigBuilder(9600)
-		.setDataBits(8)
-		.setParity(SerialConfig.Parity.NONE)
-		.setStopBits(SerialConfig.StopBits.ONE)
-		.build();
-	private static final String DATABASE_UPLOAD_ID = "packet_upload";
-	private static final String DATABASE_COMMAND_DOWNLOAD_ID = "command_download";
-	
+			.setDataBits(8)
+			.setParity(SerialConfig.Parity.NONE)
+			.setStopBits(SerialConfig.StopBits.ONE)
+			.build();
+
 	@SuppressWarnings("SameReturnValue")
 	private static int connectMate(MateProgramOptions options) throws Exception {
 		LOGGER.info("Beginning mate program");
@@ -102,9 +92,27 @@ public final class SolarMain {
 			}
 		}
 		List<DatabaseConfig> databaseConfigs = getDatabaseConfigs(options);
-		
+		PacketHandlerBundle packetHandlerBundle = PacketHandlerInit.getPacketHandlerBundle(databaseConfigs, SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, SolarThingConstants.SOLAR_EVENT_UNIQUE_NAME);
+
+		PacketHandler eventPacketHandler = new PacketHandlerMultiplexer(packetHandlerBundle.getEventPacketHandlers());
+		PacketListReceiver sourceAndFragmentUpdater = getSourceAndFragmentUpdater(options);
+		PacketListReceiverCollectorHandler packetListReceiverCollectorHandler = new PacketListReceiverCollectorHandler(
+				new PacketListReceiverMultiplexer(
+						sourceAndFragmentUpdater,
+						(packets, wasInstant) -> {
+							LOGGER.debug("Debugging event packets");
+							try {
+								LOGGER.debug(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(packets));
+							} catch (JsonProcessingException e) {
+								LOGGER.debug("Never mind about that...", e);
+							}
+						}
+				),
+				eventPacketHandler
+		);
+
 		final OnDataReceive onDataReceive;
-		List<PacketHandler> packetHandlers = new ArrayList<>();
+		List<PacketHandler> statusPacketHandlers = new ArrayList<>();
 		if(options.isAllowCommands()) {
 			LOGGER.info("Commands are allowed");
 			List<CommandProvider<MateCommand>> commandProviders = new ArrayList<>();
@@ -122,15 +130,15 @@ public final class SolarMain {
 					commandProviders.add(InputStreamCommandProvider.createFrom(fileInputStream, "command_input.txt", EnumSet.allOf(MateCommand.class)));
 				}
 			}
-			
-			final List<PacketHandler> commandRequesterHandlerList = new ArrayList<>(); // Handlers to request and get new commands to send (This may block the current thread)
-			final List<PacketHandler> commandFeedbackHandlerList = new ArrayList<>(); // Handlers to handle successful command packets, usually by storing those packets somewhere (May block the current thread)
+
+			final List<PacketHandler> commandRequesterHandlerList = new ArrayList<>(); // Handlers to request and get new commands to send (This may block the current thread). (This doesn't actually handle packets)
+//			final List<PacketHandler> commandFeedbackHandlerList = new ArrayList<>(); // Handlers to handle successful command packets, usually by storing those packets somewhere (May block the current thread)
 			for(DatabaseConfig config : databaseConfigs){
 				if(CouchDbDatabaseSettings.TYPE.equals(config.getType())){
 					CouchDbDatabaseSettings settings = (CouchDbDatabaseSettings) config.getSettings();
 					CouchProperties couchProperties = settings.getCouchProperties();
 					LatestPacketHandler latestPacketHandler = new LatestPacketHandler(true);
-					packetHandlers.add(latestPacketHandler);
+					statusPacketHandlers.add(latestPacketHandler);
 					final CommandSequenceDataReceiver<MateCommand> commandSequenceDataReceiver;
 					{
 						CommandSequence<MateCommand> generatorShutOff = CommandSequences.createAuxGeneratorShutOff(latestPacketHandler::getLatestPacketCollection);
@@ -139,38 +147,38 @@ public final class SolarMain {
 						commandSequenceDataReceiver = new CommandSequenceDataReceiver<>(map);
 					}
 					commandProviders.add(commandSequenceDataReceiver.getCommandProvider());
-					
-					IndividualSettings individualSettings = config.getIndividualSettingsOrDefault(DATABASE_COMMAND_DOWNLOAD_ID, null);
+
+					IndividualSettings individualSettings = config.getIndividualSettingsOrDefault(Constants.DATABASE_COMMAND_DOWNLOAD_ID, null);
 					FrequencySettings frequencySettings = individualSettings != null ? individualSettings.getFrequencySettings() : FrequencySettings.NORMAL_SETTINGS;
 					commandRequesterHandlerList.add(new ThrottleFactorPacketHandler(new PrintPacketHandleExceptionWrapper(
 							new CouchDbPacketRetriever(
 									couchProperties,
-									"commands",
+									SolarThingConstants.COMMANDS_UNIQUE_NAME,
 									new SecurityPacketReceiver(new DirectoryKeyMap(new File("authorized")), commandSequenceDataReceiver, new DirectoryKeyMap(new File("unauthorized"))),
 								  true
 							)
 					), frequencySettings, true));
-					commandFeedbackHandlerList.add(new CouchDbPacketSaver(couchProperties, "command_feedback"));
 				}
 			}
-			
+
 			final PacketHandler commandRequesterHandler = new PacketHandlerMultiplexer(commandRequesterHandlerList);
-			final PacketHandler commandFeedbackHandler = new PacketHandlerMultiplexer(commandFeedbackHandlerList);
 			Collection<MateCommand> allowedCommands = EnumSet.of(MateCommand.AUX_OFF, MateCommand.AUX_ON, MateCommand.USE, MateCommand.DROP);
 			onDataReceive = new MateCommandSender(
 					new CommandProviderMultiplexer<>(commandProviders),
 					io.getOutputStream(),
 					allowedCommands,
-					new OnMateCommandSent(commandFeedbackHandler)
+					new OnMateCommandSent(new PacketListReceiverMultiplexer(
+							packetListReceiverCollectorHandler.getPacketListReceiverAccepter(),
+							packetListReceiverCollectorHandler.getPacketListReceiverHandler()
+					))
 			);
-			packetHandlers.add(commandRequesterHandler);
+			statusPacketHandlers.add(commandRequesterHandler);
 		} else {
 			LOGGER.info("Commands are disabled");
 			onDataReceive = OnDataReceive.Defaults.NOTHING;
 		}
-		
-		packetHandlers.addAll(getPacketHandlers(databaseConfigs, "solarthing"));
-		
+		statusPacketHandlers.addAll(packetHandlerBundle.getStatusPacketHandlers());
+
 		try {
 			initReader(
 					requireNonNull(io.getInputStream()),
@@ -179,17 +187,18 @@ public final class SolarMain {
 							250,
 							new PacketListReceiverMultiplexer(
 									OutbackDuplicatePacketRemover.INSTANCE,
-									new DailyFXListUpdater(new MidnightIterativeScheduler()),
+									new DailyFXListUpdater(new MidnightIterativeScheduler(), packetListReceiverCollectorHandler.getPacketListReceiverAccepter()),
+									sourceAndFragmentUpdater,
 									(packets, wasInstant) -> {
 										LOGGER.debug("Debugging all packets");
 										try {
-											LOGGER.debug(OBJECT_MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(packets));
+											LOGGER.debug(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(packets));
 										} catch (JsonProcessingException e) {
 											LOGGER.debug("Never mind about that...", e);
 										}
 									},
-									getSourceAndFragmentUpdater(options),
-									new PacketHandlerPacketListReceiver(new PacketHandlerMultiplexer(packetHandlers), idGenerator)
+									new PacketHandlerPacketListReceiver(new PacketHandlerMultiplexer(statusPacketHandlers), idGenerator),
+									packetListReceiverCollectorHandler.getPacketListReceiverHandler()
 							),
 							onDataReceive
 					)
@@ -199,9 +208,11 @@ public final class SolarMain {
 		}
 		return 0;
 	}
-	private static int connectRover(RoverProgramOptions options) throws IOException {
+	private static int connectRover(RoverProgramOptions options) {
 		LOGGER.info("Beginning rover program");
-		List<PacketHandler> packetHandlers = getPacketHandlers(getDatabaseConfigs(options), "solarthing");
+		PacketHandlerBundle packetHandlerBundle = PacketHandlerInit.getPacketHandlerBundle(getDatabaseConfigs(options), SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, SolarThingConstants.SOLAR_EVENT_UNIQUE_NAME);
+		// TODO packetHandlerBundle.getEventPacketHandlers()
+		List<PacketHandler> packetHandlers = new ArrayList<>(packetHandlerBundle.getStatusPacketHandlers());
 		PacketHandler packetHandler = new PacketHandlerMultiplexer(packetHandlers);
 		PacketListReceiver packetListReceiver = getSourceAndFragmentUpdater(options);
 
@@ -220,7 +231,7 @@ public final class SolarMain {
 						continue;
 					}
 					try {
-						LOGGER.debug(OBJECT_MAPPER.writeValueAsString(packet) + "\n" +
+						LOGGER.debug(MAPPER.writeValueAsString(packet) + "\n" +
 								packet.getSpecialPowerControlE021().getFormattedInfo().replaceAll("\n", "\n\t") + "\n" +
 								packet.getSpecialPowerControlE02D().getFormattedInfo().replaceAll("\n", "\n\t")
 						);
@@ -262,7 +273,7 @@ public final class SolarMain {
 			}
 			final RoverStatusPacket roverStatusPacket;
 			try {
-				roverStatusPacket = OBJECT_MAPPER.readValue(fileInputStream, RoverStatusPacket.class);
+				roverStatusPacket = MAPPER.readValue(fileInputStream, RoverStatusPacket.class);
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
@@ -295,7 +306,8 @@ public final class SolarMain {
 	private static int connectOuthouse(OuthouseProgramOptions options) throws Exception {
 		LOGGER.info("Beginning outhouse program");
 		PacketCollectionIdGenerator idGenerator = createIdGenerator(options.getUniqueIdsInOneHour());
-		List<PacketHandler> packetHandlers = getPacketHandlers(getDatabaseConfigs(options), "outhouse");
+		PacketHandlerBundle packetHandlerBundle = PacketHandlerInit.getPacketHandlerBundle(getDatabaseConfigs(options), "outhouse", "outhouse_events_unused");
+		List<PacketHandler> packetHandlers = new ArrayList<>(packetHandlerBundle.getStatusPacketHandlers());
 		try (IOBundle ioBundle = createIOBundle(options.getIOBundleFile(), new SerialConfigBuilder(9600).build())) {
 			initReader(
 					ioBundle.getInputStream(),
@@ -305,13 +317,14 @@ public final class SolarMain {
 							new PacketListReceiverMultiplexer(
 									getSourceAndFragmentUpdater(options),
 									new PacketHandlerPacketListReceiver(new PacketHandlerMultiplexer(packetHandlers), idGenerator)
-							), OnDataReceive.Defaults.NOTHING
+							),
+							OnDataReceive.Defaults.NOTHING
 					)
 			);
 		}
 		return 0;
 	}
-	
+
 	private static void initReader(InputStream in, TextPacketCreator packetCreator, RawPacketReceiver rawPacketReceiver) {
 		SolarReader run = new SolarReader(in, packetCreator, rawPacketReceiver);
 		try {
@@ -329,7 +342,7 @@ public final class SolarMain {
 			Thread.currentThread().interrupt();
 		}
 	}
-	
+
 	private static PacketListReceiver getSourceAndFragmentUpdater(PacketHandlingOption options){
 		String source = options.getSourceId();
 		Integer fragment = options.getFragmentId();
@@ -349,50 +362,6 @@ public final class SolarMain {
 			throw new IllegalArgumentException("unique must be > 0 or not specified!");
 		}
 		return new HourIntervalPacketCollectionIdGenerator(uniqueIdsInOneHour, new Random().nextInt());
-	}
-	private static List<PacketHandler> getPacketHandlers(List<DatabaseConfig> configs, String uniqueName){
-		List<PacketHandler> r = new ArrayList<>();
-		for(DatabaseConfig config : configs) {
-			IndividualSettings individualSettings = config.getIndividualSettingsOrDefault(DATABASE_UPLOAD_ID, null);
-			FrequencySettings frequencySettings = individualSettings != null ? individualSettings.getFrequencySettings() : FrequencySettings.NORMAL_SETTINGS;
-			if (CouchDbDatabaseSettings.TYPE.equals(config.getType())) {
-				CouchDbDatabaseSettings settings = (CouchDbDatabaseSettings) config.getSettings();
-				CouchProperties couchProperties = settings.getCouchProperties();
-				r.add(new ThrottleFactorPacketHandler(
-						new PrintPacketHandleExceptionWrapper(new CouchDbPacketSaver(couchProperties, uniqueName)),
-						frequencySettings,
-						true
-				));
-			} else if(InfluxDbDatabaseSettings.TYPE.equals(config.getType())) {
-				InfluxDbDatabaseSettings settings = (InfluxDbDatabaseSettings) config.getSettings();
-				String databaseName = settings.getDatabaseName();
-				String measurementName = settings.getMeasurementName();
-				r.add(new ThrottleFactorPacketHandler(
-						new InfluxDbPacketSaver(
-								settings.getInfluxProperties(),
-								settings.getOkHttpProperties(),
-								new ConstantDatabaseNameGetter(databaseName != null ? databaseName : uniqueName),
-								measurementName != null
-										? new ConstantMeasurementPacketPointCreator(measurementName)
-										: (databaseName != null
-												? new ConstantMeasurementPacketPointCreator(uniqueName) // A constant database name was specified unrelated to the uniqueName
-												: DocumentedMeasurementPacketPointCreator.INSTANCE
-										),
-								new FrequentRetentionPolicyGetter(new FrequentHandler<>(settings.getFrequentRetentionPolicyList()))
-						),
-						frequencySettings,
-						true
-				));
-			} else if (LatestFileDatabaseSettings.TYPE.equals(config.getType())){
-				LatestFileDatabaseSettings settings = (LatestFileDatabaseSettings) config.getSettings();
-				r.add(new ThrottleFactorPacketHandler(
-					new FileWritePacketHandler(settings.getFile(), new JacksonStringPacketHandler(OBJECT_MAPPER), false),
-					frequencySettings,
-					false
-				));
-			}
-		}
-		return r;
 	}
 	private static List<DatabaseConfig> getDatabaseConfigs(PacketHandlingOption options){
 		List<File> files = options.getDatabaseConfigurationFiles();
@@ -461,7 +430,7 @@ public final class SolarMain {
 		}
 		final ProgramOptions options;
 		try {
-			options = OBJECT_MAPPER.readValue(fileReader, ProgramOptions.class);
+			options = MAPPER.readValue(fileReader, ProgramOptions.class);
 		} catch (IOException e) {
 			LOGGER.error("(Fatal)Error while parsing ProgramOptions. args=" + Arrays.toString(args), e);
 			return 1;
@@ -479,8 +448,8 @@ public final class SolarMain {
 				return connectRoverSetup((RoverSetupProgramOptions) options);
 			}
 			throw new AssertionError("Unknown program type... type=" + programType + " programOptions=" + options);
-		} catch (Exception t) {
-			LOGGER.error("(Fatal)Got exception", t);
+		} catch (Throwable t) {
+			LOGGER.error("(Fatal)Got throwable", t);
 			return 1;
 		}
 	}

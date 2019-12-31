@@ -32,13 +32,10 @@ currently three different ways to view the data that is stored in your database 
 * [PVOutput.org](https://pvoutput.org) Coming soon!
 
 ## What This is currently used for
-This program is run on a raspberry pi at Wild Mountain Farms (www.wildmountainfarms.com).
+This program is run on a raspberry pi at Wild Mountain Farms.
 That program uploads packets to a CouchDB database on a separate computer which hosts the web portion
-found here: [solarthing-web](https://github.com/wildmountainfarms/solarthing-web). We also use InfluxDB to make using Grafana easy:
-
-
-In the future, this project may extend to more IoT uses other than just solar and outhouse status. But the name will
-forever stick! Long live <strong>SolarThing</strong>!
+found here: [solarthing-web](https://github.com/wildmountainfarms/solarthing-web) CouchDB is also used for [solarthing-android](https://github.com/wildmountainfarms/solarthing-android). 
+We also use InfluxDB to make using Grafana easy.
 
 ### Displaying the Data!
 SolarThing Android: [Github](https://github.com/wildmountainfarms/solarthing-android)
@@ -93,10 +90,12 @@ dependencies {
 Run `./compile_and_move.sh`.
 
 ### Database Setup
-[CouchDB setup](docs/couchdb.md)
+[CouchDB setup](docs/couchdb.md)<br/>
+*Used for the android and web application*
 
-[InfluxDB setup](docs/influxdb_config.md):<br/>
-*Please note that InfluxDB is not supported by the web application or Android application. Use this if you only want to use Grafana*
+[InfluxDB setup](docs/influxdb_config.md)<br/>
+*Used for Grafana*
+
 ### [Technical](docs/technical.md)
 ### [Project Structure](docs/project_structure.md)
 
@@ -105,8 +104,6 @@ This uses all JSON for configuring everything. The files you edit are all in one
 
 See [Quickstart](docs/quickstart.md) to see how to set them up
 
-#### Logging
-This uses slf4j to log and uses log4j2 as the main implementation. https://logging.apache.org/log4j/2.x/manual/appenders.html
 
 ### TODO
 * Cache some data from Renogy Rover that won't be updated
@@ -115,7 +112,6 @@ This uses slf4j to log and uses log4j2 as the main implementation. https://loggi
   * Use the `vcgencmd measure_temp` available on Raspberry Pis
 * Have packets for inverters going on/off, AC Drop/AC Use, Daily kWH->0, etc
 * Add readable string alongside identifier tag for InfluxDB
-* Restart rover program if a ModbusTimeoutException is received
 * Create a calendar program to be able to view daily kWH on a calendar interface
   * If we do something with a calendar, we could use google calendar https://developers.google.com/calendar/create-events/
 * Have unique identifier for each jar file

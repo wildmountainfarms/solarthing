@@ -12,7 +12,7 @@ class ImmutableCouchProperties implements CouchProperties {
 	private final int socketTimeout, connectionTimeout, maxConnections;
 	private final String proxyHost;
 	private final int proxyPort;
-	
+
 	ImmutableCouchProperties(String database, boolean createIfNotExist, String protocol, String host, String path, int port, String username, String password, int socketTimeout, int connectionTimeout, int maxConnections, String proxyHost, int proxyPort) {
 		this.database = database;
 		this.createIfNotExist = createIfNotExist;
@@ -28,30 +28,30 @@ class ImmutableCouchProperties implements CouchProperties {
 		this.proxyHost = proxyHost;
 		this.proxyPort = proxyPort;
 	}
-	
+
 	@Override public String getDatabase() { return database; }
-	
+
 	@Override public boolean isCreateIfNotExist() { return createIfNotExist; }
-	
+
 	@Override public String getProtocol() { return protocol; }
-	
+
 	@Override public String getHost() { return host; }
-	
+
 	@Override public String getPath() { return path; }
-	
+
 	@Override public int getPort() { return port; }
-	
+
 	@Override public String getUsername() { return username; }
-	
+
 	@Override public String getPassword() { return password; }
-	
+
 	@Override public int getSocketTimeoutMillis() { return socketTimeout; }
-	
+
 	@Override public int getConnectionTimeoutMillis() { return connectionTimeout; }
-	
+
 	@Override public int getMaxConnections() { return maxConnections; }
-	
+
 	@Override public String getProxyHost() { return proxyHost; }
-	
+
 	@Override public int getProxyPort() { return proxyPort; }
 }

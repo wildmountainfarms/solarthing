@@ -10,7 +10,7 @@ import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
 public interface SuccessMateCommandPacket extends MateCommandFeedbackPacket {
 	@Override
 	default MateCommandFeedbackPacketType getPacketType() {
-		return MateCommandFeedbackPacketType.SUCCESS;
+		return MateCommandFeedbackPacketType.MATE_COMMAND_SUCCESS;
 	}
 
 	/**

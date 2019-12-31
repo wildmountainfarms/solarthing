@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import me.retrodaredevil.solarthing.DataReceiver;
 import me.retrodaredevil.solarthing.JsonPacketReceiver;
 import me.retrodaredevil.solarthing.packets.Packet;
-import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.parsing.ObjectMapperPacketConverter;
 import me.retrodaredevil.solarthing.packets.collection.parsing.PacketGroupParser;
@@ -39,11 +38,11 @@ public class SecurityPacketReceiver implements JsonPacketReceiver {
 	private final PublicKeyLookUp publicKeyLookUp;
 	private final DataReceiver dataReceiver;
 	private final PublicKeySave publicKeySave;
-	
+
 	private final Cipher cipher;
-	
+
 	private final Map<String, Long> senderLastCommandMap = new HashMap<>();
-	
+
 	/**
 	 *
 	 * @param publicKeyLookUp The {@link PublicKeyLookUp} to get the PublicKey for a received {@link IntegrityPacket}
@@ -54,14 +53,14 @@ public class SecurityPacketReceiver implements JsonPacketReceiver {
 		this.publicKeyLookUp = publicKeyLookUp;
 		this.dataReceiver = dataReceiver;
 		this.publicKeySave = publicKeySave;
-		
+
 		try {
 			cipher = Cipher.getInstance(KeyUtil.CIPHER_TRANSFORMATION);
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	@Override
 	public void receivePackets(List<ObjectNode> jsonPackets) {
 		LOGGER.debug("received packets! size: " + jsonPackets.size());
