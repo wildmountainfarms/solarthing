@@ -8,7 +8,6 @@ import java.io.File;
 
 import static java.util.Objects.requireNonNull;
 
-@SuppressWarnings("FieldCanBeLocal")
 @JsonTypeName("mate")
 public class MateProgramOptions extends PacketHandlingOptionBase implements IOBundleOption, ProgramOptions {
 
@@ -21,11 +20,11 @@ public class MateProgramOptions extends PacketHandlingOptionBase implements IOBu
 
 	@JsonProperty("io")
 	private File io;
-	
+
 	public boolean isAllowCommands() {
 		return allowCommands;
 	}
-	
+
 	public boolean isIgnoreCheckSum() {
 		return ignoreCheckSum;
 	}

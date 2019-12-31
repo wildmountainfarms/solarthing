@@ -33,42 +33,42 @@ public interface FXStatusPacket extends OutbackPacket, BatteryVoltage, FXWarning
 	 */
 	@JsonProperty("inverterCurrentRaw")
 	int getInverterCurrentRaw();
-	
+
 	/**
 	 * Should be serialized as "chargerCurrentRaw" if serialized at all
 	 * @return The raw charger current
 	 */
 	@JsonProperty("chargerCurrentRaw")
 	int getChargerCurrentRaw();
-	
+
 	/**
 	 * Should be serialized as "buyCurrentRaw" if serialized at all
 	 * @return The raw buy current
 	 */
 	@JsonProperty("buyCurrentRaw")
 	int getBuyCurrentRaw();
-	
+
 	/**
 	 * Should be serialized as "inputVoltageRaw" if serialized at all
 	 * @return The raw ac input voltage
 	 */
 	@JsonProperty("inputVoltageRaw")
 	int getInputVoltageRaw();
-	
+
 	/**
 	 * Should be serialized as "outputVoltageRaw" if serialized at all
 	 * @return The raw ac output voltage
 	 */
 	@JsonProperty("outputVoltageRaw")
 	int getOutputVoltageRaw();
-	
+
 	/**
 	 * Should be serialized as "sellCurrentRaw" if serialized at all
 	 * @return The raw sell current
 	 */
 	@JsonProperty("sellCurrentRaw")
 	int getSellCurrentRaw();
-	
+
 	/**
 	 * Should be serialized as "operatingMode"
 	 * <p>
@@ -79,7 +79,7 @@ public interface FXStatusPacket extends OutbackPacket, BatteryVoltage, FXWarning
 	@JsonProperty("operatingMode")
 	int getOperationalModeValue();
 	default OperationalMode getOperationalMode(){ return Modes.getActiveMode(OperationalMode.class, getOperationalModeValue()); }
-	
+
 	/**
 	 * Should be serialized as "errorMode"
 	 * @return The error mode bitmask which represents a varying number of ErrorModes
@@ -89,9 +89,6 @@ public interface FXStatusPacket extends OutbackPacket, BatteryVoltage, FXWarning
 	int getErrorModeValue();
 	@Override
 	default Set<FXErrorMode> getErrorModes(){ return Modes.getActiveModes(FXErrorMode.class, getErrorModeValue()); }
-	@Override
-	@Deprecated
-	default Set<FXErrorMode> getActiveErrors() { return getErrorModes(); }
 
 	/**
 	 * Should be serialized as "acMode"
@@ -110,7 +107,7 @@ public interface FXStatusPacket extends OutbackPacket, BatteryVoltage, FXWarning
 	int getMiscValue();
 	@Deprecated
 	default Set<MiscMode> getActiveMiscModes(){ return Modes.getActiveModes(MiscMode.class, getMiscValue()); }
-	
+
 	/**
 	 * Should be serialized as "warningMode"
 	 * @return The warning mode bitmask which represents a varying number of WarningModes
@@ -120,7 +117,7 @@ public interface FXStatusPacket extends OutbackPacket, BatteryVoltage, FXWarning
 	int getWarningModeValue();
 	@Deprecated
 	default Set<WarningMode> getActiveWarningModes(){ return getWarningModes(); }
-	
+
 	/**
 	 * Should be serialized as "chksum"
 	 * @return The check sum
@@ -128,7 +125,7 @@ public interface FXStatusPacket extends OutbackPacket, BatteryVoltage, FXWarning
 	@JsonProperty("chksum")
 	int getChksum();
 	// endregion
-	
+
 	// region Adjusted Currents and Voltages
 	/**
 	 * Should be serialized as "inverterCurrent"

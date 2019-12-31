@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Objects.requireNonNull;
+
 public class FrequentHandler<T> {
 	private final List<? extends FrequentObject<T>> frequentObjectList;
 
@@ -13,7 +15,7 @@ public class FrequentHandler<T> {
 	 * @param frequentObjectList The list of {@link FrequentObject}s that will be used. Mutations to this object will have an affect.
 	 */
 	public FrequentHandler(List<? extends FrequentObject<T>> frequentObjectList) {
-		this.frequentObjectList = frequentObjectList;
+		this.frequentObjectList = requireNonNull(frequentObjectList);
 	}
 
 	public FrequentObject<T> get(double progress){

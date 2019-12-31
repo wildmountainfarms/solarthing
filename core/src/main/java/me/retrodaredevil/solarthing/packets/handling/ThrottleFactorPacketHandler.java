@@ -8,10 +8,10 @@ public class ThrottleFactorPacketHandler implements PacketHandler {
 	private final PacketHandler packetHandler;
 	private final FrequencySettings frequencySettings;
 	private final boolean instantOnly;
-	
+
 	private int initialCounter = 0;
 	private int counter = 0;
-	
+
 	/**
 	 * @param packetHandler The packet handler
 	 * @param frequencySettings The frequency settings
@@ -28,7 +28,8 @@ public class ThrottleFactorPacketHandler implements PacketHandler {
 		if(instantOnly && !wasInstant){
 			return; // return and don't increment counter
 		}
-		if(initialCounter++ < frequencySettings.getInitialSkipFactor()){
+		if(initialCounter < frequencySettings.getInitialSkipFactor()){
+			initialCounter++;
 			return;
 		}
 		if(counter++ % frequencySettings.getThrottleFactor() == 0){

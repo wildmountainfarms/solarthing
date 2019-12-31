@@ -5,8 +5,8 @@ import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
-import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.ImmutableFXDailyData;
+import me.retrodaredevil.solarthing.solar.outback.fx.event.ImmutableFXACModeChangePacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.extra.DailyFXPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.extra.ImmutableDailyFXPacket;
 import me.retrodaredevil.solarthing.util.integration.MutableIntegral;
@@ -23,11 +23,13 @@ import java.util.*;
 public class DailyFXListUpdater implements PacketListReceiver {
 
 	private final IterativeScheduler iterativeScheduler;
+	private final PacketListReceiver eventReceiver;
 
 	private final Map<Identifier, ListUpdater> map = new HashMap<>();
 
-	public DailyFXListUpdater(IterativeScheduler iterativeScheduler) {
+	public DailyFXListUpdater(IterativeScheduler iterativeScheduler, PacketListReceiver eventReceiver) {
 		this.iterativeScheduler = iterativeScheduler;
+		this.eventReceiver = eventReceiver;
 	}
 
 	@Override
@@ -42,10 +44,10 @@ public class DailyFXListUpdater implements PacketListReceiver {
 					Identifier identifier = fx.getIdentifier();
 					ListUpdater updater = map.get(identifier);
 					if(updater == null){
-						updater = new ListUpdater();
+						updater = new ListUpdater(eventReceiver);
 						map.put(identifier, updater);
 					}
-					updater.update(packets, fx);
+					updater.update(packets, fx, wasInstant);
 				}
 			}
 		}
@@ -54,6 +56,7 @@ public class DailyFXListUpdater implements PacketListReceiver {
 		return new TrapezoidalRuleAccumulator();
 	}
 	private static final class ListUpdater {
+		private final PacketListReceiver eventReceiver;
 		private Long startDateMillis = null;
 		private Float minimumBatteryVoltage = null;
 		private Float maximumBatteryVoltage = null;
@@ -69,7 +72,13 @@ public class DailyFXListUpdater implements PacketListReceiver {
 		private int misc = 0;
 		private final Set<Integer> acModeValues = new HashSet<>();
 
-		private void update(List<? super Packet> packets, FXStatusPacket fx){
+		private FXStatusPacket lastFX = null;
+
+		private ListUpdater(PacketListReceiver eventReceiver) {
+			this.eventReceiver = eventReceiver;
+		}
+
+		private void update(List<? super Packet> packets, FXStatusPacket fx, boolean wasInstant){
 			Long startDateMillis = this.startDateMillis;
 			if(startDateMillis == null){
 				startDateMillis = System.currentTimeMillis();
@@ -109,6 +118,21 @@ public class DailyFXListUpdater implements PacketListReceiver {
 					fx.getIdentifier()
 			);
 			packets.add(packet);
+			doLastFX(fx, wasInstant);
+		}
+		private void doLastFX(FXStatusPacket fx, boolean wasInstant){
+			final FXStatusPacket lastFX = this.lastFX;
+			this.lastFX = fx;
+			final Integer lastACMode;
+			if(lastFX == null){
+				lastACMode = null;
+			} else {
+				lastACMode = lastFX.getACModeValue();
+			}
+			int currentACMode = fx.getACModeValue();
+			if(!Objects.equals(currentACMode, lastACMode)){
+				eventReceiver.receive(Collections.singletonList(new ImmutableFXACModeChangePacket(fx.getIdentifier(), currentACMode, lastACMode)), wasInstant);
+			}
 		}
 
 		private double getHours(){

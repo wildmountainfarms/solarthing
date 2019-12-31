@@ -39,3 +39,9 @@ we have a different measurement for each packet type. This makes some queries mo
 Set `database` to `"default_database"` or leave it unspecified. Leave `measurement` unspecified.
 
 Now each packet type will be put in its own measurement, just like measurements were intended to be used.
+
+#### Not Recommended
+If you specify both `database` and `measurement`, the program will put event packets into the same database and measurement of other packets.
+
+If you have a reason that you want to specify `database` and `measurement` and want to also store
+"event" packets in InfluxDB in different measurements or databases, please submit an issue saying why you need this.

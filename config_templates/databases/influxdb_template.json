@@ -7,7 +7,7 @@
     "database": "default_database",
     "measurement": null,
 
-    "retention_policies": [
+    "status_retention_policies": [
       {
         "frequency": 29,
         "name": "medium_duration_retention",
@@ -32,6 +32,9 @@
       }
     ],
 
+    "event_retention_policy": {
+      "name": "normal_forever_retention"
+    },
 
     "retry_on_connection_failure": true,
     "call_timeout": 0.0,
