@@ -4,6 +4,7 @@ public interface MutableIntegral {
 	void add(double x, double y);
 	void reset(boolean fullReset);
 	default void reset(){ reset(false); }
+	void setIntegral(double value);
 
 	double getIntegral();
 }

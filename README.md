@@ -115,7 +115,6 @@ See [Quickstart](docs/quickstart.md) to see how to set them up
 * Create a calendar program to be able to view daily kWH on a calendar interface
   * If we do something with a calendar, we could use google calendar https://developers.google.com/calendar/create-events/
 * Have unique identifier for each jar file
-* Save DailyFX data to a file so if the program restarts mid-day, accumulated data is not reset
 * Change command_feedback to something generic and use that database for "event"-like data
   * Also upload this to InfluxDB
 * AC Use->AC Drop, turn on AUX until NO AC. (GEN OFF) command using MATE's built in AC Use/Drop.
@@ -132,6 +131,7 @@ See [Quickstart](docs/quickstart.md) to see how to set them up
 * Integrate power usage
 * Detect when Mate packets go from address 4->1 or 1->1 to detect a new collection of packets
   * This was done by just removing duplicate packets. Not ideal, but it works.
+* Save DailyFX data to a file so if the program restarts mid-day, accumulated data is not reset
 
 ### [History](docs/history.md)
 
