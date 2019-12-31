@@ -21,6 +21,26 @@ Exceptions:
 
 Although I wish that some of these conventions could be changed, changing them would result in confusion and more inconsistencies.
 
+### Styling
+```javascript
+if(true){ // OK
+}
+if (true) { // OK
+}
+if (true){ // OK
+}
+if(true) { // OK
+}
+```
+Any of those styles will work. You will see throughout the code that it is pretty inconsistent.
+This is because I don't have a preference and I don't really notice much of a difference.
+
+But...
+```javascript
+if( true ){ // NOT OK
+}
+```
+
 ### Using Nullable and NotNull
 General rule of thumb:
 * Do not use Nullable and NotNull religiously
@@ -31,6 +51,6 @@ General rule of thumb:
 The different command line options give you may ways to receive data and export data. CouchDB and InfluxDB
 are both supported.
 
-If you want to store data in another database, you can create your own implementation of [PacketHandler](src/main/java/me/retrodaredevil/solarthing/packets/handling/PacketHandler.java)
+If you want to store data in another database, you can create your own implementation of [PacketHandler](core/src/main/java/me/retrodaredevil/solarthing/packets/handling/PacketHandler.java)
 
 If your implementation is general enough, submit a pull request so others can use your implementation as well!

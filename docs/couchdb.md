@@ -4,7 +4,7 @@ for solarthing and outhouse.
 
 CouchDB takes some initial setup to make it usable before you can configure SolarThing.
 
-**NOTE**: In the future, I plan to make CouchDB easier to configure by removing the need to setup the `millis` view as described below. (We might be changing to Ektorp instead of LightCouch)
+**NOTE**: In the future, I plan to make CouchDB easier to configure by removing the need to setup the `millis` view as described below.
 
 ## Databases
 You must create each database if you wish to use the features they come with
@@ -14,8 +14,8 @@ You must create each database if you wish to use the features they come with
 * [Legacy] `command_feedback` Stores feedback for commands that were sent to the Outback MATE
 * [Legacy] `outhouse` Stores packets from the outhouse
 
-`solarthing`, `command_feedback`, and `outhouse` should be password protected. `commands` is not required to be password
-protected because data in it is protected by encryption to provide integrity.
+Each database except `commands` is recommended to be password protected. `commands` is not required to be password
+protected because commands are encrypted to provide integrity and allow certain senders to execute commands.
 
 However, in my situation, I do not password protect any of these databases because it makes it hard to have anyone read the database.
 You should ALWAYS password protect databases such as the `_users` database. You can do that by adding a member to that database.

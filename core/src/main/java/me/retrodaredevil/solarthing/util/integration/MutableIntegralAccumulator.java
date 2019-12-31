@@ -34,6 +34,11 @@ abstract class MutableIntegralAccumulator implements MutableIntegral {
 	@Override public final void reset() { MutableIntegral.super.reset(); }
 
 	@Override
+	public void setIntegral(double integral) {
+		this.integral = integral;
+	}
+
+	@Override
 	public final double getIntegral() {
 		return integral;
 	}

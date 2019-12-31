@@ -38,12 +38,12 @@ import me.retrodaredevil.solarthing.packets.security.crypto.DirectoryKeyMap;
 import me.retrodaredevil.solarthing.solar.outback.MatePacketCreator49;
 import me.retrodaredevil.solarthing.solar.outback.OutbackDuplicatePacketRemover;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
-import me.retrodaredevil.solarthing.solar.outback.fx.DailyFXListUpdater;
+import me.retrodaredevil.solarthing.solar.outback.fx.FXListUpdater;
 import me.retrodaredevil.solarthing.solar.renogy.rover.*;
 import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusSlaveRead;
 import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusSlaveWrite;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
-import me.retrodaredevil.solarthing.util.scheduler.MidnightIterativeScheduler;
+import me.retrodaredevil.solarthing.util.time.DailyIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,7 +73,7 @@ public final class SolarMain {
 			.build();
 
 	@SuppressWarnings("SameReturnValue")
-	private static int connectMate(MateProgramOptions options) throws Exception {
+	private static int connectMate(MateProgramOptions options, File dataDirectory) throws Exception {
 		LOGGER.info("Beginning mate program");
 		PacketCollectionIdGenerator idGenerator = createIdGenerator(options.getUniqueIdsInOneHour());
 		LOGGER.info("IO Bundle File: " + options.getIOBundleFile());
@@ -187,7 +187,7 @@ public final class SolarMain {
 							250,
 							new PacketListReceiverMultiplexer(
 									OutbackDuplicatePacketRemover.INSTANCE,
-									new DailyFXListUpdater(new MidnightIterativeScheduler(), packetListReceiverCollectorHandler.getPacketListReceiverAccepter()),
+									new FXListUpdater(new DailyIdentifier(), packetListReceiverCollectorHandler.getPacketListReceiverAccepter(), dataDirectory),
 									sourceAndFragmentUpdater,
 									(packets, wasInstant) -> {
 										LOGGER.debug("Debugging all packets");
@@ -435,10 +435,15 @@ public final class SolarMain {
 			LOGGER.error("(Fatal)Error while parsing ProgramOptions. args=" + Arrays.toString(args), e);
 			return 1;
 		}
+		File dataDirectory = new File(".data");
+		if(!dataDirectory.mkdirs() && !dataDirectory.isDirectory()){
+			LOGGER.error("(Fatal)Unable to create data directory! dataDirectory=" + dataDirectory + " absolute=" + dataDirectory.getAbsolutePath());
+			return 1;
+		}
 		final ProgramType programType = options.getProgramType();
 		try {
 			if(programType == ProgramType.MATE) {
-				return connectMate((MateProgramOptions) options);
+				return connectMate((MateProgramOptions) options, dataDirectory);
 			} else if(programType == ProgramType.ROVER){
 				return connectRover((RoverProgramOptions) options);
 			} else if(programType == ProgramType.OUTHOUSE){
