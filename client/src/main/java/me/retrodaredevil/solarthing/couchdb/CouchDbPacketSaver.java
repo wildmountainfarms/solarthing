@@ -1,13 +1,16 @@
 package me.retrodaredevil.solarthing.couchdb;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.couchdb.CouchProperties;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
+import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.CouchDbInstance;
 import org.ektorp.DbAccessException;
@@ -15,6 +18,7 @@ import org.ektorp.UpdateConflictException;
 import org.ektorp.http.HttpClient;
 import org.ektorp.impl.StdCouchDbConnector;
 import org.ektorp.impl.StdCouchDbInstance;
+import org.ektorp.impl.StdObjectMapperFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +36,13 @@ public class CouchDbPacketSaver implements PacketHandler {
 	public CouchDbPacketSaver(CouchProperties properties, String databaseName){
 		final HttpClient httpClient = EktorpUtil.createHttpClient(properties);
 		CouchDbInstance instance = new StdCouchDbInstance(httpClient);
-		client = new StdCouchDbConnector(databaseName, instance);
+		client = new StdCouchDbConnector(databaseName, instance, new StdObjectMapperFactory(){
+			@Override
+			protected void applyDefaultConfiguration(ObjectMapper om) {
+//				super.applyDefaultConfiguration(om);
+				JacksonUtil.defaultMapper(om);
+			}
+		});
 	}
 
 	@Override
@@ -92,6 +102,7 @@ public class CouchDbPacketSaver implements PacketHandler {
 			return id;
 		}
 
+		@JsonInclude(JsonInclude.Include.NON_NULL)
 		@JsonGetter("_rev")
 		public String getRevision(){
 			return rev;
