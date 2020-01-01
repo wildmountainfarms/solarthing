@@ -106,17 +106,13 @@ See [Quickstart](docs/quickstart.md) to see how to set them up
 
 
 ### TODO
-* Cache some data from Renogy Rover that won't be updated
-* Create Arduino program to simulate MATE or Rover
+* Create Arduino or Java program to simulate MATE or Rover
 * Log CPU temperature, ram, etc into a database and logs.
   * Use the `vcgencmd measure_temp` available on Raspberry Pis
-* Have packets for inverters going on/off, AC Drop/AC Use, Daily kWH->0, etc
 * Add readable string alongside identifier tag for InfluxDB
 * Create a calendar program to be able to view daily kWH on a calendar interface
   * If we do something with a calendar, we could use google calendar https://developers.google.com/calendar/create-events/
 * Have unique identifier for each jar file
-* Change command_feedback to something generic and use that database for "event"-like data
-  * Also upload this to InfluxDB
 * AC Use->AC Drop, turn on AUX until NO AC. (GEN OFF) command using MATE's built in AC Use/Drop.
 
 ### Completed TODO:
@@ -132,6 +128,10 @@ See [Quickstart](docs/quickstart.md) to see how to set them up
 * Detect when Mate packets go from address 4->1 or 1->1 to detect a new collection of packets
   * This was done by just removing duplicate packets. Not ideal, but it works.
 * Save DailyFX data to a file so if the program restarts mid-day, accumulated data is not reset
+* Change command_feedback to something generic and use that database for "event"-like data
+  * Also upload this to InfluxDB
+* Have packets for inverters going on/off, AC Drop/AC Use, Daily kWH->0, etc
+  * We still need to do some of these
 
 ### [History](docs/history.md)
 
