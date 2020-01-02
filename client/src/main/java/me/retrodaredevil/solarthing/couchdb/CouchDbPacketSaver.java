@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.couchdb.CouchProperties;
+import me.retrodaredevil.couchdb.DocumentWrapper;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
@@ -29,7 +30,7 @@ public class CouchDbPacketSaver implements PacketHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CouchDbPacketSaver.class);
 //	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
 
-	private final Map<String, ObjectWrapper> idMap = new HashMap<>(); // TODO we could probably figure out a way to clear old values
+	private final Map<String, DocumentWrapper> idMap = new HashMap<>(); // TODO we could probably figure out a way to clear old values
 	private final CouchDbConnector client;
 
 
@@ -54,19 +55,19 @@ public class CouchDbPacketSaver implements PacketHandler {
 		}
 
 		final String id = packetCollection.getDbId();
-		final ObjectWrapper object;
+		final DocumentWrapper object;
 		{
-			final ObjectWrapper currentValue = idMap.get(id);
+			final DocumentWrapper currentValue = idMap.get(id);
 			if(currentValue == null){
-				object = new ObjectWrapper(id);
+				object = new DocumentWrapper(id);
 				idMap.put(id, object);
 			} else {
 				object = currentValue;
 			}
 		}
-		object.object = packetCollection;
+		object.setObject(packetCollection);
 		try {
-			if (object.rev == null) {
+			if (object.getRevision() == null) {
 				client.create(object);
 			} else {
 				client.update(object);
@@ -85,31 +86,4 @@ public class CouchDbPacketSaver implements PacketHandler {
 		}
 	}
 
-	@JsonExplicit
-	private static class ObjectWrapper {
-		private final String id;
-		private String rev = null;
-
-		@JsonUnwrapped
-		private PacketCollection object = null;
-
-		private ObjectWrapper(String id) {
-			this.id = id;
-		}
-
-		@JsonGetter("_id")
-		public String getId(){
-			return id;
-		}
-
-		@JsonInclude(JsonInclude.Include.NON_NULL)
-		@JsonGetter("_rev")
-		public String getRevision(){
-			return rev;
-		}
-		@JsonSetter("_rev")
-		public void setRevision(String rev){
-			this.rev = rev;
-		}
-	}
 }

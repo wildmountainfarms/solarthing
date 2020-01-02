@@ -13,9 +13,9 @@ public final class EktorpUtil {
 		int proxyPort = properties.getProxyPort();
 		int connectionTimeout = properties.getConnectionTimeoutMillis();
 		int socketTimeout = properties.getSocketTimeoutMillis();
+		String rawPath = properties.getPath();
+		String path = rawPath == null ? "" : rawPath;
 		try {
-			String rawPath = properties.getPath();
-			String path = rawPath == null ? "" : rawPath;
 			StdHttpClient.Builder builder = new StdHttpClient.Builder()
 					.url(properties.getProtocol() + "://" + properties.getHost() + ":" + properties.getPort() + path)
 					.username(properties.getUsername()) // may be null

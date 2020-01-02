@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.solar.outback.fx.event;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import me.retrodaredevil.solarthing.solar.PacketTestUtil;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import org.junit.jupiter.api.Test;
 
@@ -13,6 +14,7 @@ class ImmutableFXACModeChangePacketTest {
 		ObjectMapper mapper = new ObjectMapper();
 		String json = "{ \"packetType\": \"FX_AC_MODE_CHANGE\", \"address\": 1, \"acModeValue\": 2, \"previousACModeValue\": null }";
 		FXACModeChangePacket packet = mapper.readValue(json, FXACModeChangePacket.class);
+		PacketTestUtil.testJson(packet, FXACModeChangePacket.class);
 		assertTrue(packet instanceof ImmutableFXACModeChangePacket);
 		assertEquals(1, ((OutbackIdentifier) packet.getIdentifier().getSupplementaryTo()).getAddress());
 		assertEquals(2, packet.getACModeValue());
