@@ -4,10 +4,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 @JsonDeserialize(as = ImmutableCouchProperties.class)
 public interface CouchProperties {
-	@Deprecated
-	String getDatabase();
-	@Deprecated
-	boolean isCreateIfNotExist();
 	String getProtocol();
 	String getHost();
 	String getPath();

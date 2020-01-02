@@ -57,7 +57,8 @@ public class FXListUpdater implements PacketListReceiver {
 		long timeId = timeIdentifier.getTimeId(now);
 		final Long lastTimeId = this.lastTimeId;
 		this.lastTimeId = timeId;
-		if(lastTimeId == null || lastTimeId != timeId){
+		if(lastTimeId != null && lastTimeId != timeId){
+			// TODO do day end packets here
 			map.clear();
 		}
 		final JsonSaveData savedJsonData;
@@ -108,11 +109,13 @@ public class FXListUpdater implements PacketListReceiver {
 				}
 			}
 		}
-		JsonSaveData jsonSaveData = new JsonSaveData(dailyFXPackets);
-		try {
-			MAPPER.writer().writeValue(jsonSaveFile, jsonSaveData);
-		} catch (IOException e) {
-			LOGGER.error("Unable to write to file!", e);
+		if(!dailyFXPackets.isEmpty()) {
+			JsonSaveData jsonSaveData = new JsonSaveData(dailyFXPackets);
+			try {
+				MAPPER.writer().writeValue(jsonSaveFile, jsonSaveData);
+			} catch (IOException e) {
+				LOGGER.error("Unable to write to file!", e);
+			}
 		}
 	}
 	private static MutableIntegral createMutableIntegral(){

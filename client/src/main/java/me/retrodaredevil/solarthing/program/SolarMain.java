@@ -75,7 +75,7 @@ public final class SolarMain {
 	@SuppressWarnings("SameReturnValue")
 	private static int connectMate(MateProgramOptions options, File dataDirectory) throws Exception {
 		LOGGER.info("Beginning mate program");
-		PacketCollectionIdGenerator idGenerator = createIdGenerator(options.getUniqueIdsInOneHour());
+		PacketCollectionIdGenerator statusIdGenerator = createIdGenerator(options.getUniqueIdsInOneHour());
 		LOGGER.info("IO Bundle File: " + options.getIOBundleFile());
 		final IOBundle io;
 		{
@@ -96,7 +96,7 @@ public final class SolarMain {
 
 		PacketHandler eventPacketHandler = new PacketHandlerMultiplexer(packetHandlerBundle.getEventPacketHandlers());
 		PacketListReceiver sourceAndFragmentUpdater = getSourceAndFragmentUpdater(options);
-		PacketListReceiverCollectorHandler packetListReceiverCollectorHandler = new PacketListReceiverCollectorHandler(
+		PacketListReceiverHandler eventPacketListReceiverHandler = new PacketListReceiverHandler(
 				new PacketListReceiverMultiplexer(
 						sourceAndFragmentUpdater,
 						(packets, wasInstant) -> {
@@ -108,7 +108,8 @@ public final class SolarMain {
 							}
 						}
 				),
-				eventPacketHandler
+				eventPacketHandler,
+				PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR, 10
 		);
 
 		final OnDataReceive onDataReceive;
@@ -168,8 +169,9 @@ public final class SolarMain {
 					io.getOutputStream(),
 					allowedCommands,
 					new OnMateCommandSent(new PacketListReceiverMultiplexer(
-							packetListReceiverCollectorHandler.getPacketListReceiverAccepter(),
-							packetListReceiverCollectorHandler.getPacketListReceiverHandler()
+							eventPacketListReceiverHandler.getPacketListReceiverAccepter(),
+							eventPacketListReceiverHandler.getPacketListReceiverPacker(),
+							eventPacketListReceiverHandler.getPacketListReceiverHandler()
 					))
 			);
 			statusPacketHandlers.add(commandRequesterHandler);
@@ -178,6 +180,22 @@ public final class SolarMain {
 			onDataReceive = OnDataReceive.Defaults.NOTHING;
 		}
 		statusPacketHandlers.addAll(packetHandlerBundle.getStatusPacketHandlers());
+		PacketListReceiverHandler statusPacketListReceiverHandler = new PacketListReceiverHandler(
+				new PacketListReceiverMultiplexer(
+						sourceAndFragmentUpdater,
+						(packets, wasInstant) -> {
+							LOGGER.debug("Debugging all packets");
+							try {
+								LOGGER.debug(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(packets));
+							} catch (JsonProcessingException e) {
+								LOGGER.debug("Never mind about that...", e);
+							}
+						}
+				),
+				new PacketHandlerMultiplexer(statusPacketHandlers),
+				statusIdGenerator,
+				0
+		);
 
 		try {
 			initReader(
@@ -187,18 +205,12 @@ public final class SolarMain {
 							250,
 							new PacketListReceiverMultiplexer(
 									OutbackDuplicatePacketRemover.INSTANCE,
-									new FXListUpdater(new DailyIdentifier(), packetListReceiverCollectorHandler.getPacketListReceiverAccepter(), dataDirectory),
-									sourceAndFragmentUpdater,
-									(packets, wasInstant) -> {
-										LOGGER.debug("Debugging all packets");
-										try {
-											LOGGER.debug(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(packets));
-										} catch (JsonProcessingException e) {
-											LOGGER.debug("Never mind about that...", e);
-										}
-									},
-									new PacketHandlerPacketListReceiver(new PacketHandlerMultiplexer(statusPacketHandlers), idGenerator),
-									packetListReceiverCollectorHandler.getPacketListReceiverHandler()
+									new FXListUpdater(new DailyIdentifier(), eventPacketListReceiverHandler.getPacketListReceiverAccepter(), dataDirectory),
+									statusPacketListReceiverHandler.getPacketListReceiverAccepter(),
+									statusPacketListReceiverHandler.getPacketListReceiverPacker(),
+									eventPacketListReceiverHandler.getPacketListReceiverPacker(),
+									statusPacketListReceiverHandler.getPacketListReceiverHandler(),
+									eventPacketListReceiverHandler.getPacketListReceiverHandler()
 							),
 							onDataReceive
 					)
