@@ -4,8 +4,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 @JsonDeserialize(builder = CouchPropertiesBuilder.class)
 class ImmutableCouchProperties implements CouchProperties {
-	private final String database;
-	private final boolean createIfNotExist;
 	private final String protocol, host, path;
 	private final int port;
 	private final String username, password;
@@ -13,9 +11,7 @@ class ImmutableCouchProperties implements CouchProperties {
 	private final String proxyHost;
 	private final int proxyPort;
 
-	ImmutableCouchProperties(String database, boolean createIfNotExist, String protocol, String host, String path, int port, String username, String password, int socketTimeout, int connectionTimeout, int maxConnections, String proxyHost, int proxyPort) {
-		this.database = database;
-		this.createIfNotExist = createIfNotExist;
+	ImmutableCouchProperties(String protocol, String host, String path, int port, String username, String password, int socketTimeout, int connectionTimeout, int maxConnections, String proxyHost, int proxyPort) {
 		this.protocol = protocol;
 		this.host = host;
 		this.path = path;
@@ -28,11 +24,6 @@ class ImmutableCouchProperties implements CouchProperties {
 		this.proxyHost = proxyHost;
 		this.proxyPort = proxyPort;
 	}
-
-	@Override public String getDatabase() { return database; }
-
-	@Override public boolean isCreateIfNotExist() { return createIfNotExist; }
-
 	@Override public String getProtocol() { return protocol; }
 
 	@Override public String getHost() { return host; }

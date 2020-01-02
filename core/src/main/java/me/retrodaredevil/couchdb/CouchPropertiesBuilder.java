@@ -1,14 +1,11 @@
 package me.retrodaredevil.couchdb;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 @SuppressWarnings({"UnusedReturnValue", "unused"})
 @JsonPOJOBuilder
 public class CouchPropertiesBuilder {
-	private String database;
-	private boolean createIfNotExist;
 	private String protocol;
 	private String host;
 	private String path = null;
@@ -20,12 +17,14 @@ public class CouchPropertiesBuilder {
 	private int maxConnections = 0;
 	private String proxyHost = null;
 	private int proxyPort = 0;
-	
+
 	public CouchPropertiesBuilder(){}
-	
+
+	@Deprecated
 	public CouchPropertiesBuilder(String database, boolean createIfNotExist, String protocol, String host, int port, String username, String password) {
-		this.database = database;
-		this.createIfNotExist = createIfNotExist;
+		this(protocol, host, port, username, password);
+	}
+	public CouchPropertiesBuilder(String protocol, String host, int port, String username, String password) {
 		this.protocol = protocol;
 		this.host = host;
 		this.port = port;
@@ -33,8 +32,6 @@ public class CouchPropertiesBuilder {
 		this.password = password;
 	}
 	public CouchPropertiesBuilder(CouchProperties properties){
-		database = properties.getDatabase();
-		createIfNotExist = properties.isCreateIfNotExist();
 		protocol = properties.getProtocol();
 		host = properties.getHost();
 		path = properties.getPath();
@@ -46,17 +43,6 @@ public class CouchPropertiesBuilder {
 		maxConnections = properties.getMaxConnections();
 		proxyHost = properties.getProxyHost();
 		proxyPort = properties.getProxyPort();
-	}
-
-	@JsonProperty("database")
-	public CouchPropertiesBuilder setDatabase(String database) {
-		this.database = database;
-		return this;
-	}
-	
-	public CouchPropertiesBuilder setCreateIfNotExist(boolean createIfNotExist) {
-		this.createIfNotExist = createIfNotExist;
-		return this;
 	}
 
 	@JsonSetter("protocol")
@@ -94,7 +80,7 @@ public class CouchPropertiesBuilder {
 		this.password = password;
 		return this;
 	}
-	
+
 	/**
 	 * @param socketTimeout Socket timeout in ms
 	 */
@@ -107,7 +93,7 @@ public class CouchPropertiesBuilder {
 		this.socketTimeout = Math.round(seconds * 1000);
 		return this;
 	}
-	
+
 	/**
 	 * @param connectionTimeout Connection timeout in ms
 	 */
@@ -138,8 +124,8 @@ public class CouchPropertiesBuilder {
 		this.proxyPort = proxyPort;
 		return this;
 	}
-	
+
 	public CouchProperties build() {
-		return new ImmutableCouchProperties(database, createIfNotExist, protocol, host, path, port, username, password, socketTimeout, connectionTimeout, maxConnections, proxyHost, proxyPort);
+		return new ImmutableCouchProperties(protocol, host, path, port, username, password, socketTimeout, connectionTimeout, maxConnections, proxyHost, proxyPort);
 	}
 }

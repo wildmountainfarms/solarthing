@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.solar.outback.mx;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -40,7 +39,7 @@ public interface MXStatusPacket extends OutbackPacket, BasicChargeController, Da
 	}
 
 	// region Packet Values
-	
+
 	/**
 	 * Should be serialized as "chargerCurrent"
 	 * <p>
@@ -61,7 +60,7 @@ public interface MXStatusPacket extends OutbackPacket, BasicChargeController, Da
 	@Deprecated
 	@JsonProperty("ampChargerCurrent")
 	float getAmpChargerCurrent();
-	
+
 	@Override
 	default Number getChargingCurrent(){
 		/*
@@ -73,12 +72,12 @@ public interface MXStatusPacket extends OutbackPacket, BasicChargeController, Da
 		 */
 		return getChargerCurrent() + getAmpChargerCurrent();
 	}
-	
+
 	@Override
 	default Float getChargingPower(){
 		return (getChargerCurrent() + getAmpChargerCurrent()) * getBatteryVoltage();
 	}
-	
+
 	/**
 	 * Should be serialized as "pvCurrent"
 	 * <p>
@@ -88,7 +87,7 @@ public interface MXStatusPacket extends OutbackPacket, BasicChargeController, Da
 	@JsonProperty("pvCurrent")
 	@Override
 	Integer getPVCurrent();
-	
+
 	/**
 	 * Should be serialized as "inputVoltage"
 	 * <p>
@@ -98,7 +97,7 @@ public interface MXStatusPacket extends OutbackPacket, BasicChargeController, Da
 	@JsonProperty("inputVoltage")
 	@Override
 	Integer getInputVoltage();
-	
+
 	/**
 	 * Should be serialized as "dailyKWH"
 	 * <p>
@@ -107,8 +106,8 @@ public interface MXStatusPacket extends OutbackPacket, BasicChargeController, Da
 	 */
 	@Override
 	float getDailyKWH();
-	
-	
+
+
 	/**
 	 * Should be serialized as "auxMode"
 	 * <p>
@@ -124,7 +123,7 @@ public interface MXStatusPacket extends OutbackPacket, BasicChargeController, Da
 	@Deprecated
 	default AuxMode getAuxModeMode(){ return getAuxMode(); }
 	default boolean isAuxBitActive(){ return AuxMode.isAuxModeActive(getRawAuxModeValue()); }
-	
+
 	/**
 	 * Should be serialized as "errorMode"
 	 * @return [0..256] represents a varying number of active {@link MXErrorMode}s
@@ -136,7 +135,7 @@ public interface MXStatusPacket extends OutbackPacket, BasicChargeController, Da
 	default Set<MXErrorMode> getErrorModes(){
 		return Modes.getActiveModes(MXErrorMode.class, getErrorModeValue());
 	}
-	
+
 	/**
 	 * Should be serialized as "chargerMode"
 	 *
@@ -145,12 +144,12 @@ public interface MXStatusPacket extends OutbackPacket, BasicChargeController, Da
 	 */
 	@JsonProperty("chargerMode")
 	int getChargerMode();
-	
+
 	@Override
 	default ChargerMode getChargingMode(){
 		return Modes.getActiveMode(ChargerMode.class, getChargerMode());
 	}
-	
+
 	/**
 	 * Should be serialized as "dailyAH"
 	 * <p>
@@ -172,7 +171,7 @@ public interface MXStatusPacket extends OutbackPacket, BasicChargeController, Da
 	@JsonProperty("dailyAHSupport")
 	@Override
 	Support getDailyAHSupport();
-	
+
 	/**
 	 * Should be serialized as "chksum"
 	 * @return The check sum for the packet
@@ -180,7 +179,7 @@ public interface MXStatusPacket extends OutbackPacket, BasicChargeController, Da
 	@JsonProperty("chksum")
 	int getChksum();
 	// endregion
-	
+
 	// region Convenience Strings
 	@JsonProperty("auxModeName")
 	default String getAuxModeName(){ return getAuxMode().getModeName(); }
