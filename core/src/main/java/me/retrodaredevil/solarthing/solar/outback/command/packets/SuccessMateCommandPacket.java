@@ -2,10 +2,12 @@ package me.retrodaredevil.solarthing.solar.outback.command.packets;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
 
-@JsonTypeName("SUCCESS")
+@JsonTypeName("MATE_COMMAND_SUCCESS")
+@JsonDeserialize(as = ImmutableSuccessMateCommandPacket.class)
 @JsonExplicit
 public interface SuccessMateCommandPacket extends MateCommandFeedbackPacket {
 	@Override
@@ -19,7 +21,7 @@ public interface SuccessMateCommandPacket extends MateCommandFeedbackPacket {
 	 */
 	@JsonProperty("command")
 	MateCommand getCommand();
-	
+
 	/**
 	 * Should be serialized as "source"
 	 *
