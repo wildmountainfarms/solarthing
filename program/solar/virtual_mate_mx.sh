@@ -8,5 +8,7 @@ do
     #printf "\nD,uu,10,99,999,888,u7,09,000,04,282,000,000,999\r"  # this is a MX Packet
     printf "\nD,00,10,99,999,888,07,09,000,04,282,000,000,122\r"  # this is a MX Packet
     sleep 2
+    printf "\nD,00,10,99,999,000,07,09,000,04,282,000,000,122\r"  # this is a MX Packet
+    sleep 2
 done
 

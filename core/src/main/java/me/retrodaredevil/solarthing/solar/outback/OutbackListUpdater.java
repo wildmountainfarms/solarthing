@@ -1,21 +1,24 @@
-package me.retrodaredevil.solarthing.solar.outback.fx;
+package me.retrodaredevil.solarthing.solar.outback;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.DocumentedPacket;
+import me.retrodaredevil.solarthing.packets.DocumentedPacketType;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
+import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.ImmutableFXDailyData;
 import me.retrodaredevil.solarthing.solar.outback.fx.event.ImmutableFXACModeChangePacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.extra.DailyFXPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.extra.ImmutableDailyFXPacket;
+import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPacket;
+import me.retrodaredevil.solarthing.solar.outback.mx.event.ImmutableMXRawDayEndPacket;
+import me.retrodaredevil.solarthing.solar.outback.mx.event.MXRawDayEndPacket;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import me.retrodaredevil.solarthing.util.integration.MutableIntegral;
 import me.retrodaredevil.solarthing.util.integration.TrapezoidalRuleAccumulator;
@@ -34,21 +37,22 @@ import static java.util.Objects.requireNonNull;
  * <p>
  * This expects that there are no duplicate packets. If there are duplicate packets, the behaviour is undefined.
  */
-public class FXListUpdater implements PacketListReceiver {
-	private static final Logger LOGGER = LoggerFactory.getLogger(FXListUpdater.class);
+public class OutbackListUpdater implements PacketListReceiver {
+	private static final Logger LOGGER = LoggerFactory.getLogger(OutbackListUpdater.class);
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
 
 	private final TimeIdentifier timeIdentifier;
 	private final PacketListReceiver eventReceiver;
-	private final File jsonSaveFile;
+	private final File fxJsonSaveFile;
 
-	private final Map<Identifier, ListUpdater> map = new HashMap<>();
+	private final Map<Identifier, FXListUpdater> fxMap = new HashMap<>();
+	private final Map<Identifier, MXListUpdater> mxMap = new HashMap<>();
 	private Long lastTimeId = null;
 
-	public FXListUpdater(TimeIdentifier timeIdentifier, PacketListReceiver eventReceiver, File dataDirectory) {
+	public OutbackListUpdater(TimeIdentifier timeIdentifier, PacketListReceiver eventReceiver, File dataDirectory) {
 		this.timeIdentifier = timeIdentifier;
 		this.eventReceiver = eventReceiver;
-		jsonSaveFile = new File(dataDirectory, "fx_list_updater.json");
+		fxJsonSaveFile = new File(dataDirectory, "fx_list_updater.json");
 	}
 
 	@Override
@@ -59,13 +63,13 @@ public class FXListUpdater implements PacketListReceiver {
 		this.lastTimeId = timeId;
 		if(lastTimeId != null && lastTimeId != timeId){
 			// TODO do day end packets here
-			map.clear();
+			fxMap.clear();
 		}
-		final JsonSaveData savedJsonData;
+		final FXJsonSaveData savedJsonData;
 		if(lastTimeId == null){
-			JsonSaveData data = null;
+			FXJsonSaveData data = null;
 			try {
-				data = MAPPER.readValue(jsonSaveFile, JsonSaveData.class);
+				data = MAPPER.readValue(fxJsonSaveFile, FXJsonSaveData.class);
 			} catch (IOException e) {
 				LOGGER.info("Unable to read json data. That's OK though!", e);
 			}
@@ -77,10 +81,11 @@ public class FXListUpdater implements PacketListReceiver {
 		List<DailyFXPacket> dailyFXPackets = new ArrayList<>();
 		for(Packet packet : new ArrayList<>(packets)){
 			if(packet instanceof DocumentedPacket){
-				if(((DocumentedPacket<?>) packet).getPacketType() == SolarStatusPacketType.FX_STATUS){
+				DocumentedPacketType packetType = ((DocumentedPacket<?>) packet).getPacketType();
+				if(packetType == SolarStatusPacketType.FX_STATUS){
 					FXStatusPacket fx = (FXStatusPacket) packet;
 					Identifier identifier = fx.getIdentifier();
-					ListUpdater updater = map.get(identifier);
+					FXListUpdater updater = fxMap.get(identifier);
 					if(updater == null){
 						final DailyFXPacket todayDailyFXPacket;
 						{
@@ -101,18 +106,27 @@ public class FXListUpdater implements PacketListReceiver {
 								}
 							}
 						}
-						updater = new ListUpdater(eventReceiver, todayDailyFXPacket);
-						map.put(identifier, updater);
+						updater = new FXListUpdater(eventReceiver, todayDailyFXPacket);
+						fxMap.put(identifier, updater);
 					}
 					DailyFXPacket dailyFXPacket = updater.update(now, packets, fx, wasInstant);
 					dailyFXPackets.add(dailyFXPacket);
+				} else if(packetType == SolarStatusPacketType.MXFM_STATUS){
+					MXStatusPacket mx = (MXStatusPacket) packet;
+					Identifier identifier = mx.getIdentifier();
+					MXListUpdater updater = mxMap.get(identifier);
+					if(updater == null){
+						updater = new MXListUpdater(eventReceiver);
+						mxMap.put(identifier, updater);
+					}
+					updater.update(now, packets, mx, wasInstant);
 				}
 			}
 		}
 		if(!dailyFXPackets.isEmpty()) {
-			JsonSaveData jsonSaveData = new JsonSaveData(dailyFXPackets);
+			FXJsonSaveData FXJsonSaveData = new FXJsonSaveData(dailyFXPackets);
 			try {
-				MAPPER.writer().writeValue(jsonSaveFile, jsonSaveData);
+				MAPPER.writer().writeValue(fxJsonSaveFile, FXJsonSaveData);
 			} catch (IOException e) {
 				LOGGER.error("Unable to write to file!", e);
 			}
@@ -122,12 +136,12 @@ public class FXListUpdater implements PacketListReceiver {
 		return new TrapezoidalRuleAccumulator();
 	}
 	@JsonExplicit
-	private static final class JsonSaveData {
+	private static final class FXJsonSaveData {
 		@JsonProperty
 		private final List<DailyFXPacket> dailyFXPackets;
 
 		@JsonCreator
-		private JsonSaveData(
+		private FXJsonSaveData(
 				@JsonDeserialize(as = ArrayList.class) @JsonProperty(value = "dailyFXPackets", required = true) List<DailyFXPacket> dailyFXPackets
 		) {
 			this.dailyFXPackets = dailyFXPackets;
@@ -142,7 +156,7 @@ public class FXListUpdater implements PacketListReceiver {
 			return null;
 		}
 	}
-	private static final class ListUpdater {
+	private static final class FXListUpdater {
 		private final PacketListReceiver eventReceiver;
 		private Long startDateMillis = null;
 		private Float minimumBatteryVoltage = null;
@@ -161,7 +175,7 @@ public class FXListUpdater implements PacketListReceiver {
 
 		private FXStatusPacket lastFX = null;
 
-		private ListUpdater(PacketListReceiver eventReceiver, DailyFXPacket storedDailyFXPacket) {
+		private FXListUpdater(PacketListReceiver eventReceiver, DailyFXPacket storedDailyFXPacket) {
 			this.eventReceiver = requireNonNull(eventReceiver);
 			if(storedDailyFXPacket != null){
 				LOGGER.info("Restored daily fx info from today! storedDailyFXPacket: {}", storedDailyFXPacket);
@@ -239,6 +253,27 @@ public class FXListUpdater implements PacketListReceiver {
 			if(lastACMode == null || currentACMode != lastACMode){
 				eventReceiver.receive(Collections.singletonList(new ImmutableFXACModeChangePacket(fx.getIdentifier(), currentACMode, lastACMode)), wasInstant);
 			}
+		}
+	}
+	private static final class MXListUpdater {
+
+		private final PacketListReceiver eventReceiver;
+
+		private MXStatusPacket lastMX = null;
+
+		private MXListUpdater(PacketListReceiver eventReceiver) {
+			this.eventReceiver = eventReceiver;
+		}
+
+		private void update(long currentTimeMillis, List<? super Packet> packets, MXStatusPacket mx, boolean wasInstant){
+			final MXStatusPacket last = this.lastMX;
+			this.lastMX = mx;
+
+			if(last != null && mx.isNewDay(last)){
+				MXRawDayEndPacket dayEndPacket = new ImmutableMXRawDayEndPacket(last.getDailyKWH(), last.getDailyAH(), last.getDailyAHSupport());
+				eventReceiver.receive(Collections.singletonList(dayEndPacket), wasInstant);
+			}
+
 		}
 	}
 }

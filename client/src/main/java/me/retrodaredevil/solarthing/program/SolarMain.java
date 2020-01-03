@@ -38,7 +38,7 @@ import me.retrodaredevil.solarthing.packets.security.crypto.DirectoryKeyMap;
 import me.retrodaredevil.solarthing.solar.outback.MatePacketCreator49;
 import me.retrodaredevil.solarthing.solar.outback.OutbackDuplicatePacketRemover;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
-import me.retrodaredevil.solarthing.solar.outback.fx.FXListUpdater;
+import me.retrodaredevil.solarthing.solar.outback.OutbackListUpdater;
 import me.retrodaredevil.solarthing.solar.renogy.rover.*;
 import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusSlaveRead;
 import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusSlaveWrite;
@@ -205,7 +205,7 @@ public final class SolarMain {
 							250,
 							new PacketListReceiverMultiplexer(
 									OutbackDuplicatePacketRemover.INSTANCE,
-									new FXListUpdater(new DailyIdentifier(), eventPacketListReceiverHandler.getPacketListReceiverAccepter(), dataDirectory),
+									new OutbackListUpdater(new DailyIdentifier(), eventPacketListReceiverHandler.getPacketListReceiverAccepter(), dataDirectory),
 									statusPacketListReceiverHandler.getPacketListReceiverAccepter(),
 									statusPacketListReceiverHandler.getPacketListReceiverPacker(),
 									eventPacketListReceiverHandler.getPacketListReceiverPacker(),
