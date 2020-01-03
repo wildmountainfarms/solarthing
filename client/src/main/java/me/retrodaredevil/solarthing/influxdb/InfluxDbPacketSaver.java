@@ -197,7 +197,7 @@ public class InfluxDbPacketSaver implements PacketHandler {
 						.readTimeout(okHttpProperties.getReadTimeoutMillis(), TimeUnit.MILLISECONDS)
 						.writeTimeout(okHttpProperties.getWriteTimeoutMillis(), TimeUnit.MILLISECONDS)
 						.pingInterval(okHttpProperties.getPingIntervalMillis(), TimeUnit.MILLISECONDS)
-						.addInterceptor(new HttpLoggingInterceptor(INFLUX_LOGGER::info).setLevel(HttpLoggingInterceptor.Level.BODY)),
+						.addInterceptor(new HttpLoggingInterceptor(INFLUX_LOGGER::info).setLevel(HttpLoggingInterceptor.Level.BASIC)),
 				InfluxDB.ResponseFormat.JSON
 		).setLogLevel(InfluxDB.LogLevel.NONE);
 	}
