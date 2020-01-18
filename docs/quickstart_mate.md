@@ -7,7 +7,7 @@ Once everything is installed, you're ready to edit the configs. You will cd to t
 cd /opt/solarthing/program
 ```
 
-Copy some template config files ([default_linux_serial](../config_templates/io/default_linux_serial.json) and [rover_template](../config_templates/base/rover_template.json))
+Copy some template config files ([default_linux_serial](../config_templates/io/default_linux_serial.json) and [mate_template](../config_templates/base/mate_template.json))
 ```
 cp ../config_templates/io/default_linux_serial.json config/
 cp ../config_templates/base/mate_template.json config/base.json
