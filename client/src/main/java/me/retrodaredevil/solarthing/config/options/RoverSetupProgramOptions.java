@@ -28,7 +28,16 @@ public class RoverSetupProgramOptions implements ProgramOptions, RoverOption {
 
 	@Override
 	public File getIOBundleFile() {
+		File io = this.io;
+		if(io == null){
+			if(dummyFile == null){
+				throw new IllegalStateException("(Configuration error) Both 'io' and 'dummy' are null or unspecified. You must define one!");
+			} else {
+				throw new IllegalStateException("(Program error) 'io' is null! 'dummy' is not null! You should use 'dummy'!");
+			}
+		}
 		return io;
+
 	}
 
 	@Override

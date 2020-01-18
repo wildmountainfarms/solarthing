@@ -7,17 +7,17 @@ Once everything is installed, you're ready to edit the configs. You will cd to t
 cd /opt/solarthing/program
 ```
 
-Copy some template config files
+Copy some template config files ([default_linux_serial](../config_templates/io/default_linux_serial.json) and [rover_template](../config_templates/base/rover_template.json))
 ```
-cp ../config_templates/default_linux_serial.json config/
+cp ../config_templates/io/default_linux_serial.json config/
 cp ../config_templates/base/mate_template.json config/base.json
 ```
 Edit `base.json`
 ```json
 {
-  "type": "mate",
+  ...
   "io": "config/default_linux_serial.json",
-  "correct_check_sum": true
+  "correct_check_sum": false
 }
 ```
 The mate configuration has the unique property `correct_check_sum`. This makes it easy to change values in `virtual_mate.sh`. By using this,
@@ -28,7 +28,7 @@ Obviously you don't want to use that when you are getting reliable data from a s
 You can run `solar/virtual_mate.sh | java -jar solarthing.jar "config/base.json"`
 
 ### I'm ready to use this for real!
-Once your configuration is how you want it, you can go back to the [quickstart](quickstart.md) to enable and start the service.
+Once your configuration is how you want it, you can go back to the [quickstart](quickstart.md#Configuration Continued) to enable and start the service.
 
 ### In the future
 If you use a CouchDB database for this, you can send commands to it and this will execute them. Currently

@@ -13,7 +13,7 @@ public class RoverProgramOptions extends PacketHandlingOptionBase implements Rov
 	private int modbusAddress = 1;
 	@JsonProperty("dummy")
 	private File dummyFile = null;
-	@JsonProperty(value = "io", required = true)
+	@JsonProperty(value = "io")
 	private File io;
 
 	@Override
@@ -28,7 +28,15 @@ public class RoverProgramOptions extends PacketHandlingOptionBase implements Rov
 
 	@Override
 	public File getIOBundleFile() {
-		return requireNonNull(io, "io is required!");
+		File io = this.io;
+		if(io == null){
+			if(dummyFile == null){
+				throw new IllegalStateException("(Configuration error) Both 'io' and 'dummy' are null or unspecified. You must define one!");
+			} else {
+				throw new IllegalStateException("(Program error) 'io' is null! 'dummy' is not null! You should use 'dummy'!");
+			}
+		}
+		return io;
 	}
 
 	@Override

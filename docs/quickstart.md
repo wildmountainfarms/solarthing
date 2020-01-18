@@ -23,7 +23,7 @@ You will have to adjust the configuration to your needs and based on the type of
 
 [Rover Quickstart](quickstart_rover.md)
 
----
+## Configuration Continued
 
 Now that you have started to configure your `base.json` file, decide what databases you want to use:
 ### CouchDB
