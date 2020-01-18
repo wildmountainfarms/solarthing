@@ -1,5 +1,0 @@
-{
-  "type": "serial",
-  "port": "/dev/ttyUSB0",
-  "serial_config": null
-}

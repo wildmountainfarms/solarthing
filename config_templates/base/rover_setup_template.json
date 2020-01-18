@@ -1,0 +1,5 @@
+{
+  "type": "rover-setup",
+  "io": "../config_templates/io/default_linux_serial.json",
+  "modbus": 1
+}

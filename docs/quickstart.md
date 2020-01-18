@@ -2,10 +2,10 @@
 Ready to get started? Run these commands:
 
 ```shell script
-cd /opt
+cd /opt # You can clone it somewhere else, however if you do that, you will have to change the solarthing.service file if you plan to install the systemd service
 sudo git clone https://github.com/wildmountainfarms/solarthing
 cd solarthing
-sudo systemd/install.sh
+sudo systemd/install.sh # This only works on Linux systems that use systemd. Using this makes running the program long term very easy
 ```
 
 ## Edit Configurations
@@ -21,7 +21,11 @@ You will have to adjust the configuration to your needs and based on the type of
 
 [Mate Quickstart](quickstart_mate.md)
 
-First, decide what databases you want to use:
+[Rover Quickstart](quickstart_rover.md)
+
+---
+
+Now that you have started to configure your `base.json` file, decide what databases you want to use:
 ### CouchDB
 ```shell script
 cp ../config_templates/databases/couchdb_template.json config/couchdb.json
