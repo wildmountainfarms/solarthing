@@ -6,6 +6,6 @@
   "databases": [
     "config/couchdb.json"
   ],
-  "io": "../config_templates/io/mate_io.json",
+  "io": "../config_templates/io/default_linux_serial.json",
   "correct_check_sum": false
 }

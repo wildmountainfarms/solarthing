@@ -4,8 +4,8 @@
   "fragment": 2,
   "unique": 30,
   "databases": [
-    "config/couchdb.json",
-    "config/influxdb.json"
+    "config/couchdb.json"
   ],
-  "io": "config/serial.json"
+  "io": "../config_templates/io/default_linux_serial.json",
+  "modbus": 1
 }
