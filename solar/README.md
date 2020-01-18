@@ -1,7 +1,9 @@
 # Detailed Solar Implementation
-Shows set up for Outback MATE and Renogy Rover communication
+Some information about how this program works with solar products.
 
-Ready to get started? Go to the [quickstart](../docs/quickstart.md)!
+Ready to get started? Go to the **[QUICKSTART](../docs/quickstart.md)**!
+
+---
 
 ## About
 Outback Mate products have a serial port on them that prints data every second for each device connected.
@@ -9,28 +11,13 @@ Because of this, you can hook up just about anything to the Mate and receive and
 commands to your mate! This program aims to be compatible with new and old Mate firmwares. This does not implement
 FlexNET DC Packets, but FX, MX/FM, and Renogy Rover communication is supported.
 
-This does not supper the Outback MATE 3. This is because the MATE3 does not have a DB9 serial port.
+This does not support the Outback MATE 3. This is because the MATE3 does not have a DB9 serial port.
 
 You can look at how we parse packets for 
 [FX Here](../core/src/main/java/me/retrodaredevil/solarthing/solar/outback/fx/FXStatusPackets.java),
 [MX/FM Here](../core/src/main/java/me/retrodaredevil/solarthing/solar/outback/mx/MXStatusPackets.java),
 [Renogy Read Here](../core/src/main/java/me/retrodaredevil/solarthing/solar/renogy/rover/modbus/RoverModbusSlaveRead.java) and
 [Renogy Write Here](../core/src/main/java/me/retrodaredevil/solarthing/solar/renogy/rover/modbus/RoverModbusSlaveWrite.java)
-
-### Running
-```shell script
-# The program directory is always the working directory when running Solarthing
-cd program
-```
-Testing SolarThing:
-```shell script
-solar/virtual_mate.sh | java -jar solarthing.jar "config/base.json"
-```
-Running SolarThing for Real:
-```shell script
-java -jar solarthing.jar "config/base.json"
-```
-
 
 ### Connecting to Outback MATE
 Connecting a Raspberry Pi or any device to an Outback MATE's serial port is pretty simple. For the easiest solution,
@@ -40,7 +27,7 @@ you should get a serial to USB cable (RS232 to USB).
 If you have the USB to RS232 cable that comes with the Rover, all you have to do is connect it to your computer of
 choice and it will act like a serial port!
 
-If you don't have that cable, you can jump through some hoops to do conversion to allow the Pi UART to read it, or you can order a nice RS232 to DB9 cable and a break out
+If you don't have that cable, you can jump through some hoops to do conversion to allow the Pi UART to read it, or you can order a nice RS232 to DB9 cable and a break out board.
 
 Please see [this](http://renogy.boards.net/thread/535/using-rj11-cable-connect-raspberry) thread to see my my experience on creating a DIY cable.
 

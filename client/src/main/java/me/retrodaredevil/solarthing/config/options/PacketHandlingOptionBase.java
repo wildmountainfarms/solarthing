@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("FieldCanBeLocal")
@@ -20,7 +21,11 @@ class PacketHandlingOptionBase implements PacketHandlingOption {
 
 	@Override
 	public List<File> getDatabaseConfigurationFiles() {
-		return databases;
+		List<File> r = databases;
+		if(r == null){
+			return Collections.emptyList();
+		}
+		return r;
 	}
 
 	@Override
