@@ -8,7 +8,7 @@ import java.io.File;
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("rover")
-public class RoverProgramOptions extends PacketHandlingOptionBase implements RoverOption {
+public class RoverProgramOptions extends PacketHandlingOptionBase implements RoverOption, ProgramOptions {
 	@JsonProperty("modbus")
 	private int modbusAddress = 1;
 	@JsonProperty("dummy")
@@ -29,6 +29,11 @@ public class RoverProgramOptions extends PacketHandlingOptionBase implements Rov
 	@Override
 	public File getIOBundleFile() {
 		return requireNonNull(io, "io is required!");
+	}
+
+	@Override
+	public ProgramType getProgramType() {
+		return ProgramType.ROVER;
 	}
 
 }
