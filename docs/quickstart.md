@@ -26,19 +26,36 @@ You will have to adjust the configuration to your needs and based on the type of
 ## Configuration Continued
 
 Now that you have started to configure your `base.json` file, decide what databases you want to use:
-### CouchDB
+### CouchDB "Database"
 ```shell script
 cp ../config_templates/databases/couchdb_template.json config/couchdb.json
 # Edit it with your editor of choice
 ```
 
-### InfluxDB
+### InfluxDB "Database"
 ```shell script
 cp ../config_templates/databases/influxdb_template.json config/influxdb.json
 # Edit it with your editor of choice
 ```
+### Latest "Database"
+```shell script
+cp ../config_templates/databases/latest_save_json_template.json config/latest.json
+# Edit it with your editor of choice
+```
+
 ### Add databases to base configuration
-TODO document this
+Edit `config/base.json` with your editor of choice
+```json
+{
+  ...
+  "databases": [
+    "config/couchdb.json",
+    "config/influxdb.json",
+    "config/latest.json"
+  ]
+}
+```
+You can use 0 or all of the available databases. 
 
 ### Enable and Start
 Now you can enable and start the service
@@ -46,5 +63,5 @@ Now you can enable and start the service
 sudo systemctl enable solarthing # Run on boot
 sudo systemctl start solarthing # Start the service now
 ```
-
+If you do not have systemd on your system or did not install the service, you can run solarthing manually by running `java -jar solarthing.jar config/base.json`.
 
