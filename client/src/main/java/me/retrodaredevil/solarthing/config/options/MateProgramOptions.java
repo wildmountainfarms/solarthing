@@ -18,7 +18,7 @@ public class MateProgramOptions extends PacketHandlingOptionBase implements IOBu
 	@JsonProperty("correct_check_sum")
 	private boolean correctCheckSum = false;
 
-	@JsonProperty("io")
+	@JsonProperty(value = "io", required = true)
 	private File io;
 
 	public boolean isAllowCommands() {
