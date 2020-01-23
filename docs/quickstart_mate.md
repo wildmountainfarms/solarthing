@@ -28,7 +28,7 @@ Obviously you don't want to use that when you are getting reliable data from a s
 You can run `solar/virtual_mate.sh | java -jar solarthing.jar "config/base.json"`
 
 ### I'm ready to use this for real!
-Once your configuration is how you want it, you can go back to the [quickstart](quickstart.md#Configuration Continued) to enable and start the service.
+Once your configuration is how you want it, you can go back to the [quickstart](quickstart.md#configuration-continued) to enable and start the service.
 
 ### In the future
 If you use a CouchDB database for this, you can send commands to it and this will execute them. Currently

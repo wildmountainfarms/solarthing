@@ -31,6 +31,10 @@ If you don't have that cable, you can jump through some hoops to do conversion t
 
 Please see [this](http://renogy.boards.net/thread/535/using-rj11-cable-connect-raspberry) thread to see my my experience on creating a DIY cable.
 
+You can also view [Renogy Rover RS232 Pinout](resources/renogy_rover_rs232_pinout.png). Note that this is partially incorrect;
+you need to connect the Rover's TX to your RX and the Rover's RX to your TX. Make sure you measure voltage
+with a multimeter so you don't send 15V through a Raspberry Pi's GPIO like I did!
+
 ### Outback References
 New documentation:
 http://www.outbackpower.com/downloads/documents/system_management/mate/mate_serial_communicationsguide.pdf

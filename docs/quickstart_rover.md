@@ -1,6 +1,8 @@
 # Quick Start With Renogy Rover
 If you haven't already, [click here](quickstart.md) to view how to clone this repo and install the service.
 
+If you don't have a cable to connect to your device, [click here](../solar/README.md#connecting-to-renogy-rover)
+
 Once everything is installed, you're ready to edit the configs. You will cd to the `program` directory.
 ```
 # If you have it installed in /opt
@@ -38,7 +40,7 @@ the `config` directory and change it.
 Make sure to configure the `dummy` field as the above section describes, then just run `java -jar solarthing.jar`.
 
 ### I'm ready to use this for real!
-Once your configuration is how you want it, you can go back to the [quickstart](quickstart.md#Configuration Continued) to enable and start the service.
+Once your configuration is how you want it, you can go back to the [quickstart](quickstart.md#configuration-continued) to enable and start the service.
 
 ### I want to test this easily!
 See [Rover Setup Info](rover_setup_info.md) for information on how to use the `rover-setup` program.
