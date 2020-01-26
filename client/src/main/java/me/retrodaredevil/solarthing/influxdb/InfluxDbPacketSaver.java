@@ -156,11 +156,11 @@ public class InfluxDbPacketSaver implements PacketHandler {
 					if (prim.isNumber()) {
 						// always store as float datatype
 						pointBuilder.addField(key, prim.asDouble());
-					} else if (prim.isTextual()) {
+					} else if (prim.isTextual() || prim.isBinary()) {
 						pointBuilder.addField(key, prim.asText());
 					} else if (prim.isBoolean()) {
 						pointBuilder.addField(key, prim.asBoolean());
-					} else throw new AssertionError("This primitive isn't a number, string or boolean! It's: " + prim);
+					} else throw new AssertionError("This primitive isn't a number, string or boolean! It's: " + prim + " class: " + prim.getClass() + " text=" + prim.asText());
 				}
 				points.point(pointBuilder.build());
 				packetsWritten++;
