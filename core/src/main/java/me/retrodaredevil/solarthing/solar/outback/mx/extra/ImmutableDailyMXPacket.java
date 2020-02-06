@@ -1,4 +1,36 @@
 package me.retrodaredevil.solarthing.solar.outback.mx.extra;
 
-public abstract class ImmutableDailyMXPacket implements DailyMXPacket {// TODO
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import me.retrodaredevil.solarthing.solar.extra.SolarExtraPacketType;
+import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
+import me.retrodaredevil.solarthing.solar.outback.mx.common.BaseMXDailyData;
+import me.retrodaredevil.solarthing.solar.outback.mx.common.ImmutableMXDailyData;
+import me.retrodaredevil.solarthing.solar.outback.mx.common.MXDailyData;
+
+@JsonDeserialize(builder = ImmutableDailyMXPacket.Builder.class)
+public class ImmutableDailyMXPacket extends BaseMXDailyData implements DailyMXPacket {
+	public ImmutableDailyMXPacket(MXDailyData dailyData, OutbackIdentifier outbackIdentifier) {
+		super(SolarExtraPacketType.MXFM_DAILY, dailyData, outbackIdentifier);
+	}
+	public ImmutableDailyMXPacket(MXDailyData dailyData) {
+		this(dailyData, new OutbackIdentifier(dailyData.getAddress()));
+	}
+
+	@Override
+	public SolarExtraPacketType getPacketType() {
+		return SolarExtraPacketType.MXFM_DAILY;
+	}
+
+	static class Builder {
+		@JsonUnwrapped
+		@JsonProperty(required = true)
+		@JsonDeserialize(as = ImmutableMXDailyData.class)
+		private MXDailyData mxDailyData;
+
+		public ImmutableDailyMXPacket build(){
+			return new ImmutableDailyMXPacket(mxDailyData);
+		}
+	}
 }

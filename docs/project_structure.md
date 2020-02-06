@@ -9,6 +9,9 @@
 ### [pvoutput](../pvoutput)
 * A gradle subproject
 * An API for https://pvoutput.org
+### [schema-generator](../schema-generator)
+* A gradle subproject
+* A subprogram that generates JSON schema
 
 ---
 

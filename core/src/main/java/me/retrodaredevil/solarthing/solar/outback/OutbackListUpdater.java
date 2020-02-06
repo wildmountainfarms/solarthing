@@ -12,13 +12,20 @@ import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
+import me.retrodaredevil.solarthing.solar.outback.fx.common.FXDailyData;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.ImmutableFXDailyData;
 import me.retrodaredevil.solarthing.solar.outback.fx.event.ImmutableFXACModeChangePacket;
+import me.retrodaredevil.solarthing.solar.outback.fx.event.ImmutableFXDayEndPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.extra.DailyFXPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.extra.ImmutableDailyFXPacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPacket;
+import me.retrodaredevil.solarthing.solar.outback.mx.common.ImmutableMXDailyData;
+import me.retrodaredevil.solarthing.solar.outback.mx.common.MXDailyData;
+import me.retrodaredevil.solarthing.solar.outback.mx.event.ImmutableMXDayEndPacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.event.ImmutableMXRawDayEndPacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.event.MXRawDayEndPacket;
+import me.retrodaredevil.solarthing.solar.outback.mx.extra.DailyMXPacket;
+import me.retrodaredevil.solarthing.solar.outback.mx.extra.ImmutableDailyMXPacket;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import me.retrodaredevil.solarthing.util.integration.MutableIntegral;
 import me.retrodaredevil.solarthing.util.integration.TrapezoidalRuleAccumulator;
@@ -38,12 +45,17 @@ import static java.util.Objects.requireNonNull;
  * This expects that there are no duplicate packets. If there are duplicate packets, the behaviour is undefined.
  */
 public class OutbackListUpdater implements PacketListReceiver {
+	/*
+	So you think this class is a mess? You would be correct! I plan to eventually refactor this class, but I didn't want to start
+	the refactor process too early because if I did, I would eventually have to refactor the new mess I made.
+	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(OutbackListUpdater.class);
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
 
 	private final TimeIdentifier timeIdentifier;
 	private final PacketListReceiver eventReceiver;
 	private final File fxJsonSaveFile;
+	private final File mxJsonSaveFile;
 
 	private final Map<Identifier, FXListUpdater> fxMap = new HashMap<>();
 	private final Map<Identifier, MXListUpdater> mxMap = new HashMap<>();
@@ -53,6 +65,7 @@ public class OutbackListUpdater implements PacketListReceiver {
 		this.timeIdentifier = timeIdentifier;
 		this.eventReceiver = eventReceiver;
 		fxJsonSaveFile = new File(dataDirectory, "fx_list_updater.json");
+		mxJsonSaveFile = new File(dataDirectory, "mx_list_updater.json");
 	}
 
 	@Override
@@ -62,23 +75,43 @@ public class OutbackListUpdater implements PacketListReceiver {
 		final Long lastTimeId = this.lastTimeId;
 		this.lastTimeId = timeId;
 		if(lastTimeId != null && lastTimeId != timeId){
-			// TODO do day end packets here
-			fxMap.clear();
-		}
-		final FXJsonSaveData savedJsonData;
-		if(lastTimeId == null){
-			FXJsonSaveData data = null;
-			try {
-				data = MAPPER.readValue(fxJsonSaveFile, FXJsonSaveData.class);
-			} catch (IOException e) {
-				LOGGER.info("Unable to read json data. That's OK though!", e);
+			for(FXListUpdater updater : fxMap.values()){
+				updater.doDayEnd(wasInstant);
 			}
-			savedJsonData = data;
+			for(MXListUpdater updater : mxMap.values()){
+				updater.doDayEnd(wasInstant);
+			}
+			fxMap.clear();
+			mxMap.clear();
+		}
+		final FXJsonSaveData fxSavedJsonData;
+		final MXJsonSaveData mxSavedJsonData;
+		if(lastTimeId == null){
+			{
+				FXJsonSaveData data = null;
+				try {
+					data = MAPPER.readValue(fxJsonSaveFile, FXJsonSaveData.class);
+				} catch (IOException e) {
+					LOGGER.info("Unable to read fx json data. That's OK though!", e);
+				}
+				fxSavedJsonData = data;
+			}
+			{
+				MXJsonSaveData data = null;
+				try {
+					data = MAPPER.readValue(mxJsonSaveFile, MXJsonSaveData.class);
+				} catch(IOException e){
+					LOGGER.info("Unable to read mx json data. That's OK though!", e);
+				}
+				mxSavedJsonData = data;
+			}
 		} else {
-			savedJsonData = null;
+			fxSavedJsonData = null;
+			mxSavedJsonData = null;
 		}
 
 		List<DailyFXPacket> dailyFXPackets = new ArrayList<>();
+		List<MXSaveNode> mxSaveNodes = new ArrayList<>();
 		for(Packet packet : new ArrayList<>(packets)){
 			if(packet instanceof DocumentedPacket){
 				DocumentedPacketType packetType = ((DocumentedPacket<?>) packet).getPacketType();
@@ -89,11 +122,11 @@ public class OutbackListUpdater implements PacketListReceiver {
 					if(updater == null){
 						final DailyFXPacket todayDailyFXPacket;
 						{
-							final DailyFXPacket storedDailyFXPacket = savedJsonData == null ? null : savedJsonData.getPacket(fx);
+							final DailyFXPacket storedDailyFXPacket = fxSavedJsonData == null ? null : fxSavedJsonData.getPacket(fx);
 							if (storedDailyFXPacket == null) {
 								todayDailyFXPacket = null;
-								if(savedJsonData != null){
-									LOGGER.warn("Although savedJsonData isn't null we couldn't find a packet for identifier: {}", identifier);
+								if(fxSavedJsonData != null){
+									LOGGER.warn("Although fxSavedJsonData isn't null we couldn't find a packet for identifier: {}", identifier);
 								}
 							} else {
 								long startDateMillis = requireNonNull(storedDailyFXPacket.getStartDateMillis());
@@ -116,17 +149,45 @@ public class OutbackListUpdater implements PacketListReceiver {
 					Identifier identifier = mx.getIdentifier();
 					MXListUpdater updater = mxMap.get(identifier);
 					if(updater == null){
-						updater = new MXListUpdater(eventReceiver);
+						final MXSaveNode todayNode;
+						{
+							final MXSaveNode storedSaveNode = mxSavedJsonData == null ? null : mxSavedJsonData.getNode(mx);
+							if(storedSaveNode == null){
+								todayNode = null;
+								if(mxSavedJsonData != null){
+									LOGGER.warn("Although fxSavedJsonData isn't null, we couldn't find a MXSaveNode for identifier: {}", identifier);
+								}
+							} else {
+								long startDateMillis = requireNonNull(storedSaveNode.dailyMXPacket.getStartDateMillis());
+								if(timeIdentifier.getTimeId(startDateMillis) == timeId) {
+									todayNode = storedSaveNode;
+									LOGGER.info("We found a MXSaveNode from today! identifier: {}", identifier);
+								} else {
+									todayNode = null;
+									LOGGER.info("The MXSaveNode we found wasn't from today! identifier: {}", identifier);
+								}
+							}
+						}
+						updater = new MXListUpdater(eventReceiver, todayNode);
 						mxMap.put(identifier, updater);
 					}
-					updater.update(now, packets, mx, wasInstant);
+					MXSaveNode node = updater.update(now, packets, mx, wasInstant);
+					mxSaveNodes.add(node);
 				}
 			}
 		}
 		if(!dailyFXPackets.isEmpty()) {
-			FXJsonSaveData FXJsonSaveData = new FXJsonSaveData(dailyFXPackets);
+			FXJsonSaveData fxJsonSaveData = new FXJsonSaveData(dailyFXPackets);
 			try {
-				MAPPER.writer().writeValue(fxJsonSaveFile, FXJsonSaveData);
+				MAPPER.writer().writeValue(fxJsonSaveFile, fxJsonSaveData);
+			} catch (IOException e) {
+				LOGGER.error("Unable to write to file!", e);
+			}
+		}
+		if(!mxSaveNodes.isEmpty()) {
+			MXJsonSaveData  mxJsonSaveData = new MXJsonSaveData(mxSaveNodes);
+			try {
+				MAPPER.writer().writeValue(mxJsonSaveFile, mxJsonSaveData);
 			} catch (IOException e) {
 				LOGGER.error("Unable to write to file!", e);
 			}
@@ -224,21 +285,21 @@ public class OutbackListUpdater implements PacketListReceiver {
 			warningMode |= fx.getWarningModeValue();
 			misc |= fx.getMiscValue();
 			acModeValues.add(fx.getACModeValue());
-			DailyFXPacket packet = new ImmutableDailyFXPacket(
-					new ImmutableFXDailyData(
-							fx.getAddress(),
-							startDateMillis,
-							minimumBatteryVoltage, maximumBatteryVoltage,
-							(float) (inverterWH.getIntegral() / 1000), (float) (chargerWH.getIntegral() / 1000),
-							(float) (buyWH.getIntegral() / 1000), (float) (sellWH.getIntegral() / 1000),
-							operationalModeValues, errorMode, warningMode, misc, acModeValues
-					),
-					fx.getIdentifier()
-			);
+			DailyFXPacket packet = new ImmutableDailyFXPacket(createData(fx), fx.getIdentifier());
 
 			packets.add(packet);
 			doLastFX(fx, wasInstant);
 			return packet;
+		}
+		private FXDailyData createData(FXStatusPacket fx){
+			return new ImmutableFXDailyData(
+					fx.getAddress(),
+					startDateMillis,
+					minimumBatteryVoltage, maximumBatteryVoltage,
+					(float) (inverterWH.getIntegral() / 1000), (float) (chargerWH.getIntegral() / 1000),
+					(float) (buyWH.getIntegral() / 1000), (float) (sellWH.getIntegral() / 1000),
+					operationalModeValues, errorMode, warningMode, misc, acModeValues
+			);
 		}
 		private void doLastFX(FXStatusPacket fx, boolean wasInstant){
 			final FXStatusPacket lastFX = this.lastFX;
@@ -254,26 +315,137 @@ public class OutbackListUpdater implements PacketListReceiver {
 				eventReceiver.receive(Collections.singletonList(new ImmutableFXACModeChangePacket(fx.getIdentifier(), currentACMode, lastACMode)), wasInstant);
 			}
 		}
+		private void doDayEnd(boolean wasInstant){
+			FXStatusPacket fx = requireNonNull(lastFX);
+			eventReceiver.receive(Collections.singletonList(new ImmutableFXDayEndPacket(createData(fx), fx.getIdentifier())), wasInstant);
+		}
+	}
+	@JsonExplicit
+	private static final class MXJsonSaveData {
+		@JsonProperty
+		private final List<MXSaveNode> mxNodes;
+
+		@JsonCreator
+		private MXJsonSaveData(@JsonProperty(value = "mxNodes", required = true) @JsonDeserialize(as = ArrayList.class) List<MXSaveNode> mxNodes) {
+			this.mxNodes = mxNodes;
+		}
+		public MXSaveNode getNode(MXStatusPacket mx){
+			Identifier identifier = mx.getIdentifier();
+			for(MXSaveNode node : mxNodes){
+				if(node.dailyMXPacket.getIdentifier().getSupplementaryTo().equals(identifier)){
+					return node;
+				}
+			}
+			return null;
+		}
+	}
+	@JsonExplicit
+	private static final class MXSaveNode {
+		@JsonProperty
+		private final DailyMXPacket dailyMXPacket;
+		@JsonProperty
+		private final float unreportedKWH;
+		@JsonProperty
+		private final int unreportedAH;
+
+		@JsonCreator
+		private MXSaveNode(
+				@JsonProperty(value = "dailyMXPacket", required = true) DailyMXPacket dailyMXPacket,
+				@JsonProperty(value = "unreportedKWH", required = true) float unreportedKWH,
+				@JsonProperty(value = "unreportedAH", required = true) int unreportedAH) {
+			this.dailyMXPacket = dailyMXPacket;
+			this.unreportedKWH = unreportedKWH;
+			this.unreportedAH = unreportedAH;
+		}
 	}
 	private static final class MXListUpdater {
-
+		/*
+		TODO there's a bug in here where if you start it after midnight and before it resets...
+		it will report yesterday's kWH and then reset down to 0 once it does a raw reset.
+		 */
 		private final PacketListReceiver eventReceiver;
+		private int errorMode = 0;
+		private Long startDateMillis = null;
+		private Float minimumBatteryVoltage = null;
+		private Float maximumBatteryVoltage = null;
+
+		private float observedKWHAccumulation = 0.0f;
+		private int observedAHAccumulation = 0;
+		private float unreportedKWH = 0.0f;
+		private int unreportedAH = 0;
 
 		private MXStatusPacket lastMX = null;
 
-		private MXListUpdater(PacketListReceiver eventReceiver) {
-			this.eventReceiver = eventReceiver;
+		private MXListUpdater(PacketListReceiver eventReceiver, MXSaveNode storedSaveNode) {
+			this.eventReceiver = requireNonNull(eventReceiver);
+			if(storedSaveNode != null){
+				DailyMXPacket packet = storedSaveNode.dailyMXPacket;
+				errorMode = packet.getErrorModeValue();
+				startDateMillis = packet.getStartDateMillis();
+				minimumBatteryVoltage = packet.getDailyMinBatteryVoltage();
+				maximumBatteryVoltage = packet.getDailyMaxBatteryVoltage();
+
+				unreportedKWH = storedSaveNode.unreportedKWH;
+				unreportedAH = storedSaveNode.unreportedAH;
+			}
 		}
 
-		private void update(long currentTimeMillis, List<? super Packet> packets, MXStatusPacket mx, boolean wasInstant){
+		private MXSaveNode update(long currentTimeMillis, List<? super Packet> packets, MXStatusPacket mx, boolean wasInstant){
 			final MXStatusPacket last = this.lastMX;
 			this.lastMX = mx;
 
 			if(last != null && mx.isNewDay(last)){
-				MXRawDayEndPacket dayEndPacket = new ImmutableMXRawDayEndPacket(last.getDailyKWH(), last.getDailyAH(), last.getDailyAHSupport());
+				MXRawDayEndPacket dayEndPacket = new ImmutableMXRawDayEndPacket(last.getAddress(), last.getDailyKWH(), last.getDailyAH(), last.getDailyAHSupport());
 				eventReceiver.receive(Collections.singletonList(dayEndPacket), wasInstant);
 			}
 
+			Long startDateMillis = this.startDateMillis;
+			if(startDateMillis == null){
+				startDateMillis = currentTimeMillis;
+				this.startDateMillis = startDateMillis;
+			}
+
+			float batteryVoltage = mx.getBatteryVoltage();
+			Float currentMin = minimumBatteryVoltage;
+			Float currentMax = maximumBatteryVoltage;
+			if(currentMin == null || batteryVoltage < currentMin){
+				minimumBatteryVoltage = batteryVoltage;
+			}
+			if(currentMax == null || batteryVoltage > currentMax){
+				maximumBatteryVoltage = batteryVoltage;
+			}
+			errorMode |= mx.getErrorModeValue();
+
+			if(last != null){
+				float lastKWH = last.getDailyKWH();
+				int lastAH = last.getDailyAH();
+				float kwh = mx.getDailyKWH();
+				int ah = mx.getDailyAH();
+				if(lastKWH > kwh){ // kwh must have reset to 0
+					unreportedKWH += observedKWHAccumulation;
+					observedKWHAccumulation = 0;
+				} else {
+					observedKWHAccumulation += kwh - lastKWH;
+				}
+				if(lastAH > ah){ // ah must have reset to 0
+					unreportedAH += observedAHAccumulation;
+					observedAHAccumulation = 0;
+				} else {
+					observedAHAccumulation += ah - lastAH;
+				}
+			}
+			MXDailyData data = createData(mx);
+			DailyMXPacket packet = new ImmutableDailyMXPacket(data, mx.getIdentifier());
+			packets.add(packet);
+			return new MXSaveNode(packet, unreportedKWH, unreportedAH);
+		}
+		private MXDailyData createData(MXStatusPacket mx){
+			return new ImmutableMXDailyData(mx.getAddress(), errorMode, startDateMillis, mx.getDailyKWH() + unreportedKWH, mx.getDailyAH() + unreportedAH, mx.getDailyAHSupport(), minimumBatteryVoltage, maximumBatteryVoltage);
+		}
+
+		private void doDayEnd(boolean wasInstant) {
+			MXStatusPacket mx = requireNonNull(lastMX);
+			eventReceiver.receive(Collections.singletonList(new ImmutableMXDayEndPacket(createData(mx), mx.getIdentifier())), wasInstant);
 		}
 	}
 }

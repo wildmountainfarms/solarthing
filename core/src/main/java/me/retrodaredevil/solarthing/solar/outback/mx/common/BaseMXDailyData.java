@@ -1,27 +1,22 @@
-package me.retrodaredevil.solarthing.solar.outback.fx.common;
+package me.retrodaredevil.solarthing.solar.outback.mx.common;
 
+import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.DocumentedPacketType;
 import me.retrodaredevil.solarthing.packets.identification.DefaultSupplementaryIdentifier;
 import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifiable;
 import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 
-import java.util.Collection;
-
-public abstract class BaseFXDailyData extends ImmutableFXDailyData implements SupplementaryIdentifiable {
-
+@JsonExplicit
+public abstract class BaseMXDailyData extends ImmutableMXDailyData implements SupplementaryIdentifiable {
 	private final SupplementaryIdentifier supplementaryIdentifier;
 
-	public BaseFXDailyData(
+	public BaseMXDailyData(
 			DocumentedPacketType packetType,
-			FXDailyData dailyData,
+			MXDailyData dailyData,
 			OutbackIdentifier outbackIdentifier
 	) {
-		super(
-				dailyData.getAddress(), dailyData.getStartDateMillis(), dailyData.getDailyMinBatteryVoltage(), dailyData.getDailyMaxBatteryVoltage(),
-				dailyData.getInverterKWH(), dailyData.getChargerKWH(), dailyData.getBuyKWH(), dailyData.getSellKWH(), dailyData.getOperationalModeValues(),
-				dailyData.getWarningModeValue(), dailyData.getWarningModeValue(), dailyData.getMiscValue(), dailyData.getACModeValues()
-		);
+		super(dailyData.getAddress(), dailyData.getErrorModeValue(), dailyData.getStartDateMillis(), dailyData.getDailyKWH(), dailyData.getDailyAH(), dailyData.getDailyAHSupport(), dailyData.getDailyMinBatteryVoltage(), dailyData.getDailyMaxBatteryVoltage());
 		int address = dailyData.getAddress();
 		int identifierAddress = outbackIdentifier.getAddress();
 		if(address != identifierAddress){
@@ -34,5 +29,4 @@ public abstract class BaseFXDailyData extends ImmutableFXDailyData implements Su
 	public SupplementaryIdentifier getIdentifier() {
 		return supplementaryIdentifier;
 	}
-
 }

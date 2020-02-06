@@ -1,7 +1,11 @@
 package me.retrodaredevil.solarthing.solar.outback.mx.event;
 
-import me.retrodaredevil.solarthing.solar.event.SolarEventPacket;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import me.retrodaredevil.solarthing.solar.event.SupplementarySolarEventPacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.common.MXDailyData;
 
-public interface MXDayEndPacket extends SolarEventPacket, MXDailyData {
+@JsonDeserialize(as = ImmutableMXDayEndPacket.class)
+@JsonTypeName("MXFM_DAILY_DAY_END")
+public interface MXDayEndPacket extends SupplementarySolarEventPacket, MXDailyData {
 }
