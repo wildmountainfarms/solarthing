@@ -54,3 +54,9 @@ project(":pvoutput"){
         api project(":core")
     }
 }
+project(":schema-generator"){
+    apply plugin: 'java'
+    dependencies {
+        api project(":core")
+    }
+}

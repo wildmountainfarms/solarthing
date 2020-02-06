@@ -8,11 +8,12 @@ import me.retrodaredevil.solarthing.packets.support.Support;
 import me.retrodaredevil.solarthing.solar.common.AccumulatedChargeController;
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacket;
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
+import me.retrodaredevil.solarthing.solar.outback.OutbackData;
 
 @JsonTypeName("MXFM_RAW_DAY_END")
 @JsonDeserialize(as = ImmutableMXRawDayEndPacket.class)
 @JsonExplicit
-public interface MXRawDayEndPacket extends SolarEventPacket, AccumulatedChargeController {
+public interface MXRawDayEndPacket extends SolarEventPacket, AccumulatedChargeController, OutbackData {
 	@Override
 	default SolarEventPacketType getPacketType(){
 		return SolarEventPacketType.MXFM_RAW_DAY_END;

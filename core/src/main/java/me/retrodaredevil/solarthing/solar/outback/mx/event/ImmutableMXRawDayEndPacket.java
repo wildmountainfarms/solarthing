@@ -6,16 +6,19 @@ import me.retrodaredevil.solarthing.packets.support.Support;
 
 public class ImmutableMXRawDayEndPacket implements MXRawDayEndPacket {
 
+	private final int address;
 	private final float dailyKWH;
 	private final int dailyAH;
 	private final Support dailyAHSupport;
 
 	@JsonCreator
 	public ImmutableMXRawDayEndPacket(
+			@JsonProperty(value = "address", required = true) int address,
 			@JsonProperty(value = "dailyKWH", required = true) float dailyKWH,
 			@JsonProperty(value = "dailyAH", required = true) int dailyAH,
 			@JsonProperty(value = "dailyAHSupport", required = true) Support dailyAHSupport
 	) {
+		this.address = address;
 		this.dailyKWH = dailyKWH;
 		this.dailyAH = dailyAH;
 		this.dailyAHSupport = dailyAHSupport;
@@ -35,5 +38,10 @@ public class ImmutableMXRawDayEndPacket implements MXRawDayEndPacket {
 	@Override
 	public Support getDailyAHSupport() {
 		return dailyAHSupport;
+	}
+
+	@Override
+	public int getAddress() {
+		return address;
 	}
 }

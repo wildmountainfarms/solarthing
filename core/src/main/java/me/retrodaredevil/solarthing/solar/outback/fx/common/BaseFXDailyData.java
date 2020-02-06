@@ -8,7 +8,7 @@ import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 
 import java.util.Collection;
 
-public abstract class BaseFXDailyData extends ImmutableFXDailyData implements FXDailyData, SupplementaryIdentifiable {
+public abstract class BaseFXDailyData extends ImmutableFXDailyData implements SupplementaryIdentifiable {
 
 	private final SupplementaryIdentifier supplementaryIdentifier;
 
@@ -23,12 +23,11 @@ public abstract class BaseFXDailyData extends ImmutableFXDailyData implements FX
 				dailyData.getWarningModeValue(), dailyData.getWarningModeValue(), dailyData.getMiscValue(), dailyData.getACModeValues()
 		);
 		int address = dailyData.getAddress();
-
-		this.supplementaryIdentifier = new DefaultSupplementaryIdentifier<>(outbackIdentifier, packetType.toString());
 		int identifierAddress = outbackIdentifier.getAddress();
 		if(address != identifierAddress){
 			throw new IllegalArgumentException("The address from dailyData and from outbackIdentifier are different! dailyData.getAddress()=" + address + " and outbackIdentifier.getAddress()=" + identifierAddress);
 		}
+		supplementaryIdentifier = new DefaultSupplementaryIdentifier<>(outbackIdentifier, packetType.toString());
 	}
 
 	@Override

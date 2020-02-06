@@ -57,6 +57,14 @@ import static java.util.Objects.requireNonNull;
 public final class SolarMain {
 	private SolarMain(){ throw new UnsupportedOperationException(); }
 
+	/*
+	So you think this class is complicated? Well I'll have to agree with you on that. This is probably the most
+	complicated class in this project. However, that's a good thing. By having most of the complexity in this class,
+	we have less complexity in other classes. Most configuration of how the actual program works goes on in here.
+	I'm sure there's a better way to write this class. However the main advantage of it right now is that
+	it's pretty easy to change behaviour, and that's what's important.
+	 */
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(SolarMain.class);
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
 
@@ -264,7 +272,7 @@ public final class SolarMain {
 					}
 					final long saveDuration = System.currentTimeMillis() - saveStartTime;
 					LOGGER.debug("took " + saveDuration + "ms to handle packets");
-					Thread.sleep(Math.max(1000, 6000 - readDuration)); // allow 5 seconds to read from rover
+					Thread.sleep(Math.max(1000, 6000 - readDuration)); // sleep between 1 and 6 seconds
 				}
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
