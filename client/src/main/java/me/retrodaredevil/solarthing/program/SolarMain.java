@@ -4,17 +4,14 @@ import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.io.IOBundle;
 import me.retrodaredevil.io.serial.SerialConfig;
-import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
-import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
-import me.retrodaredevil.solarthing.config.databases.implementations.InfluxDbDatabaseSettings;
-import me.retrodaredevil.solarthing.config.databases.implementations.LatestFileDatabaseSettings;
 import me.retrodaredevil.solarthing.config.io.IOConfig;
 import me.retrodaredevil.solarthing.config.io.SerialIOConfig;
 import me.retrodaredevil.solarthing.config.options.*;
 import me.retrodaredevil.solarthing.packets.collection.HourIntervalPacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.creation.TextPacketCreator;
-import me.retrodaredevil.solarthing.packets.handling.*;
+import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
+import me.retrodaredevil.solarthing.packets.handling.RawPacketReceiver;
 import me.retrodaredevil.solarthing.packets.instance.InstanceFragmentIndicatorPackets;
 import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePackets;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
@@ -22,7 +19,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 import static java.util.Objects.requireNonNull;
 
@@ -81,29 +81,23 @@ public final class SolarMain {
 	public static List<DatabaseConfig> getDatabaseConfigs(PacketHandlingOption options){
 		List<File> files = options.getDatabaseConfigurationFiles();
 		List<DatabaseConfig> r = new ArrayList<>();
-		ObjectMapper mapper = JacksonUtil.defaultMapper();
-		mapper.getSubtypeResolver().registerSubtypes(
-				DatabaseSettings.class,
-				CouchDbDatabaseSettings.class,
-				InfluxDbDatabaseSettings.class,
-				LatestFileDatabaseSettings.class
-		);
 		for(File file : files){
-			FileInputStream reader;
-			try {
-				reader = new FileInputStream(file);
-			} catch (FileNotFoundException e) {
-				throw new RuntimeException(e);
-			}
-			final DatabaseConfig databaseConfig;
-			try {
-				databaseConfig = mapper.readValue(reader, DatabaseConfig.class);
-			} catch (IOException e) {
-				throw new RuntimeException("Couldn't parse data!", e);
-			}
-			r.add(databaseConfig);
+			r.add(getDatabaseConfig(file));
 		}
 		return r;
+	}
+	public static DatabaseConfig getDatabaseConfig(File file){
+		FileInputStream reader;
+		try {
+			reader = new FileInputStream(file);
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException(e);
+		}
+		try {
+			return MAPPER.readValue(reader, DatabaseConfig.class);
+		} catch (IOException e) {
+			throw new RuntimeException("Couldn't parse data!", e);
+		}
 	}
 
 	public static IOBundle createIOBundle(File configFile, SerialConfig defaultSerialConfig) throws Exception {

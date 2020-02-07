@@ -1,6 +1,6 @@
 package me.retrodaredevil.solarthing.pvoutput;
 
-import me.retrodaredevil.solarthing.pvoutput.data.AddOutputParamtersBuilder;
+import me.retrodaredevil.solarthing.pvoutput.data.AddOutputParametersBuilder;
 import me.retrodaredevil.solarthing.pvoutput.service.OkHttpUtil;
 import me.retrodaredevil.solarthing.pvoutput.service.PVOutputService;
 import me.retrodaredevil.solarthing.pvoutput.service.RetrofitUtil;
@@ -27,7 +27,7 @@ public class UploadTest {
 				.build();
 		PVOutputService service = retrofit.create(PVOutputService.class);
 		Call<String> call = service.addOutput(
-				new AddOutputParamtersBuilder(new SimpleDate(2020, 1, 30))
+				new AddOutputParametersBuilder(new SimpleDate(2020, 1, 30))
 						.setGenerated(7000)
 						.build()
 		);

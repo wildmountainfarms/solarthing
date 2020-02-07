@@ -15,6 +15,7 @@ import me.retrodaredevil.solarthing.config.databases.IndividualSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.config.options.MateProgramOptions;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketRetriever;
+import me.retrodaredevil.solarthing.couchdb.CouchDbPacketRetrieverHandler;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.handling.*;
 import me.retrodaredevil.solarthing.packets.handling.implementations.TimedPacketReceiver;
@@ -125,11 +126,13 @@ public class OutbackMateMain {
 					IndividualSettings individualSettings = config.getIndividualSettingsOrDefault(Constants.DATABASE_COMMAND_DOWNLOAD_ID, null);
 					FrequencySettings frequencySettings = individualSettings != null ? individualSettings.getFrequencySettings() : FrequencySettings.NORMAL_SETTINGS;
 					commandRequesterHandlerList.add(new ThrottleFactorPacketHandler(new PrintPacketHandleExceptionWrapper(
-							new CouchDbPacketRetriever(
-									couchProperties,
-									SolarThingConstants.COMMANDS_UNIQUE_NAME,
-									new SecurityPacketReceiver(new DirectoryKeyMap(new File("authorized")), commandSequenceDataReceiver, new DirectoryKeyMap(new File("unauthorized"))),
-									true
+							new CouchDbPacketRetrieverHandler(
+									new CouchDbPacketRetriever(
+											couchProperties,
+											SolarThingConstants.COMMANDS_UNIQUE_NAME,
+											true
+									),
+									new SecurityPacketReceiver(new DirectoryKeyMap(new File("authorized")), commandSequenceDataReceiver, new DirectoryKeyMap(new File("unauthorized")))
 							)
 					), frequencySettings, true));
 				}

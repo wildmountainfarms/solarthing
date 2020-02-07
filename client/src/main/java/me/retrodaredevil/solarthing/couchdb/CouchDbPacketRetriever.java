@@ -2,10 +2,7 @@ package me.retrodaredevil.solarthing.couchdb;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import me.retrodaredevil.couchdb.CouchProperties;
-import me.retrodaredevil.solarthing.JsonPacketReceiver;
-import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
-import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
 import org.ektorp.*;
 import org.ektorp.http.HttpClient;
 import org.ektorp.impl.StdCouchDbConnector;
@@ -16,27 +13,24 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CouchDbPacketRetriever implements PacketHandler {
+public class CouchDbPacketRetriever {
 	private final Logger LOGGER = LoggerFactory.getLogger(CouchDbPacketRetriever.class);
-	
-	private final JsonPacketReceiver jsonPacketReceiver;
+
 	private final boolean removeQueriedPackets;
 	private final CouchDbConnector client;
-
-	public CouchDbPacketRetriever(CouchProperties properties, String databaseName, JsonPacketReceiver jsonPacketReceiver, boolean removeQueriedPackets){
-		this.jsonPacketReceiver = jsonPacketReceiver;
+	public CouchDbPacketRetriever(CouchProperties properties, String databaseName, boolean removeQueriedPackets){
 		this.removeQueriedPackets = removeQueriedPackets;
 		final HttpClient httpClient = EktorpUtil.createHttpClient(properties);
 		CouchDbInstance instance = new StdCouchDbInstance(httpClient);
 		client = new StdCouchDbConnector(databaseName, instance);
 	}
-	
+	public CouchDbPacketRetriever(CouchProperties properties, String databaseName){
+		this(properties, databaseName, false);
+	}
 	protected ViewQuery alterView(ViewQuery view){
 		return view;
 	}
-	
-	@Override
-	public void handle(PacketCollection packetCollection, boolean wasInstant) throws PacketHandleException {
+	public List<ObjectNode> query() throws PacketHandleException {
 		ViewQuery query = alterView(new ViewQuery().designDocId("_design/packets").viewName("millis"));
 		final ViewResult result;
 		try {
@@ -64,7 +58,6 @@ public class CouchDbPacketRetriever implements PacketHandler {
 				}
 			}
 		}
-		jsonPacketReceiver.receivePackets(packets);
+		return packets;
 	}
-	
 }

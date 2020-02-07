@@ -1,15 +1,21 @@
 package me.retrodaredevil.solarthing.pvoutput;
 
-import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.time.temporal.ChronoField;
+import java.util.Calendar;
 
-@JsonSerialize(using = SimpleDate.Serializer.class)
+/**
+ * Represents a date with a year, month, and day. Both month and day are 1 based.
+ */
 @JsonDeserialize(using = SimpleDate.Deserializer.class)
 public final class SimpleDate implements PVOutputString {
 	private final int year;
@@ -20,12 +26,18 @@ public final class SimpleDate implements PVOutputString {
 		this.year = year;
 		this.month = month;
 		this.day = day;
-		if(month < 0 || month > 12){
+		if(month < 1 || month > 12){
 			throw new IllegalArgumentException("Month is out of range! month=" + month);
 		}
-		if(day < 0 || day > 31){
+		if(day < 1 || day > 31){
 			throw new IllegalArgumentException("Day is out of range! day=" + day);
 		}
+	}
+	public static SimpleDate fromCalendar(Calendar calendar){
+		return new SimpleDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));
+	}
+	public static SimpleDate fromInstant(Instant instant){
+		return new SimpleDate(instant.get(ChronoField.YEAR), instant.get(ChronoField.MONTH_OF_YEAR), instant.get(ChronoField.DAY_OF_MONTH));
 	}
 
 	public int getYear() {
@@ -41,8 +53,9 @@ public final class SimpleDate implements PVOutputString {
 	}
 	@Override
 	public String toPVOutputString(){
-		if(year < 0){
-			throw new IllegalStateException("Year is < 0! year=" + year);
+		if(year < 1000){
+			// Sorry to time travelers that decide to live in the past, I know this isn't very convenient for you
+			throw new IllegalStateException("Year is < 1000! year=" + year);
 		}
 		if(year > 9999){
 			// Sorry future programmers (are you still called programmers?), I know at the beginning of year 9999, you'll all have to be fixing stuff like this.
@@ -63,12 +76,6 @@ public final class SimpleDate implements PVOutputString {
 		}
 
 		return yearString + monthString + dayString;
-	}
-	static class Serializer extends JsonSerializer<SimpleDate> {
-		@Override
-		public void serialize(SimpleDate value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-			gen.writeString(value.toPVOutputString());
-		}
 	}
 	static class Deserializer extends JsonDeserializer<SimpleDate> {
 

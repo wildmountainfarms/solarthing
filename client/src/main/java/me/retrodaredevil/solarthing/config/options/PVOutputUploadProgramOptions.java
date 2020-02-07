@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 
 import java.io.File;
+import java.util.TimeZone;
 
 @JsonTypeName("pvoutput-upload")
 @JsonExplicit
@@ -15,6 +16,8 @@ public class PVOutputUploadProgramOptions implements ProgramOptions {
 	private String apiKey;
 	@JsonProperty(value = "database", required = true)
 	private File database;
+	@JsonProperty("time_zone")
+	private TimeZone timeZone = null;
 
 	@Override
 	public ProgramType getProgramType() {
@@ -31,5 +34,12 @@ public class PVOutputUploadProgramOptions implements ProgramOptions {
 
 	public File getDatabase() {
 		return database;
+	}
+	public TimeZone getTimeZone(){
+		TimeZone r = this.timeZone;
+		if(r == null){
+			return TimeZone.getDefault();
+		}
+		return r;
 	}
 }
