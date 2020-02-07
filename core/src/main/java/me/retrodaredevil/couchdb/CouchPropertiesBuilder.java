@@ -12,11 +12,11 @@ public class CouchPropertiesBuilder {
 	private int port;
 	private String username;
 	private String password;
-	private int socketTimeout = 0;
-	private int connectionTimeout = 0;
-	private int maxConnections = 0;
+	private Integer socketTimeout = null;
+	private Integer connectionTimeout = null;
+	private Integer maxConnections = null;
 	private String proxyHost = null;
-	private int proxyPort = 0;
+	private Integer proxyPort = null;
 
 	public CouchPropertiesBuilder(){}
 
@@ -84,7 +84,7 @@ public class CouchPropertiesBuilder {
 	/**
 	 * @param socketTimeout Socket timeout in ms
 	 */
-	public CouchPropertiesBuilder setSocketTimeoutMillis(int socketTimeout) {
+	public CouchPropertiesBuilder setSocketTimeoutMillis(Integer socketTimeout) {
 		this.socketTimeout = socketTimeout;
 		return this;
 	}
@@ -97,7 +97,7 @@ public class CouchPropertiesBuilder {
 	/**
 	 * @param connectionTimeout Connection timeout in ms
 	 */
-	public CouchPropertiesBuilder setConnectionTimeoutMillis(int connectionTimeout) {
+	public CouchPropertiesBuilder setConnectionTimeoutMillis(Integer connectionTimeout) {
 		this.connectionTimeout = connectionTimeout;
 		return this;
 	}
@@ -108,7 +108,7 @@ public class CouchPropertiesBuilder {
 	}
 
 	@JsonSetter("max_connections")
-	public CouchPropertiesBuilder setMaxConnections(int maxConnections) {
+	public CouchPropertiesBuilder setMaxConnections(Integer maxConnections) {
 		this.maxConnections = maxConnections;
 		return this;
 	}
@@ -120,7 +120,7 @@ public class CouchPropertiesBuilder {
 	}
 
 	@JsonSetter("proxy_port")
-	public CouchPropertiesBuilder setProxyPort(int proxyPort) {
+	public CouchPropertiesBuilder setProxyPort(Integer proxyPort) {
 		this.proxyPort = proxyPort;
 		return this;
 	}

@@ -14,8 +14,9 @@ public enum ProgramType {
 	MATE("mate"),
 	ROVER("rover"),
 	ROVER_SETUP("rover-setup"),
+	@Deprecated
 	OUTHOUSE("outhouse"),
-	PV_OUTPUT_UPLOAD("pv-output-upload")
+	PVOUTPUT_UPLOAD("pvoutput-upload")
 	;
 	private final String name;
 

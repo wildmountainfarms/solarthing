@@ -1,6 +1,5 @@
 ## Using CouchDB
-All you need is a vanilla CouchDB instance to create a usable database
-for solarthing and outhouse.
+All you need is a vanilla CouchDB instance to create a usable database.
 
 CouchDB takes some initial setup to make it usable before you can configure SolarThing.
 

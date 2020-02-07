@@ -1,27 +1,38 @@
 package me.retrodaredevil.couchdb;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @JsonDeserialize(as = ImmutableCouchProperties.class)
 public interface CouchProperties {
+	@NotNull
 	String getProtocol();
+	@NotNull
 	String getHost();
+	@Nullable
 	String getPath();
 	int getPort();
 
+	@Nullable
 	String getUsername();
+	@Nullable
 	String getPassword();
 
-	// TODO make default values for some of these 'nullable' instead of 0
 	/**
 	 * @return The socket timeout in ms
 	 */
-	int getSocketTimeoutMillis();
+	@Nullable
+	Integer getSocketTimeoutMillis();
 	/**
 	 * @return The connection timeout in ms
 	 */
-	int getConnectionTimeoutMillis();
-	int getMaxConnections();
+	@Nullable
+	Integer getConnectionTimeoutMillis();
+	@Nullable
+	Integer getMaxConnections();
+	@Nullable
 	String getProxyHost();
-	int getProxyPort();
+	@Nullable
+	Integer getProxyPort();
 }
