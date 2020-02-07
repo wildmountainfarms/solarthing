@@ -6,7 +6,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonSubTypes({
 		@JsonSubTypes.Type(MateProgramOptions.class),
 		@JsonSubTypes.Type(RoverProgramOptions.class),
-		@JsonSubTypes.Type(RoverSetupProgramOptions.class)
+		@JsonSubTypes.Type(RoverSetupProgramOptions.class),
+		@JsonSubTypes.Type(PVOutputUploadProgramOptions.class)
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 public interface ProgramOptions {

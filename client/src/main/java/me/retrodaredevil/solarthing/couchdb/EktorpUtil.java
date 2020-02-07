@@ -9,10 +9,10 @@ import java.net.MalformedURLException;
 public final class EktorpUtil {
 	private EktorpUtil(){ throw new UnsupportedOperationException(); }
 	public static HttpClient createHttpClient(CouchProperties properties){
-		int maxConnections = properties.getMaxConnections();
-		int proxyPort = properties.getProxyPort();
-		int connectionTimeout = properties.getConnectionTimeoutMillis();
-		int socketTimeout = properties.getSocketTimeoutMillis();
+		Integer maxConnections = properties.getMaxConnections();
+		Integer proxyPort = properties.getProxyPort();
+		Integer connectionTimeout = properties.getConnectionTimeoutMillis();
+		Integer socketTimeout = properties.getSocketTimeoutMillis();
 		String rawPath = properties.getPath();
 		String path = rawPath == null ? "" : rawPath;
 		try {
@@ -22,16 +22,16 @@ public final class EktorpUtil {
 					.password(properties.getPassword()) // may be null
 					.proxy(properties.getProxyHost()) // may be null
 					;
-			if(connectionTimeout != 0){
+			if(connectionTimeout != null){
 				builder.connectionTimeout(connectionTimeout);
 			}
-			if(socketTimeout != 0){
+			if(socketTimeout != null){
 				builder.socketTimeout(socketTimeout);
 			}
-			if(maxConnections != 0){
+			if(maxConnections != null){
 				builder.maxConnections(maxConnections);
 			}
-			if(proxyPort != 0){
+			if(proxyPort != null){
 				builder.proxyPort(proxyPort);
 			}
 			return builder.build();

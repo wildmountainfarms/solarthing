@@ -14,7 +14,7 @@ to null.
 
 If you specify `database`, all of the packets will go into that specific database. If you do not specify
 `database`, the packets will go into a certain database determined by the program you are running. A `mate` or `rover` program's
-packets will go into the `"solarthing"` database. An `outhouse` program's packets will go into the `"outhouse"` database.
+packets will go into the `solarthing` database. An `outhouse` program's packets will go into the `"outhouse"` database.
 
 If you specify a `measurement`, all of the packets will always be stored as that specific measurement. If you
 do not specify `measurement`, one of two things will happen. If the database was specified, `measurement` will be determined by

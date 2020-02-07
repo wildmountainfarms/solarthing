@@ -1,0 +1,138 @@
+package me.retrodaredevil.solarthing.program;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import me.retrodaredevil.io.IOBundle;
+import me.retrodaredevil.io.modbus.*;
+import me.retrodaredevil.io.serial.SerialConfig;
+import me.retrodaredevil.io.serial.SerialConfigBuilder;
+import me.retrodaredevil.solarthing.SolarThingConstants;
+import me.retrodaredevil.solarthing.config.options.RoverOption;
+import me.retrodaredevil.solarthing.config.options.RoverProgramOptions;
+import me.retrodaredevil.solarthing.config.options.RoverSetupProgramOptions;
+import me.retrodaredevil.solarthing.packets.Packet;
+import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
+import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
+import me.retrodaredevil.solarthing.packets.collection.PacketCollections;
+import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
+import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
+import me.retrodaredevil.solarthing.packets.handling.PacketHandlerMultiplexer;
+import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
+import me.retrodaredevil.solarthing.solar.renogy.rover.*;
+import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusSlaveRead;
+import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusSlaveWrite;
+import me.retrodaredevil.solarthing.util.JacksonUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class RoverMain {
+	private static final Logger LOGGER = LoggerFactory.getLogger(RoverMain.class);
+	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
+
+	private static final SerialConfig ROVER_CONFIG = new SerialConfigBuilder(9600)
+			.setDataBits(8)
+			.setParity(SerialConfig.Parity.NONE)
+			.setStopBits(SerialConfig.StopBits.ONE)
+			.build();
+
+	public static int connectRover(RoverProgramOptions options) {
+		LOGGER.info("Beginning rover program");
+		PacketHandlerBundle packetHandlerBundle = PacketHandlerInit.getPacketHandlerBundle(SolarMain.getDatabaseConfigs(options), SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, SolarThingConstants.SOLAR_EVENT_UNIQUE_NAME);
+		// TODO packetHandlerBundle.getEventPacketHandlers()
+		List<PacketHandler> packetHandlers = new ArrayList<>(packetHandlerBundle.getStatusPacketHandlers());
+		PacketHandler packetHandler = new PacketHandlerMultiplexer(packetHandlers);
+		PacketListReceiver packetListReceiver = SolarMain.getSourceAndFragmentUpdater(options);
+
+
+		PacketCollectionIdGenerator idGenerator = SolarMain.createIdGenerator(options.getUniqueIdsInOneHour());
+		return doRoverProgram(options, (read, write) -> {
+			try {
+				while (!Thread.currentThread().isInterrupted()) {
+					final long startTime = System.currentTimeMillis();
+					final RoverStatusPacket packet;
+					try {
+						packet = RoverStatusPackets.createFromReadTable(read);
+					} catch(ModbusRuntimeException e){
+						LOGGER.error("Modbus exception", e);
+						Thread.sleep(5000);
+						continue;
+					}
+					try {
+						LOGGER.debug(MAPPER.writeValueAsString(packet) + "\n" +
+								packet.getSpecialPowerControlE021().getFormattedInfo().replaceAll("\n", "\n\t") + "\n" +
+								packet.getSpecialPowerControlE02D().getFormattedInfo().replaceAll("\n", "\n\t")
+						);
+					} catch (JsonProcessingException e) {
+						LOGGER.debug("Tried debugging value...", e);
+					}
+					List<Packet> packets = new ArrayList<>();
+					packets.add(packet);
+					packetListReceiver.receive(packets, true);
+					PacketCollection packetCollection = PacketCollections.createFromPackets(packets, idGenerator);
+					final long readDuration = System.currentTimeMillis() - startTime;
+					LOGGER.debug("took " + readDuration + "ms to read from Rover");
+					final long saveStartTime = System.currentTimeMillis();
+					try {
+						packetHandler.handle(packetCollection, true);
+					} catch (PacketHandleException e) {
+						LOGGER.error("Couldn't save a renogy rover packet!", e);
+					}
+					final long saveDuration = System.currentTimeMillis() - saveStartTime;
+					LOGGER.debug("took " + saveDuration + "ms to handle packets");
+					Thread.sleep(Math.max(1000, 6000 - readDuration)); // sleep between 1 and 6 seconds
+				}
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+			}
+		});
+	}
+	public static int connectRoverSetup(RoverSetupProgramOptions options) {
+		return doRoverProgram(options, RoverSetupProgram::startRoverSetup);
+	}
+	private static int doRoverProgram(RoverOption options, RoverProgramRunner runner) {
+		File dummyFile = options.getDummyFile();
+		if(dummyFile != null){
+			final FileInputStream fileInputStream;
+			try {
+				fileInputStream = new FileInputStream(dummyFile);
+			} catch (FileNotFoundException e) {
+				throw new RuntimeException("The dummy file was not found!", e);
+			}
+			final RoverStatusPacket roverStatusPacket;
+			try {
+				roverStatusPacket = MAPPER.readValue(fileInputStream, RoverStatusPacket.class);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+			DummyRoverReadWrite readWrite = new DummyRoverReadWrite(
+					roverStatusPacket,
+					(fieldName, previousValue, newValue) -> System.out.println(fieldName + " changed from " + previousValue + " to " + newValue)
+			);
+			runner.doProgram(readWrite, readWrite);
+			return 0;
+		} else {
+			try(IOBundle ioBundle = SolarMain.createIOBundle(options.getIOBundleFile(), ROVER_CONFIG)) {
+				ModbusSlaveBus modbus = new IOModbusSlaveBus(ioBundle, new RTUDataEncoder(2000, 20, 4));
+				ModbusSlave slave = new ImmutableAddressModbusSlave(options.getModbusAddress(), modbus);
+				RoverReadTable read = new RoverModbusSlaveRead(slave);
+				RoverWriteTable write = new RoverModbusSlaveWrite(slave);
+				runner.doProgram(read, write);
+				return 0;
+			} catch (Exception e) {
+				LOGGER.error("(Fatal)Got exception!", e);
+				return 1;
+			}
+		}
+	}
+	@FunctionalInterface
+	private interface RoverProgramRunner {
+		void doProgram(RoverReadTable read, RoverWriteTable write);
+	}
+}
