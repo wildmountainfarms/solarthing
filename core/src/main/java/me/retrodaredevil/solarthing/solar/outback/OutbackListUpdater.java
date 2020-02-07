@@ -344,35 +344,29 @@ public class OutbackListUpdater implements PacketListReceiver {
 		@JsonProperty
 		private final DailyMXPacket dailyMXPacket;
 		@JsonProperty
-		private final float unreportedKWH;
+		private final float accumulatedKWH;
 		@JsonProperty
-		private final int unreportedAH;
+		private final int accumulatedAH;
 
 		@JsonCreator
 		private MXSaveNode(
 				@JsonProperty(value = "dailyMXPacket", required = true) DailyMXPacket dailyMXPacket,
-				@JsonProperty(value = "unreportedKWH", required = true) float unreportedKWH,
-				@JsonProperty(value = "unreportedAH", required = true) int unreportedAH) {
+				@JsonProperty(value = "accumulatedKWH", required = true) float accumulatedKWH,
+				@JsonProperty(value = "accumulatedAH", required = true) int accumulatedAH) {
 			this.dailyMXPacket = dailyMXPacket;
-			this.unreportedKWH = unreportedKWH;
-			this.unreportedAH = unreportedAH;
+			this.accumulatedKWH = accumulatedKWH;
+			this.accumulatedAH = accumulatedAH;
 		}
 	}
 	private static final class MXListUpdater {
-		/*
-		TODO there's a bug in here where if you start it after midnight and before it resets...
-		it will report yesterday's kWH and then reset down to 0 once it does a raw reset.
-		 */
 		private final PacketListReceiver eventReceiver;
 		private int errorMode = 0;
 		private Long startDateMillis = null;
 		private Float minimumBatteryVoltage = null;
 		private Float maximumBatteryVoltage = null;
 
-		private float observedKWHAccumulation = 0.0f;
-		private int observedAHAccumulation = 0;
-		private float unreportedKWH = 0.0f;
-		private int unreportedAH = 0;
+		private float accumulatedKWH = 0;
+		private int accumulatedAH = 0;
 
 		private MXStatusPacket lastMX = null;
 
@@ -385,8 +379,8 @@ public class OutbackListUpdater implements PacketListReceiver {
 				minimumBatteryVoltage = packet.getDailyMinBatteryVoltage();
 				maximumBatteryVoltage = packet.getDailyMaxBatteryVoltage();
 
-				unreportedKWH = storedSaveNode.unreportedKWH;
-				unreportedAH = storedSaveNode.unreportedAH;
+				accumulatedKWH = storedSaveNode.accumulatedKWH;
+				accumulatedAH = storedSaveNode.accumulatedAH;
 			}
 		}
 
@@ -421,26 +415,20 @@ public class OutbackListUpdater implements PacketListReceiver {
 				int lastAH = last.getDailyAH();
 				float kwh = mx.getDailyKWH();
 				int ah = mx.getDailyAH();
-				if(lastKWH > kwh){ // kwh must have reset to 0
-					unreportedKWH += observedKWHAccumulation;
-					observedKWHAccumulation = 0;
-				} else {
-					observedKWHAccumulation += kwh - lastKWH;
+				if(kwh > lastKWH){
+					accumulatedKWH += kwh - lastKWH;
 				}
-				if(lastAH > ah){ // ah must have reset to 0
-					unreportedAH += observedAHAccumulation;
-					observedAHAccumulation = 0;
-				} else {
-					observedAHAccumulation += ah - lastAH;
+				if(ah > lastAH){
+					accumulatedAH += ah - lastAH;
 				}
 			}
 			MXDailyData data = createData(mx);
 			DailyMXPacket packet = new ImmutableDailyMXPacket(data, mx.getIdentifier());
 			packets.add(packet);
-			return new MXSaveNode(packet, unreportedKWH, unreportedAH);
+			return new MXSaveNode(packet, accumulatedKWH, accumulatedAH);
 		}
 		private MXDailyData createData(MXStatusPacket mx){
-			return new ImmutableMXDailyData(mx.getAddress(), errorMode, startDateMillis, mx.getDailyKWH() + unreportedKWH, mx.getDailyAH() + unreportedAH, mx.getDailyAHSupport(), minimumBatteryVoltage, maximumBatteryVoltage);
+			return new ImmutableMXDailyData(mx.getAddress(), errorMode, startDateMillis, accumulatedKWH, accumulatedAH, mx.getDailyAHSupport(), minimumBatteryVoltage, maximumBatteryVoltage);
 		}
 
 		private void doDayEnd(boolean wasInstant) {
