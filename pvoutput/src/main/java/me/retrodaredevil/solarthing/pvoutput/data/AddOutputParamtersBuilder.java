@@ -2,10 +2,11 @@ package me.retrodaredevil.solarthing.pvoutput.data;
 
 import me.retrodaredevil.solarthing.pvoutput.SimpleDate;
 import me.retrodaredevil.solarthing.pvoutput.SimpleTime;
+import me.retrodaredevil.solarthing.pvoutput.WeatherCondition;
 
 import static java.util.Objects.requireNonNull;
 
-public class OutputServiceDataBuilder implements OutputServiceData {
+public class AddOutputParamtersBuilder implements AddOutputParamters {
 	private final SimpleDate date;
 	private Number generated;
 	private Number exported;
@@ -21,12 +22,12 @@ public class OutputServiceDataBuilder implements OutputServiceData {
 	private Number importHighShoulder;
 	private Number consumption;
 
-	public OutputServiceDataBuilder(SimpleDate date) {
+	public AddOutputParamtersBuilder(SimpleDate date) {
 		this.date = requireNonNull(date);
 	}
 
-	public OutputServiceData build(){
-		return new ImmutableOutputServiceData(date, generated, exported, peakPower, peakTime, condition, minimumTemperatureCelsius, maximumTemperatureCelsius, comments, importPeak, importOffPeak, importShoulder, importHighShoulder, consumption);
+	public AddOutputParamters build(){
+		return new ImmutableAddOutputParamters(date, generated, exported, peakPower, peakTime, condition, minimumTemperatureCelsius, maximumTemperatureCelsius, comments, importPeak, importOffPeak, importShoulder, importHighShoulder, consumption);
 	}
 
 	@Override
@@ -34,7 +35,7 @@ public class OutputServiceDataBuilder implements OutputServiceData {
 		return date;
 	}
 
-	public OutputServiceDataBuilder setGenerated(Number generated) {
+	public AddOutputParamtersBuilder setGenerated(Number generated) {
 		this.generated = generated;
 		return this;
 	}
@@ -44,7 +45,7 @@ public class OutputServiceDataBuilder implements OutputServiceData {
 		return generated;
 	}
 
-	public OutputServiceDataBuilder setExported(Number exported) {
+	public AddOutputParamtersBuilder setExported(Number exported) {
 		this.exported = exported;
 		return this;
 	}
@@ -54,7 +55,7 @@ public class OutputServiceDataBuilder implements OutputServiceData {
 		return exported;
 	}
 
-	public OutputServiceDataBuilder setPeakPower(Number peakPower) {
+	public AddOutputParamtersBuilder setPeakPower(Number peakPower) {
 		this.peakPower = peakPower;
 		return this;
 	}
@@ -64,7 +65,7 @@ public class OutputServiceDataBuilder implements OutputServiceData {
 		return peakPower;
 	}
 
-	public OutputServiceDataBuilder setPeakTime(SimpleTime peakTime) {
+	public AddOutputParamtersBuilder setPeakTime(SimpleTime peakTime) {
 		this.peakTime = peakTime;
 		return this;
 	}
@@ -74,7 +75,7 @@ public class OutputServiceDataBuilder implements OutputServiceData {
 		return peakTime;
 	}
 
-	public OutputServiceDataBuilder setConditionValue(String condition) {
+	public AddOutputParamtersBuilder setConditionValue(String condition) {
 		this.condition = condition;
 		return this;
 	}
@@ -84,12 +85,12 @@ public class OutputServiceDataBuilder implements OutputServiceData {
 		return condition;
 	}
 
-	public OutputServiceDataBuilder setCondition(WeatherCondition condition){
+	public AddOutputParamtersBuilder setCondition(WeatherCondition condition){
 		this.condition = condition.toPVOutputString();
 		return this;
 	}
 
-	public OutputServiceDataBuilder setMinimumTemperatureCelsius(Float minimumTemperatureCelsius) {
+	public AddOutputParamtersBuilder setMinimumTemperatureCelsius(Float minimumTemperatureCelsius) {
 		this.minimumTemperatureCelsius = minimumTemperatureCelsius;
 		return this;
 	}
@@ -99,7 +100,7 @@ public class OutputServiceDataBuilder implements OutputServiceData {
 		return minimumTemperatureCelsius;
 	}
 
-	public OutputServiceDataBuilder setMaximumTemperatureCelsius(Float maximumTemperatureCelsius) {
+	public AddOutputParamtersBuilder setMaximumTemperatureCelsius(Float maximumTemperatureCelsius) {
 		this.maximumTemperatureCelsius = maximumTemperatureCelsius;
 		return this;
 	}
@@ -112,7 +113,7 @@ public class OutputServiceDataBuilder implements OutputServiceData {
 	/**
 	 * @param comments The comments string. It is recommended to be less than 30 characters
 	 */
-	public OutputServiceDataBuilder setComments(String comments) {
+	public AddOutputParamtersBuilder setComments(String comments) {
 		this.comments = comments;
 		return this;
 	}
@@ -122,7 +123,7 @@ public class OutputServiceDataBuilder implements OutputServiceData {
 		return comments;
 	}
 
-	public OutputServiceDataBuilder setImportPeak(Number importPeak) {
+	public AddOutputParamtersBuilder setImportPeak(Number importPeak) {
 		this.importPeak = importPeak;
 		return this;
 	}
@@ -132,7 +133,7 @@ public class OutputServiceDataBuilder implements OutputServiceData {
 		return importPeak;
 	}
 
-	public OutputServiceDataBuilder setImportOffPeak(Number importOffPeak) {
+	public AddOutputParamtersBuilder setImportOffPeak(Number importOffPeak) {
 		this.importOffPeak = importOffPeak;
 		return this;
 	}
@@ -142,7 +143,7 @@ public class OutputServiceDataBuilder implements OutputServiceData {
 		return importOffPeak;
 	}
 
-	public OutputServiceDataBuilder setImportShoulder(Number importShoulder) {
+	public AddOutputParamtersBuilder setImportShoulder(Number importShoulder) {
 		this.importShoulder = importShoulder;
 		return this;
 	}
@@ -152,7 +153,7 @@ public class OutputServiceDataBuilder implements OutputServiceData {
 		return importShoulder;
 	}
 
-	public OutputServiceDataBuilder setImportHighShoulder(Number importHighShoulder) {
+	public AddOutputParamtersBuilder setImportHighShoulder(Number importHighShoulder) {
 		this.importHighShoulder = importHighShoulder;
 		return this;
 	}
@@ -162,7 +163,7 @@ public class OutputServiceDataBuilder implements OutputServiceData {
 		return importHighShoulder;
 	}
 
-	public OutputServiceDataBuilder setConsumption(Number consumption) {
+	public AddOutputParamtersBuilder setConsumption(Number consumption) {
 		this.consumption = consumption;
 		return this;
 	}
@@ -172,7 +173,7 @@ public class OutputServiceDataBuilder implements OutputServiceData {
 		return consumption;
 	}
 
-	private static final class ImmutableOutputServiceData implements OutputServiceData {
+	private static final class ImmutableAddOutputParamters implements AddOutputParamters {
 		private final SimpleDate date;
 		private final Number generated;
 		private final Number exported;
@@ -188,8 +189,8 @@ public class OutputServiceDataBuilder implements OutputServiceData {
 		private final Number importHighShoulder;
 		private final Number consumption;
 
-		private ImmutableOutputServiceData(SimpleDate date, Number generated, Number exported, Number peakPower, SimpleTime peakTime, String condition, Float minimumTemperatureCelsius, Float maximumTemperatureCelsius, String comments, Number importPeak, Number importOffPeak, Number importShoulder, Number importHighShoulder, Number consumption) {
-			this.date = date;
+		private ImmutableAddOutputParamters(SimpleDate date, Number generated, Number exported, Number peakPower, SimpleTime peakTime, String condition, Float minimumTemperatureCelsius, Float maximumTemperatureCelsius, String comments, Number importPeak, Number importOffPeak, Number importShoulder, Number importHighShoulder, Number consumption) {
+			this.date = requireNonNull(date);
 			this.generated = generated;
 			this.exported = exported;
 			this.peakPower = peakPower;

@@ -1,6 +1,4 @@
-package me.retrodaredevil.solarthing.pvoutput.data;
-
-import me.retrodaredevil.solarthing.pvoutput.PVOutputString;
+package me.retrodaredevil.solarthing.pvoutput;
 
 public enum WeatherCondition implements PVOutputString {
 	FINE("Fine"),

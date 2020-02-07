@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        retrofitVersion = "2.6.3"
+        retrofitVersion = "2.7.1"
     }
 }
 plugins {
@@ -17,4 +17,7 @@ dependencies {
     api group: 'com.squareup.okhttp3', name: 'okhttp', version: '3.14.4'
     api "com.squareup.retrofit2:retrofit:$retrofitVersion"
     api "com.squareup.retrofit2:converter-jackson:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-scalars:$retrofitVersion"
+//    implementation "com.squareup.retrofit2:converter-jackson:$retrofitVersion"
+    implementation "com.squareup.okhttp3:logging-interceptor:4.3.1"
 }
