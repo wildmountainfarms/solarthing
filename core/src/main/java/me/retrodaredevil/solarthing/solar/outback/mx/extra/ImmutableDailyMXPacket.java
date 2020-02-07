@@ -18,11 +18,6 @@ public class ImmutableDailyMXPacket extends BaseMXDailyData implements DailyMXPa
 		this(dailyData, new OutbackIdentifier(dailyData.getAddress()));
 	}
 
-	@Override
-	public SolarExtraPacketType getPacketType() {
-		return SolarExtraPacketType.MXFM_DAILY;
-	}
-
 	static class Builder {
 		@JsonUnwrapped
 		@JsonProperty(required = true)

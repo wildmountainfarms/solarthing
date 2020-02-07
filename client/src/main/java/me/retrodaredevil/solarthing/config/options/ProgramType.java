@@ -14,7 +14,9 @@ public enum ProgramType {
 	MATE("mate"),
 	ROVER("rover"),
 	ROVER_SETUP("rover-setup"),
-	OUTHOUSE("outhouse");
+	OUTHOUSE("outhouse"),
+	PV_OUTPUT_UPLOAD("pv-output-upload")
+	;
 	private final String name;
 
 	ProgramType(String name) {
