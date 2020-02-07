@@ -1,6 +1,6 @@
 package me.retrodaredevil.solarthing.pvoutput;
 
-import me.retrodaredevil.solarthing.pvoutput.data.AddOutputParamters;
+import me.retrodaredevil.solarthing.pvoutput.data.AddOutputParameters;
 import me.retrodaredevil.solarthing.pvoutput.data.AddStatusParameters;
 import me.retrodaredevil.solarthing.pvoutput.service.PVOutputService;
 import retrofit2.Call;
@@ -16,7 +16,7 @@ public class ServicePVOutputExporter implements PVOutputExporter {
 	}
 
 	@Override
-	public void exportOutput(AddOutputParamters parameters) throws PVOutputException {
+	public void exportOutput(AddOutputParameters parameters) throws PVOutputException {
 		Call<String> call = service.addOutput(parameters);
 		final Response<String> response;
 		try {

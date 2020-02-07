@@ -6,7 +6,7 @@ import me.retrodaredevil.solarthing.pvoutput.WeatherCondition;
 
 import static java.util.Objects.requireNonNull;
 
-public class AddOutputParamtersBuilder implements AddOutputParamters {
+public class AddOutputParametersBuilder implements AddOutputParameters {
 	private final SimpleDate date;
 	private Number generated;
 	private Number exported;
@@ -22,12 +22,12 @@ public class AddOutputParamtersBuilder implements AddOutputParamters {
 	private Number importHighShoulder;
 	private Number consumption;
 
-	public AddOutputParamtersBuilder(SimpleDate date) {
+	public AddOutputParametersBuilder(SimpleDate date) {
 		this.date = requireNonNull(date);
 	}
 
-	public AddOutputParamters build(){
-		return new ImmutableAddOutputParamters(date, generated, exported, peakPower, peakTime, condition, minimumTemperatureCelsius, maximumTemperatureCelsius, comments, importPeak, importOffPeak, importShoulder, importHighShoulder, consumption);
+	public AddOutputParameters build(){
+		return new ImmutableAddOutputParameters(date, generated, exported, peakPower, peakTime, condition, minimumTemperatureCelsius, maximumTemperatureCelsius, comments, importPeak, importOffPeak, importShoulder, importHighShoulder, consumption);
 	}
 
 	@Override
@@ -35,7 +35,7 @@ public class AddOutputParamtersBuilder implements AddOutputParamters {
 		return date;
 	}
 
-	public AddOutputParamtersBuilder setGenerated(Number generated) {
+	public AddOutputParametersBuilder setGenerated(Number generated) {
 		this.generated = generated;
 		return this;
 	}
@@ -45,7 +45,7 @@ public class AddOutputParamtersBuilder implements AddOutputParamters {
 		return generated;
 	}
 
-	public AddOutputParamtersBuilder setExported(Number exported) {
+	public AddOutputParametersBuilder setExported(Number exported) {
 		this.exported = exported;
 		return this;
 	}
@@ -55,7 +55,7 @@ public class AddOutputParamtersBuilder implements AddOutputParamters {
 		return exported;
 	}
 
-	public AddOutputParamtersBuilder setPeakPower(Number peakPower) {
+	public AddOutputParametersBuilder setPeakPower(Number peakPower) {
 		this.peakPower = peakPower;
 		return this;
 	}
@@ -65,7 +65,7 @@ public class AddOutputParamtersBuilder implements AddOutputParamters {
 		return peakPower;
 	}
 
-	public AddOutputParamtersBuilder setPeakTime(SimpleTime peakTime) {
+	public AddOutputParametersBuilder setPeakTime(SimpleTime peakTime) {
 		this.peakTime = peakTime;
 		return this;
 	}
@@ -75,7 +75,7 @@ public class AddOutputParamtersBuilder implements AddOutputParamters {
 		return peakTime;
 	}
 
-	public AddOutputParamtersBuilder setConditionValue(String condition) {
+	public AddOutputParametersBuilder setConditionValue(String condition) {
 		this.condition = condition;
 		return this;
 	}
@@ -85,12 +85,12 @@ public class AddOutputParamtersBuilder implements AddOutputParamters {
 		return condition;
 	}
 
-	public AddOutputParamtersBuilder setCondition(WeatherCondition condition){
+	public AddOutputParametersBuilder setCondition(WeatherCondition condition){
 		this.condition = condition.toPVOutputString();
 		return this;
 	}
 
-	public AddOutputParamtersBuilder setMinimumTemperatureCelsius(Float minimumTemperatureCelsius) {
+	public AddOutputParametersBuilder setMinimumTemperatureCelsius(Float minimumTemperatureCelsius) {
 		this.minimumTemperatureCelsius = minimumTemperatureCelsius;
 		return this;
 	}
@@ -100,7 +100,7 @@ public class AddOutputParamtersBuilder implements AddOutputParamters {
 		return minimumTemperatureCelsius;
 	}
 
-	public AddOutputParamtersBuilder setMaximumTemperatureCelsius(Float maximumTemperatureCelsius) {
+	public AddOutputParametersBuilder setMaximumTemperatureCelsius(Float maximumTemperatureCelsius) {
 		this.maximumTemperatureCelsius = maximumTemperatureCelsius;
 		return this;
 	}
@@ -113,7 +113,7 @@ public class AddOutputParamtersBuilder implements AddOutputParamters {
 	/**
 	 * @param comments The comments string. It is recommended to be less than 30 characters
 	 */
-	public AddOutputParamtersBuilder setComments(String comments) {
+	public AddOutputParametersBuilder setComments(String comments) {
 		this.comments = comments;
 		return this;
 	}
@@ -123,7 +123,7 @@ public class AddOutputParamtersBuilder implements AddOutputParamters {
 		return comments;
 	}
 
-	public AddOutputParamtersBuilder setImportPeak(Number importPeak) {
+	public AddOutputParametersBuilder setImportPeak(Number importPeak) {
 		this.importPeak = importPeak;
 		return this;
 	}
@@ -133,7 +133,7 @@ public class AddOutputParamtersBuilder implements AddOutputParamters {
 		return importPeak;
 	}
 
-	public AddOutputParamtersBuilder setImportOffPeak(Number importOffPeak) {
+	public AddOutputParametersBuilder setImportOffPeak(Number importOffPeak) {
 		this.importOffPeak = importOffPeak;
 		return this;
 	}
@@ -143,7 +143,7 @@ public class AddOutputParamtersBuilder implements AddOutputParamters {
 		return importOffPeak;
 	}
 
-	public AddOutputParamtersBuilder setImportShoulder(Number importShoulder) {
+	public AddOutputParametersBuilder setImportShoulder(Number importShoulder) {
 		this.importShoulder = importShoulder;
 		return this;
 	}
@@ -153,7 +153,7 @@ public class AddOutputParamtersBuilder implements AddOutputParamters {
 		return importShoulder;
 	}
 
-	public AddOutputParamtersBuilder setImportHighShoulder(Number importHighShoulder) {
+	public AddOutputParametersBuilder setImportHighShoulder(Number importHighShoulder) {
 		this.importHighShoulder = importHighShoulder;
 		return this;
 	}
@@ -163,7 +163,7 @@ public class AddOutputParamtersBuilder implements AddOutputParamters {
 		return importHighShoulder;
 	}
 
-	public AddOutputParamtersBuilder setConsumption(Number consumption) {
+	public AddOutputParametersBuilder setConsumption(Number consumption) {
 		this.consumption = consumption;
 		return this;
 	}
@@ -173,7 +173,7 @@ public class AddOutputParamtersBuilder implements AddOutputParamters {
 		return consumption;
 	}
 
-	private static final class ImmutableAddOutputParamters implements AddOutputParamters {
+	private static final class ImmutableAddOutputParameters implements AddOutputParameters {
 		private final SimpleDate date;
 		private final Number generated;
 		private final Number exported;
@@ -189,7 +189,7 @@ public class AddOutputParamtersBuilder implements AddOutputParamters {
 		private final Number importHighShoulder;
 		private final Number consumption;
 
-		private ImmutableAddOutputParamters(SimpleDate date, Number generated, Number exported, Number peakPower, SimpleTime peakTime, String condition, Float minimumTemperatureCelsius, Float maximumTemperatureCelsius, String comments, Number importPeak, Number importOffPeak, Number importShoulder, Number importHighShoulder, Number consumption) {
+		private ImmutableAddOutputParameters(SimpleDate date, Number generated, Number exported, Number peakPower, SimpleTime peakTime, String condition, Float minimumTemperatureCelsius, Float maximumTemperatureCelsius, String comments, Number importPeak, Number importOffPeak, Number importShoulder, Number importHighShoulder, Number consumption) {
 			this.date = requireNonNull(date);
 			this.generated = generated;
 			this.exported = exported;

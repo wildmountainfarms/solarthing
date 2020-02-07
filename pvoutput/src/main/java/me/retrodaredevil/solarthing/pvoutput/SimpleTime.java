@@ -1,15 +1,18 @@
 package me.retrodaredevil.solarthing.pvoutput;
 
-import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.time.temporal.ChronoField;
+import java.util.Calendar;
 
-@JsonSerialize(using = SimpleTime.Serializer.class)
 @JsonDeserialize(using = SimpleTime.Deserializer.class)
 public final class SimpleTime implements PVOutputString {
 	private final int hour;
@@ -18,6 +21,12 @@ public final class SimpleTime implements PVOutputString {
 	public SimpleTime(int hour, int minute) {
 		this.hour = hour;
 		this.minute = minute;
+	}
+	public static SimpleTime fromCalendar(Calendar calendar){
+		return new SimpleTime(calendar.get(Calendar.HOUR), calendar.get(Calendar.MINUTE));
+	}
+	public static SimpleTime fromInstant(Instant instant){
+		return new SimpleTime(instant.get(ChronoField.HOUR_OF_DAY), instant.get(ChronoField.MINUTE_OF_HOUR));
 	}
 
 	public int getHour() {
@@ -39,12 +48,6 @@ public final class SimpleTime implements PVOutputString {
 			minuteString = "0" + minuteString;
 		}
 		return hourString + ":" + minuteString;
-	}
-	static class Serializer extends JsonSerializer<SimpleTime> {
-		@Override
-		public void serialize(SimpleTime value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-			gen.writeString(value.toPVOutputString());
-		}
 	}
 	static class Deserializer extends JsonDeserializer<SimpleTime> {
 

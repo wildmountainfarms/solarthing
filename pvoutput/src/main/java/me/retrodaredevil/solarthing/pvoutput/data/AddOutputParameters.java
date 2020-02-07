@@ -8,7 +8,7 @@ import me.retrodaredevil.solarthing.pvoutput.WeatherCondition;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonExplicit
-public interface AddOutputParamters {
+public interface AddOutputParameters {
 	@JsonProperty("d")
 	SimpleDate getOutputDate();
 
