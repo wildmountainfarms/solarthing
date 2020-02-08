@@ -23,7 +23,7 @@ public final class SimpleTime implements PVOutputString {
 		this.minute = minute;
 	}
 	public static SimpleTime fromCalendar(Calendar calendar){
-		return new SimpleTime(calendar.get(Calendar.HOUR), calendar.get(Calendar.MINUTE));
+		return new SimpleTime(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
 	}
 	public static SimpleTime fromInstant(Instant instant){
 		return new SimpleTime(instant.get(ChronoField.HOUR_OF_DAY), instant.get(ChronoField.MINUTE_OF_HOUR));
