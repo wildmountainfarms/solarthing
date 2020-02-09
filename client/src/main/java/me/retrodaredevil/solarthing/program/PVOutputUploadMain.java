@@ -46,6 +46,10 @@ public class PVOutputUploadMain {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PVOutputUploadMain.class);
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
 
+	/*
+	TODO This program currently doesn't work with fragmented packets or with Renogy Rover packets
+	 */
+
 	private static PacketGroup getLatestPacket(List<ObjectNode> packetNodes, PacketGroupParser parser){
 		PacketGroup latestPacketGroup = null;
 		for(ObjectNode object : packetNodes){

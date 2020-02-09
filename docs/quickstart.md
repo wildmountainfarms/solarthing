@@ -23,9 +23,11 @@ You will have to adjust the configuration to your needs and based on the type of
 
 [Rover Quickstart](quickstart_rover.md)
 
-## Configuration Continued
+[PVOutput Quickstart](quickstart_pvoutput.md) (requires CouchDB and either the Mate or Rover program)
 
+## Configuration Continued
 Now that you have started to configure your `base.json` file, decide what databases you want to use:
+
 ### CouchDB "Database"
 ```shell script
 cp ../config_templates/databases/couchdb_template.json config/couchdb.json
