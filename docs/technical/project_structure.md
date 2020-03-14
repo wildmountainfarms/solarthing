@@ -1,27 +1,27 @@
 # Project Structure
 
-### [core](../core)
+### [core](../../core)
 * A gradle subproject
 * Contains core code used in all other subprojects
-### [client](../client)
+### [client](../../client)
 * A gradle subproject
 * Contains the program for uploading packets to databases
-### [pvoutput](../pvoutput)
+### [pvoutput](../../pvoutput)
 * A gradle subproject
 * An API for https://pvoutput.org
-### [schema-generator](../schema-generator)
+### [schema-generator](../../schema-generator)
 * A gradle subproject
 * A subprogram that generates JSON schema
 
 ---
 
-### [program](../program)
+### [program](../../program)
 * A directory that is used as the working directory when running the `client` program.
-### [config_templates](../config_templates)
-* A directory that contains configuration templates that should be copied to [program/config](../program/config)
-### [solar](../solar)
+### [config_templates](../../config_templates)
+* A directory that contains configuration templates that should be copied to [program/config](../../program/config)
+### [solar](../../solar)
 * A directory that contains documentation for this project relating to solar data
-### [outhouse](../legacy/outhouse)
+### [outhouse](../../legacy/outhouse)
 * A directory that contains documentation for this project relating to outhouse data
-### [systemd](../systemd)
+### [systemd](../../systemd)
 * A directory that contains files for installing the solarthing service to a system that uses systemd

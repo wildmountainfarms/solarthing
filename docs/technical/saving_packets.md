@@ -2,7 +2,7 @@
 There are many ways to save packets (the way data is represented in this program)
 
 ### Example Configurations
-You can see [this](../config_templates) directory for some examples
+You can see [this](../../config_templates) directory for some examples
 
 This is for couchdb
 ```

@@ -18,6 +18,8 @@ public class PVOutputUploadProgramOptions implements ProgramOptions {
 	private File database;
 	@JsonProperty("time_zone")
 	private TimeZone timeZone = null;
+	@JsonProperty("source")
+	private String sourceId = null;
 
 	@Override
 	public ProgramType getProgramType() {
@@ -41,5 +43,8 @@ public class PVOutputUploadProgramOptions implements ProgramOptions {
 			return TimeZone.getDefault();
 		}
 		return r;
+	}
+	public String getSourceId(){
+		return sourceId;
 	}
 }

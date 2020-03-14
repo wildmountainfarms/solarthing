@@ -67,8 +67,8 @@ Run `./compile_and_move.sh`.
 
 #### [Developer Use](docs/developer_use.md)
 #### [Contributing](CONTRIBUTING.md)
-#### [Technical](docs/technical.md)
-#### [Project Structure](docs/project_structure.md)
+#### [Technical](docs/technical/technical.md)
+#### [Project Structure](docs/technical/project_structure.md)
 #### [History](docs/history.md)
 
 #### Configuration

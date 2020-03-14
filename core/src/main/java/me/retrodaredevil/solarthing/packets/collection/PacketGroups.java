@@ -11,7 +11,7 @@ import static java.util.Objects.requireNonNull;
 
 public final class PacketGroups {
 	private PacketGroups(){ throw new UnsupportedOperationException(); }
-	
+
 	public static PacketGroup createPacketGroup(Collection<? extends Packet> groups, long dateMillis){
 		return createPacketGroup(groups, dateMillis, Collections.emptyMap());
 	}
@@ -58,7 +58,6 @@ public final class PacketGroups {
 		}
 		return map;
 	}
-	@SuppressWarnings("unused")
 	public static Map<String, List<PacketGroup>> sortPackets(Collection<? extends PacketGroup> groups, long maxTimeDistance){
 		return sortPackets(groups, maxTimeDistance, null);
 	}
