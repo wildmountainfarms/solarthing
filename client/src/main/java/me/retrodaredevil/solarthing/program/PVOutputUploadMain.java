@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.program;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import me.retrodaredevil.couchdb.CouchProperties;
@@ -11,6 +10,7 @@ import me.retrodaredevil.solarthing.config.options.PVOutputUploadProgramOptions;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketRetriever;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
+import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
 import me.retrodaredevil.solarthing.packets.collection.parsing.*;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.pvoutput.SimpleDate;
@@ -21,14 +21,12 @@ import me.retrodaredevil.solarthing.pvoutput.service.OkHttpUtil;
 import me.retrodaredevil.solarthing.pvoutput.service.PVOutputService;
 import me.retrodaredevil.solarthing.pvoutput.service.RetrofitUtil;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacket;
-import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
-import me.retrodaredevil.solarthing.solar.common.AccumulatedChargeController;
-import me.retrodaredevil.solarthing.solar.common.BasicChargeController;
 import me.retrodaredevil.solarthing.solar.extra.SolarExtraPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.extra.DailyFXPacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.extra.DailyMXPacket;
+import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -46,23 +44,39 @@ public class PVOutputUploadMain {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PVOutputUploadMain.class);
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
 
-	/*
-	TODO This program currently doesn't work with fragmented packets or with Renogy Rover packets
-	 */
-
-	private static PacketGroup getLatestPacket(List<ObjectNode> packetNodes, PacketGroupParser parser){
-		PacketGroup latestPacketGroup = null;
+	private static PacketGroup getLatestPacket(String sourceId, List<ObjectNode> packetNodes, PacketGroupParser parser){
+		List<PacketGroup> rawPacketGroups = new ArrayList<>(packetNodes.size());
 		for(ObjectNode object : packetNodes){
 			try {
 				PacketGroup packetGroup = parser.parse(object);
-				if(latestPacketGroup == null || packetGroup.getDateMillis() > latestPacketGroup.getDateMillis()){
-					latestPacketGroup = packetGroup;
-				}
+				rawPacketGroups.add(packetGroup);
 			} catch (PacketParseException e) {
 				LOGGER.warn("This object must contain all unknown packets...", e);
 			}
 		}
-		return latestPacketGroup;
+		Map<String, List<PacketGroup>> packetGroupsMap = PacketGroups.sortPackets(rawPacketGroups, 2 * 60 * 1000);
+		final List<PacketGroup> packetGroups;
+		if(sourceId == null){
+			if(packetGroupsMap.containsKey("default")){
+				packetGroups = packetGroupsMap.get("default");
+			} else {
+				Iterator<List<PacketGroup>> iterator = packetGroupsMap.values().iterator();
+				if(iterator.hasNext()){
+					packetGroups = iterator.next();
+				} else {
+					packetGroups = null;
+				}
+			}
+		} else {
+			packetGroups = packetGroupsMap.get(sourceId);
+		}
+		if(packetGroups == null){
+			return null;
+		}
+		if(packetGroups.isEmpty()){
+			return null;
+		}
+		return packetGroups.get(packetGroups.size() - 1);
 	}
 	private static AddStatusParameters getStatusParameters(TimeZone timeZone, PacketGroup packetGroup){
 		int generatedWH = 0;
@@ -73,11 +87,16 @@ public class PVOutputUploadMain {
 			if(packet instanceof DailyMXPacket){
 				generatedWH += ((DailyMXPacket) packet).getDailyKWH() * 1000;
 			} else if(packet instanceof MXStatusPacket){
-				generatingW += ((MXStatusPacket) packet).getChargingPower().intValue();
+				generatingW += ((MXStatusPacket) packet).getPVWattage().intValue();
 			} else if(packet instanceof FXStatusPacket){
 				usingW += ((FXStatusPacket) packet).getInverterWattage();
 			} else if(packet instanceof DailyFXPacket){
 				usedWH += ((DailyFXPacket) packet).getInverterKWH() * 1000;
+			} else if(packet instanceof RoverStatusPacket){
+				generatedWH += ((RoverStatusPacket) packet).getDailyKWH() * 1000;
+				generatingW += ((RoverStatusPacket) packet).getPVWattage().intValue();
+				usedWH += ((RoverStatusPacket) packet).getDailyKWHConsumption() * 1000;
+				usingW += ((RoverStatusPacket) packet).getLoadPower();
 			}
 		}
 		LOGGER.debug("generatedWH={} generatingW={} usedWH={} usingW={}", generatedWH, generatingW, usedWH, usingW);
@@ -141,7 +160,7 @@ public class PVOutputUploadMain {
 				LOGGER.error("Couldn't get status packets", e);
 			}
 			if(statusPacketNodes != null){
-				PacketGroup packetGroup = getLatestPacket(statusPacketNodes, statusParser);
+				PacketGroup packetGroup = getLatestPacket(options.getSourceId(), statusPacketNodes, statusParser);
 				if(packetGroup == null){
 					LOGGER.warn("latestPacketGroup == null! We didn't get any status packets...");
 				} else {

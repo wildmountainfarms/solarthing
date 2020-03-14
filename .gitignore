@@ -1,5 +1,6 @@
 # Custom stuff:
 *.attach_pid*
+.~lock*
 
 /program/
 !/program/solarthing.jar
