@@ -3,11 +3,12 @@
 * Log CPU temperature, ram, etc into a database and logs.
   * Use the `vcgencmd measure_temp` available on Raspberry Pis
 * Add readable string alongside identifier tag for InfluxDB
-* Create a calendar program to be able to view daily kWH on a calendar interface
+* Create a calendar program to be able to view daily kWh on a calendar interface
   * If we do something with a calendar, we could use google calendar https://developers.google.com/calendar/create-events/
 * Have unique identifier for each jar file
 * AC Use->AC Drop, turn on AUX until NO AC. (GEN OFF) command using MATE's built in AC Use/Drop.
-* Add optional telemetry https://github.com/open-telemetry/opentelemetry-java
+* Figure out how to use https://emoncms.org/ to graph data
+  * https://emoncms.org/site/api#input
 
 ### Completed TODO:
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
@@ -24,11 +25,10 @@
 * Save DailyFX data to a file so if the program restarts mid-day, accumulated data is not reset
 * Change command_feedback to something generic and use that database for "event"-like data
   * Also upload this to InfluxDB
-* Have packets for inverters going on/off, AC Drop/AC Use, Daily kWH->0, etc
+* Have packets for inverters going on/off, AC Drop/AC Use, Daily kWh->0, etc
   * We still need to do some of these
 
 ### TODO Look into
-* Figure out how to use https://emoncms.org/ to graph data
 * Look into supporting Elasticsearch, MongoDB, Graphite
 * Do something with https://www.home-assistant.io/ somehow
 * Log data to https://solcast.com.au/
@@ -38,6 +38,7 @@
 * MQTT
 * https://github.com/netdata (grafana alternative?)
 * https://github.com/grafana/loki (for logging)
+* Add optional telemetry https://github.com/open-telemetry/opentelemetry-java
 
 #### TODO - Additions I'm not going to work on
 These might be useful to some people. I will not implement these in the future, but pull requests are welcome!

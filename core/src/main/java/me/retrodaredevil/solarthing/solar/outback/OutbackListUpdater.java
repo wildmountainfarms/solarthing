@@ -12,10 +12,13 @@ import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
+import me.retrodaredevil.solarthing.solar.outback.fx.MiscMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.FXDailyData;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.ImmutableFXDailyData;
 import me.retrodaredevil.solarthing.solar.outback.fx.event.ImmutableFXACModeChangePacket;
+import me.retrodaredevil.solarthing.solar.outback.fx.event.ImmutableFXAuxStateChangePacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.event.ImmutableFXDayEndPacket;
+import me.retrodaredevil.solarthing.solar.outback.fx.event.ImmutableFXOperationalModeChangePacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.extra.DailyFXPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.extra.ImmutableDailyFXPacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPacket;
@@ -305,15 +308,34 @@ public class OutbackListUpdater implements PacketListReceiver {
 			final FXStatusPacket lastFX = this.lastFX;
 			this.lastFX = fx;
 			final Integer lastACMode;
+			final Boolean wasAuxActive;
+			final Integer previousOperationalModeValue;
 			if(lastFX == null){
 				lastACMode = null;
+				wasAuxActive = null;
+				previousOperationalModeValue = null;
 			} else {
 				lastACMode = lastFX.getACModeValue();
+				wasAuxActive = lastFX.getMiscModes().contains(MiscMode.AUX_OUTPUT_ON);
+				previousOperationalModeValue = lastFX.getOperationalModeValue();
 			}
 			int currentACMode = fx.getACModeValue();
+			boolean isAuxActive = fx.getMiscModes().contains(MiscMode.AUX_OUTPUT_ON);
+			int operationalModeValue = fx.getOperationalModeValue();
+			List<Packet> packets = new ArrayList<>();
 			if(lastACMode == null || currentACMode != lastACMode){
-				eventReceiver.receive(Collections.singletonList(new ImmutableFXACModeChangePacket(fx.getIdentifier(), currentACMode, lastACMode)), wasInstant);
+				packets.add(new ImmutableFXACModeChangePacket(fx.getIdentifier(), currentACMode, lastACMode));
 			}
+			if(wasAuxActive == null || isAuxActive != wasAuxActive){
+				packets.add(new ImmutableFXAuxStateChangePacket(fx.getIdentifier(), isAuxActive, wasAuxActive));
+			}
+			if(previousOperationalModeValue == null || operationalModeValue != previousOperationalModeValue){
+				packets.add(new ImmutableFXOperationalModeChangePacket(fx.getIdentifier(), operationalModeValue, previousOperationalModeValue));
+			}
+			if(!packets.isEmpty()){
+				eventReceiver.receive(packets, wasInstant);
+			}
+
 		}
 		private void doDayEnd(boolean wasInstant){
 			FXStatusPacket fx = requireNonNull(lastFX);

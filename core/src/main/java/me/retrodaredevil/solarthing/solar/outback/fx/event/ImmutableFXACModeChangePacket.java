@@ -47,11 +47,6 @@ public class ImmutableFXACModeChangePacket implements FXACModeChangePacket {
 	}
 
 	@Override
-	public SolarEventPacketType getPacketType() {
-		return SolarEventPacketType.FX_AC_MODE_CHANGE;
-	}
-
-	@Override
 	public SupplementaryIdentifier getIdentifier() {
 		return identifier;
 	}

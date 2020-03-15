@@ -10,7 +10,7 @@ public class PacketTestUtil {
 	public static <T> void testJson(T originalPacket, Class<T> packetClass) throws JsonProcessingException {
 		ObjectMapper mapper = JacksonUtil.defaultMapper();
 		String json = mapper.writeValueAsString(originalPacket);
-		System.out.println(json);
+//		System.out.println(json);
 		T output = mapper.readValue(json, packetClass);
 		String json2 = mapper.writeValueAsString(output);
 		assertEquals(json, json2);
