@@ -1,7 +1,9 @@
 package me.retrodaredevil.solarthing.solar.outback;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import me.retrodaredevil.solarthing.annotations.TagKeys;
 
+@TagKeys({"address"})
 public interface OutbackData {
 	/**
 	 * Should be serialized as "address"

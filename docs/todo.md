@@ -9,6 +9,7 @@
 * AC Use->AC Drop, turn on AUX until NO AC. (GEN OFF) command using MATE's built in AC Use/Drop.
 * Figure out how to use https://emoncms.org/ to graph data
   * https://emoncms.org/site/api#input
+  * Some of this is done. Now we have to allow users to configure this and implement it into a program
 
 ### Completed TODO:
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
