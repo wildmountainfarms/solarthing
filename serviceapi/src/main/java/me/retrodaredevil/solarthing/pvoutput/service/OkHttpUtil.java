@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.pvoutput.service;
 
+import me.retrodaredevil.solarthing.serviceutil.HeaderRequestInterceptor;
 import okhttp3.OkHttpClient;
 
 public final class OkHttpUtil {

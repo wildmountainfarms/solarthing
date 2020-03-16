@@ -33,3 +33,5 @@ FX Packet:
 \n1,10,10,10,100,100,10,03,000,02,282,129,000,999\r
 ```
 
+This project has most of its code in one file: https://github.com/gitGNU/gnu_powerguru/blob/master/lib/outbackpower.h
+

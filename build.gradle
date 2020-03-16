@@ -7,6 +7,7 @@ buildscript {
         slf4jVersion = '1.7.29'
         log4jVersion = '2.12.1'
         jacksonVersion = '2.10.1'
+        retrofitVersion = "2.7.1"
     }
 }
 allprojects {
@@ -46,10 +47,10 @@ project(":client"){
     apply plugin: 'java'
     dependencies {
         api project(":core")
-        api project(":pvoutput")
+        api project(":serviceapi")
     }
 }
-project(":pvoutput"){
+project(":serviceapi"){
     apply plugin: 'java'
     dependencies {
         api project(":core")
