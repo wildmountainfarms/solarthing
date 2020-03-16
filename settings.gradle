@@ -1,6 +1,6 @@
 rootProject.name = 'solarthing'
 include 'core'
 include 'client'
-include 'pvoutput'
+include 'serviceapi'
 include 'json-datasource'
 include 'schema-generator'

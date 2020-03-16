@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing.pvoutput.service;
+package me.retrodaredevil.solarthing.serviceutil;
 
 import okhttp3.Interceptor;
 import okhttp3.Response;

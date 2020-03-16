@@ -17,5 +17,9 @@ SELECT "acModeValue" FROM "normal_forever_retention"."solarthing_events" WHERE (
 ```
 SELECT "command" FROM "normal_forever_retention"."solarthing_events" WHERE ("packetType" = 'MATE_COMMAND_SUCCESS') AND $timeFilter
 ```
+##### Operational Mode Changes
+```
+SELECT "operationalModeValue" FROM "normal_forever_retention"."solarthing_events" WHERE ("packetType" = 'FX_OPERATIONAL_MODE_CHANGE') AND "previousOperationalModeValue" > -1 AND "address" = 1 AND $timeFilter
+```
 
 *Contributions are welcome!*
