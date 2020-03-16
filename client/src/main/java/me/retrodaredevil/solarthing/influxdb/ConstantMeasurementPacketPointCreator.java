@@ -5,6 +5,7 @@ import me.retrodaredevil.solarthing.packets.DocumentedPacketType;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
+import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifier;
 import org.influxdb.dto.Point;
 
 public class ConstantMeasurementPacketPointCreator implements PacketPointCreator {
@@ -18,15 +19,18 @@ public class ConstantMeasurementPacketPointCreator implements PacketPointCreator
 	@Override
 	public Point.Builder createBuilder(Packet packet) {
 		Point.Builder r = Point.measurement(measurement);
+		if(packet instanceof Identifiable){
+			Identifier identifier = ((Identifiable) packet).getIdentifier();
+			r.tag("identifier", identifier.getRepresentation());
+			if(identifier instanceof SupplementaryIdentifier){
+				SupplementaryIdentifier supplementaryIdentifier = (SupplementaryIdentifier) identifier;
+				r.tag("identifier_supplementaryTo", supplementaryIdentifier.getSupplementaryTo().getRepresentation());
+			}
+		}
 		if(packet instanceof DocumentedPacket){
 			DocumentedPacket<? extends DocumentedPacketType> documentedPacket = (DocumentedPacket<? extends DocumentedPacketType>) packet;
 			DocumentedPacketType type = documentedPacket.getPacketType();
 			r.tag("packetType", type.toString());
-			if(packet instanceof Identifiable){
-				Identifier identifier = ((Identifiable) packet).getIdentifier();
-				return r.tag("identifier", identifier.getRepresentation());
-			}
-			return r;
 		}
 		return r;
 	}
