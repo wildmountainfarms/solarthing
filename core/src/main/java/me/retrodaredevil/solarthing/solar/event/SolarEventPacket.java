@@ -2,10 +2,7 @@ package me.retrodaredevil.solarthing.solar.event;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import me.retrodaredevil.solarthing.packets.DocumentedPacket;
-import me.retrodaredevil.solarthing.solar.outback.fx.event.FXACModeChangePacket;
-import me.retrodaredevil.solarthing.solar.outback.fx.event.FXAuxStateChangePacket;
-import me.retrodaredevil.solarthing.solar.outback.fx.event.FXDayEndPacket;
-import me.retrodaredevil.solarthing.solar.outback.fx.event.FXOperationalModeChangePacket;
+import me.retrodaredevil.solarthing.solar.outback.fx.event.*;
 import me.retrodaredevil.solarthing.solar.outback.mx.event.*;
 
 /**
@@ -21,6 +18,8 @@ import me.retrodaredevil.solarthing.solar.outback.mx.event.*;
 		@JsonSubTypes.Type(MXAuxModeChangePacket.class),
 		@JsonSubTypes.Type(MXErrorModeChangePacket.class),
 		@JsonSubTypes.Type(MXChargerModeChangePacket.class),
+		@JsonSubTypes.Type(FXErrorModeChangePacket.class),
+		@JsonSubTypes.Type(FXWarningModeChangePacket.class),
 })
 public interface SolarEventPacket extends DocumentedPacket<SolarEventPacketType> {
 }

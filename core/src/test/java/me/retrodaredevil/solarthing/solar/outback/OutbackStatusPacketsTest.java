@@ -4,13 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import me.retrodaredevil.solarthing.packets.support.Support;
 import me.retrodaredevil.solarthing.solar.PacketTestUtil;
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacket;
+import me.retrodaredevil.solarthing.solar.outback.fx.FXErrorMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.OperationalMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.FXDailyData;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.ImmutableFXDailyData;
-import me.retrodaredevil.solarthing.solar.outback.fx.event.FXAuxStateChangePacket;
-import me.retrodaredevil.solarthing.solar.outback.fx.event.FXOperationalModeChangePacket;
-import me.retrodaredevil.solarthing.solar.outback.fx.event.ImmutableFXAuxStateChangePacket;
-import me.retrodaredevil.solarthing.solar.outback.fx.event.ImmutableFXOperationalModeChangePacket;
+import me.retrodaredevil.solarthing.solar.outback.fx.event.*;
 import me.retrodaredevil.solarthing.solar.outback.fx.extra.DailyFXPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.extra.ImmutableDailyFXPacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.AuxMode;
@@ -77,6 +75,18 @@ public class OutbackStatusPacketsTest {
 			MXChargerModeChangePacket packet = new ImmutableMXChargerModeChangePacket(new OutbackIdentifier(1), 1, 0);
 			assertEquals(ChargerMode.FLOAT, packet.getChargingMode());
 			PacketTestUtil.testJson(packet, MXChargerModeChangePacket.class);
+			PacketTestUtil.testJson(packet, SolarEventPacket.class);
+		}
+		{
+			FXErrorModeChangePacket packet = new ImmutableFXErrorModeChangePacket(new OutbackIdentifier(1), 64, 0);
+			assertEquals(64, packet.getErrorModeValue());
+			PacketTestUtil.testJson(packet, FXErrorModeChangePacket.class);
+			PacketTestUtil.testJson(packet, SolarEventPacket.class);
+		}
+		{
+			FXWarningModeChangePacket packet = new ImmutableFXWarningModeChangePacket(new OutbackIdentifier(1), 32, 0, 0);
+			assertEquals(32, packet.getWarningModeValue());
+			PacketTestUtil.testJson(packet, FXWarningModeChangePacket.class);
 			PacketTestUtil.testJson(packet, SolarEventPacket.class);
 		}
 	}

@@ -8,6 +8,7 @@ public enum SolarEventPacketType implements DocumentedPacketType {
 	FX_AUX_STATE_CHANGE,
 	FX_DAILY_DAY_END,
 	FX_ERROR_MODE_CHANGE,
+	FX_WARNING_MODE_CHANGE,
 
 	MXFM_CHARGER_MODE_CHANGE,
 	MXFM_AUX_MODE_CHANGE,
