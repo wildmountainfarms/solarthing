@@ -59,7 +59,7 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 	public int getAddress() {
 		return address;
 	}
-	
+
 	@Override
 	public OutbackIdentifier getIdentifier() {
 		return identifier;
@@ -105,7 +105,7 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 	}
 
 	@Override
-	public int getChargerMode() {
+	public int getChargerModeValue() {
 		return chargerMode;
 	}
 
@@ -113,17 +113,17 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 	public float getBatteryVoltage() {
 		return batteryVoltage;
 	}
-	
+
 	@Override
 	public int getDailyAH() {
 		return dailyAH;
 	}
-	
+
 	@Override
 	public Support getDailyAHSupport() {
 		return dailyAHSupport;
 	}
-	
+
 	@Override
 	public int getChksum() {
 		return chksum;

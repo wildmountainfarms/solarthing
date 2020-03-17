@@ -11,7 +11,7 @@ import me.retrodaredevil.solarthing.solar.common.BasicChargeController;
 import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
 import me.retrodaredevil.solarthing.solar.common.DailyChargeController;
 import me.retrodaredevil.solarthing.solar.common.DailyData;
-import me.retrodaredevil.solarthing.solar.outback.OutbackPacket;
+import me.retrodaredevil.solarthing.solar.outback.OutbackStatusPacket;
 
 import java.util.Set;
 
@@ -23,7 +23,7 @@ import java.util.Set;
 @JsonDeserialize(as = ImmutableMXStatusPacket.class)
 @JsonTypeName("MXFM_STATUS")
 @JsonExplicit
-public interface MXStatusPacket extends OutbackPacket, BasicChargeController, DailyChargeController, BatteryVoltage {
+public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeController, DailyChargeController, BatteryVoltage {
 	@Override
 	default SolarStatusPacketType getPacketType(){
 		return SolarStatusPacketType.MXFM_STATUS;
@@ -120,8 +120,6 @@ public interface MXStatusPacket extends OutbackPacket, BasicChargeController, Da
 		return AuxMode.getActualValueCode(getRawAuxModeValue());
 	}
 	default AuxMode getAuxMode(){ return Modes.getActiveMode(AuxMode.class, getAuxModeValue());}
-	@Deprecated
-	default AuxMode getAuxModeMode(){ return getAuxMode(); }
 	default boolean isAuxBitActive(){ return AuxMode.isAuxModeActive(getRawAuxModeValue()); }
 
 	/**
@@ -143,11 +141,11 @@ public interface MXStatusPacket extends OutbackPacket, BasicChargeController, Da
 	 * @return [0..99] representing the MX's {@link ChargerMode}
 	 */
 	@JsonProperty("chargerMode")
-	int getChargerMode();
+	int getChargerModeValue();
 
 	@Override
 	default ChargerMode getChargingMode(){
-		return Modes.getActiveMode(ChargerMode.class, getChargerMode());
+		return Modes.getActiveMode(ChargerMode.class, getChargerModeValue());
 	}
 
 	/**

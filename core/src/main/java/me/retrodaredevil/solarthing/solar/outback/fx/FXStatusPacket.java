@@ -2,14 +2,13 @@ package me.retrodaredevil.solarthing.solar.outback.fx;
 
 import com.fasterxml.jackson.annotation.JsonClassDescription;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
-import me.retrodaredevil.solarthing.solar.outback.OutbackPacket;
+import me.retrodaredevil.solarthing.solar.outback.OutbackStatusPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.FXMiscReporter;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.FXWarningReporter;
 
@@ -23,7 +22,7 @@ import java.util.Set;
 @JsonTypeName("FX_STATUS")
 @JsonExplicit
 @JsonClassDescription("Status packet for FX devices")
-public interface FXStatusPacket extends OutbackPacket, BatteryVoltage, FXWarningReporter, FXMiscReporter {
+public interface FXStatusPacket extends OutbackStatusPacket, BatteryVoltage, FXWarningReporter, FXMiscReporter {
 	@Override
 	default SolarStatusPacketType getPacketType(){
 		return SolarStatusPacketType.FX_STATUS;
