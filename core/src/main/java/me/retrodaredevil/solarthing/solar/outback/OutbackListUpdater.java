@@ -24,9 +24,7 @@ import me.retrodaredevil.solarthing.solar.outback.fx.extra.ImmutableDailyFXPacke
 import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.common.ImmutableMXDailyData;
 import me.retrodaredevil.solarthing.solar.outback.mx.common.MXDailyData;
-import me.retrodaredevil.solarthing.solar.outback.mx.event.ImmutableMXDayEndPacket;
-import me.retrodaredevil.solarthing.solar.outback.mx.event.ImmutableMXRawDayEndPacket;
-import me.retrodaredevil.solarthing.solar.outback.mx.event.MXRawDayEndPacket;
+import me.retrodaredevil.solarthing.solar.outback.mx.event.*;
 import me.retrodaredevil.solarthing.solar.outback.mx.extra.DailyMXPacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.extra.ImmutableDailyMXPacket;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
@@ -447,6 +445,38 @@ public class OutbackListUpdater implements PacketListReceiver {
 			MXDailyData data = createData(mx);
 			DailyMXPacket packet = new ImmutableDailyMXPacket(data, mx.getIdentifier());
 			packets.add(packet);
+
+			{ // event packet stuff
+				int chargerModeValue = mx.getChargerModeValue();
+				int rawAuxModeValue = mx.getRawAuxModeValue();
+				int errorModeValue = mx.getErrorModeValue();
+				final Integer previousChargerModeValue;
+				final Integer previousRawAuxModeValue;
+				final Integer previousErrorModeValue;
+				if (last == null) {
+					previousChargerModeValue = null;
+					previousRawAuxModeValue = null;
+					previousErrorModeValue = null;
+				} else {
+					previousChargerModeValue = last.getChargerModeValue();
+					previousRawAuxModeValue = last.getRawAuxModeValue();
+					previousErrorModeValue = last.getErrorModeValue();
+				}
+				List<Packet> eventPackets = new ArrayList<>();
+				if (previousChargerModeValue == null || chargerModeValue != previousChargerModeValue) {
+					eventPackets.add(new ImmutableMXChargerModeChangePacket(mx.getIdentifier(), chargerModeValue, previousChargerModeValue));
+				}
+				if (previousRawAuxModeValue == null || rawAuxModeValue != previousRawAuxModeValue) {
+					eventPackets.add(new ImmutableMXAuxModeChangePacket(mx.getIdentifier(), rawAuxModeValue, previousRawAuxModeValue));
+				}
+				if(previousErrorModeValue == null || errorModeValue != previousErrorModeValue){
+					eventPackets.add(new ImmutableMXErrorModeChangePacket(mx.getIdentifier(), errorModeValue, previousErrorModeValue));
+				}
+				if (!eventPackets.isEmpty()) {
+					eventReceiver.receive(eventPackets, wasInstant);
+				}
+			}
+
 			return new MXSaveNode(packet, accumulatedKWH, accumulatedAH);
 		}
 		private MXDailyData createData(MXStatusPacket mx){

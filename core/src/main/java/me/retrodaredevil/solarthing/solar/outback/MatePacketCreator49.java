@@ -27,7 +27,7 @@ public class MatePacketCreator49 extends StartEndTextPacketCreator {
 	@Override
 	public Collection<Packet> create(char[] bytes) throws PacketCreationException {
 		final int value = bytes[1]; // ascii value
-		final OutbackPacket r;
+		final OutbackStatusPacket r;
 		if(value >= 48 && value <= 58){ // fx status
 			try {
 				r = FXStatusPackets.createFromChars(bytes, ignoreCheckSum);

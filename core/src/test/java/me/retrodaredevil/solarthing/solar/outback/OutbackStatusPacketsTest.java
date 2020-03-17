@@ -13,10 +13,11 @@ import me.retrodaredevil.solarthing.solar.outback.fx.event.ImmutableFXAuxStateCh
 import me.retrodaredevil.solarthing.solar.outback.fx.event.ImmutableFXOperationalModeChangePacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.extra.DailyFXPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.extra.ImmutableDailyFXPacket;
+import me.retrodaredevil.solarthing.solar.outback.mx.AuxMode;
+import me.retrodaredevil.solarthing.solar.outback.mx.ChargerMode;
 import me.retrodaredevil.solarthing.solar.outback.mx.common.ImmutableMXDailyData;
 import me.retrodaredevil.solarthing.solar.outback.mx.common.MXDailyData;
-import me.retrodaredevil.solarthing.solar.outback.mx.event.ImmutableMXDayEndPacket;
-import me.retrodaredevil.solarthing.solar.outback.mx.event.MXDayEndPacket;
+import me.retrodaredevil.solarthing.solar.outback.mx.event.*;
 import me.retrodaredevil.solarthing.solar.outback.mx.extra.DailyMXPacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.extra.ImmutableDailyMXPacket;
 import org.junit.jupiter.api.Test;
@@ -26,7 +27,7 @@ import java.util.Collections;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class OutbackPacketsTest {
+public class OutbackStatusPacketsTest {
 	@Test
 	void test() throws JsonProcessingException {
 		{
@@ -58,6 +59,24 @@ public class OutbackPacketsTest {
 			FXOperationalModeChangePacket packet = new ImmutableFXOperationalModeChangePacket(new OutbackIdentifier(1), 3, 4);
 			assertEquals(OperationalMode.CHARGE, packet.getOperationalMode());
 			PacketTestUtil.testJson(packet, FXOperationalModeChangePacket.class);
+			PacketTestUtil.testJson(packet, SolarEventPacket.class);
+		}
+		{
+			MXAuxModeChangePacket packet = new ImmutableMXAuxModeChangePacket(new OutbackIdentifier(1), 3, 0);
+			assertEquals(AuxMode.MANUAL, packet.getAuxMode());
+			PacketTestUtil.testJson(packet, MXAuxModeChangePacket.class);
+			PacketTestUtil.testJson(packet, SolarEventPacket.class);
+		}
+		{
+			MXErrorModeChangePacket packet = new ImmutableMXErrorModeChangePacket(new OutbackIdentifier(1), 32, 0);
+			assertEquals(32, packet.getErrorModeValue());
+			PacketTestUtil.testJson(packet, MXErrorModeChangePacket.class);
+			PacketTestUtil.testJson(packet, SolarEventPacket.class);
+		}
+		{
+			MXChargerModeChangePacket packet = new ImmutableMXChargerModeChangePacket(new OutbackIdentifier(1), 1, 0);
+			assertEquals(ChargerMode.FLOAT, packet.getChargingMode());
+			PacketTestUtil.testJson(packet, MXChargerModeChangePacket.class);
 			PacketTestUtil.testJson(packet, SolarEventPacket.class);
 		}
 	}

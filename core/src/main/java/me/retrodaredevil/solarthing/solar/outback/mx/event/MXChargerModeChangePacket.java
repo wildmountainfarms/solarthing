@@ -1,6 +1,8 @@
 package me.retrodaredevil.solarthing.solar.outback.mx.event;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
@@ -9,6 +11,8 @@ import me.retrodaredevil.solarthing.solar.outback.OutbackData;
 import me.retrodaredevil.solarthing.solar.outback.mx.ChargerMode;
 import org.jetbrains.annotations.Nullable;
 
+@JsonDeserialize(as = ImmutableMXChargerModeChangePacket.class)
+@JsonTypeName("MXFM_CHARGER_MODE_CHANGE")
 @JsonExplicit
 public interface MXChargerModeChangePacket extends SupplementarySolarEventPacket, OutbackData {
 	@Override
@@ -16,9 +20,9 @@ public interface MXChargerModeChangePacket extends SupplementarySolarEventPacket
 		return SolarEventPacketType.MXFM_CHARGER_MODE_CHANGE;
 	}
 
-	@JsonProperty("chargerMode")
+	@JsonProperty("chargerModeValue")
 	int getChargerModeValue();
-	@JsonProperty("previousChargerMode")
+	@JsonProperty("previousChargerModeValue")
 	@Nullable Integer getPreviousChargerModeValue();
 
 	default ChargerMode getChargingMode(){

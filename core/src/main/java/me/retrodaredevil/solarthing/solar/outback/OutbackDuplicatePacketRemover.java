@@ -17,17 +17,17 @@ public class OutbackDuplicatePacketRemover implements PacketListReceiver {
 
 	@Override
 	public void receive(List<Packet> packets, boolean wasInstant) {
-		OutbackPacket last = null;
+		OutbackStatusPacket last = null;
 		List<Integer> split = new ArrayList<>();
 		split.add(0);
 		for (int i = 0; i < packets.size(); i++) {
 			Packet packet = packets.get(i);
-			if (packet instanceof OutbackPacket) {
-				OutbackPacket outbackPacket = (OutbackPacket) packet;
-				if(last != null && outbackPacket.getAddress() <= last.getAddress()){
+			if (packet instanceof OutbackStatusPacket) {
+				OutbackStatusPacket outbackStatusPacket = (OutbackStatusPacket) packet;
+				if(last != null && outbackStatusPacket.getAddress() <= last.getAddress()){
 					split.add(i);
 				}
-				last = outbackPacket;
+				last = outbackStatusPacket;
 			}
 		}
 		split.add(packets.size());

@@ -55,8 +55,8 @@ class OutbackDuplicatePacketRemoverTest {
 		}
 		return r;
 	}
-	private OutbackPacket create(int address){
-		return new OutbackPacket() {
+	private OutbackStatusPacket create(int address){
+		return new OutbackStatusPacket() {
 			@Override
 			public int getAddress() {
 				return address;

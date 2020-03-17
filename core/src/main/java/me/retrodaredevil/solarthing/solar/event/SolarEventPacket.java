@@ -6,8 +6,7 @@ import me.retrodaredevil.solarthing.solar.outback.fx.event.FXACModeChangePacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.event.FXAuxStateChangePacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.event.FXDayEndPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.event.FXOperationalModeChangePacket;
-import me.retrodaredevil.solarthing.solar.outback.mx.event.MXDayEndPacket;
-import me.retrodaredevil.solarthing.solar.outback.mx.event.MXRawDayEndPacket;
+import me.retrodaredevil.solarthing.solar.outback.mx.event.*;
 
 /**
  * A type of packet for solar data that goes into the "event" database. These packets have one of the types defined in {@link SolarEventPacketType}
@@ -19,6 +18,9 @@ import me.retrodaredevil.solarthing.solar.outback.mx.event.MXRawDayEndPacket;
 		@JsonSubTypes.Type(MXRawDayEndPacket.class),
 		@JsonSubTypes.Type(FXAuxStateChangePacket.class),
 		@JsonSubTypes.Type(FXOperationalModeChangePacket.class),
+		@JsonSubTypes.Type(MXAuxModeChangePacket.class),
+		@JsonSubTypes.Type(MXErrorModeChangePacket.class),
+		@JsonSubTypes.Type(MXChargerModeChangePacket.class),
 })
 public interface SolarEventPacket extends DocumentedPacket<SolarEventPacketType> {
 }
