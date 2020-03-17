@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
@@ -20,6 +22,9 @@ public class MateProgramOptions extends PacketHandlingOptionBase implements IOBu
 
 	@JsonProperty(value = "io", required = true)
 	private File io;
+
+	@JsonProperty("fx_warning_ignore")
+	private Map<Integer, Integer> fxWarningIgnoreMap;
 
 	public boolean isAllowCommands() {
 		return allowCommands;
@@ -49,5 +54,12 @@ public class MateProgramOptions extends PacketHandlingOptionBase implements IOBu
 	@Override
 	public ProgramType getProgramType() {
 		return ProgramType.MATE;
+	}
+	public Map<Integer, Integer> getFXWarningIgnoreMap() {
+		Map<Integer, Integer> r = fxWarningIgnoreMap;
+		if(r == null){
+			return Collections.emptyMap();
+		}
+		return r;
 	}
 }

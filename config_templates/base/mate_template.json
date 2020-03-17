@@ -7,5 +7,9 @@
     "config/couchdb.json"
   ],
   "io": "../config_templates/io/default_linux_serial.json",
-  "correct_check_sum": false
+  "correct_check_sum": false,
+  "fx_warning_ignore": {
+    "1": 0,
+    "2": 32
+  }
 }

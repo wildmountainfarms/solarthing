@@ -181,7 +181,7 @@ public class OutbackMateMain {
 							250,
 							new PacketListReceiverMultiplexer(
 									OutbackDuplicatePacketRemover.INSTANCE,
-									new OutbackListUpdater(new DailyIdentifier(), eventPacketListReceiverHandler.getPacketListReceiverAccepter(), dataDirectory),
+									new OutbackListUpdater(new DailyIdentifier(), eventPacketListReceiverHandler.getPacketListReceiverAccepter(), options.getFXWarningIgnoreMap(), dataDirectory),
 									statusPacketListReceiverHandler.getPacketListReceiverAccepter(),
 									statusPacketListReceiverHandler.getPacketListReceiverPacker(),
 									eventPacketListReceiverHandler.getPacketListReceiverPacker(),

@@ -13,6 +13,7 @@ public enum MiscMode implements BitmaskMode {
 	 * If this is active, this has an AC Output greater than 200 V. If this is not active, then this is likely a 120V FX unit
 	 */
 	FX_230V_UNIT(1, "FX - 230V unit"),
+	// bits #2 through #7 are reserved/used by the fx
 	/** If this is active, this FX's AUX output is active*/
 	AUX_OUTPUT_ON(128, "AUX output ON");
 
