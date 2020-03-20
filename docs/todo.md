@@ -10,6 +10,7 @@
 * Figure out how to use https://emoncms.org/ to graph data
   * https://emoncms.org/site/api#input
   * Some of this is done. Now we have to allow users to configure this and implement it into a program
+* Graph QL
 
 ### Completed TODO:
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
@@ -27,7 +28,6 @@
 * Change command_feedback to something generic and use that database for "event"-like data
   * Also upload this to InfluxDB
 * Have packets for inverters going on/off, AC Drop/AC Use, Daily kWh->0, etc
-  * We still need to do some of these
 
 ### TODO Look into
 * Look into supporting Elasticsearch, MongoDB, Graphite
@@ -40,6 +40,7 @@
 * https://github.com/netdata (grafana alternative?)
 * https://github.com/grafana/loki (for logging)
 * Add optional telemetry https://github.com/open-telemetry/opentelemetry-java
+* thingsboard.io
 
 #### TODO - Additions I'm not going to work on
 These might be useful to some people. I will not implement these in the future, but pull requests are welcome!

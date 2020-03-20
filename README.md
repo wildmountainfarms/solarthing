@@ -1,5 +1,5 @@
-# SolarThing
-Parses data from an Outback MATE, communicates with a Renogy Rover - MPPT Charge Controller, uses CouchDB or InfluxDB as a database. Great with Grafana and PVOutput!
+![SolarThing](docs/solarthing_logo.png "SolarThing")
+Stores solar data in a database to view on Android, Grafana, or PVOutput
 
 ## Supported Products
 * <strong>Outback MATEs</strong> (FX Inverter, MX/FM Charge Controller)
@@ -23,6 +23,7 @@ Ready to install? Use the [Quickstart](docs/quickstart.md)!
 * [PVOutput.org](https://pvoutput.org)
   * Allows for viewing of data on [pvoutput.org](https://pvoutput.org)
   * Requires CouchDB to be set up
+  * Enables usage of the [PVOutput Mycroft skill](https://github.com/wildmountainfarms/pvoutput-mycroft)
 
 
 ### Examples
@@ -30,30 +31,32 @@ SolarThing Android: [Github](https://github.com/wildmountainfarms/solarthing-and
 |
 [Google Play](https://play.google.com/store/apps/details?id=me.retrodaredevil.solarthing.android)
 
-![alt text](docs/solarthing-android-example.jpg "SolarThing Android Notification")
+SolarThing Android displays data in a persistent notification that updates at a configurable rate
+![alt text](docs/solarthing-android-notification-screenshot-1.jpg "SolarThing Android Notification")
+<hr/>
+
+If you decide to use InfluxDB, you can easily create your own Dashboard with [Grafana](https://github.com/grafana/grafana).
+
+Grafana is very customizable. Rearrange graphs and make it how you want!
+![alt text](docs/grafana-screenshot-1.png "SolarThing with Grafana")
+
 <hr/>
 
 [SolarThing Web](https://github.com/wildmountainfarms/solarthing-web)
 
-![alt text](docs/solarthing-web-example.png "SolarThing Web")
-<hr/>
-If you decide to use InfluxDB, you can easily create your own Dashboard with Grafana. This is the most customizable!
-
-![alt text](docs/grafana-example.png "SolarThing with Grafana")
-
+While it takes some configuring, SolarThing web is a simple way to display solar data.
+![alt text](docs/solarthing-web-screenshot-1.png "SolarThing Web")
 <hr/>
 
-## What This is currently used for
-This program is run on a raspberry pi at Wild Mountain Farms.
-That program uploads packets to a CouchDB database on a separate computer which hosts the web portion
-found here: [solarthing-web](https://github.com/wildmountainfarms/solarthing-web) CouchDB is also used for [solarthing-android](https://github.com/wildmountainfarms/solarthing-android). 
-We use InfluxDB to make using Grafana easy. We run the `pvoutput-upload` subprogram to upload CouchDB data to [pvoutput.org](https://pvoutput.org)
+## Usage at Wild Mountain Farms
+We monitor an Outback MATE2 with a Raspberry Pi 1 and a Renogy Rover charge controller with a Raspberry Pi Zero W.
+Both SolarThing instances upload data to CouchDB and InfluxDB, both hosted on the computer also hosting Grafana and SolarThing Web.
+Another computer gets data from CouchDB and uploads it to PVOutput using the `pvoutput-upload` program.
 
 ## Using the program
 You can see the [Outback/Renogy Rover](solar/README.md) README for using the program with outback or renogy products.
 
 The [input and output](docs/input_and_outputs.md) README is documentation for the `io` JSON property option used in all of the sub programs.
-
 
 ### Compiling
 Run `./compile_and_move.sh`.
