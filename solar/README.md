@@ -45,6 +45,12 @@ https://www.wmrc.edu/projects/BARenergy/manuals/outback-manuals/Mate_Serial_Comm
 Mate Manual:
 https://www.wmrc.edu/projects/BARenergy/manuals/outback-manuals/Mate-rev-230.pdf
 
+FX Manual:
+http://outbackpower.com/downloads/documents/inverter_chargers/m_series/fx_mobile_operator.pdf
+
+MX Manual:
+https://www.wmrc.edu/projects/BARenergy/manuals/outback-manuals/MX60_REV_C.pdf
+
 
 ## Renogy References:
 Rover manual: https://www.renogy.com/template/files/Manuals/Rover%20203040%20Manual.pdf
