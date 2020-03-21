@@ -9,14 +9,14 @@ Stores solar data in a database to view on Android, Grafana, or PVOutput
 Ready to install? Use the [Quickstart](docs/quickstart.md)!
 
 # Features
-* Supports **multiple types of solar products** (Outback MX/FM and Renogy Rover + compatible products)
+* Supports **multiple types of solar products**
 * Runs reliably **24-7**. Recovers from connection errors and has verbose logging features
 * Fully customizable through JSON (**No programming experience required**)
 * Supports CouchDB, InfluxDB, local JSON file, and PVOutput exporting
 
 ## Supported Databases
 * CouchDB
-  * Allows for [solarthing-web](https://github.com/wildmountainfarms/solarthing-web) and [solarthing-android](https://github.com/wildmountainfarms/solarthing-android) to function
+  * Allows for [SolarThing Android](https://github.com/wildmountainfarms/solarthing-android) and [SolarThing Web](https://github.com/wildmountainfarms/solarthing-web) to function
   * Used for PVOutput data collection
 * InfluxDB
   * Allows for viewing of data in Grafana

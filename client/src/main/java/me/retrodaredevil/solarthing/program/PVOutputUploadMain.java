@@ -13,6 +13,7 @@ import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
 import me.retrodaredevil.solarthing.packets.collection.parsing.*;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
+import me.retrodaredevil.solarthing.packets.instance.InstancePacket;
 import me.retrodaredevil.solarthing.pvoutput.SimpleDate;
 import me.retrodaredevil.solarthing.pvoutput.SimpleTime;
 import me.retrodaredevil.solarthing.pvoutput.data.AddStatusParameters;
@@ -130,18 +131,19 @@ public class PVOutputUploadMain {
 		CouchDbPacketRetriever statusRetriever = new CouchDbPacketRetriever(couchProperties, SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME){
 			@Override
 			protected ViewQuery alterView(ViewQuery view) {
-				return view.startKey(System.currentTimeMillis() - 5 * 60 * 1000).limit(1); // last 5 minutes
+				return view.startKey(System.currentTimeMillis() - 5 * 60 * 1000); // last 5 minutes
 			}
 		};
-		CouchDbPacketRetriever eventRetriever = new CouchDbPacketRetriever(couchProperties, SolarThingConstants.SOLAR_EVENT_UNIQUE_NAME){
-			@Override
-			protected ViewQuery alterView(ViewQuery view) {
-				return view.startKey(System.currentTimeMillis() - 15 * 60 * 1000); // last 15 minutes
-			}
-		};
+//		CouchDbPacketRetriever eventRetriever = new CouchDbPacketRetriever(couchProperties, SolarThingConstants.SOLAR_EVENT_UNIQUE_NAME){
+//			@Override
+//			protected ViewQuery alterView(ViewQuery view) {
+//				return view.startKey(System.currentTimeMillis() - 15 * 60 * 1000); // last 15 minutes
+//			}
+//		};
 		PacketGroupParser statusParser = new SimplePacketGroupParser(new PacketParserMultiplexer(Arrays.asList(
 				new ObjectMapperPacketConverter(MAPPER, SolarStatusPacket.class),
-				new ObjectMapperPacketConverter(MAPPER, SolarExtraPacket.class)
+				new ObjectMapperPacketConverter(MAPPER, SolarExtraPacket.class),
+				new ObjectMapperPacketConverter(MAPPER, InstancePacket.class)
 		), PacketParserMultiplexer.LenientType.FULLY_LENIENT));
 
 		OkHttpClient client = OkHttpUtil.configure(new OkHttpClient.Builder(), options.getApiKey(), options.getSystemId())
