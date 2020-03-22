@@ -19,31 +19,38 @@ public class PacketListReceiverHandler {
 	private final PacketListReceiver packetListReceiver;
 	private final PacketHandler packetHandler;
 	private final PacketCollectionIdGenerator idGenerator;
-	private final int packetCollectionsToKeepOnFail;
 
 	private final List<Packet> packetList = new ArrayList<>();
 	private final List<PacketCollection> packetCollectionList = new ArrayList<>();
 
-	public PacketListReceiverHandler(PacketListReceiver packetListReceiver, PacketHandler packetHandler, PacketCollectionIdGenerator idGenerator, int packetCollectionsToKeepOnFail) {
+	public PacketListReceiverHandler(PacketListReceiver packetListReceiver, PacketHandler packetHandler, PacketCollectionIdGenerator idGenerator) {
 		this.packetListReceiver = packetListReceiver;
 		this.packetHandler = packetHandler;
 		this.idGenerator = idGenerator;
-		this.packetCollectionsToKeepOnFail = packetCollectionsToKeepOnFail;
-		if(packetCollectionsToKeepOnFail < 0){
-			throw new IllegalArgumentException("packetsToKeep=" + packetCollectionsToKeepOnFail);
-		}
 	}
 
+	/**
+	 *
+	 * @return The {@link PacketListReceiver} to accept the packets. When this is used, packets are accepted and stored
+	 */
 	public PacketListReceiver getPacketListReceiverAccepter(){
 		return receiver;
 	}
 	private final PacketListReceiver receiver = (packets, wasInstant) -> packetList.addAll(packets);
 
+	/**
+	 * NOTE: This does not do anything with the packets passed to {@link PacketListReceiver#receive(List, boolean)}.
+	 * @return The {@link PacketListReceiver} that uses the packets currently stored to create a {@link PacketCollection} that can be handled with returned value from {@link #getPacketListReceiverHandler()}
+	 */
 	public PacketListReceiver getPacketListReceiverPacker(){
 		return packer;
 	}
 	private final PacketListReceiver packer = (packets, wasInstant) -> pack(wasInstant);
 
+	/**
+	 * NOTE: This does not do anything with the packets passed to {@link PacketListReceiver#receive(List, boolean)}.
+	 * @return A {@link PacketListReceiver} that handles the {@link PacketCollection}s that are currently stored
+	 */
 	public PacketListReceiver getPacketListReceiverHandler(){
 		return handler;
 	}
@@ -60,20 +67,13 @@ public class PacketListReceiverHandler {
 	}
 
 	public void handle(boolean wasInstant) {
-		for (Iterator<PacketCollection> iterator = packetCollectionList.iterator(); iterator.hasNext(); ) {
-			PacketCollection packetCollection = iterator.next();
+		for (PacketCollection packetCollection : packetCollectionList) {
 			try {
 				packetHandler.handle(packetCollection, wasInstant);
-				iterator.remove();
 			} catch (PacketHandleException e) {
-				LOGGER.error("Couldn't handle packets!", e);
-				if(packetCollectionsToKeepOnFail == 0){
-					iterator.remove();
-				}
+				LOGGER.error("Couldn't packet collection id: " + packetCollection.getDbId() + " dateMillis: " + packetCollection.getDateMillis(), ". Will NOT try again.", e);
 			}
 		}
-		while(packetCollectionList.size() > packetCollectionsToKeepOnFail){
-			packetCollectionList.remove(0); // remove oldest
-		}
+		packetCollectionList.clear();
 	}
 }

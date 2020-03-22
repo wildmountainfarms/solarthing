@@ -83,7 +83,7 @@ public class OutbackMateMain {
 						}
 				),
 				eventPacketHandler,
-				PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR, 10
+				PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR
 		);
 
 		final OnDataReceive onDataReceive;
@@ -169,8 +169,7 @@ public class OutbackMateMain {
 						}
 				),
 				new PacketHandlerMultiplexer(statusPacketHandlers),
-				statusIdGenerator,
-				0
+				statusIdGenerator
 		);
 
 		try {
