@@ -13,10 +13,7 @@ import me.retrodaredevil.solarthing.influxdb.DocumentedMeasurementPacketPointCre
 import me.retrodaredevil.solarthing.influxdb.InfluxDbPacketSaver;
 import me.retrodaredevil.solarthing.influxdb.retention.ConstantRetentionPolicyGetter;
 import me.retrodaredevil.solarthing.influxdb.retention.FrequentRetentionPolicyGetter;
-import me.retrodaredevil.solarthing.packets.handling.FrequencySettings;
-import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
-import me.retrodaredevil.solarthing.packets.handling.PrintPacketHandleExceptionWrapper;
-import me.retrodaredevil.solarthing.packets.handling.ThrottleFactorPacketHandler;
+import me.retrodaredevil.solarthing.packets.handling.*;
 import me.retrodaredevil.solarthing.packets.handling.implementations.FileWritePacketHandler;
 import me.retrodaredevil.solarthing.packets.handling.implementations.JacksonStringPacketHandler;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
@@ -56,7 +53,7 @@ public class PacketHandlerInit {
 				// TODO We should use Constants.DATABASE_UPLOAD_EVENT_ID and its FrequencySettings to stop this from doing stuff too frequently.
 				// The reason we aren't going to use a ThrottleFactorPacketHandler is all "event" packets are important. We do not want to
 				// miss adding a single event packet to a database
-				eventPacketHandlers.add(new PrintPacketHandleExceptionWrapper(new CouchDbPacketSaver(couchProperties, uniqueEventName)));
+				eventPacketHandlers.add(new RetryFailedPacketHandler(new CouchDbPacketSaver(couchProperties, uniqueEventName), 7));
 			} else if(InfluxDbDatabaseSettings.TYPE.equals(config.getType())) {
 				InfluxDbDatabaseSettings settings = (InfluxDbDatabaseSettings) config.getSettings();
 				String databaseName = settings.getDatabaseName();
@@ -77,7 +74,7 @@ public class PacketHandlerInit {
 						statusFrequencySettings,
 						true
 				));
-				eventPacketHandlers.add(new InfluxDbPacketSaver(
+				eventPacketHandlers.add(new RetryFailedPacketHandler(new InfluxDbPacketSaver(
 						settings.getInfluxProperties(),
 						settings.getOkHttpProperties(),
 						new ConstantDatabaseNameGetter(databaseName != null ? databaseName : uniqueEventName),
@@ -88,7 +85,7 @@ public class PacketHandlerInit {
 										: DocumentedMeasurementPacketPointCreator.INSTANCE
 								),
 						new ConstantRetentionPolicyGetter(settings.getEventRetentionPolicy())
-				));
+				), 5));
 			} else if (LatestFileDatabaseSettings.TYPE.equals(config.getType())){
 				LatestFileDatabaseSettings settings = (LatestFileDatabaseSettings) config.getSettings();
 				LOGGER.info("Adding latest file 'database'. This currently only saves 'status' packets");
