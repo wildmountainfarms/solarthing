@@ -186,4 +186,25 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 	@JsonProperty("chargerModeName")
 	default String getChargerModeName(){ return getChargingMode().getModeName(); }
 	// endregion
+
+	/**
+	 *
+	 * @return true if the firmware is pre 4.01, false otherwise
+	 */
+	default boolean isOldFirmware(){
+		double dailyAH = getDailyAH();
+		if(dailyAH == 9999){
+			return false; // new MX
+		}
+		Support support = getDailyAHSupport(); // this should never be UNKNOWN unless we have solarthing data before summer of 2019, so this is fine
+		return support != Support.FULLY_SUPPORTED;
+	}
+
+	/**
+	 * @return true if this is a FlexMAX charge controller, false if it's an MX
+	 */
+	default boolean isFlexMax(){
+		return !isOldFirmware() && getDailyAH() != 9999;
+	}
+
 }
