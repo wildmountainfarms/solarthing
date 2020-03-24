@@ -119,7 +119,7 @@ public final class MXStatusPackets {
 
 		final float batteryVoltage = batteryVoltageTens * 10 + batteryVoltageOnes + (batteryVoltageTenths / 10.0f);
 
-		final int dailyAH = dailyAHThousands * 1000 + dailyAHHundreds * 100 + dailyAHTens * 10 + dailyAHOnes; // will be 9999 if MX60
+		final int dailyAH = dailyAHThousands * 1000 + dailyAHHundreds * 100 + dailyAHTens * 10 + dailyAHOnes; // will be 9999 if MX60 on new firmware
 		final Support dailyAHSupported;
 		if(oldFirmware || dailyAH == 9999){
 			if(dailyAH != 0 && dailyAH != 9999){

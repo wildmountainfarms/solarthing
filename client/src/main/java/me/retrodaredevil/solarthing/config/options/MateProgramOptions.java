@@ -62,4 +62,17 @@ public class MateProgramOptions extends PacketHandlingOptionBase implements IOBu
 		}
 		return r;
 	}
+	private static class MateSettings { // will be used for something eventually
+//		private float chargerLimit;
+
+		private float absorbSetpoint;
+		private float absorbSetTimeLimit;
+
+		private float floatSetpoint;
+		private float floatTimePeriod;
+		private float refloatSetpoint;
+
+		private float equalizeSetpoint;
+		private float equalizeTimePeriod;
+	}
 }
