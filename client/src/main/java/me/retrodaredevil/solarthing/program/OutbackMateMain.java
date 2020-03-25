@@ -24,6 +24,8 @@ import me.retrodaredevil.solarthing.solar.outback.MatePacketCreator49;
 import me.retrodaredevil.solarthing.solar.outback.OutbackDuplicatePacketRemover;
 import me.retrodaredevil.solarthing.solar.outback.OutbackListUpdater;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
+import me.retrodaredevil.solarthing.solar.outback.fx.FXEventUpdaterListReceiver;
+import me.retrodaredevil.solarthing.solar.outback.mx.MXEventUpdaterListReceiver;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import me.retrodaredevil.solarthing.util.time.DailyIdentifier;
 import org.slf4j.Logger;
@@ -180,7 +182,9 @@ public class OutbackMateMain {
 							250,
 							new PacketListReceiverMultiplexer(
 									OutbackDuplicatePacketRemover.INSTANCE,
-									new OutbackListUpdater(new DailyIdentifier(), eventPacketListReceiverHandler.getPacketListReceiverAccepter(), options.getFXWarningIgnoreMap(), dataDirectory),
+									new FXEventUpdaterListReceiver(eventPacketListReceiverHandler.getPacketListReceiverAccepter(), options.getFXWarningIgnoreMap()),
+									new MXEventUpdaterListReceiver(eventPacketListReceiverHandler.getPacketListReceiverAccepter()),
+									new OutbackListUpdater(new DailyIdentifier(), eventPacketListReceiverHandler.getPacketListReceiverAccepter(), dataDirectory),
 									statusPacketListReceiverHandler.getPacketListReceiverAccepter(),
 									statusPacketListReceiverHandler.getPacketListReceiverPacker(),
 									eventPacketListReceiverHandler.getPacketListReceiverPacker(),

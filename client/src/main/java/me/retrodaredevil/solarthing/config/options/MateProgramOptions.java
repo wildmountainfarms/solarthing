@@ -64,15 +64,21 @@ public class MateProgramOptions extends PacketHandlingOptionBase implements IOBu
 	}
 	private static class MateSettings { // will be used for something eventually
 //		private float chargerLimit;
+		@JsonProperty("rebulk_setpoint")
+		private Float rebulkSetpoint;
 
-		private float absorbSetpoint;
-		private float absorbSetTimeLimit;
+		@JsonProperty("absorb_setpoint")
+		private Float absorbSetpoint;
+		@JsonProperty("absorb_time_limit")
+		private Float absorbSetTimeLimit;
 
-		private float floatSetpoint;
-		private float floatTimePeriod;
-		private float refloatSetpoint;
+		private Float floatSetpoint;
+		private Float floatTimePeriod;
+		private Float refloatSetpoint;
 
-		private float equalizeSetpoint;
-		private float equalizeTimePeriod;
+		private Float equalizeSetpoint;
+		private Float equalizeTimePeriod;
+
+		private boolean supportsACLoss = false;
 	}
 }
