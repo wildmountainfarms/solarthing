@@ -36,6 +36,8 @@ you need to connect the Rover's TX to your RX and the Rover's RX to your TX. Mak
 with a multimeter so you don't send 15V through a Raspberry Pi's GPIO like I did!
 
 ### Outback References
+http://outbackpower.com/resources/documents/product-documentation
+
 New documentation:
 http://www.outbackpower.com/downloads/documents/system_management/mate/mate_serial_communicationsguide.pdf
 
@@ -47,6 +49,8 @@ https://www.wmrc.edu/projects/BARenergy/manuals/outback-manuals/Mate-rev-230.pdf
 
 FX Manual:
 http://outbackpower.com/downloads/documents/inverter_chargers/m_series/fx_mobile_operator.pdf
+
+http://outbackpower.com/downloads/documents/inverter_chargers/gtfx_gvfx_series/gtfx_gvfx_series_programming_manual.pdf
 
 MX Manual:
 https://www.wmrc.edu/projects/BARenergy/manuals/outback-manuals/MX60_REV_C.pdf
