@@ -11,6 +11,9 @@ public class ModeTimer {
 	public void resetTimer(){
 		timeMillis = modeTimeMillis;
 	}
+	public void setToZero(){
+		timeMillis = 0;
+	}
 	public boolean isDone(){
 		return timeMillis == 0;
 	}
