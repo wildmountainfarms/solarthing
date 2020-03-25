@@ -48,9 +48,11 @@ Mate Manual:
 https://www.wmrc.edu/projects/BARenergy/manuals/outback-manuals/Mate-rev-230.pdf
 
 FX Manual:
-http://outbackpower.com/downloads/documents/inverter_chargers/m_series/fx_mobile_operator.pdf
 
-http://outbackpower.com/downloads/documents/inverter_chargers/gtfx_gvfx_series/gtfx_gvfx_series_programming_manual.pdf
+* [gfx (legacy)](http://outbackpower.com/downloads/documents/inverter_chargers/gfx_series/gfx_operators_manual.pdf)
+* [m series - FX Mobile Operator](http://outbackpower.com/downloads/documents/inverter_chargers/m_series/fx_mobile_operator.pdf)
+* [GTFX/GVFX](http://outbackpower.com/downloads/documents/inverter_chargers/gtfx_gvfx_series/gtfx_gvfx_series_programming_manual.pdf)
+* [radian](http://outbackpower.com/downloads/documents/inverter_chargers/radian_8048a_4048a/gs_8048a_4048a_operator.pdf)
 
 MX Manual:
 https://www.wmrc.edu/projects/BARenergy/manuals/outback-manuals/MX60_REV_C.pdf

@@ -20,7 +20,7 @@ public enum OperationalMode implements CodeMode { // one must be active
 	SILENT(4, "Silent"),
 	/** Refers to a user programmed end of charge behavior */
 	FLOAT(5, "Float"),
-	/** User initiated charge state */
+	/** User initiated charge state. Refers to a bulk - EQ cycle, similar to {@link #CHARGE}, but with the EQ voltage and time period */
 	EQ(6, "EQ"),
 	/**
 	 *  Active when the user manually turned the charger off

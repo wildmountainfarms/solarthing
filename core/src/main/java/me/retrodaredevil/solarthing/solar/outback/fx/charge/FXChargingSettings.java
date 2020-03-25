@@ -27,20 +27,8 @@ public class FXChargingSettings {
 		this.equalizeTimeMillis = equalizeTimeMillis;
 	}
 
-	/**
-	 *
-	 * @return true if the float time is set to 24 hours or if the charger is set to &lt;On&gt; (for older systems)
-	 */
-	public boolean isFloatForever(){
-		return floatTimeMillis >= 24 * 60 * 60 * 1000;
-	}
-
-	/**
-	 * This should cause the system to completely skip the bulk and absorption stages
-	 * @return true if {@link #getAbsorbTimeMillis()} is 0, false otherwise
-	 */
-	public boolean isAbsorbZero(){
-		return absorbTimeMillis == 0;
+	public boolean isFloatTimerStartedImmediately(){
+		return rebulkVoltage == null; // if we're on older firmware without rebulk voltage, this also means that the float timer is started immediately
 	}
 
 	public Float getRebulkVoltage() {

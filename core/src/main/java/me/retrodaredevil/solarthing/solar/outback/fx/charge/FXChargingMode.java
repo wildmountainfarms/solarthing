@@ -1,8 +1,10 @@
 package me.retrodaredevil.solarthing.solar.outback.fx.charge;
 
 public enum FXChargingMode {
-	BULK,
-	ABSORB_OR_EQ,
+	BULK_TO_ABSORB,
+	BULK_TO_EQ,
+	ABSORB,
+	EQ,
 	SILENT,
 	REFLOAT,
 	FLOAT
