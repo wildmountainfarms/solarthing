@@ -1,10 +1,25 @@
 package me.retrodaredevil.solarthing.solar.outback.fx.charge;
 
-import me.retrodaredevil.solarthing.solar.outback.fx.ACMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.OperationalMode;
 
+import static java.util.Objects.requireNonNull;
+
+/**
+ * A state machine that can calculate the timer values on the FX that are shown in one of the Mate display screens
+ */
 public class FXChargingStateHandler {
+	/*
+	This class tries to emulate/calculate the timer for the FX's charging stages.
+
+	The implementation varies from model to model and firmware to firmware, but I tried my best.
+	The most untested thing here is what happens when AC power is lost, then restored.
+
+	Also, sometimes in the operator's manual for some FX models, the timers accumulated back up instead of just resetting. I'll need to read more to confirm
+	If you see something in here that you don't think is correct, please, create an issue at https://github.com/wildmountainfarms/solarthing/issues
+
+	NOTE: The Sell RE Set Point thing is not implemented in here, and will probably break this calculation if used
+	 */
 	private final FXChargingSettings fxChargingSettings;
 
 	private final ModeTimer rebulkTimer = new ModeTimer(1000 * 90);
@@ -20,7 +35,7 @@ public class FXChargingStateHandler {
 	private OperationalMode previousOperationalMode = null;
 
 	public FXChargingStateHandler(FXChargingSettings fxChargingSettings) {
-		this.fxChargingSettings = fxChargingSettings;
+		this.fxChargingSettings = requireNonNull(fxChargingSettings);
 		absorbTimer = new ModeTimer(fxChargingSettings.getAbsorbTimeMillis());
 		floatTimer = new ModeTimer(fxChargingSettings.getFloatTimeMillis());
 		equalizeTimer = new ModeTimer(fxChargingSettings.getEqualizeTimeMillis());
@@ -53,21 +68,20 @@ public class FXChargingStateHandler {
 		} else {
 			rebulkTimer.resetTimer();
 		}
+		if(fxChargingSettings.isFloatTimerStartedImmediately()){
+			if(batteryVoltage >= fxChargingSettings.getFloatVoltage()){
+				atFloatSetpoint = true;
+			}
+		}
 		if(operationalMode == OperationalMode.CHARGE){
 			atEqualizeSetpoint = false;
 			if(batteryVoltage >= fxChargingSettings.getAbsorbVoltage()){
 				atAbsorbSetpoint = true;
 			}
-			if(atAbsorbSetpoint){
-				absorbTimer.countDown(deltaTimeMillis);
-			}
 		} else if(operationalMode == OperationalMode.EQ){
 			atAbsorbSetpoint = false;
 			if(batteryVoltage >= fxChargingSettings.getEqualizeVoltage()){
 				atEqualizeSetpoint = true;
-			}
-			if(atEqualizeSetpoint){
-				equalizeTimer.countDown(deltaTimeMillis);
 			}
 		} else if(operationalMode == OperationalMode.SILENT){
 			absorbTimer.resetTimer();
@@ -86,9 +100,6 @@ public class FXChargingStateHandler {
 			if(batteryVoltage >= fxChargingSettings.getFloatVoltage()){
 				atFloatSetpoint = true;
 			}
-			if(atFloatSetpoint){
-				floatTimer.countDown(deltaTimeMillis);
-			}
 		} else { // not charging
 			atAbsorbSetpoint = false;
 			atEqualizeSetpoint = false;
@@ -98,6 +109,15 @@ public class FXChargingStateHandler {
 				floatTimer.resetTimer();
 				equalizeTimer.resetTimer();
 			}
+		}
+		if(atAbsorbSetpoint){
+			absorbTimer.countDown(deltaTimeMillis);
+		}
+		if(atEqualizeSetpoint){
+			equalizeTimer.countDown(deltaTimeMillis);
+		}
+		if(atFloatSetpoint){
+			floatTimer.countDown(deltaTimeMillis);
 		}
 	}
 	public FXChargingMode getMode(){

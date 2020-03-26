@@ -6,6 +6,7 @@ public enum FXChargingMode {
 	ABSORB,
 	EQ,
 	SILENT,
+	/** AKA Bulk to Float */
 	REFLOAT,
 	FLOAT
 }

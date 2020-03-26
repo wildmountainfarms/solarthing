@@ -4,8 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import me.retrodaredevil.solarthing.packets.support.Support;
 import me.retrodaredevil.solarthing.solar.PacketTestUtil;
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacket;
+import me.retrodaredevil.solarthing.solar.extra.SolarExtraPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXErrorMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.OperationalMode;
+import me.retrodaredevil.solarthing.solar.outback.fx.charge.FXChargingMode;
+import me.retrodaredevil.solarthing.solar.outback.fx.charge.FXChargingPacket;
+import me.retrodaredevil.solarthing.solar.outback.fx.charge.ImmutableFXChargingPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.FXDailyData;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.ImmutableFXDailyData;
 import me.retrodaredevil.solarthing.solar.outback.fx.event.*;
@@ -25,7 +29,7 @@ import java.util.Collections;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class OutbackStatusPacketsTest {
+public class OutbackPacketsTest {
 	@Test
 	void test() throws JsonProcessingException {
 		{
@@ -88,6 +92,13 @@ public class OutbackStatusPacketsTest {
 			assertEquals(32, packet.getWarningModeValue());
 			PacketTestUtil.testJson(packet, FXWarningModeChangePacket.class);
 			PacketTestUtil.testJson(packet, SolarEventPacket.class);
+		}
+		{
+			FXChargingPacket packet = new ImmutableFXChargingPacket(new OutbackIdentifier(1), FXChargingMode.BULK_TO_ABSORB, 60 * 1000, 60 * 60 * 1000, 60 * 60 * 1000, 60 * 60 * 1000, 60 * 60 * 1000, 60 * 60 * 1000);
+			assertEquals(1, packet.getMasterFXAddress());
+			assertEquals(60 * 1000, packet.getRemainingAbsorbTimeMillis());
+			PacketTestUtil.testJson(packet, FXChargingPacket.class);
+			PacketTestUtil.testJson(packet, SolarExtraPacket.class);
 		}
 	}
 }

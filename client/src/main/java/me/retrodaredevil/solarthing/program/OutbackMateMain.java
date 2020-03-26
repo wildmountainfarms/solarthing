@@ -25,6 +25,8 @@ import me.retrodaredevil.solarthing.solar.outback.OutbackDuplicatePacketRemover;
 import me.retrodaredevil.solarthing.solar.outback.OutbackListUpdater;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXEventUpdaterListReceiver;
+import me.retrodaredevil.solarthing.solar.outback.fx.charge.FXChargingSettings;
+import me.retrodaredevil.solarthing.solar.outback.fx.charge.FXChargingUpdaterListReceiver;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXEventUpdaterListReceiver;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import me.retrodaredevil.solarthing.util.time.DailyIdentifier;
@@ -175,22 +177,29 @@ public class OutbackMateMain {
 		);
 
 		try {
+			List<PacketListReceiver> packetListReceiverList = new ArrayList<>(Arrays.asList(
+					OutbackDuplicatePacketRemover.INSTANCE,
+					new FXEventUpdaterListReceiver(eventPacketListReceiverHandler.getPacketListReceiverAccepter(), options.getFXWarningIgnoreMap()),
+					new MXEventUpdaterListReceiver(eventPacketListReceiverHandler.getPacketListReceiverAccepter()),
+					new OutbackListUpdater(new DailyIdentifier(), eventPacketListReceiverHandler.getPacketListReceiverAccepter(), dataDirectory)
+			));
+			FXChargingSettings fxChargingSettings = options.getFXChargingSettings();
+			if(fxChargingSettings != null){
+				packetListReceiverList.add(new FXChargingUpdaterListReceiver(options.getMasterFXAddress(), fxChargingSettings));
+			}
+			packetListReceiverList.addAll(Arrays.asList(
+					statusPacketListReceiverHandler.getPacketListReceiverAccepter(),
+					statusPacketListReceiverHandler.getPacketListReceiverPacker(),
+					eventPacketListReceiverHandler.getPacketListReceiverPacker(),
+					statusPacketListReceiverHandler.getPacketListReceiverHandler(),
+					eventPacketListReceiverHandler.getPacketListReceiverHandler()
+			));
 			SolarMain.initReader(
 					requireNonNull(io.getInputStream()),
 					new MatePacketCreator49(MateProgramOptions.getIgnoreCheckSum(options)),
 					new TimedPacketReceiver(
 							250,
-							new PacketListReceiverMultiplexer(
-									OutbackDuplicatePacketRemover.INSTANCE,
-									new FXEventUpdaterListReceiver(eventPacketListReceiverHandler.getPacketListReceiverAccepter(), options.getFXWarningIgnoreMap()),
-									new MXEventUpdaterListReceiver(eventPacketListReceiverHandler.getPacketListReceiverAccepter()),
-									new OutbackListUpdater(new DailyIdentifier(), eventPacketListReceiverHandler.getPacketListReceiverAccepter(), dataDirectory),
-									statusPacketListReceiverHandler.getPacketListReceiverAccepter(),
-									statusPacketListReceiverHandler.getPacketListReceiverPacker(),
-									eventPacketListReceiverHandler.getPacketListReceiverPacker(),
-									statusPacketListReceiverHandler.getPacketListReceiverHandler(),
-									eventPacketListReceiverHandler.getPacketListReceiverHandler()
-							),
+							new PacketListReceiverMultiplexer(packetListReceiverList),
 							onDataReceive
 					)
 			);

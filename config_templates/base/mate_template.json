@@ -11,5 +11,7 @@
   "fx_warning_ignore": {
     "1": 0,
     "2": 32
-  }
+  },
+  "master_fx": 1,
+  "fx_charge_settings": null
 }

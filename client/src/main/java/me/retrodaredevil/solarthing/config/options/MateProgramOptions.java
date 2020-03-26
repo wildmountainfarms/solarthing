@@ -2,7 +2,9 @@ package me.retrodaredevil.solarthing.config.options;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import me.retrodaredevil.solarthing.solar.outback.fx.charge.FXChargingSettings;
 import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.Collections;
@@ -25,6 +27,10 @@ public class MateProgramOptions extends PacketHandlingOptionBase implements IOBu
 
 	@JsonProperty("fx_warning_ignore")
 	private Map<Integer, Integer> fxWarningIgnoreMap;
+	@JsonProperty("master_fx")
+	private Integer masterFX = null;
+	@JsonProperty("fx_charge_settings")
+	private MateFXChargingSettings mateFXChargingSettings;
 
 	public boolean isAllowCommands() {
 		return allowCommands;
@@ -62,23 +68,39 @@ public class MateProgramOptions extends PacketHandlingOptionBase implements IOBu
 		}
 		return r;
 	}
-	private static class MateSettings { // will be used for something eventually
-//		private float chargerLimit;
-		@JsonProperty("rebulk_setpoint")
+	public @Nullable Integer getMasterFXAddress(){
+		return masterFX;
+	}
+	public @Nullable FXChargingSettings getFXChargingSettings(){
+		MateFXChargingSettings settings = this.mateFXChargingSettings;
+		if(settings == null){
+			return null;
+		}
+		return new FXChargingSettings(
+				settings.rebulkSetpoint, settings.absorbSetpoint, Math.round(settings.absorbSetTimeLimit * 60 * 60 * 1000),
+				settings.floatSetpoint, Math.round(settings.floatTimePeriod * 60 * 60 * 1000), settings.refloatSetpoint,
+				settings.equalizeSetpoint, Math.round(settings.equalizeTimePeriod * 60 * 60 * 1000)
+		);
+	}
+	private static class MateFXChargingSettings { // will be used for something eventually
+		@JsonProperty("rebulk_voltage")
 		private Float rebulkSetpoint;
 
-		@JsonProperty("absorb_setpoint")
-		private Float absorbSetpoint;
-		@JsonProperty("absorb_time_limit")
-		private Float absorbSetTimeLimit;
+		@JsonProperty(value = "absorb_voltage", required = true)
+		private float absorbSetpoint;
+		@JsonProperty(value = "absorb_time_hours", required = true)
+		private double absorbSetTimeLimit;
 
-		private Float floatSetpoint;
-		private Float floatTimePeriod;
-		private Float refloatSetpoint;
+		@JsonProperty(value = "float_voltage", required = true)
+		private float floatSetpoint;
+		@JsonProperty(value = "float_time_hours", required = true)
+		private double floatTimePeriod;
+		@JsonProperty(value = "refloat_voltage", required = true)
+		private float refloatSetpoint;
 
-		private Float equalizeSetpoint;
-		private Float equalizeTimePeriod;
-
-		private boolean supportsACLoss = false;
+		@JsonProperty(value = "equalize_voltage", required = true)
+		private float equalizeSetpoint;
+		@JsonProperty(value = "equalize_time_hours", required = true)
+		private double equalizeTimePeriod;
 	}
 }

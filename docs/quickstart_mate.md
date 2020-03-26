@@ -13,9 +13,9 @@ cp ../config_templates/io/default_linux_serial.json config/
 cp ../config_templates/base/mate_template.json config/base.json
 ```
 Edit `base.json`
-```json
+```json5
 {
-  ...
+  //...
   "io": "config/default_linux_serial.json",
   "correct_check_sum": false
 }
@@ -23,6 +23,31 @@ Edit `base.json`
 The mate configuration has the unique property `correct_check_sum`. This makes it easy to change values in `virtual_mate.sh`. By using this,
 we can change values quicker values without calculating the checksum ourselves and just have the program do it for us.
 Obviously you don't want to use that when you are getting reliable data from a serial port.
+
+Advanced configuration:
+```json5
+{
+  //...
+  "fx_warning_ignore": {
+    "1": 0,
+    "2": 32
+  },
+  "master_fx": 1,
+  "fx_charge_settings": {
+    "rebulk_voltage": null,
+    "absorb_voltage": 29.2,
+    "absorb_time_hours": 1.5,
+    "float_voltage": 27.2,
+    "float_time_hours": 1.0,
+    "refloat_voltage": 25.0,
+    "equalize_voltage": 30.0,
+    "equalize_time_hours": 2.0
+  }
+}
+```
+`fx_warning_ignore` is used for the "event" packets to ignore certain warnings. `master_fx` is used in addition to 
+`fx_charge_settings` to calculate/emulate the timers that can be viewed on the MATE. This is **optional**!!! This is also in beta
+and is not recommended to try unless you have everything else working.
 
 ### I want to test this without an Outback Mate!
 You can run `solar/virtual_mate.sh | java -jar solarthing.jar "config/base.json"`
