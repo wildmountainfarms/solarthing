@@ -47,6 +47,8 @@ https://www.wmrc.edu/projects/BARenergy/manuals/outback-manuals/Mate_Serial_Comm
 Mate Manual:
 https://www.wmrc.edu/projects/BARenergy/manuals/outback-manuals/Mate-rev-230.pdf
 
+[Mate3](http://www.outbackpower.com/downloads/documents/system_management/mate3s/mate3s_programmingguide_web.pdf)
+
 FX Manual:
 
 * [gfx (legacy)](http://outbackpower.com/downloads/documents/inverter_chargers/gfx_series/gfx_operators_manual.pdf)
