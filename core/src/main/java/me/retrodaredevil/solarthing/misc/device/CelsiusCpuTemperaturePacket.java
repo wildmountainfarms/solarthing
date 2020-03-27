@@ -4,11 +4,11 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@JsonIgnoreProperties({"cpuTemperatureFahrenheit"})
 public class CelsiusCpuTemperaturePacket implements CpuTemperaturePacket {
 	private final float cpuTemperatureCelsius;
 
 	@JsonCreator
-	@JsonIgnoreProperties({"cpuTemperatureFahrenheit"})
 	public CelsiusCpuTemperaturePacket(
 			@JsonProperty("cpuTemperatureCelsius") float cpuTemperatureCelsius
 	) {
