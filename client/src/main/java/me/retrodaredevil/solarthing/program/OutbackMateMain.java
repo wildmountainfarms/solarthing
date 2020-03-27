@@ -13,9 +13,11 @@ import me.retrodaredevil.solarthing.commands.CommandProviderMultiplexer;
 import me.retrodaredevil.solarthing.commands.sequence.CommandSequence;
 import me.retrodaredevil.solarthing.config.databases.IndividualSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
+import me.retrodaredevil.solarthing.config.options.ExtraOptionFlag;
 import me.retrodaredevil.solarthing.config.options.MateProgramOptions;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketRetriever;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketRetrieverHandler;
+import me.retrodaredevil.solarthing.misc.device.RaspberryPiCpuTemperatureListUpdater;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.handling.*;
 import me.retrodaredevil.solarthing.packets.handling.implementations.TimedPacketReceiver;
@@ -71,6 +73,7 @@ public class OutbackMateMain {
 		}
 		List<DatabaseConfig> databaseConfigs = SolarMain.getDatabaseConfigs(options);
 		PacketHandlerBundle packetHandlerBundle = PacketHandlerInit.getPacketHandlerBundle(databaseConfigs, SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, SolarThingConstants.SOLAR_EVENT_UNIQUE_NAME);
+		boolean rpiCpuTemperature = options.getExtraOptionFlags().contains(ExtraOptionFlag.RPI_LOG_CPU_TEMPERATURE);
 
 		PacketHandler eventPacketHandler = new PacketHandlerMultiplexer(packetHandlerBundle.getEventPacketHandlers());
 		PacketListReceiver sourceAndFragmentUpdater = SolarMain.getSourceAndFragmentUpdater(options);
@@ -116,7 +119,7 @@ public class OutbackMateMain {
 				if(CouchDbDatabaseSettings.TYPE.equals(config.getType())){
 					CouchDbDatabaseSettings settings = (CouchDbDatabaseSettings) config.getSettings();
 					CouchProperties couchProperties = settings.getCouchProperties();
-					LatestPacketHandler latestPacketHandler = new LatestPacketHandler(true);
+					LatestPacketHandler latestPacketHandler = new LatestPacketHandler(true); // this is used to determine the state of the system when a command is requested
 					statusPacketHandlers.add(latestPacketHandler);
 					final CommandSequenceDataReceiver<MateCommand> commandSequenceDataReceiver;
 					{
@@ -186,6 +189,9 @@ public class OutbackMateMain {
 			FXChargingSettings fxChargingSettings = options.getFXChargingSettings();
 			if(fxChargingSettings != null){
 				packetListReceiverList.add(new FXChargingUpdaterListReceiver(options.getMasterFXAddress(), fxChargingSettings));
+			}
+			if(rpiCpuTemperature){
+				packetListReceiverList.add(new RaspberryPiCpuTemperatureListUpdater());
 			}
 			packetListReceiverList.addAll(Arrays.asList(
 					statusPacketListReceiverHandler.getPacketListReceiverAccepter(),

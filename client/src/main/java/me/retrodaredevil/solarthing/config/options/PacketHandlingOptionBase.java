@@ -19,6 +19,9 @@ class PacketHandlingOptionBase implements PacketHandlingOption {
 	@JsonProperty
 	private Integer unique = null;
 
+	@JsonProperty("extra_option_flags")
+	private List<ExtraOptionFlag> extraOptionFlags;
+
 	@Override
 	public List<File> getDatabaseConfigurationFiles() {
 		List<File> r = databases;
@@ -43,4 +46,12 @@ class PacketHandlingOptionBase implements PacketHandlingOption {
 		return unique;
 	}
 
+	@Override
+	public List<ExtraOptionFlag> getExtraOptionFlags() {
+		List<ExtraOptionFlag> r = extraOptionFlags;
+		if(r == null){
+			return Collections.emptyList();
+		}
+		return r;
+	}
 }
