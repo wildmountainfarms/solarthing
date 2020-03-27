@@ -10,7 +10,7 @@ Once everything is installed, you're ready to edit the configs. You will cd to t
 cd /opt/solarthing/program
 ```
 
-Copy some template config files ([pvoutput_upload_template](../config_templates/base/pvoutput_upload_template.json))
+Copy some template config files ([pvoutput_upload_template](../../config_templates/base/pvoutput_upload_template.json))
 ```
 cp ../config_templates/base/pvoutput_upload_template.json config/base.json
 ```
@@ -40,3 +40,8 @@ Once your configuration is how you want it, you can go back to the [quickstart](
 This project is set up this way because it makes future changes easier. If you were to use an advanced feature of
 this project such as fragmented packets, the only way to upload all of your data to pvoutput would be to do it
 in one program instead of two.
+
+Yes, this makes setting everything up on a single computer more difficult. Right now I haven't created an
+easy way to install multiple systemd services which makes setting this up on Debian based computers using systemd (such as a Raspberry Pi)
+difficult. This is already difficult to set up on other types of computers (because there's no easy way to start SolarThing on boot).
+This is something that needs to be worked on.

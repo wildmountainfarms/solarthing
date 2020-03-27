@@ -12,6 +12,7 @@ First, make sure your `base.json` file has `rover-setup` set as the `type`.
 
 Run it:
 ```shell script
+# Also note that you will likely have to run this as root unless you give your user the correct groups to access serial ports
 java -jar solarthing.jar config/base.json
 ```
 Request data:
@@ -22,7 +23,7 @@ dailykwh
 0.0
 ```
 
-Although I'd love to document all the possible options, there are many, so you can read [this file](../client/src/main/java/me/retrodaredevil/solarthing/program/RoverSetupProgram.java) to understand it better.
+Although I'd love to document all the possible options, there are many, so you can read [this file](../../client/src/main/java/me/retrodaredevil/solarthing/program/RoverSetupProgram.java) to understand it better.
 
 ### Warning:
 This supports the ability to "factory reset" your rover. If you do this, it will set your product serial number to 100. (It did for me anyway and I am unsure if I can change it back)

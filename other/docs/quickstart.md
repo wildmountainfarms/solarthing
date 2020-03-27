@@ -65,5 +65,5 @@ Now you can enable and start the service
 sudo systemctl enable solarthing # Run on boot
 sudo systemctl start solarthing # Start the service now
 ```
-If you do not have systemd on your system or did not install the service, you can run solarthing manually by running `java -jar solarthing.jar config/base.json`.
+If you do not have systemd on your system or did not install the service, you can run solarthing manually by running `java -jar solarthing.jar config/base.json`. You may have to use `sudo`
 

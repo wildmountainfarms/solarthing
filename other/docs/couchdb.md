@@ -45,7 +45,7 @@ To view that in a url, you will usually type something like
 "MY_IP:5984/solarthing/_design/......."
 
 # Configuring SolarThing for CouchDB
-An example configuration can be found [here](../config_templates/databases/couchdb_template.json)
+An example configuration can be found [here](../../config_templates/databases/couchdb_template.json)
 
 * CouchDB can be configured to download commands from the `commands` database if the `allow-commands` is set to true
 in a mate program config.

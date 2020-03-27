@@ -32,11 +32,11 @@ Fragment 2: Renogy Rover
 As of 2019.12.20, duplicate packets are no longer something we have to worry about.
 
 In a "mate" type program, it is possible that packets will pile up. When this happens, the `instant` boolean is usually set to false.
-Even if this fails, [OutbackDuplicatePacketRemover](../../core/src/main/java/me/retrodaredevil/solarthing/solar/outback/OutbackDuplicatePacketRemover.java) will
+Even if this fails, [OutbackDuplicatePacketRemover](../../../core/src/main/java/me/retrodaredevil/solarthing/solar/outback/OutbackDuplicatePacketRemover.java) will
 remove duplicate packets.
 
 For old solarthing versions, you can expect that a PacketCollection may have one or two other identical packets from almost the same time. 
-This is where [Identifiers](../../core/src/main/java/me/retrodaredevil/solarthing/packets/identification/Identifier.java) comes in. By
+This is where [Identifiers](../../../core/src/main/java/me/retrodaredevil/solarthing/packets/identification/Identifier.java) comes in. By
 adding packets to a Map, you can make sure that there's only one packet for each unique Identifier
 
 #### Logging
