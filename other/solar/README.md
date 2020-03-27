@@ -14,10 +14,10 @@ FlexNET DC Packets, but FX, MX/FM, and Renogy Rover communication is supported.
 This does not support the Outback MATE 3. This is because the MATE3 does not have a DB9 serial port.
 
 You can look at how we parse packets for 
-[FX Here](../core/src/main/java/me/retrodaredevil/solarthing/solar/outback/fx/FXStatusPackets.java),
-[MX/FM Here](../core/src/main/java/me/retrodaredevil/solarthing/solar/outback/mx/MXStatusPackets.java),
-[Renogy Read Here](../core/src/main/java/me/retrodaredevil/solarthing/solar/renogy/rover/modbus/RoverModbusSlaveRead.java) and
-[Renogy Write Here](../core/src/main/java/me/retrodaredevil/solarthing/solar/renogy/rover/modbus/RoverModbusSlaveWrite.java)
+[FX Here](../../core/src/main/java/me/retrodaredevil/solarthing/solar/outback/fx/FXStatusPackets.java),
+[MX/FM Here](../../core/src/main/java/me/retrodaredevil/solarthing/solar/outback/mx/MXStatusPackets.java),
+[Renogy Read Here](../../core/src/main/java/me/retrodaredevil/solarthing/solar/renogy/rover/modbus/RoverModbusSlaveRead.java) and
+[Renogy Write Here](../../core/src/main/java/me/retrodaredevil/solarthing/solar/renogy/rover/modbus/RoverModbusSlaveWrite.java)
 
 ### Connecting to Outback MATE
 Connecting a Raspberry Pi or any device to an Outback MATE's serial port is pretty simple. For the easiest solution,

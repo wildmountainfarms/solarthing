@@ -4,7 +4,7 @@ Click [here](https://docs.influxdata.com/influxdb/v1.7/introduction/installation
 Once installed, you don't need to do anything to the installation itself, it's ready to go!
 
 ### Configuring SolarThing
-When running SolarThing, you can specify databases using JSON files. An example of a configuration can be found [here](../config_templates/databases/influxdb_template.json)
+When running SolarThing, you can specify databases using JSON files. An example of a configuration can be found [here](../../config_templates/databases/influxdb_template.json)
 
 ### Specifying `database` and `measurement`
 Note that dashes (`-`) and other special characters cannot be used in either of these.

@@ -13,7 +13,7 @@ Specifying the file that has the configuration for the input/output is simple:
 ```
 
 ### Examples
-You can see some examples in [this](../config_templates) directory
+You can see some examples in [this](../../config_templates) directory
 
 #### stdin/stdout example
 ```json

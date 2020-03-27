@@ -7,9 +7,6 @@
   * If we do something with a calendar, we could use google calendar https://developers.google.com/calendar/create-events/
 * Have unique identifier for each jar file
 * AC Use->AC Drop, turn on AUX until NO AC. (GEN OFF) command using MATE's built in AC Use/Drop.
-* Figure out how to use https://emoncms.org/ to graph data
-  * https://emoncms.org/site/api#input
-  * Some of this is done. Now we have to allow users to configure this and implement it into a program
 * Graph QL
 
 ### Completed TODO:
@@ -48,3 +45,5 @@ These might be useful to some people. I will not implement these in the future, 
   * I do not have a FlexNet DC unit and I do not plan to get one anytime soon
 * Create 'exporter' module which will have a Prometheus exporter that runs and gets data from CouchDB
   * This is not useful to me, but anyone else is welcome to do this
+* Use https://emoncms.org/ to graph data (https://emoncms.org/site/api#input)
+  * Some of this is done, but it will not be worked on any further by me
