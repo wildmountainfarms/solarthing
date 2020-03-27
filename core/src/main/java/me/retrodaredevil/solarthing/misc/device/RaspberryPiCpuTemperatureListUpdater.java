@@ -36,7 +36,7 @@ public class RaspberryPiCpuTemperatureListUpdater implements PacketListReceiver 
 					LOGGER.warn("split2.length != 2!!! split2.length=" + split2.length);
 					return;
 				}
-				String toParse = split2[1];
+				String toParse = split2[0];
 				try {
 					float resultCelsius = Float.parseFloat(toParse);
 					packets.add(new CelsiusCpuTemperaturePacket(resultCelsius));
