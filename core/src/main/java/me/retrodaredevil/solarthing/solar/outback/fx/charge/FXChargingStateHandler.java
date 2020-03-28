@@ -9,6 +9,7 @@ import static java.util.Objects.requireNonNull;
  * A state machine that can calculate the timer values on the FX that are shown in one of the Mate display screens
  */
 public class FXChargingStateHandler {
+	private static final float ROUNDING_ERROR = 0.00001f;
 	/*
 	This class tries to emulate/calculate the timer for the FX's charging stages.
 
@@ -48,14 +49,15 @@ public class FXChargingStateHandler {
 	public void update(long deltaTimeMillis, OperationalMode operationalMode, float batteryVoltage){
 		OperationalMode previousOperationalMode = this.previousOperationalMode;
 		this.previousOperationalMode = operationalMode;
+		float stepSize = fxChargingSettings.getStepSize(); // momentary battery jumps are not reported to us, but the FX reacts to them, so we can use this to offset our setpoints to make this more accurate
 
 		float refloatVoltage = fxChargingSettings.getRefloatVoltage();
-		if(batteryVoltage <= refloatVoltage){
+		if(batteryVoltage <= refloatVoltage + ROUNDING_ERROR){
 			floatTimer.resetTimer();
 			atFloatSetpoint = false;
 		}
 		Float rebulkVoltage = fxChargingSettings.getRebulkVoltage();
-		if(rebulkVoltage != null && batteryVoltage <= rebulkVoltage){
+		if(rebulkVoltage != null && batteryVoltage <= rebulkVoltage + ROUNDING_ERROR){
 			rebulkTimer.countDown(deltaTimeMillis);
 			if(rebulkTimer.isDone()) {
 				absorbTimer.resetTimer();
@@ -69,18 +71,18 @@ public class FXChargingStateHandler {
 			rebulkTimer.resetTimer();
 		}
 		if(fxChargingSettings.isFloatTimerStartedImmediately()){
-			if(batteryVoltage >= fxChargingSettings.getFloatVoltage()){
+			if(batteryVoltage + ROUNDING_ERROR + stepSize >= fxChargingSettings.getFloatVoltage()){
 				atFloatSetpoint = true;
 			}
 		}
 		if(operationalMode == OperationalMode.CHARGE){
 			atEqualizeSetpoint = false;
-			if(batteryVoltage >= fxChargingSettings.getAbsorbVoltage()){
+			if(batteryVoltage + ROUNDING_ERROR + stepSize >= fxChargingSettings.getAbsorbVoltage()){
 				atAbsorbSetpoint = true;
 			}
 		} else if(operationalMode == OperationalMode.EQ){
 			atAbsorbSetpoint = false;
-			if(batteryVoltage >= fxChargingSettings.getEqualizeVoltage()){
+			if(batteryVoltage + ROUNDING_ERROR + stepSize >= fxChargingSettings.getEqualizeVoltage()){
 				atEqualizeSetpoint = true;
 			}
 		} else if(operationalMode == OperationalMode.SILENT){
@@ -97,7 +99,7 @@ public class FXChargingStateHandler {
 			if(previousOperationalMode == OperationalMode.SILENT){ // there's never an instance where a transition from silent to float should have the float timer counted down any amount
 				floatTimer.resetTimer();
 			}
-			if(batteryVoltage >= fxChargingSettings.getFloatVoltage()){
+			if(batteryVoltage + ROUNDING_ERROR + stepSize >= fxChargingSettings.getFloatVoltage()){
 				atFloatSetpoint = true;
 			}
 		} else { // not charging
