@@ -13,6 +13,7 @@ Ready to install? Use the [Quickstart](other/docs/quickstart.md)!
 * Runs reliably **24-7**. Recovers from connection errors and has verbose logging features
 * Fully customizable through JSON (**No programming experience required**)
 * Supports CouchDB, InfluxDB, local JSON file, and PVOutput exporting
+* Can [report Raspberry Pi CPU temperature](other/docs/raspberry_pi_cpu_temperature.md)
 
 ## Supported Databases
 * CouchDB
