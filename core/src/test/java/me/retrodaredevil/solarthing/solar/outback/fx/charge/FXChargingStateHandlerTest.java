@@ -10,6 +10,11 @@ class FXChargingStateHandlerTest {
 
 	@Test
 	void test(){
+		/*
+		The implementation of FXChargingSettings actually detects voltages one "step" below the setpoint. With a 24V system this step is .2V.
+		In this test, we're going to try to avoid being that close to the setpoint because we may change the behavior in the future and it's OK if
+		this test doesn't pick up on that
+		 */
 		FXChargingSettings settings = new FXChargingSettings(
 				23.8f,
 				28.8f, 60 * 60 * 1000,
@@ -19,7 +24,7 @@ class FXChargingStateHandlerTest {
 		FXChargingStateHandler handler = new FXChargingStateHandler(settings);
 		handler.update(1000, OperationalMode.INV_OFF, 23.0f);
 		assertNull(handler.getMode());
-		handler.update(1000, OperationalMode.CHARGE, 28.6f);
+		handler.update(1000, OperationalMode.CHARGE, 28.4f);
 		assertEquals(FXChargingMode.BULK_TO_ABSORB, handler.getMode());
 
 		handler.update(1000, OperationalMode.CHARGE, 28.8f);
@@ -41,7 +46,7 @@ class FXChargingStateHandlerTest {
 		assertEquals(FXChargingMode.REFLOAT, handler.getMode());
 		handler.update(1000 * 1000 * 1000, OperationalMode.FLOAT, 26.0f); // make delta time an absurd amount
 		assertEquals(FXChargingMode.REFLOAT, handler.getMode());
-		handler.update(1000 * 1000 * 1000, OperationalMode.FLOAT, 26.6f);
+		handler.update(1000 * 1000 * 1000, OperationalMode.FLOAT, 26.4f);
 		assertEquals(FXChargingMode.REFLOAT, handler.getMode());
 
 		handler.update(1000, OperationalMode.FLOAT, 26.8f);
@@ -58,7 +63,7 @@ class FXChargingStateHandlerTest {
 		handler.update(1000, OperationalMode.FLOAT, 25.1f); // AC back
 		assertEquals(FXChargingMode.REFLOAT, handler.getMode());
 		assertEquals(60 * 60 * 1000 * 2 - 3000, handler.getRemainingFloatTimeMillis());
-		handler.update(1000, OperationalMode.FLOAT, 26.6f);
+		handler.update(1000, OperationalMode.FLOAT, 26.4f);
 		assertEquals(FXChargingMode.REFLOAT, handler.getMode());
 		handler.update(1000, OperationalMode.FLOAT, 26.8f);
 		assertEquals(FXChargingMode.FLOAT, handler.getMode());
