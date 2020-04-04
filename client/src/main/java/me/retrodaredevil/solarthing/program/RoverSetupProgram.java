@@ -12,7 +12,7 @@ import java.util.Scanner;
 
 public final class RoverSetupProgram {
 	private RoverSetupProgram(){ throw new UnsupportedOperationException(); }
-	
+
 	public static void startRoverSetup(RoverReadTable read, RoverWriteTable write){
 		Scanner scanner = new Scanner(System.in);
 		loop: while (scanner.hasNextLine()) {
@@ -203,7 +203,7 @@ public final class RoverSetupProgram {
 						case "discharginglimitvoltageraw":
 							System.out.println(read.getDischargingLimitVoltageRaw());
 							break;
-							
+
 						case "endofchargesoc":
 							System.out.println(read.getEndOfChargeSOC());
 							break;
@@ -310,11 +310,11 @@ public final class RoverSetupProgram {
 						case "batterytype":
 							final BatteryType batteryType;
 							switch(toSet){
-								case "open": batteryType = BatteryType.OPEN; break;
+								case "open": case "flooded": batteryType = BatteryType.OPEN; break;
 								case "sealed": batteryType = BatteryType.SEALED; break;
 								case "gel": batteryType = BatteryType.GEL; break;
 								case "lithium": batteryType = BatteryType.LITHIUM; break;
-								case "self-customized": case "custom": case "customized": batteryType = BatteryType.SELF_CUSTOMIZED; break;
+								case "self-customized": case "custom": case "customized": case "user": batteryType = BatteryType.SELF_CUSTOMIZED; break;
 								default: System.err.println(toSet + " not supported as a battery type!"); batteryType = null; break;
 							}
 							if(batteryType != null) {

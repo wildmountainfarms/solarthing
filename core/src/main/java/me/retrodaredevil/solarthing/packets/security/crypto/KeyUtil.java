@@ -11,15 +11,16 @@ import java.util.Base64;
  */
 public final class KeyUtil {
 	private KeyUtil() { throw new UnsupportedOperationException(); }
-	
+	// TODO java.util.Base64 was introduced in Java 8. We want this class to remain compatible with Android SDK 19
+
 	public static final String PAIR_ALGORITHM = "RSA";
 	public static final String FACTORY_ALGORITHM = "RSA";
 	public static final String CIPHER_TRANSFORMATION = "RSA/ECB/PKCS1Padding";
 	public static final int KEY_SIZE = 1024;
-	
+
 	private static final KeyPairGenerator KEY_PAIR_GENERATOR;
 	private static final KeyFactory KEY_FACTORY;
-	
+
 	static {
 		try {
 			KEY_PAIR_GENERATOR = KeyPairGenerator.getInstance(PAIR_ALGORITHM);
@@ -29,14 +30,14 @@ public final class KeyUtil {
 		}
 		KEY_PAIR_GENERATOR.initialize(KEY_SIZE);
 	}
-	
+
 	public static KeyPair generateKeyPair(){
 		return KEY_PAIR_GENERATOR.generateKeyPair();
 	}
 	public static String encodePublicKey(PublicKey key){
 		return Base64.getEncoder().encodeToString(key.getEncoded());
 	}
-	
+
 	/**
 	 *
 	 * @param encodedKey The base64 data where when decoded, represents the public key

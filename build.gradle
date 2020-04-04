@@ -3,11 +3,11 @@ description = """SolarThing"""
 
 buildscript {
     ext {
-        junit5Version = '5.5.2'
-        slf4jVersion = '1.7.29'
-        log4jVersion = '2.12.1'
-        jacksonVersion = '2.10.1'
-        retrofitVersion = "2.7.1"
+        junit5Version = '5.6.1'
+        slf4jVersion = '1.7.30'
+        log4jVersion = '2.13.1'
+        jacksonVersion = '2.10.2'
+        retrofitVersion = "2.8.1"
     }
 }
 allprojects {
