@@ -1,0 +1,26 @@
+# Rover Setup Config
+batterytype                     custom
+systemvoltage                   24
+
+# Under Voltage
+undervoltagewarninglevelraw     112 # 22.2
+discharginglimitvoltageraw      110 # 22.0
+overdischargerecoveryvoltageraw 112 # 22.4 # has to get back to 22.4
+overdischargetimedelayseconds   120 # 2 minutes before "over discharge"
+
+# Boost (Absorb)
+boostchargingvoltageraw         146 # 29.2
+boostchargingrecoveryvoltageraw 120 # 24.0
+boostchargingtimeminutes         90 # 1.5 hours
+
+# EQ
+equalizingchargingvoltageraw    150 # 30.0
+equalizingchargingtimeminutes   120 # 2 hours
+equalizingchargingintervaldays    0 # Let's disable this for now
+
+# Float
+floatingchargingvoltageraw      136 # 27.2
+
+# Over Voltage
+chargingvoltagelimitraw         149 # 29.8 # default 155 # might have to change this if we enable EQ
+overvoltagethresholdraw         152 # 30.4 # default 160

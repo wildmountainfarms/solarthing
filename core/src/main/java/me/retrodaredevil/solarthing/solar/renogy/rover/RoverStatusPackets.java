@@ -2,8 +2,9 @@ package me.retrodaredevil.solarthing.solar.renogy.rover;
 
 public final class RoverStatusPackets {
 	private RoverStatusPackets(){ throw new UnsupportedOperationException(); }
-	
+
 	public static RoverStatusPacket createFromReadTable(RoverReadTable read){
+		// it has to be read 76 different times
 		return new ImmutableRoverStatusPacket(
 			read.getMaxVoltageValue(), read.getRatedChargingCurrentValue(),
 			read.getRatedDischargingCurrentValue(), read.getProductTypeValue(),
