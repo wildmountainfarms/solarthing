@@ -53,6 +53,8 @@ While it takes some configuring, SolarThing web is a simple way to display solar
 Of course! This runs on Java 8+ and has been tested to work with Java 8 and Java 11. This runs on Linux, Windows and Mac,
 but is easiest to set up on Linux systems running Debian with systemd (such as the default Raspberry Pi OS or Ubuntu).
 
+This repository always has a compiled and up to date [jar file containing the SolarThing program](program/solarthing.jar).
+
 ## Usage at Wild Mountain Farms
 We monitor an Outback MATE2 with a Raspberry Pi 1 and a Renogy Rover charge controller with a Raspberry Pi Zero W.
 Both SolarThing instances upload data to CouchDB and InfluxDB, both hosted on the computer also hosting Grafana and SolarThing Web.
@@ -64,7 +66,7 @@ You can see the [Outback/Renogy Rover](other/solar/README.md) README for using t
 The [input and output](other/docs/input_and_outputs.md) README is documentation for the `io` JSON property option used in all of the sub programs.
 
 ### Compiling
-Run `./compile_and_move.sh`.
+Run `./compile_and_move.sh`. (You only need to do this if you've changed the code) This updates [solarthing.jar](program/solarthing.jar).
 
 ### Database Setup
 [CouchDB setup](other/docs/couchdb.md)<br/>

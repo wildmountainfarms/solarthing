@@ -5,30 +5,30 @@ import me.retrodaredevil.solarthing.packets.Packet;
 import java.util.*;
 
 class ImmutablePacketGroup implements PacketGroup {
-	
+
 	private final List<Packet> packets;
 	private final long dateMillis;
 	private final Map<Packet, Long> dateMillisPacketMap;
-	
+
 	ImmutablePacketGroup(Collection<? extends Packet> packets, long dateMillis, Map<? extends Packet, Long> dateMillisPacketMap) {
 		this.packets = Collections.unmodifiableList(new ArrayList<>(packets));
 		this.dateMillis = dateMillis;
 		this.dateMillisPacketMap = Collections.unmodifiableMap(new HashMap<>(dateMillisPacketMap));
 	}
-	
-	
+
+
 	@Override
-	public List<Packet> getPackets() {
+	public final List<Packet> getPackets() {
 		return packets;
 	}
-	
+
 	@Override
-	public long getDateMillis() {
+	public final long getDateMillis() {
 		return dateMillis;
 	}
-	
+
 	@Override
-	public Long getDateMillis(Packet packet) {
+	public final Long getDateMillis(Packet packet) {
 		return dateMillisPacketMap.get(packet);
 	}
 }

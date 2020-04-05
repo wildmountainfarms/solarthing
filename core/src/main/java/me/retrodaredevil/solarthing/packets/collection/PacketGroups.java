@@ -24,7 +24,13 @@ public final class PacketGroups {
 	public static InstancePacketGroup createInstancePacketGroup(Collection<? extends Packet> groups, long dateMillis, String sourceId, Integer fragmentId, Map<? extends Packet, Long> dateMillisPacketMap){
 		return new ImmutableInstancePacketGroup(groups, dateMillis, dateMillisPacketMap, sourceId, fragmentId);
 	}
+	public static FragmentedPacketGroup createFragmentedPacketGroup(Collection<? extends InstancePacketGroup> instancePackets, long dateMillis) {
+		return new ImmutableFragmentedPacketGroup(instancePackets, dateMillis);
+	}
 	public static InstancePacketGroup parseToInstancePacketGroup(PacketGroup group){
+		if(group instanceof InstancePacketGroup){
+			return (InstancePacketGroup) group;
+		}
 		List<Packet> packets = new ArrayList<>();
 		String sourceId = InstanceSourcePacket.DEFAULT_SOURCE_ID;
 		Integer fragmentId = null;
@@ -58,12 +64,12 @@ public final class PacketGroups {
 		}
 		return map;
 	}
-	public static Map<String, List<PacketGroup>> sortPackets(Collection<? extends PacketGroup> groups, long maxTimeDistance){
+	public static Map<String, List<FragmentedPacketGroup>> sortPackets(Collection<? extends PacketGroup> groups, long maxTimeDistance){
 		return sortPackets(groups, maxTimeDistance, null);
 	}
-	public static Map<String, List<PacketGroup>> sortPackets(Collection<? extends PacketGroup> groups, long maxTimeDistance, Long masterIdIgnoreDistance){
+	public static Map<String, List<FragmentedPacketGroup>> sortPackets(Collection<? extends PacketGroup> groups, long maxTimeDistance, Long masterIdIgnoreDistance){
 		Map<String, List<InstancePacketGroup>> map = parsePackets(groups);
-		Map<String, List<PacketGroup>> r = new HashMap<>();
+		Map<String, List<FragmentedPacketGroup>> r = new HashMap<>();
 		for(Map.Entry<String, List<InstancePacketGroup>> entry : map.entrySet()){
 			Map<Integer, List<InstancePacketGroup>> fragmentMap = new HashMap<>();
 			for(InstancePacketGroup packetGroup : entry.getValue()){ // this for loop initializes fragmentMap
@@ -85,7 +91,7 @@ public final class PacketGroups {
 				fragmentIdsSet.addAll(fragmentMap.keySet());
 				fragmentIds = new ArrayList<>(fragmentIdsSet); // now this is sorted
 			}
-			List<PacketGroup> packetGroups = new ArrayList<>();
+			List<FragmentedPacketGroup> packetGroups = new ArrayList<>();
 			addToPacketGroups(
 					maxTimeDistance, masterIdIgnoreDistance,
 					Long.MIN_VALUE, Long.MAX_VALUE,
@@ -102,7 +108,7 @@ public final class PacketGroups {
 			long minTime, long maxTime,
 			List<? extends Integer> fragmentIds,
 			Map<Integer, ? extends List<? extends InstancePacketGroup>> fragmentMap,
-			List<? super PacketGroup> packetGroupsOut
+			List<? super FragmentedPacketGroup> packetGroupsOut
 	){
 		if(minTime > maxTime){
 			return;
@@ -170,11 +176,8 @@ public final class PacketGroups {
 			if(masterGroup.getDateMillis() > maxTime){
 				break;
 			}
-			Map<Packet, Long> extraDateMillisPacketMap = new HashMap<>();
-			List<Packet> packetList = new ArrayList<>(masterGroup.getPackets());
-			for(Packet masterPacket : masterGroup.getPackets()){
-				extraDateMillisPacketMap.put(masterPacket, masterGroup.getDateMillis());
-			}
+			List<InstancePacketGroup> instancePacketGroupList = new ArrayList<>();
+			instancePacketGroupList.add(masterGroup);
 			for(Integer fragmentId : fragmentIds){
 				if(Objects.equals(fragmentId, masterFragmentId)) continue;
 				List<? extends InstancePacketGroup> packetGroupList = requireNonNull(fragmentMap.get(fragmentId));
@@ -182,13 +185,10 @@ public final class PacketGroups {
 				InstancePacketGroup closest = getClosest(packetGroupList, masterGroup.getDateMillis());
 				long smallestTime = Math.abs(closest.getDateMillis() - masterGroup.getDateMillis());
 				if(smallestTime < maxTimeDistance){
-					packetList.addAll(closest.getPackets());
-					for(Packet packet : closest.getPackets()){
-						extraDateMillisPacketMap.put(packet, closest.getDateMillis());
-					}
+					instancePacketGroupList.add(closest);
 				}
 			}
-			packetGroupsOut.add(createPacketGroup(packetList, masterGroup.getDateMillis(), extraDateMillisPacketMap));
+			packetGroupsOut.add(createFragmentedPacketGroup(instancePacketGroupList, masterGroup.getDateMillis()));
 		}
 	}
 	private static InstancePacketGroup getClosest(List<? extends InstancePacketGroup> packetGroupList, long masterGroupDateMillis){
