@@ -55,13 +55,13 @@ public class PVOutputUploadMain {
 				LOGGER.warn("This object must contain all unknown packets...", e);
 			}
 		}
-		Map<String, List<PacketGroup>> packetGroupsMap = PacketGroups.sortPackets(rawPacketGroups, 2 * 60 * 1000);
-		final List<PacketGroup> packetGroups;
+		Map<String, ? extends List<? extends PacketGroup>> packetGroupsMap = PacketGroups.sortPackets(rawPacketGroups, 2 * 60 * 1000);
+		final List<? extends PacketGroup> packetGroups;
 		if(sourceId == null){
 			if(packetGroupsMap.containsKey("default")){
 				packetGroups = packetGroupsMap.get("default");
 			} else {
-				Iterator<List<PacketGroup>> iterator = packetGroupsMap.values().iterator();
+				Iterator<? extends List<? extends PacketGroup>> iterator = packetGroupsMap.values().iterator();
 				if(iterator.hasNext()){
 					packetGroups = iterator.next();
 				} else {

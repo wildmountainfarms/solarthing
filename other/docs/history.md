@@ -25,6 +25,11 @@ was created and completed in less than a week.
 have the ability to have multiple instances uploading packets to a single database
 * InfluxDB support was added allowing for easy configuration of a Grafana dashboard
 * Raspberry Pi running the outhouse program didn't survive the freezing temperatures (RIP outhousepi 2019-2019)
+#### 2020
+* PVOutput was setup
+* Outhouse code was completely removed from SolarThing codebase
+* "Events Display" was added to the Android application
+* RoverPi became corrupt, but was eventually reflashed and set up again
 
 
 ### Moving from Gson to Jackson
@@ -33,10 +38,23 @@ simplicity. It has served this project very well and is very user friendly. Howe
 deserializing functions to deserialize advanced packets. Jackson is very annotation orientated and is very
 feature rich. The added complexity of Jackson is worth the speed of development it brings.
 
-Useful links:
-* https://www.baeldung.com/jackson-field-serializable-deserializable-or-not
-* https://www.baeldung.com/jackson-deserialize-immutable-objects
-* https://github.com/FasterXML/jackson-docs/wiki/JacksonPolymorphicDeserialization
+### Configuration
+When developing SolarThing, I didn't want to hard code values everywhere in the code, so I decided to
+go with command line arguments. For this, I decided to use [JCommander](https://github.com/cbeust/jcommander).
+
+JCommander was a great option until I wanted to use inheritance to define which types of programs can have
+certain options. JCommander did not work with interfaces an [JewelCli](http://jewelcli.lexicalscope.com/) did. JewelCli
+is like the Retrofit of command line parsers. Defining options in interfaces gives you many options for how to structure
+your configuration. If SolarThing or another one of my projects needs command line parsing again, JewelCli will be my go to library.
+
+At this point, the command line arguments were pretty crazy. Plus, swapping out different configs meant changing the
+file that actually ran the `java -jar` command. I knew it was time to move to JSON configuration. This allowed for a lot of
+flexibility. While GSON was used to start with, the JSON configuration code was one of the reasons I felt like I needed to rewrite a lot
+of the stuff that used JSON. I wasn't utilizing Gson's deserialization features, so I decided to switch
+to Jackson altogether as explained above.
+
+Currently the configuration is very easy to change. I can swap out what configuration I'm using easily and can
+use the same CouchDB or InfluxDB configuration on multiple devices running SolarThing.
 
 ### Legacy
 [The perl script](../legacy/helloworld.pl) is a legacy program. It was the program that started solarthing.
