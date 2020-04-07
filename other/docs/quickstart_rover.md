@@ -51,5 +51,13 @@ See [Rover Setup Info](rover_setup_info.md) for information on how to use the `r
 Yes, I hear you. When I first started trying to configure certain things on my Rover, it just straight up didn't work.
 Here's an incomplete list of things I was unable to do:
 * Set the voltage thresholds
+  * This doesn't work on CCs like the Wanderer, Adventurer. It only works on the Rover
+  * This only works if you set your battery type to "user" aka self-customized
+  * Even though I tried configuring the voltage thresholds on a *Rover*, I couldn't get it to work. This program
+  might not be setup correctly to even change these values, I'm not sure.
 * Settings most of the values
-* Getting special power control values
+* Getting (accurate) special power control values
+  * These values didn't really seem correct
+
+Note that a lot of the more advanced features are untested. They exist in SolarThing because they were in the
+Rover's Modbus protocol document so I added it.
