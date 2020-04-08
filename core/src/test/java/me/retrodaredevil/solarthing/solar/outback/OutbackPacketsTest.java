@@ -5,7 +5,6 @@ import me.retrodaredevil.solarthing.packets.support.Support;
 import me.retrodaredevil.solarthing.solar.PacketTestUtil;
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacket;
 import me.retrodaredevil.solarthing.solar.extra.SolarExtraPacket;
-import me.retrodaredevil.solarthing.solar.outback.fx.FXErrorMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.OperationalMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.charge.FXChargingMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.charge.FXChargingPacket;

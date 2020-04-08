@@ -300,4 +300,5 @@ gradle-app.setting
 *.iml
 /.idea/*
 !/.idea/dictionaries
+!/.idea/inspectionProfiles
 

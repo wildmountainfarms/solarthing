@@ -6,8 +6,6 @@ import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifi
 import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 
-import java.util.Collection;
-
 public abstract class BaseFXDailyData extends ImmutableFXDailyData implements SupplementaryIdentifiable {
 
 	private final SupplementaryIdentifier supplementaryIdentifier;

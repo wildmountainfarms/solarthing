@@ -11,8 +11,6 @@ import me.retrodaredevil.solarthing.solar.outback.fx.common.FXDailyData;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.ImmutableFXDailyData;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
-
 import static java.util.Objects.requireNonNull;
 
 @JsonDeserialize(builder = ImmutableFXDayEndPacket.Builder.class)

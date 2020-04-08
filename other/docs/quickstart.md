@@ -47,9 +47,9 @@ cp ../config_templates/databases/latest_save_json_template.json config/latest.js
 
 ### Add databases to base configuration
 Edit `config/base.json` with your editor of choice
-```json
+```json5
 {
-  ...
+  //...
   "databases": [
     "config/couchdb.json",
     "config/influxdb.json",

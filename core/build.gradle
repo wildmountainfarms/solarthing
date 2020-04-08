@@ -4,8 +4,6 @@ plugins {
 
 version "0.0.1-SNAPSHOT"
 
-sourceCompatibility = 1.8
-
 dependencies {
     api 'com.github.retrodaredevil:io-lib:v1.2.2'
 

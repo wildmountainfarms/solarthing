@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.util.frequency;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;

@@ -6,11 +6,6 @@
 * Have unique identifier for each jar file
 * AC Use->AC Drop, turn on AUX until NO AC. (GEN OFF) command using MATE's built in AC Use/Drop.
   * Might also have to detect low/high vac to determine if intentional
-* GraphQL
-  * For grafana: https://github.com/fifemon/graphql-datasource
-  * https://github.com/lifeomic/json-schema-to-graphql-types
-  * https://github.com/graphql-java/graphql-java-spring and [tutorial](https://www.graphql-java.com/tutorials/getting-started-with-spring-boot/)
-  * https://github.com/nfl/glitr
 
 ### Completed TODO:
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)

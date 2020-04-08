@@ -432,7 +432,7 @@ public final class RoverSetupProgram {
 					break;
 				default:
 					System.out.println("This isn't supported!");
-					continue loop;
+					break;
 			}
 		}
 	}

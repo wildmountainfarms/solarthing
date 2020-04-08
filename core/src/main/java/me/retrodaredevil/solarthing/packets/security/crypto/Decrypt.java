@@ -1,18 +1,18 @@
 package me.retrodaredevil.solarthing.packets.security.crypto;
 
+import com.fasterxml.jackson.core.Base64Variants;
 import me.retrodaredevil.solarthing.packets.security.IntegrityPacket;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import java.security.PublicKey;
-import java.util.Base64;
 
 import static java.util.Objects.requireNonNull;
 
 public final class Decrypt {
 	private Decrypt(){ throw new UnsupportedOperationException(); }
-	
+
 	public static String decrypt(Cipher cipher, PublicKeyLookUp publicKeyLookUp, IntegrityPacket packet) throws NotAuthorizedException, DecryptException, InvalidKeyException {
 		PublicKey key = publicKeyLookUp.getKey(packet.getSender());
 		if(key == null){
@@ -24,7 +24,7 @@ public final class Decrypt {
 		requireNonNull(cipher);
 		requireNonNull(key);
 		requireNonNull(base64EncryptedData);
-		byte[] encryptedData = Base64.getDecoder().decode(base64EncryptedData);
+		byte[] encryptedData = Base64Variants.getDefaultVariant().decode(base64EncryptedData);
 		try {
 			cipher.init(Cipher.DECRYPT_MODE, key);
 		} catch (java.security.InvalidKeyException e) {

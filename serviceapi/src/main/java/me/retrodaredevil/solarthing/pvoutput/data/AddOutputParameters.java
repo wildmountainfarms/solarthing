@@ -29,6 +29,7 @@ public interface AddOutputParameters {
 
 	@JsonProperty("cd")
 	String getConditionValue();
+	@SuppressWarnings("unused")
 	default WeatherCondition getCondition(){
 		String value = getConditionValue();
 		if(value == null){

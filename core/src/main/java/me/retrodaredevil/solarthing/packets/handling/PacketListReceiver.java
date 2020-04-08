@@ -14,8 +14,8 @@ public interface PacketListReceiver {
 	 * <p>
 	 * It is also expected that after this method is called, the caller may mutate or clear {@code packets}, so if the implementation
 	 * needs a reference to {@code packets}, it should copy the elements into a new list.
-	 * @param packets
-	 * @param wasInstant
+	 * @param packets The list of packets. The implementation may add or remove packets depending on what it's supposed to do.
+	 * @param wasInstant true if the data being received was instant/reliable
 	 */
 	void receive(List<Packet> packets, boolean wasInstant);
 }

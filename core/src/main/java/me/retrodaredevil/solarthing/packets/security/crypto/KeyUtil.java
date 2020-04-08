@@ -1,17 +1,17 @@
 package me.retrodaredevil.solarthing.packets.security.crypto;
 
+import com.fasterxml.jackson.core.Base64Variants;
+
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.Base64;
 
 /**
  * Contains constants and utility methods for encoding keys and creating new keys
  */
 public final class KeyUtil {
 	private KeyUtil() { throw new UnsupportedOperationException(); }
-	// TODO java.util.Base64 was introduced in Java 8. We want this class to remain compatible with Android SDK 19
 
 	public static final String PAIR_ALGORITHM = "RSA";
 	public static final String FACTORY_ALGORITHM = "RSA";
@@ -35,7 +35,8 @@ public final class KeyUtil {
 		return KEY_PAIR_GENERATOR.generateKeyPair();
 	}
 	public static String encodePublicKey(PublicKey key){
-		return Base64.getEncoder().encodeToString(key.getEncoded());
+//		return Base64.getEncoder().encodeToString(key.getEncoded());
+		return Base64Variants.getDefaultVariant().encode(key.getEncoded());
 	}
 
 	/**
@@ -45,7 +46,8 @@ public final class KeyUtil {
 	 * @throws InvalidKeyException Thrown if the {@code encodedKey} is not valid
 	 */
 	public static PublicKey decodePublicKey(String encodedKey) throws InvalidKeyException {
-		byte[] bytes = Base64.getDecoder().decode(encodedKey);
+//		byte[] bytes = Base64.getDecoder().decode(encodedKey);
+		byte[] bytes = Base64Variants.getDefaultVariant().decode(encodedKey);
 		return decodePublicKey(bytes);
 	}
 	/**
