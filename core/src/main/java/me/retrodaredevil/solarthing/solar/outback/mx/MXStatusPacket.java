@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.solar.outback.mx;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -12,6 +13,7 @@ import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
 import me.retrodaredevil.solarthing.solar.common.DailyChargeController;
 import me.retrodaredevil.solarthing.solar.common.DailyData;
 import me.retrodaredevil.solarthing.solar.outback.OutbackStatusPacket;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
 
@@ -38,6 +40,12 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 		return getDailyKWH() < previous.getDailyKWH() || getDailyAH() < previous.getDailyAH();
 	}
 
+	@JsonIgnore
+	@NotNull
+	@Override
+	default Integer getPVWattage() {
+		return getPVCurrent() * getInputVoltage();
+	}
 	// region Packet Values
 
 	/**
@@ -86,6 +94,7 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 	 * The DC current the MX is taking from the PV panels in Amps
 	 * @return [0..99] representing the PV current in Amps
 	 */
+	@NotNull
 	@JsonProperty("pvCurrent")
 	@Override
 	Integer getPVCurrent();
@@ -96,6 +105,7 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 	 * The voltage seen at the MX's PV input terminals
 	 * @return [0..256] The PV panel voltage (in volts)
 	 */
+	@NotNull
 	@JsonProperty("inputVoltage")
 	@Override
 	Integer getInputVoltage();

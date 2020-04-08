@@ -1,11 +1,13 @@
 type Query1 {
-    packets(from: String, to: String): [PacketCollection!]!
+    sortedPacketCollections(from: String, to: String): [PacketCollection!]!
+    fragmentedPacketCollections(from: String, to: String): [PacketCollection!]!
+    packets(from: String, to: String): [PacketNode!]!
 }
 type PacketCollection {
-    dateMillis: Int!
     packets: [SolarPacket!]!
 }
 type PacketNode {
+    dateMillis: Int!
     source: String!
     fragment: Int!
     identifier: String!

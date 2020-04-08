@@ -5,12 +5,13 @@ import me.retrodaredevil.io.modbus.handling.MessageHandler;
 import me.retrodaredevil.io.modbus.handling.ReadRegistersHandler;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverIdentifier;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverReadTable;
+import org.jetbrains.annotations.NotNull;
 
 public class RoverModbusSlaveRead implements RoverReadTable {
 	private static final float KWH_DIVIDER = 1_000; // units are returned in Watt Hours
-	
+
 	private final ModbusSlave modbus;
-	
+
 	public RoverModbusSlaveRead(ModbusSlave modbus) {
 		this.modbus = modbus;
 	}
@@ -51,7 +52,7 @@ public class RoverModbusSlaveRead implements RoverReadTable {
 	@Override public int getProductTypeValue() {
 		return lower(oneRegister(DISCHARGING_AND_PRODUCT_TYPE));
 	}
-	
+
 	private static final MessageHandler<int[]> PRODUCT_MODEL = new ReadRegistersHandler(0x000C, 8);
 	@Override public byte[] getProductModelValue() {
 		int[] model = get(PRODUCT_MODEL);
@@ -63,7 +64,7 @@ public class RoverModbusSlaveRead implements RoverReadTable {
 		}
 		return r;
 	}
-	
+
 	private static final MessageHandler<int[]> SOFTWARE_VERSION = new ReadRegistersHandler(0x0014, 2);
 	@Override public int getSoftwareVersionValue() {
 		return twoRegistersAsInt(SOFTWARE_VERSION);
@@ -76,32 +77,32 @@ public class RoverModbusSlaveRead implements RoverReadTable {
 	@Override public int getProductSerialNumber() {
 		return twoRegistersAsInt(PRODUCT_SERIAL);
 	}
-	
+
 	private static final MessageHandler<int[]> ADDRESS = new ReadRegistersHandler(0x001A, 1);
 	@Override
 	public int getControllerDeviceAddress() {
 		return oneRegister(ADDRESS);
 	}
-	
+
 	private static final MessageHandler<int[]> SOC = new ReadRegistersHandler(0x0100, 1);
 	@Override
 	public int getBatteryCapacitySOC() {
 		return oneRegister(SOC);
 	}
-	
+
 	private static final MessageHandler<int[]> BATTERY_VOLTAGE = new ReadRegistersHandler(0x0101, 1);
 	@Override
 	public float getBatteryVoltage() {
 		return oneRegister(BATTERY_VOLTAGE) / 10.0F;
 	}
-	
+
 	private static final MessageHandler<int[]> CHARGING_CURRENT = new ReadRegistersHandler(0x0102, 1);
 	@Override
 	public Float getChargingCurrent() {
 		return oneRegister(CHARGING_CURRENT) / 100.0F;
 	}
-	
-	
+
+
 	private static final MessageHandler<int[]> CONTROLLER_BATTERY_TEMPERATURE = new ReadRegistersHandler(0x0103, 1);
 	@Override public int getControllerTemperatureRaw() {
 		return upper(oneRegister(CONTROLLER_BATTERY_TEMPERATURE));
@@ -109,37 +110,39 @@ public class RoverModbusSlaveRead implements RoverReadTable {
 	@Override public int getBatteryTemperatureRaw() {
 		return lower(oneRegister(CONTROLLER_BATTERY_TEMPERATURE));
 	}
-	
+
 	private static final MessageHandler<int[]> LOAD_VOLTAGE = new ReadRegistersHandler(0x0104, 1);
 	@Override
 	public float getLoadVoltage() {
 		return oneRegister(LOAD_VOLTAGE) / 10.0F;
 	}
-	
+
 	private static final MessageHandler<int[]> LOAD_CURRENT = new ReadRegistersHandler(0x0105, 1);
 	@Override public float getLoadCurrent() {
 		return oneRegister(LOAD_CURRENT) / 100.0F;
 	}
-	
+
 	private static final MessageHandler<int[]> LOAD_POWER = new ReadRegistersHandler(0x0106, 1);
 	@Override public int getLoadPower() {
 		return oneRegister(LOAD_POWER);
 	}
-	
+
 	private static final MessageHandler<int[]> PV_VOLTAGE = new ReadRegistersHandler(0x0107, 1);
-	@Override public Float getInputVoltage() { // pv voltage/solar panel voltage
+	@NotNull
+    @Override public Float getInputVoltage() { // pv voltage/solar panel voltage
 		return oneRegister(PV_VOLTAGE) / 10.0F;
 	}
 	private static final MessageHandler<int[]> PV_CURRENT = new ReadRegistersHandler(0x0108, 1);
+	@NotNull
 	@Override public Float getPVCurrent() {
 		return oneRegister(PV_CURRENT) / 100.0F;
 	}
-	
+
 	private static final MessageHandler<int[]> CHARGING_POWER = new ReadRegistersHandler(0x0109, 1);
 	@Override public Integer getChargingPower() {
 		return oneRegister(CHARGING_POWER);
 	}
-	
+
 	private static final MessageHandler<int[]> DAILY_MIN_BATTERY_VOLTAGE = new ReadRegistersHandler(0x010B, 1);
 	@Override public float getDailyMinBatteryVoltage() {
 		return oneRegister(DAILY_MIN_BATTERY_VOLTAGE) / 10.0F;
@@ -148,7 +151,7 @@ public class RoverModbusSlaveRead implements RoverReadTable {
 	@Override public float getDailyMaxBatteryVoltage() {
 		return oneRegister(DAILY_MAX_BATTERY_VOLTAGE) / 10.0F;
 	}
-	
+
 	private static final MessageHandler<int[]> DAILY_MAX_CHARGING_CURRENT = new ReadRegistersHandler(0x010D, 1);
 	@Override public float getDailyMaxChargingCurrent() {
 		return oneRegister(DAILY_MAX_CHARGING_CURRENT) / 100.0F;
@@ -166,7 +169,7 @@ public class RoverModbusSlaveRead implements RoverReadTable {
 	@Override public int getDailyMaxDischargingPower() {
 		return oneRegister(DAILY_MAX_DISCHARGING_POWER);
 	}
-	
+
 	private static final MessageHandler<int[]> DAILY_AH_CHARGING = new ReadRegistersHandler(0x0111, 1);
 	@Override public int getDailyAH() {
 		return oneRegister(DAILY_AH_CHARGING);
@@ -175,17 +178,17 @@ public class RoverModbusSlaveRead implements RoverReadTable {
 	@Override public int getDailyAHDischarging() {
 		return oneRegister(DAILY_AH_DISCHARGING);
 	}
-	
+
 	private static final MessageHandler<int[]> DAILY_KWH_CHARGING = new ReadRegistersHandler(0x0113, 1);
 	@Override public float getDailyKWH() {
 		return oneRegister(DAILY_KWH_CHARGING) / KWH_DIVIDER;
 	}
-	
+
 	private static final MessageHandler<int[]> DAILY_KWH_DISCHARGING = new ReadRegistersHandler(0x0114, 1);
 	@Override public float getDailyKWHConsumption() {
 		return oneRegister(DAILY_KWH_DISCHARGING) / KWH_DIVIDER;
 	}
-	
+
 	private static final MessageHandler<int[]> OPERATING_DAYS = new ReadRegistersHandler(0x0115, 1);
 	@Override public int getOperatingDaysCount() {
 		return oneRegister(OPERATING_DAYS);
@@ -198,7 +201,7 @@ public class RoverModbusSlaveRead implements RoverReadTable {
 	@Override public int getBatteryFullChargesCount() {
 		return oneRegister(FULL_CHARGE_COUNT);
 	}
-	
+
 	private static final MessageHandler<int[]> AH_CHARGING_COUNT = new ReadRegistersHandler(0x0118, 2);
 	@Override public int getChargingAmpHoursOfBatteryCount() {
 		return twoRegistersAsInt(AH_CHARGING_COUNT);
@@ -207,7 +210,7 @@ public class RoverModbusSlaveRead implements RoverReadTable {
 	@Override public int getDischargingAmpHoursOfBatteryCount() {
 		return twoRegistersAsInt(AH_DISCHARGING_COUNT);
 	}
-	
+
 	private static final MessageHandler<int[]> CUMULATIVE_KWH_CHARGING = new ReadRegistersHandler(0x011C, 2);
 	@Override public float getCumulativeKWH() {
 		return twoRegistersAsInt(CUMULATIVE_KWH_CHARGING) / KWH_DIVIDER;
@@ -216,7 +219,7 @@ public class RoverModbusSlaveRead implements RoverReadTable {
 	@Override public float getCumulativeKWHConsumption() {
 		return twoRegistersAsInt(CUMULATIVE_KWH_DISCHARGING) / KWH_DIVIDER;
 	}
-	
+
 	private static final MessageHandler<int[]> STREET_LIGHT_AND_CHARGING_STATE = new ReadRegistersHandler(0x0120, 2);
 	@Override public int getRawStreetLightValue() {
 		return upper(oneRegister(STREET_LIGHT_AND_CHARGING_STATE));
@@ -224,17 +227,17 @@ public class RoverModbusSlaveRead implements RoverReadTable {
 	@Override public int getChargingStateValue() {
 		return lower(oneRegister(STREET_LIGHT_AND_CHARGING_STATE));
 	}
-	
+
 	private static final MessageHandler<int[]> ERROR_MODE = new ReadRegistersHandler(0x0121, 2);
 	@Override public int getErrorModeValue() {
 		return twoRegistersAsInt(ERROR_MODE);
 	}
-	
+
 	private static final MessageHandler<int[]> NOMINAL_BATTERY_CAPACITY = new ReadRegistersHandler(0xE002, 1);
 	@Override public int getNominalBatteryCapacity() {
 		return oneRegister(NOMINAL_BATTERY_CAPACITY);
 	}
-	
+
 	private static final MessageHandler<int[]> SYSTEM_AND_RECOGNIZED_VOLTAGE = new ReadRegistersHandler(0xE003, 1);
 	@Override public int getSystemVoltageSettingValue() {
 		return upper(oneRegister(SYSTEM_AND_RECOGNIZED_VOLTAGE));
@@ -242,62 +245,62 @@ public class RoverModbusSlaveRead implements RoverReadTable {
 	@Override public int getRecognizedVoltageValue() {
 		return lower(oneRegister(SYSTEM_AND_RECOGNIZED_VOLTAGE));
 	}
-	
+
 	private static final MessageHandler<int[]> BATTERY_TYPE = new ReadRegistersHandler(0xE004, 1);
 	@Override public int getBatteryTypeValue() {
 		return oneRegister(BATTERY_TYPE);
 	}
-	
+
 	private static final MessageHandler<int[]> OVER_VOLTAGE_THRESHOLD = new ReadRegistersHandler(0xE005, 1);
 	@Override public int getOverVoltageThresholdRaw() {
 		return oneRegister(OVER_VOLTAGE_THRESHOLD);
 	}
-	
+
 	private static final MessageHandler<int[]> CHARGING_VOLTAGE_LIMIT = new ReadRegistersHandler(0xE006, 1);
 	@Override public int getChargingVoltageLimitRaw() {
 		return oneRegister(CHARGING_VOLTAGE_LIMIT);
 	}
-	
+
 	private static final MessageHandler<int[]> EQUALIZING_CHARGING_VOLTAGE = new ReadRegistersHandler(0xE007, 1);
 	@Override public int getEqualizingChargingVoltageRaw() {
 		return oneRegister(EQUALIZING_CHARGING_VOLTAGE);
 	}
-	
+
 	private static final MessageHandler<int[]> BOOST_CHARGING_VOLTAGE = new ReadRegistersHandler(0xE008, 1);
 	@Override public int getBoostChargingVoltageRaw() {
 		return oneRegister(BOOST_CHARGING_VOLTAGE);
 	}
-	
+
 	private static final MessageHandler<int[]> FLOATING_CHARGING_VOLTAGE = new ReadRegistersHandler(0xE009, 1);
 	@Override public int getFloatingChargingVoltageRaw() {
 		return oneRegister(FLOATING_CHARGING_VOLTAGE);
 	}
-	
+
 	private static final MessageHandler<int[]> BOOST_CHARGING_RECOVERY_VOLTAGE = new ReadRegistersHandler(0xE00A, 1);
 	@Override public int getBoostChargingRecoveryVoltageRaw() {
 		return oneRegister(BOOST_CHARGING_RECOVERY_VOLTAGE);
 	}
-	
+
 	private static final MessageHandler<int[]> OVER_DISCHARGE_RECOVERY_VOLTAGE = new ReadRegistersHandler(0xE00B, 1);
 	@Override public int getOverDischargeRecoveryVoltageRaw() {
 		return oneRegister(OVER_DISCHARGE_RECOVERY_VOLTAGE);
 	}
-	
+
 	private static final MessageHandler<int[]> UNDER_VOLTAGE_WARNING_LEVEL = new ReadRegistersHandler(0xE00C, 1);
 	@Override public int getUnderVoltageWarningLevelRaw() {
 		return oneRegister(UNDER_VOLTAGE_WARNING_LEVEL);
 	}
-	
+
 	private static final MessageHandler<int[]> OVER_DISCHARGE_VOLTAGE = new ReadRegistersHandler(0xE00D, 1);
 	@Override public int getOverDischargeVoltageRaw() {
 		return oneRegister(OVER_DISCHARGE_VOLTAGE);
 	}
-	
+
 	private static final MessageHandler<int[]> DISCHARGING_LIMIT_VOLTAGE = new ReadRegistersHandler(0xE00E, 1);
 	@Override public int getDischargingLimitVoltageRaw() {
 		return oneRegister(DISCHARGING_LIMIT_VOLTAGE);
 	}
-	
+
 	private static final MessageHandler<int[]> END_OF_CHARGE_AND_DISCHARGE_SOC = new ReadRegistersHandler(0xE00F, 1);
 	@Override public int getEndOfChargeSOC() {
 		return upper(oneRegister(END_OF_CHARGE_AND_DISCHARGE_SOC));
@@ -305,59 +308,59 @@ public class RoverModbusSlaveRead implements RoverReadTable {
 	@Override public int getEndOfDischargeSOC() {
 		return lower(oneRegister(END_OF_CHARGE_AND_DISCHARGE_SOC));
 	}
-	
+
 	private static final MessageHandler<int[]> OVER_DISCHARGE_TIME_DELAY = new ReadRegistersHandler(0xE010, 1);
 	@Override public int getOverDischargeTimeDelaySeconds() {
 		return oneRegister(OVER_DISCHARGE_TIME_DELAY);
 	}
-	
+
 	private static final MessageHandler<int[]> EQUALIZING_CHARGING_TIME = new ReadRegistersHandler(0xE011, 1);
 	@Override public int getEqualizingChargingTimeRaw() {
 		return oneRegister(EQUALIZING_CHARGING_TIME);
 	}
-	
+
 	private static final MessageHandler<int[]> BOOST_CHARGING_TIME = new ReadRegistersHandler(0xE012, 1);
 	@Override public int getBoostChargingTimeRaw() {
 		return oneRegister(BOOST_CHARGING_TIME);
 	}
-	
+
 	private static final MessageHandler<int[]> EQUALIZING_CHARGING_INTERVAL = new ReadRegistersHandler(0xE013, 1);
 	@Override public int getEqualizingChargingIntervalRaw() {
 		return oneRegister(EQUALIZING_CHARGING_INTERVAL);
 	}
-	
+
 	private static final MessageHandler<int[]> TEMPERATURE_COMPENSATION = new ReadRegistersHandler(0xE014, 1);
 	@Override public int getTemperatureCompensationFactorRaw() {
 		return oneRegister(TEMPERATURE_COMPENSATION);
 	}
-	
+
 	@Override public int getOperatingDurationHours(OperatingSetting setting) {
 		return oneRegister(new ReadRegistersHandler(setting.getDurationHoursRegister(), 1));
 	}
 	@Override public int getOperatingPowerPercentage(OperatingSetting setting) {
 		return oneRegister(new ReadRegistersHandler(setting.getOperatingPowerPercentageRegister(), 1));
 	}
-	
+
 	private static final MessageHandler<int[]> LOAD_WORKING_MODE = new ReadRegistersHandler(0xE01D, 1);
 	@Override public int getLoadWorkingModeValue() {
 		return oneRegister(LOAD_WORKING_MODE);
 	}
-	
+
 	private static final MessageHandler<int[]> LIGHT_CONTROL_DELAY = new ReadRegistersHandler(0xE01E, 1);
 	@Override public int getLightControlDelayMinutes() {
 		return oneRegister(LIGHT_CONTROL_DELAY);
 	}
-	
+
 	private static final MessageHandler<int[]> LIGHT_CONTROL_VOLTAGE = new ReadRegistersHandler(0xE01F, 1);
 	@Override public int getLightControlVoltage() {
 		return oneRegister(LIGHT_CONTROL_VOLTAGE);
 	}
-	
+
 	private static final MessageHandler<int[]> LED_LOAD_CURRENT_SETTING = new ReadRegistersHandler(0xE020, 1);
 	@Override public int getLEDLoadCurrentSettingRaw() {
 		return oneRegister(LED_LOAD_CURRENT_SETTING);
 	}
-	
+
 	private static final MessageHandler<int[]> SPECIAL_POWER_CONTROL_E021 = new ReadRegistersHandler(0xE021, 1);
 	@Override public int getSpecialPowerControlE021Raw() {
 		return oneRegister(SPECIAL_POWER_CONTROL_E021);
@@ -371,7 +374,7 @@ public class RoverModbusSlaveRead implements RoverReadTable {
 	@Override public int getPowerWithNoPeopleSensedRaw(Sensing sensing) {
 		return oneRegister(new ReadRegistersHandler(sensing.getPowerWithNoPeopleSensedRegister(), 1));
 	}
-	
+
 	private static final MessageHandler<int[]> SENSING_TIME_DELAY = new ReadRegistersHandler(0xE02B, 1);
 	@Override public int getSensingTimeDelayRaw() {
 		return oneRegister(SENSING_TIME_DELAY);
