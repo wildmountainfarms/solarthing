@@ -11,13 +11,12 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
-import java.util.Collections;
 
 import static java.util.Objects.requireNonNull;
 
 public class SolarReader {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SolarReader.class);
-	
+
 	private final InputStream in;
 	private final TextPacketCreator creator;
 	private final RawPacketReceiver rawPacketReceiver;

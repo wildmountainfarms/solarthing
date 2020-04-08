@@ -5,8 +5,6 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import java.io.File;
 
-import static java.util.Objects.requireNonNull;
-
 @JsonTypeName("rover")
 public class RoverProgramOptions extends PacketHandlingOptionBase implements RoverOption, ProgramOptions {
 	@JsonProperty("modbus")

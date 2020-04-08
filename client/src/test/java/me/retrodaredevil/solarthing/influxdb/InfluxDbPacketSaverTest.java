@@ -10,12 +10,7 @@ class InfluxDbPacketSaverTest {
 
 	@Test
 	void test(){
-		OutbackData data = new OutbackData() {
-			@Override
-			public int getAddress() {
-				return 0;
-			}
-		};
+		OutbackData data = () -> 0;
 		System.out.println(getTagKeys(data.getClass()));
 	}
 }

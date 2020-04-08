@@ -6,6 +6,7 @@ import me.retrodaredevil.solarthing.pvoutput.WeatherCondition;
 
 import static java.util.Objects.requireNonNull;
 
+@SuppressWarnings("unused")
 public class AddOutputParametersBuilder implements AddOutputParameters {
 	private final SimpleDate date;
 	private Number generated;

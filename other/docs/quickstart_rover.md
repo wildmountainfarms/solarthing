@@ -17,9 +17,9 @@ cp ../config_templates/base/rover_template.json config/base.json
 cp ../config_templates/base/rover_setup_template.json config/base.json
 ```
 Edit `base.json`
-```json
+```json5
 {
-  ...
+  //...
   "io": "config/default_linux_serial.json"
 }
 ```
@@ -27,9 +27,9 @@ Edit `base.json`
 ### Configuring the dummy file
 If you want to test this program **without a rover**, both the `rover` and `rover-setup` program types support it.
 You can edit your `base.json` like so:
-```json
+```json5
 {
-  ...
+  //...
   "dummy": "solar/dummy_rover.json"
 }
 ```

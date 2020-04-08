@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.solar.renogy.rover;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.packets.identification.IntegerIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
@@ -26,12 +27,12 @@ public final class RoverIdentifier implements IntegerIdentifier, Comparable<Iden
 		RoverIdentifier that = (RoverIdentifier) o;
 		return serialNumber == that.serialNumber;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(serialNumber);
 	}
-	
+
 	public RoverIdentifier(int serialNumber) {
 		this.serialNumber = serialNumber;
 	}
@@ -43,9 +44,9 @@ public final class RoverIdentifier implements IntegerIdentifier, Comparable<Iden
 	public int getIntegerIdentifier() {
 		return serialNumber;
 	}
-	
+
 	@Override
-	public int compareTo(Identifier o) {
+	public int compareTo(@NotNull Identifier o) {
 		if(o instanceof RoverIdentifier){
 			return serialNumber - ((RoverIdentifier) o).serialNumber;
 		}

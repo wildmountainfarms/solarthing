@@ -1,7 +1,6 @@
 package me.retrodaredevil.grafana.datasource.util;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 
@@ -10,7 +9,7 @@ import java.io.IOException;
 
 public class ColorDeserializer extends JsonDeserializer<Color> {
 	@Override
-	public Color deserialize(JsonParser p, DeserializationContext context) throws IOException, JsonProcessingException {
+	public Color deserialize(JsonParser p, DeserializationContext context) throws IOException {
 		String string = p.getValueAsString();
 		String valueString = string.substring(5);
 		valueString = valueString.substring(0, valueString.length() - 1);

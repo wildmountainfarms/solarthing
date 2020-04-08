@@ -47,6 +47,7 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 	 * @return [0..99] representing the charger current in Amps
 	 * @deprecated Deprecated to encourage use of {@link #getChargingCurrent()}. This, however, will not be removed in a future release.
 	 */
+	@SuppressWarnings("DeprecatedIsStillUsed")
 	@Deprecated
 	@JsonProperty("chargerCurrent")
 	int getChargerCurrent();
@@ -57,6 +58,7 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 	 * @return [0..0.9] The current to add to {@link #getChargerCurrent()} to get current displayed on FM80 or FM60
 	 * @deprecated Deprecated to encourage use of {@link #getChargingCurrent()}. This, however, will not be removed in a future release
 	 */
+	@SuppressWarnings("DeprecatedIsStillUsed")
 	@Deprecated
 	@JsonProperty("ampChargerCurrent")
 	float getAmpChargerCurrent();

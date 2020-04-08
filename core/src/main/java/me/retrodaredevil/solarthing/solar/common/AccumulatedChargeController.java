@@ -13,5 +13,6 @@ public interface AccumulatedChargeController extends ChargeController {
 	 * Should be serialized as "dailyAHSupport" if serialized at all. Should be serialized using {@link Support#toString()}
 	 * @return A {@link Support} enum constant indicating whether or not {@link #getDailyAH()} is supported
 	 */
+	@SuppressWarnings("unused")
 	default Support getDailyAHSupport(){ return Support.UNKNOWN; }
 }

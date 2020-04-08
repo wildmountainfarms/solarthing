@@ -1,7 +1,6 @@
 package me.retrodaredevil.grafana.datasource.endpoint;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -42,7 +41,7 @@ public class Range {
 	static class Deserializer extends JsonDeserializer<Range> {
 
 		@Override
-		public Range deserialize(JsonParser p, DeserializationContext context) throws IOException, JsonProcessingException {
+		public Range deserialize(JsonParser p, DeserializationContext context) throws IOException {
 			JsonNode node = p.getCodec().readTree(p);
 			String from = node.get("from").asText();
 			String to = node.get("to").asText();
