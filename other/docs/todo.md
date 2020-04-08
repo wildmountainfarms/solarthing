@@ -6,6 +6,15 @@
 * Have unique identifier for each jar file
 * AC Use->AC Drop, turn on AUX until NO AC. (GEN OFF) command using MATE's built in AC Use/Drop.
   * Might also have to detect low/high vac to determine if intentional
+* For PVOutput, when the PV Current is 0 and the input voltage is high, we might be able to assume that
+the charge controller is not accepting more power
+  * Use this so incorrect statistics are not reported
+  * If PV Current == 0 and charging current == 0 and mode != Silent (and probably != bulk), then assume it's stopped
+  * Alternatively, don't report statistics if the CC is in Float, Absorb, or EQ
+  
+### Android TODO
+* Notification for when FXs are in EQ, but any MX is is absorb or float
+* Notification for when MX wakes up and goes straight to float (happens on older models)
 
 ### Completed TODO:
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
