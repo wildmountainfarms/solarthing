@@ -14,6 +14,7 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.special.ImmutableSpecialP
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.ImmutableSpecialPowerControl_E02D;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerControl_E021;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerControl_E02D;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 
@@ -217,9 +218,11 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	int getLoadPower();
 
 	/** AKA PV/Solar Panel voltage*/
-	@JsonProperty("inputVoltage")
+	@NotNull
+    @JsonProperty("inputVoltage")
 	@Override
 	Float getInputVoltage();
+	@NotNull
 	@JsonProperty("pvCurrent")
 	@Override
 	Float getPVCurrent();

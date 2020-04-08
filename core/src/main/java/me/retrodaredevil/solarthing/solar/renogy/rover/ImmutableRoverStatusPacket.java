@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.solar.renogy.rover;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.jetbrains.annotations.NotNull;
 
 @JsonIgnoreProperties(value = {"productModelString", "hardwareVersionString", "softwareVersionString", "streetLightBrightness", "streetLightOn", "chargingStateName", "errors", "batteryTypeName", "loadWorkingModeName"}, allowGetters = true)
 public class ImmutableRoverStatusPacket implements RoverStatusPacket {
@@ -62,7 +63,7 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	private final int underVoltageWarningLevelRaw;
 	private final int overDischargeVoltageRaw;
 	private final int dischargingLimitVoltageRaw;
-	
+
 	private final int endOfChargeSOC;
 	private final int endOfDischargeSOC;
 	private final int overDischargeTimeDelaySeconds;
@@ -70,17 +71,17 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	private final int boostChargingTimeRaw;
 	private final int equalizingChargingIntervalRaw;
 	private final int temperatureCompensationFactorRaw;
-	
+
 	private final OperatingSettingBundle operatingStage1, operatingStage2, operatingStage3, operatingMorningOn;
-	
+
 	private final int loadWorkingMode;
 	private final int lightControlDelayMinutes;
 	private final int lightControlVoltage;
 	private final int ledLoadCurrentSettingRaw;
 	private final int specialPowerControlE021Raw; // maybe add convenient?
-	
+
 	private final SensingBundle sensed1, sensed2, sensed3;
-	
+
 	private final int sensingTimeDelayRaw;
 	private final int ledLoadCurrentRaw;
 	private final int specialPowerControlE02DRaw;
@@ -190,7 +191,7 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 		this.ledLoadCurrentRaw = ledLoadCurrentRaw;
 		this.specialPowerControlE02DRaw = specialPowerControlE02DRaw;
 		// endregion
-		
+
 		identifier = new RoverIdentifier(productSerialNumber);
 	}
 
@@ -198,222 +199,224 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	public RoverIdentifier getIdentifier() {
 		return identifier;
 	}
-	
+
 	@Override
 	public int getMaxVoltageValue() {
 		return maxVoltage;
 	}
-	
+
 	@Override
 	public int getRatedChargingCurrentValue() {
 		return ratedChargingCurrent;
 	}
-	
+
 	@Override
 	public int getRatedDischargingCurrentValue() {
 		return ratedDischargingCurrent;
 	}
-	
+
 	@Override
 	public int getProductTypeValue() {
 		return productType;
 	}
-	
+
 	@Override
 	public byte[] getProductModelValue() {
 		return productModel;
 	}
-	
+
 	@Override
 	public int getSoftwareVersionValue() {
 		return softwareVersion;
 	}
-	
+
 	@Override
 	public int getHardwareVersionValue() {
 		return hardwareVersion;
 	}
-	
+
 	@Override
 	public int getProductSerialNumber() {
 		return productSerialNumber;
 	}
-	
+
 	@Override
 	public int getControllerDeviceAddress() {
 		return controllerDeviceAddress;
 	}
-	
+
 	@Override
 	public int getBatteryCapacitySOC() {
 		return batteryCapacitySOC;
 	}
-	
+
 	@Override
 	public float getBatteryVoltage() {
 		return batteryVoltage;
 	}
-	
+
 	@Override
 	public Float getChargingCurrent() {
 		return chargingCurrent;
 	}
-	
+
 	@Override
 	public int getControllerTemperatureRaw() {
 		return controllerTemperatureRaw;
 	}
-	
+
 	@Override
 	public int getBatteryTemperatureRaw() {
 		return batteryTemperatureRaw;
 	}
-	
+
 	@Override
 	public float getLoadVoltage() {
 		return loadVoltage;
 	}
-	
+
 	@Override
 	public float getLoadCurrent() {
 		return loadCurrent;
 	}
-	
+
 	@Override
 	public int getLoadPower() {
 		return loadPower;
 	}
-	
-	@Override
+
+	@NotNull
+    @Override
 	public Float getInputVoltage() {
 		return inputVoltage;
 	}
-	
+
+	@NotNull
 	@Override
 	public Float getPVCurrent() {
 		return pvCurrent;
 	}
-	
+
 	@Override
 	public Integer getChargingPower() {
 		return chargingPower;
 	}
-	
+
 	@Override
 	public float getDailyMinBatteryVoltage() {
 		return dailyMinBatteryVoltage;
 	}
-	
+
 	@Override
 	public float getDailyMaxBatteryVoltage() {
 		return dailyMaxBatteryVoltage;
 	}
-	
+
 	@Override
 	public float getDailyMaxChargingCurrent() {
 		return dailyMaxChargingCurrent;
 	}
-	
+
 	@Override
 	public float getDailyMaxDischargingCurrent() {
 		return dailyMaxDischargingCurrent;
 	}
-	
+
 	@Override
 	public int getDailyMaxChargingPower() {
 		return dailyMaxChargingPower;
 	}
-	
+
 	@Override
 	public int getDailyMaxDischargingPower() {
 		return dailyMaxDischargingPower;
 	}
-	
+
 	@Override
 	public int getDailyAH() {
 		return dailyAH;
 	}
-	
+
 	@Override
 	public int getDailyAHDischarging() {
 		return dailyAHDischarging;
 	}
-	
+
 	@Override
 	public float getDailyKWH() {
 		return dailyKWH;
 	}
-	
+
 	@Override
 	public float getDailyKWHConsumption() {
 		return dailyKWHConsumption;
 	}
-	
+
 	@Override
 	public int getOperatingDaysCount() {
 		return operatingDaysCount;
 	}
-	
+
 	@Override
 	public int getBatteryOverDischargesCount() {
 		return batteryOverDischargesCount;
 	}
-	
+
 	@Override
 	public int getBatteryFullChargesCount() {
 		return batteryFullChargesCount;
 	}
-	
+
 	@Override
 	public int getChargingAmpHoursOfBatteryCount() {
 		return chargingAmpHoursOfBatteryCount;
 	}
-	
+
 	@Override
 	public int getDischargingAmpHoursOfBatteryCount() {
 		return dischargingAmpHoursOfBatteryCount;
 	}
-	
+
 	@Override
 	public float getCumulativeKWH() {
 		return cumulativeKWH;
 	}
-	
+
 	@Override
 	public float getCumulativeKWHConsumption() {
 		return cumulativeKWHConsumption;
 	}
-	
+
 	@Override
 	public int getRawStreetLightValue() {
 		return streetLightValue;
 	}
-	
+
 	@Override
 	public int getChargingStateValue() {
 		return chargingState;
 	}
-	
+
 	@Override
 	public int getErrorModeValue() {
 		return errorMode;
 	}
-	
+
 	@Override
 	public int getNominalBatteryCapacity() {
 		return nominalBatteryCapacity;
 	}
-	
+
 	@Override
 	public int getSystemVoltageSettingValue() {
 		return systemVoltageSetting;
 	}
-	
+
 	@Override
 	public int getRecognizedVoltageValue() {
 		return recognizedVoltage;
 	}
-	
+
 	@Override
 	public int getBatteryTypeValue() {
 		return batteryType;
@@ -423,87 +426,87 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	public int getOverVoltageThresholdRaw() {
 		return overVoltageThresholdRaw;
 	}
-	
+
 	@Override
 	public int getChargingVoltageLimitRaw() {
 		return chargingVoltageLimitRaw;
 	}
-	
+
 	@Override
 	public int getEqualizingChargingVoltageRaw() {
 		return equalizingChargingVoltageRaw;
 	}
-	
+
 	@Override
 	public int getBoostChargingVoltageRaw() {
 		return boostChargingVoltageRaw;
 	}
-	
+
 	@Override
 	public int getFloatingChargingVoltageRaw() {
 		return floatingChargingVoltageRaw;
 	}
-	
+
 	@Override
 	public int getBoostChargingRecoveryVoltageRaw() {
 		return boostChargingRecoveryVoltageRaw;
 	}
-	
+
 	@Override
 	public int getOverDischargeRecoveryVoltageRaw() {
 		return overDischargeRecoveryVoltageRaw;
 	}
-	
+
 	@Override
 	public int getUnderVoltageWarningLevelRaw() {
 		return underVoltageWarningLevelRaw;
 	}
-	
+
 	@Override
 	public int getOverDischargeVoltageRaw() {
 		return overDischargeVoltageRaw;
 	}
-	
+
 	@Override
 	public int getDischargingLimitVoltageRaw() {
 		return dischargingLimitVoltageRaw;
 	}
-	
+
 	@Override
 	public int getEndOfChargeSOC() {
 		return endOfChargeSOC;
 	}
-	
+
 	@Override
 	public int getEndOfDischargeSOC() {
 		return endOfDischargeSOC;
 	}
-	
+
 	@Override
 	public int getOverDischargeTimeDelaySeconds() {
 		return overDischargeTimeDelaySeconds;
 	}
-	
+
 	@Override
 	public int getEqualizingChargingTimeRaw() {
 		return equalizingChargingTimeRaw;
 	}
-	
+
 	@Override
 	public int getBoostChargingTimeRaw() {
 		return boostChargingTimeRaw;
 	}
-	
+
 	@Override
 	public int getEqualizingChargingIntervalRaw() {
 		return equalizingChargingIntervalRaw;
 	}
-	
+
 	@Override
 	public int getTemperatureCompensationFactorRaw() {
 		return temperatureCompensationFactorRaw;
 	}
-	
+
 	@Override
 	public int getOperatingDurationHours(OperatingSetting setting) {
 		switch(setting){
@@ -514,7 +517,7 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 			default: throw new UnsupportedOperationException(setting.toString());
 		}
 	}
-	
+
 	@Override
 	public int getOperatingPowerPercentage(OperatingSetting setting) {
 		switch(setting){
@@ -541,27 +544,27 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	public int getLoadWorkingModeValue() {
 		return loadWorkingMode;
 	}
-	
+
 	@Override
 	public int getLightControlDelayMinutes() {
 		return lightControlDelayMinutes;
 	}
-	
+
 	@Override
 	public int getLightControlVoltage() {
 		return lightControlVoltage;
 	}
-	
+
 	@Override
 	public int getLEDLoadCurrentSettingRaw() {
 		return ledLoadCurrentSettingRaw;
 	}
-	
+
 	@Override
 	public int getSpecialPowerControlE021Raw() {
 		return specialPowerControlE021Raw;
 	}
-	
+
 	@Override
 	public int getWorkingHoursRaw(Sensing sensing) {
 		switch(sensing){
@@ -571,7 +574,7 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 			default: throw new UnsupportedOperationException(sensing.toString());
 		}
 	}
-	
+
 	@Override
 	public int getPowerWithPeopleSensedRaw(Sensing sensing) {
 		switch(sensing){
@@ -581,7 +584,7 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 			default: throw new UnsupportedOperationException(sensing.toString());
 		}
 	}
-	
+
 	@Override
 	public int getPowerWithNoPeopleSensedRaw(Sensing sensing) {
 		switch(sensing){
@@ -609,12 +612,12 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	public int getSensingTimeDelayRaw() {
 		return sensingTimeDelayRaw;
 	}
-	
+
 	@Override
 	public int getLEDLoadCurrentRaw() {
 		return ledLoadCurrentRaw;
 	}
-	
+
 	@Override
 	public int getSpecialPowerControlE02DRaw() {
 		return specialPowerControlE02DRaw;

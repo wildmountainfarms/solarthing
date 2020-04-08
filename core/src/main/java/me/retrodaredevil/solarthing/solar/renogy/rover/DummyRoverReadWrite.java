@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.solar.renogy.rover;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.solar.renogy.BatteryType;
 import me.retrodaredevil.solarthing.solar.renogy.Voltage;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,12 +16,12 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 	}
 	private final RoverReadTable roverReadTable;
 	private final OnChange onChange;
-	
+
 	private int controllerDeviceAddress;
 	private int streetLightValue;
 	private Voltage systemVoltageSetting;
 	private BatteryType batteryType;
-	
+
 	private int overVoltageThresholdRaw;
 	private int chargingVoltageLimitRaw;
 	private int equalizingChargingVoltageRaw;
@@ -31,43 +32,43 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 	private int underVoltageWarningLevelRaw;
 	private int overDischargeVoltageRaw;
 	private int dischargingLimitVoltageRaw;
-	
+
 	private int overDischargeTimeDelaySeconds;
 	private int equalizingChargingTimeRaw;
 	private int boostChargingTimeRaw;
 	private int equalizingChargingIntervalRaw;
 	private int temperatureCompensationFactorRaw;
-	
+
 	private int endOfChargeSOC;
 	private int endOfDischargeSOC;
-	
+
 	private final Map<OperatingSetting, Integer> operatingDurationHoursMap = new HashMap<>();
 	private final Map<OperatingSetting, Integer> operatingPowerPercentageMap = new HashMap<>();
-	
+
 	private LoadWorkingMode loadWorkingMode;
 	private int lightControlDelayMinutes;
 	private int lightControlVoltage;
-	
+
 	private int ledLoadCurrentSettingRaw;
 	private int specialPowerControlE021Raw;
-	
+
 	private final Map<Sensing, Integer> workingHoursRawMap = new HashMap<>();
 	private final Map<Sensing, Integer> powerWithPeopleSensedRawMap = new HashMap<>();
 	private final Map<Sensing, Integer> powerWithNoPeopleSensedRawMap = new HashMap<>();
-	
+
 	private int sensingTimeDelayRaw;
 	private int ledLoadCurrentRaw;
 	private int specialPowerControlE02DRaw;
-	
+
 	public DummyRoverReadWrite(RoverReadTable roverReadTable, OnChange onChange) {
 		this.roverReadTable = roverReadTable;
 		this.onChange = onChange;
-		
+
 		controllerDeviceAddress = roverReadTable.getControllerDeviceAddress();
 		streetLightValue = roverReadTable.getRawStreetLightValue();
 		systemVoltageSetting = roverReadTable.getSystemVoltageSetting();
 		batteryType = roverReadTable.getBatteryType();
-		
+
 		overVoltageThresholdRaw = roverReadTable.getOverVoltageThresholdRaw();
 		chargingVoltageLimitRaw = roverReadTable.getChargingVoltageLimitRaw();
 		equalizingChargingVoltageRaw = roverReadTable.getEqualizingChargingVoltageRaw();
@@ -78,28 +79,28 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 		underVoltageWarningLevelRaw = roverReadTable.getUnderVoltageWarningLevelRaw();
 		overDischargeVoltageRaw = roverReadTable.getOverDischargeVoltageRaw();
 		dischargingLimitVoltageRaw = roverReadTable.getDischargingLimitVoltageRaw();
-		
+
 		overDischargeTimeDelaySeconds = roverReadTable.getOverDischargeTimeDelaySeconds();
 		equalizingChargingTimeRaw = roverReadTable.getEqualizingChargingTimeRaw();
 		boostChargingTimeRaw = roverReadTable.getBoostChargingTimeRaw();
 		equalizingChargingIntervalRaw = roverReadTable.getEqualizingChargingIntervalRaw();
 		temperatureCompensationFactorRaw = roverReadTable.getTemperatureCompensationFactorRaw();
-		
+
 		endOfChargeSOC = roverReadTable.getEndOfChargeSOC();
 		endOfDischargeSOC = roverReadTable.getEndOfDischargeSOC();
-		
+
 		for(OperatingSetting setting : OperatingSetting.values()) {
 			operatingDurationHoursMap.put(setting, roverReadTable.getOperatingDurationHours(setting));
 			operatingPowerPercentageMap.put(setting, roverReadTable.getOperatingPowerPercentage(setting));
 		}
-		
+
 		loadWorkingMode = roverReadTable.getLoadWorkingMode();
 		lightControlDelayMinutes = roverReadTable.getLightControlDelayMinutes();
 		lightControlVoltage = roverReadTable.getLightControlVoltage();
-		
+
 		ledLoadCurrentSettingRaw = roverReadTable.getLEDLoadCurrentSettingRaw();
 		specialPowerControlE021Raw = roverReadTable.getSpecialPowerControlE021Raw();
-		
+
 		for(Sensing sensing : Sensing.values()){
 			workingHoursRawMap.put(sensing, roverReadTable.getWorkingHoursRaw(sensing));
 			powerWithPeopleSensedRawMap.put(sensing, roverReadTable.getPowerWithNoPeopleSensedRaw(sensing));
@@ -113,17 +114,17 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 	public void factoryReset() {
 		onChange.onChange("factoryReset", "nothing", "reset called");
 	}
-	
+
 	@Override
 	public void clearHistory() {
 		onChange.onChange("clearHistory", "nothing", "clear history called");
 	}
-	
+
 	@Override
 	public RoverIdentifier getIdentifier() {
 		return new RoverIdentifier(getProductSerialNumber());
 	}
-	
+
 	@Override public int getMaxVoltageValue() { return roverReadTable.getMaxVoltageValue(); }
 	@Override public int getRatedChargingCurrentValue() { return roverReadTable.getRatedChargingCurrentValue(); }
 	@Override public int getRatedDischargingCurrentValue() { return roverReadTable.getRatedDischargingCurrentValue(); }
@@ -142,7 +143,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 		this.controllerDeviceAddress = address;
 		onChange.onChange("controllerDeviceAddress", old, "" + address);
 	}
-	
+
 	@Override public int getBatteryCapacitySOC() { return roverReadTable.getBatteryCapacitySOC(); }
 	@Override public float getBatteryVoltage() { return roverReadTable.getBatteryVoltage(); }
 	@Override public Float getChargingCurrent() { return roverReadTable.getChargingCurrent(); }
@@ -151,7 +152,9 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 	@Override public float getLoadVoltage() { return roverReadTable.getLoadVoltage(); }
 	@Override public float getLoadCurrent() { return roverReadTable.getLoadCurrent(); }
 	@Override public int getLoadPower() { return roverReadTable.getLoadPower(); }
-	@Override public Float getInputVoltage() { return roverReadTable.getInputVoltage(); }
+	@NotNull
+    @Override public Float getInputVoltage() { return roverReadTable.getInputVoltage(); }
+	@NotNull
 	@Override public Float getPVCurrent() { return roverReadTable.getPVCurrent(); }
 	@Override public Integer getChargingPower() { return roverReadTable.getChargingPower(); }
 	@Override public float getDailyMinBatteryVoltage() { return roverReadTable.getDailyMinBatteryVoltage(); }
@@ -171,7 +174,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 	@Override public int getDischargingAmpHoursOfBatteryCount() { return roverReadTable.getDischargingAmpHoursOfBatteryCount(); }
 	@Override public float getCumulativeKWH() { return roverReadTable.getCumulativeKWH(); }
 	@Override public float getCumulativeKWHConsumption() { return roverReadTable.getCumulativeKWHConsumption(); }
-	
+
 	@Override
 	public int getRawStreetLightValue() {
 		return streetLightValue;
@@ -189,7 +192,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 		}
 		onChange.onChange("streetLightStatus", oldValue.getModeName(), streetLightStatus.getModeName());
 	}
-	
+
 	@Override
 	public void setStreetLightBrightnessPercent(int brightnessPercent) {
 		final int oldValue = streetLightValue & StreetLight.IGNORED_BITS;
@@ -199,7 +202,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 		streetLightValue = value;
 		onChange.onChange("streetLightBrightnessPercent", "" + oldValue, "" + brightnessPercent);
 	}
-	
+
 	@Override public int getChargingStateValue() { return roverReadTable.getChargingStateValue(); }
 	@Override public int getErrorModeValue() { return roverReadTable.getErrorModeValue(); }
 	@Override public int getNominalBatteryCapacity() { return 0; }
@@ -224,7 +227,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 		this.batteryType = batteryType;
 		onChange.onChange("batteryType", oldType.getModeName(), batteryType.getModeName());
 	}
-	
+
 	// region Raw Voltage Configurations
 	@Override
 	public int getOverVoltageThresholdRaw() {
@@ -236,7 +239,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 		overVoltageThresholdRaw = value;
 		onChange.onChange("overVoltageThresholdRaw", "" + old, "" + value);
 	}
-	
+
 	@Override
 	public int getChargingVoltageLimitRaw() {
 		return chargingVoltageLimitRaw;
@@ -247,7 +250,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 		chargingVoltageLimitRaw = value;
 		onChange.onChange("chargingVoltageLimitRaw", "" + old, "" + value);
 	}
-	
+
 	@Override
 	public int getEqualizingChargingVoltageRaw() {
 		return equalizingChargingVoltageRaw;
@@ -258,7 +261,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 		equalizingChargingVoltageRaw = value;
 		onChange.onChange("equalizingChargingVoltageRaw", "" + old, "" + value);
 	}
-	
+
 	@Override
 	public int getBoostChargingVoltageRaw() {
 		return boostChargingVoltageRaw;
@@ -269,7 +272,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 		boostChargingVoltageRaw = value;
 		onChange.onChange("boostChargingVoltageRaw", "" + old, "" + value);
 	}
-	
+
 	@Override
 	public int getFloatingChargingVoltageRaw() {
 		return floatingChargingVoltageRaw;
@@ -280,7 +283,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 		floatingChargingVoltageRaw = value;
 		onChange.onChange("floatingChargingVoltageRaw", "" + old, "" + value);
 	}
-	
+
 	@Override
 	public int getBoostChargingRecoveryVoltageRaw() {
 		return boostChargingRecoveryVoltageRaw;
@@ -291,7 +294,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 		boostChargingRecoveryVoltageRaw = value;
 		onChange.onChange("boostChargingRecoveryVoltageRaw", "" + old, "" + value);
 	}
-	
+
 	@Override
 	public int getOverDischargeRecoveryVoltageRaw() {
 		return overDischargeRecoveryVoltageRaw;
@@ -302,7 +305,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 		overDischargeRecoveryVoltageRaw = value;
 		onChange.onChange("overDischargeRecoveryVoltageRaw", "" + old, "" + value);
 	}
-	
+
 	@Override
 	public int getUnderVoltageWarningLevelRaw() {
 		return underVoltageWarningLevelRaw;
@@ -313,7 +316,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 		underVoltageWarningLevelRaw = value;
 		onChange.onChange("underVoltageWarningLevelRaw", "" + old, "" + value);
 	}
-	
+
 	@Override
 	public int getOverDischargeVoltageRaw() {
 		return overDischargeVoltageRaw;
@@ -324,7 +327,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 		overDischargeVoltageRaw = value;
 		onChange.onChange("overDischargeVoltageRaw", "" + old, "" + value);
 	}
-	
+
 	@Override
 	public int getDischargingLimitVoltageRaw() {
 		return dischargingLimitVoltageRaw;
@@ -336,17 +339,17 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 		onChange.onChange("dischargingLimitVoltageRaw", "" + old, "" + value);
 	}
 	// endregion
-	
+
 	@Override
 	public int getEndOfChargeSOC() {
 		return endOfChargeSOC;
 	}
-	
+
 	@Override
 	public int getEndOfDischargeSOC() {
 		return endOfDischargeSOC;
 	}
-	
+
 	@Override
 	public void setEndOfChargeSOCEndOfDischargeSOC(int endOfChargeSOCValue, int endOfDischargeSOCValue) {
 		int oldCharge = endOfChargeSOC;
@@ -356,7 +359,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 		onChange.onChange("endOfChargeSOC", "" + oldCharge, "" + endOfChargeSOCValue);
 		onChange.onChange("endOfDischargeSOC", "" + oldDischarge, "" + endOfDischargeSOCValue);
 	}
-	
+
 	@Override
 	public int getOverDischargeTimeDelaySeconds() {
 		return overDischargeTimeDelaySeconds;
@@ -367,7 +370,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 		this.overDischargeTimeDelaySeconds = overDischargeTimeDelaySeconds;
 		onChange.onChange("overDischargeTimeDelaySeconds", "" + old, "" + overDischargeTimeDelaySeconds);
 	}
-	
+
 	@Override
 	public int getEqualizingChargingTimeRaw() {
 		return equalizingChargingTimeRaw;
@@ -378,7 +381,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 		this.equalizingChargingTimeRaw = equalizingChargingTimeRaw;
 		onChange.onChange("equalizingChargingTimeRaw", "" + old, "" + equalizingChargingTimeRaw);
 	}
-	
+
 	@Override
 	public int getBoostChargingTimeRaw() {
 		return boostChargingTimeRaw;
@@ -389,7 +392,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 		this.boostChargingTimeRaw = boostChargingTimeRaw;
 		onChange.onChange("boostChargingTimeRaw", "" + old, "" + boostChargingTimeRaw);
 	}
-	
+
 	@Override
 	public int getEqualizingChargingIntervalRaw() {
 		return equalizingChargingIntervalRaw;
@@ -400,7 +403,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 		this.equalizingChargingIntervalRaw = equalizingChargingIntervalRaw;
 		onChange.onChange("equalizingChargingIntervalRaw", "" + old, "" + equalizingChargingIntervalRaw);
 	}
-	
+
 	@Override
 	public int getTemperatureCompensationFactorRaw() {
 		return temperatureCompensationFactorRaw;
@@ -411,7 +414,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 		this.temperatureCompensationFactorRaw = temperatureCompensationFactorRaw;
 		onChange.onChange("temperatureCompensationFactorRaw", "" + old, "" + temperatureCompensationFactorRaw);
 	}
-	
+
 	@Override
 	public int getOperatingDurationHours(OperatingSetting setting) {
 		return operatingDurationHoursMap.get(setting);
@@ -422,7 +425,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 		operatingDurationHoursMap.put(setting, hours);
 		onChange.onChange(setting + ".operatingDurationHours", "" + old, "" + hours);
 	}
-	
+
 	@Override
 	public int getOperatingPowerPercentage(OperatingSetting setting) {
 		return operatingPowerPercentageMap.get(setting);
@@ -433,19 +436,19 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 		operatingPowerPercentageMap.put(setting, operatingPowerPercentage);
 		onChange.onChange(setting + ".operatingPowerPercentage", "" + old, "" + operatingPowerPercentage);
 	}
-	
+
 	@Override
 	public int getLoadWorkingModeValue() {
 		return loadWorkingMode.getValueCode();
 	}
-	
+
 	@Override
 	public void setLoadWorkingMode(LoadWorkingMode loadWorkingMode) {
 		LoadWorkingMode old = this.loadWorkingMode;
 		this.loadWorkingMode = loadWorkingMode;
 		onChange.onChange("loadWorkingMode", "" + old, "" + loadWorkingMode);
 	}
-	
+
 	@Override
 	public int getLightControlDelayMinutes() {
 		return lightControlDelayMinutes;
@@ -456,7 +459,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 		lightControlDelayMinutes = minutes;
 		onChange.onChange("lightControlDelayMinutes", "" + old, "" + minutes);
 	}
-	
+
 	@Override
 	public int getLightControlVoltage() {
 		return lightControlVoltage;
@@ -467,7 +470,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 		lightControlVoltage = voltage;
 		onChange.onChange("lightControlVoltage", "" + old, "" + voltage);
 	}
-	
+
 	@Override
 	public int getLEDLoadCurrentSettingRaw() {
 		return ledLoadCurrentSettingRaw;
@@ -478,7 +481,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 		ledLoadCurrentSettingRaw = value;
 		onChange.onChange("ledLoadCurrentSettingRaw", "" + old, "" + value);
 	}
-	
+
 	@Override
 	public int getSpecialPowerControlE021Raw() {
 		return specialPowerControlE021Raw;
@@ -489,7 +492,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 		specialPowerControlE021Raw = value;
 		onChange.onChange("specialPowerControlE021Raw", "" + old, "" + value);
 	}
-	
+
 	@Override
 	public int getWorkingHoursRaw(Sensing sensing) {
 		return workingHoursRawMap.get(sensing);
@@ -500,7 +503,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 		workingHoursRawMap.put(sensing, value);
 		onChange.onChange("workingHoursRaw", "" + old, "" + value);
 	}
-	
+
 	@Override
 	public int getPowerWithPeopleSensedRaw(Sensing sensing) {
 		return powerWithPeopleSensedRawMap.get(sensing);
@@ -511,7 +514,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 		powerWithPeopleSensedRawMap.put(sensing, value);
 		onChange.onChange("powerWithPeopleSensedRaw", "" + old, "" + value);
 	}
-	
+
 	@Override
 	public int getPowerWithNoPeopleSensedRaw(Sensing sensing) {
 		return powerWithNoPeopleSensedRawMap.get(sensing);
@@ -522,7 +525,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 		powerWithNoPeopleSensedRawMap.put(sensing, value);
 		onChange.onChange("powerWithNoPeopleSensedRaw", "" + old, "" + value);
 	}
-	
+
 	@Override
 	public int getSensingTimeDelayRaw() {
 		return sensingTimeDelayRaw;
@@ -533,7 +536,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 		this.sensingTimeDelayRaw = sensingTimeDelayRaw;
 		onChange.onChange("sensingTimeDelayRaw", "" + old, "" + sensingTimeDelayRaw);
 	}
-	
+
 	@Override
 	public int getLEDLoadCurrentRaw() {
 		return ledLoadCurrentRaw;
@@ -544,7 +547,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 		ledLoadCurrentRaw = value;
 		onChange.onChange("ledLoadCurrentRaw", "" + old, "" + value);
 	}
-	
+
 	@Override
 	public int getSpecialPowerControlE02DRaw() {
 		return specialPowerControlE02DRaw;
