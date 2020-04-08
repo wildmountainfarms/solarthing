@@ -40,10 +40,8 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 		return getDailyKWH() < previous.getDailyKWH() || getDailyAH() < previous.getDailyAH();
 	}
 
-	@JsonIgnore
-	@NotNull
 	@Override
-	default Integer getPVWattage() {
+	default @NotNull Integer getPVWattage() {
 		return getPVCurrent() * getInputVoltage();
 	}
 	// region Packet Values
