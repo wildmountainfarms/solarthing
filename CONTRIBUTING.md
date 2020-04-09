@@ -46,6 +46,9 @@ General rule of thumb:
 * Do not use Nullable and NotNull religiously
 * If something is Nullable, you should probably annotate it with Nullable
 * Just because something is NotNull doesn't mean you need to annotate it and everything else with NotNull
+* But if something is commonly used (public api), then annotating with NotNull can be helpful
+* Use `org.jetbrains.annotations.Nullable` or `javax.validation.constraints.NotNull`
+  * Why? Because the `javax.validation` variant is available at runtime, which is useful in some cases
 
 ### Customizing
 The different command line options give you may ways to receive data and export data. CouchDB and InfluxDB

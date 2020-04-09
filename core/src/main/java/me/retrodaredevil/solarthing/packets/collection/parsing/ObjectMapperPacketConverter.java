@@ -3,7 +3,7 @@ package me.retrodaredevil.solarthing.packets.collection.parsing;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.solarthing.packets.Packet;
-import org.jetbrains.annotations.NotNull;
+import javax.validation.constraints.NotNull;
 
 public class ObjectMapperPacketConverter implements JsonPacketParser {
 	private final ObjectMapper mapper;

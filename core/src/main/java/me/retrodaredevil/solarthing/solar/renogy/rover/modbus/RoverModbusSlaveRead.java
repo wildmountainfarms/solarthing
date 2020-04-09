@@ -5,7 +5,7 @@ import me.retrodaredevil.io.modbus.handling.MessageHandler;
 import me.retrodaredevil.io.modbus.handling.ReadRegistersHandler;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverIdentifier;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverReadTable;
-import org.jetbrains.annotations.NotNull;
+import javax.validation.constraints.NotNull;
 
 public class RoverModbusSlaveRead implements RoverReadTable {
 	private static final float KWH_DIVIDER = 1_000; // units are returned in Watt Hours
