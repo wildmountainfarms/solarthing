@@ -12,6 +12,7 @@ import me.retrodaredevil.solarthing.solar.outback.fx.WarningMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.FXWarningReporter;
 import org.jetbrains.annotations.Nullable;
 
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @JsonDeserialize(as = ImmutableFXWarningModeChangePacket.class)
@@ -20,7 +21,8 @@ import java.util.Set;
 public interface FXWarningModeChangePacket extends SupplementarySolarEventPacket, OutbackData, FXWarningReporter {
 	int DEFAULT_IGNORED_WARNING_MODE_VALUE_CONSTANT = 0;
 
-	@Override
+	@NotNull
+    @Override
 	default SolarEventPacketType getPacketType(){
 		return SolarEventPacketType.FX_WARNING_MODE_CHANGE;
 	}

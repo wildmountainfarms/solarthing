@@ -6,6 +6,8 @@ import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import me.retrodaredevil.solarthing.solar.renogy.RenogyPacket;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * Represents a Rover Status Packet. This implements {@link RoverReadTable}
  * <p>
@@ -17,7 +19,8 @@ import me.retrodaredevil.solarthing.solar.renogy.RenogyPacket;
 @JsonTypeName("RENOGY_ROVER_STATUS")
 @JsonExplicit
 public interface RoverStatusPacket extends RenogyPacket, RoverReadTable {
-	@Override
+	@NotNull
+    @Override
 	default SolarStatusPacketType getPacketType(){
 		return SolarStatusPacketType.RENOGY_ROVER_STATUS;
 	}

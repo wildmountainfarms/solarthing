@@ -20,10 +20,6 @@ public class CouchPropertiesBuilder {
 
 	public CouchPropertiesBuilder(){}
 
-	@Deprecated
-	public CouchPropertiesBuilder(String database, boolean createIfNotExist, String protocol, String host, int port, String username, String password) {
-		this(protocol, host, port, username, password);
-	}
 	public CouchPropertiesBuilder(String protocol, String host, int port, String username, String password) {
 		this.protocol = protocol;
 		this.host = host;

@@ -51,6 +51,7 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 		this.identifier = new OutbackIdentifier(address);
 	}
 
+	@NotNull
 	@Override
 	public SolarStatusPacketType getPacketType() {
 		return SolarStatusPacketType.MXFM_STATUS;
@@ -122,6 +123,7 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 		return dailyAH;
 	}
 
+	@NotNull
 	@Override
 	public Support getDailyAHSupport() {
 		return dailyAHSupport;

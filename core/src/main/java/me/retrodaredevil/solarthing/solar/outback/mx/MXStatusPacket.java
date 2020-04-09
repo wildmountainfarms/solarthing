@@ -13,6 +13,8 @@ import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
 import me.retrodaredevil.solarthing.solar.common.DailyChargeController;
 import me.retrodaredevil.solarthing.solar.common.DailyData;
 import me.retrodaredevil.solarthing.solar.outback.OutbackStatusPacket;
+import org.jetbrains.annotations.Nullable;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 
@@ -27,6 +29,7 @@ import java.util.Set;
 @JsonTypeName("MXFM_STATUS")
 @JsonExplicit
 public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeController, DailyChargeController, BatteryVoltage {
+	@NotNull
 	@Override
 	default SolarStatusPacketType getPacketType(){
 		return SolarStatusPacketType.MXFM_STATUS;
@@ -40,6 +43,11 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 		MXStatusPacket previous = (MXStatusPacket) previousDailyData;
 		return getDailyKWH() < previous.getDailyKWH() || getDailyAH() < previous.getDailyAH();
 	}
+
+	@Override
+	@Nullable
+	@Null
+	default Long getStartDateMillis() { return null; }
 
 	@Override
 	default @NotNull Integer getPVWattage() {
@@ -177,6 +185,7 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 	 * Should be serialized as "dailyAHSupport". Should be serialized using {@link Support#toString()}
 	 * @return A {@link Support} enum constant indicating whether or not {@link #getDailyAH()} is supported
 	 */
+	@NotNull
 	@JsonProperty("dailyAHSupport")
 	@Override
 	Support getDailyAHSupport();

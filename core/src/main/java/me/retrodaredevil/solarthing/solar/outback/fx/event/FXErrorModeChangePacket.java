@@ -12,13 +12,15 @@ import me.retrodaredevil.solarthing.solar.outback.OutbackData;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXErrorMode;
 import org.jetbrains.annotations.Nullable;
 
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @JsonDeserialize(as = ImmutableFXErrorModeChangePacket.class)
 @JsonTypeName("FX_ERROR_MODE_CHANGE")
 @JsonExplicit
 public interface FXErrorModeChangePacket extends SupplementarySolarEventPacket, OutbackData, ErrorReporter {
-	@Override
+	@NotNull
+    @Override
 	default SolarEventPacketType getPacketType(){
 		return SolarEventPacketType.FX_ERROR_MODE_CHANGE;
 	}

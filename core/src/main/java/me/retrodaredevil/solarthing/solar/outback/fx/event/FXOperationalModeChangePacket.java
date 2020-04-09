@@ -11,12 +11,15 @@ import me.retrodaredevil.solarthing.solar.outback.OutbackData;
 import me.retrodaredevil.solarthing.solar.outback.fx.OperationalMode;
 import org.jetbrains.annotations.Nullable;
 
+import javax.validation.constraints.NotNull;
+
 
 @JsonDeserialize(as = ImmutableFXOperationalModeChangePacket.class)
 @JsonTypeName("FX_OPERATIONAL_MODE_CHANGE")
 @JsonExplicit
 public interface FXOperationalModeChangePacket extends SupplementarySolarEventPacket, OutbackData {
-	@Override
+	@NotNull
+    @Override
 	default SolarEventPacketType getPacketType(){
 		return SolarEventPacketType.FX_OPERATIONAL_MODE_CHANGE;
 	}

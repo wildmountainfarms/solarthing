@@ -6,11 +6,14 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
 
+import javax.validation.constraints.NotNull;
+
 @JsonTypeName("MATE_COMMAND_SUCCESS")
 @JsonDeserialize(as = ImmutableSuccessMateCommandPacket.class)
 @JsonExplicit
 public interface SuccessMateCommandPacket extends MateCommandFeedbackPacket {
-	@Override
+	@NotNull
+    @Override
 	default MateCommandFeedbackPacketType getPacketType() {
 		return MateCommandFeedbackPacketType.MATE_COMMAND_SUCCESS;
 	}

@@ -10,6 +10,8 @@ import me.retrodaredevil.solarthing.solar.outback.mx.common.BaseMXDailyData;
 import me.retrodaredevil.solarthing.solar.outback.mx.common.ImmutableMXDailyData;
 import me.retrodaredevil.solarthing.solar.outback.mx.common.MXDailyData;
 
+import javax.validation.constraints.NotNull;
+
 @JsonDeserialize(builder = ImmutableMXDayEndPacket.Builder.class)
 public class ImmutableMXDayEndPacket extends BaseMXDailyData implements MXDayEndPacket {
 	public ImmutableMXDayEndPacket(MXDailyData dailyData, OutbackIdentifier outbackIdentifier) {
@@ -19,7 +21,8 @@ public class ImmutableMXDayEndPacket extends BaseMXDailyData implements MXDayEnd
 		this(dailyData, new OutbackIdentifier(dailyData.getAddress()));
 	}
 
-	@Override
+	@NotNull
+    @Override
 	public SolarEventPacketType getPacketType() {
 		return SolarEventPacketType.MXFM_DAILY_DAY_END;
 	}

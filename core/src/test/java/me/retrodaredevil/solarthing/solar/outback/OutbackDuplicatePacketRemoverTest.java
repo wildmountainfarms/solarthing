@@ -5,6 +5,7 @@ import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import org.junit.jupiter.api.Test;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -67,7 +68,8 @@ class OutbackDuplicatePacketRemoverTest {
 				throw new UnsupportedOperationException();
 			}
 
-			@Override
+			@NotNull
+            @Override
 			public SolarStatusPacketType getPacketType() {
 				throw new UnsupportedOperationException();
 			}

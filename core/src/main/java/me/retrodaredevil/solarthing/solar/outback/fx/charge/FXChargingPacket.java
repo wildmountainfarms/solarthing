@@ -8,11 +8,14 @@ import me.retrodaredevil.solarthing.solar.extra.SolarExtraPacketType;
 import me.retrodaredevil.solarthing.solar.extra.SupplementarySolarExtraPacket;
 import org.jetbrains.annotations.Nullable;
 
+import javax.validation.constraints.NotNull;
+
 @JsonDeserialize(as = ImmutableFXChargingPacket.class)
 @JsonTypeName("FX_CHARGING")
 @JsonExplicit
 public interface FXChargingPacket extends SupplementarySolarExtraPacket {
-	@Override
+	@NotNull
+    @Override
 	default SolarExtraPacketType getPacketType(){
 		return SolarExtraPacketType.FX_CHARGING;
 	}
