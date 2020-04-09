@@ -16,7 +16,8 @@ import org.jetbrains.annotations.Nullable;
 @JsonTypeName("MXFM_AUX_MODE_CHANGE")
 @JsonExplicit
 public interface MXAuxModeChangePacket extends SupplementarySolarEventPacket, OutbackData {
-	@Override
+	@NotNull
+    @Override
 	default SolarEventPacketType getPacketType(){
 		return SolarEventPacketType.MXFM_AUX_MODE_CHANGE;
 	}

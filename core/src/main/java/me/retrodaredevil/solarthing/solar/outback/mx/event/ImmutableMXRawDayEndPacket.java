@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.packets.support.Support;
 
+import javax.validation.constraints.NotNull;
+
 public class ImmutableMXRawDayEndPacket implements MXRawDayEndPacket {
 
 	private final int address;
@@ -35,6 +37,7 @@ public class ImmutableMXRawDayEndPacket implements MXRawDayEndPacket {
 		return dailyAH;
 	}
 
+	@NotNull
 	@Override
 	public Support getDailyAHSupport() {
 		return dailyAHSupport;

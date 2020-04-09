@@ -12,6 +12,7 @@ import me.retrodaredevil.solarthing.solar.outback.OutbackStatusPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.FXMiscReporter;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.FXWarningReporter;
 
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 /**
@@ -23,6 +24,7 @@ import java.util.Set;
 @JsonExplicit
 @JsonClassDescription("Status packet for FX devices")
 public interface FXStatusPacket extends OutbackStatusPacket, BatteryVoltage, FXWarningReporter, FXMiscReporter {
+	@NotNull
 	@Override
 	default SolarStatusPacketType getPacketType(){
 		return SolarStatusPacketType.FX_STATUS;
@@ -107,8 +109,6 @@ public interface FXStatusPacket extends OutbackStatusPacket, BatteryVoltage, FXW
 	@JsonProperty("misc")
 	@Override
 	int getMiscValue();
-	@Deprecated
-	default Set<MiscMode> getActiveMiscModes(){ return Modes.getActiveModes(MiscMode.class, getMiscValue()); }
 
 	/**
 	 * Should be serialized as "warningMode"
@@ -117,8 +117,6 @@ public interface FXStatusPacket extends OutbackStatusPacket, BatteryVoltage, FXW
 	@JsonProperty("warningMode")
 	@Override
 	int getWarningModeValue();
-	@Deprecated
-	default Set<WarningMode> getActiveWarningModes(){ return getWarningModes(); }
 
 	/**
 	 * Should be serialized as "chksum"

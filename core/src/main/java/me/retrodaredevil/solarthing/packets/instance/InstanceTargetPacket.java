@@ -5,12 +5,15 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 
+import javax.validation.constraints.NotNull;
+
 @JsonTypeName("TARGET")
 @JsonDeserialize(as = ImmutableInstanceTargetPacket.class)
 @JsonExplicit
 public interface InstanceTargetPacket extends InstancePacket {
 
-	@Override
+	@NotNull
+    @Override
 	default InstancePacketType getPacketType() {
 		return InstancePacketType.TARGET;
 	}

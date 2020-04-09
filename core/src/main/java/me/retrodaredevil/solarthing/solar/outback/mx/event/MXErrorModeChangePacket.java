@@ -12,13 +12,15 @@ import me.retrodaredevil.solarthing.solar.outback.OutbackData;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXErrorMode;
 import org.jetbrains.annotations.Nullable;
 
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @JsonDeserialize(as = ImmutableMXErrorModeChangePacket.class)
 @JsonTypeName("MXFM_ERROR_MODE_CHANGE")
 @JsonExplicit
 public interface MXErrorModeChangePacket extends SupplementarySolarEventPacket, OutbackData, ErrorReporter {
-	@Override
+	@NotNull
+    @Override
 	default SolarEventPacketType getPacketType(){
 		return SolarEventPacketType.MXFM_ERROR_MODE_CHANGE;
 	}

@@ -29,7 +29,8 @@ public class ImmutableFXDayEndPacket extends BaseFXDailyData implements FXDayEnd
 		return requireNonNull(super.getStartDateMillis());
 	}
 
-	@Override
+	@NotNull
+    @Override
 	public SolarEventPacketType getPacketType() {
 		return SolarEventPacketType.FX_DAILY_DAY_END;
 	}

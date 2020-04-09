@@ -37,6 +37,7 @@ public interface MXDailyData extends OutbackData, DailyChargeController, DailyBa
 	@NotNull
 	Long getStartDateMillis();
 
+	@NotNull
 	@JsonProperty("dailyAHSupport")
 	@Override
 	Support getDailyAHSupport();

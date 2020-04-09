@@ -64,6 +64,7 @@ public class ImmutableMXDailyData implements MXDailyData {
 		return dailyAH;
 	}
 
+	@NotNull
 	@Override
 	public Support getDailyAHSupport() {
 		return dailyAHSupport;

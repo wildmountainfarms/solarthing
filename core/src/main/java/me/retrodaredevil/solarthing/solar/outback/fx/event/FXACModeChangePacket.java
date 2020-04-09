@@ -11,11 +11,14 @@ import me.retrodaredevil.solarthing.solar.outback.OutbackData;
 import me.retrodaredevil.solarthing.solar.outback.fx.ACMode;
 import org.jetbrains.annotations.Nullable;
 
+import javax.validation.constraints.NotNull;
+
 @JsonDeserialize(as = ImmutableFXACModeChangePacket.class)
 @JsonTypeName("FX_AC_MODE_CHANGE")
 @JsonExplicit
 public interface FXACModeChangePacket extends SupplementarySolarEventPacket, OutbackData {
-	@Override
+	@NotNull
+    @Override
 	default SolarEventPacketType getPacketType(){
 		return SolarEventPacketType.FX_AC_MODE_CHANGE;
 	}

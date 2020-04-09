@@ -1,7 +1,9 @@
 package me.retrodaredevil.solarthing.graphql;
 
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.databind.BeanDescription;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
 import com.fasterxml.jackson.databind.introspect.BeanPropertyDefinition;
 import io.leangen.graphql.annotations.GraphQLNonNull;
 import io.leangen.graphql.generator.JavaDeprecationMappingConfig;
@@ -92,12 +94,15 @@ public class JacksonResolverBuilder implements ResolverBuilder {
 		List<Resolver> r = new ArrayList<>();
 		for(BeanPropertyDefinition property : properties){
 			String propertyName = property.getName();
+			AnnotatedMember accessor = property.getAccessor();
+			JsonPropertyDescription descriptionAnnotation = accessor.getAnnotation(JsonPropertyDescription.class);
+			String description = descriptionAnnotation == null ? null : descriptionAnnotation.value();
 			if(property.hasGetter()){
 				Method method = property.getGetter().getMember();
 				TypedElement element = new TypedElement(getReturnType(method, params), method);
 				r.add(new Resolver(
 						propertyName,
-						"no description yet",
+						description,
 						null, // no deprecation
 						false, // we won't mess with this
 						new MethodInvoker(method, beanType),
@@ -110,7 +115,7 @@ public class JacksonResolverBuilder implements ResolverBuilder {
 				TypedElement element = new TypedElement(getFieldType(field, params), field);
 				r.add(new Resolver(
 						propertyName,
-						"no description yet",
+						description,
 						null, // no deprecation
 						false, // we won't mess with this
 						new FieldAccessor(field, beanType),

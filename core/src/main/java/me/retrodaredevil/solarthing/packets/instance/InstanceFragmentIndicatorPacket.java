@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * This packet is used to indicate that multiple {@link me.retrodaredevil.solarthing.packets.collection.PacketCollection}s
  * in a database are fragmented. This means that packet collection A (fragment id of 1) and packet collection B (fragment id of 2)
@@ -17,6 +19,7 @@ import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 @JsonExplicit
 public interface InstanceFragmentIndicatorPacket extends InstancePacket {
 
+	@NotNull
 	@Override
 	default InstancePacketType getPacketType(){
 		return InstancePacketType.FRAGMENT_INDICATOR;

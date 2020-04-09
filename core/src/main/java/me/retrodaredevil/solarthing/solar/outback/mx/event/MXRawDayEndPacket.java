@@ -10,15 +10,19 @@ import me.retrodaredevil.solarthing.solar.event.SolarEventPacket;
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.outback.OutbackData;
 
+import javax.validation.constraints.NotNull;
+
 @JsonTypeName("MXFM_RAW_DAY_END")
 @JsonDeserialize(as = ImmutableMXRawDayEndPacket.class)
 @JsonExplicit
 public interface MXRawDayEndPacket extends SolarEventPacket, AccumulatedChargeController, OutbackData {
-	@Override
+	@NotNull
+    @Override
 	default SolarEventPacketType getPacketType(){
 		return SolarEventPacketType.MXFM_RAW_DAY_END;
 	}
 
+	@NotNull
 	@JsonProperty("dailyAHSupport")
 	@Override
 	Support getDailyAHSupport();

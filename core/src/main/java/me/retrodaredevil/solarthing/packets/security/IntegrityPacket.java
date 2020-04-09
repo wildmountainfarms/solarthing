@@ -5,11 +5,14 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 
+import javax.validation.constraints.NotNull;
+
 @JsonTypeName("INTEGRITY_PACKET")
 @JsonDeserialize(as = ImmutableIntegrityPacket.class)
 @JsonExplicit
 public interface IntegrityPacket extends SecurityPacket, SenderPacket {
-	@Override
+	@NotNull
+    @Override
 	default SecurityPacketType getPacketType(){
 		return SecurityPacketType.INTEGRITY_PACKET;
 	}
