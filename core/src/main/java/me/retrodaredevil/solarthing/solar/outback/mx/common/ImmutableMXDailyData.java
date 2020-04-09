@@ -3,7 +3,7 @@ package me.retrodaredevil.solarthing.solar.outback.mx.common;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.packets.support.Support;
-import org.jetbrains.annotations.NotNull;
+import javax.validation.constraints.NotNull;
 
 public class ImmutableMXDailyData implements MXDailyData {
 

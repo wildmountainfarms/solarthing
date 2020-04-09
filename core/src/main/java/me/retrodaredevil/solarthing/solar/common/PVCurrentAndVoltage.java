@@ -1,6 +1,6 @@
 package me.retrodaredevil.solarthing.solar.common;
 
-import org.jetbrains.annotations.NotNull;
+import javax.validation.constraints.NotNull;
 
 public interface PVCurrentAndVoltage {
 	@NotNull Number getPVCurrent();

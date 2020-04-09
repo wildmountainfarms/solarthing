@@ -2,7 +2,6 @@ package me.retrodaredevil.solarthing.graphql;
 
 import com.fasterxml.jackson.databind.BeanDescription;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
 import com.fasterxml.jackson.databind.introspect.BeanPropertyDefinition;
 import io.leangen.graphql.annotations.GraphQLNonNull;
 import io.leangen.graphql.generator.JavaDeprecationMappingConfig;
@@ -11,17 +10,17 @@ import io.leangen.graphql.metadata.TypedElement;
 import io.leangen.graphql.metadata.exceptions.TypeMappingException;
 import io.leangen.graphql.metadata.execution.FieldAccessor;
 import io.leangen.graphql.metadata.execution.MethodInvoker;
-import io.leangen.graphql.metadata.strategy.query.*;
-import io.leangen.graphql.metadata.strategy.value.Property;
+import io.leangen.graphql.metadata.strategy.query.ResolverBuilder;
+import io.leangen.graphql.metadata.strategy.query.ResolverBuilderParams;
 import io.leangen.graphql.util.ClassUtils;
-import io.leangen.graphql.util.ReservedStrings;
-import io.leangen.graphql.util.Utils;
 
 import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Field;
-import java.lang.reflect.Member;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 public class JacksonResolverBuilder implements ResolverBuilder {
 
@@ -71,11 +70,6 @@ public class JacksonResolverBuilder implements ResolverBuilder {
 
 	@Override
 	public Collection<Resolver> buildQueryResolvers(ResolverBuilderParams params) {
-//		Set<Property> properties = ClassUtils.getProperties(ClassUtils.getRawType(params.getBeanType().getType()));
-//		Collection<Resolver> propertyAccessors = buildPropertyAccessors(properties.stream(), params);
-//		Collection<Resolver> methodInvokers = buildMethodInvokers(params, (method, par) -> isQuery(method, par) && properties.stream().noneMatch(prop -> prop.getGetter().equals(method)), OperationDefinition.Operation.QUERY, true);
-//		Collection<Resolver> fieldAccessors = buildFieldAccessors(params);
-//		return Utils.concat(methodInvokers.stream(), propertyAccessors.stream(), fieldAccessors.stream()).collect(Collectors.toSet());
 		return buildResolvers(params);
 	}
 
@@ -100,7 +94,6 @@ public class JacksonResolverBuilder implements ResolverBuilder {
 			String propertyName = property.getName();
 			if(property.hasGetter()){
 				Method method = property.getGetter().getMember();
-				@GraphQLNonNull
 				TypedElement element = new TypedElement(getReturnType(method, params), method);
 				r.add(new Resolver(
 						propertyName,

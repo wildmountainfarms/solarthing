@@ -13,7 +13,8 @@ import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
 import me.retrodaredevil.solarthing.solar.common.DailyChargeController;
 import me.retrodaredevil.solarthing.solar.common.DailyData;
 import me.retrodaredevil.solarthing.solar.outback.OutbackStatusPacket;
-import org.jetbrains.annotations.NotNull;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 
 import java.util.Set;
 

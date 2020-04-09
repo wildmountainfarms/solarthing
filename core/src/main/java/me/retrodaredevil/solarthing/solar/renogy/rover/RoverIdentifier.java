@@ -3,7 +3,7 @@ package me.retrodaredevil.solarthing.solar.renogy.rover;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.packets.identification.IntegerIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
-import org.jetbrains.annotations.NotNull;
+import javax.validation.constraints.NotNull;
 
 import java.util.Objects;
 

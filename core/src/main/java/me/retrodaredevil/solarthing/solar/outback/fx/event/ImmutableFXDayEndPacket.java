@@ -9,7 +9,7 @@ import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.BaseFXDailyData;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.FXDailyData;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.ImmutableFXDailyData;
-import org.jetbrains.annotations.NotNull;
+import javax.validation.constraints.NotNull;
 
 import static java.util.Objects.requireNonNull;
 

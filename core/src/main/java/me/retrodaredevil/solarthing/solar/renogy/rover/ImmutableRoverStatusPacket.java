@@ -3,7 +3,7 @@ package me.retrodaredevil.solarthing.solar.renogy.rover;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.jetbrains.annotations.NotNull;
+import javax.validation.constraints.NotNull;
 
 @JsonIgnoreProperties(value = {"productModelString", "hardwareVersionString", "softwareVersionString", "streetLightBrightness", "streetLightOn", "chargingStateName", "errors", "batteryTypeName", "loadWorkingModeName"}, allowGetters = true)
 public class ImmutableRoverStatusPacket implements RoverStatusPacket {

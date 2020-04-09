@@ -9,7 +9,7 @@ import me.retrodaredevil.solarthing.solar.common.DailyData;
 import me.retrodaredevil.solarthing.solar.common.ErrorReporter;
 import me.retrodaredevil.solarthing.solar.outback.OutbackData;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXErrorMode;
-import org.jetbrains.annotations.NotNull;
+import javax.validation.constraints.NotNull;
 
 import java.util.Set;
 
