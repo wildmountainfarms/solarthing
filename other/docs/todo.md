@@ -9,7 +9,7 @@
 * For PVOutput, when the PV Current is 0 and the input voltage is high, we might be able to assume that
 the charge controller is not accepting more power
   * Use this so incorrect statistics are not reported
-  * If PV Current == 0 and charging current == 0 and mode != Silent (and probably != bulk), then assume it's stopped
+  * If PVVoltage != 0 and PV Current == 0 and charging current == 0 and mode != Silent (and probably != bulk), then assume it's stopped
   * Alternatively, don't report statistics if the CC is in Float, Absorb, or EQ
   
 ### Android TODO
@@ -49,6 +49,7 @@ the charge controller is not accepting more power
 * thingsboard.io
 * Cypher [guide here](https://neo4j.com/developer/guide-sql-to-cypher/)
   * Looks interesting
+* [Metrictank](https://grafana.com/oss/metrictank/)
 
 #### TODO - Additions I'm not going to work on
 These might be useful to some people. I will not implement these in the future, but pull requests are welcome!

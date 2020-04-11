@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonClassDescription;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
@@ -18,7 +19,6 @@ import java.util.Set;
 /**
  * Represents an FX Status Packet from an Outback Mate
  */
-@SuppressWarnings("unused")
 @JsonDeserialize(as = ImmutableFXStatusPacket.class)
 @JsonTypeName("FX_STATUS")
 @JsonExplicit
@@ -92,7 +92,7 @@ public interface FXStatusPacket extends OutbackStatusPacket, BatteryVoltage, FXW
 	@Override
 	int getErrorModeValue();
 	@Override
-	default Set<FXErrorMode> getErrorModes(){ return Modes.getActiveModes(FXErrorMode.class, getErrorModeValue()); }
+	default @NotNull Set<@NotNull FXErrorMode> getErrorModes(){ return Modes.getActiveModes(FXErrorMode.class, getErrorModeValue()); }
 
 	/**
 	 * Should be serialized as "acMode"
@@ -100,7 +100,7 @@ public interface FXStatusPacket extends OutbackStatusPacket, BatteryVoltage, FXW
 	 */
 	@JsonProperty("acMode")
 	int getACModeValue();
-	default ACMode getACMode(){ return Modes.getActiveMode(ACMode.class, getACModeValue()); }
+	default @NotNull ACMode getACMode(){ return Modes.getActiveMode(ACMode.class, getACModeValue()); }
 
 	/**
 	 * Should be serialized as "misc"
@@ -186,40 +186,46 @@ public interface FXStatusPacket extends OutbackStatusPacket, BatteryVoltage, FXW
 	 * @return The errors represented as a string
 	 */
 	@JsonProperty("errors")
-	default String getErrorsString() { return Modes.toString(FXErrorMode.class, getErrorModeValue()); }
+	@GraphQLInclude("errorsString")
+	default @NotNull String getErrorsString() { return Modes.toString(FXErrorMode.class, getErrorModeValue()); }
 
 	/**
 	 * Should be serialized as "acModeName"
 	 * @return The name of the ac mode
 	 */
 	@JsonProperty("acModeName")
-	default String getACModeName() { return getACMode().getModeName(); }
+	default @NotNull String getACModeName() { return getACMode().getModeName(); }
 
 	/**
 	 * Should be serialized as "miscModes"
 	 * @return The misc modes represented as a string
 	 */
 	@JsonProperty("miscModes")
-	default String getMiscModesString() { return Modes.toString(MiscMode.class, getMiscValue()); }
+	@GraphQLInclude("miscModesString")
+	default @NotNull String getMiscModesString() { return Modes.toString(MiscMode.class, getMiscValue()); }
 
 	/**
 	 * Should be serialized as "warnings"
 	 * @return The warning modes represented as a string
 	 */
 	@JsonProperty("warnings")
-	default String getWarningsString() { return Modes.toString(WarningMode.class, getWarningModeValue()); }
+	default @NotNull String getWarningsString() { return Modes.toString(WarningMode.class, getWarningModeValue()); }
 	// endregion
 
 	// region Default Power Getters
+	@GraphQLInclude("inverterWattage")
 	default int getInverterWattage(){
 		return getInverterCurrentRaw() * getOutputVoltageRaw();
 	}
+	@GraphQLInclude("chargerWattage")
 	default int getChargerWattage(){
 		return getChargerCurrentRaw() * getInputVoltageRaw();
 	}
+	@GraphQLInclude("buyWattage")
 	default int getBuyWattage(){
 		return getBuyCurrentRaw() * getInputVoltageRaw();
 	}
+	@GraphQLInclude("sellWattage")
 	default int getSellWattage(){
 		return getSellCurrentRaw() * getOutputVoltageRaw();
 	}
