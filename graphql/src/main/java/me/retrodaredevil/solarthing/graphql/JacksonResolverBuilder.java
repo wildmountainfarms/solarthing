@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.BeanDescription;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
 import com.fasterxml.jackson.databind.introspect.BeanPropertyDefinition;
-import io.leangen.graphql.annotations.GraphQLNonNull;
+import io.leangen.graphql.annotations.GraphQLIgnore;
 import io.leangen.graphql.generator.JavaDeprecationMappingConfig;
 import io.leangen.graphql.metadata.Resolver;
 import io.leangen.graphql.metadata.TypedElement;
@@ -15,6 +15,8 @@ import io.leangen.graphql.metadata.execution.MethodInvoker;
 import io.leangen.graphql.metadata.strategy.query.ResolverBuilder;
 import io.leangen.graphql.metadata.strategy.query.ResolverBuilderParams;
 import io.leangen.graphql.util.ClassUtils;
+import me.retrodaredevil.solarthing.annotations.GraphQLExclude;
+import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
 
 import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Field;
@@ -27,24 +29,13 @@ import java.util.List;
 public class JacksonResolverBuilder implements ResolverBuilder {
 
 	private ObjectMapper objectMapper = new ObjectMapper();
-	private String[] basePackages;
 	private JavaDeprecationMappingConfig javaDeprecationConfig;
 
 	public JacksonResolverBuilder() {
-		this(new String[0]);
-	}
-
-	public JacksonResolverBuilder(String... basePackages) {
-		withBasePackages(basePackages);
 		withJavaDeprecation(new JavaDeprecationMappingConfig(true, "Deprecated"));
 	}
 	public JacksonResolverBuilder withObjectMapper(ObjectMapper objectMapper){
 		this.objectMapper = objectMapper;
-		return this;
-	}
-
-	public JacksonResolverBuilder withBasePackages(String... basePackages) {
-		this.basePackages = basePackages;
 		return this;
 	}
 
@@ -90,11 +81,19 @@ public class JacksonResolverBuilder implements ResolverBuilder {
 		if (rawType.isArray() || rawType.isPrimitive()) return Collections.emptyList();
 
 		BeanDescription bean = objectMapper.getSerializationConfig().introspect(objectMapper.constructType(rawType));
+		AnnotatedMember jsonValueAccessor = bean.findJsonValueAccessor();
+		if(jsonValueAccessor != null){
+			System.err.println("@JsonValue is present! Bad!");
+		}
+
 		List<BeanPropertyDefinition> properties = bean.findProperties();
 		List<Resolver> r = new ArrayList<>();
 		for(BeanPropertyDefinition property : properties){
-			String propertyName = property.getName();
 			AnnotatedMember accessor = property.getAccessor();
+			if(accessor.hasAnnotation(GraphQLIgnore.class) || accessor.hasAnnotation(GraphQLInclude.class) || accessor.hasAnnotation(GraphQLExclude.class)) {
+				continue;
+			}
+			String propertyName = property.getName();
 			JsonPropertyDescription descriptionAnnotation = accessor.getAnnotation(JsonPropertyDescription.class);
 			String description = descriptionAnnotation == null ? null : descriptionAnnotation.value();
 			if(property.hasGetter()){

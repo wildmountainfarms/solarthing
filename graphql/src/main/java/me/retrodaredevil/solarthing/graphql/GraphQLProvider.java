@@ -39,7 +39,7 @@ public class GraphQLProvider {
 				.withModules((conf, current) -> Arrays.asList(new JacksonModule()))
 				.withResolverBuilders(resolverBuilder)
 //				.withNestedResolverBuilders(resolverBuilder, bean) don't use this because we don't need nested queries
-				.withNestedResolverBuilders(bean)
+				.withNestedResolverBuilders(bean, new SolarThingResolverBuilder())
 				.generate();
 
 		this.graphQL = GraphQL.newGraphQL(schema).build();

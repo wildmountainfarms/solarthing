@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.packets.support.Support;
@@ -90,6 +91,7 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 		return getChargerCurrent() + getAmpChargerCurrent();
 	}
 
+	@GraphQLInclude("chargingPower")
 	@Override
 	default Float getChargingPower(){
 		return (getChargerCurrent() + getAmpChargerCurrent()) * getBatteryVoltage();
@@ -139,6 +141,7 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 		return AuxMode.getActualValueCode(getRawAuxModeValue());
 	}
 	default AuxMode getAuxMode(){ return Modes.getActiveMode(AuxMode.class, getAuxModeValue());}
+	@GraphQLInclude("auxBitActive")
 	default boolean isAuxBitActive(){ return AuxMode.isAuxModeActive(getRawAuxModeValue()); }
 
 	/**
@@ -200,11 +203,11 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 
 	// region Convenience Strings
 	@JsonProperty("auxModeName")
-	default String getAuxModeName(){ return getAuxMode().getModeName(); }
+	default @NotNull String getAuxModeName(){ return getAuxMode().getModeName(); }
 	@JsonProperty("errors")
-	default String getErrorsString(){ return Modes.toString(MXErrorMode.class, getErrorModeValue()); }
+	default @NotNull String getErrorsString(){ return Modes.toString(MXErrorMode.class, getErrorModeValue()); }
 	@JsonProperty("chargerModeName")
-	default String getChargerModeName(){ return getChargingMode().getModeName(); }
+	default @NotNull String getChargerModeName(){ return getChargingMode().getModeName(); }
 	// endregion
 
 	/**
