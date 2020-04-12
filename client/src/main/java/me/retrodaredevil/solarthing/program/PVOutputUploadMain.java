@@ -43,7 +43,7 @@ import java.util.*;
 
 public class PVOutputUploadMain {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PVOutputUploadMain.class);
-	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
+	private static final ObjectMapper MAPPER = JacksonUtil.lenientMapper(JacksonUtil.defaultMapper());
 
 	private static PacketGroup getLatestPacket(String sourceId, List<ObjectNode> packetNodes, PacketGroupParser parser){
 		List<PacketGroup> rawPacketGroups = new ArrayList<>(packetNodes.size());
@@ -88,7 +88,7 @@ public class PVOutputUploadMain {
 			if(packet instanceof DailyMXPacket){
 				generatedWH += ((DailyMXPacket) packet).getDailyKWH() * 1000;
 			} else if(packet instanceof MXStatusPacket){
-				generatingW += ((MXStatusPacket) packet).getPVWattage().intValue();
+				generatingW += ((MXStatusPacket) packet).getPVWattage();
 			} else if(packet instanceof FXStatusPacket){
 				usingW += ((FXStatusPacket) packet).getInverterWattage();
 			} else if(packet instanceof DailyFXPacket){

@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.couchdb;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.couchdb.CouchProperties;
 import me.retrodaredevil.couchdb.DocumentWrapper;
+import me.retrodaredevil.couchdb.EktorpUtil;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;

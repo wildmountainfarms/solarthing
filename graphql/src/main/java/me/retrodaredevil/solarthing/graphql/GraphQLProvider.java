@@ -35,7 +35,7 @@ public class GraphQLProvider {
 		ResolverBuilder resolverBuilder = new AnnotatedResolverBuilder();
 		GraphQLSchema schema = new GraphQLSchemaGenerator()
 				.withBasePackages("me.retrodaredevil.solarthing")
-				.withOperationsFromSingleton(new SolarThingGraphQLService())
+				.withOperationsFromSingleton(new SolarThingGraphQLService(objectMapper))
 				.withValueMapperFactory(jacksonValueMapperFactory)
 				.withResolverBuilders(resolverBuilder)
 				.withNestedResolverBuilders(
