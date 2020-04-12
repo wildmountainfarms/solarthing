@@ -195,7 +195,8 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 		identifier = new RoverIdentifier(productSerialNumber);
 	}
 
-	@Override
+	@NotNull
+    @Override
 	public RoverIdentifier getIdentifier() {
 		return identifier;
 	}

@@ -62,6 +62,7 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 		return address;
 	}
 
+	@NotNull
 	@Override
 	public OutbackIdentifier getIdentifier() {
 		return identifier;

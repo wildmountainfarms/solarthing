@@ -1,8 +1,10 @@
 package me.retrodaredevil.solarthing.solar.common;
 
+import me.retrodaredevil.solarthing.packets.identification.Identifiable;
+
 import javax.validation.constraints.NotNull;
 
-public interface PVCurrentAndVoltage {
+public interface PVCurrentAndVoltage extends Identifiable {
 	@NotNull Number getPVCurrent();
 
 	/**

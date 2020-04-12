@@ -16,6 +16,10 @@ apply plugin: 'io.spring.dependency-management'
 
 version = '0.0.1-SNAPSHOT'
 
+compileJava {
+    options.compilerArgs << '-parameters' // we don't want to use have to put @GraphQLArgument everywhere
+}
+
 dependencies {
     implementation "com.fasterxml.jackson.module:jackson-module-jsonSchema:$jacksonVersion"
 //    implementation 'com.graphql-java:graphql-java:14.0'

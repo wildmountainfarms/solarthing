@@ -7,6 +7,8 @@ import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifi
 import me.retrodaredevil.solarthing.solar.extra.SolarExtraPacketType;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 
+import javax.validation.constraints.NotNull;
+
 public class ImmutableFXChargingPacket implements FXChargingPacket {
 	private final int masterFXAddress;
 
@@ -56,7 +58,8 @@ public class ImmutableFXChargingPacket implements FXChargingPacket {
 		this(new OutbackIdentifier(masterFXAddress), fxChargingMode, remainingAbsorbTimeMillis, remainingFloatTimeMillis, remainingEqualizeTimeMillis, totalAbsorbTimeMillis, totalFloatTimeMillis, totalEqualizeTimeMillis);
 	}
 
-	@Override
+	@NotNull
+    @Override
 	public SupplementaryIdentifier getIdentifier() {
 		return identifier;
 	}

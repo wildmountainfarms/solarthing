@@ -99,6 +99,10 @@ public class JacksonResolverBuilder implements ResolverBuilder {
 			if(property.hasGetter()){
 				Method method = property.getGetter().getMember();
 				TypedElement element = new TypedElement(getReturnType(method, params), method);
+//				Class<?> classType = ClassUtils.getRawType(element.getJavaType().getType());
+//				if(classType.isPrimitive()) {
+//
+//				}
 				r.add(new Resolver(
 						propertyName,
 						description,
@@ -106,8 +110,8 @@ public class JacksonResolverBuilder implements ResolverBuilder {
 						false, // we won't mess with this
 						new MethodInvoker(method, beanType),
 						element,
-						Collections.emptyList(),
-						null // complexity stuff here // not implemented yet
+						Collections.emptyList(), // no arguments
+						null // complexity stuff here // not implemented yet // I don't know what this is
 				));
 			} else if(property.hasField()){
 				Field field = (Field) property.getField().getMember();

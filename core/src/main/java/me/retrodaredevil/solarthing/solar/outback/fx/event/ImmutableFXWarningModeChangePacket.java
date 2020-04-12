@@ -7,6 +7,8 @@ import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifi
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 
+import javax.validation.constraints.NotNull;
+
 public class ImmutableFXWarningModeChangePacket implements FXWarningModeChangePacket {
 	private final int address;
 	private final int warningModeValue;
@@ -47,7 +49,8 @@ public class ImmutableFXWarningModeChangePacket implements FXWarningModeChangePa
 		return ignoredWarningModeValueConstant;
 	}
 
-	@Override
+	@NotNull
+    @Override
 	public SupplementaryIdentifier getIdentifier() {
 		return identifier;
 	}

@@ -1,66 +1,63 @@
 package me.retrodaredevil.solarthing.graphql;
 
 import io.leangen.graphql.annotations.GraphQLArgument;
-import io.leangen.graphql.annotations.GraphQLContext;
 import io.leangen.graphql.annotations.GraphQLQuery;
+import me.retrodaredevil.solarthing.graphql.packets.PacketNode;
+import me.retrodaredevil.solarthing.graphql.packets.PacketUtil;
+import me.retrodaredevil.solarthing.misc.device.CpuTemperaturePacket;
+import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.InstancePacketGroup;
+import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
-import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPackets;
+import me.retrodaredevil.solarthing.solar.outback.fx.extra.DailyFXPacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPacket;
-import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPackets;
-import me.retrodaredevil.solarthing.util.CheckSumException;
-import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
-import me.retrodaredevil.solarthing.util.ParsePacketAsciiDecimalDigitException;
+import me.retrodaredevil.solarthing.solar.outback.mx.extra.DailyMXPacket;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public class SolarThingGraphQLService {
-	@GraphQLQuery
-	public MXStatusPacket lastMXStatus() {
-		try {
-			return MXStatusPackets.createFromChars("\nD,00,10,99,999,888,07,09,000,04,282,000,000,122\r".toCharArray(), IgnoreCheckSum.IGNORE_AND_USE_CALCULATED);
-		} catch (CheckSumException | ParsePacketAsciiDecimalDigitException e) {
-			throw new RuntimeException(e);
-		}
+	private List<FragmentedPacketGroup> queryPackets(long from, long to) {
+		throw new UnsupportedOperationException();
 	}
-	@GraphQLQuery
-	public FXStatusPacket lastFXStatus() {
-		try {
-			return FXStatusPackets.createFromChars("\n1,07,00,00,000,125,00,03,000,00,282,000,000,999\r".toCharArray(), IgnoreCheckSum.IGNORE_AND_USE_CALCULATED);
-		} catch (ParsePacketAsciiDecimalDigitException | CheckSumException e) {
-			throw new RuntimeException(e);
-		}
-	}
-	public List<InstancePacketGroup> queryInstance(String sourceId, Integer fragmentId) { throw new UnsupportedOperationException(); }
-	public List<InstancePacketGroup> queryUnsorted(String sourceId) { throw new UnsupportedOperationException(); }
-	public List<InstancePacketGroup> querySorted(String sourceId) { throw new UnsupportedOperationException(); }
 
 	@GraphQLQuery
-	public List<TestQuery> submissions(@GraphQLArgument(name = "from") long from, @GraphQLArgument(name = "to") long to){
-		List<TestQuery> r = new ArrayList<>();
-		for(long start = from; start < to; start += 100000){
-			TestQuery testQuery = new TestQuery();
-			testQuery.submitTime = start;
-			testQuery.running = (float) (6.6 * Math.random());
-			testQuery.name = "Josh";
-
-			TestQuery test2 = new TestQuery();
-			test2.submitTime = start + 50000;
-			test2.running = (float) (6.6 * Math.random());
-			test2.name = "Josh2";
-
-			r.add(testQuery);
-			r.add(test2);
-		}
-		return r;
+	public QueryFromTo queryAll(@GraphQLArgument(name = "from") long from, @GraphQLArgument(name = "to") long to){
+		return new QueryFromTo(from, to);
 	}
-	public static class TestQuery {
-		public long submitTime;
-		public float idle;
-		public float running;
-		public float completed;
-		public String name;
+	public class QueryFromTo {
+		private final List<FragmentedPacketGroup> packets;
+
+		public QueryFromTo(long from, long to) {
+			packets = queryPackets(from, to);
+		}
+		@GraphQLQuery
+		public @NotNull List<@NotNull PacketNode<BatteryVoltage>> batteryVoltage() {
+			return PacketUtil.convertPackets(packets, BatteryVoltage.class);
+		}
+		@GraphQLQuery
+		public @NotNull List<@NotNull PacketNode<FXStatusPacket>> fxStatus() {
+			return PacketUtil.convertPackets(packets, FXStatusPacket.class);
+		}
+		@GraphQLQuery
+		public @NotNull List<@NotNull PacketNode<MXStatusPacket>> mxStatus() {
+			return PacketUtil.convertPackets(packets, MXStatusPacket.class);
+		}
+		@GraphQLQuery
+		public @NotNull List<@NotNull PacketNode<DailyMXPacket>> mxDaily() {
+			return PacketUtil.convertPackets(packets, DailyMXPacket.class);
+		}
+		@GraphQLQuery
+		public @NotNull List<@NotNull PacketNode<DailyFXPacket>> fxDaily() {
+			return PacketUtil.convertPackets(packets, DailyFXPacket.class);
+		}
+		@GraphQLQuery
+		public @NotNull List<@NotNull PacketNode<CpuTemperaturePacket>> cpuTemperature() {
+			return PacketUtil.convertPackets(packets, CpuTemperaturePacket.class);
+		}
+		//	public List<InstancePacketGroup> queryInstance(long from, long to, @NotNull String sourceId, @NotNull Integer fragmentId) { throw new UnsupportedOperationException(); }
+		public List<InstancePacketGroup> queryUnsorted(String sourceId) { throw new UnsupportedOperationException(); }
+		public List<FragmentedPacketGroup> querySorted(String sourceId) { throw new UnsupportedOperationException(); }
+
 	}
 }

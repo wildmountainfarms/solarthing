@@ -21,6 +21,7 @@ import java.util.Collection;
 @JsonExplicit
 public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeController, DailyChargeController, DailyBatteryVoltage, Identifiable {
 
+	@NotNull
 	@Override
 	RoverIdentifier getIdentifier();
 

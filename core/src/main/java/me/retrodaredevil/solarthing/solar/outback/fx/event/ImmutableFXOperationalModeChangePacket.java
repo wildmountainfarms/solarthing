@@ -8,6 +8,8 @@ import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import org.jetbrains.annotations.Nullable;
 
+import javax.validation.constraints.NotNull;
+
 public class ImmutableFXOperationalModeChangePacket implements FXOperationalModeChangePacket {
 	private final int address;
 	private final int operationalModeValue;
@@ -49,7 +51,8 @@ public class ImmutableFXOperationalModeChangePacket implements FXOperationalMode
 		return previousOperationalModeValue;
 	}
 
-	@Override
+	@NotNull
+    @Override
 	public SupplementaryIdentifier getIdentifier() {
 		return identifier;
 	}

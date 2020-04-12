@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 
 import static me.retrodaredevil.util.json.JacksonHelper.require;
@@ -184,7 +185,7 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 	public float getBatteryVoltage() {
 		return batteryVoltage;
 	}
-	
+
 	@Override
 	public int getMiscValue() {
 		return misc;
@@ -204,8 +205,9 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 	public int getAddress() {
 		return address;
 	}
-	
-	@Override
+
+	@NotNull
+    @Override
 	public OutbackIdentifier getIdentifier() {
 		return identifier;
 	}
