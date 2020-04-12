@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing.couchdb;
+package me.retrodaredevil.couchdb;
 
 import me.retrodaredevil.couchdb.CouchProperties;
 import org.ektorp.http.HttpClient;
