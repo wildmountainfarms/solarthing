@@ -1,8 +1,9 @@
 package me.retrodaredevil.solarthing.solar.common;
 
+import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 import org.jetbrains.annotations.Nullable;
 
-public interface DailyData {
+public interface DailyData extends Identifiable {
 	/**
 	 * NOTE: If {@code previousDailyData} is data from a {@link DailyData} generated after this, the returned result is
 	 * undefined.

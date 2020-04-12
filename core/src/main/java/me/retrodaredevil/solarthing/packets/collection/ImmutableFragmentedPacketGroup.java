@@ -14,7 +14,7 @@ class ImmutableFragmentedPacketGroup extends ImmutablePacketGroup implements Fra
 		Map<Packet, Integer> fragmentIdMap = new HashMap<>();
 		for(InstancePacketGroup instancePacketGroup : instancePackets){
 			for(Packet packet : instancePacketGroup.getPackets()){
-				fragmentIdMap.put(packet, instancePacketGroup.getFragmentId(packet));
+				fragmentIdMap.put(packet, instancePacketGroup.getFragmentId());
 			}
 		}
 		this.fragmentIdMap = fragmentIdMap;

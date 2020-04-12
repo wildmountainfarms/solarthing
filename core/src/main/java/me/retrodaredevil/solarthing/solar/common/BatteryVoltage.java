@@ -2,11 +2,12 @@ package me.retrodaredevil.solarthing.solar.common;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 
 /**
  * Represents something that detects and measures the battery voltage
  */
-public interface BatteryVoltage {
+public interface BatteryVoltage extends Identifiable {
 
 	/**
 	 * Should be serialized as "batteryVoltage"

@@ -7,6 +7,8 @@ import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifi
 import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 
+import javax.validation.constraints.NotNull;
+
 @JsonExplicit
 public abstract class BaseMXDailyData extends ImmutableMXDailyData implements SupplementaryIdentifiable {
 	private final SupplementaryIdentifier supplementaryIdentifier;
@@ -25,6 +27,7 @@ public abstract class BaseMXDailyData extends ImmutableMXDailyData implements Su
 		supplementaryIdentifier = new DefaultSupplementaryIdentifier<>(outbackIdentifier, packetType.toString());
 	}
 
+	@NotNull
 	@Override
 	public SupplementaryIdentifier getIdentifier() {
 		return supplementaryIdentifier;

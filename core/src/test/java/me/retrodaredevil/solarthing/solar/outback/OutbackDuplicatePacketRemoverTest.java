@@ -63,7 +63,8 @@ class OutbackDuplicatePacketRemoverTest {
 				return address;
 			}
 
-			@Override
+			@NotNull
+            @Override
 			public OutbackIdentifier getIdentifier() {
 				throw new UnsupportedOperationException();
 			}

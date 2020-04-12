@@ -8,6 +8,8 @@ import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import org.jetbrains.annotations.Nullable;
 
+import javax.validation.constraints.NotNull;
+
 public class ImmutableMXAuxModeChangePacket implements MXAuxModeChangePacket {
 	private final int address;
 	private final int rawAuxModeValue;
@@ -41,7 +43,8 @@ public class ImmutableMXAuxModeChangePacket implements MXAuxModeChangePacket {
 		return previousRawAuxModeValue;
 	}
 
-	@Override
+	@NotNull
+    @Override
 	public SupplementaryIdentifier getIdentifier() {
 		return identifier;
 	}

@@ -120,6 +120,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 		onChange.onChange("clearHistory", "nothing", "clear history called");
 	}
 
+	@NotNull
 	@Override
 	public RoverIdentifier getIdentifier() {
 		return new RoverIdentifier(getProductSerialNumber());

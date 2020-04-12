@@ -6,9 +6,11 @@ import me.retrodaredevil.solarthing.solar.event.SupplementarySolarEventPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.FXDailyData;
 import org.jetbrains.annotations.Nullable;
 
+import javax.validation.constraints.NotNull;
+
 @JsonTypeName("FX_DAILY_DAY_END")
 @JsonDeserialize(as = ImmutableFXDayEndPacket.class)
 public interface FXDayEndPacket extends SupplementarySolarEventPacket, FXDailyData {
 	@Override
-	@Nullable Long getStartDateMillis();
+	@NotNull Long getStartDateMillis();
 }

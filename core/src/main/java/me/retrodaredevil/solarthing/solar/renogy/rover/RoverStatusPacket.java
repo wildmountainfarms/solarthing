@@ -25,6 +25,7 @@ public interface RoverStatusPacket extends RenogyPacket, RoverReadTable {
 		return SolarStatusPacketType.RENOGY_ROVER_STATUS;
 	}
 
-	@Override
+	@NotNull
+    @Override
 	RoverIdentifier getIdentifier();
 }

@@ -15,7 +15,8 @@ public class RoverModbusSlaveRead implements RoverReadTable {
 	public RoverModbusSlaveRead(ModbusSlave modbus) {
 		this.modbus = modbus;
 	}
-	@Override
+	@NotNull
+    @Override
 	public RoverIdentifier getIdentifier() {
 		return new RoverIdentifier(getProductSerialNumber());
 	}

@@ -2,7 +2,11 @@ package me.retrodaredevil.solarthing.solar.outback.mx.event;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import me.retrodaredevil.solarthing.packets.identification.DefaultSupplementaryIdentifier;
+import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifier;
 import me.retrodaredevil.solarthing.packets.support.Support;
+import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
+import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 
 import javax.validation.constraints.NotNull;
 
@@ -12,6 +16,8 @@ public class ImmutableMXRawDayEndPacket implements MXRawDayEndPacket {
 	private final float dailyKWH;
 	private final int dailyAH;
 	private final Support dailyAHSupport;
+
+	private final SupplementaryIdentifier identifier;
 
 	@JsonCreator
 	public ImmutableMXRawDayEndPacket(
@@ -24,8 +30,14 @@ public class ImmutableMXRawDayEndPacket implements MXRawDayEndPacket {
 		this.dailyKWH = dailyKWH;
 		this.dailyAH = dailyAH;
 		this.dailyAHSupport = dailyAHSupport;
+		identifier = new DefaultSupplementaryIdentifier<>(new OutbackIdentifier(address), SolarEventPacketType.MXFM_RAW_DAY_END.toString());
 	}
 
+	@NotNull
+	@Override
+	public SupplementaryIdentifier getIdentifier() {
+		return identifier;
+	}
 
 	@Override
 	public float getDailyKWH() {

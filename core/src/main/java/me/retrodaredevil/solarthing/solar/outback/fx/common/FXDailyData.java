@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.solar.outback.fx.common;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.solar.common.DailyBatteryVoltage;
@@ -55,6 +56,7 @@ public interface FXDailyData extends OutbackData, DailyBatteryVoltage, ErrorRepo
 
 	@JsonProperty("operationalModeValues")
 	Collection<Integer> getOperationalModeValues();
+	@GraphQLInclude("operationalModes")
 	default Set<OperationalMode> getOperationalModes(){ return Modes.getActiveModes(OperationalMode.class, getOperationalModeValues()); }
 
 	/**
@@ -77,5 +79,6 @@ public interface FXDailyData extends OutbackData, DailyBatteryVoltage, ErrorRepo
 
 	@JsonProperty("acModeValues")
 	Collection<Integer> getACModeValues();
+	@GraphQLInclude("acModes")
 	default Set<ACMode> getACModes(){ return Modes.getActiveModes(ACMode.class, getACModeValues()); }
 }

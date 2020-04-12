@@ -1,5 +1,10 @@
 package me.retrodaredevil.solarthing.packets.identification;
 
+import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
+
+import javax.validation.constraints.NotNull;
+
 public interface Identifiable {
-	Identifier getIdentifier();
+	@GraphQLInclude("identifier")
+	@NotNull Identifier getIdentifier();
 }

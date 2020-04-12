@@ -1,4 +1,6 @@
 package me.retrodaredevil.solarthing.solar.common;
 
-public interface ChargeController {
+import me.retrodaredevil.solarthing.packets.identification.Identifiable;
+
+public interface ChargeController extends Identifiable {
 }

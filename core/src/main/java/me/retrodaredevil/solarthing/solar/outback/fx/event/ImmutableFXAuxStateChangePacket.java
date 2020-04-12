@@ -8,6 +8,8 @@ import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import org.jetbrains.annotations.Nullable;
 
+import javax.validation.constraints.NotNull;
+
 public class ImmutableFXAuxStateChangePacket implements FXAuxStateChangePacket {
 	private final int address;
 	private final boolean isAuxActive;
@@ -48,7 +50,8 @@ public class ImmutableFXAuxStateChangePacket implements FXAuxStateChangePacket {
 		return wasAuxActive;
 	}
 
-	@Override
+	@NotNull
+    @Override
 	public SupplementaryIdentifier getIdentifier() {
 		return identifier;
 	}

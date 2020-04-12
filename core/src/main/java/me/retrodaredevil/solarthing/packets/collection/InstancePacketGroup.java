@@ -10,8 +10,18 @@ import me.retrodaredevil.solarthing.packets.Packet;
 public interface InstancePacketGroup extends FragmentedPacketGroup {
 	@Override
 	String getSourceId();
+
+	/**
+	 * @return The fragmentId, which is the same for each packet
+	 */
 	Integer getFragmentId();
 
+	/**
+	 * @deprecated Use {@link #getFragmentId()} instead
+	 * @param packet The packet to get the fragmentId of
+	 * @return {@link #getFragmentId()}
+	 */
+	@Deprecated
 	@Override
 	default Integer getFragmentId(Packet packet) {
 		return getFragmentId();
