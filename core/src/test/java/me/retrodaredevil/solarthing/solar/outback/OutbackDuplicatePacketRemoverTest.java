@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.solar.outback;
 
 import me.retrodaredevil.solarthing.packets.BitmaskMode;
 import me.retrodaredevil.solarthing.packets.Packet;
+import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import org.junit.jupiter.api.Test;
 
@@ -66,6 +67,11 @@ class OutbackDuplicatePacketRemoverTest {
 			@NotNull
             @Override
 			public OutbackIdentifier getIdentifier() {
+				throw new UnsupportedOperationException();
+			}
+
+			@Override
+			public @NotNull IdentityInfo getIdentityInfo() {
 				throw new UnsupportedOperationException();
 			}
 

@@ -3,10 +3,12 @@ package me.retrodaredevil.solarthing.solar.outback.mx.event;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.packets.identification.DefaultSupplementaryIdentifier;
+import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifier;
 import me.retrodaredevil.solarthing.packets.support.Support;
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
+import me.retrodaredevil.solarthing.solar.outback.mx.MXIdentityInfo;
 
 import javax.validation.constraints.NotNull;
 
@@ -18,6 +20,7 @@ public class ImmutableMXRawDayEndPacket implements MXRawDayEndPacket {
 	private final Support dailyAHSupport;
 
 	private final SupplementaryIdentifier identifier;
+	private final IdentityInfo identityInfo;
 
 	@JsonCreator
 	public ImmutableMXRawDayEndPacket(
@@ -31,12 +34,19 @@ public class ImmutableMXRawDayEndPacket implements MXRawDayEndPacket {
 		this.dailyAH = dailyAH;
 		this.dailyAHSupport = dailyAHSupport;
 		identifier = new DefaultSupplementaryIdentifier<>(new OutbackIdentifier(address), SolarEventPacketType.MXFM_RAW_DAY_END.toString());
+		identityInfo = new MXIdentityInfo(address);
 	}
 
 	@NotNull
 	@Override
 	public SupplementaryIdentifier getIdentifier() {
 		return identifier;
+	}
+
+	@NotNull
+	@Override
+	public IdentityInfo getIdentityInfo() {
+		return identityInfo;
 	}
 
 	@Override

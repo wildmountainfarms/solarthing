@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.solar.outback.mx;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.packets.support.Support;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
@@ -23,6 +24,7 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 	private final int chksum;
 
 	private final OutbackIdentifier identifier;
+	private final IdentityInfo identityInfo;
 
 	@JsonCreator
 	ImmutableMXStatusPacket(
@@ -49,6 +51,12 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 		this.chksum = chksum;
 
 		this.identifier = new OutbackIdentifier(address);
+		this.identityInfo = new MXIdentityInfo(address);
+	}
+
+	@Override
+	public @NotNull IdentityInfo getIdentityInfo() {
+		return identityInfo;
 	}
 
 	@NotNull

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
+import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 
 import javax.validation.constraints.NotNull;
@@ -35,6 +36,7 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 	private final int misc, warningMode, chksum;
 
 	private final OutbackIdentifier identifier;
+	private final IdentityInfo identityInfo;
 
 	ImmutableFXStatusPacket(
 			int address,
@@ -70,6 +72,7 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 		this.chksum = chksum;
 
 		this.identifier = new OutbackIdentifier(address);
+		this.identityInfo = new FXIdentityInfo(address);
 	}
 
 	@JsonCreator
@@ -104,6 +107,12 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 				sellCurrent, sellCurrentRaw, operatingMode, errorMode, acMode, batteryVoltage,
 				misc, warningMode, chksum
 		);
+	}
+
+	@NotNull
+	@Override
+	public IdentityInfo getIdentityInfo() {
+		return identityInfo;
 	}
 
 	@Override

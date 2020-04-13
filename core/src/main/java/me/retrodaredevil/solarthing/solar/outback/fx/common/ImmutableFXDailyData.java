@@ -3,9 +3,11 @@ package me.retrodaredevil.solarthing.solar.outback.fx.common;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
+import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifier;
 import me.retrodaredevil.solarthing.packets.identification.UnknownSupplementaryIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
+import me.retrodaredevil.solarthing.solar.outback.fx.FXIdentityInfo;
 
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
@@ -31,6 +33,7 @@ public class ImmutableFXDailyData implements FXDailyData {
 	private final Collection<Integer> acModeValues;
 
 	private final SupplementaryIdentifier identifier;
+	private final IdentityInfo identityInfo;
 
 	@JsonCreator
 	public ImmutableFXDailyData(
@@ -54,12 +57,19 @@ public class ImmutableFXDailyData implements FXDailyData {
 		this.acModeValues = acModeValues;
 
 		identifier = new UnknownSupplementaryIdentifier<>(new OutbackIdentifier(address));
+		identityInfo = new FXIdentityInfo(address);
 	}
 
 	@NotNull
 	@Override
 	public Identifier getIdentifier() {
 		return identifier;
+	}
+
+	@NotNull
+	@Override
+	public IdentityInfo getIdentityInfo() {
+		return identityInfo;
 	}
 
 	@Override

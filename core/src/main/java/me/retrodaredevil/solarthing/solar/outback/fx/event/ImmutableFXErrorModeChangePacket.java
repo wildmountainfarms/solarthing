@@ -3,9 +3,11 @@ package me.retrodaredevil.solarthing.solar.outback.fx.event;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.packets.identification.DefaultSupplementaryIdentifier;
+import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifier;
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
+import me.retrodaredevil.solarthing.solar.outback.fx.FXIdentityInfo;
 import org.jetbrains.annotations.Nullable;
 
 import javax.validation.constraints.NotNull;
@@ -16,6 +18,7 @@ public class ImmutableFXErrorModeChangePacket implements FXErrorModeChangePacket
 	private final int errorModeValue;
 	private final Integer previousErrorModeValue;
 	private final SupplementaryIdentifier identifier;
+	private final IdentityInfo identityInfo;
 	@JsonCreator
 	private ImmutableFXErrorModeChangePacket(
 			@JsonProperty(value = "address", required = true) int address,
@@ -31,6 +34,7 @@ public class ImmutableFXErrorModeChangePacket implements FXErrorModeChangePacket
 
 		address = outbackIdentifier.getAddress();
 		identifier = new DefaultSupplementaryIdentifier<>(outbackIdentifier, SolarEventPacketType.FX_ERROR_MODE_CHANGE.toString());
+		identityInfo = new FXIdentityInfo(address);
 	}
 
 	@Override
@@ -47,6 +51,12 @@ public class ImmutableFXErrorModeChangePacket implements FXErrorModeChangePacket
     @Override
 	public SupplementaryIdentifier getIdentifier() {
 		return identifier;
+	}
+
+	@NotNull
+	@Override
+	public IdentityInfo getIdentityInfo() {
+		return identityInfo;
 	}
 
 	@Override

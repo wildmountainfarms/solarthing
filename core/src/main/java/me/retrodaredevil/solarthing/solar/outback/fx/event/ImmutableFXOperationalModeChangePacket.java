@@ -3,9 +3,11 @@ package me.retrodaredevil.solarthing.solar.outback.fx.event;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.packets.identification.DefaultSupplementaryIdentifier;
+import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifier;
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
+import me.retrodaredevil.solarthing.solar.outback.fx.FXIdentityInfo;
 import org.jetbrains.annotations.Nullable;
 
 import javax.validation.constraints.NotNull;
@@ -15,6 +17,7 @@ public class ImmutableFXOperationalModeChangePacket implements FXOperationalMode
 	private final int operationalModeValue;
 	private final Integer previousOperationalModeValue;
 	private final SupplementaryIdentifier identifier;
+	private final IdentityInfo identityInfo;
 
 	@JsonCreator
 	private ImmutableFXOperationalModeChangePacket(
@@ -34,6 +37,7 @@ public class ImmutableFXOperationalModeChangePacket implements FXOperationalMode
 
 		address = outbackIdentifier.getAddress();
 		identifier = new DefaultSupplementaryIdentifier<>(outbackIdentifier, SolarEventPacketType.FX_OPERATIONAL_MODE_CHANGE.toString());
+		identityInfo = new FXIdentityInfo(address);
 	}
 
 	@Override
@@ -55,5 +59,11 @@ public class ImmutableFXOperationalModeChangePacket implements FXOperationalMode
     @Override
 	public SupplementaryIdentifier getIdentifier() {
 		return identifier;
+	}
+
+	@NotNull
+	@Override
+	public IdentityInfo getIdentityInfo() {
+		return identityInfo;
 	}
 }
