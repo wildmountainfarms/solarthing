@@ -3,11 +3,14 @@ package me.retrodaredevil.solarthing.solar.renogy.rover;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
+
 import javax.validation.constraints.NotNull;
 
 @JsonIgnoreProperties(value = {"productModelString", "hardwareVersionString", "softwareVersionString", "streetLightBrightness", "streetLightOn", "chargingStateName", "errors", "batteryTypeName", "loadWorkingModeName"}, allowGetters = true)
 public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	private final RoverIdentifier identifier;
+	private final IdentityInfo identityInfo;
 	private final int maxVoltage;
 	private final int ratedChargingCurrent;
 	private final int ratedDischargingCurrent;
@@ -193,12 +196,19 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 		// endregion
 
 		identifier = new RoverIdentifier(productSerialNumber);
+		identityInfo = new RoverIdentityInfo(productSerialNumber);
 	}
 
 	@NotNull
     @Override
 	public RoverIdentifier getIdentifier() {
 		return identifier;
+	}
+
+	@NotNull
+	@Override
+	public IdentityInfo getIdentityInfo() {
+		return identityInfo;
 	}
 
 	@Override

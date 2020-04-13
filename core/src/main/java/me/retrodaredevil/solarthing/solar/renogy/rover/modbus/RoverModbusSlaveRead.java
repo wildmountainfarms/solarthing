@@ -3,7 +3,9 @@ package me.retrodaredevil.solarthing.solar.renogy.rover.modbus;
 import me.retrodaredevil.io.modbus.ModbusSlave;
 import me.retrodaredevil.io.modbus.handling.MessageHandler;
 import me.retrodaredevil.io.modbus.handling.ReadRegistersHandler;
+import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverIdentifier;
+import me.retrodaredevil.solarthing.solar.renogy.rover.RoverIdentityInfo;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverReadTable;
 import javax.validation.constraints.NotNull;
 
@@ -20,6 +22,12 @@ public class RoverModbusSlaveRead implements RoverReadTable {
 	public RoverIdentifier getIdentifier() {
 		return new RoverIdentifier(getProductSerialNumber());
 	}
+
+	@Override
+	public @NotNull IdentityInfo getIdentityInfo() {
+		return new RoverIdentityInfo(getProductSerialNumber());
+	}
+
 	private static int upper(int number16Bit){
 		return (number16Bit & 0xFF00) >> 8;
 	}

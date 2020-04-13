@@ -3,9 +3,11 @@ package me.retrodaredevil.solarthing.solar.outback.mx.event;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.packets.identification.DefaultSupplementaryIdentifier;
+import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifier;
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
+import me.retrodaredevil.solarthing.solar.outback.mx.MXIdentityInfo;
 import org.jetbrains.annotations.Nullable;
 
 import javax.validation.constraints.NotNull;
@@ -15,6 +17,7 @@ public class ImmutableMXAuxModeChangePacket implements MXAuxModeChangePacket {
 	private final int rawAuxModeValue;
 	private final Integer previousRawAuxModeValue;
 	private final SupplementaryIdentifier identifier;
+	private final IdentityInfo identityInfo;
 	@JsonCreator
 	private ImmutableMXAuxModeChangePacket(
 			@JsonProperty(value = "address", required = true) int address,
@@ -30,8 +33,14 @@ public class ImmutableMXAuxModeChangePacket implements MXAuxModeChangePacket {
 
 		address = outbackIdentifier.getAddress();
 		identifier = new DefaultSupplementaryIdentifier<>(outbackIdentifier, SolarEventPacketType.MXFM_AUX_MODE_CHANGE.toString());
+		identityInfo = new MXIdentityInfo(address);
 	}
 
+	@NotNull
+	@Override
+	public IdentityInfo getIdentityInfo() {
+		return identityInfo;
+	}
 
 	@Override
 	public int getRawAuxModeValue() {

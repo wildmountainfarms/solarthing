@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.solar.outback.mx;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -212,9 +211,10 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 
 	/**
 	 *
-	 * @return true if the firmware is pre 4.01, false otherwise
+	 * @return true if the Mate's firmware is pre 4.01, false otherwise
 	 */
-	default boolean isOldFirmware(){
+	default boolean isOldMateFirmware(){
+		// TODO Does this mean an old MX firmware, or does this mean an old MATE firmware?
 		double dailyAH = getDailyAH();
 		if(dailyAH == 9999){
 			return false; // new MX
@@ -224,10 +224,13 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 	}
 
 	/**
-	 * @return true if this is a FlexMAX charge controller, false if it's an MX
+	 * @return true if this is a FlexMAX charge controller, false if it's an MX, null if the Mate has old firmware and is unable to tell
 	 */
-	default boolean isFlexMax(){
-		return !isOldFirmware() && getDailyAH() != 9999;
+	default @Nullable Boolean isFlexMax(){
+		if (isOldMateFirmware()) {
+			return null;
+		}
+		return getDailyAH() != 9999;
 	}
 
 }

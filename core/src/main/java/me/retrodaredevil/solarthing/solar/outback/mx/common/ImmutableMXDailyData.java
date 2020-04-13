@@ -2,16 +2,19 @@ package me.retrodaredevil.solarthing.solar.outback.mx.common;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifier;
 import me.retrodaredevil.solarthing.packets.identification.UnknownSupplementaryIdentifier;
 import me.retrodaredevil.solarthing.packets.support.Support;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
+import me.retrodaredevil.solarthing.solar.outback.fx.FXIdentityInfo;
 
 import javax.validation.constraints.NotNull;
 
 public class ImmutableMXDailyData implements MXDailyData {
 
 	private final SupplementaryIdentifier identifier;
+	private final IdentityInfo identityInfo;
 
 	private final int address;
 	private final int errorModeValue;
@@ -44,12 +47,19 @@ public class ImmutableMXDailyData implements MXDailyData {
 		this.dailyMinBatteryVoltage = dailyMinBatteryVoltage;
 		this.dailyMaxBatteryVoltage = dailyMaxBatteryVoltage;
 		identifier = new UnknownSupplementaryIdentifier<>(new OutbackIdentifier(address));
+		identityInfo = new FXIdentityInfo(address);
 	}
 
 	@NotNull
 	@Override
 	public SupplementaryIdentifier getIdentifier() {
 		return identifier;
+	}
+
+	@NotNull
+	@Override
+	public IdentityInfo getIdentityInfo() {
+		return identityInfo;
 	}
 
 	@Override

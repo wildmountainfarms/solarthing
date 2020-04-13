@@ -11,6 +11,7 @@ import me.retrodaredevil.couchdb.EktorpUtil;
 import me.retrodaredevil.solarthing.graphql.packets.PacketNode;
 import me.retrodaredevil.solarthing.graphql.packets.PacketUtil;
 import me.retrodaredevil.solarthing.misc.device.CpuTemperaturePacket;
+import me.retrodaredevil.solarthing.misc.device.DevicePacket;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.InstancePacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
@@ -54,10 +55,11 @@ public class SolarThingGraphQLService {
 		statusParser = new SimplePacketGroupParser(new PacketParserMultiplexer(Arrays.asList(
 				new ObjectMapperPacketConverter(objectMapper, SolarStatusPacket.class),
 				new ObjectMapperPacketConverter(objectMapper, SolarExtraPacket.class),
+				new ObjectMapperPacketConverter(objectMapper, DevicePacket.class),
 				new ObjectMapperPacketConverter(objectMapper, InstancePacket.class)
 		), PacketParserMultiplexer.LenientType.FULLY_LENIENT));
 	}
-	private List<FragmentedPacketGroup> queryPackets(long from, long to, String sourceId) {
+	private List<? extends FragmentedPacketGroup> queryPackets(long from, long to, String sourceId) {
 		final List<ObjectNode> packets;
 		try {
 			packets = queryHandler.query(new ViewQuery().designDocId("_design/packets").viewName("millis").startKey(from).endKey(to));
@@ -76,7 +78,7 @@ public class SolarThingGraphQLService {
 				LOGGER.error("Error parsing packet group. We will continue.", e);
 			}
 		}
-		Map<String, List<FragmentedPacketGroup>> map = PacketGroups.sortPackets(rawPacketGroups, 2 * 60 * 1000);
+		Map<String, List<InstancePacketGroup>> map = PacketGroups.parsePackets(rawPacketGroups);
 		if(map.containsKey(sourceId)){
 			return map.get(sourceId);
 		}
@@ -88,9 +90,9 @@ public class SolarThingGraphQLService {
 		return new SolarThingQuery(queryPackets(from, to, sourceId));
 	}
 	public static class SolarThingQuery {
-		private final List<FragmentedPacketGroup> packets;
+		private final List<? extends FragmentedPacketGroup> packets;
 
-		public SolarThingQuery(List<FragmentedPacketGroup> packets) {
+		public SolarThingQuery(List<? extends FragmentedPacketGroup> packets) {
 			this.packets = requireNonNull(packets);
 		}
 		@GraphQLQuery

@@ -20,7 +20,7 @@ public interface FXChargingPacket extends SupplementarySolarExtraPacket {
 		return SolarExtraPacketType.FX_CHARGING;
 	}
 	@JsonProperty("masterFXAddress")
-	int getMasterFXAddress();
+	int getMasterFXAddress(); // TODO we might change this to just "address" and use another packet to indicate the master FX address
 
 	@JsonProperty("fxChargingMode")
 	@Nullable FXChargingMode getFXChargingMode();

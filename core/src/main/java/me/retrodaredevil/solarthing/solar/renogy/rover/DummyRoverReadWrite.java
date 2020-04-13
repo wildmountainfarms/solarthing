@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover;
 
 import me.retrodaredevil.solarthing.packets.Modes;
+import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.solar.renogy.BatteryType;
 import me.retrodaredevil.solarthing.solar.renogy.Voltage;
 import javax.validation.constraints.NotNull;
@@ -124,6 +125,11 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 	@Override
 	public RoverIdentifier getIdentifier() {
 		return new RoverIdentifier(getProductSerialNumber());
+	}
+
+	@Override
+	public @NotNull IdentityInfo getIdentityInfo() {
+		return null;
 	}
 
 	@Override public int getMaxVoltageValue() { return roverReadTable.getMaxVoltageValue(); }

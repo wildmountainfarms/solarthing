@@ -3,9 +3,11 @@ package me.retrodaredevil.solarthing.solar.outback.mx.event;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.packets.identification.DefaultSupplementaryIdentifier;
+import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifier;
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
+import me.retrodaredevil.solarthing.solar.outback.mx.MXIdentityInfo;
 import org.jetbrains.annotations.Nullable;
 
 import javax.validation.constraints.NotNull;
@@ -15,6 +17,7 @@ public class ImmutableMXChargerModeChangePacket implements MXChargerModeChangePa
 	private final int chargerModeValue;
 	private final Integer previousChargerModeValue;
 	private final SupplementaryIdentifier identifier;
+	private final IdentityInfo identityInfo;
 
 	@JsonCreator
 	private ImmutableMXChargerModeChangePacket(
@@ -31,6 +34,7 @@ public class ImmutableMXChargerModeChangePacket implements MXChargerModeChangePa
 
 		address = outbackIdentifier.getAddress();
 		identifier = new DefaultSupplementaryIdentifier<>(outbackIdentifier, SolarEventPacketType.MXFM_CHARGER_MODE_CHANGE.toString());
+		identityInfo = new MXIdentityInfo(address);
 	}
 
 	@Override
@@ -47,6 +51,11 @@ public class ImmutableMXChargerModeChangePacket implements MXChargerModeChangePa
     @Override
 	public SupplementaryIdentifier getIdentifier() {
 		return identifier;
+	}
+	@NotNull
+	@Override
+	public IdentityInfo getIdentityInfo() {
+		return identityInfo;
 	}
 
 	@Override
