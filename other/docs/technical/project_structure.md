@@ -9,9 +9,9 @@
 ### [serviceapi](../../../serviceapi)
 * A gradle subproject
 * An API for https://pvoutput.org and for https://emoncms.org
-### [schema-generator](../../../schema-generator) (WIP)
+### [graphql](../../../graphql)
 * A gradle subproject
-* A subprogram that generates JSON schema
+* A subprogram that exposes a CouchDB database as a GraphQL Server.
 ### [json-datasource](../../../json-datasource) (WIP)
 * A gradle subproject
 * A subprogram that is a REST interface that exposes SolarThing data from CouchDB to Grafana

@@ -3,12 +3,18 @@
 .~lock*
 *.log.gz
 
-/program/
+/program/*
 !/program/solarthing.jar
 !/program/solar/*
 !/program/legacy/outhouse/*
 !/program/config/README.md
 !/program/README.md
+
+!/program/graphql/
+/program/graphql/*
+!/program/graphql/README.md
+!/program/graphql/solarthing-graphql.jar
+!/program/graphql/solarthing-graphql.sh
 
 
 
@@ -296,6 +302,7 @@ gradle-app.setting
 **/build/
 
 # End of https://www.gitignore.io/api/java,linux,macos,gradle,windows,eclipse,intellij,netbeans
+!*.jar
 
 #Idea stuff
 *.iml

@@ -13,18 +13,21 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
 
 @Component
 public class GraphQLProvider {
 
-	@Value("${solarthing.config.path}")
-	private String configFilePath;
+	@Value("${solarthing.config.database}")
+	private File databaseFile;
 
 	private GraphQL graphQL;
 
 	@PostConstruct
 	public void init() {
-		System.out.println("Config path: " + configFilePath);
+//		File databaseFile = new File(databaseFilePath);
+		System.out.println("file: " + databaseFile);
+
 		ObjectMapper objectMapper = JacksonUtil.defaultMapper();
 		JacksonValueMapperFactory jacksonValueMapperFactory = JacksonValueMapperFactory.builder()
 				.withPrototype(objectMapper)
