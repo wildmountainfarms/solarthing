@@ -1,0 +1,11 @@
+[Unit]
+Description=solarthing
+
+[Service]
+Restart=always
+RestartSec=1
+TimeoutStartSec=1
+ExecStart=/opt/solarthing/program/graphql/solarthing-graphql.sh
+
+[Install]
+WantedBy=multi-user.target

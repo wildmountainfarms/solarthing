@@ -1,6 +1,5 @@
 package me.retrodaredevil.couchdb;
 
-import me.retrodaredevil.couchdb.CouchProperties;
 import org.ektorp.http.HttpClient;
 import org.ektorp.http.StdHttpClient;
 
