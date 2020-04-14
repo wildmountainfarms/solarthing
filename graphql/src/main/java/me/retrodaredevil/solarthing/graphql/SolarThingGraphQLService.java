@@ -4,10 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLQuery;
+import me.retrodaredevil.couchdb.CouchProperties;
 import me.retrodaredevil.couchdb.CouchPropertiesBuilder;
-import me.retrodaredevil.solarthing.SolarThingConstants;
-import me.retrodaredevil.couchdb.CouchDbQueryHandler;
 import me.retrodaredevil.couchdb.EktorpUtil;
+import me.retrodaredevil.solarthing.SolarThingConstants;
+import me.retrodaredevil.solarthing.couchdb.CouchDbQueryHandler;
 import me.retrodaredevil.solarthing.graphql.packets.PacketNode;
 import me.retrodaredevil.solarthing.graphql.packets.PacketUtil;
 import me.retrodaredevil.solarthing.misc.device.CpuTemperaturePacket;
@@ -45,12 +46,7 @@ public class SolarThingGraphQLService {
 
 	private final CouchDbQueryHandler queryHandler;
 	private final PacketGroupParser statusParser;
-	{
-		final HttpClient httpClient = EktorpUtil.createHttpClient(new CouchPropertiesBuilder("http", "your host here", 5984, null, null).build());
-		CouchDbInstance instance = new StdCouchDbInstance(httpClient);
-		queryHandler = new CouchDbQueryHandler(new StdCouchDbConnector(SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, instance), false);
-	}
-	public SolarThingGraphQLService(ObjectMapper originalObjectMapper) {
+	public SolarThingGraphQLService(ObjectMapper originalObjectMapper, CouchProperties couchProperties) {
 		ObjectMapper objectMapper = JacksonUtil.lenientMapper(originalObjectMapper.copy());
 		statusParser = new SimplePacketGroupParser(new PacketParserMultiplexer(Arrays.asList(
 				new ObjectMapperPacketConverter(objectMapper, SolarStatusPacket.class),
@@ -58,6 +54,10 @@ public class SolarThingGraphQLService {
 				new ObjectMapperPacketConverter(objectMapper, DevicePacket.class),
 				new ObjectMapperPacketConverter(objectMapper, InstancePacket.class)
 		), PacketParserMultiplexer.LenientType.FULLY_LENIENT));
+
+		final HttpClient httpClient = EktorpUtil.createHttpClient(couchProperties);
+		CouchDbInstance instance = new StdCouchDbInstance(httpClient);
+		queryHandler = new CouchDbQueryHandler(new StdCouchDbConnector(SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, instance), false);
 	}
 	private List<? extends FragmentedPacketGroup> queryPackets(long from, long to, String sourceId) {
 		final List<ObjectNode> packets;

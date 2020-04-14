@@ -6,7 +6,7 @@ buildscript {
         junit5Version = '5.6.1'
         slf4jVersion = '1.7.30'
         log4jVersion = '2.13.1'
-        jacksonVersion = '2.10.2'
+        jacksonVersion = '2.10.3'
         retrofitVersion = "2.8.1"
         shadowVersion = '5.2.0'
     }
@@ -45,10 +45,17 @@ subprojects {
         }
     }
 }
+project(":common"){
+    apply plugin: 'java'
+    dependencies {
+        api project(":core")
+    }
+}
 project(":client"){
     apply plugin: 'java'
     dependencies {
         api project(":core")
+        api project(":common")
         api project(":serviceapi")
     }
 }
@@ -58,15 +65,10 @@ project(":serviceapi"){
         api project(":core")
     }
 }
-//project(":schema-generator"){
-//    apply plugin: 'java'
-//    dependencies {
-//        api project(":core")
-//    }
-//}
 project(":graphql"){
     apply plugin: 'java'
     dependencies {
         api project(":core")
+        api project(":common")
     }
 }

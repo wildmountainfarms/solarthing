@@ -4,6 +4,10 @@ import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.io.IOBundle;
 import me.retrodaredevil.io.serial.SerialConfig;
+import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
+import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
+import me.retrodaredevil.solarthing.config.databases.implementations.InfluxDbDatabaseSettings;
+import me.retrodaredevil.solarthing.config.databases.implementations.LatestFileDatabaseSettings;
 import me.retrodaredevil.solarthing.config.io.IOConfig;
 import me.retrodaredevil.solarthing.config.io.SerialIOConfig;
 import me.retrodaredevil.solarthing.config.options.*;
@@ -39,6 +43,14 @@ public final class SolarMain {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SolarMain.class);
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
+	static {
+		MAPPER.getSubtypeResolver().registerSubtypes(
+				DatabaseSettings.class,
+				CouchDbDatabaseSettings.class,
+				InfluxDbDatabaseSettings.class,
+				LatestFileDatabaseSettings.class
+		);
+	}
 
 	public static void initReader(InputStream in, TextPacketCreator packetCreator, RawPacketReceiver rawPacketReceiver) {
 		SolarReader run = new SolarReader(in, packetCreator, rawPacketReceiver);

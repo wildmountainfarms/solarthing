@@ -1,7 +1,6 @@
 package me.retrodaredevil.solarthing.couchdb;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import me.retrodaredevil.couchdb.CouchDbQueryHandler;
 import me.retrodaredevil.couchdb.CouchProperties;
 import me.retrodaredevil.couchdb.EktorpUtil;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;

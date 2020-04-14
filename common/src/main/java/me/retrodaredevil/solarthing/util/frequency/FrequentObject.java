@@ -41,8 +41,7 @@ public final class FrequentObject<T> {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		FrequentObject<?> that = (FrequentObject<?>) o;
-		return Objects.equals(object, that.object) &&
-			Objects.equals(frequency, that.frequency);
+		return Objects.equals(object, that.object) && Objects.equals(frequency, that.frequency);
 	}
 
 	@Override
