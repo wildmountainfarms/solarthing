@@ -21,6 +21,7 @@ public final class EktorpUtil {
 					.username(properties.getUsername()) // may be null
 					.password(properties.getPassword()) // may be null
 					.proxy(properties.getProxyHost()) // may be null
+					.compression(true)
 					;
 			if(connectionTimeout != null){
 				builder.connectionTimeout(connectionTimeout);

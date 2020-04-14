@@ -8,6 +8,7 @@ buildscript {
         log4jVersion = '2.13.1'
         jacksonVersion = '2.10.2'
         retrofitVersion = "2.8.1"
+        shadowVersion = '5.2.0'
     }
 }
 allprojects {

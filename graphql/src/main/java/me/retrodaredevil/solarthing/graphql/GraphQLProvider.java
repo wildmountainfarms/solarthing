@@ -4,30 +4,27 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import graphql.GraphQL;
 import graphql.schema.GraphQLSchema;
 import io.leangen.graphql.GraphQLSchemaGenerator;
-import io.leangen.graphql.generator.mapping.common.NonNullMapper;
 import io.leangen.graphql.metadata.strategy.query.AnnotatedResolverBuilder;
-import io.leangen.graphql.metadata.strategy.query.BeanResolverBuilder;
 import io.leangen.graphql.metadata.strategy.query.ResolverBuilder;
 import io.leangen.graphql.metadata.strategy.value.jackson.JacksonValueMapperFactory;
-import io.leangen.graphql.module.common.jackson.JacksonModule;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.lang.reflect.Member;
-import java.util.Arrays;
 
 @Component
 public class GraphQLProvider {
-	/*
-	NOTE: jetbrains NotNull annotation is not retained at runtime...
-	 */
+
+	@Value("${solarthing.config.path}")
+	private String configFilePath;
 
 	private GraphQL graphQL;
 
 	@PostConstruct
 	public void init() {
+		System.out.println("Config path: " + configFilePath);
 		ObjectMapper objectMapper = JacksonUtil.defaultMapper();
 		JacksonValueMapperFactory jacksonValueMapperFactory = JacksonValueMapperFactory.builder()
 				.withPrototype(objectMapper)
