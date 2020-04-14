@@ -58,12 +58,12 @@ project(":serviceapi"){
         api project(":core")
     }
 }
-project(":schema-generator"){
-    apply plugin: 'java'
-    dependencies {
-        api project(":core")
-    }
-}
+//project(":schema-generator"){
+//    apply plugin: 'java'
+//    dependencies {
+//        api project(":core")
+//    }
+//}
 project(":graphql"){
     apply plugin: 'java'
     dependencies {
