@@ -9,8 +9,15 @@ import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 
+@SuppressWarnings("Java8MapApi") // must remain compatible with Android SDK 19
 public final class PacketGroups {
 	private PacketGroups(){ throw new UnsupportedOperationException(); }
+
+	public static final Comparator<Integer> DEFAULT_FRAGMENT_ID_COMPARATOR = (o1, o2) -> {
+		if (o1 == null) return 1; // null is last in the set. Other values are ascending
+		if (o2 == null) return -1;
+		return o1 - o2;
+	};
 
 	public static PacketGroup createPacketGroup(Collection<? extends Packet> groups, long dateMillis){
 		return createPacketGroup(groups, dateMillis, Collections.emptyMap());
@@ -55,7 +62,6 @@ public final class PacketGroups {
 			String sourceId = instancePacketGroup.getSourceId();
 			List<InstancePacketGroup> list = map.get(sourceId);
 
-			//noinspection Java8MapApi // This library must remain compatible with Android SDK 19
 			if(list == null){
 				list = new ArrayList<>();
 				map.put(sourceId, list);
@@ -83,11 +89,7 @@ public final class PacketGroups {
 			}
 			final List<Integer> fragmentIds;
 			{ // initialize fragmentIds
-				SortedSet<Integer> fragmentIdsSet = new TreeSet<>((o1, o2) -> {
-					if (o1 == null) return 1; // null is last in the set. Other values are ascending
-					if (o2 == null) return -1;
-					return o1 - o2;
-				});
+				SortedSet<Integer> fragmentIdsSet = new TreeSet<>(DEFAULT_FRAGMENT_ID_COMPARATOR);
 				fragmentIdsSet.addAll(fragmentMap.keySet());
 				fragmentIds = new ArrayList<>(fragmentIdsSet); // now this is sorted
 			}
@@ -203,5 +205,19 @@ public final class PacketGroups {
 			}
 		}
 		return requireNonNull(closest);
+	}
+
+	public static Map<Integer, List<InstancePacketGroup>> mapFragments(Collection<? extends InstancePacketGroup> packetGroups) {
+		Map<Integer, List<InstancePacketGroup>> r = new HashMap<>();
+		for(InstancePacketGroup packetGroup : packetGroups) {
+			Integer fragmentId = packetGroup.getFragmentId();
+			List<InstancePacketGroup> list = r.get(fragmentId);
+			if (list == null) {
+				list = new ArrayList<>();
+				r.put(fragmentId, list);
+			}
+			list.add(packetGroup);
+		}
+		return r;
 	}
 }

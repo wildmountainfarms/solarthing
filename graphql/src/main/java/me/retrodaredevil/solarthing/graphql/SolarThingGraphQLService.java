@@ -62,7 +62,12 @@ public class SolarThingGraphQLService {
 	private List<? extends FragmentedPacketGroup> queryPackets(long from, long to, String sourceId) {
 		final List<ObjectNode> packets;
 		try {
-			packets = queryHandler.query(new ViewQuery().designDocId("_design/packets").viewName("millis").startKey(from).endKey(to));
+			packets = queryHandler.query(new ViewQuery()
+					.designDocId("_design/packets")
+					.viewName("millis")
+					.startKey(from)
+					.endKey(to)
+					.cacheOk(true));
 		} catch (PacketHandleException e) {
 			throw new RuntimeException(e);
 		}
@@ -80,7 +85,15 @@ public class SolarThingGraphQLService {
 		}
 		Map<String, List<InstancePacketGroup>> map = PacketGroups.parsePackets(rawPacketGroups);
 		if(map.containsKey(sourceId)){
-			return map.get(sourceId);
+			List<InstancePacketGroup> instancePacketGroupList = map.get(sourceId);
+			Map<Integer, List<InstancePacketGroup>> mappedPackets = PacketGroups.mapFragments(instancePacketGroupList);
+			Collection<Integer> sortedFragmentKeys = new TreeSet<>(PacketGroups.DEFAULT_FRAGMENT_ID_COMPARATOR);
+			sortedFragmentKeys.addAll(mappedPackets.keySet());
+			List<InstancePacketGroup> r = new ArrayList<>();
+			for(Integer fragmentId : sortedFragmentKeys) {
+				r.addAll(mappedPackets.get(fragmentId));
+			}
+			return r;
 		}
 		throw new NoSuchElementException("No element with sourceId: '" + sourceId + "' available keys are: " + map.keySet());
 	}

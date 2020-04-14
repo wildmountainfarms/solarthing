@@ -37,6 +37,9 @@ function(doc) {
 }
 ```
 
+# Enabling CORS
+If you are using the web application, you should enable Cross Origin Reference Sharing.
+
 ## What a request looks like
 Although you will usually be using an API or have a graphical config to choose
 different settings, a request will almost always look like this:
