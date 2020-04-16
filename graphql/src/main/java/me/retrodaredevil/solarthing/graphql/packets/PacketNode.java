@@ -41,4 +41,14 @@ public class PacketNode<T> {
 	public @Nullable Integer getFragmentId() {
 		return fragmentId;
 	}
+
+	@Override
+	public String toString() {
+		return "PacketNode(" +
+				"packet=" + packet +
+				", dateMillis=" + dateMillis +
+				", sourceId='" + sourceId + '\'' +
+				", fragmentId=" + fragmentId +
+				')';
+	}
 }

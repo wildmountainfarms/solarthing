@@ -5,12 +5,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLQuery;
 import me.retrodaredevil.couchdb.CouchProperties;
-import me.retrodaredevil.couchdb.CouchPropertiesBuilder;
 import me.retrodaredevil.couchdb.EktorpUtil;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.couchdb.CouchDbQueryHandler;
-import me.retrodaredevil.solarthing.graphql.packets.PacketNode;
-import me.retrodaredevil.solarthing.graphql.packets.PacketUtil;
+import me.retrodaredevil.solarthing.graphql.packets.*;
 import me.retrodaredevil.solarthing.misc.device.CpuTemperaturePacket;
 import me.retrodaredevil.solarthing.misc.device.DevicePacket;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
@@ -22,8 +20,12 @@ import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.instance.InstancePacket;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacket;
 import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
+import me.retrodaredevil.solarthing.solar.event.SolarEventPacket;
 import me.retrodaredevil.solarthing.solar.extra.SolarExtraPacket;
+import me.retrodaredevil.solarthing.solar.outback.command.packets.MateCommandFeedbackPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
+import me.retrodaredevil.solarthing.solar.outback.fx.event.FXACModeChangePacket;
+import me.retrodaredevil.solarthing.solar.outback.fx.event.FXOperationalModeChangePacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.extra.DailyFXPacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.extra.DailyMXPacket;
@@ -33,6 +35,7 @@ import org.ektorp.ViewQuery;
 import org.ektorp.http.HttpClient;
 import org.ektorp.impl.StdCouchDbConnector;
 import org.ektorp.impl.StdCouchDbInstance;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,10 +45,13 @@ import java.util.*;
 import static java.util.Objects.requireNonNull;
 
 public class SolarThingGraphQLService {
-	private final Logger LOGGER = LoggerFactory.getLogger(SolarThingGraphQLService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SolarThingGraphQLService.class);
 
-	private final CouchDbQueryHandler queryHandler;
+	private final CouchDbQueryHandler statusQueryHandler;
+	private final CouchDbQueryHandler eventQueryHandler;
 	private final PacketGroupParser statusParser;
+	private final PacketGroupParser eventParser;
+
 	public SolarThingGraphQLService(ObjectMapper originalObjectMapper, CouchProperties couchProperties) {
 		ObjectMapper objectMapper = JacksonUtil.lenientMapper(originalObjectMapper.copy());
 		statusParser = new SimplePacketGroupParser(new PacketParserMultiplexer(Arrays.asList(
@@ -54,12 +60,18 @@ public class SolarThingGraphQLService {
 				new ObjectMapperPacketConverter(objectMapper, DevicePacket.class),
 				new ObjectMapperPacketConverter(objectMapper, InstancePacket.class)
 		), PacketParserMultiplexer.LenientType.FULLY_LENIENT));
+		eventParser = new SimplePacketGroupParser(new PacketParserMultiplexer(Arrays.asList(
+				new ObjectMapperPacketConverter(objectMapper, SolarEventPacket.class),
+				new ObjectMapperPacketConverter(objectMapper, MateCommandFeedbackPacket.class),
+				new ObjectMapperPacketConverter(objectMapper, InstancePacket.class)
+		), PacketParserMultiplexer.LenientType.FULLY_LENIENT));
 
 		final HttpClient httpClient = EktorpUtil.createHttpClient(couchProperties);
 		CouchDbInstance instance = new StdCouchDbInstance(httpClient);
-		queryHandler = new CouchDbQueryHandler(new StdCouchDbConnector(SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, instance), false);
+		statusQueryHandler = new CouchDbQueryHandler(new StdCouchDbConnector(SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, instance), false);
+		eventQueryHandler = new CouchDbQueryHandler(new StdCouchDbConnector(SolarThingConstants.SOLAR_EVENT_UNIQUE_NAME, instance), false);
 	}
-	private List<? extends FragmentedPacketGroup> queryPackets(long from, long to, String sourceId) {
+	private static List<? extends FragmentedPacketGroup> queryPackets(CouchDbQueryHandler queryHandler, PacketGroupParser parser, long from, long to, String sourceId) {
 		final List<ObjectNode> packets;
 		try {
 			packets = queryHandler.query(new ViewQuery()
@@ -77,7 +89,7 @@ public class SolarThingGraphQLService {
 		List<PacketGroup> rawPacketGroups = new ArrayList<>();
 		for(ObjectNode node : packets) {
 			try {
-				PacketGroup group = statusParser.parse(node);
+				PacketGroup group = parser.parse(node);
 				rawPacketGroups.add(group);
 			} catch (PacketParseException e) {
 				LOGGER.error("Error parsing packet group. We will continue.", e);
@@ -93,48 +105,112 @@ public class SolarThingGraphQLService {
 			for(Integer fragmentId : sortedFragmentKeys) {
 				r.addAll(mappedPackets.get(fragmentId));
 			}
+			System.out.println("got " + r.size() + " packets!");
+			System.out.println(r);
 			return r;
 		}
 		throw new NoSuchElementException("No element with sourceId: '" + sourceId + "' available keys are: " + map.keySet());
 	}
 
 	@GraphQLQuery
-	public SolarThingQuery queryAll(@GraphQLArgument(name = "from") long from, @GraphQLArgument(name = "to") long to, @GraphQLArgument(name = "sourceId") String sourceId){
-		return new SolarThingQuery(queryPackets(from, to, sourceId));
+	public SolarThingStatusQuery queryStatus(
+			@GraphQLArgument(name = "from") long from, @GraphQLArgument(name = "to") long to,
+			@GraphQLArgument(name = "sourceId") @NotNull String sourceId){
+		return new SolarThingStatusQuery(new BasicPacketGetter(queryPackets(statusQueryHandler, statusParser, from, to, sourceId), PacketFilter.KEEP_ALL));
 	}
-	public static class SolarThingQuery {
+	@GraphQLQuery
+	public SolarThingEventQuery queryEvent(
+			@GraphQLArgument(name = "from") long from, @GraphQLArgument(name = "to") long to,
+			@GraphQLArgument(name = "sourceId") @NotNull String sourceId
+	) {
+		return new SolarThingEventQuery(new BasicPacketGetter(queryPackets(eventQueryHandler, eventParser, from, to, sourceId), PacketFilter.KEEP_ALL));
+	}
+	@GraphQLQuery(description = "Queries events in the specified time range while only including the specified identifier in the specified fragment")
+	public SolarThingEventQuery queryEventIdentifier(
+			@GraphQLArgument(name = "from") long from, @GraphQLArgument(name = "to") long to,
+			@GraphQLArgument(name = "sourceId") @NotNull String sourceId,
+			@GraphQLArgument(name = "fragmentId") @Nullable Integer fragmentId,
+			@GraphQLArgument(name = "identifier") @NotNull String identifierRepresentation
+	) {
+		return new SolarThingEventQuery(new BasicPacketGetter(
+				queryPackets(eventQueryHandler, eventParser, from, to, sourceId),
+				new PacketFilterMultiplexer(Arrays.asList(new FragmentFilter(fragmentId), new IdentifierFilter((identifierRepresentation))))
+		));
+	}
+	@GraphQLQuery(description = "Queries events in the specified time range while only including the specified fragment")
+	public SolarThingEventQuery queryEventFragment(
+			@GraphQLArgument(name = "from") long from, @GraphQLArgument(name = "to") long to,
+			@GraphQLArgument(name = "sourceId") @NotNull String sourceId,
+			@GraphQLArgument(name = "fragmentId") @Nullable Integer fragmentId
+	) {
+		return new SolarThingEventQuery(new BasicPacketGetter(
+				queryPackets(eventQueryHandler, eventParser, from, to, sourceId),
+				new FragmentFilter(fragmentId)
+		));
+	}
+	private interface PacketGetter {
+		<T> @NotNull List<@NotNull PacketNode<T>> getPackets(Class<T> clazz);
+	}
+	private static class BasicPacketGetter implements PacketGetter {
 		private final List<? extends FragmentedPacketGroup> packets;
+		private final PacketFilter packetFilter;
 
-		public SolarThingQuery(List<? extends FragmentedPacketGroup> packets) {
+		public BasicPacketGetter(List<? extends FragmentedPacketGroup> packets, PacketFilter packetFilter) {
 			this.packets = requireNonNull(packets);
+			this.packetFilter = packetFilter;
 		}
+		@Override
+		public <T> @NotNull List<@NotNull PacketNode<T>> getPackets(Class<T> clazz) {
+			return PacketUtil.convertPackets(packets, clazz, packetFilter);
+		}
+	}
+	public static class SolarThingStatusQuery {
+		private final PacketGetter packetGetter;
+
+		public SolarThingStatusQuery(PacketGetter packetGetter) {
+			this.packetGetter = packetGetter;
+		}
+
 		@GraphQLQuery
 		public @NotNull List<@NotNull PacketNode<BatteryVoltage>> batteryVoltage() {
-			return PacketUtil.convertPackets(packets, BatteryVoltage.class);
+			return packetGetter.getPackets(BatteryVoltage.class);
 		}
 		@GraphQLQuery
 		public @NotNull List<@NotNull PacketNode<FXStatusPacket>> fxStatus() {
-			return PacketUtil.convertPackets(packets, FXStatusPacket.class);
+			return packetGetter.getPackets(FXStatusPacket.class);
 		}
 		@GraphQLQuery
 		public @NotNull List<@NotNull PacketNode<MXStatusPacket>> mxStatus() {
-			return PacketUtil.convertPackets(packets, MXStatusPacket.class);
+			return packetGetter.getPackets(MXStatusPacket.class);
 		}
 		@GraphQLQuery
 		public @NotNull List<@NotNull PacketNode<DailyMXPacket>> mxDaily() {
-			return PacketUtil.convertPackets(packets, DailyMXPacket.class);
+			return packetGetter.getPackets(DailyMXPacket.class);
 		}
 		@GraphQLQuery
 		public @NotNull List<@NotNull PacketNode<DailyFXPacket>> fxDaily() {
-			return PacketUtil.convertPackets(packets, DailyFXPacket.class);
+			return packetGetter.getPackets(DailyFXPacket.class);
 		}
 		@GraphQLQuery
 		public @NotNull List<@NotNull PacketNode<CpuTemperaturePacket>> cpuTemperature() {
-			return PacketUtil.convertPackets(packets, CpuTemperaturePacket.class);
+			return packetGetter.getPackets(CpuTemperaturePacket.class);
 		}
-		//	public List<InstancePacketGroup> queryInstance(long from, long to, @NotNull String sourceId, @NotNull Integer fragmentId) { throw new UnsupportedOperationException(); }
-		public List<InstancePacketGroup> queryUnsorted(String sourceId) { throw new UnsupportedOperationException(); }
-		public List<FragmentedPacketGroup> querySorted(String sourceId) { throw new UnsupportedOperationException(); }
+	}
+	public static class SolarThingEventQuery {
+		private final PacketGetter packetGetter;
+
+		public SolarThingEventQuery(PacketGetter packetGetter) {
+			this.packetGetter = packetGetter;
+		}
+
+		@GraphQLQuery
+		public @NotNull List<@NotNull PacketNode<FXACModeChangePacket>> fxACModeChange() {
+			return packetGetter.getPackets(FXACModeChangePacket.class);
+		}
+		@GraphQLQuery
+		public @NotNull List<@NotNull PacketNode<FXOperationalModeChangePacket>> fxOperationalModeChange() {
+			return packetGetter.getPackets(FXOperationalModeChangePacket.class);
+		}
 
 	}
 }

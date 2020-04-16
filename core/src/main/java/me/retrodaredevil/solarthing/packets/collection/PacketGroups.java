@@ -14,7 +14,10 @@ public final class PacketGroups {
 	private PacketGroups(){ throw new UnsupportedOperationException(); }
 
 	public static final Comparator<Integer> DEFAULT_FRAGMENT_ID_COMPARATOR = (o1, o2) -> {
-		if (o1 == null) return 1; // null is last in the set. Other values are ascending
+		if (o1 == null) {
+			if (o2 == null) return 0;
+			return 1; // null is last in the set. Other values are ascending
+		}
 		if (o2 == null) return -1;
 		return o1 - o2;
 	};

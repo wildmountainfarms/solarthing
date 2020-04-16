@@ -6,22 +6,23 @@ This uses [GraphQL-SPQR](https://github.com/leangen/GraphQL-SPQR) to convert the
 a GraphQL Schema.
 
 ### What this is used for
-Exposes the SolarThing API through GraphQL by fetching data from CouchDB.
+Exposes the SolarThing API through GraphQL by fetching data from CouchDB. This allows for
+querying from Grafana using the [graphql-datasource](https://github.com/fifemon/graphql-datasource).
 
 #### Useful Links
 This is useful for querying: https://github.com/prisma-labs/graphql-playground
 
-Good example here: https://nhzvc.csb.app/
-
-* For grafana: https://github.com/fifemon/graphql-datasource
-* Online type converter: https://walmartlabs.github.io/json-to-simple-graphql-schema/
-* https://github.com/graphql-java/graphql-java-spring and [tutorial](https://www.graphql-java.com/tutorials/getting-started-with-spring-boot/)
-* More useful stuff: https://github.com/graphql-java/awesome-graphql-java and https://github.com/graphql-java-generator/awesome-graphql-java
+For grafana: https://github.com/fifemon/graphql-datasource
 
 For testing your skills/syntax: https://graphql.org/swapi-graphql or https://nhzvc.csb.app/
 
 ### Compiling
-Use `./gradlew graphql:bootJar`
+Use `./gradlew graphql:bootJar` or [./compile_and_move_graphql.sh](../compile_and_move_graphql.sh) in the root directory.
 
 Or `./gradlew graphql:bootRun` to run this
 
+### TODO
+* Power Usage stat for FX
+* Ignore fields
+  * Helps with mode names, CPU temperature
+* Annotations (event packets)
