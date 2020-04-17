@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.solar.outback.fx.charge;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.packets.identification.DefaultSupplementaryIdentifier;
@@ -12,7 +13,7 @@ import me.retrodaredevil.solarthing.solar.outback.fx.FXIdentityInfo;
 import javax.validation.constraints.NotNull;
 
 public class ImmutableFXChargingPacket implements FXChargingPacket {
-	private final int masterFXAddress;
+	private final int address;
 
 	private final FXChargingMode fxChargingMode;
 
@@ -44,14 +45,14 @@ public class ImmutableFXChargingPacket implements FXChargingPacket {
 		this.totalFloatTimeMillis = totalFloatTimeMillis;
 		this.totalEqualizeTimeMillis = totalEqualizeTimeMillis;
 
-		this.masterFXAddress = outbackIdentifier.getAddress();
+		this.address = outbackIdentifier.getAddress();
 
 		identifier = new DefaultSupplementaryIdentifier<>(outbackIdentifier, SolarExtraPacketType.FX_CHARGING.toString());
-		identityInfo = new FXIdentityInfo(masterFXAddress);
+		identityInfo = new FXIdentityInfo(address);
 	}
 	@JsonCreator
 	private ImmutableFXChargingPacket(
-			@JsonProperty(value = "masterFXAddress", required = true) int masterFXAddress,
+			@JsonProperty(value = "masterFXAddress", required = true) @JsonAlias("address") int address,
 			@JsonProperty(value = "fxChargingMode", required = true) FXChargingMode fxChargingMode,
 			@JsonProperty(value = "remainingAbsorbTimeMillis", required = true) long remainingAbsorbTimeMillis,
 			@JsonProperty(value = "remainingFloatTimeMillis", required = true) long remainingFloatTimeMillis,
@@ -59,7 +60,7 @@ public class ImmutableFXChargingPacket implements FXChargingPacket {
 			@JsonProperty(value = "totalAbsorbTimeMillis", required = true) long totalAbsorbTimeMillis,
 			@JsonProperty(value = "totalFloatTimeMillis", required = true) long totalFloatTimeMillis,
 			@JsonProperty(value = "totalEqualizeTimeMillis", required = true) long totalEqualizeTimeMillis) {
-		this(new OutbackIdentifier(masterFXAddress), fxChargingMode, remainingAbsorbTimeMillis, remainingFloatTimeMillis, remainingEqualizeTimeMillis, totalAbsorbTimeMillis, totalFloatTimeMillis, totalEqualizeTimeMillis);
+		this(new OutbackIdentifier(address), fxChargingMode, remainingAbsorbTimeMillis, remainingFloatTimeMillis, remainingEqualizeTimeMillis, totalAbsorbTimeMillis, totalFloatTimeMillis, totalEqualizeTimeMillis);
 	}
 
 	@NotNull
@@ -75,8 +76,8 @@ public class ImmutableFXChargingPacket implements FXChargingPacket {
 	}
 
 	@Override
-	public int getMasterFXAddress() {
-		return masterFXAddress;
+	public int getAddress() {
+		return address;
 	}
 
 	@Override

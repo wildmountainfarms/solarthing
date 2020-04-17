@@ -94,7 +94,7 @@ public class OutbackPacketsTest {
 		}
 		{
 			FXChargingPacket packet = new ImmutableFXChargingPacket(new OutbackIdentifier(1), FXChargingMode.BULK_TO_ABSORB, 60 * 1000, 60 * 60 * 1000, 60 * 60 * 1000, 60 * 60 * 1000, 60 * 60 * 1000, 60 * 60 * 1000);
-			assertEquals(1, packet.getMasterFXAddress());
+			assertEquals(1, packet.getAddress());
 			assertEquals(60 * 1000, packet.getRemainingAbsorbTimeMillis());
 			PacketTestUtil.testJson(packet, FXChargingPacket.class);
 			PacketTestUtil.testJson(packet, SolarExtraPacket.class);
