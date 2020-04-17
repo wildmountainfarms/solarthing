@@ -223,4 +223,17 @@ public final class PacketGroups {
 		}
 		return r;
 	}
+	public static List<InstancePacketGroup> orderByFragment(Collection<? extends InstancePacketGroup> instancePacketGroups) {
+		return orderByFragment(instancePacketGroups, DEFAULT_FRAGMENT_ID_COMPARATOR);
+	}
+	public static List<InstancePacketGroup> orderByFragment(Collection<? extends InstancePacketGroup> instancePacketGroups, Comparator<Integer> fragmentComparator) {
+		Map<Integer, List<InstancePacketGroup>> mappedPackets = mapFragments(instancePacketGroups);
+		Collection<Integer> sortedFragmentKeys = new TreeSet<>(fragmentComparator);
+		sortedFragmentKeys.addAll(mappedPackets.keySet());
+		List<InstancePacketGroup> r = new ArrayList<>();
+		for(Integer fragmentId : sortedFragmentKeys) {
+			r.addAll(mappedPackets.get(fragmentId));
+		}
+		return r;
+	}
 }

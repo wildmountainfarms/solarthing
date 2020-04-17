@@ -229,5 +229,16 @@ public interface FXStatusPacket extends OutbackStatusPacket, BatteryVoltage, FXW
 	default int getSellWattage(){
 		return getSellCurrentRaw() * getOutputVoltageRaw();
 	}
+
+	/**
+	 * NOTE: Sometimes this can be negative if there are multiple FX units (and maybe if there's a single FX unit?).
+	 * While monitoring this, I've never seen the sum of all the FX units add up to a negative number, so assuming you
+	 * add this to the other FX units in the system, I don't believe that number will ever be negative.
+	 * @return The ac power in watts that is being passed thru (buy - charger)
+	 */
+	@GraphQLInclude("passThruWattage")
+	default int getPassThruWattage() {
+		return getBuyWattage() - getChargerWattage();
+	}
 	// endregion
 }

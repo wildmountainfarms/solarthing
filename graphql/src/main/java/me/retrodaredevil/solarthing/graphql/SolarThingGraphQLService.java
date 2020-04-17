@@ -71,7 +71,7 @@ public class SolarThingGraphQLService {
 		statusQueryHandler = new CouchDbQueryHandler(new StdCouchDbConnector(SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, instance), false);
 		eventQueryHandler = new CouchDbQueryHandler(new StdCouchDbConnector(SolarThingConstants.SOLAR_EVENT_UNIQUE_NAME, instance), false);
 	}
-	private static List<? extends FragmentedPacketGroup> queryPackets(CouchDbQueryHandler queryHandler, PacketGroupParser parser, long from, long to, String sourceId) {
+	private static List<? extends InstancePacketGroup> queryPackets(CouchDbQueryHandler queryHandler, PacketGroupParser parser, long from, long to, String sourceId) {
 		final List<ObjectNode> packets;
 		try {
 			packets = queryHandler.query(new ViewQuery()
@@ -98,16 +98,7 @@ public class SolarThingGraphQLService {
 		Map<String, List<InstancePacketGroup>> map = PacketGroups.parsePackets(rawPacketGroups);
 		if(map.containsKey(sourceId)){
 			List<InstancePacketGroup> instancePacketGroupList = map.get(sourceId);
-			Map<Integer, List<InstancePacketGroup>> mappedPackets = PacketGroups.mapFragments(instancePacketGroupList);
-			Collection<Integer> sortedFragmentKeys = new TreeSet<>(PacketGroups.DEFAULT_FRAGMENT_ID_COMPARATOR);
-			sortedFragmentKeys.addAll(mappedPackets.keySet());
-			List<InstancePacketGroup> r = new ArrayList<>();
-			for(Integer fragmentId : sortedFragmentKeys) {
-				r.addAll(mappedPackets.get(fragmentId));
-			}
-			System.out.println("got " + r.size() + " packets!");
-			System.out.println(r);
-			return r;
+			return PacketGroups.orderByFragment(instancePacketGroupList);
 		}
 		throw new NoSuchElementException("No element with sourceId: '" + sourceId + "' available keys are: " + map.keySet());
 	}
@@ -117,6 +108,17 @@ public class SolarThingGraphQLService {
 			@GraphQLArgument(name = "from") long from, @GraphQLArgument(name = "to") long to,
 			@GraphQLArgument(name = "sourceId") @NotNull String sourceId){
 		return new SolarThingStatusQuery(new BasicPacketGetter(queryPackets(statusQueryHandler, statusParser, from, to, sourceId), PacketFilter.KEEP_ALL));
+	}
+	@GraphQLQuery
+	public SolarThingStatusQuery queryStatusLast(
+			@GraphQLArgument(name = "to") long to,
+			@GraphQLArgument(name = "sourceId") @NotNull String sourceId, @GraphQLArgument(name = "reversed") Boolean reversed){
+		List<? extends InstancePacketGroup> packets = queryPackets(statusQueryHandler, statusParser, to - 2 * 60 * 1000, to, sourceId);
+		List<InstancePacketGroup> lastPackets = new ArrayList<>();
+		for(List<InstancePacketGroup> packetGroups : PacketGroups.mapFragments(packets).values()) {
+			lastPackets.add(packetGroups.get(packetGroups.size() - 1));
+		}
+		return new SolarThingStatusQuery(new ReversedPacketGetter(new BasicPacketGetter(lastPackets, PacketFilter.KEEP_ALL), Boolean.TRUE.equals(reversed)));
 	}
 	@GraphQLQuery
 	public SolarThingEventQuery queryEvent(
@@ -162,6 +164,24 @@ public class SolarThingGraphQLService {
 		@Override
 		public <T> @NotNull List<@NotNull PacketNode<T>> getPackets(Class<T> clazz) {
 			return PacketUtil.convertPackets(packets, clazz, packetFilter);
+		}
+	}
+	private static class ReversedPacketGetter implements PacketGetter {
+		private final PacketGetter packetGetter;
+		private final boolean reversed;
+
+		private ReversedPacketGetter(PacketGetter packetGetter, boolean reversed) {
+			this.packetGetter = packetGetter;
+			this.reversed = reversed;
+		}
+
+		@Override
+		public @NotNull <T> List<@NotNull PacketNode<T>> getPackets(Class<T> clazz) {
+			List<PacketNode<T>> r = packetGetter.getPackets(clazz);
+			if (reversed) {
+				Collections.reverse(r);
+			}
+			return r;
 		}
 	}
 	public static class SolarThingStatusQuery {
