@@ -1,3 +1,4 @@
+#!/usr/bin/env sh
 
 # This has to be run with root
 
