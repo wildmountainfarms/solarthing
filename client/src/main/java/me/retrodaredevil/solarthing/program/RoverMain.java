@@ -52,6 +52,7 @@ public class RoverMain {
 						packet = RoverStatusPackets.createFromReadTable(read);
 					} catch(ModbusRuntimeException e){
 						LOGGER.error("Modbus exception", e);
+						//noinspection BusyWait
 						Thread.sleep(5000);
 						continue;
 					}
@@ -67,6 +68,7 @@ public class RoverMain {
 					packetListReceiver.receive(packets, true);
 					final long saveDuration = System.currentTimeMillis() - saveStartTime;
 					LOGGER.debug("took " + saveDuration + "ms to handle packets");
+					//noinspection BusyWait
 					Thread.sleep(Math.max(1000, 6000 - readDuration)); // sleep between 1 and 6 seconds
 				}
 			} catch (InterruptedException e) {
@@ -76,7 +78,7 @@ public class RoverMain {
 	}
 
 	public static int connectRover(RoverProgramOptions options) {
-		LOGGER.info("Beginning rover program");
+		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Beginning rover program");
 		PacketHandlerBundle packetHandlerBundle = PacketHandlerInit.getPacketHandlerBundle(SolarMain.getDatabaseConfigs(options), SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, SolarThingConstants.SOLAR_EVENT_UNIQUE_NAME);
 		boolean rpiCpuTemperature = options.getExtraOptionFlags().contains(ExtraOptionFlag.RPI_LOG_CPU_TEMPERATURE);
 		// TODO packetHandlerBundle.getEventPacketHandlers()
@@ -144,7 +146,7 @@ public class RoverMain {
 				runner.doProgram(read, write);
 				return 0;
 			} catch (Exception e) {
-				LOGGER.error("(Fatal)Got exception!", e);
+				LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)Got exception!", e);
 				return 1;
 			}
 		}

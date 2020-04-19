@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import me.retrodaredevil.solarthing.DataReceiver;
 import me.retrodaredevil.solarthing.JsonPacketReceiver;
+import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.parsing.ObjectMapperPacketConverter;
@@ -94,7 +95,7 @@ public class SecurityPacketReceiver implements JsonPacketReceiver {
 					String sender = integrityPacket.getSender();
 					final String invalidSenderReason = sender == null ? "sender is null!" : SenderUtil.getInvalidSenderNameReason(sender);
 					if(invalidSenderReason != null){
-						LOGGER.warn(invalidSenderReason);
+						LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, invalidSenderReason);
 					} else {
 						try {
 							String data = Decrypt.decrypt(cipher, publicKeyLookUp, integrityPacket);
@@ -115,11 +116,11 @@ public class SecurityPacketReceiver implements JsonPacketReceiver {
 									Long lastCommand = senderLastCommandMap.get(sender);
 									long currentTime = System.currentTimeMillis();
 									if(dateMillis > currentTime) {
-										LOGGER.warn("Message from " + sender + " is from the future??? dateMillis: " + dateMillis + " currentTime: " + currentTime);
+										LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Message from " + sender + " is from the future??? dateMillis: " + dateMillis + " currentTime: " + currentTime);
 									} else if(dateMillis < minTime){
-										LOGGER.warn("Message from " + sender + " was parsed, but it too old! dateMillis: " + dateMillis + " minTime: " + minTime);
+										LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Message from " + sender + " was parsed, but it too old! dateMillis: " + dateMillis + " minTime: " + minTime);
 									} else if(lastCommand != null && dateMillis <= lastCommand) { // if this command is old or if someone is trying to send the exact same command twice
-										LOGGER.warn("Message from " + sender + " was parsed, but was older than the last command they sent! dateMillis: " + dateMillis + " lastCommand: " + lastCommand);
+										LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Message from " + sender + " was parsed, but was older than the last command they sent! dateMillis: " + dateMillis + " lastCommand: " + lastCommand);
 									} else {
 										lastCommands.put(sender, dateMillis);
 										dataReceiver.receiveData(sender, dateMillis, message);
@@ -127,11 +128,11 @@ public class SecurityPacketReceiver implements JsonPacketReceiver {
 								}
 							}
 						} catch (DecryptException e) {
-							LOGGER.warn("Someone tried to impersonate " + sender + "! Or that person has a new public key.", e);
+							LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Someone tried to impersonate " + sender + "! Or that person has a new public key.", e);
 						} catch (InvalidKeyException e) {
 							throw new RuntimeException("If there is a saved key, it should be valid! sender: " + sender, e);
 						} catch (NotAuthorizedException e) {
-							LOGGER.info(sender + " is not authorized!", e);
+							LOGGER.info(SolarThingConstants.SUMMARY_MARKER, sender + " is not authorized!", e);
 						}
 					}
 				} else if(packetType == SecurityPacketType.AUTH_NEW_SENDER){
@@ -140,7 +141,7 @@ public class SecurityPacketReceiver implements JsonPacketReceiver {
 					PublicKey key = auth.getPublicKeyObject();
 					final String invalidSenderReason = sender == null ? "sender is null!" : SenderUtil.getInvalidSenderNameReason(sender);
 					if(invalidSenderReason != null){
-						LOGGER.warn(invalidSenderReason);
+						LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, invalidSenderReason);
 					} else {
 						publicKeySave.putKey(sender, key);
 					}

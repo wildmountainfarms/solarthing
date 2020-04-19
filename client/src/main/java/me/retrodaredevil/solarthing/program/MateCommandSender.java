@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.program;
 
 import me.retrodaredevil.solarthing.OnDataReceive;
+import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.commands.CommandProvider;
 import me.retrodaredevil.solarthing.commands.OnCommandExecute;
 import me.retrodaredevil.solarthing.commands.SourcedCommand;
@@ -20,21 +21,21 @@ public class MateCommandSender implements OnDataReceive {
 	private final OutputStream outputStream;
 	private final Collection<MateCommand> allowedCommands;
 	private final OnCommandExecute<MateCommand> onCommandExecute;
-	
+
 	public MateCommandSender(CommandProvider<MateCommand> commandProvider, OutputStream outputStream, Collection<MateCommand> allowedCommands, OnCommandExecute<MateCommand> onCommandExecute) {
 		this.commandProvider = requireNonNull(commandProvider);
 		this.outputStream = requireNonNull(outputStream);
 		this.allowedCommands = requireNonNull(allowedCommands);
 		this.onCommandExecute = requireNonNull(onCommandExecute);
 	}
-	
+
 	public void onDataReceive(boolean firstData, boolean wasInstant) {
 		if(firstData && wasInstant){
 			SourcedCommand<MateCommand> sourcedCommand = commandProvider.pollCommand();
 			if(sourcedCommand != null){
 				MateCommand command = sourcedCommand.getCommand();
 				if(!allowedCommands.contains(command)){
-					LOGGER.warn("Command: " + command + " is not allowed!");
+					LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Command: " + command + " is not allowed!");
 					return;
 				}
 				try {
@@ -42,7 +43,7 @@ public class MateCommandSender implements OnDataReceive {
 				} catch (IOException e) {
 					throw new RuntimeException("Unable to send command: " + command, e);
 				}
-				LOGGER.info("\nSent command: " + command + " at " + System.currentTimeMillis());
+				LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "\nSent command: " + command + " at " + System.currentTimeMillis());
 				onCommandExecute.onCommandExecute(sourcedCommand);
 			}
 		}

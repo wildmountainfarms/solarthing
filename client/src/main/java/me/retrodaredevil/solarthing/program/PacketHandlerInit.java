@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.program;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.couchdb.CouchProperties;
+import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.config.databases.IndividualSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.InfluxDbDatabaseSettings;
@@ -39,7 +40,7 @@ public class PacketHandlerInit {
 			IndividualSettings eventIndividualSettings = config.getIndividualSettingsOrDefault(Constants.DATABASE_UPLOAD_EVENT_ID, null);
 //			FrequencySettings eventFrequencySettings = eventIndividualSettings != null ? eventIndividualSettings.getFrequencySettings() : FrequencySettings.NORMAL_SETTINGS;
 			if(eventIndividualSettings != null){
-				LOGGER.warn("Individual settings were declared for " + Constants.DATABASE_UPLOAD_EVENT_ID + "! These will not be used in this version! config=" + config);
+				LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Individual settings were declared for " + Constants.DATABASE_UPLOAD_EVENT_ID + "! These will not be used in this version! config=" + config);
 			}
 
 			if (CouchDbDatabaseSettings.TYPE.equals(config.getType())) {
@@ -88,7 +89,7 @@ public class PacketHandlerInit {
 				), 5));
 			} else if (LatestFileDatabaseSettings.TYPE.equals(config.getType())){
 				LatestFileDatabaseSettings settings = (LatestFileDatabaseSettings) config.getSettings();
-				LOGGER.info("Adding latest file 'database'. This currently only saves 'status' packets");
+				LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Adding latest file 'database'. This currently only saves 'status' packets");
 				statusPacketHandlers.add(new ThrottleFactorPacketHandler(
 						new FileWritePacketHandler(settings.getFile(), new JacksonStringPacketHandler(MAPPER), false),
 						statusFrequencySettings,

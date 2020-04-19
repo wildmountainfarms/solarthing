@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.DocumentedPacket;
 import me.retrodaredevil.solarthing.packets.DocumentedPacketType;
@@ -91,7 +92,7 @@ public class OutbackListUpdater implements PacketListReceiver {
 				try {
 					data = MAPPER.readValue(fxJsonSaveFile, FXJsonSaveData.class);
 				} catch (IOException e) {
-					LOGGER.info("Unable to read fx json data. That's OK though!", e);
+					LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Unable to read fx json data. That's OK though!", e);
 				}
 				fxSavedJsonData = data;
 			}
@@ -100,7 +101,7 @@ public class OutbackListUpdater implements PacketListReceiver {
 				try {
 					data = MAPPER.readValue(mxJsonSaveFile, MXJsonSaveData.class);
 				} catch(IOException e){
-					LOGGER.info("Unable to read mx json data. That's OK though!", e);
+					LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Unable to read mx json data. That's OK though!", e);
 				}
 				mxSavedJsonData = data;
 			}
@@ -125,16 +126,16 @@ public class OutbackListUpdater implements PacketListReceiver {
 							if (storedDailyFXPacket == null) {
 								todayDailyFXPacket = null;
 								if(fxSavedJsonData != null){
-									LOGGER.warn("Although fxSavedJsonData isn't null we couldn't find a packet for identifier: {}", identifier);
+									LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Although fxSavedJsonData isn't null we couldn't find a packet for identifier: {}", identifier);
 								}
 							} else {
 								long startDateMillis = requireNonNull(storedDailyFXPacket.getStartDateMillis());
 								if (timeIdentifier.getTimeId(startDateMillis) == timeId) {
 									todayDailyFXPacket = storedDailyFXPacket;
-									LOGGER.info("We found a daily fx packet from today! identifier: {}", identifier);
+									LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "We found a daily fx packet from today! identifier: {}", identifier);
 								} else {
 									todayDailyFXPacket = null;
-									LOGGER.info("The daily packet we found wasn't from today! identifier: {}", identifier);
+									LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "The daily packet we found wasn't from today! identifier: {}", identifier);
 								}
 							}
 						}
@@ -160,10 +161,10 @@ public class OutbackListUpdater implements PacketListReceiver {
 								long startDateMillis = requireNonNull(storedSaveNode.dailyMXPacket.getStartDateMillis());
 								if(timeIdentifier.getTimeId(startDateMillis) == timeId) {
 									todayNode = storedSaveNode;
-									LOGGER.info("We found a MXSaveNode from today! identifier: {}", identifier);
+									LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "We found a MXSaveNode from today! identifier: {}", identifier);
 								} else {
 									todayNode = null;
-									LOGGER.info("The MXSaveNode we found wasn't from today! identifier: {}", identifier);
+									LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "The MXSaveNode we found wasn't from today! identifier: {}", identifier);
 								}
 							}
 						}
@@ -180,6 +181,7 @@ public class OutbackListUpdater implements PacketListReceiver {
 			try {
 				MAPPER.writer().writeValue(fxJsonSaveFile, fxJsonSaveData);
 			} catch (IOException e) {
+				// in rare cases, the this happens and the message is "No space left on device". We could try reporting this in a more extreme way (maybe a packet or something)
 				LOGGER.error("Unable to write to file!", e);
 			}
 		}
@@ -238,7 +240,7 @@ public class OutbackListUpdater implements PacketListReceiver {
 		private FXListUpdater(PacketListReceiver eventReceiver, DailyFXPacket storedDailyFXPacket) {
 			this.eventReceiver = requireNonNull(eventReceiver);
 			if(storedDailyFXPacket != null){
-				LOGGER.info("Restored daily fx info from today! storedDailyFXPacket: {}", storedDailyFXPacket);
+				LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Restored daily fx info from today! storedDailyFXPacket: {}", storedDailyFXPacket);
 				startDateMillis = storedDailyFXPacket.getStartDateMillis();
 				minimumBatteryVoltage = storedDailyFXPacket.getDailyMinBatteryVoltage();
 				maximumBatteryVoltage = storedDailyFXPacket.getDailyMaxBatteryVoltage();

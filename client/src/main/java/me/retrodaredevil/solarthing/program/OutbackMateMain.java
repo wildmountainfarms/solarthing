@@ -54,9 +54,9 @@ public class OutbackMateMain {
 
 	@SuppressWarnings("SameReturnValue")
 	public static int connectMate(MateProgramOptions options, File dataDirectory) throws Exception {
-		LOGGER.info("Beginning mate program");
+		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Beginning mate program");
 		PacketCollectionIdGenerator statusIdGenerator = SolarMain.createIdGenerator(options.getUniqueIdsInOneHour());
-		LOGGER.info("IO Bundle File: " + options.getIOBundleFile());
+		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "IO Bundle File: " + options.getIOBundleFile());
 		final IOBundle io;
 		{
 			final IOBundle createdIO = SolarMain.createIOBundle(options.getIOBundleFile(), MATE_CONFIG);
@@ -96,7 +96,7 @@ public class OutbackMateMain {
 		final OnDataReceive onDataReceive;
 		List<PacketHandler> statusPacketHandlers = new ArrayList<>();
 		if(options.isAllowCommands()) {
-			LOGGER.info("Commands are allowed");
+			LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Commands are allowed");
 			List<CommandProvider<MateCommand>> commandProviders = new ArrayList<>();
 			{ // InputStreamCommandProvider command_input.txt block
 				// TODO make the file path customizable through json (a DatabaseConfig)
@@ -106,7 +106,7 @@ public class OutbackMateMain {
 				try {
 					fileInputStream = new FileInputStream(commandInputFile);
 				} catch (FileNotFoundException e) {
-					LOGGER.warn("No command input file! We created the file, but for some reason it isn't there...");
+					LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "No command input file! We created the file, but for some reason it isn't there...");
 				}
 				if (fileInputStream != null) {
 					commandProviders.add(InputStreamCommandProvider.createFrom(fileInputStream, "command_input.txt", EnumSet.allOf(MateCommand.class)));
@@ -159,7 +159,7 @@ public class OutbackMateMain {
 			);
 			statusPacketHandlers.add(commandRequesterHandler);
 		} else {
-			LOGGER.info("Commands are disabled");
+			LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Commands are disabled");
 			onDataReceive = OnDataReceive.Defaults.NOTHING;
 		}
 		statusPacketHandlers.addAll(packetHandlerBundle.getStatusPacketHandlers());
