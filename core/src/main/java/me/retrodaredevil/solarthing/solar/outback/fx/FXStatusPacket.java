@@ -240,5 +240,12 @@ public interface FXStatusPacket extends OutbackStatusPacket, BatteryVoltage, FXW
 	default int getPassThruWattage() {
 		return getBuyWattage() - getChargerWattage();
 	}
+	/**
+	 * @return {@link #getInverterWattage()} + {@link #getPassThruWattage()}
+	 */
+	@GraphQLInclude("powerUsageWattage")
+	default int getPowerUsageWattage() {
+		return getInverterWattage() + getPassThruWattage();
+	}
 	// endregion
 }

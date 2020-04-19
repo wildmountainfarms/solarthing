@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ValueNode;
 import me.retrodaredevil.influxdb.InfluxProperties;
 import me.retrodaredevil.okhttp3.OkHttpProperties;
+import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.TagKeys;
 import me.retrodaredevil.solarthing.influxdb.retention.RetentionPolicy;
 import me.retrodaredevil.solarthing.influxdb.retention.RetentionPolicyGetter;
@@ -133,7 +134,7 @@ public class InfluxDbPacketSaver implements PacketHandler {
 								final QueryResult alterResult;
 								try {
 									alterResult = db.query(new Query("ALTER " + policyString));
-									LOGGER.info("Successfully altered {} retention policy!", retentionPolicyName);
+									LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Successfully altered {} retention policy!", retentionPolicyName);
 								} catch (InfluxDBException ex) {
 									throw new PacketHandleException("Unable to query database to alter retention policy: " + retentionPolicyName, ex);
 								}

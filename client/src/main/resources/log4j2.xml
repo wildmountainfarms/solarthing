@@ -8,17 +8,48 @@
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="${LOG_PATTERN}"/>
         </Console>
-        <RollingFile name="logAll" fileName="${logPath}/log_debug.log" filePattern="${logPath}/log_debug_%d{yyyy.MM.dd}.log.gz">
+        <RollingFile name="logAll" fileName="${logPath}/log_debug.log" filePattern="${logPath}/log_debug_%d{yyyy.MM.dd}-%i.log.gz">
             <PatternLayout pattern="${LOG_PATTERN}"/>
             <Policies>
+                <OnStartupTriggeringPolicy />
                 <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="3GB" />
             </Policies>
+            <DefaultRolloverStrategy max="1">
+                <Delete basePath="${logPath}" maxDepth="1">
+                    <IfFileName glob="log_debug_*" />
+                    <IfLastModified age="14d" />
+                </Delete>
+            </DefaultRolloverStrategy>
         </RollingFile>
-        <RollingFile name="logInfo" fileName="${logPath}/log_info.log" filePattern="${logPath}/log_info_%d{yyyy.MM.dd}.log.gz" >
+        <RollingFile name="logInfo" fileName="${logPath}/log_info.log" filePattern="${logPath}/log_info_%d{yyyy.MM.dd}-%i.log.gz">
             <PatternLayout pattern="${LOG_PATTERN}"/>
             <Policies>
+                <OnStartupTriggeringPolicy />
                 <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="3GB" />
             </Policies>
+            <DefaultRolloverStrategy>
+                <Delete basePath="${logPath}" maxDepth="1">
+                    <IfFileName glob="log_info_*" />
+                    <IfLastModified age="60d" />
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+        <RollingFile name="logSummary" fileName="${logPath}/log_summary.log" filePattern="${logPath}/log_summary_%d{yyyy.MM.dd}-%i.log.gz">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <MarkerFilter marker="SUMMARY" onMatch="ACCEPT" onMismatch="DENY"/>
+            <Policies>
+                <OnStartupTriggeringPolicy />
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="3GB" />
+            </Policies>
+            <DefaultRolloverStrategy>
+                <Delete basePath="${logPath}" maxDepth="1">
+                    <IfFileName glob="log_summary_*" />
+                    <IfLastModified age="400d" />
+                </Delete>
+            </DefaultRolloverStrategy>
         </RollingFile>
     </Appenders>
     <Loggers>
@@ -28,6 +59,7 @@
         <Logger name="me.retrodaredevil.solarthing">
             <AppenderRef ref="logAll" level="DEBUG"/>
             <AppenderRef ref="logInfo" level="INFO"/>
+            <AppenderRef ref="logSummary" level="DEBUG"/> <!-- We can allow debugs to go through because it will filter for explicit SUMMARY marker -->
         </Logger>
         <Logger name="org.ektorp" level="INFO">
             <AppenderRef ref="logAll"/>

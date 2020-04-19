@@ -49,3 +49,17 @@ This query is used for displaying the operating mode in a table. You can make `p
   }
 }
 ```
+
+This is used in the battery voltage gauge. The `Time` is important.
+```graphql
+{
+  data:queryStatusLast(to:"$timeTo", sourceId:"default") {
+    batteryVoltage {
+      Time:dateMillis
+      packet {
+        batteryVoltage
+      }
+    }
+  }
+}
+```

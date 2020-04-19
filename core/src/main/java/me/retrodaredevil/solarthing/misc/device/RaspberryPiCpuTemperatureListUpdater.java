@@ -44,6 +44,11 @@ public class RaspberryPiCpuTemperatureListUpdater implements PacketListReceiver 
 					LOGGER.warn("Couldn't parse! toParse=" + toParse + ". Result=" + result, e);
 				}
 			}
+			process.destroy();
+			if (process.isAlive()) {
+				process.destroyForcibly();
+				LOGGER.warn("Had to destroy forcibly! is still alive: " + process.isAlive());
+			}
 		} catch (IOException | InterruptedException e) {
 			LOGGER.error("Error while running command to get CPU temperature", e);
 		}

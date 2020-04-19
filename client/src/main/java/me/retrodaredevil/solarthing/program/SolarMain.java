@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.io.IOBundle;
 import me.retrodaredevil.io.serial.SerialConfig;
+import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.InfluxDbDatabaseSettings;
@@ -134,11 +135,11 @@ public final class SolarMain {
 	}
 
 	public static int doMain(String[] args){
-		LOGGER.info("[LOG] Beginning main");
+		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "[LOG] Beginning main");
 		System.out.println("[stdout] Beginning main");
 		if(args.length < 1){
 			System.err.println("Usage: <java -jar ...> {base config file}");
-			LOGGER.error("(Fatal)Incorrect args");
+			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)Incorrect args");
 			return 1;
 		}
 		File baseConfigFile = new File(args[0]);
@@ -146,19 +147,19 @@ public final class SolarMain {
 		try {
 			fileReader = new FileReader(baseConfigFile);
 		} catch(FileNotFoundException ex){
-			LOGGER.error("(Fatal)File not found", ex);
+			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)File not found", ex);
 			return 1;
 		}
 		final ProgramOptions options;
 		try {
 			options = MAPPER.readValue(fileReader, ProgramOptions.class);
 		} catch (IOException e) {
-			LOGGER.error("(Fatal)Error while parsing ProgramOptions. args=" + Arrays.toString(args), e);
+			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)Error while parsing ProgramOptions. args=" + Arrays.toString(args), e);
 			return 1;
 		}
 		File dataDirectory = new File(".data");
 		if(!dataDirectory.mkdirs() && !dataDirectory.isDirectory()){
-			LOGGER.error("(Fatal)Unable to create data directory! dataDirectory=" + dataDirectory + " absolute=" + dataDirectory.getAbsolutePath());
+			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)Unable to create data directory! dataDirectory=" + dataDirectory + " absolute=" + dataDirectory.getAbsolutePath());
 			return 1;
 		}
 		final ProgramType programType = options.getProgramType();
@@ -174,7 +175,7 @@ public final class SolarMain {
 			}
 			throw new AssertionError("Unknown program type... type=" + programType + " programOptions=" + options);
 		} catch (Throwable t) {
-			LOGGER.error("(Fatal)Got throwable", t);
+			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)Got throwable", t);
 			return 1;
 		}
 	}

@@ -117,13 +117,13 @@ public class PVOutputUploadMain {
 
 	@SuppressWarnings("SameReturnValue")
 	public static int startPVOutputUpload(PVOutputUploadProgramOptions options){
-		LOGGER.info("Starting PV Output upload program");
+		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Starting PV Output upload program");
 		TimeZone timeZone = options.getTimeZone();
-		LOGGER.debug("Using time zone: {}", timeZone.getDisplayName());
+		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Using time zone: {}", timeZone.getDisplayName());
 		DatabaseConfig databaseConfig = SolarMain.getDatabaseConfig(options.getDatabase());
 		DatabaseType databaseType = databaseConfig.getType();
 		if(databaseType != CouchDbDatabaseSettings.TYPE){
-			LOGGER.error("(Fatal)Only CouchDb can be used for this program type right now!");
+			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)Only CouchDb can be used for this program type right now!");
 			return 1;
 		}
 		CouchDbDatabaseSettings couchDbDatabaseSettings = (CouchDbDatabaseSettings) databaseConfig.getSettings();
@@ -186,6 +186,7 @@ public class PVOutputUploadMain {
 			}
 			LOGGER.debug("Going to sleep now");
 			try {
+				//noinspection BusyWait
 				Thread.sleep(5 * 60 * 1000);
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();

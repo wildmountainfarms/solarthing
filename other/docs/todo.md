@@ -2,7 +2,7 @@
 * Create Arduino or Java program to simulate MATE or Rover
 * Add readable string alongside identifier tag for InfluxDB
 * Create a calendar program to be able to view daily kWh on a calendar interface
-  * If we do something with a calendar, we could use google calendar https://developers.google.com/calendar/create-events/
+  * If we do something with a calendar, we could use Google calendar https://developers.google.com/calendar/create-events/
 * Have unique identifier for each jar file
 * AC Use->AC Drop, turn on AUX until NO AC. (GEN OFF) command using MATE's built in AC Use/Drop.
   * Might also have to detect low/high vac to determine if intentional
@@ -11,10 +11,17 @@ the charge controller is not accepting more power
   * Use this so incorrect statistics are not reported
   * If PVVoltage != 0 and PV Current == 0 and charging current == 0 and mode != Silent (and probably != bulk), then assume it's stopped
   * Alternatively, don't report statistics if the CC is in Float, Absorb, or EQ
+* Create button/widget on Grafana that sends an encrypted command to shut off the generator
+* Create GraphQL query that allows someone to get dailyKWH from a large time period (many days) for
+easy displaying in Grafana
+* Packet for disk usage
+* Query all Renogy Rover data at once by reading almost all the registers.
   
 ### Android TODO
-* Notification for when FXs are in EQ, but any MX is is absorb or float
+* Notification for when FXs are in EQ, but any MX is in absorb or float
 * Notification for when MX wakes up and goes straight to float (happens on older models)
+* Don't display load if there are no FXs
+* Don't display battery average if there is only one device and don't display if both are the same
 
 ### Completed TODO:
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
@@ -50,6 +57,7 @@ the charge controller is not accepting more power
 * Cypher [guide here](https://neo4j.com/developer/guide-sql-to-cypher/)
   * Looks interesting
 * [Metrictank](https://grafana.com/oss/metrictank/)
+* IntelliJ is complaining about "busy waiting". We do a lot of this. Should we change how we're doing this?
 
 #### TODO - Additions I'm not going to work on
 These might be useful to some people. I will not implement these in the future, but pull requests are welcome!

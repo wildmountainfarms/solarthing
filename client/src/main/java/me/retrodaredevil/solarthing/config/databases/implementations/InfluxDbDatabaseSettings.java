@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import me.retrodaredevil.influxdb.InfluxProperties;
 import me.retrodaredevil.okhttp3.OkHttpProperties;
+import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.DatabaseType;
 import me.retrodaredevil.solarthing.config.databases.SimpleDatabaseType;
@@ -109,7 +110,7 @@ public final class InfluxDbDatabaseSettings implements DatabaseSettings {
 		@JsonProperty("retention_policies")
 		@JsonDeserialize(as = ArrayList.class)
 		private Builder setFrequentRetentionPolicies(Collection<FrequentObject<RetentionPolicySetting>> frequentStatusRetentionPolicies) {
-			LOGGER.warn("Using 'retention_policies' instead of 'status_retention_policies'. This may be removed in a future version! Start using 'status_retention_policies'!");
+			LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Using 'retention_policies' instead of 'status_retention_policies'. This may be removed in a future version! Start using 'status_retention_policies'!");
 			this.frequentStatusRetentionPolicies = frequentStatusRetentionPolicies;
 			return this;
 		}
