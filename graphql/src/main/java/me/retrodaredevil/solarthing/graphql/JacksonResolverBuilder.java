@@ -75,6 +75,12 @@ public class JacksonResolverBuilder implements ResolverBuilder {
 	public Collection<Resolver> buildSubscriptionResolvers(ResolverBuilderParams params) {
 		return Collections.emptyList();
 	}
+	private String getDeprecationReason(AnnotatedMember member) {
+		if (!javaDeprecationConfig.enabled || !member.hasAnnotation(Deprecated.class)) {
+			return null;
+		}
+		return javaDeprecationConfig.deprecationReason;
+	}
 	private Collection<Resolver> buildResolvers(ResolverBuilderParams params){
 		AnnotatedType beanType = params.getBeanType();
 		Class<?> rawType = ClassUtils.getRawType(beanType.getType());
@@ -99,14 +105,10 @@ public class JacksonResolverBuilder implements ResolverBuilder {
 			if(property.hasGetter()){
 				Method method = property.getGetter().getMember();
 				TypedElement element = new TypedElement(getReturnType(method, params), method);
-//				Class<?> classType = ClassUtils.getRawType(element.getJavaType().getType());
-//				if(classType.isPrimitive()) {
-//
-//				}
 				r.add(new Resolver(
 						propertyName,
 						description,
-						null, // no deprecation
+						getDeprecationReason(accessor),
 						false, // we won't mess with this
 						new MethodInvoker(method, beanType),
 						element,
@@ -119,7 +121,7 @@ public class JacksonResolverBuilder implements ResolverBuilder {
 				r.add(new Resolver(
 						propertyName,
 						description,
-						null, // no deprecation
+						getDeprecationReason(accessor),
 						false, // we won't mess with this
 						new FieldAccessor(field, beanType),
 						element,

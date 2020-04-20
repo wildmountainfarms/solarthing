@@ -13,7 +13,7 @@ public class SingleTypeIdentifier implements Identifier {
 	}
 
 	@Override
-	public String getRepresentation() {
+	public @NotNull String getRepresentation() {
 		return "SingleTypeIdentifier(type=" + type + ")";
 	}
 

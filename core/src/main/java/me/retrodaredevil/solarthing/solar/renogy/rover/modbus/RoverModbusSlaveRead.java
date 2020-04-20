@@ -107,7 +107,7 @@ public class RoverModbusSlaveRead implements RoverReadTable {
 
 	private static final MessageHandler<int[]> CHARGING_CURRENT = new ReadRegistersHandler(0x0102, 1);
 	@Override
-	public Float getChargingCurrent() {
+	public @NotNull Float getChargingCurrent() {
 		return oneRegister(CHARGING_CURRENT) / 100.0F;
 	}
 
@@ -148,7 +148,7 @@ public class RoverModbusSlaveRead implements RoverReadTable {
 	}
 
 	private static final MessageHandler<int[]> CHARGING_POWER = new ReadRegistersHandler(0x0109, 1);
-	@Override public Integer getChargingPower() {
+	@Override public @NotNull Integer getChargingPower() {
 		return oneRegister(CHARGING_POWER);
 	}
 

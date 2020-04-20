@@ -153,7 +153,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 
 	@Override public int getBatteryCapacitySOC() { return roverReadTable.getBatteryCapacitySOC(); }
 	@Override public float getBatteryVoltage() { return roverReadTable.getBatteryVoltage(); }
-	@Override public Float getChargingCurrent() { return roverReadTable.getChargingCurrent(); }
+	@Override public @NotNull Float getChargingCurrent() { return roverReadTable.getChargingCurrent(); }
 	@Override public int getControllerTemperatureRaw() { return roverReadTable.getControllerTemperatureRaw(); }
 	@Override public int getBatteryTemperatureRaw() { return roverReadTable.getBatteryTemperatureRaw(); }
 	@Override public float getLoadVoltage() { return roverReadTable.getLoadVoltage(); }
@@ -163,7 +163,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
     @Override public Float getInputVoltage() { return roverReadTable.getInputVoltage(); }
 	@NotNull
 	@Override public Float getPVCurrent() { return roverReadTable.getPVCurrent(); }
-	@Override public Integer getChargingPower() { return roverReadTable.getChargingPower(); }
+	@Override public @NotNull Integer getChargingPower() { return roverReadTable.getChargingPower(); }
 	@Override public float getDailyMinBatteryVoltage() { return roverReadTable.getDailyMinBatteryVoltage(); }
 	@Override public float getDailyMaxBatteryVoltage() { return roverReadTable.getDailyMaxBatteryVoltage(); }
 	@Override public float getDailyMaxChargingCurrent() { return roverReadTable.getDailyMaxChargingCurrent(); }

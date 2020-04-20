@@ -16,11 +16,11 @@ the charge controller is not accepting more power
 easy displaying in Grafana
 * Packet for disk usage
 * Query all Renogy Rover data at once by reading almost all the registers.
+* Store data such as the panel tilt that can change over time
   
 ### Android TODO
 * Notification for when FXs are in EQ, but any MX is in absorb or float
 * Notification for when MX wakes up and goes straight to float (happens on older models)
-* Don't display load if there are no FXs
 * Don't display battery average if there is only one device and don't display if both are the same
 
 ### Completed TODO:

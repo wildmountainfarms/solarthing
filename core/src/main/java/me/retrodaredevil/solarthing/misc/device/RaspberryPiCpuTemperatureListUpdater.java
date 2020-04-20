@@ -19,7 +19,7 @@ public class RaspberryPiCpuTemperatureListUpdater implements PacketListReceiver 
 		processBuilder.redirectErrorStream(true);
 		try {
 			Process process = processBuilder.start();
-			boolean finished = process.waitFor(100, TimeUnit.MILLISECONDS);
+			boolean finished = process.waitFor(300, TimeUnit.MILLISECONDS);
 			if(!finished){
 				LOGGER.warn("vcgencmd must have taken longer than 100ms!");
 			} else {
