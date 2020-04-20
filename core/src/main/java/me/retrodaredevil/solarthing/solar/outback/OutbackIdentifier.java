@@ -28,7 +28,7 @@ public class OutbackIdentifier implements IntegerIdentifier, OutbackData, Compar
 	}
 
 	@Override
-	public String getRepresentation() {
+	public @NotNull String getRepresentation() {
 		return "OutbackIdentifier(address=" + address + ")";
 	}
 

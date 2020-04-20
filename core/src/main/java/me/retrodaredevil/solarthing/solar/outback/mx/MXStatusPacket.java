@@ -78,8 +78,9 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 	@JsonProperty("ampChargerCurrent")
 	float getAmpChargerCurrent();
 
+	@GraphQLInclude("chargingCurrent")
 	@Override
-	default Number getChargingCurrent(){
+	default @NotNull Number getChargingCurrent(){
 		/*
 		TODO In the future, if we decide to detect and store if we are on old firmware or a non-FM device, we may want to
 		explicitly return either an Integer or Float so the caller can decide how they want to display the number.
@@ -92,7 +93,7 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 
 	@GraphQLInclude("chargingPower")
 	@Override
-	default Float getChargingPower(){
+	default @NotNull Float getChargingPower(){
 		return (getChargerCurrent() + getAmpChargerCurrent()) * getBatteryVoltage();
 	}
 
@@ -165,7 +166,7 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 	int getChargerModeValue();
 
 	@Override
-	default ChargerMode getChargingMode(){
+	default @NotNull ChargerMode getChargingMode(){
 		return Modes.getActiveMode(ChargerMode.class, getChargerModeValue());
 	}
 

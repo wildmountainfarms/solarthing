@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.solar.renogy.rover;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
@@ -157,6 +158,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	 */
 	@JsonProperty("chargingCurrent")
 	@Override
+	@NotNull
 	Float getChargingCurrent();
 
 	/**
@@ -175,12 +177,14 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	/**
 	 * @return The temperature of the controller in degrees celsius
 	 */
+	@GraphQLInclude("controllerTemperature")
 	default int getControllerTemperature(){
 		return convertRawTemperature(getControllerTemperatureRaw());
 	}
 	/**
 	 * @return The temperature of the battery in degrees celsius
 	 */
+	@GraphQLInclude("batteryTemperature")
 	default int getBatteryTemperature(){
 		return convertRawTemperature(getBatteryTemperatureRaw());
 	}
@@ -229,6 +233,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	Float getPVCurrent();
 	@JsonProperty("chargingPower")
 	@Override
+	@NotNull
 	Integer getChargingPower();
 
 	@Override
@@ -293,7 +298,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	@JsonProperty("chargingState")
 	int getChargingStateValue();
 	@Override
-	default ChargingState getChargingMode(){ return Modes.getActiveMode(ChargingState.class, getChargingStateValue()); }
+	default @NotNull ChargingState getChargingMode(){ return Modes.getActiveMode(ChargingState.class, getChargingStateValue()); }
 	@JsonProperty("chargingStateName") // convenient
 	default String getChargingStateName(){ return getChargingMode().getModeName(); }
 

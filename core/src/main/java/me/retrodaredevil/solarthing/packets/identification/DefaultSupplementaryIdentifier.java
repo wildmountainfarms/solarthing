@@ -22,7 +22,7 @@ public class DefaultSupplementaryIdentifier<T extends Identifier> implements Sup
 	}
 
 	@Override
-	public String getRepresentation() {
+	public @NotNull String getRepresentation() {
 		return "SupplementaryIdentifier(identifier=" + identifier + ", supplementaryType=" + supplementaryType + ")";
 	}
 

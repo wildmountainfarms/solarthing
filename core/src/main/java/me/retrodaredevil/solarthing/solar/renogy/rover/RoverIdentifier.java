@@ -16,7 +16,7 @@ public final class RoverIdentifier implements IntegerIdentifier, Comparable<Iden
 	}
 
 	@Override
-	public String getRepresentation() {
+	public @NotNull String getRepresentation() {
 		return "RoverIdentifier(serialNumber=" + serialNumber + ")";
 	}
 

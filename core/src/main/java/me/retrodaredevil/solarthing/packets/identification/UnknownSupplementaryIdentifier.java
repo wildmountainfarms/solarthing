@@ -24,7 +24,7 @@ public class UnknownSupplementaryIdentifier<T extends Identifier> implements Sup
 	}
 
 	@Override
-	public String getRepresentation() {
+	public @NotNull String getRepresentation() {
 		return "UnknownSupplementaryIdentifier(identifier=" + identifier + ")";
 	}
 

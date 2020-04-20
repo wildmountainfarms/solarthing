@@ -267,7 +267,7 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	}
 
 	@Override
-	public Float getChargingCurrent() {
+	public @NotNull Float getChargingCurrent() {
 		return chargingCurrent;
 	}
 
@@ -309,7 +309,7 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	}
 
 	@Override
-	public Integer getChargingPower() {
+	public @NotNull Integer getChargingPower() {
 		return chargingPower;
 	}
 

@@ -18,7 +18,7 @@ public interface Identifier extends Comparable<Identifier> {
 	 * @return A representation of this identifier
 	 */
 	@JsonProperty("representation")
-	String getRepresentation();
+	@NotNull String getRepresentation();
 
 	@Override
 	int compareTo(@NotNull Identifier identifier);
