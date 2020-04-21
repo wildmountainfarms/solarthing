@@ -26,6 +26,7 @@ public class CouchDbQueryHandler {
 		} catch(DocumentNotFoundException e){
 			throw new PacketHandleException("Document not found... Maybe the 'millis' view hasn't been created in design 'packets'?", e);
 		} catch(DbAccessException e){
+//			e.getMessage().contains("No rows can match your key range") // TODO we could throw a different exception for this (argument exception?)
 			throw new PacketHandleException("This probably means we couldn't reach the database", e);
 		}
 		List<ViewResult.Row> rows = result.getRows();

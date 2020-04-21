@@ -11,7 +11,7 @@ import java.io.IOException;
 public final class Version {
 	private final int raw;
 	private final int high, middle, low;
-	
+
 	public Version(int versionCodeRaw) {
 		this.raw = versionCodeRaw;
 		int versionCode = versionCodeRaw & 0x00FFFFFF;
@@ -28,10 +28,10 @@ public final class Version {
 	public int getPatch(){
 		return low;
 	}
-	
-	
+
+
 	private static String twoPlaces(int number){
-		if(number > 100){
+		if(number >= 100){
 			throw new IllegalArgumentException("number cannot be greater than 100! it was: " + number);
 		}
 		if(number < 0){
@@ -44,7 +44,7 @@ public final class Version {
 			default: throw new AssertionError();
 		}
 	}
-	
+
 	@Override
 	public String toString() {
 		return "V" + twoPlaces(high) + "." + twoPlaces(middle) + "." +twoPlaces(low);

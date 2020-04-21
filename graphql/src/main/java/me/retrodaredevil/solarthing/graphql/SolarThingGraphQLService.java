@@ -29,6 +29,7 @@ import me.retrodaredevil.solarthing.solar.outback.fx.event.FXOperationalModeChan
 import me.retrodaredevil.solarthing.solar.outback.fx.extra.DailyFXPacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.extra.DailyMXPacket;
+import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.ektorp.CouchDbInstance;
 import org.ektorp.ViewQuery;
@@ -210,6 +211,10 @@ public class SolarThingGraphQLService {
 		@GraphQLQuery
 		public @NotNull List<@NotNull PacketNode<DailyFXPacket>> fxDaily() {
 			return packetGetter.getPackets(DailyFXPacket.class);
+		}
+		@GraphQLQuery
+		public @NotNull List<@NotNull PacketNode<RoverStatusPacket>> roverStatus() {
+			return packetGetter.getPackets(RoverStatusPacket.class);
 		}
 		@GraphQLQuery
 		public @NotNull List<@NotNull PacketNode<CpuTemperaturePacket>> cpuTemperature() {
