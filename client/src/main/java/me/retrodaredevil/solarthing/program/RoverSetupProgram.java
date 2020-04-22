@@ -72,10 +72,10 @@ public final class RoverSetupProgram {
 							System.out.println(read.getChargingCurrent());
 							break;
 						case "controllertemperature":
-							System.out.println(read.getControllerTemperature());
+							System.out.println(read.getControllerTemperatureCelsius());
 							break;
 						case "batterytemperature":
-							System.out.println(read.getBatteryTemperature());
+							System.out.println(read.getBatteryTemperatureCelsius());
 							break;
 						case "loadvoltage":
 							System.out.println(read.getLoadVoltage());

@@ -177,15 +177,15 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	/**
 	 * @return The temperature of the controller in degrees celsius
 	 */
-	@GraphQLInclude("controllerTemperature")
-	default int getControllerTemperature(){
+	@GraphQLInclude("controllerTemperatureCelsius")
+	default int getControllerTemperatureCelsius(){
 		return convertRawTemperature(getControllerTemperatureRaw());
 	}
 	/**
 	 * @return The temperature of the battery in degrees celsius
 	 */
-	@GraphQLInclude("batteryTemperature")
-	default int getBatteryTemperature(){
+	@GraphQLInclude("batteryTemperatureCelsius")
+	default int getBatteryTemperatureCelsius(){
 		return convertRawTemperature(getBatteryTemperatureRaw());
 	}
 	static int convertRawTemperature(int temperatureRaw){
@@ -193,6 +193,18 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 			return 128 - temperatureRaw; // uses bit 7 (8th bit) as a sign indicator. Signed numbers are not represented in the standard way
 		}
 		return temperatureRaw;
+	}
+	@Deprecated
+	default int getControllerTemperature(){ return getControllerTemperatureCelsius(); }
+	@Deprecated
+	default int getBatteryTemperature(){ return getBatteryTemperatureCelsius(); }
+	@GraphQLInclude("controllerTemperatureFahrenheit")
+	default float getControllerTemperatureFahrenheit(){
+		return getControllerTemperatureCelsius() * 9 / 5.0f + 32;
+	}
+	@GraphQLInclude("batteryTemperatureFahrenheit")
+	default float getBatteryTemperatureFahrenheit(){
+		return getBatteryTemperatureCelsius() * 9 / 5.0f + 32;
 	}
 
 	/**

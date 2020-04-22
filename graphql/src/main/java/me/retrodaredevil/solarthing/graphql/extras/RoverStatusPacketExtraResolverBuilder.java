@@ -53,7 +53,7 @@ public class RoverStatusPacketExtraResolverBuilder implements ResolverBuilder {
 		return Collections.emptyList();
 	}
 	public static float getControllerTemperatureFahrenheit(RoverStatusPacket roverStatusPacket) {
-		return roverStatusPacket.getControllerTemperature() * 9 / 5.0f + 32;
+		return roverStatusPacket.getControllerTemperatureCelsius() * 9 / 5.0f + 32;
 	}
 	protected AnnotatedType getReturnType(Method method, ResolverBuilderParams params, AnnotatedType annotatedType) {
 		try {

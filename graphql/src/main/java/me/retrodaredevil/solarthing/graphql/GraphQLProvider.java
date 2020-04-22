@@ -9,7 +9,6 @@ import io.leangen.graphql.metadata.strategy.query.ResolverBuilder;
 import io.leangen.graphql.metadata.strategy.value.jackson.JacksonValueMapperFactory;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
-import me.retrodaredevil.solarthing.graphql.extras.RoverStatusPacketExtraResolverBuilder;
 import me.retrodaredevil.solarthing.program.DatabaseConfig;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.springframework.beans.factory.annotation.Value;
@@ -68,8 +67,7 @@ public class GraphQLProvider {
 				.withNestedResolverBuilders(
 						resolverBuilder,
 						new JacksonResolverBuilder().withObjectMapper(objectMapper),
-						new SolarThingResolverBuilder(),
-						new RoverStatusPacketExtraResolverBuilder()
+						new SolarThingResolverBuilder()
 				)
 				.generate();
 
