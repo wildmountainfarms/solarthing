@@ -2,11 +2,9 @@
 Stores solar data in a database to view on Android, Grafana, or PVOutput
 
 ## Supported Products
-* <strong>Outback MATEs</strong> (FX Inverter, MX/FM Charge Controller)
-* <strong>Renogy Rover</strong> (And other Renogy products) over modbus serial.
-  * Compatible with Zenith Grape Solar Charge Controller
-  * Compatible with PowMr MPPT Charge Controller
-  * Compatible with RICH SOLAR MPPT
+* **Outback MATEs** (FX Inverter, MX/FM Charge Controller)
+* **Renogy Rover** (And other Renogy products) over modbus serial.
+  * Also compatible with **Zenith Grape** Solar Charge Controller, **PowMr** MPPT Charge Controller, **RICH** SOLAR MPPT, **WindyNations TrakMax** MPPT
 
 # Quickstart
 Ready to install? Use the [Quickstart](other/docs/quickstart.md)!

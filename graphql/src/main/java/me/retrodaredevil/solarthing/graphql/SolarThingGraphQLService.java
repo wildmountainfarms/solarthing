@@ -3,10 +3,12 @@ package me.retrodaredevil.solarthing.graphql;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.leangen.graphql.annotations.GraphQLArgument;
+import io.leangen.graphql.annotations.GraphQLContext;
 import io.leangen.graphql.annotations.GraphQLQuery;
 import me.retrodaredevil.couchdb.CouchProperties;
 import me.retrodaredevil.couchdb.EktorpUtil;
 import me.retrodaredevil.solarthing.SolarThingConstants;
+import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
 import me.retrodaredevil.solarthing.couchdb.CouchDbQueryHandler;
 import me.retrodaredevil.solarthing.graphql.packets.*;
 import me.retrodaredevil.solarthing.misc.device.CpuTemperaturePacket;
@@ -137,7 +139,7 @@ public class SolarThingGraphQLService {
 	) {
 		return new SolarThingEventQuery(new BasicPacketGetter(
 				queryPackets(eventQueryHandler, eventParser, from, to, sourceId),
-				new PacketFilterMultiplexer(Arrays.asList(new FragmentFilter(fragmentId), new IdentifierFilter((identifierRepresentation))))
+				new PacketFilterMultiplexer(Arrays.asList(new FragmentFilter(fragmentId), new IdentifierFilter(identifierRepresentation)))
 		));
 	}
 	@GraphQLQuery(description = "Queries events in the specified time range while only including the specified fragment")
@@ -150,6 +152,14 @@ public class SolarThingGraphQLService {
 				queryPackets(eventQueryHandler, eventParser, from, to, sourceId),
 				new FragmentFilter(fragmentId)
 		));
+	}
+	@GraphQLQuery(name = "controllerTemperatureFahrenheit")
+	public float getControllerTemperatureFahrenheit(@GraphQLContext RoverStatusPacket roverStatusPacket){
+		return roverStatusPacket.getControllerTemperatureCelsius() * 9 / 5.0f + 32;
+	}
+	@GraphQLQuery(name = "batteryTemperatureFahrenheit")
+	public float getBatteryTemperatureFahrenheit(@GraphQLContext RoverStatusPacket roverStatusPacket){
+		return roverStatusPacket.getBatteryTemperatureCelsius() * 9 / 5.0f + 32;
 	}
 	private interface PacketGetter {
 		<T> @NotNull List<@NotNull PacketNode<T>> getPackets(Class<T> clazz);
