@@ -198,14 +198,6 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	default int getControllerTemperature(){ return getControllerTemperatureCelsius(); }
 	@Deprecated
 	default int getBatteryTemperature(){ return getBatteryTemperatureCelsius(); }
-	@GraphQLInclude("controllerTemperatureFahrenheit")
-	default float getControllerTemperatureFahrenheit(){
-		return getControllerTemperatureCelsius() * 9 / 5.0f + 32;
-	}
-	@GraphQLInclude("batteryTemperatureFahrenheit")
-	default float getBatteryTemperatureFahrenheit(){
-		return getBatteryTemperatureCelsius() * 9 / 5.0f + 32;
-	}
 
 	/**
 	 * Should be serialized as "loadVoltage"
