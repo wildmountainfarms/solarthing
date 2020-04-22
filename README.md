@@ -4,16 +4,19 @@ Stores solar data in a database to view on Android, Grafana, or PVOutput
 ## Supported Products
 * <strong>Outback MATEs</strong> (FX Inverter, MX/FM Charge Controller)
 * <strong>Renogy Rover</strong> (And other Renogy products) over modbus serial.
+  * Compatible with Zenith Grape Solar Charge Controller
+  * Compatible with PowMr MPPT Charge Controller
+  * Compatible with RICH SOLAR MPPT
 
 # Quickstart
 Ready to install? Use the [Quickstart](other/docs/quickstart.md)!
 
 # Features
-* Supports **multiple types of solar products**
-* Runs reliably **24-7**. Recovers from connection errors and has verbose logging features
-* Fully customizable through JSON (**No programming experience required**)
-* Supports CouchDB, InfluxDB, local JSON file, and PVOutput exporting
-* Can [report Raspberry Pi CPU temperature](other/docs/raspberry_pi_cpu_temperature.md)
+* Supports **multiple types of solar products**.
+* Runs reliably **24-7**. Recovers from connection errors and has verbose logging features.
+* Fully customizable through JSON (**No programming experience required**).
+* Supports CouchDB, InfluxDB, local JSON file, and PVOutput exporting.
+* Can [report Raspberry Pi CPU temperature](other/docs/raspberry_pi_cpu_temperature.md).
 
 ## Supported Databases
 * CouchDB
@@ -91,4 +94,4 @@ If you have suggestions on how to improve the documentation or have a feature re
 hear from you! [SolarThing Issues](https://github.com/wildmountainfarms/solarthing/issues)
 
 If you get confused while trying to configure solarthing, that's probably because the documentation is
-always a work in progress. If you find something confusing, please report it so I can make it clearer.
+always a work in progress. If you find something confusing, please report it, so I can make it clearer.

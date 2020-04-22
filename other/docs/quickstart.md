@@ -5,7 +5,7 @@ Ready to get started? Run these commands:
 cd /opt # You can clone it somewhere else, however if you do that, you will have to change the solarthing.service file if you plan to install the systemd service
 sudo git clone https://github.com/wildmountainfarms/solarthing
 cd solarthing
-sudo systemd/install.sh # This only works on Linux systems that use systemd. Using this makes running the program long term very easy
+sudo other/systemd/install.sh # This only works on Linux systems that use systemd. Using this makes running the program long term very easy
 ```
 
 ## Edit Configurations
@@ -66,4 +66,9 @@ sudo systemctl enable solarthing # Run on boot
 sudo systemctl start solarthing # Start the service now
 ```
 If you do not have systemd on your system or did not install the service, you can run solarthing manually by running `java -jar solarthing.jar config/base.json`. You may have to use `sudo`
+
+### Run Without systemd service
+If you don't want to run the systemd service, or just want immediate feedback in your terminal,
+you can run `sudo ./solarthing.sh` or run `sudo java -jar solarthing.jar config/base.json` (both assume
+that your base config is named `base.json` and is located in the `config` directory.)
 

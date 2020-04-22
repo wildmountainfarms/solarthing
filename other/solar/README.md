@@ -67,6 +67,8 @@ Software download: https://www.renogy.com/template/files/Solar%20Station%20Monit
 
 Modbus protocol: renogy.boards.net/thread/266/rover-modbus
 
+Zenith manual: https://grapesolar.com/docs/ZENITH%2060%20Manual.pdf
+
 ## Products to support in the future
 
 https://www.rototron.info/raspberry-pi-solar-serial-rest-api-tutorial/
@@ -76,6 +78,9 @@ https://www.rototron.info/raspberry-pi-solar-serial-rest-api-tutorial/
 
 TriStar Modbus
 * https://www.stellavolta.com/content/MSCTSModbusCommunication.pdf
+* http://www.hardysolar.com/charge-controller/dl/morningstar-charge-controller-sunsaver-mppt.pdf
+
+SunSaver
 * http://www.hardysolar.com/charge-controller/dl/morningstar-charge-controller-sunsaver-mppt.pdf
 
 ## Identifier Order
