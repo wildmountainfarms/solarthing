@@ -1,4 +1,4 @@
-# Quick Start With Renogy Rover
+# Quick Start With Renogy Rover or Zenith Grape Charge Controller
 If you haven't already, [click here](quickstart.md) to view how to clone this repo and install the service.
 
 If you don't have a cable to connect to your device, [click here](../solar/README.md#connecting-to-renogy-rover)
@@ -11,6 +11,7 @@ cd /opt/solarthing/program
 
 Copy some template config files ([default_linux_serial](../../config_templates/io/default_linux_serial.json) and [rover_template](../../config_templates/base/rover_template.json) or [rover_setup_template](../../config_templates/base/rover_setup_template.json))
 ```
+# NOTE You will have to use sudo for all of these commands
 cp ../config_templates/io/default_linux_serial.json config/
 cp ../config_templates/base/rover_template.json config/base.json
 # or do this if you want to run the setup program:
@@ -37,7 +38,7 @@ If the default file in `solar/dummy_rover.json` doesn't work for you, feel free 
 the `config` directory and change it.
 
 ### I want to test this without a Renogy Rover
-Make sure to configure the `dummy` field as the above section describes, then just run `java -jar solarthing.jar`.
+Make sure to configure the `dummy` field as the above section describes, then just run `java -jar solarthing.jar config/base.json`.
 
 ### I'm ready to use this for real!
 Once your configuration is how you want it, you can go back to the [quickstart](quickstart.md#configuration-continued) to enable and start the service.
@@ -60,4 +61,4 @@ Here's an incomplete list of things I was unable to do:
   * These values didn't really seem correct
 
 Note that a lot of the more advanced features are untested. They exist in SolarThing because they were in the
-Rover's Modbus protocol document so I added it.
+Rover's Modbus protocol document, so I added it.
