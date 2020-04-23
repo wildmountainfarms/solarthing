@@ -24,6 +24,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 
 	@NotNull
 	@Override
+	@GraphQLInclude("identifier")
 	RoverIdentifier getIdentifier();
 
 	@Override

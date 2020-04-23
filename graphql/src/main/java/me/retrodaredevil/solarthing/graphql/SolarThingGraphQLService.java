@@ -126,40 +126,35 @@ public class SolarThingGraphQLService {
 	@GraphQLQuery
 	public SolarThingEventQuery queryEvent(
 			@GraphQLArgument(name = "from") long from, @GraphQLArgument(name = "to") long to,
-			@GraphQLArgument(name = "sourceId") @NotNull String sourceId
+			@GraphQLArgument(name = "sourceId") @NotNull String sourceId,
+			@GraphQLArgument(name = "includeUnknownChangePackets", defaultValue = "false") boolean includeUnknownChangePackets
 	) {
-		return new SolarThingEventQuery(new BasicPacketGetter(queryPackets(eventQueryHandler, eventParser, from, to, sourceId), PacketFilter.KEEP_ALL));
+		return new SolarThingEventQuery(new BasicPacketGetter(queryPackets(eventQueryHandler, eventParser, from, to, sourceId), new UnknownChangePacketsFilter(includeUnknownChangePackets)));
 	}
 	@GraphQLQuery(description = "Queries events in the specified time range while only including the specified identifier in the specified fragment")
 	public SolarThingEventQuery queryEventIdentifier(
 			@GraphQLArgument(name = "from") long from, @GraphQLArgument(name = "to") long to,
 			@GraphQLArgument(name = "sourceId") @NotNull String sourceId,
 			@GraphQLArgument(name = "fragmentId") @Nullable Integer fragmentId,
-			@GraphQLArgument(name = "identifier") @NotNull String identifierRepresentation
+			@GraphQLArgument(name = "identifier") @NotNull String identifierRepresentation,
+			@GraphQLArgument(name = "includeUnknownChangePackets", defaultValue = "false") boolean includeUnknownChangePackets
 	) {
 		return new SolarThingEventQuery(new BasicPacketGetter(
 				queryPackets(eventQueryHandler, eventParser, from, to, sourceId),
-				new PacketFilterMultiplexer(Arrays.asList(new FragmentFilter(fragmentId), new IdentifierFilter(identifierRepresentation)))
+				new PacketFilterMultiplexer(Arrays.asList(new FragmentFilter(fragmentId), new IdentifierFilter(identifierRepresentation), new UnknownChangePacketsFilter(includeUnknownChangePackets)))
 		));
 	}
 	@GraphQLQuery(description = "Queries events in the specified time range while only including the specified fragment")
 	public SolarThingEventQuery queryEventFragment(
 			@GraphQLArgument(name = "from") long from, @GraphQLArgument(name = "to") long to,
 			@GraphQLArgument(name = "sourceId") @NotNull String sourceId,
-			@GraphQLArgument(name = "fragmentId") @Nullable Integer fragmentId
+			@GraphQLArgument(name = "fragmentId") @Nullable Integer fragmentId,
+			@GraphQLArgument(name = "includeUnknownChangePackets", defaultValue = "false") boolean includeUnknownChangePackets
 	) {
 		return new SolarThingEventQuery(new BasicPacketGetter(
 				queryPackets(eventQueryHandler, eventParser, from, to, sourceId),
-				new FragmentFilter(fragmentId)
+				new PacketFilterMultiplexer(Arrays.asList(new FragmentFilter(fragmentId), new UnknownChangePacketsFilter(includeUnknownChangePackets)))
 		));
-	}
-	@GraphQLQuery(name = "controllerTemperatureFahrenheit")
-	public float getControllerTemperatureFahrenheit(@GraphQLContext RoverStatusPacket roverStatusPacket){
-		return roverStatusPacket.getControllerTemperatureCelsius() * 9 / 5.0f + 32;
-	}
-	@GraphQLQuery(name = "batteryTemperatureFahrenheit")
-	public float getBatteryTemperatureFahrenheit(@GraphQLContext RoverStatusPacket roverStatusPacket){
-		return roverStatusPacket.getBatteryTemperatureCelsius() * 9 / 5.0f + 32;
 	}
 	private interface PacketGetter {
 		<T> @NotNull List<@NotNull PacketNode<T>> getPackets(Class<T> clazz);

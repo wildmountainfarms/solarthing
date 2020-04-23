@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
+import me.retrodaredevil.solarthing.packets.ChangePacket;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.solar.common.ErrorReporter;
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
@@ -18,7 +19,7 @@ import java.util.Set;
 @JsonDeserialize(as = ImmutableMXErrorModeChangePacket.class)
 @JsonTypeName("MXFM_ERROR_MODE_CHANGE")
 @JsonExplicit
-public interface MXErrorModeChangePacket extends SupplementarySolarEventPacket, OutbackData, ErrorReporter {
+public interface MXErrorModeChangePacket extends SupplementarySolarEventPacket, OutbackData, ErrorReporter, ChangePacket {
 	@NotNull
     @Override
 	default SolarEventPacketType getPacketType(){
@@ -42,5 +43,10 @@ public interface MXErrorModeChangePacket extends SupplementarySolarEventPacket, 
 			return null;
 		}
 		return Modes.getActiveModes(MXErrorMode.class, previousErrorModeValue);
+	}
+
+	@Override
+	default boolean isLastUnknown() {
+		return getPreviousErrorModeValue() == null;
 	}
 }
