@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
+import me.retrodaredevil.solarthing.packets.ChangePacket;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.event.SupplementarySolarEventPacket;
@@ -16,7 +17,7 @@ import javax.validation.constraints.NotNull;
 @JsonDeserialize(as = ImmutableFXACModeChangePacket.class)
 @JsonTypeName("FX_AC_MODE_CHANGE")
 @JsonExplicit
-public interface FXACModeChangePacket extends SupplementarySolarEventPacket, OutbackData {
+public interface FXACModeChangePacket extends SupplementarySolarEventPacket, OutbackData, ChangePacket {
 	@NotNull
     @Override
 	default SolarEventPacketType getPacketType(){
@@ -37,5 +38,10 @@ public interface FXACModeChangePacket extends SupplementarySolarEventPacket, Out
 			return null;
 		}
 		return Modes.getActiveMode(ACMode.class, previous);
+	}
+
+	@Override
+	default boolean isLastUnknown() {
+		return getPreviousACModeValue() == null;
 	}
 }

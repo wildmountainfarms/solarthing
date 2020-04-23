@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.solar.renogy.rover;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import me.retrodaredevil.solarthing.solar.renogy.RenogyPacket;
@@ -27,7 +28,4 @@ public interface RoverStatusPacket extends RenogyPacket, RoverReadTable {
 		return SolarStatusPacketType.RENOGY_ROVER_STATUS;
 	}
 
-	@NotNull
-    @Override
-	RoverIdentifier getIdentifier();
 }

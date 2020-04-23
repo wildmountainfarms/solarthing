@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
+import me.retrodaredevil.solarthing.packets.ChangePacket;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.event.SupplementarySolarEventPacket;
@@ -15,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 @JsonDeserialize(as = ImmutableMXAuxModeChangePacket.class)
 @JsonTypeName("MXFM_AUX_MODE_CHANGE")
 @JsonExplicit
-public interface MXAuxModeChangePacket extends SupplementarySolarEventPacket, OutbackData {
+public interface MXAuxModeChangePacket extends SupplementarySolarEventPacket, OutbackData, ChangePacket {
 	@NotNull
     @Override
 	default SolarEventPacketType getPacketType(){
@@ -53,5 +54,10 @@ public interface MXAuxModeChangePacket extends SupplementarySolarEventPacket, Ou
 			return null;
 		}
 		return AuxMode.isAuxModeActive(raw);
+	}
+
+	@Override
+	default boolean isLastUnknown() {
+		return getPreviousRawAuxModeValue() == null;
 	}
 }

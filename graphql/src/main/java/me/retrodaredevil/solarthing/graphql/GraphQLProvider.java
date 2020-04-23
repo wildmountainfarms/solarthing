@@ -62,6 +62,7 @@ public class GraphQLProvider {
 		GraphQLSchema schema = new GraphQLSchemaGenerator()
 				.withBasePackages("me.retrodaredevil.solarthing")
 				.withOperationsFromSingleton(new SolarThingGraphQLService(objectMapper, couchDbDatabaseSettings.getCouchProperties()))
+				.withOperationsFromSingleton(new SolarThingGraphQLExtensions())
 				.withValueMapperFactory(jacksonValueMapperFactory)
 				.withResolverBuilders(resolverBuilder)
 				.withNestedResolverBuilders(
