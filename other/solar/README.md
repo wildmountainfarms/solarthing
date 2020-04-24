@@ -35,6 +35,13 @@ You can also view [Renogy Rover RS232 Pinout](resources/renogy_rover_rs232_pinou
 you need to connect the Rover's TX to your RX and the Rover's RX to your TX. Make sure you measure voltage
 with a multimeter so you don't send 15V through a Raspberry Pi's GPIO like I did!
 
+NOTE: Rover Elites use RS-485 serial communication and must use a different cable than regular Renogy Rovers. It is
+unknown if they use the same protocol, but I assume it is the same.
+
+### In the future
+In the future, it might be beneficial to allow the Rover program to request data from multiple Rover Elites at once
+because RS-485 supports multiple devices on the same serial wire.
+
 ### Outback References
 http://outbackpower.com/resources/documents/product-documentation
 

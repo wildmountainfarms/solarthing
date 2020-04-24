@@ -87,7 +87,8 @@ public class SolarThingGraphQLService {
 			throw new RuntimeException(e);
 		}
 		if(packets.isEmpty()){
-			throw new NoSuchElementException("No packets were queried between " + from + " and " + to);
+			System.out.println("No packets were queried between " + from + " and " + to);
+			return Collections.emptyList();
 		}
 		List<PacketGroup> rawPacketGroups = new ArrayList<>();
 		for(ObjectNode node : packets) {
