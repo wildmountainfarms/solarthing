@@ -2,6 +2,15 @@
 Contributions are welcome! Feel free to submit an issue to check to see if you want to start working on a feature but aren't
 sure if it will be accepted.
 
+## Submitting Changes
+When you submit changes, you should make sure you follow conventions. Most of the time you should test your changes.
+However, when you submit a PR, you should not have `program/solarthing.jar` or `program/graphql/solarthing.jar` added.
+This is because I want to be the one to compile it to avoid a possible security risk or unsupported JDK version.
+
+If the `.gitignore` file needs something added to it, please add it **at the bottom**.
+
+---
+
 ### Conventions
 This project requires Java 8+. However Java 8 API additions aren't used in the `core` module to remain compatible with Android SDK level 19.
 This does not apply to the `client` module.
