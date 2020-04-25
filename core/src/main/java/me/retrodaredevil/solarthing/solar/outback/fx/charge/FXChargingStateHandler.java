@@ -106,7 +106,8 @@ public class FXChargingStateHandler {
 			atAbsorbSetpoint = false;
 			atEqualizeSetpoint = false;
 			atFloatSetpoint = false;
-			if(rebulkVoltage == null){ // older FXs do not support continuing cycle through AC loss
+			if(rebulkVoltage == null){
+				// older FXs do not support continuing cycle through AC loss // TODO this is false and I'm not sure the best thing to do here
 				absorbTimer.resetTimer();
 				floatTimer.resetTimer();
 				equalizeTimer.resetTimer();
