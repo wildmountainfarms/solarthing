@@ -42,6 +42,11 @@ public class PacketNode<T> {
 		return fragmentId;
 	}
 
+	@JsonProperty("fragmentIdString")
+	public @NotNull String getFragmentIdString() {
+		return "" + getFragmentId();
+	}
+
 	@Override
 	public String toString() {
 		return "PacketNode(" +

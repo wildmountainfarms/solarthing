@@ -195,10 +195,6 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 		}
 		return temperatureRaw;
 	}
-	@Deprecated
-	default int getControllerTemperature(){ return getControllerTemperatureCelsius(); }
-	@Deprecated
-	default int getBatteryTemperature(){ return getBatteryTemperatureCelsius(); }
 
 	/**
 	 * Should be serialized as "loadVoltage"
