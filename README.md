@@ -4,6 +4,7 @@ Stores solar data in a database to view on Android, Grafana, or PVOutput
 ## Supported Products
 * **Outback MATEs** (FX Inverter, MX/FM Charge Controller)
 * **Renogy Rover** (And other Renogy products) over modbus serial.
+  * Compatible with all [SRNE Solar](https://www.srnesolar.com) Products (And rebranded products)
   * Also compatible with **Zenith Grape** Solar Charge Controller, **PowMr** MPPT Charge Controller, **RICH** SOLAR MPPT, **WindyNations TrakMax** MPPT
 
 # Quickstart
