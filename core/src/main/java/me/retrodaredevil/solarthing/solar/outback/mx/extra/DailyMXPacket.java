@@ -16,4 +16,12 @@ public interface DailyMXPacket extends SupplementarySolarExtraPacket, MXDailyDat
 	default SolarExtraPacketType getPacketType() {
 		return SolarExtraPacketType.MXFM_DAILY;
 	}
+
+	@Deprecated
+	@Override
+	float getDailyKWH();
+
+	@Deprecated
+	@Override
+	int getDailyAH();
 }

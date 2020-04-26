@@ -44,6 +44,8 @@ public class SecurityPacketReceiver implements JsonPacketReceiver {
 
 	private final Map<String, Long> senderLastCommandMap = new HashMap<>();
 
+	private final long listenStartTime;
+
 	/**
 	 *
 	 * @param publicKeyLookUp The {@link PublicKeyLookUp} to get the PublicKey for a received {@link IntegrityPacket}
@@ -60,6 +62,7 @@ public class SecurityPacketReceiver implements JsonPacketReceiver {
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
 			throw new RuntimeException(e);
 		}
+		listenStartTime = System.currentTimeMillis();
 	}
 
 	@Override
@@ -121,6 +124,8 @@ public class SecurityPacketReceiver implements JsonPacketReceiver {
 										LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Message from " + sender + " was parsed, but it too old! dateMillis: " + dateMillis + " minTime: " + minTime);
 									} else if(lastCommand != null && dateMillis <= lastCommand) { // if this command is old or if someone is trying to send the exact same command twice
 										LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Message from " + sender + " was parsed, but was older than the last command they sent! dateMillis: " + dateMillis + " lastCommand: " + lastCommand);
+									} else if(dateMillis < listenStartTime){
+										LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Message from " + sender + " was parsed, but it was sent before we started listening! dateMillis: " + dateMillis + " listenStartTime: " + listenStartTime);
 									} else {
 										lastCommands.put(sender, dateMillis);
 										dataReceiver.receiveData(sender, dateMillis, message);
@@ -143,6 +148,7 @@ public class SecurityPacketReceiver implements JsonPacketReceiver {
 					if(invalidSenderReason != null){
 						LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, invalidSenderReason);
 					} else {
+						LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Saving public key. Sender: " + sender);
 						publicKeySave.putKey(sender, key);
 					}
 				}
