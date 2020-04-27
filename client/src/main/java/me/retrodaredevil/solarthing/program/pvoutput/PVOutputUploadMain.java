@@ -99,7 +99,11 @@ public class PVOutputUploadMain {
 			long dayStartTimeMillis = calendar.getTimeInMillis();
 			List<ObjectNode> statusPacketNodes = null;
 			try {
-				statusPacketNodes = queryHandler.query(new ViewQuery().startKey(dayStartTimeMillis).endKey(now));
+				statusPacketNodes = queryHandler.query(new ViewQuery()
+						.designDocId("_design/packets")
+						.viewName("millis")
+						.startKey(dayStartTimeMillis)
+						.endKey(now));
 				LOGGER.debug("Got packets");
 			} catch (PacketHandleException e) {
 				LOGGER.error("Couldn't get status packets", e);
