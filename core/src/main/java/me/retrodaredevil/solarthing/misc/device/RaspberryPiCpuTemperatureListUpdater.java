@@ -21,7 +21,7 @@ public class RaspberryPiCpuTemperatureListUpdater implements PacketListReceiver 
 			Process process = processBuilder.start();
 			boolean finished = process.waitFor(300, TimeUnit.MILLISECONDS);
 			if(!finished){
-				LOGGER.warn("vcgencmd must have taken longer than 100ms!");
+				LOGGER.warn("vcgencmd must have taken longer than 300ms!");
 			} else {
 				InputStream inputStream = process.getInputStream();
 				int len = inputStream.read(buffer);
@@ -45,8 +45,9 @@ public class RaspberryPiCpuTemperatureListUpdater implements PacketListReceiver 
 				}
 			}
 			process.destroy();
+			process.waitFor(50, TimeUnit.MILLISECONDS);
 			if (process.isAlive()) {
-				process.destroyForcibly();
+				process.destroyForcibly().waitFor(50, TimeUnit.MILLISECONDS);
 				LOGGER.warn("Had to destroy forcibly! is still alive: " + process.isAlive());
 			}
 		} catch (IOException | InterruptedException e) {

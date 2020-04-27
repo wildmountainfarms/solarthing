@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 
 import static java.util.Objects.requireNonNull;
 
+@Deprecated
 public class ImmutableDailyUpdatePacket implements DailyUpdatePacket {
 	private final Long lastResetTimeMillis;
 	private final Long lastAtZeroTimeMillis;

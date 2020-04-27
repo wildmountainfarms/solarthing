@@ -6,6 +6,7 @@ import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class SimplePacketGroupParser implements PacketGroupParser {
 	}
 
 	@Override
-	public PacketGroup parse(ObjectNode objectNode) throws PacketParseException {
+	public @NotNull PacketGroup parse(ObjectNode objectNode) throws PacketParseException {
 		JsonNode dateMillisNode = objectNode.get("dateMillis");
 		if(dateMillisNode == null){
 			throw new PacketParseException("'dateMillis' does not exist for objectNode=" + objectNode);
