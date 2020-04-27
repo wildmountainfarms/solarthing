@@ -1,4 +1,4 @@
-# Quick Start With Renogy Rover or Zenith Grape Charge Controller
+# Quick Start With Renogy Rover or other SRNE (re)branded charge controllers
 If you haven't already, [click here](quickstart.md) to view how to clone this repo and install the service.
 
 If you don't have a cable to connect to your device, [click here](../solar/README.md#connecting-to-renogy-rover)
@@ -53,12 +53,12 @@ Yes, I hear you. When I first started trying to configure certain things on my R
 Here's an incomplete list of things I was unable to do:
 * Set the voltage thresholds
   * This doesn't work on CCs like the Wanderer, Adventurer. It only works on the Rover
-  * This only works if you set your battery type to "user" aka self-customized
+  * This only works if you set your battery type to "user" aka self-customized. Some settings can be changed on the "lithium" mode too.
   * Even though I tried configuring the voltage thresholds on a *Rover*, I couldn't get it to work. This program
   might not be setup correctly to even change these values, I'm not sure.
 * Settings most of the values
 * Getting (accurate) special power control values
-  * These values didn't really seem correct
+  * These values didn't really seem correct (maybe they only work on certain charge controllers or only when the battery type is lithium)
 
 Note that a lot of the more advanced features are untested. They exist in SolarThing because they were in the
-Rover's Modbus protocol document, so I added it.
+Rover's Modbus protocol document.

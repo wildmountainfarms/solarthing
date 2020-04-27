@@ -10,7 +10,6 @@ import me.retrodaredevil.solarthing.solar.outback.mx.extra.DailyMXPacket;
 		@JsonSubTypes.Type(DailyFXPacket.class),
 		@JsonSubTypes.Type(DailyMXPacket.class),
 		@JsonSubTypes.Type(FXChargingPacket.class),
-		@JsonSubTypes.Type(DailyUpdatePacket.class),
 })
 public interface SolarExtraPacket extends SolarPacket<SolarExtraPacketType> {
 }

@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 
 @JsonTypeName("pvoutput-upload")
@@ -20,6 +23,11 @@ public class PVOutputUploadProgramOptions implements ProgramOptions {
 	private TimeZone timeZone = null;
 	@JsonProperty("source")
 	private String sourceId = null;
+
+	@JsonProperty("required_fragment_ids")
+	private List<Integer> requiredFragmentIds = null;
+	@JsonProperty("required_identifiers")
+	private Map<Integer, String> requiredIdentifiers = null;
 
 	@Override
 	public ProgramType getProgramType() {
@@ -46,5 +54,21 @@ public class PVOutputUploadProgramOptions implements ProgramOptions {
 	}
 	public String getSourceId(){
 		return sourceId;
+	}
+
+	public List<Integer> getRequiredFragmentIds() {
+		List<Integer> r = requiredFragmentIds;
+		if (r == null) {
+			return Collections.emptyList();
+		}
+		return r;
+	}
+
+	public Map<Integer, String> getRequiredIdentifiers() {
+		Map<Integer, String> r = requiredIdentifiers;
+		if (r == null) {
+			return Collections.emptyMap();
+		}
+		return r;
 	}
 }

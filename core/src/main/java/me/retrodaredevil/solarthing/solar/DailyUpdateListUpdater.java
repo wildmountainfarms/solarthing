@@ -13,8 +13,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Deprecated
 public class DailyUpdateListUpdater<T extends Identifiable> implements PacketListReceiver {
 
+	@Deprecated
 	public static final PacketListReceiver MX_DAILY_UPDATE_LIST_UPDATER = new DailyUpdateListUpdater<>(MXStatusPacket.class, mxStatusPacket -> {
 		Support dailyAHSupport = mxStatusPacket.getDailyAHSupport();
 		if (dailyAHSupport == Support.NOT_SUPPORTED) {

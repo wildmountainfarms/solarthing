@@ -22,8 +22,6 @@ import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerat
 import me.retrodaredevil.solarthing.packets.handling.*;
 import me.retrodaredevil.solarthing.packets.handling.implementations.TimedPacketReceiver;
 import me.retrodaredevil.solarthing.packets.security.crypto.DirectoryKeyMap;
-import me.retrodaredevil.solarthing.packets.support.Support;
-import me.retrodaredevil.solarthing.solar.DailyUpdateListUpdater;
 import me.retrodaredevil.solarthing.solar.outback.MatePacketCreator49;
 import me.retrodaredevil.solarthing.solar.outback.OutbackDuplicatePacketRemover;
 import me.retrodaredevil.solarthing.solar.outback.OutbackListUpdater;
@@ -32,7 +30,6 @@ import me.retrodaredevil.solarthing.solar.outback.fx.FXEventUpdaterListReceiver;
 import me.retrodaredevil.solarthing.solar.outback.fx.charge.FXChargingSettings;
 import me.retrodaredevil.solarthing.solar.outback.fx.charge.FXChargingUpdaterListReceiver;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXEventUpdaterListReceiver;
-import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPacket;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import me.retrodaredevil.solarthing.util.time.DailyIdentifier;
 import org.slf4j.Logger;
@@ -187,7 +184,6 @@ public class OutbackMateMain {
 					OutbackDuplicatePacketRemover.INSTANCE,
 					new FXEventUpdaterListReceiver(eventPacketListReceiverHandler.getPacketListReceiverAccepter(), options.getFXWarningIgnoreMap()),
 					new MXEventUpdaterListReceiver(eventPacketListReceiverHandler.getPacketListReceiverAccepter()),
-					DailyUpdateListUpdater.MX_DAILY_UPDATE_LIST_UPDATER,
 					new OutbackListUpdater(new DailyIdentifier(), eventPacketListReceiverHandler.getPacketListReceiverAccepter(), dataDirectory)
 			));
 			FXChargingSettings fxChargingSettings = options.getFXChargingSettings();
