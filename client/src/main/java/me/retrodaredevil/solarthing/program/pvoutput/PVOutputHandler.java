@@ -149,16 +149,14 @@ public class PVOutputHandler {
 		Map<IdentifierFragment, List<DailyPair<RoverStatusPacket>>> roverMap = DailyUtil.getDailyPairs(DailyUtil.mapPackets(RoverStatusPacket.class, packetGroups), dailyConfig);
 		Map<IdentifierFragment, List<DailyPair<DailyFXPacket>>> dailyFXMap = DailyUtil.getDailyPairs(DailyUtil.mapPackets(DailyFXPacket.class, packetGroups), dailyConfig);
 		if (!mxMap.isEmpty() || !roverMap.isEmpty()) { // energy produced
-			builder.setEnergyGeneration(
-					getTotal(mxMap.values(), MXStatusPacket::getDailyKWH) +
-							getTotal(roverMap.values(), RoverStatusPacket::getDailyKWH)
-			);
+			float generationKWH = getTotal(mxMap.values(), MXStatusPacket::getDailyKWH) +
+					getTotal(roverMap.values(), RoverStatusPacket::getDailyKWH);
+			builder.setEnergyGeneration((int) (generationKWH * 1000.0f));
 		}
 		if (!roverMap.isEmpty() || !dailyFXMap.isEmpty()) { // energy consumed
-			builder.setEnergyConsumption(
-					getTotal(roverMap.values(), RoverStatusPacket::getDailyKWHConsumption) +
-							getTotal(dailyFXMap.values(), dailyFXPacket -> dailyFXPacket.getInverterKWH() + dailyFXPacket.getBuyKWH() - dailyFXPacket.getChargerKWH())
-			);
+			float consumptionKWH = getTotal(roverMap.values(), RoverStatusPacket::getDailyKWHConsumption) +
+					getTotal(dailyFXMap.values(), dailyFXPacket -> dailyFXPacket.getInverterKWH() + dailyFXPacket.getBuyKWH() - dailyFXPacket.getChargerKWH());
+			builder.setEnergyConsumption((int) (consumptionKWH * 1000.0f));
 		}
 		return builder;
 	}
