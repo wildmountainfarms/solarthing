@@ -11,7 +11,7 @@ import java.util.List;
 public class PacketParseUtil {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PacketParseUtil.class);
 
-	public static List<PacketGroup> parseRawPackets(List<? extends ObjectNode> packetNodes, PacketGroupParser parser) {
+	public static List<PacketGroup> parseRawPacketsLenient(List<? extends ObjectNode> packetNodes, PacketGroupParser parser) {
 		List<PacketGroup> rawPacketGroups = new ArrayList<>(packetNodes.size());
 		for(ObjectNode object : packetNodes){
 			try {
@@ -20,6 +20,14 @@ public class PacketParseUtil {
 			} catch (PacketParseException e) {
 				LOGGER.warn("Got PacketParseException. Going to continue...", e);
 			}
+		}
+		return rawPacketGroups;
+	}
+	public static List<PacketGroup> parseRawPackets(List<? extends ObjectNode> packetNodes, PacketGroupParser parser) throws PacketParseException {
+		List<PacketGroup> rawPacketGroups = new ArrayList<>(packetNodes.size());
+		for(ObjectNode object : packetNodes){
+			PacketGroup packetGroup = parser.parse(object);
+			rawPacketGroups.add(packetGroup);
 		}
 		return rawPacketGroups;
 	}

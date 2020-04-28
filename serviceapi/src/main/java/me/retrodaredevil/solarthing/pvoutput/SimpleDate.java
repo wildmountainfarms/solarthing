@@ -7,17 +7,20 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.time.Instant;
 import java.time.temporal.ChronoField;
-import java.util.Calendar;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalField;
+import java.util.*;
 
 /**
  * Represents a date with a year, month, and day. Both month and day are 1 based.
  */
 @JsonDeserialize(using = SimpleDate.Deserializer.class)
-public final class SimpleDate implements PVOutputString {
+public final class SimpleDate implements Comparable<SimpleDate>, PVOutputString {
 	private final int year;
 	private final int month;
 	private final int day;
@@ -36,8 +39,37 @@ public final class SimpleDate implements PVOutputString {
 	public static SimpleDate fromCalendar(Calendar calendar){
 		return new SimpleDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));
 	}
-	public static SimpleDate fromInstant(Instant instant){
+	public static SimpleDate fromTemporal(Temporal instant){
 		return new SimpleDate(instant.get(ChronoField.YEAR), instant.get(ChronoField.MONTH_OF_YEAR), instant.get(ChronoField.DAY_OF_MONTH));
+	}
+	public static SimpleDate fromDate(Date date) {
+		Calendar calendar = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
+		calendar.setTime(date);
+		return fromCalendar(calendar);
+	}
+	public static SimpleDate fromDateMillis(long dateMillis, TimeZone timeZone) {
+		Calendar calendar = new GregorianCalendar(timeZone);
+		calendar.setTimeInMillis(dateMillis);
+		return fromCalendar(calendar);
+	}
+	public Calendar toCalendar(TimeZone timeZone) {
+		Calendar calendar = new GregorianCalendar(timeZone);
+		calendar.set(year, month - 1, day, 0, 0, 0);
+		calendar.setTimeInMillis(calendar.getTimeInMillis() - (calendar.getTimeInMillis() % 1000));
+		return calendar;
+	}
+	public Date toDate(TimeZone timeZone) {
+		return new Date(toCalendar(timeZone).getTimeInMillis());
+	}
+
+	public long getDayStartDateMillis(TimeZone timeZone) {
+		return toCalendar(timeZone).getTimeInMillis();
+	}
+	public SimpleDate tomorrow() {
+		Calendar calendar = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
+		calendar.set(year, month - 1, day);
+		calendar.add(Calendar.DAY_OF_YEAR, 1);
+		return fromCalendar(calendar);
 	}
 
 	public int getYear() {
@@ -51,6 +83,35 @@ public final class SimpleDate implements PVOutputString {
 	public int getDay() {
 		return day;
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		SimpleDate that = (SimpleDate) o;
+		return year == that.year &&
+				month == that.month &&
+				day == that.day;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(year, month, day);
+	}
+
+	@Override
+	public int compareTo(@NotNull SimpleDate simpleDate) {
+		int a = Integer.compare(year, simpleDate.year);
+		if (a != 0) {
+			return a;
+		}
+		a = Integer.compare(month, simpleDate.month);
+		if (a != 0) {
+			return a;
+		}
+		return Integer.compare(day, simpleDate.day);
+	}
+
 	@Override
 	public String toPVOutputString(){
 		if(year < 1000){
@@ -76,6 +137,10 @@ public final class SimpleDate implements PVOutputString {
 		}
 
 		return yearString + monthString + dayString;
+	}
+	@Override
+	public String toString() {
+		return toPVOutputString();
 	}
 	static class Deserializer extends JsonDeserializer<SimpleDate> {
 

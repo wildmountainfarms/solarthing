@@ -11,8 +11,6 @@ interface UnimplementedPVOutputService {
 	// Implement Billion Gateway
 	// Implement eGauge Post
 
-	@POST("addbatchoutput.jsp") // or get
-	Call<?> addBatchOutput();
 	@POST("addbatchstatus.jsp") // or get
 	Call<?> addBatchStatus();
 
