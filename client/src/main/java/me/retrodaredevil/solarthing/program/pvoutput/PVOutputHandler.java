@@ -58,7 +58,7 @@ public class PVOutputHandler {
 						}
 					}
 				}
-				LOGGER.warn("The required identifier: " + entry.getValue() + " with fragmentId: " + entry.getKey() + " was not present int he latest packet group!");
+				LOGGER.warn("The required identifier: " + entry.getValue() + " with fragmentId: " + entry.getKey() + " was not present in the latest packet group!");
 				return false;
 			}
 		}
@@ -120,12 +120,12 @@ public class PVOutputHandler {
 		if (!mxMap.isEmpty() || !roverMap.isEmpty()) { // energy produced
 			float generationKWH = getTotal(mxMap.values(), MXStatusPacket::getDailyKWH) +
 					getTotal(roverMap.values(), RoverStatusPacket::getDailyKWH);
-			builder.setEnergyGeneration((int) (generationKWH * 1000.0f));
+			builder.setEnergyGeneration(Math.round(generationKWH * 1000.0f));
 		}
-		if (!roverMap.isEmpty() || !dailyFXMap.isEmpty()) { // energy consumed
+		if (!dailyFXMap.isEmpty()) { // energy consumed // right now, only do this if there are fx dailies
 			float consumptionKWH = getTotal(roverMap.values(), RoverStatusPacket::getDailyKWHConsumption) +
 					getTotal(dailyFXMap.values(), dailyFXPacket -> dailyFXPacket.getInverterKWH() + dailyFXPacket.getBuyKWH() - dailyFXPacket.getChargerKWH());
-			builder.setEnergyConsumption((int) (consumptionKWH * 1000.0f));
+			builder.setEnergyConsumption(Math.round(consumptionKWH * 1000.0f));
 		}
 		return builder;
 	}
