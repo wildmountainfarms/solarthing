@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.pvoutput.service;
 
+import me.retrodaredevil.solarthing.pvoutput.data.AddBatchOutputParameters;
 import me.retrodaredevil.solarthing.pvoutput.data.AddOutputParameters;
 import me.retrodaredevil.solarthing.pvoutput.data.AddStatusParameters;
 import retrofit2.Call;
@@ -12,5 +13,6 @@ public interface PVOutputService {
 	Call<String> addOutput(@Body AddOutputParameters parameters);
 	@POST("addstatus.jsp") // or get
 	Call<String> addStatus(@Body AddStatusParameters parameters);
-
+	@POST("addbatchoutput.jsp")
+	Call<String> addBatchOutput(@Body AddBatchOutputParameters parameters);
 }

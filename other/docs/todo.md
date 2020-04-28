@@ -1,11 +1,8 @@
 ### TODO
 * Create Arduino or Java program to simulate MATE or Rover
-* Add readable string alongside identifier tag for InfluxDB
 * Create a calendar program to be able to view daily kWh on a calendar interface
   * If we do something with a calendar, we could use Google calendar https://developers.google.com/calendar/create-events/
 * Have unique identifier for each jar file
-* AC Use->AC Drop, turn on AUX until NO AC. (GEN OFF) command using MATE's built in AC Use/Drop.
-  * Might also have to detect low/high vac to determine if intentional
 * For PVOutput, when the PV Current is 0 and the input voltage is high, we might be able to assume that
 the charge controller is not accepting more power
   * Use this so incorrect statistics are not reported
@@ -17,11 +14,11 @@ easy displaying in Grafana
 * Packet for disk usage
 * Query all Renogy Rover data at once by reading almost all the registers.
 * Store data such as the panel tilt that can change over time
+* Add a packet for Renogy Rover that is sent when it is disconnected (when timeouts happen).
   
 ### Android TODO
 * Notification for when FXs are in EQ, but any MX is in absorb or float
 * Notification for when MX wakes up and goes straight to float (happens on older models)
-* Don't display battery average if there is only one device and don't display if both are the same
 
 ### Completed TODO:
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)

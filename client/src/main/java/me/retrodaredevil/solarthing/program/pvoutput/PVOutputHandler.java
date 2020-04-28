@@ -1,7 +1,5 @@
 package me.retrodaredevil.solarthing.program.pvoutput;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
@@ -12,7 +10,6 @@ import me.retrodaredevil.solarthing.pvoutput.SimpleDate;
 import me.retrodaredevil.solarthing.pvoutput.SimpleTime;
 import me.retrodaredevil.solarthing.pvoutput.data.AddStatusParameters;
 import me.retrodaredevil.solarthing.pvoutput.data.AddStatusParametersBuilder;
-import me.retrodaredevil.solarthing.pvoutput.service.PVOutputService;
 import me.retrodaredevil.solarthing.solar.common.DailyData;
 import me.retrodaredevil.solarthing.solar.daily.DailyConfig;
 import me.retrodaredevil.solarthing.solar.daily.DailyPair;
@@ -21,44 +18,32 @@ import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.extra.DailyFXPacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPacket;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
-import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import retrofit2.Call;
-import retrofit2.Response;
 
-import java.io.IOException;
 import java.util.*;
 
 public class PVOutputHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PVOutputHandler.class);
-	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
 
 	private final TimeZone timeZone;
 	private final Map<Integer, List<String>> requiredIdentifierMap;
-	private final PVOutputService service;
 
-	public PVOutputHandler(TimeZone timeZone, Map<Integer, List<String>> requiredIdentifierMap, PVOutputService service) {
+	public PVOutputHandler(TimeZone timeZone, Map<Integer, List<String>> requiredIdentifierMap) {
 		this.timeZone = timeZone;
 		this.requiredIdentifierMap = requiredIdentifierMap;
-		this.service = service;
 	}
-
-	public void handle(long dayStartTimeMillis, List<FragmentedPacketGroup> packetGroupList) {
+	public boolean checkPackets(long dayStartTimeMillis, List<FragmentedPacketGroup> packetGroupList) {
 		if (packetGroupList.isEmpty()) {
 			LOGGER.warn("No packets!");
-			return;
+			return false;
 		}
 		FragmentedPacketGroup latestPacketGroup = packetGroupList.get(packetGroupList.size() - 1);
-		if (latestPacketGroup.getDateMillis() < System.currentTimeMillis() - 5 * 60 * 1000) {
-			LOGGER.warn("The last packet is more than 5 minutes in the past!");
-			return;
-		}
 		outerLoop: for (Map.Entry<Integer, List<String>> entry : requiredIdentifierMap.entrySet()) {
 			Integer desiredFragmentId = entry.getKey();
 			if (!latestPacketGroup.hasFragmentId(desiredFragmentId)) {
 				LOGGER.warn("The latest packet group doesn't contain the " + desiredFragmentId + " fragment id!");
-				return;
+				return false;
 			}
 			for (String desiredIdentifierRepresentation : entry.getValue()) {
 				for (Packet packet : latestPacketGroup.getPackets()) {
@@ -74,47 +59,32 @@ public class PVOutputHandler {
 					}
 				}
 				LOGGER.warn("The required identifier: " + entry.getValue() + " with fragmentId: " + entry.getKey() + " was not present int he latest packet group!");
+				return false;
 			}
-			return;
 		}
+		return true;
+	}
+
+	public AddStatusParameters getStatus(long dayStartTimeMillis, List<FragmentedPacketGroup> packetGroupList) {
+		FragmentedPacketGroup latestPacketGroup = packetGroupList.get(packetGroupList.size() - 1);
 		LOGGER.debug("Continuing with the latest packet group. Day start: " + dayStartTimeMillis);
-		AddStatusParametersBuilder addStatusParametersBuilder = createBuilder(timeZone, latestPacketGroup.getDateMillis());
-		setPowerValues(addStatusParametersBuilder, latestPacketGroup);
-		setEnergyValues(
+		AddStatusParametersBuilder addStatusParametersBuilder = createStatusBuilder(timeZone, latestPacketGroup.getDateMillis());
+		setStatusPowerValues(addStatusParametersBuilder, latestPacketGroup);
+		setStatusEnergyValues(
 				addStatusParametersBuilder,
 				packetGroupList,
 				new DailyConfig(dayStartTimeMillis + 3 * 60 * 60 * 1000, dayStartTimeMillis + 10 * 60 * 60 * 1000)
 		);
-		AddStatusParameters parameters = addStatusParametersBuilder.build();
-		try {
-			LOGGER.debug(MAPPER.writeValueAsString(parameters));
-		} catch (JsonProcessingException e) {
-			LOGGER.error("Got error serializing JSON. This should never happen.", e);
-		}
-		Call<String> call = service.addStatus(parameters);
-		LOGGER.debug("Executing call");
-		Response<String> response = null;
-		try {
-			response = call.execute();
-		} catch (IOException e) {
-			LOGGER.error("Exception while executing", e);
-		}
-		if(response != null) {
-			if (response.isSuccessful()) {
-				LOGGER.debug("Executed successfully. Result: " + response.body());
-			} else {
-				LOGGER.debug("Unsuccessful. Message: " + response.message() + " code: " + response.code());
-			}
-		}
+		return addStatusParametersBuilder.build();
 	}
-	private static AddStatusParametersBuilder createBuilder(TimeZone timeZone, long dateMillis) {
+	private static AddStatusParametersBuilder createStatusBuilder(TimeZone timeZone, long dateMillis) {
 		Calendar calendar = new GregorianCalendar(timeZone);
 		calendar.setTimeInMillis(dateMillis);
 		SimpleDate date = SimpleDate.fromCalendar(calendar);
 		SimpleTime time = SimpleTime.fromCalendar(calendar);
 		return new AddStatusParametersBuilder(date, time);
 	}
-	private static AddStatusParametersBuilder setPowerValues(AddStatusParametersBuilder builder, PacketGroup latestPacketGroup){
+	private static AddStatusParametersBuilder setStatusPowerValues(AddStatusParametersBuilder builder, PacketGroup latestPacketGroup){
 		Integer generatingW = null;
 		Integer usingW = null;
 		for(Packet packet : latestPacketGroup.getPackets()){
@@ -143,7 +113,7 @@ public class PVOutputHandler {
 		return builder.setPowerGeneration(generatingW)
 				.setPowerConsumption(usingW);
 	}
-	private static AddStatusParametersBuilder setEnergyValues(AddStatusParametersBuilder builder, List<FragmentedPacketGroup> packetGroups, DailyConfig dailyConfig) {
+	private static AddStatusParametersBuilder setStatusEnergyValues(AddStatusParametersBuilder builder, List<FragmentedPacketGroup> packetGroups, DailyConfig dailyConfig) {
 		Map<IdentifierFragment, List<DailyPair<MXStatusPacket>>> mxMap = DailyUtil.getDailyPairs(DailyUtil.mapPackets(MXStatusPacket.class, packetGroups), dailyConfig);
 		Map<IdentifierFragment, List<DailyPair<RoverStatusPacket>>> roverMap = DailyUtil.getDailyPairs(DailyUtil.mapPackets(RoverStatusPacket.class, packetGroups), dailyConfig);
 		Map<IdentifierFragment, List<DailyPair<DailyFXPacket>>> dailyFXMap = DailyUtil.getDailyPairs(DailyUtil.mapPackets(DailyFXPacket.class, packetGroups), dailyConfig);

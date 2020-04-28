@@ -2,9 +2,10 @@ package me.retrodaredevil.solarthing.pvoutput.data;
 
 import com.fasterxml.jackson.annotation.*;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.pvoutput.SimpleDate;
-import me.retrodaredevil.solarthing.pvoutput.SimpleTime;
-import me.retrodaredevil.solarthing.pvoutput.WeatherCondition;
+import me.retrodaredevil.solarthing.pvoutput.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonExplicit
@@ -56,4 +57,31 @@ public interface AddOutputParameters {
 	Number getImportHighShoulder();
 	@JsonProperty("c")
 	Number getConsumption();
+
+	default String[] toBatchCsvArray() {
+		return new String[] {
+				getOutputDate().toPVOutputString(),
+				toStringOrNull(getGenerated()),
+				toStringOrNull(getExported()),
+				toStringOrNull(getConsumption()),
+				toStringOrNull(getPeakPower()),
+				toStringOrNull(getPeakTime()),
+				getConditionValue(),
+				toStringOrNull(getMinimumTemperatureCelsius()),
+				toStringOrNull(getMaximumTemperatureCelsius()),
+				getComments(),
+				toStringOrNull(getImportPeak()),
+				toStringOrNull(getImportOffPeak()),
+				toStringOrNull(getImportShoulder())
+		};
+	}
+	static String toStringOrNull(Object object) {
+		if(object == null) {
+			return null;
+		}
+		if (object instanceof PVOutputString) {
+			return ((PVOutputString) object).toPVOutputString();
+		}
+		return object.toString();
+	}
 }

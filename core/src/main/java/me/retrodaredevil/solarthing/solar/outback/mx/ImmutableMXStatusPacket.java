@@ -9,7 +9,10 @@ import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import javax.validation.constraints.NotNull;
 
-@JsonIgnoreProperties(value = {"auxModeName", "errors", "chargerModeName"}, allowGetters = true)
+@JsonIgnoreProperties(value = {
+		"auxModeName", "errors", "chargerModeName",
+		"batteryVoltageString", "dailyKWHString", "ampChargerCurrentString"
+}, allowGetters = true)
 final class ImmutableMXStatusPacket implements MXStatusPacket {
 	private final int address;
 	private final int chargerCurrent, pvCurrent, inputVoltage;
