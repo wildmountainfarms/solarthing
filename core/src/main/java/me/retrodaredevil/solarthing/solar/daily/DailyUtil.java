@@ -18,7 +18,7 @@ public class DailyUtil {
 	private static <T extends Packet & DailyData> DailyPair<T> createDailyPair(boolean isFirst, TimestampedPacket<T> firstPacket, TimestampedPacket<T> endPacket, DailyConfig dailyConfig) {
 		final DailyPair.StartPacketType startPacketType;
 		if (isFirst) {
-			if (endPacket.getDateMillis() < dailyConfig.getCutOffBeforeDateMillis()) {
+			if (firstPacket.getDateMillis() < dailyConfig.getCutOffIfStartBeforeDateMillis() || endPacket.getDateMillis() < dailyConfig.getCutOffIfEndBeforeDateMillis()) {
 				startPacketType = DailyPair.StartPacketType.CUT_OFF;
 			} else {
 				startPacketType = DailyPair.StartPacketType.MIDDLE_OF_DAY_CONNECT;

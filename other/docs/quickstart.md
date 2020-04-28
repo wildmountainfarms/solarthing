@@ -3,7 +3,7 @@ Ready to get started? Run these commands:
 
 ```shell script
 cd /opt # You can clone it somewhere else, however if you do that, you will have to change the solarthing.service file if you plan to install the systemd service
-sudo git clone https://github.com/wildmountainfarms/solarthing
+sudo git clone --depth=1 https://github.com/wildmountainfarms/solarthing
 cd solarthing
 sudo other/systemd/install.sh # This only works on Linux systems that use systemd. Using this makes running the program long term very easy
 ```

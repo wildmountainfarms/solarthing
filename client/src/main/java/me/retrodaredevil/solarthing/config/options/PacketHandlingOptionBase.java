@@ -12,10 +12,12 @@ class PacketHandlingOptionBase implements PacketHandlingOption {
 	@JsonProperty
 	@JsonPropertyDescription("An array of strings that each represent a database configuration file relative to the program directory.")
 	private List<File> databases = null;
-	@JsonProperty
+	@JsonProperty(value = "source", required = true)
 	private String source = "default";
-	@JsonProperty
+	@JsonProperty(value = "fragment", required = true)
 	private Integer fragment = null;
+	@JsonProperty("allow_null_fragment")
+	private boolean allowNullFragment = false;
 	@JsonProperty
 	private Integer unique = null;
 
@@ -38,6 +40,9 @@ class PacketHandlingOptionBase implements PacketHandlingOption {
 
 	@Override
 	public Integer getFragmentId() {
+		if (fragment == null && !allowNullFragment) {
+			throw new IllegalStateException("fragment is null when allowNullFragment == false! If you want to allow null fragments, set `allow_null_fragment` to true");
+		}
 		return fragment;
 	}
 

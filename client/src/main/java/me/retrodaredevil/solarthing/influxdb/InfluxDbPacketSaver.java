@@ -12,6 +12,7 @@ import me.retrodaredevil.solarthing.influxdb.retention.RetentionPolicy;
 import me.retrodaredevil.solarthing.influxdb.retention.RetentionPolicyGetter;
 import me.retrodaredevil.solarthing.influxdb.retention.RetentionPolicySetting;
 import me.retrodaredevil.solarthing.packets.Packet;
+import me.retrodaredevil.solarthing.packets.collection.DefaultInstanceOptions;
 import me.retrodaredevil.solarthing.packets.collection.InstancePacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
@@ -81,7 +82,7 @@ public class InfluxDbPacketSaver implements PacketHandler {
 	@Override
 	public void handle(PacketCollection packetCollection, boolean wasInstant) throws PacketHandleException {
 		try(InfluxDB db = createDatabase()) {
-			final InstancePacketGroup packetGroup = PacketGroups.parseToInstancePacketGroup(packetCollection);
+			final InstancePacketGroup packetGroup = PacketGroups.parseToInstancePacketGroup(packetCollection, DefaultInstanceOptions.DEFAULT_DEFAULT_INSTANCE_OPTIONS);
 			final String database = databaseNameGetter.getDatabaseName(packetGroup);
 			try {
 				QueryResult result = db.query(new Query("CREATE DATABASE " + database, null, true));

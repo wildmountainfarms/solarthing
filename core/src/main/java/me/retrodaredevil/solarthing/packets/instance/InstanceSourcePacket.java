@@ -12,6 +12,7 @@ import javax.validation.constraints.NotNull;
 @JsonExplicit
 public interface InstanceSourcePacket extends InstancePacket {
 	String DEFAULT_SOURCE_ID = "default";
+	String UNUSED_SOURCE_ID = "<UNUSED SOURCE ID THAT WILL NEVER BE IN A PACKET>";
 
 	@NotNull
     @Override

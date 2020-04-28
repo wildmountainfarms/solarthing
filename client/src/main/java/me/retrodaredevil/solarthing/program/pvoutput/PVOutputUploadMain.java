@@ -9,6 +9,7 @@ import me.retrodaredevil.solarthing.config.databases.DatabaseType;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.config.options.PVOutputUploadProgramOptions;
 import me.retrodaredevil.solarthing.couchdb.CouchDbQueryHandler;
+import me.retrodaredevil.solarthing.packets.collection.DefaultInstanceOptions;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
 import me.retrodaredevil.solarthing.packets.collection.parsing.*;
@@ -39,11 +40,11 @@ public class PVOutputUploadMain {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PVOutputUploadMain.class);
 	private static final ObjectMapper MAPPER = JacksonUtil.lenientMapper(JacksonUtil.defaultMapper());
 
-	private static List<FragmentedPacketGroup> getPacketGroups(String sourceId, List<? extends ObjectNode> packetNodes, PacketGroupParser parser){
-		Map<String, List<FragmentedPacketGroup>> packetGroupsMap = PacketGroups.sortPackets(PacketParseUtil.parseRawPackets(packetNodes, parser), 2 * 60 * 1000);
-		if(sourceId == null){
-			if(packetGroupsMap.containsKey("default")){
-				return packetGroupsMap.get("default");
+	private static List<FragmentedPacketGroup> getPacketGroups(String sourceId, DefaultInstanceOptions defaultInstanceOptions, List<? extends ObjectNode> packetNodes, PacketGroupParser parser){
+		Map<String, List<FragmentedPacketGroup>> packetGroupsMap = PacketGroups.sortPackets(PacketParseUtil.parseRawPackets(packetNodes, parser), defaultInstanceOptions, 2 * 60 * 1000);
+		if(sourceId == null){ // no preference on the source
+			if(packetGroupsMap.containsKey(defaultInstanceOptions.getDefaultSourceId())){
+				return packetGroupsMap.get(defaultInstanceOptions.getDefaultSourceId());
 			} else {
 				Iterator<List<FragmentedPacketGroup>> iterator = packetGroupsMap.values().iterator();
 				if(iterator.hasNext()){
@@ -57,7 +58,7 @@ public class PVOutputUploadMain {
 	}
 
 	@SuppressWarnings("SameReturnValue")
-	public static int startPVOutputUpload(PVOutputUploadProgramOptions options){
+	public static int startPVOutputUpload(PVOutputUploadProgramOptions options, String[] extraArgs){
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Starting PV Output upload program");
 		TimeZone timeZone = options.getTimeZone();
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Using time zone: {}", timeZone.getDisplayName());
@@ -86,9 +87,20 @@ public class PVOutputUploadMain {
 				.build();
 		Retrofit retrofit = RetrofitUtil.defaultBuilder().client(client).build();
 		PVOutputService service = retrofit.create(PVOutputService.class);
+		if(extraArgs.length >= 2) {
+			System.out.println("In a future version we will parse two dates here");
+		} else if (extraArgs.length == 1) {
+			System.err.println("You need 2 arguments! Continuing with real time program.");
+		}
 
-		PVOutputHandler handler = new PVOutputHandler(timeZone, options.getRequiredFragmentIds(), options.getRequiredIdentifiers(), service);
+		PVOutputHandler handler = new PVOutputHandler(timeZone, options.getRequiredIdentifierMap(), service);
+		return startRealTimeProgram(options, queryHandler, statusParser, handler);
+	}
 
+	private static int startRealTimeProgram(
+			PVOutputUploadProgramOptions options, CouchDbQueryHandler queryHandler,
+			PacketGroupParser statusParser, PVOutputHandler handler
+	) {
 		while(!Thread.currentThread().isInterrupted()){
 			LOGGER.debug("Going to do stuff now.");
 			long now = System.currentTimeMillis();
@@ -109,7 +121,7 @@ public class PVOutputUploadMain {
 				LOGGER.error("Couldn't get status packets", e);
 			}
 			if(statusPacketNodes != null){
-				List<FragmentedPacketGroup> packetGroups = getPacketGroups(options.getSourceId(), statusPacketNodes, statusParser);
+				List<FragmentedPacketGroup> packetGroups = getPacketGroups(options.getSourceId(), options.getDefaultInstanceOptions(), statusPacketNodes, statusParser);
 				if (packetGroups != null) {
 					handler.handle(dayStartTimeMillis, packetGroups);
 				} else {

@@ -37,13 +37,17 @@ public final class PacketGroups {
 	public static FragmentedPacketGroup createFragmentedPacketGroup(Collection<? extends InstancePacketGroup> instancePackets, long dateMillis) {
 		return new ImmutableFragmentedPacketGroup(instancePackets, dateMillis);
 	}
+	@Deprecated
 	public static InstancePacketGroup parseToInstancePacketGroup(PacketGroup group){
+		return parseToInstancePacketGroup(group, DefaultInstanceOptions.DEFAULT_DEFAULT_INSTANCE_OPTIONS);
+	}
+	public static InstancePacketGroup parseToInstancePacketGroup(PacketGroup group, DefaultInstanceOptions defaultInstanceOptions){
 		if(group instanceof InstancePacketGroup){
 			return (InstancePacketGroup) group;
 		}
 		List<Packet> packets = new ArrayList<>();
-		String sourceId = InstanceSourcePacket.DEFAULT_SOURCE_ID;
-		Integer fragmentId = null;
+		String sourceId = defaultInstanceOptions.getDefaultSourceId();
+		Integer fragmentId = defaultInstanceOptions.getDefaultFragmentId();
 		for(Packet packet : group.getPackets()){
 			if (packet instanceof InstancePacket) {
 				InstancePacket instancePacket = (InstancePacket) packet;
@@ -58,10 +62,14 @@ public final class PacketGroups {
 		}
 		return createInstancePacketGroup(packets, group.getDateMillis(), sourceId, fragmentId);
 	}
+	@Deprecated
 	public static Map<String, List<InstancePacketGroup>> parsePackets(Collection<? extends PacketGroup> groups){
+		return parsePackets(groups, DefaultInstanceOptions.DEFAULT_DEFAULT_INSTANCE_OPTIONS);
+	}
+	public static Map<String, List<InstancePacketGroup>> parsePackets(Collection<? extends PacketGroup> groups, DefaultInstanceOptions defaultInstanceOptions){
 		Map<String, List<InstancePacketGroup>> map = new HashMap<>();
 		for(PacketGroup group : groups){
-			InstancePacketGroup instancePacketGroup = parseToInstancePacketGroup(group);
+			InstancePacketGroup instancePacketGroup = parseToInstancePacketGroup(group, defaultInstanceOptions);
 			String sourceId = instancePacketGroup.getSourceId();
 			List<InstancePacketGroup> list = map.get(sourceId);
 
@@ -73,11 +81,19 @@ public final class PacketGroups {
 		}
 		return map;
 	}
+	@Deprecated
 	public static Map<String, List<FragmentedPacketGroup>> sortPackets(Collection<? extends PacketGroup> groups, long maxTimeDistance){
-		return sortPackets(groups, maxTimeDistance, null);
+		return sortPackets(groups, DefaultInstanceOptions.DEFAULT_DEFAULT_INSTANCE_OPTIONS, maxTimeDistance);
 	}
+	@Deprecated
 	public static Map<String, List<FragmentedPacketGroup>> sortPackets(Collection<? extends PacketGroup> groups, long maxTimeDistance, Long masterIdIgnoreDistance){
-		Map<String, List<InstancePacketGroup>> map = parsePackets(groups);
+		return sortPackets(groups, DefaultInstanceOptions.DEFAULT_DEFAULT_INSTANCE_OPTIONS, maxTimeDistance, masterIdIgnoreDistance);
+	}
+	public static Map<String, List<FragmentedPacketGroup>> sortPackets(Collection<? extends PacketGroup> groups, DefaultInstanceOptions defaultInstanceOptions, long maxTimeDistance){
+		return sortPackets(groups, defaultInstanceOptions, maxTimeDistance, null);
+	}
+	public static Map<String, List<FragmentedPacketGroup>> sortPackets(Collection<? extends PacketGroup> groups, DefaultInstanceOptions defaultInstanceOptions, long maxTimeDistance, Long masterIdIgnoreDistance){
+		Map<String, List<InstancePacketGroup>> map = parsePackets(groups, defaultInstanceOptions);
 		Map<String, List<FragmentedPacketGroup>> r = new HashMap<>();
 		for(Map.Entry<String, List<InstancePacketGroup>> entry : map.entrySet()){
 			Map<Integer, List<InstancePacketGroup>> fragmentMap = new HashMap<>();

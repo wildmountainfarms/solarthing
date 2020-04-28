@@ -3,6 +3,8 @@ package me.retrodaredevil.solarthing.config.options;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
+import me.retrodaredevil.solarthing.packets.collection.DefaultInstanceOptions;
+import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePacket;
 
 import java.io.File;
 import java.util.Collections;
@@ -21,13 +23,16 @@ public class PVOutputUploadProgramOptions implements ProgramOptions {
 	private File database;
 	@JsonProperty("time_zone")
 	private TimeZone timeZone = null;
-	@JsonProperty("source")
+	@JsonProperty(value = "source", required = true)
 	private String sourceId = null;
 
-	@JsonProperty("required_fragment_ids")
-	private List<Integer> requiredFragmentIds = null;
-	@JsonProperty("required_identifiers")
-	private Map<Integer, String> requiredIdentifiers = null;
+	@JsonProperty("include_undefined_sources")
+	private Boolean includeUndefinedSources = null;
+	@JsonProperty("default_fragment")
+	private Integer defaultFragment = null;
+
+	@JsonProperty("required")
+	private Map<Integer, List<String>> requiredIdentifierMap = null;
 
 	@Override
 	public ProgramType getProgramType() {
@@ -56,19 +61,24 @@ public class PVOutputUploadProgramOptions implements ProgramOptions {
 		return sourceId;
 	}
 
-	public List<Integer> getRequiredFragmentIds() {
-		List<Integer> r = requiredFragmentIds;
-		if (r == null) {
-			return Collections.emptyList();
-		}
-		return r;
-	}
-
-	public Map<Integer, String> getRequiredIdentifiers() {
-		Map<Integer, String> r = requiredIdentifiers;
+	public Map<Integer, List<String>> getRequiredIdentifierMap() {
+		Map<Integer, List<String>> r = requiredIdentifierMap;
 		if (r == null) {
 			return Collections.emptyMap();
 		}
 		return r;
+	}
+	private String getDefaultSourceId() {
+		Boolean includeUndefinedSources = this.includeUndefinedSources;
+		if (Boolean.TRUE.equals(includeUndefinedSources)) {
+			return sourceId;
+		}
+		if (Boolean.FALSE.equals(includeUndefinedSources)) {
+			return InstanceSourcePacket.UNUSED_SOURCE_ID;
+		}
+		return InstanceSourcePacket.DEFAULT_SOURCE_ID;
+	}
+	public DefaultInstanceOptions getDefaultInstanceOptions() {
+		return new DefaultInstanceOptions(getDefaultSourceId(), defaultFragment);
 	}
 }
