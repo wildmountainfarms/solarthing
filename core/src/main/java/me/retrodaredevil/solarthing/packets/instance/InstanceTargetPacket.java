@@ -7,6 +7,7 @@ import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 
 import javax.validation.constraints.NotNull;
 
+@Deprecated // never used. Maybe used in the future
 @JsonTypeName("TARGET")
 @JsonDeserialize(as = ImmutableInstanceTargetPacket.class)
 @JsonExplicit

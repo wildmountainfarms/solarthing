@@ -58,6 +58,7 @@ easy displaying in Grafana
   * Looks interesting
 * [Metrictank](https://grafana.com/oss/metrictank/)
 * IntelliJ is complaining about "busy waiting". We do a lot of this. Should we change how we're doing this?
+* https://git-lfs.github.com/ - For solarthing.jar
 
 #### TODO - Additions I'm not going to work on
 These might be useful to some people. I will not implement these in the future, but pull requests are welcome!

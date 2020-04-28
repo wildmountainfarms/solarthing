@@ -35,14 +35,12 @@ public class PVOutputHandler {
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
 
 	private final TimeZone timeZone;
-	private final List<Integer> requiredFragmentIds;
-	private final Map<Integer, String> requiredIdentifiers;
+	private final Map<Integer, List<String>> requiredIdentifierMap;
 	private final PVOutputService service;
 
-	public PVOutputHandler(TimeZone timeZone, List<Integer> requiredFragmentIds, Map<Integer, String> requiredIdentifiers, PVOutputService service) {
+	public PVOutputHandler(TimeZone timeZone, Map<Integer, List<String>> requiredIdentifierMap, PVOutputService service) {
 		this.timeZone = timeZone;
-		this.requiredFragmentIds = requiredFragmentIds;
-		this.requiredIdentifiers = requiredIdentifiers;
+		this.requiredIdentifierMap = requiredIdentifierMap;
 		this.service = service;
 	}
 
@@ -56,26 +54,27 @@ public class PVOutputHandler {
 			LOGGER.warn("The last packet is more than 5 minutes in the past!");
 			return;
 		}
-		outerLoop: for (Integer fragmentId : requiredFragmentIds) {
-			for (Packet packet : latestPacketGroup.getPackets()) {
-				if (Objects.equals(fragmentId, latestPacketGroup.getFragmentId(packet))) {
-					continue outerLoop;
-				}
+		outerLoop: for (Map.Entry<Integer, List<String>> entry : requiredIdentifierMap.entrySet()) {
+			Integer desiredFragmentId = entry.getKey();
+			if (!latestPacketGroup.hasFragmentId(desiredFragmentId)) {
+				LOGGER.warn("The latest packet group doesn't contain the " + desiredFragmentId + " fragment id!");
+				return;
 			}
-			LOGGER.warn("The required fragmentId: " + fragmentId + " was not present in the latest packet group!");
-			return;
-		}
-		outerLoop: for (Map.Entry<Integer, String> entry : requiredIdentifiers.entrySet()) {
-			for (Packet packet : latestPacketGroup.getPackets()) {
-				if (packet instanceof Identifiable) {
-					Identifier identifier = ((Identifiable) packet).getIdentifier();
+			for (String desiredIdentifierRepresentation : entry.getValue()) {
+				for (Packet packet : latestPacketGroup.getPackets()) {
 					Integer fragmentId = latestPacketGroup.getFragmentId(packet);
-					if (Objects.equals(fragmentId, entry.getKey()) && identifier.getRepresentation().equals(entry.getValue())) {
-						continue outerLoop;
+					if (!Objects.equals(fragmentId, desiredFragmentId)) {
+						continue;
+					}
+					if (packet instanceof Identifiable) {
+						Identifier identifier = ((Identifiable) packet).getIdentifier();
+						if (desiredIdentifierRepresentation.equals(identifier.getRepresentation())) {
+							continue outerLoop;
+						}
 					}
 				}
+				LOGGER.warn("The required identifier: " + entry.getValue() + " with fragmentId: " + entry.getKey() + " was not present int he latest packet group!");
 			}
-			LOGGER.warn("The required identifier: " + entry.getValue() + " with fragmentId: " + entry.getKey() + " was not present int he latest packet group!");
 			return;
 		}
 		LOGGER.debug("Continuing with the latest packet group. Day start: " + dayStartTimeMillis);
@@ -84,7 +83,7 @@ public class PVOutputHandler {
 		setEnergyValues(
 				addStatusParametersBuilder,
 				packetGroupList,
-				new DailyConfig(dayStartTimeMillis + 12 * 60 * 60 * 1000)
+				new DailyConfig(dayStartTimeMillis + 3 * 60 * 60 * 1000, dayStartTimeMillis + 10 * 60 * 60 * 1000)
 		);
 		AddStatusParameters parameters = addStatusParametersBuilder.build();
 		try {
@@ -128,7 +127,7 @@ public class PVOutputHandler {
 				if (usingW == null) {
 					usingW = 0;
 				}
-				usingW += ((FXStatusPacket) packet).getInverterWattage();
+				usingW += ((FXStatusPacket) packet).getPowerUsageWattage();
 			} else if(packet instanceof RoverStatusPacket){
 				if (generatingW == null) {
 					generatingW = 0;

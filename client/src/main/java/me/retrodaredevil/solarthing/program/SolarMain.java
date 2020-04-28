@@ -76,6 +76,9 @@ public final class SolarMain {
 		String source = options.getSourceId();
 		Integer fragment = options.getFragmentId();
 		requireNonNull(source);
+		if (fragment == null) {
+			LOGGER.warn("'fragment' is null! This is OK, but is NOT recommended!");
+		}
 		return (list, wasInstant) -> {
 			list.add(InstanceSourcePackets.create(source));
 			if(fragment != null){
@@ -172,7 +175,7 @@ public final class SolarMain {
 			} else if(programType == ProgramType.ROVER_SETUP){
 				return RoverMain.connectRoverSetup((RoverSetupProgramOptions) options);
 			} else if(programType == ProgramType.PVOUTPUT_UPLOAD){
-				return PVOutputUploadMain.startPVOutputUpload((PVOutputUploadProgramOptions) options);
+				return PVOutputUploadMain.startPVOutputUpload((PVOutputUploadProgramOptions) options, Arrays.copyOfRange(args, 1, args.length));
 			}
 			throw new AssertionError("Unknown program type... type=" + programType + " programOptions=" + options);
 		} catch (Throwable t) {

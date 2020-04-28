@@ -2,6 +2,8 @@ package me.retrodaredevil.solarthing.packets.collection;
 
 import me.retrodaredevil.solarthing.packets.Packet;
 
+import java.util.Objects;
+
 /**
  * Represents a {@link FragmentedPacketGroup} where each packet has the same fragment id.
  * <p>
@@ -25,5 +27,10 @@ public interface InstancePacketGroup extends FragmentedPacketGroup {
 	@Override
 	default Integer getFragmentId(Packet packet) {
 		return getFragmentId();
+	}
+
+	@Override
+	default boolean hasFragmentId(Integer fragmentId) {
+		return Objects.equals(fragmentId, getFragmentId());
 	}
 }

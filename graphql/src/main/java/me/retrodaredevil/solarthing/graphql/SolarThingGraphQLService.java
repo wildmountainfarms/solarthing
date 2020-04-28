@@ -3,20 +3,15 @@ package me.retrodaredevil.solarthing.graphql;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.leangen.graphql.annotations.GraphQLArgument;
-import io.leangen.graphql.annotations.GraphQLContext;
 import io.leangen.graphql.annotations.GraphQLQuery;
 import me.retrodaredevil.couchdb.CouchProperties;
 import me.retrodaredevil.couchdb.EktorpUtil;
 import me.retrodaredevil.solarthing.SolarThingConstants;
-import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
 import me.retrodaredevil.solarthing.couchdb.CouchDbQueryHandler;
 import me.retrodaredevil.solarthing.graphql.packets.*;
 import me.retrodaredevil.solarthing.misc.device.CpuTemperaturePacket;
 import me.retrodaredevil.solarthing.misc.device.DevicePacket;
-import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
-import me.retrodaredevil.solarthing.packets.collection.InstancePacketGroup;
-import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
-import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
+import me.retrodaredevil.solarthing.packets.collection.*;
 import me.retrodaredevil.solarthing.packets.collection.parsing.*;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.instance.InstancePacket;
@@ -50,12 +45,15 @@ import static java.util.Objects.requireNonNull;
 public class SolarThingGraphQLService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SolarThingGraphQLService.class);
 
+	private final DefaultInstanceOptions defaultInstanceOptions;
+
 	private final CouchDbQueryHandler statusQueryHandler;
 	private final CouchDbQueryHandler eventQueryHandler;
 	private final PacketGroupParser statusParser;
 	private final PacketGroupParser eventParser;
 
-	public SolarThingGraphQLService(ObjectMapper originalObjectMapper, CouchProperties couchProperties) {
+	public SolarThingGraphQLService(DefaultInstanceOptions defaultInstanceOptions, ObjectMapper originalObjectMapper, CouchProperties couchProperties) {
+		this.defaultInstanceOptions = defaultInstanceOptions;
 		ObjectMapper objectMapper = JacksonUtil.lenientMapper(originalObjectMapper.copy());
 		statusParser = new SimplePacketGroupParser(new PacketParserMultiplexer(Arrays.asList(
 				new ObjectMapperPacketConverter(objectMapper, SolarStatusPacket.class),
@@ -74,7 +72,7 @@ public class SolarThingGraphQLService {
 		statusQueryHandler = new CouchDbQueryHandler(new StdCouchDbConnector(SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, instance), false);
 		eventQueryHandler = new CouchDbQueryHandler(new StdCouchDbConnector(SolarThingConstants.SOLAR_EVENT_UNIQUE_NAME, instance), false);
 	}
-	private static List<? extends InstancePacketGroup> queryPackets(CouchDbQueryHandler queryHandler, PacketGroupParser parser, long from, long to, String sourceId) {
+	private List<? extends InstancePacketGroup> queryPackets(CouchDbQueryHandler queryHandler, PacketGroupParser parser, long from, long to, String sourceId) {
 		final List<ObjectNode> packets;
 		try {
 			packets = queryHandler.query(new ViewQuery()
@@ -99,7 +97,7 @@ public class SolarThingGraphQLService {
 				LOGGER.error("Error parsing packet group. We will continue.", e);
 			}
 		}
-		Map<String, List<InstancePacketGroup>> map = PacketGroups.parsePackets(rawPacketGroups);
+		Map<String, List<InstancePacketGroup>> map = PacketGroups.parsePackets(rawPacketGroups, defaultInstanceOptions);
 		if(map.containsKey(sourceId)){
 			List<InstancePacketGroup> instancePacketGroupList = map.get(sourceId);
 			return PacketGroups.orderByFragment(instancePacketGroupList);

@@ -9,6 +9,8 @@ import io.leangen.graphql.metadata.strategy.query.ResolverBuilder;
 import io.leangen.graphql.metadata.strategy.value.jackson.JacksonValueMapperFactory;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
+import me.retrodaredevil.solarthing.packets.collection.DefaultInstanceOptions;
+import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePacket;
 import me.retrodaredevil.solarthing.program.DatabaseConfig;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +28,10 @@ public class GraphQLProvider {
 
 	@Value("${solarthing.config.database}")
 	private File databaseFile;
+	@Value("${solarthing.config.default_source}")
+	private String defaultSourceId = InstanceSourcePacket.DEFAULT_SOURCE_ID;
+	@Value("${solarthing.config.default_fragment}")
+	private Integer defaultFragmentId = null;
 
 	private GraphQL graphQL;
 
@@ -59,9 +65,15 @@ public class GraphQLProvider {
 				.withPrototype(objectMapper)
 				.build();
 		ResolverBuilder resolverBuilder = new AnnotatedResolverBuilder();
+		DefaultInstanceOptions defaultInstanceOptions = new DefaultInstanceOptions(defaultSourceId, defaultFragmentId);
+		System.out.println("Using defaultInstanceOptions=" + defaultInstanceOptions);
 		GraphQLSchema schema = new GraphQLSchemaGenerator()
 				.withBasePackages("me.retrodaredevil.solarthing")
-				.withOperationsFromSingleton(new SolarThingGraphQLService(objectMapper, couchDbDatabaseSettings.getCouchProperties()))
+				.withOperationsFromSingleton(new SolarThingGraphQLService(
+						defaultInstanceOptions,
+						objectMapper,
+						couchDbDatabaseSettings.getCouchProperties()
+				))
 				.withOperationsFromSingleton(new SolarThingGraphQLExtensions())
 				.withValueMapperFactory(jacksonValueMapperFactory)
 				.withResolverBuilders(resolverBuilder)
