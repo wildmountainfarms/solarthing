@@ -155,13 +155,13 @@ public class PVOutputUploadMain {
 				List<FragmentedPacketGroup> packetGroups = getPacketGroups(options.getSourceId(), options.getDefaultInstanceOptions(), statusPacketNodes, statusParser);
 
 				if (packetGroups != null) {
-					try {
-						System.out.println(MAPPER.writeValueAsString(packetGroups.get(packetGroups.size() - 1)));
-					} catch (JsonProcessingException e) {
-						e.printStackTrace();
-					}
 					if (!handler.checkPackets(dayStart, packetGroups)) {
 						System.err.println("Unsuccessfully checked packets for " + date.toPVOutputString());
+						try {
+							System.out.println(MAPPER.writeValueAsString(packetGroups.get(packetGroups.size() - 1)));
+						} catch (JsonProcessingException e) {
+							e.printStackTrace();
+						}
 					} else {
 						AddStatusParameters statusParameters = handler.getStatus(dayStart, packetGroups);
 						AddOutputParameters outputParameters = new AddOutputParametersBuilder(statusParameters.getDate())
@@ -183,10 +183,60 @@ public class PVOutputUploadMain {
 		}
 		System.out.println("Going to upload in batches of 30...");
 		for (int i = 0; i < addOutputParameters.size(); i += 30) {
+			if (i != 0) {
+				System.out.println("Sleeping...");
+				try {
+					//noinspection BusyWait
+					Thread.sleep(7000);
+				} catch (InterruptedException e) {
+					Thread.currentThread().interrupt();
+					System.err.println("Interrupted");
+					return 1;
+				}
+			}
 			int endIndex = Math.min(i + 30, addOutputParameters.size());
 			List<AddOutputParameters> parameters = addOutputParameters.subList(i, endIndex);
 			System.out.println("Going to upload from " + parameters.get(0).getOutputDate().toPVOutputString() + " to " + parameters.get(parameters.size() - 1).getOutputDate().toPVOutputString());
-			uploadBatchOutput(service, new ImmutableAddBatchOutputParameters(parameters));
+			AddBatchOutputParameters batchOutputParameters = new ImmutableAddBatchOutputParameters(parameters);
+			try {
+				LOGGER.debug("Batch Output parameters as JSON: " + MAPPER.writeValueAsString(batchOutputParameters));
+			} catch (JsonProcessingException e) {
+				LOGGER.error("Got error serializing JSON. This should never happen.", e);
+			}
+			boolean successful = false;
+			for (int j = 0; j < 5; j++) {
+				if (j != 0) {
+					System.out.println("Sleeping before trying again");
+					try {
+						//noinspection BusyWait
+						Thread.sleep(j * 7000);
+					} catch (InterruptedException e) {
+						Thread.currentThread().interrupt();
+						System.err.println("Interrupted");
+						return 1;
+					}
+				}
+				Call<String> call = service.addBatchOutput(batchOutputParameters);
+				final Response<String> response;
+				try {
+					response = call.execute();
+				} catch (IOException e) {
+					e.printStackTrace();
+					System.err.println("Error while executing");
+					continue;
+				}
+				if (response.isSuccessful()) {
+					System.out.println("Executed successfully. Result: " + response.body());
+					successful = true;
+					break;
+				} else {
+					System.err.println("Unsuccessful. Message: " + response.message() + " code: " + response.code());
+				}
+			}
+			if (!successful) {
+				System.err.println("All tries were unsuccessful. Ending");
+				return 1;
+			}
 		}
 		System.out.println("Done!");
 		return 0;
@@ -240,7 +290,7 @@ public class PVOutputUploadMain {
 	}
 	private static void uploadStatus(PVOutputService service, AddStatusParameters addStatusParameters) {
 		try {
-			LOGGER.debug(MAPPER.writeValueAsString(addStatusParameters));
+			LOGGER.debug("Status parameters as JSON: " + MAPPER.writeValueAsString(addStatusParameters));
 		} catch (JsonProcessingException e) {
 			LOGGER.error("Got error serializing JSON. This should never happen.", e);
 		}
@@ -248,11 +298,6 @@ public class PVOutputUploadMain {
 		executeCall(call);
 	}
 	private static void uploadBatchOutput(PVOutputService service, AddBatchOutputParameters parameters) {
-		try {
-			LOGGER.debug(MAPPER.writeValueAsString(parameters));
-		} catch (JsonProcessingException e) {
-			LOGGER.error("Got error serializing JSON. This should never happen.", e);
-		}
 		Call<String> call = service.addBatchOutput(parameters);
 		executeCall(call);
 	}
