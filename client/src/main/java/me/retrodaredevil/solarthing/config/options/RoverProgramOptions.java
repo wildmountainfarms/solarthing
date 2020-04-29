@@ -14,6 +14,13 @@ public class RoverProgramOptions extends PacketHandlingOptionBase implements Rov
 	@JsonProperty(value = "io")
 	private File io;
 
+	@JsonProperty("error_packets")
+	private boolean sendErrorPackets = false;
+
+	public boolean isSendErrorPackets() {
+		return sendErrorPackets;
+	}
+
 	@Override
 	public int getModbusAddress() {
 		return modbusAddress;

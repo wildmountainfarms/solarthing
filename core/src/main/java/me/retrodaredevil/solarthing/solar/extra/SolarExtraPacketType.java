@@ -8,6 +8,4 @@ public enum SolarExtraPacketType implements DocumentedPacketType {
 
 	MXFM_DAILY,
 
-	@Deprecated // never used, so can be removed in the future
-	DAILY_UPDATE
 }

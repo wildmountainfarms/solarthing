@@ -11,6 +11,7 @@ import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbData
 import me.retrodaredevil.solarthing.config.options.PVOutputUploadProgramOptions;
 import me.retrodaredevil.solarthing.couchdb.CouchDbQueryHandler;
 import me.retrodaredevil.solarthing.misc.device.DevicePacket;
+import me.retrodaredevil.solarthing.misc.error.ErrorPacket;
 import me.retrodaredevil.solarthing.packets.collection.DefaultInstanceOptions;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
@@ -92,6 +93,7 @@ public class PVOutputUploadMain {
 				new ObjectMapperPacketConverter(MAPPER, SolarStatusPacket.class),
 				new ObjectMapperPacketConverter(MAPPER, SolarExtraPacket.class),
 				new ObjectMapperPacketConverter(MAPPER, DevicePacket.class),
+				new ObjectMapperPacketConverter(MAPPER, ErrorPacket.class),
 				new ObjectMapperPacketConverter(MAPPER, InstancePacket.class)
 		), PacketParserMultiplexer.LenientType.FAIL_WHEN_UNHANDLED_WITH_EXCEPTION));
 
