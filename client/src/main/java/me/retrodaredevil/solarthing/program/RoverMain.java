@@ -12,6 +12,7 @@ import me.retrodaredevil.solarthing.config.options.RoverOption;
 import me.retrodaredevil.solarthing.config.options.RoverProgramOptions;
 import me.retrodaredevil.solarthing.config.options.RoverSetupProgramOptions;
 import me.retrodaredevil.solarthing.misc.device.RaspberryPiCpuTemperatureListUpdater;
+import me.retrodaredevil.solarthing.misc.error.ImmutableExceptionErrorPacket;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandlerMultiplexer;
@@ -35,6 +36,8 @@ import java.util.List;
 public class RoverMain {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RoverMain.class);
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
+	private static final String MODBUS_RUNTIME_EXCEPTION_CATCH_LOCATION_IDENTIFIER = "rover.read.modbus";
+	private static final String MODBUS_RUNTIME_INSTANCE_IDENTIFIER = "instance.1";
 
 	private static final SerialConfig ROVER_CONFIG = new SerialConfigBuilder(9600)
 			.setDataBits(8)
@@ -52,6 +55,19 @@ public class RoverMain {
 						packet = RoverStatusPackets.createFromReadTable(read);
 					} catch(ModbusRuntimeException e){
 						LOGGER.error("Modbus exception", e);
+
+						if (options.isSendErrorPackets()) {
+							List<Packet> packets = new ArrayList<>();
+							LOGGER.debug("Sending error packets");
+							packets.add(new ImmutableExceptionErrorPacket(
+									e.getClass().getName(),
+									e.getMessage(),
+									MODBUS_RUNTIME_EXCEPTION_CATCH_LOCATION_IDENTIFIER,
+									MODBUS_RUNTIME_INSTANCE_IDENTIFIER
+							));
+							packetListReceiver.receive(packets, true);
+						}
+
 						//noinspection BusyWait
 						Thread.sleep(5000);
 						continue;
