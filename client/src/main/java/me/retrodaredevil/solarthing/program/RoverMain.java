@@ -102,11 +102,10 @@ public class RoverMain {
 			modbusCacheSlave.cacheRangeInclusive(0x0100, 0x0109); // skip 0x010A
 			modbusCacheSlave.cacheRangeInclusive(0x010B, 0x0122);
 
-//			modbusCacheSlave.cacheRangeInclusive(0xE002, 0xE021);
 			modbusCacheSlave.cacheRangeInclusive(0xE002, 0xE014);
-			modbusCacheSlave.cacheRangeInclusive(0xE015, 0xE01D); // skip 0xE01E and 0xE01F
-			modbusCacheSlave.cacheRangeInclusive(0xE020, 0xE021);
-			modbusCacheSlave.cacheRangeInclusive(0xE022, 0xE02D);
+			// break here just because they're for different things
+			modbusCacheSlave.cacheRangeInclusive(0xE015, 0xE021);
+//			modbusCacheSlave.cacheRangeInclusive(0xE022, 0xE02D); these do not work when querying in bulk for some reason
 		});
 	}
 
