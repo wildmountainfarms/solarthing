@@ -53,6 +53,7 @@ public class RoverMain {
 					final long startTime = System.currentTimeMillis();
 					final RoverStatusPacket packet;
 					try {
+						reloadCache.run();
 						packet = RoverStatusPackets.createFromReadTable(read);
 					} catch(ModbusRuntimeException e){
 						LOGGER.error("Modbus exception", e);

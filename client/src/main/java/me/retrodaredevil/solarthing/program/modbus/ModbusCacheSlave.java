@@ -39,7 +39,7 @@ public class ModbusCacheSlave implements ModbusSlave {
 		try {
 			messageHandler = PARSER.parseRequestMessage(message);
 		} catch (MessageParseException e) {
-			throw new RuntimeException(e);
+			throw new RuntimeException("Got error while parsing message. This should never happen because message should be from a trusted (local) source.", e);
 		}
 		if (messageHandler instanceof ReadRegistersHandler) {
 			ReadRegistersHandler read = (ReadRegistersHandler) messageHandler;
