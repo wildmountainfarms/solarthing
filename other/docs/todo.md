@@ -14,7 +14,6 @@ easy displaying in Grafana
 * Packet for disk usage
 * Query all Renogy Rover data at once by reading almost all the registers.
 * Store data such as the panel tilt that can change over time
-* Add a packet for Renogy Rover that is sent when it is disconnected (when timeouts happen).
   
 ### Android TODO
 * Notification for when FXs are in EQ, but any MX is in absorb or float

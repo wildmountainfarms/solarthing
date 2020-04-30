@@ -13,7 +13,7 @@ import java.util.Scanner;
 public final class RoverSetupProgram {
 	private RoverSetupProgram(){ throw new UnsupportedOperationException(); }
 
-	public static void startRoverSetup(RoverReadTable read, RoverWriteTable write){
+	public static void startRoverSetup(RoverReadTable read, RoverWriteTable write, Runnable reloadCache){
 		Scanner scanner = new Scanner(System.in);
 		loop: while (scanner.hasNextLine()) {
 			String command = scanner.nextLine();

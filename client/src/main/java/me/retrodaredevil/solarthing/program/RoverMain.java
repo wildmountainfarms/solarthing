@@ -18,6 +18,7 @@ import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerat
 import me.retrodaredevil.solarthing.packets.handling.PacketHandlerMultiplexer;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiverMultiplexer;
+import me.retrodaredevil.solarthing.program.modbus.ModbusCacheSlave;
 import me.retrodaredevil.solarthing.solar.renogy.rover.*;
 import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusSlaveRead;
 import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusSlaveWrite;
@@ -46,12 +47,13 @@ public class RoverMain {
 			.build();
 
 	private static int doRover(RoverProgramOptions options, PacketListReceiver packetListReceiver){
-		return doRoverProgram(options, (read, write) -> {
+		return doRoverProgram(options, (read, write, reloadCache) -> {
 			try {
 				while (!Thread.currentThread().isInterrupted()) {
 					final long startTime = System.currentTimeMillis();
 					final RoverStatusPacket packet;
 					try {
+						reloadCache.run();
 						packet = RoverStatusPackets.createFromReadTable(read);
 					} catch(ModbusRuntimeException e){
 						LOGGER.error("Modbus exception", e);
@@ -90,7 +92,21 @@ public class RoverMain {
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
 			}
-		});
+		}, options.isBulkRequest() ? modbusCacheSlave -> {
+//			modbusCacheSlave.cacheRangeInclusive(0x000A, 0x001A);
+//			modbusCacheSlave.cacheRangeInclusive(0x0100, 0x0122);
+//			modbusCacheSlave.cacheRangeInclusive(0xE002, 0xE02D);
+
+			modbusCacheSlave.cacheRangeInclusive(0x000A, 0x001A);
+
+			modbusCacheSlave.cacheRangeInclusive(0x0100, 0x0109); // skip 0x010A
+			modbusCacheSlave.cacheRangeInclusive(0x010B, 0x0122);
+
+			modbusCacheSlave.cacheRangeInclusive(0xE002, 0xE014);
+			// break here just because they're for different things
+			modbusCacheSlave.cacheRangeInclusive(0xE015, 0xE021);
+//			modbusCacheSlave.cacheRangeInclusive(0xE022, 0xE02D); these do not work when querying in bulk for some reason
+		} : null);
 	}
 
 	public static int connectRover(RoverProgramOptions options) {
@@ -130,9 +146,9 @@ public class RoverMain {
 		return doRover(options, new PacketListReceiverMultiplexer(packetListReceiverList));
 	}
 	public static int connectRoverSetup(RoverSetupProgramOptions options) {
-		return doRoverProgram(options, RoverSetupProgram::startRoverSetup);
+		return doRoverProgram(options, RoverSetupProgram::startRoverSetup, null);
 	}
-	private static int doRoverProgram(RoverOption options, RoverProgramRunner runner) {
+	private static int doRoverProgram(RoverOption options, RoverProgramRunner runner, RegisterCacheHandler registerCacheHandler) {
 		File dummyFile = options.getDummyFile();
 		if(dummyFile != null){
 			final FileInputStream fileInputStream;
@@ -151,15 +167,24 @@ public class RoverMain {
 					roverStatusPacket,
 					(fieldName, previousValue, newValue) -> System.out.println(fieldName + " changed from " + previousValue + " to " + newValue)
 			);
-			runner.doProgram(readWrite, readWrite);
+			runner.doProgram(readWrite, readWrite, () -> {});
 			return 0;
 		} else {
 			try(IOBundle ioBundle = SolarMain.createIOBundle(options.getIOBundleFile(), ROVER_CONFIG)) {
 				ModbusSlaveBus modbus = new IOModbusSlaveBus(ioBundle, new RTUDataEncoder(2000, 20, 4));
 				ModbusSlave slave = new ImmutableAddressModbusSlave(options.getModbusAddress(), modbus);
-				RoverReadTable read = new RoverModbusSlaveRead(slave);
+				final RoverReadTable read;
+				final Runnable reloadCache;
+				if (registerCacheHandler != null) {
+					ModbusCacheSlave modbusCacheSlave = new ModbusCacheSlave(slave);
+					read = new RoverModbusSlaveRead(modbusCacheSlave);
+					reloadCache = () -> registerCacheHandler.cacheRegisters(modbusCacheSlave);
+				} else {
+					read = new RoverModbusSlaveRead(slave);
+					reloadCache = () -> {};
+				}
 				RoverWriteTable write = new RoverModbusSlaveWrite(slave);
-				runner.doProgram(read, write);
+				runner.doProgram(read, write, reloadCache);
 				return 0;
 			} catch (Exception e) {
 				LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)Got exception!", e);
@@ -169,6 +194,10 @@ public class RoverMain {
 	}
 	@FunctionalInterface
 	private interface RoverProgramRunner {
-		void doProgram(RoverReadTable read, RoverWriteTable write);
+		void doProgram(RoverReadTable read, RoverWriteTable write, Runnable reloadCache);
+	}
+	@FunctionalInterface
+	private interface RegisterCacheHandler {
+		void cacheRegisters(ModbusCacheSlave modbusCacheSlave);
 	}
 }
