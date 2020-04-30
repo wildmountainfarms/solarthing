@@ -9,23 +9,23 @@ import me.retrodaredevil.io.modbus.handling.ResponseLengthException;
 
 public class RoverMessageHandler implements MessageHandler<Void> {
 	private final int functionCode;
-	
+
 	protected RoverMessageHandler(int functionCode) {
 		this.functionCode = functionCode;
 	}
-	
+
 	public static MessageHandler<Void> createRoverFactoryReset(){
 		return new RoverMessageHandler(0x78);
 	}
 	public static MessageHandler<Void> createRoverClearHistory(){
 		return new RoverMessageHandler(0x79);
 	}
-	
+
 	@Override
-	public ModbusMessage createMessage() {
+	public ModbusMessage createRequest() {
 		return ModbusMessages.createMessage((byte) functionCode, new byte[] {0, 0, 0, 1});
 	}
-	
+
 	@Override
 	public Void handleResponse(ModbusMessage modbusMessage) {
 		int functionCode = modbusMessage.getFunctionCode();
