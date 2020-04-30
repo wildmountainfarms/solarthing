@@ -38,7 +38,7 @@ public class RoverModbusSlaveRead implements RoverReadTable {
 		return ((arrayWithLengthOf2[0] & 0xFFFF0000) << 16) | arrayWithLengthOf2[1];
 	}
 	private int[] get(MessageHandler<int[]> readHandler){
-		return modbus.sendMessage(readHandler);
+		return modbus.sendRequestMessage(readHandler);
 	}
 	private int oneRegister(MessageHandler<int[]> readHandler){
 		return get(readHandler)[0];
@@ -151,7 +151,7 @@ public class RoverModbusSlaveRead implements RoverReadTable {
 	@Override public @NotNull Integer getChargingPower() {
 		return oneRegister(CHARGING_POWER);
 	}
-
+	// 0x010A is used as the command to turn the street light on/off
 	private static final MessageHandler<int[]> DAILY_MIN_BATTERY_VOLTAGE = new ReadRegistersHandler(0x010B, 1);
 	@Override public float getDailyMinBatteryVoltage() {
 		return oneRegister(DAILY_MIN_BATTERY_VOLTAGE) / 10.0F;
@@ -229,7 +229,7 @@ public class RoverModbusSlaveRead implements RoverReadTable {
 		return twoRegistersAsInt(CUMULATIVE_KWH_DISCHARGING) / KWH_DIVIDER;
 	}
 
-	private static final MessageHandler<int[]> STREET_LIGHT_AND_CHARGING_STATE = new ReadRegistersHandler(0x0120, 2);
+	private static final MessageHandler<int[]> STREET_LIGHT_AND_CHARGING_STATE = new ReadRegistersHandler(0x0120, 1);
 	@Override public int getRawStreetLightValue() {
 		return upper(oneRegister(STREET_LIGHT_AND_CHARGING_STATE));
 	}
