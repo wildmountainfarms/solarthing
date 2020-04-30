@@ -93,8 +93,9 @@ public class RoverMain {
 				Thread.currentThread().interrupt();
 			}
 		}, modbusCacheSlave -> {
-			modbusCacheSlave.cache(0x000A, 0x0121 - 0x000A + 1);
-			modbusCacheSlave.cache(0xE002, 0xE02D - 0xE002 + 1);
+			modbusCacheSlave.cacheRangeInclusive(0x000A, 0x001A);
+			modbusCacheSlave.cacheRangeInclusive(0x0100, 0x0121);
+			modbusCacheSlave.cacheRangeInclusive(0xE002, 0xE02D);
 		});
 	}
 

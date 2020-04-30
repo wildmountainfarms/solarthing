@@ -32,6 +32,9 @@ public class ModbusCacheSlave implements ModbusSlave {
 			cache.put(register, value);
 		}
 	}
+	public void cacheRangeInclusive(int startRegister, int endRegister) {
+		cache(startRegister, endRegister - startRegister + 1);
+	}
 
 	@Override
 	public ModbusMessage sendRequestMessage(ModbusMessage message) {
