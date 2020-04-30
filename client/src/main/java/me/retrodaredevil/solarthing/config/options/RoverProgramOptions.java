@@ -17,8 +17,15 @@ public class RoverProgramOptions extends PacketHandlingOptionBase implements Rov
 	@JsonProperty("error_packets")
 	private boolean sendErrorPackets = false;
 
+	@JsonProperty("bulk_request")
+	private boolean bulkRequest = false;
+
 	public boolean isSendErrorPackets() {
 		return sendErrorPackets;
+	}
+
+	public boolean isBulkRequest() {
+		return bulkRequest;
 	}
 
 	@Override

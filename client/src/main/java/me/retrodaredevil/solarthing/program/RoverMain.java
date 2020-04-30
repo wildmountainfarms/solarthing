@@ -92,7 +92,7 @@ public class RoverMain {
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
 			}
-		}, modbusCacheSlave -> {
+		}, options.isBulkRequest() ? modbusCacheSlave -> {
 //			modbusCacheSlave.cacheRangeInclusive(0x000A, 0x001A);
 //			modbusCacheSlave.cacheRangeInclusive(0x0100, 0x0122);
 //			modbusCacheSlave.cacheRangeInclusive(0xE002, 0xE02D);
@@ -106,7 +106,7 @@ public class RoverMain {
 			// break here just because they're for different things
 			modbusCacheSlave.cacheRangeInclusive(0xE015, 0xE021);
 //			modbusCacheSlave.cacheRangeInclusive(0xE022, 0xE02D); these do not work when querying in bulk for some reason
-		});
+		} : null);
 	}
 
 	public static int connectRover(RoverProgramOptions options) {
