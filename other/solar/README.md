@@ -95,3 +95,8 @@ implement Comparable<Identifier> so Identifiers have a defined order which is th
 
 * Outback packets in order (port 1, port 2, etc)
 * Renogy packet in order according to serial number (serial 65, serial 1234, serial 5989)
+
+### Outback Mate3 Software
+SolarThing doesn't support Outback Mate3 devices, but there's lots of other software you can use
+* http://www.jeperez.com/monitor-solar-outback/
+* http://outbackpower.com/forum/viewtopic.php?f=1&t=13225
