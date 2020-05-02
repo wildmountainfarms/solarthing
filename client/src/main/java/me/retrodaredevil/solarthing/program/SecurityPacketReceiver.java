@@ -113,7 +113,7 @@ public class SecurityPacketReceiver implements JsonPacketReceiver {
 								try {
 									dateMillis = Long.parseLong(hexMillis, 16);
 								} catch (NumberFormatException e){
-									e.printStackTrace();
+									LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "Error parsing hex date millis", e);
 								}
 								if(dateMillis != null){
 									Long lastCommand = senderLastCommandMap.get(sender);

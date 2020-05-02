@@ -1,0 +1,19 @@
+{
+  "type": "mate",
+  "source": "default",
+  "fragment": 1,
+  "unique": 60,
+  "databases": [
+    "config/couchdb.json"
+  ],
+  "io": "../config_templates/io/default_linux_serial.json",
+  "allow_commands": true,
+  "commands": [
+    {
+      "name": "GEN OFF",
+      "display_name": "Generator Off",
+      "description": "Shuts off the generator",
+      "action": "config/commands/generator_shut_off.json"
+    }
+  ]
+}

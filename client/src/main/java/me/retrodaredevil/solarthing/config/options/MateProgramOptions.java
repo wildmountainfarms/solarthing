@@ -2,12 +2,15 @@ package me.retrodaredevil.solarthing.config.options;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import me.retrodaredevil.solarthing.actions.ActionNode;
 import me.retrodaredevil.solarthing.solar.outback.fx.charge.FXChargingSettings;
 import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
@@ -31,6 +34,9 @@ public class MateProgramOptions extends PacketHandlingOptionBase implements IOBu
 	private Integer masterFX = null;
 	@JsonProperty("fx_charge_settings")
 	private MateFXChargingSettings mateFXChargingSettings;
+
+	@JsonProperty("commands")
+	private List<Command> commands;
 
 	public boolean isAllowCommands() {
 		return allowCommands;
@@ -82,7 +88,14 @@ public class MateProgramOptions extends PacketHandlingOptionBase implements IOBu
 				settings.equalizeSetpoint, Math.round(settings.equalizeTimePeriod * 60 * 60 * 1000)
 		);
 	}
-	private static class MateFXChargingSettings { // will be used for something eventually
+	public Map<String, File> getCommandFileMap() {
+		Map<String, File> commandFileMap = new HashMap<>();
+		for (Command command : commands) {
+			commandFileMap.put(command.name, command.actionFile);
+		}
+		return commandFileMap;
+	}
+	private static class MateFXChargingSettings {
 		@JsonProperty("rebulk_voltage")
 		private Float rebulkSetpoint;
 
@@ -102,5 +115,16 @@ public class MateProgramOptions extends PacketHandlingOptionBase implements IOBu
 		private float equalizeSetpoint;
 		@JsonProperty(value = "equalize_time_hours", required = true)
 		private double equalizeTimePeriod;
+	}
+
+	private static class Command {
+		@JsonProperty(value = "name", required = true)
+		private String name;
+		@JsonProperty("display_name")
+		private String displayName = null;
+		@JsonProperty("description")
+		private String description = "";
+		@JsonProperty("action")
+		private File actionFile;
 	}
 }

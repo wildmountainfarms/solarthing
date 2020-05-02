@@ -6,11 +6,15 @@ import me.retrodaredevil.couchdb.CouchProperties;
 import me.retrodaredevil.io.IOBundle;
 import me.retrodaredevil.io.serial.SerialConfig;
 import me.retrodaredevil.io.serial.SerialConfigBuilder;
+import me.retrodaredevil.solarthing.DataSource;
 import me.retrodaredevil.solarthing.OnDataReceive;
 import me.retrodaredevil.solarthing.SolarThingConstants;
+import me.retrodaredevil.solarthing.actions.ActionNode;
+import me.retrodaredevil.solarthing.actions.environment.InjectEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.MateCommandEnvironment;
 import me.retrodaredevil.solarthing.commands.CommandProvider;
 import me.retrodaredevil.solarthing.commands.CommandProviderMultiplexer;
-import me.retrodaredevil.solarthing.commands.sequence.CommandSequence;
 import me.retrodaredevil.solarthing.config.databases.IndividualSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.config.options.ExtraOptionFlag;
@@ -112,23 +116,34 @@ public class OutbackMateMain {
 					commandProviders.add(InputStreamCommandProvider.createFrom(fileInputStream, "command_input.txt", EnumSet.allOf(MateCommand.class)));
 				}
 			}
+			Map<String, ActionNode> actionNodeMap = new HashMap<>();
+			for (Map.Entry<String, File> entry : options.getCommandFileMap().entrySet()) {
+				String name = entry.getKey();
+				File file = entry.getValue();
+				final ActionNode actionNode = MAPPER.readValue(file, ActionNode.class);
+				actionNodeMap.put(name, actionNode);
+			}
+			LOGGER.debug("actionNodeMap={}", actionNodeMap);
 
 			final List<PacketHandler> commandRequesterHandlerList = new ArrayList<>(); // Handlers to request and get new commands to send (This may block the current thread). (This doesn't actually handle packets)
-//			final List<PacketHandler> commandFeedbackHandlerList = new ArrayList<>(); // Handlers to handle successful command packets, usually by storing those packets somewhere (May block the current thread)
 			for(DatabaseConfig config : databaseConfigs){
 				if(CouchDbDatabaseSettings.TYPE.equals(config.getType())){
 					CouchDbDatabaseSettings settings = (CouchDbDatabaseSettings) config.getSettings();
 					CouchProperties couchProperties = settings.getCouchProperties();
 					LatestPacketHandler latestPacketHandler = new LatestPacketHandler(true); // this is used to determine the state of the system when a command is requested
 					statusPacketHandlers.add(latestPacketHandler);
-					final CommandSequenceDataReceiver<MateCommand> commandSequenceDataReceiver;
+					final ActionNodeDataReceiver<MateCommand> actionNodeDataReceiver;
 					{
-						CommandSequence<MateCommand> generatorShutOff = CommandSequences.createAuxGeneratorShutOff(latestPacketHandler::getLatestPacketCollection);
-						Map<String, CommandSequence<MateCommand>> map = new HashMap<>();
-						map.put("GEN OFF", generatorShutOff);
-						commandSequenceDataReceiver = new CommandSequenceDataReceiver<>(map);
+						actionNodeDataReceiver = new ActionNodeDataReceiver<MateCommand>(actionNodeMap) {
+							@Override
+							protected void updateInjectEnvironment(DataSource dataSource, InjectEnvironment.Builder injectEnvironmentBuilder) {
+								injectEnvironmentBuilder
+										.add(new MateCommandEnvironment(dataSource.toString(), queue))
+										.add(new LatestPacketGroupEnvironment(latestPacketHandler::getLatestPacketCollection));
+							}
+						};
 					}
-					commandProviders.add(commandSequenceDataReceiver.getCommandProvider());
+					commandProviders.add(actionNodeDataReceiver.getCommandProvider());
 
 					IndividualSettings individualSettings = config.getIndividualSettingsOrDefault(Constants.DATABASE_COMMAND_DOWNLOAD_ID, null);
 					FrequencySettings frequencySettings = individualSettings != null ? individualSettings.getFrequencySettings() : FrequencySettings.NORMAL_SETTINGS;
@@ -139,7 +154,7 @@ public class OutbackMateMain {
 											SolarThingConstants.COMMANDS_UNIQUE_NAME,
 											true
 									),
-									new SecurityPacketReceiver(new DirectoryKeyMap(new File("authorized")), commandSequenceDataReceiver, new DirectoryKeyMap(new File("unauthorized")))
+									new SecurityPacketReceiver(new DirectoryKeyMap(new File("authorized")), actionNodeDataReceiver, new DirectoryKeyMap(new File("unauthorized")))
 							)
 					), frequencySettings, true));
 				}
