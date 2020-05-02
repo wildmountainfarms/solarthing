@@ -6,8 +6,13 @@ import me.retrodaredevil.couchdb.CouchProperties;
 import me.retrodaredevil.io.IOBundle;
 import me.retrodaredevil.io.serial.SerialConfig;
 import me.retrodaredevil.io.serial.SerialConfigBuilder;
+import me.retrodaredevil.solarthing.DataSource;
 import me.retrodaredevil.solarthing.OnDataReceive;
 import me.retrodaredevil.solarthing.SolarThingConstants;
+import me.retrodaredevil.solarthing.actions.ActionNode;
+import me.retrodaredevil.solarthing.actions.environment.InjectEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.MateCommandEnvironment;
 import me.retrodaredevil.solarthing.commands.CommandProvider;
 import me.retrodaredevil.solarthing.commands.CommandProviderMultiplexer;
 import me.retrodaredevil.solarthing.commands.sequence.CommandSequence;
@@ -121,14 +126,21 @@ public class OutbackMateMain {
 					CouchProperties couchProperties = settings.getCouchProperties();
 					LatestPacketHandler latestPacketHandler = new LatestPacketHandler(true); // this is used to determine the state of the system when a command is requested
 					statusPacketHandlers.add(latestPacketHandler);
-					final CommandSequenceDataReceiver<MateCommand> commandSequenceDataReceiver;
+					final ActionNodeDataReceiver<MateCommand> actionNodeDataReceiver;
 					{
-						CommandSequence<MateCommand> generatorShutOff = CommandSequences.createAuxGeneratorShutOff(latestPacketHandler::getLatestPacketCollection);
-						Map<String, CommandSequence<MateCommand>> map = new HashMap<>();
-						map.put("GEN OFF", generatorShutOff);
-						commandSequenceDataReceiver = new CommandSequenceDataReceiver<>(map);
+//						CommandSequence<MateCommand> generatorShutOff = CommandSequences.createAuxGeneratorShutOff(latestPacketHandler::getLatestPacketCollection);
+						Map<String, ActionNode> map = new HashMap<>();
+
+						actionNodeDataReceiver = new ActionNodeDataReceiver<MateCommand>(map) {
+							@Override
+							protected void updateInjectEnvironment(DataSource dataSource, InjectEnvironment.Builder injectEnvironmentBuilder) {
+								injectEnvironmentBuilder
+										.add(new MateCommandEnvironment(dataSource.toString(), queue))
+										.add(new LatestPacketGroupEnvironment(latestPacketHandler::getLatestPacketCollection));
+							}
+						};
 					}
-					commandProviders.add(commandSequenceDataReceiver.getCommandProvider());
+					commandProviders.add(actionNodeDataReceiver.getCommandProvider());
 
 					IndividualSettings individualSettings = config.getIndividualSettingsOrDefault(Constants.DATABASE_COMMAND_DOWNLOAD_ID, null);
 					FrequencySettings frequencySettings = individualSettings != null ? individualSettings.getFrequencySettings() : FrequencySettings.NORMAL_SETTINGS;
@@ -139,7 +151,7 @@ public class OutbackMateMain {
 											SolarThingConstants.COMMANDS_UNIQUE_NAME,
 											true
 									),
-									new SecurityPacketReceiver(new DirectoryKeyMap(new File("authorized")), commandSequenceDataReceiver, new DirectoryKeyMap(new File("unauthorized")))
+									new SecurityPacketReceiver(new DirectoryKeyMap(new File("authorized")), actionNodeDataReceiver, new DirectoryKeyMap(new File("unauthorized")))
 							)
 					), frequencySettings, true));
 				}

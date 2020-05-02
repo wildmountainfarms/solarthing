@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.Actions;
+import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,20 +16,18 @@ import static java.util.Objects.requireNonNull;
 public class DeclarationActionNode implements ActionNode {
 	private final ActionNode mainDeclaration;
 	private final Map<String, ActionNode> declarations;
-	private final ActionEnvironment actionEnvironment;
 	@JsonCreator
-	public DeclarationActionNode(ActionNode mainDeclaration, Map<String, ActionNode> declarations, ActionEnvironment actionEnvironment) {
+	public DeclarationActionNode(ActionNode mainDeclaration, Map<String, ActionNode> declarations) {
 		requireNonNull(this.mainDeclaration = mainDeclaration);
 		requireNonNull(this.declarations = declarations);
-		requireNonNull(this.actionEnvironment = actionEnvironment);
 	}
 	@Override
-	public Action createAction() {
-		Action mainAction = mainDeclaration.createAction();
+	public Action createAction(ActionEnvironment actionEnvironment) {
+		Action mainAction = mainDeclaration.createAction(actionEnvironment);
 		return new Actions.ActionQueueBuilder(
 				Actions.createRunOnce(() -> {
 					for(Map.Entry<String, ActionNode> entry : declarations.entrySet()) {
-						actionEnvironment.setDeclaredAction(entry.getKey(), entry.getValue());
+						actionEnvironment.getLocalEnvironment().setDeclaredAction(entry.getKey(), entry.getValue());
 					}
 				}),
 				mainAction
@@ -38,16 +37,13 @@ public class DeclarationActionNode implements ActionNode {
 		@JsonProperty(value = "main", required = true)
 		private ActionNode mainDeclaration;
 		private final Map<String, ActionNode> declarations = new HashMap<>();
-		@JacksonInject("environment")
-		private ActionEnvironment actionEnvironment;
-
 		@JsonAnySetter
 		public void setActionNode(String name, ActionNode actionNode) {
 			declarations.put(name, actionNode);
 		}
 
 		DeclarationActionNode build() {
-			return new DeclarationActionNode(mainDeclaration, declarations, actionEnvironment);
+			return new DeclarationActionNode(mainDeclaration, declarations);
 		}
 	}
 }

@@ -1,23 +1,21 @@
 package me.retrodaredevil.solarthing.actions;
 
-import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.Actions;
+import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
 
 @JsonTypeName("unlock")
 public class UnlockActionNode implements ActionNode {
 	private final String lockName;
-	private final ActionEnvironment actionEnvironment;
 
-	public UnlockActionNode(@JsonProperty("name") String lockName, @JacksonInject("environment") ActionEnvironment actionEnvironment) {
+	public UnlockActionNode(@JsonProperty("name") String lockName) {
 		this.lockName = lockName;
-		this.actionEnvironment = actionEnvironment;
 	}
 
 	@Override
-	public Action createAction() {
-		return Actions.createRunOnce(() -> actionEnvironment.unlock(lockName));
+	public Action createAction(ActionEnvironment actionEnvironment) {
+		return Actions.createRunOnce(() -> actionEnvironment.getGlobalEnvironment().unlock(lockName));
 	}
 }

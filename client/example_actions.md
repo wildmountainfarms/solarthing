@@ -24,12 +24,12 @@
       {
         "type": "race",
         "racers": [
-          [{ "type": "fxcondition", "condition": "NO AC" }, { "type": "pass" }],
+          [{ "type": "acmode", "mode": "NO AC" }, { "type": "pass" }],
           [{ "type": "waitms", "wait": 7000 }, { "type": "seterror", "error": "AC is still present!"}]
         ]
       },
-      { "type": "matecommand", "command": "USE"},
       { "type": "matecommand", "command": "AUX OFF"},
+      { "type": "matecommand", "command": "USE"},
       { "type": "log", "message": "Finished sequence!"}
     ]
   }
@@ -58,6 +58,20 @@ Simple Declaration:
       { "type": "log", "message": "Finished sequence!" }
     ]
   }
+}
+```
+
+---
+Race Example:
+
+```json
+{
+  "type": "race",
+  "racers": [
+    [{ "type": "waitms", "wait": 500}, { "type": "log", "message": "500ms finished first!"}],
+    [{ "type": "waitms", "wait": 200}, { "type": "log", "message": "200ms finished first!"}],
+    [{ "type": "waitms", "wait": 1000}, { "type": "log", "message": "1000ms finished first!"}]
+  ]
 }
 ```
 

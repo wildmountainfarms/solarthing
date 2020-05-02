@@ -1,0 +1,36 @@
+{
+  "type": "declaration",
+  "main": {
+    "type": "queue",
+    "actions": [
+      {
+        "type": "race",
+        "racers": [
+          [{ "type": "lock", "name": "send_commands"}, { "type": "call", "name": "run_commands"}],
+          [{ "type": "waitms", "wait": 5000}, { "type": "seterror", "error": "Something else had a lock on send_commands"}]
+        ]
+      },
+      { "type": "unlock", "name": "send_commands" }
+    ]
+  },
+  "run_commands": {
+    "type": "queue",
+    "actions": [
+      { "type": "matecommand", "command": "DROP" },
+      { "type": "matecommand", "command": "AUX ON" },
+      { "type": "matecommandwait" },
+      {
+        "type": "race",
+        "racers": [
+          [{ "type": "acmode", "mode": "NO AC" }, { "type": "pass" }],
+          [{ "type": "waitms", "wait": 7000 }, { "type": "seterror", "error": "AC is still present!"}]
+        ]
+      },
+      { "type": "matecommand", "command": "AUX OFF"},
+      { "type": "matecommand", "command": "USE"},
+      { "type": "log", "message": "Almost finished sequence!"},
+      { "type": "matecommandwait" },
+      { "type": "log", "message": "Sent all commands!"}
+    ]
+  }
+}

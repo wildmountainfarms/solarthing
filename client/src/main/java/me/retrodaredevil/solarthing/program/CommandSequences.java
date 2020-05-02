@@ -9,6 +9,7 @@ import me.retrodaredevil.solarthing.commands.sequence.condition.TimedCondition;
 import me.retrodaredevil.solarthing.solar.outback.fx.ACMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 
+@Deprecated
 final class CommandSequences {
 	public static CommandSequence<MateCommand> createAuxGeneratorShutOff(PacketCollectionProvider packetCollectionProvider){
 		return new CommandSequence.Builder<MateCommand>()

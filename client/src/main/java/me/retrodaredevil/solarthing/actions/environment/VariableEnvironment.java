@@ -1,20 +1,15 @@
-package me.retrodaredevil.solarthing.actions;
+package me.retrodaredevil.solarthing.actions.environment;
+
+import me.retrodaredevil.solarthing.actions.ActionNode;
 
 import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 
-public class ActionEnvironment {
+public class VariableEnvironment {
 	private final Map<String, ActionNode> declaredActionMap = new HashMap<>();
 	private final Set<String> lockSet = new HashSet<>();
-	private String error;
 
-	public void setError(String error) {
-		this.error = error;
-	}
-	public String getError() {
-		return error;
-	}
 	public ActionNode getDeclaredAction(String name) {
 		if (!declaredActionMap.containsKey(name)) {
 			throw new NoSuchElementException("Action with name='" + name + "' not declared!");

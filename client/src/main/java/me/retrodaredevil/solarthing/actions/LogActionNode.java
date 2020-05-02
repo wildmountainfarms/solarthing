@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.Actions;
+import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +18,7 @@ public class LogActionNode implements ActionNode {
 	}
 
 	@Override
-	public Action createAction() {
+	public Action createAction(ActionEnvironment actionEnvironment) {
 		return Actions.createRunOnce(() -> LOGGER.info(message));
 	}
 }
