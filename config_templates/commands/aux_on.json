@@ -2,6 +2,6 @@
   "type": "race",
   "racers": [
     [{ "type": "lock", "name": "send_commands"}, { "type": "matecommand", "command": "AUX ON"}],
-    [{ "type": "waitms", "wait": 5000}, { "type": "seterror", "error": "Something else had a lock on send_commands"}]
+    [{ "type": "waitms", "wait": 5000}, { "type": "log", "message": "Something else had a lock on send_commands"}]
   ]
 }

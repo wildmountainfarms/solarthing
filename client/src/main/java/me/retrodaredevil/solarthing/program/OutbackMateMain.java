@@ -15,7 +15,6 @@ import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnviron
 import me.retrodaredevil.solarthing.actions.environment.MateCommandEnvironment;
 import me.retrodaredevil.solarthing.commands.CommandProvider;
 import me.retrodaredevil.solarthing.commands.CommandProviderMultiplexer;
-import me.retrodaredevil.solarthing.commands.sequence.CommandSequence;
 import me.retrodaredevil.solarthing.config.databases.IndividualSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.config.options.ExtraOptionFlag;
@@ -117,9 +116,16 @@ public class OutbackMateMain {
 					commandProviders.add(InputStreamCommandProvider.createFrom(fileInputStream, "command_input.txt", EnumSet.allOf(MateCommand.class)));
 				}
 			}
+			Map<String, ActionNode> actionNodeMap = new HashMap<>();
+			for (Map.Entry<String, File> entry : options.getCommandFileMap().entrySet()) {
+				String name = entry.getKey();
+				File file = entry.getValue();
+				final ActionNode actionNode = MAPPER.readValue(file, ActionNode.class);
+				actionNodeMap.put(name, actionNode);
+			}
+			LOGGER.debug("actionNodeMap={}", actionNodeMap);
 
 			final List<PacketHandler> commandRequesterHandlerList = new ArrayList<>(); // Handlers to request and get new commands to send (This may block the current thread). (This doesn't actually handle packets)
-//			final List<PacketHandler> commandFeedbackHandlerList = new ArrayList<>(); // Handlers to handle successful command packets, usually by storing those packets somewhere (May block the current thread)
 			for(DatabaseConfig config : databaseConfigs){
 				if(CouchDbDatabaseSettings.TYPE.equals(config.getType())){
 					CouchDbDatabaseSettings settings = (CouchDbDatabaseSettings) config.getSettings();
@@ -128,10 +134,7 @@ public class OutbackMateMain {
 					statusPacketHandlers.add(latestPacketHandler);
 					final ActionNodeDataReceiver<MateCommand> actionNodeDataReceiver;
 					{
-//						CommandSequence<MateCommand> generatorShutOff = CommandSequences.createAuxGeneratorShutOff(latestPacketHandler::getLatestPacketCollection);
-						Map<String, ActionNode> map = new HashMap<>();
-
-						actionNodeDataReceiver = new ActionNodeDataReceiver<MateCommand>(map) {
+						actionNodeDataReceiver = new ActionNodeDataReceiver<MateCommand>(actionNodeMap) {
 							@Override
 							protected void updateInjectEnvironment(DataSource dataSource, InjectEnvironment.Builder injectEnvironmentBuilder) {
 								injectEnvironmentBuilder

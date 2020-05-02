@@ -1,40 +1,18 @@
 # Turing SolarThing
+Turing SolarThing is basically a programming language inside SolarThing. Turing SolarThing is expressed in JSON, so it
+can't be a programming language right? Well, although it's limited and expressed in JSON, it's turing complete, hence the name.
 
-```json
-{
-  "type": "declaration",
-  "main": {
-    "type": "queue",
-    "actions": [
-      {
-        "type": "race",
-        "racers": [
-          [{ "type": "lock", "name": "send_commands"}, { "type": "call", "name": "run_commands"}],
-          [{ "type": "waitms", "wait": 5000}, { "type": "seterror", "error": "Something else had a lock on run_commands"}]
-        ]
-      },
-      { "type": "unlock", "name": "send_commands" }
-    ]
-  },
-  "run_commands": {
-    "type": "queue",
-    "actions": [
-      { "type": "matecommand", "command": "DROP" },
-      { "type": "matecommand", "command": "AUX ON" },
-      {
-        "type": "race",
-        "racers": [
-          [{ "type": "acmode", "mode": "NO AC" }, { "type": "pass" }],
-          [{ "type": "waitms", "wait": 7000 }, { "type": "seterror", "error": "AC is still present!"}]
-        ]
-      },
-      { "type": "matecommand", "command": "AUX OFF"},
-      { "type": "matecommand", "command": "USE"},
-      { "type": "log", "message": "Finished sequence!"}
-    ]
-  }
-}
-```
+Really it's just a way to configure chaining commands, but the nature of it allows for lots of customization
+through simple constructs. You can use 'race' actions as if statements, and you can use 'call' actions to easily
+repeat actions and separate code into more readable parts.
+
+Locks can be used to stop other running actions from doing something at the same time.
+Locks are global, so if they are locked in one action, they are locked in all actions. Declarations are local,
+so you can have the same name in different actions.
+
+Examples:
+* [config_templates/commands](../config_templates/commands)
+* Simple examples below
 
 ---
 
