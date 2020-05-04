@@ -1,14 +1,17 @@
 package me.retrodaredevil.solarthing.packets.creation;
 
 import me.retrodaredevil.solarthing.packets.Packet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 public abstract class StartEndTextPacketCreator implements TextPacketCreator {
+	private static final Logger LOGGER = LoggerFactory.getLogger(StartEndTextPacketCreator.class);
 	private final char start, end;
 	private final int assertSizeAtLeast;
 	private final char[] bytes;
-	
+
 	private int amount;
 	/**
 	 *
@@ -24,7 +27,7 @@ public abstract class StartEndTextPacketCreator implements TextPacketCreator {
 		this.assertSizeAtLeast = assertSizeAtLeast;
 		bytes = new char[maxPacketSize];
 	}
-	
+
 	@Override
 	public Collection<Packet> add(char[] chars) throws PacketCreationException{
 		if(chars.length == 0){
@@ -55,18 +58,17 @@ public abstract class StartEndTextPacketCreator implements TextPacketCreator {
 				}
 				try{
 					final Collection<Packet> packetsToAdd = create(new String(bytes, 0, amount).toCharArray()); // resets bytes array and amount
-					
+
 					if(r == null){
 						r = new ArrayList<>();
 					}
 					r.addAll(packetsToAdd);
 				} catch(PacketCreationException ex){
-					ex.printStackTrace();
-					System.err.println("Got an exception that we were able to handle. Ignoring it...");
+					LOGGER.error("Got an exception that we were able to handle. Ignoring it...", ex);
 				} finally {
 					reset();
 				}
-				
+
 			} else if(c == start){
 				reset();
 				bytes[0] = start;
@@ -78,14 +80,14 @@ public abstract class StartEndTextPacketCreator implements TextPacketCreator {
 		}
 		return r;
 	}
-	
+
 	/**
 	 * @param bytes The bytes to create the packet(s) with
 	 * @return A Collection usually with a size of 1 representing the packets to add.
 	 * @throws PacketCreationException Should be thrown if something unexpected happens where the program should not crash
 	 */
 	protected abstract Collection<Packet> create(char[] bytes) throws PacketCreationException;
-	
+
 	private void reset(){
 		amount = 0;
 		// reset bytes array

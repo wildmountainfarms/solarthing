@@ -8,11 +8,13 @@ import me.retrodaredevil.io.serial.SerialConfig;
 import me.retrodaredevil.io.serial.SerialConfigBuilder;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.analytics.AnalyticsManager;
+import me.retrodaredevil.solarthing.analytics.RoverAnalyticsHandler;
 import me.retrodaredevil.solarthing.config.options.*;
 import me.retrodaredevil.solarthing.misc.device.RaspberryPiCpuTemperatureListUpdater;
 import me.retrodaredevil.solarthing.misc.error.ImmutableExceptionErrorPacket;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
+import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandlerMultiplexer;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiverMultiplexer;
@@ -114,8 +116,10 @@ public class RoverMain {
 		analyticsManager.sendStartUp(ProgramType.ROVER);
 		boolean rpiCpuTemperature = options.getExtraOptionFlags().contains(ExtraOptionFlag.RPI_LOG_CPU_TEMPERATURE);
 		// TODO packetHandlerBundle.getEventPacketHandlers()
-		PacketListReceiver sourceAndFragmentUpdater = SolarMain.getSourceAndFragmentUpdater(options);
+		List<PacketHandler> statusPacketHandlers = new ArrayList<>(packetHandlerBundle.getStatusPacketHandlers());
+		statusPacketHandlers.add(new RoverAnalyticsHandler(analyticsManager));
 
+		PacketListReceiver sourceAndFragmentUpdater = SolarMain.getSourceAndFragmentUpdater(options);
 		PacketCollectionIdGenerator idGenerator = SolarMain.createIdGenerator(options.getUniqueIdsInOneHour());
 		PacketListReceiverHandler statusPacketListReceiverHandler = new PacketListReceiverHandler(
 				new PacketListReceiverMultiplexer(
@@ -129,7 +133,7 @@ public class RoverMain {
 							}
 						}
 				),
-				new PacketHandlerMultiplexer(packetHandlerBundle.getStatusPacketHandlers()),
+				new PacketHandlerMultiplexer(statusPacketHandlers),
 				idGenerator
 		);
 		List<PacketListReceiver> packetListReceiverList = new ArrayList<>();

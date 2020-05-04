@@ -17,12 +17,14 @@ import java.io.IOException;
 import java.util.UUID;
 
 public class AnalyticsManager {
+	/*
+	For future self setting this up again: in the View Settings in Google Analytics, you must have "Bot Filtering" turned off.
+	 */
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
 	private static final Logger LOGGER = LoggerFactory.getLogger(AnalyticsManager.class);
 	private final GoogleAnalytics googleAnalytics;
 
 	public AnalyticsManager(boolean isEnabled, File dataDirectory) {
-		final String clientId;
 		if (isEnabled) {
 			LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Google Analytics is ENABLED!");
 			File file = new File(dataDirectory, "analytics_data.json");
@@ -40,30 +42,58 @@ public class AnalyticsManager {
 					LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Couldn't save analytics data!", e);
 				}
 			}
-			clientId = analyticsData.uuid.toString();
+			final String clientId = analyticsData.uuid.toString();
 			LOGGER.debug("Using Analytics UUID: " + clientId);
+			googleAnalytics = GoogleAnalytics.builder()
+					.withConfig(new GoogleAnalyticsConfig()
+							.setThreadTimeoutSecs(5)
+					)
+					.withDefaultRequest(new DefaultRequest()
+							.applicationName("solarthing-program")
+							.applicationVersion("V-UNKNOWN")
+							.clientId(clientId)
+					)
+					.withTrackingId("UA-70767765-2")
+					.build();
 		} else {
 			LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Google Analytics is disabled");
-			clientId = "UNUSED CLIENT ID";
+			googleAnalytics = null;
 		}
-		googleAnalytics = GoogleAnalytics.builder()
-				.withConfig(new GoogleAnalyticsConfig()
-						.setThreadTimeoutSecs(5)
-						.setEnabled(isEnabled)
-				)
-				.withDefaultRequest(new DefaultRequest()
-						.applicationName("solarthing-program")
-						.applicationVersion("V-UNKNOWN")
-						.clientId(clientId)
-				)
-				.withTrackingId("UA-70767765-2")
-				.build();
 	}
 
 	public void sendStartUp(ProgramType programType) {
-		googleAnalytics.screenView()
-				.screenName(programType.getName())
-				.sendAsync();
+		if (googleAnalytics != null) {
+			LOGGER.info("Sending program type to Google Analytics");
+			googleAnalytics.screenView()
+					.screenName(programType.getName())
+					.sendAsync();
+			googleAnalytics.event()
+					.eventCategory("startup")
+					.eventAction(programType.getName())
+					.sendAsync();
+		}
+	}
+	public void sendMateStatus(String data, int uptimeHours) {
+		if (googleAnalytics != null) {
+			LOGGER.info("Sending Mate status to Google Analytics. data=" + data + " uptime hours=" + uptimeHours);
+			googleAnalytics.event()
+					.eventCategory("status")
+					.eventAction("mate")
+					.eventLabel(data)
+					.eventValue(uptimeHours)
+					.sendAsync();
+		}
+	}
+	public void sendRoverStatus(String data, int uptimeHours) {
+		if (googleAnalytics != null) {
+			LOGGER.info("Sending Rover status to Google Analytics. data=" + data + " uptime hours=" + uptimeHours);
+			googleAnalytics.event()
+					.eventCategory("status")
+					.eventAction("rover")
+					.eventLabel(data)
+					.eventValue(uptimeHours)
+					.sendAsync();
+		}
 	}
 	private static final class AnalyticsData {
 		@JsonProperty("uuid")

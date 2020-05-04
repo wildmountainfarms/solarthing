@@ -14,23 +14,28 @@ public enum AuxMode implements CodeMode {
 	MANUAL(3, "Manual"),
 	VENT_FAN(4, "Vent Fan"),
 	PV_TRIGGER(5, "PV Trigger"),
-	
+
 	/** Only used on FLEXmax80/FLEXmax60*/
-	FLOAT(6, "Float"),
+	FLOAT(6, "Float", true),
 	/** Only used on FLEXmax80/FLEXmax60*/
-	ERROR_OUTPUT(7, "ERROR Output"),
+	ERROR_OUTPUT(7, "ERROR Output", true),
 	/** Only used on FLEXmax80/FLEXmax60*/
-	NIGHT_LIGHT(8, "Night Light"),
+	NIGHT_LIGHT(8, "Night Light", true),
 	/** Only used on FLEXmax80/FLEXmax60*/
-	PWM_DIVERSION(9, "PWM Diversion"),
+	PWM_DIVERSION(9, "PWM Diversion", true),
 	/** Only used on FLEXmax80/FLEXmax60*/
-	LOW_BATTERY(10, "Low Battery");
+	LOW_BATTERY(10, "Low Battery", true);
 
 	private final int value;
 	private final String name;
-	AuxMode(int value, String name){
+	private final boolean flexMaxOnly;
+	AuxMode(int value, String name, boolean flexMaxOnly){
 		this.value = value;
 		this.name = name;
+		this.flexMaxOnly = flexMaxOnly;
+	}
+	AuxMode(int value, String name){
+		this(value, name, false);
 	}
 
 	@Override
@@ -46,6 +51,10 @@ public enum AuxMode implements CodeMode {
 	@Override
 	public int getValueCode() {
 		return value;
+	}
+
+	public boolean isFlexMaxOnly() {
+		return flexMaxOnly;
 	}
 
 	/**

@@ -141,13 +141,13 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 	default int getAuxModeValue() {
 		return AuxMode.getActualValueCode(getRawAuxModeValue());
 	}
-	default AuxMode getAuxMode(){ return Modes.getActiveMode(AuxMode.class, getAuxModeValue());}
+	default @NotNull AuxMode getAuxMode(){ return Modes.getActiveMode(AuxMode.class, getAuxModeValue());}
 	@GraphQLInclude("auxBitActive")
 	default boolean isAuxBitActive(){ return AuxMode.isAuxModeActive(getRawAuxModeValue()); }
 
 	/**
 	 * Should be serialized as "errorMode"
-	 * @return [0..256] represents a varying number of active {@link MXErrorMode}s
+	 * @return [0..255] represents a varying number of active {@link MXErrorMode}s
 	 */
 	@JsonProperty("errorMode")
 	@Override
@@ -229,6 +229,9 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 	 * @return true if this is a FlexMAX charge controller, false if it's an MX, null if the Mate has old firmware and is unable to tell
 	 */
 	default @Nullable Boolean isFlexMax(){
+		if (isAuxBitActive() || getAuxMode().isFlexMaxOnly() || getAmpChargerCurrent() != 0) {
+			return true;
+		}
 		if (isOldMateFirmware()) {
 			return null;
 		}

@@ -58,9 +58,8 @@ public class SolarReader {
 		try {
 			newPackets = creator.add(s.toCharArray());
 		} catch (PacketCreationException e) {
-			e.printStackTrace();
 			String debugString = s.replaceAll("\n", "\\\\n").replaceAll("\r", "\\\\r");
-			LOGGER.warn("Got a garbled packet! got: '" + debugString + "'");
+			LOGGER.warn("Got a garbled packet! got: '" + debugString + "'", e);
 			rawPacketReceiver.updateGarbledData();
 			return true;
 		}

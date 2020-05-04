@@ -14,6 +14,7 @@ import me.retrodaredevil.solarthing.actions.environment.InjectEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.MateCommandEnvironment;
 import me.retrodaredevil.solarthing.analytics.AnalyticsManager;
+import me.retrodaredevil.solarthing.analytics.MateAnalyticsHandler;
 import me.retrodaredevil.solarthing.commands.CommandProvider;
 import me.retrodaredevil.solarthing.commands.CommandProviderMultiplexer;
 import me.retrodaredevil.solarthing.config.databases.IndividualSettings;
@@ -64,7 +65,7 @@ public class OutbackMateMain {
 		PacketCollectionIdGenerator statusIdGenerator = SolarMain.createIdGenerator(options.getUniqueIdsInOneHour());
 		AnalyticsManager analyticsManager = new AnalyticsManager(options.isAnalyticsEnabled(), dataDirectory);
 		analyticsManager.sendStartUp(ProgramType.MATE);
-		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "IO Bundle File: " + options.getIOBundleFile());
+		LOGGER.debug("IO Bundle File: " + options.getIOBundleFile());
 		final IOBundle io;
 		{
 			final IOBundle createdIO = SolarMain.createIOBundle(options.getIOBundleFile(), MATE_CONFIG);
@@ -182,6 +183,7 @@ public class OutbackMateMain {
 			onDataReceive = OnDataReceive.Defaults.NOTHING;
 		}
 		statusPacketHandlers.addAll(packetHandlerBundle.getStatusPacketHandlers());
+		statusPacketHandlers.add(new MateAnalyticsHandler(analyticsManager));
 		PacketListReceiverHandler statusPacketListReceiverHandler = new PacketListReceiverHandler(
 				new PacketListReceiverMultiplexer(
 						sourceAndFragmentUpdater,
