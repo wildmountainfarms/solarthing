@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.couchdb.CouchProperties;
 import me.retrodaredevil.couchdb.DocumentWrapper;
 import me.retrodaredevil.couchdb.EktorpUtil;
+import me.retrodaredevil.couchdb.design.DefaultPacketsDesign;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
@@ -28,9 +29,12 @@ public class CouchDbPacketSaver implements PacketHandler {
 
 	private final Map<String, DocumentWrapper> idMap = new HashMap<>(); // TODO we could probably figure out a way to clear old values
 	private final CouchDbConnector client;
+	private final boolean addDefaultDesign;
 
+	private boolean defaultDesignAdded = false;
 
-	public CouchDbPacketSaver(CouchProperties properties, String databaseName){
+	public CouchDbPacketSaver(CouchProperties properties, String databaseName, boolean addDefaultDesign){
+		this.addDefaultDesign = addDefaultDesign;
 		final HttpClient httpClient = EktorpUtil.createHttpClient(properties);
 		CouchDbInstance instance = new StdCouchDbInstance(httpClient);
 		client = new StdCouchDbConnector(databaseName, instance, new StdObjectMapperFactory(){
@@ -41,6 +45,9 @@ public class CouchDbPacketSaver implements PacketHandler {
 			}
 		});
 	}
+	public CouchDbPacketSaver(CouchProperties properties, String databaseName){
+		this(properties, databaseName, true);
+	}
 
 	@Override
 	public void handle(PacketCollection packetCollection, boolean wasInstant) throws PacketHandleException {
@@ -48,6 +55,20 @@ public class CouchDbPacketSaver implements PacketHandler {
 			client.createDatabaseIfNotExists();
 		} catch(DbAccessException ex){
 			throw new PacketHandleException("Could not establish connection", ex);
+		}
+		if (addDefaultDesign && !defaultDesignAdded) {
+			DocumentWrapper documentWrapper = new DocumentWrapper("_design/packets");
+			documentWrapper.setObject(new DefaultPacketsDesign());
+			try {
+				client.create(documentWrapper);
+				defaultDesignAdded = true;
+				LOGGER.info("Created default design document on database=" + client.getDatabaseName());
+			} catch(UpdateConflictException ex) {
+				defaultDesignAdded = true;
+				LOGGER.debug("Already had a design document for packets on database=" + client.getDatabaseName());
+			} catch(DbAccessException ex) {
+				LOGGER.debug("Couldn't create default design", ex);
+			}
 		}
 
 		final String id = packetCollection.getDbId();

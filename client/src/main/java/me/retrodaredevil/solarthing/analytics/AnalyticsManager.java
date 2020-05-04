@@ -32,7 +32,7 @@ public class AnalyticsManager {
 			try {
 				analyticsData = MAPPER.readValue(file, AnalyticsData.class);
 			} catch (IOException e) {
-				LOGGER.debug("Couldn't read analytics data, but that's OK!", e);
+				LOGGER.debug(SolarThingConstants.NO_CONSOLE, "Couldn't read analytics data, but that's OK!", e);
 			}
 			if (analyticsData == null) {
 				analyticsData = new AnalyticsData(UUID.randomUUID());

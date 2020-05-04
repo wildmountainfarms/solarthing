@@ -16,4 +16,9 @@ public final class SolarThingConstants {
 	 * frequently. (SolarThing program is starting, a command is requested, etc)
 	 */
 	public static final Marker SUMMARY_MARKER = MarkerFactory.getMarker("SUMMARY");
+
+	/**
+	 * This can be used to make sure something doesn't go to the console. This is useful for debugs that aren't important
+	 */
+	public static final Marker NO_CONSOLE = MarkerFactory.getMarker("NO_CONSOLE");
 }

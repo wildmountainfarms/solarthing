@@ -67,14 +67,11 @@ You can see the [Outback/Renogy Rover](other/solar/README.md) README for using t
 
 The [input and output](other/docs/input_and_outputs.md) README is documentation for the `io` JSON property option used in all of the sub programs.
 
-### Compiling
-Run `./compile_and_move.sh`. (You only need to do this if you've changed the code) This updates [solarthing.jar](program/solarthing.jar).
-
 ### Database Setup
-[CouchDB setup](other/docs/couchdb.md)<br/>
+[CouchDB setup](other/docs/couchdb_setup.md)<br/>
 *Used for the android and web application*
 
-[InfluxDB setup](other/docs/influxdb_config.md)<br/>
+[InfluxDB setup](other/docs/influxdb_setup.md)<br/>
 *Used for Grafana*
 
 #### [Developer Use](other/docs/developer_use.md)

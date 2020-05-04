@@ -29,7 +29,9 @@ have the ability to have multiple instances uploading packets to a single databa
 * PVOutput was setup
 * Outhouse code was completely removed from SolarThing codebase
 * "Events Display" was added to the Android application
-* RoverPi became corrupt, but was eventually reflashed and set up again
+* RoverPi became corrupt, but was eventually re-flashed and set up again
+* MatePi finally became corrupt. It was re-flashed, worked, then became corrupt again. (Need new SD card).
+* Google Analytics were added
 
 
 ### Moving from Gson to Jackson

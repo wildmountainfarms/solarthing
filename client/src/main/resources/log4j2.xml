@@ -6,6 +6,7 @@
     </Properties>
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
+            <MarkerFilter marker="NO_CONSOLE" onMatch="DENY" onMismatch="NEUTRAL"/>
             <PatternLayout pattern="${LOG_PATTERN}"/>
         </Console>
         <RollingFile name="logAll" fileName="${logPath}/log_debug.log" filePattern="${logPath}/log_debug_%d{yyyy.MM.dd}-%i.log.gz">

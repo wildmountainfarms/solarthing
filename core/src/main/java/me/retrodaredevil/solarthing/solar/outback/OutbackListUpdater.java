@@ -92,7 +92,7 @@ public class OutbackListUpdater implements PacketListReceiver {
 				try {
 					data = MAPPER.readValue(fxJsonSaveFile, FXJsonSaveData.class);
 				} catch (IOException e) {
-					LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Unable to read fx json data. That's OK though!", e);
+					LOGGER.debug(SolarThingConstants.NO_CONSOLE, "Unable to read fx json data. That's OK though!", e);
 				}
 				fxSavedJsonData = data;
 			}
@@ -101,7 +101,7 @@ public class OutbackListUpdater implements PacketListReceiver {
 				try {
 					data = MAPPER.readValue(mxJsonSaveFile, MXJsonSaveData.class);
 				} catch(IOException e){
-					LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Unable to read mx json data. That's OK though!", e);
+					LOGGER.debug(SolarThingConstants.NO_CONSOLE, "Unable to read mx json data. That's OK though!", e);
 				}
 				mxSavedJsonData = data;
 			}
