@@ -49,6 +49,9 @@ Advanced configuration:
 `fx_charge_settings` to calculate/emulate the timers that can be viewed on the MATE. This is **optional**!!! This is also in beta
 and is not recommended to try unless you have everything else working.
 
+If you want to learn about commands, you can look at [commands](./commands.md). This is **optional** and should only be
+looked at once everything else is working.
+
 ### I want to test this without an Outback Mate!
 You can run `solar/virtual_mate.sh | java -jar solarthing.jar "config/base.json"`
 

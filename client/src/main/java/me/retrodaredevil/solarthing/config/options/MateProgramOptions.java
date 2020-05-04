@@ -16,7 +16,7 @@ import java.util.Map;
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("mate")
-public class MateProgramOptions extends PacketHandlingOptionBase implements IOBundleOption, ProgramOptions {
+public class MateProgramOptions extends PacketHandlingOptionBase implements IOBundleOption, AnalyticsOption, ProgramOptions {
 
 	@JsonProperty("allow_commands")
 	private boolean allowCommands = false;
@@ -38,6 +38,9 @@ public class MateProgramOptions extends PacketHandlingOptionBase implements IOBu
 	@JsonProperty("commands")
 	private List<Command> commands;
 
+	@JsonProperty(AnalyticsOption.PROPERTY_NAME)
+	private boolean isAnalyticsEnabled = AnalyticsOption.DEFAULT_IS_ANALYTICS_ENABLED;
+
 	public boolean isAllowCommands() {
 		return allowCommands;
 	}
@@ -47,6 +50,11 @@ public class MateProgramOptions extends PacketHandlingOptionBase implements IOBu
 	}
 	public boolean isCorrectCheckSum() {
 		return correctCheckSum;
+	}
+
+	@Override
+	public boolean isAnalyticsEnabled() {
+		return isAnalyticsEnabled;
 	}
 
 	@Override

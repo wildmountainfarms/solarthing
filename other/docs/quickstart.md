@@ -26,6 +26,7 @@ You will have to adjust the configuration to your needs and based on the type of
 [PVOutput Quickstart](quickstart_pvoutput.md) (requires CouchDB and either the Mate or Rover program)
 
 ## Configuration Continued
+Also learn about [analytics data we collect](./google_analytics.md).
 Now that you have started to configure your `base.json` file, decide what databases you want to use:
 
 ### CouchDB "Database"
@@ -58,6 +59,7 @@ Edit `config/base.json` with your editor of choice
 }
 ```
 You can use 0 or all of the available databases. 
+If you are just testing and don't want to setup a database, you don't have to!
 
 ### Enable and Start
 Now you can enable and start the service

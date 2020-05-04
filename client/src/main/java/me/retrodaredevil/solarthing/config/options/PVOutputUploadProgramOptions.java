@@ -14,7 +14,7 @@ import java.util.TimeZone;
 
 @JsonTypeName("pvoutput-upload")
 @JsonExplicit
-public class PVOutputUploadProgramOptions implements ProgramOptions {
+public class PVOutputUploadProgramOptions implements AnalyticsOption, ProgramOptions {
 	@JsonProperty(value = "system_id", required = true)
 	private int systemId;
 	@JsonProperty(value = "api_key", required = true)
@@ -34,9 +34,16 @@ public class PVOutputUploadProgramOptions implements ProgramOptions {
 	@JsonProperty("required")
 	private Map<Integer, List<String>> requiredIdentifierMap = null;
 
+	@JsonProperty(AnalyticsOption.PROPERTY_NAME)
+	private boolean isAnalyticsEnabled = AnalyticsOption.DEFAULT_IS_ANALYTICS_ENABLED;
+
 	@Override
 	public ProgramType getProgramType() {
 		return ProgramType.PVOUTPUT_UPLOAD;
+	}
+	@Override
+	public boolean isAnalyticsEnabled() {
+		return isAnalyticsEnabled;
 	}
 
 	public int getSystemId() {

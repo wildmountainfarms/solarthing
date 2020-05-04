@@ -12,8 +12,9 @@ the charge controller is not accepting more power
 * Create GraphQL query that allows someone to get dailyKWH from a large time period (many days) for
 easy displaying in Grafana
 * Packet for disk usage
-* Query all Renogy Rover data at once by reading almost all the registers.
 * Store data such as the panel tilt that can change over time
+* If the serial port for some reason changes from `/dev/ttyUSB0` to `/dev/ttyUSB1`, dynamically switch
+* Make command requests use JSON
   
 ### Android TODO
 * Notification for when FXs are in EQ, but any MX is in absorb or float
@@ -37,6 +38,9 @@ easy displaying in Grafana
 * Have packets for inverters going on/off, AC Drop/AC Use, Daily kWh->0, etc
 * Log CPU temperature, ram, etc into a database and logs.
   * Use the `vcgencmd measure_temp` available on Raspberry Pis
+* Query all Renogy Rover data at once by reading almost all the registers.
+* Use Google Analytics Collection API https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters
+  * Could use this: https://github.com/brsanthu/google-analytics-java
 
 ### TODO Look into
 * Look into supporting Elasticsearch, MongoDB, Graphite
@@ -64,3 +68,8 @@ These might be useful to some people. I will not implement these in the future, 
   * This is not useful to me, but anyone else is welcome to do this
 * Use https://emoncms.org/ to graph data (https://emoncms.org/site/api#input)
   * Some of this is done, but it will not be worked on any further by me
+  
+  
+#### Interesting stuff that will probably never be implemented
+* https://github.com/resilience4j/resilience4j It might be cool to try and heavily structure the client program around
+resilience4j

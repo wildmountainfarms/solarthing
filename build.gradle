@@ -3,11 +3,11 @@ description = """SolarThing"""
 
 buildscript {
     ext {
-        junit5Version = '5.6.1'
+        junit5Version = '5.6.2'
         slf4jVersion = '1.7.30'
-        log4jVersion = '2.13.1'
-        jacksonVersion = '2.10.3'
-        retrofitVersion = "2.8.1"
+        log4jVersion = '2.13.2'
+        jacksonVersion = '2.10.3' // TODO look into updating to 2.11.0 does it support Android SDK level 19? // https://github.com/FasterXML/jackson/wiki/Jackson-Release-2.11
+        retrofitVersion = "2.7.2" // don't update because https://stackoverflow.com/questions/60915381/retrofit2-maven-project-illegal-reflective-access-warning
         shadowVersion = '5.2.0'
     }
 }

@@ -13,12 +13,14 @@ import me.retrodaredevil.solarthing.actions.ActionNode;
 import me.retrodaredevil.solarthing.actions.environment.InjectEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.MateCommandEnvironment;
+import me.retrodaredevil.solarthing.analytics.AnalyticsManager;
 import me.retrodaredevil.solarthing.commands.CommandProvider;
 import me.retrodaredevil.solarthing.commands.CommandProviderMultiplexer;
 import me.retrodaredevil.solarthing.config.databases.IndividualSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.config.options.ExtraOptionFlag;
 import me.retrodaredevil.solarthing.config.options.MateProgramOptions;
+import me.retrodaredevil.solarthing.config.options.ProgramType;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketRetriever;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketRetrieverHandler;
 import me.retrodaredevil.solarthing.misc.device.RaspberryPiCpuTemperatureListUpdater;
@@ -60,6 +62,8 @@ public class OutbackMateMain {
 	public static int connectMate(MateProgramOptions options, File dataDirectory) throws Exception {
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Beginning mate program");
 		PacketCollectionIdGenerator statusIdGenerator = SolarMain.createIdGenerator(options.getUniqueIdsInOneHour());
+		AnalyticsManager analyticsManager = new AnalyticsManager(options.isAnalyticsEnabled(), dataDirectory);
+		analyticsManager.sendStartUp(ProgramType.MATE);
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "IO Bundle File: " + options.getIOBundleFile());
 		final IOBundle io;
 		{

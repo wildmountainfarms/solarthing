@@ -43,7 +43,7 @@ public class MateCommandSender implements OnDataReceive {
 				} catch (IOException e) {
 					throw new RuntimeException("Unable to send command: " + command, e);
 				}
-				LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "\nSent command: " + command + " at " + System.currentTimeMillis());
+				LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Sent command: " + command + " at " + System.currentTimeMillis());
 				onCommandExecute.onCommandExecute(sourcedCommand);
 			}
 		}

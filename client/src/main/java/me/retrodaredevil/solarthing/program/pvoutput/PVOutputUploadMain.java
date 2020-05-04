@@ -6,9 +6,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import me.retrodaredevil.couchdb.CouchProperties;
 import me.retrodaredevil.couchdb.EktorpUtil;
 import me.retrodaredevil.solarthing.SolarThingConstants;
+import me.retrodaredevil.solarthing.analytics.AnalyticsManager;
 import me.retrodaredevil.solarthing.config.databases.DatabaseType;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.config.options.PVOutputUploadProgramOptions;
+import me.retrodaredevil.solarthing.config.options.ProgramType;
 import me.retrodaredevil.solarthing.couchdb.CouchDbQueryHandler;
 import me.retrodaredevil.solarthing.misc.device.DevicePacket;
 import me.retrodaredevil.solarthing.misc.error.ErrorPacket;
@@ -42,6 +44,7 @@ import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -70,7 +73,7 @@ public class PVOutputUploadMain {
 	}
 
 	@SuppressWarnings("SameReturnValue")
-	public static int startPVOutputUpload(PVOutputUploadProgramOptions options, String[] extraArgs){
+	public static int startPVOutputUpload(PVOutputUploadProgramOptions options, String[] extraArgs, File dataDirectory){
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Starting PV Output upload program");
 		TimeZone timeZone = options.getTimeZone();
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Using time zone: {}", timeZone.getDisplayName());
@@ -125,6 +128,8 @@ public class PVOutputUploadMain {
 			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)You need 2 arguments for range upload! You have 1!");
 			return 1;
 		}
+		AnalyticsManager analyticsManager = new AnalyticsManager(options.isAnalyticsEnabled(), dataDirectory);
+		analyticsManager.sendStartUp(ProgramType.PVOUTPUT_UPLOAD);
 
 		return startRealTimeProgram(options, queryHandler, statusParser, handler, service, options.getTimeZone());
 	}

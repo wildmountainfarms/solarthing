@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import java.io.File;
 
 @JsonTypeName("rover")
-public class RoverProgramOptions extends PacketHandlingOptionBase implements RoverOption, ProgramOptions {
+public class RoverProgramOptions extends PacketHandlingOptionBase implements RoverOption, AnalyticsOption, ProgramOptions {
 	@JsonProperty("modbus")
 	private int modbusAddress = 1;
 	@JsonProperty("dummy")
@@ -20,12 +20,20 @@ public class RoverProgramOptions extends PacketHandlingOptionBase implements Rov
 	@JsonProperty("bulk_request")
 	private boolean bulkRequest = false;
 
+	@JsonProperty(AnalyticsOption.PROPERTY_NAME)
+	private boolean isAnalyticsEnabled = AnalyticsOption.DEFAULT_IS_ANALYTICS_ENABLED;
+
 	public boolean isSendErrorPackets() {
 		return sendErrorPackets;
 	}
 
 	public boolean isBulkRequest() {
 		return bulkRequest;
+	}
+
+	@Override
+	public boolean isAnalyticsEnabled() {
+		return isAnalyticsEnabled;
 	}
 
 	@Override

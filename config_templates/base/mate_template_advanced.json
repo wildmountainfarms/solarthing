@@ -22,5 +22,6 @@
     "refloat_voltage": 25.0,
     "equalize_voltage": 30.0,
     "equalize_time_hours": 2.0
-  }
+  },
+  "analytics_enabled": true
 }

@@ -171,11 +171,11 @@ public final class SolarMain {
 			if(programType == ProgramType.MATE) {
 				return OutbackMateMain.connectMate((MateProgramOptions) options, dataDirectory);
 			} else if(programType == ProgramType.ROVER){
-				return RoverMain.connectRover((RoverProgramOptions) options);
+				return RoverMain.connectRover((RoverProgramOptions) options, dataDirectory);
 			} else if(programType == ProgramType.ROVER_SETUP){
 				return RoverMain.connectRoverSetup((RoverSetupProgramOptions) options);
 			} else if(programType == ProgramType.PVOUTPUT_UPLOAD){
-				return PVOutputUploadMain.startPVOutputUpload((PVOutputUploadProgramOptions) options, Arrays.copyOfRange(args, 1, args.length));
+				return PVOutputUploadMain.startPVOutputUpload((PVOutputUploadProgramOptions) options, Arrays.copyOfRange(args, 1, args.length), dataDirectory);
 			}
 			throw new AssertionError("Unknown program type... type=" + programType + " programOptions=" + options);
 		} catch (Throwable t) {

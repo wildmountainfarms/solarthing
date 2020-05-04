@@ -7,10 +7,8 @@ import me.retrodaredevil.io.modbus.*;
 import me.retrodaredevil.io.serial.SerialConfig;
 import me.retrodaredevil.io.serial.SerialConfigBuilder;
 import me.retrodaredevil.solarthing.SolarThingConstants;
-import me.retrodaredevil.solarthing.config.options.ExtraOptionFlag;
-import me.retrodaredevil.solarthing.config.options.RoverOption;
-import me.retrodaredevil.solarthing.config.options.RoverProgramOptions;
-import me.retrodaredevil.solarthing.config.options.RoverSetupProgramOptions;
+import me.retrodaredevil.solarthing.analytics.AnalyticsManager;
+import me.retrodaredevil.solarthing.config.options.*;
 import me.retrodaredevil.solarthing.misc.device.RaspberryPiCpuTemperatureListUpdater;
 import me.retrodaredevil.solarthing.misc.error.ImmutableExceptionErrorPacket;
 import me.retrodaredevil.solarthing.packets.Packet;
@@ -109,9 +107,11 @@ public class RoverMain {
 		} : null);
 	}
 
-	public static int connectRover(RoverProgramOptions options) {
+	public static int connectRover(RoverProgramOptions options, File dataDirectory) {
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Beginning rover program");
 		PacketHandlerBundle packetHandlerBundle = PacketHandlerInit.getPacketHandlerBundle(SolarMain.getDatabaseConfigs(options), SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, SolarThingConstants.SOLAR_EVENT_UNIQUE_NAME);
+		AnalyticsManager analyticsManager = new AnalyticsManager(options.isAnalyticsEnabled(), dataDirectory);
+		analyticsManager.sendStartUp(ProgramType.ROVER);
 		boolean rpiCpuTemperature = options.getExtraOptionFlags().contains(ExtraOptionFlag.RPI_LOG_CPU_TEMPERATURE);
 		// TODO packetHandlerBundle.getEventPacketHandlers()
 		PacketListReceiver sourceAndFragmentUpdater = SolarMain.getSourceAndFragmentUpdater(options);

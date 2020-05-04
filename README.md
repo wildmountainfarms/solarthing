@@ -82,6 +82,7 @@ Run `./compile_and_move.sh`. (You only need to do this if you've changed the cod
 #### [Technical](other/docs/technical/technical.md)
 #### [Project Structure](other/docs/technical/project_structure.md)
 #### [History](other/docs/history.md)
+#### [Google Analytics](other/docs/google_analytics.md)
 
 #### Configuration
 This uses all JSON for configuring everything. The files you edit are all in one place unless you decide to move them.

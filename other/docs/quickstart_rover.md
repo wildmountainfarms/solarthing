@@ -25,6 +25,10 @@ Edit `base.json`
 }
 ```
 
+### Other parameters
+You can use the optional `bulk_request` parameter to make requests to the rover much faster. There may be unknown side effects to
+using this, but it is recommended to be enabled as I've tested it successfully. It is disabled by default.
+
 ### Configuring the dummy file
 If you want to test this program **without a rover**, both the `rover` and `rover-setup` program types support it.
 You can edit your `base.json` like so:
