@@ -1,0 +1,9 @@
+[Unit]
+Description=The service for SolarThing PVOutput
+
+[Service]
+TimeoutStartSec=1
+ExecStart=/opt/solarthing/program/pvoutput/run.sh
+
+[Install]
+WantedBy=multi-user.target

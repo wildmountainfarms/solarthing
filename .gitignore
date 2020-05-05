@@ -4,18 +4,18 @@
 *.log.gz
 
 /program/*
-!/program/solarthing.jar
-!/program/solar/*
-!/program/legacy/outhouse/*
-!/program/config/README.md
+!/program/**
 !/program/README.md
-
-!/program/graphql/
+/program/config/*
+/program/downloads/*
 /program/graphql/*
-!/program/graphql/README.md
-!/program/graphql/solarthing-graphql.jar
-!/program/graphql/solarthing-graphql.sh
-
+/program/mate/*
+/program/rover/*
+/program/pvoutput/*
+!/program/**/README.md
+!/program/**/run.sh
+!/program/**/test
+!/program/**/test/*
 
 
 */__pycache__/*
@@ -302,7 +302,6 @@ gradle-app.setting
 **/build/
 
 # End of https://www.gitignore.io/api/java,linux,macos,gradle,windows,eclipse,intellij,netbeans
-!*.jar
 
 #Idea stuff
 *.iml

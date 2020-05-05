@@ -19,10 +19,10 @@
 ---
 
 ### [program](../../../program)
-* A directory that is used as the working directory when running the `client` program.
-* Files in this directory are not pushed to GitHub unless explicitly added
+* Contains directories that are used as working directories when running SolarThing
+* Files in this directory are not pushed to GitHub unless explicitly added (or there's an exception in .gitignore)
 ### [config_templates](../../../config_templates)
-* A directory that contains configuration templates that should be copied to [program/config](../../../program/config)
+* A directory that contains configuration templates that should be copied to `program/<program>/config`
 
 ---
 

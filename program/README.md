@@ -1,18 +1,29 @@
 ### `program` directory
-This directory should be used as the working directory when running solarthing.jar.
+This directory contains many other directories. See their descriptions below
 
-#### Sub directories
-* `.data` is where SolarThing stores data related to the program. Don't edit these files
-* `authorized` is where authorized public keys should go. Copy files from `unauthorized` here to authorize a command sender
-* `config` is where all configuration data should go. **Edit these files for configuring**
-* `legacy` contains unused legacy code. You shouldn't edit files in here
-* `logs` contains all the log files
-* `solar` contains files to be used while testing SolarThing. Do not edit these files.
-* `unauthorized` contains unauthorized public keys that can be copied into `authorized`.
+#### Directories
+* `mate` the working directory for the mate program.
+* `rover` the working directory for the rover program.
+* `pvoutput` the working directory for the PVOutput program.
+* `graphql` the working directory for the GraphQL program.
+
+#### other directories
+* `.downloads` downloaded SolarThing jar files are stored here.
+* `.scripts` contains scripts used when running/setting up SolarThing.
+* `.legacy` contains unused legacy code. You shouldn't edit files in here.
+* `config` is where shared configuration should go.
 
 #### Files
-* `command_input.txt` you can write commands to be executed to this file by using `cat >command_input.txt`
-* `latest_json.json` the default location for storing the latest set of packets.
 * `README.md` this file!
-* `solarthing.jar` the compiled SolarThing jar for running the `client` submodule
-* `solarthing.sh` an executable that makes running SolarThing on Linux very easy
+* `solarthing.jar` (must be compiled or downloaded). If downloaded, a symbolic link goes here.
+* `download_solarthing.sh` downloads the version of SolarThing that this commit defaults to.
+
+#### Sub directory files
+* `config` is where most configuration data should go. **Edit these files for configuring**
+* `.data` is where SolarThing stores data related to the program. Don't edit these files
+* `authorized` is where authorized public keys should go. Copy files from `unauthorized` here to authorize a command sender
+  * Only used in [mate](mate) so far
+* `unauthorized` contains unauthorized public keys that can be copied into `authorized`.
+  * Only used in [mate](mate) so far
+* `test` contains files to be used while testing SolarThing. Do not edit these files.
+* `logs` contains all the log files

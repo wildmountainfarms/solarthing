@@ -1,0 +1,9 @@
+[Unit]
+Description=The service for SolarThing Mate
+
+[Service]
+TimeoutStartSec=1
+ExecStart=/opt/solarthing/program/mate/run.sh
+
+[Install]
+WantedBy=multi-user.target
