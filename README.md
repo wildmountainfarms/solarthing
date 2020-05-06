@@ -80,6 +80,7 @@ The [input and output](other/docs/input_and_outputs.md) README is documentation 
 #### [Project Structure](other/docs/technical/project_structure.md)
 #### [History](other/docs/history.md)
 #### [Google Analytics](other/docs/google_analytics.md)
+#### [Updating](other/docs/updating.md)
 
 #### Configuration
 This uses all JSON for configuring everything. The files you edit are all in one place unless you decide to move them.

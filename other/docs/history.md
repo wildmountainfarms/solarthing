@@ -32,6 +32,7 @@ have the ability to have multiple instances uploading packets to a single databa
 * RoverPi became corrupt, but was eventually re-flashed and set up again
 * MatePi finally became corrupt. It was re-flashed, worked, then became corrupt again. (Need new SD card).
 * Google Analytics were added
+* Did a huge rebase to remove all solarthing.jar files, restructured program directory
 
 
 ### Moving from Gson to Jackson
