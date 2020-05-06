@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fazecast.jSerialComm.SerialPort;
 import me.retrodaredevil.io.IOBundle;
 import me.retrodaredevil.io.serial.JSerialIOBundle;
 import me.retrodaredevil.io.serial.SerialConfig;
@@ -41,7 +42,12 @@ public class SerialIOConfig implements IOConfig {
 		if(port == null){
 			throw new NullPointerException("null is not a valid value for the port!");
 		}
-		return JSerialIOBundle.createPort(port, serialConfig);
+		SerialPort serialPort = JSerialIOBundle.createSerialPortFromName(port);
+		return new JSerialIOBundle(
+				serialPort,
+				serialConfig,
+				new JSerialIOBundle.Config(50, 4096, 65536)
+		);
 	}
 	@JsonExplicit
 	static class SerialConfigBuilderJackson extends SerialConfigBuilder {

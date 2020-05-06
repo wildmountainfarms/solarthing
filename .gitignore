@@ -7,15 +7,25 @@
 !/program/**
 !/program/README.md
 /program/config/*
-/program/downloads/*
+/program/.downloads/*
 /program/graphql/*
 /program/mate/*
 /program/rover/*
 /program/pvoutput/*
+
+!/program/**/config
+/program/**/config/*
+!/program/**/config/README.md
+
 !/program/**/README.md
+!/program/*/config/README.md
 !/program/**/run.sh
 !/program/**/test
 !/program/**/test/*
+
+!/program/**/config/commands
+/program/**/config/commands/*
+!/program/**/config/commands/README.md
 
 
 */__pycache__/*

@@ -55,7 +55,9 @@ While it takes some configuring, SolarThing web is a simple way to display solar
 Of course! This runs on Java 8+ and has been tested to work with Java 8 and Java 11. This runs on Linux, Windows and Mac,
 but is easiest to set up on Linux systems running Debian with systemd (such as the default Raspberry Pi OS or Ubuntu).
 
-This repository always has a compiled and up to date [jar file containing the SolarThing program](program/solarthing.jar).
+You can get the latest jar file on [our releases page](https://github.com/wildmountainfarms/solarthing/releases), but it
+is recommended that you use the script to automatically download it. The [quickstart](other/docs/quickstart.md) can help
+you get SolarThing up and running.
 
 ## Usage at Wild Mountain Farms
 We monitor an Outback MATE2 with a Raspberry Pi 1 and a Renogy Rover charge controller with a Raspberry Pi Zero W.

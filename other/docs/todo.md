@@ -13,6 +13,7 @@ the charge controller is not accepting more power
 easy displaying in Grafana
 * Packet for disk usage
 * Store data such as the panel tilt that can change over time
+  * This could go into a database called `solarthing-meta`
 * If the serial port for some reason changes from `/dev/ttyUSB0` to `/dev/ttyUSB1`, dynamically switch
 * Make command requests use JSON
   
