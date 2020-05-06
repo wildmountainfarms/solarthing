@@ -1,16 +1,16 @@
 # Quick Start With Outback MATE
 If you haven't already, [click here](quickstart.md) to view how to clone this repo and install the service.
 
-Once everything is installed, you're ready to edit the configs. You will cd to the `program` directory.
+Once everything is installed, you're ready to edit the configs. You will cd to the `program/mate` directory.
 ```
 # If you have it installed in /opt
-cd /opt/solarthing/program
+cd /opt/solarthing/program/mate
 ```
 
 Copy some template config files ([default_linux_serial](../../config_templates/io/default_linux_serial.json) and [mate_template](../../config_templates/base/mate_template.json))
 ```
-cp ../config_templates/io/default_linux_serial.json config/
-cp ../config_templates/base/mate_template.json config/base.json
+cp ../../config_templates/io/default_linux_serial.json config/
+cp ../../config_templates/base/mate_template.json config/base.json
 ```
 Edit `base.json`
 ```json5
@@ -53,7 +53,7 @@ If you want to learn about commands, you can look at [commands](./commands.md). 
 looked at once everything else is working.
 
 ### I want to test this without an Outback Mate!
-You can run `solar/virtual_mate.sh | java -jar solarthing.jar "config/base.json"`
+You can run `solar/virtual_mate.sh | ./run.sh`
 
 ### I'm ready to use this for real!
 Once your configuration is how you want it, you can go back to the [quickstart](quickstart.md#configuration-continued) to enable and start the service.

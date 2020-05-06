@@ -6,7 +6,7 @@
   "databases": [
     "config/couchdb.json"
   ],
-  "io": "../config_templates/io/default_linux_serial.json",
+  "io": "../../config_templates/io/default_linux_serial.json",
   "allow_commands": true,
   "commands": [
     {

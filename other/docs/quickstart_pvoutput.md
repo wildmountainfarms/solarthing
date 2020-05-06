@@ -7,12 +7,12 @@ from solar devices.
 Once everything is installed, you're ready to edit the configs. You will cd to the `program` directory.
 ```
 # If you have it installed in /opt
-cd /opt/solarthing/program
+cd /opt/solarthing/program/pvoutput
 ```
 
 Copy some template config files ([pvoutput_upload_template](../../config_templates/base/pvoutput_upload_template.json))
 ```
-cp ../config_templates/base/pvoutput_upload_template.json config/base.json
+cp ../../config_templates/base/pvoutput_upload_template.json config/base.json
 ```
 Edit `base.json`
 ```json

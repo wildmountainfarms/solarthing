@@ -3,10 +3,11 @@
 BASEDIR=$(dirname "$0")
 cd "$BASEDIR" || exit 1
 
-SOLARTHING_VERSION="2020.1.0"
+# shellcheck source=.scripts/export_version.sh
+. "$BASEDIR"/.scripts/export_version.sh || exit 1
 
 if ! ls ".downloads/solarthing-$SOLARTHING_VERSION.jar" 2>/dev/null; then
-  echo Going to download version: $SOLARTHING_VERSION
+  echo Going to download version: "$SOLARTHING_VERSION"
   mkdir ".downloads" 2>/dev/null
   (cd .downloads && wget "https://github.com/wildmountainfarms/solarthing/releases/download/v$SOLARTHING_VERSION/solarthing-$SOLARTHING_VERSION.jar") || exit 1
 fi

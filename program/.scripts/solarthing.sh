@@ -11,8 +11,8 @@ echo Using base config = "$BASE_CONFIG"
 "$BASEDIR/download_if_needed.sh" || exit 1
 
 if java --add-opens 2>&1 | grep 'requires modules' >/dev/null; then
-  java --add-opens=java.base/java.lang.invoke=ALL-UNNAMED -jar "$BASEDIR/../solarthing.jar" "config/base.json"
+  java --add-opens=java.base/java.lang.invoke=ALL-UNNAMED -jar "$BASEDIR/../solarthing.jar" "$BASE_CONFIG"
 else
-  java -jar "$BASEDIR/../solarthing.jar" "config/base.json"
+  java -jar "$BASEDIR/../solarthing.jar" "$BASE_CONFIG"
 fi
 

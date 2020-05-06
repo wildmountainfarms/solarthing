@@ -6,7 +6,7 @@
   "databases": [
     "config/couchdb.json"
   ],
-  "io": "../config_templates/io/default_linux_serial.json",
+  "io": "../../config_templates/io/default_linux_serial.json",
   "extra_option_flags": [
     "rpi_cpu_temp"
   ]

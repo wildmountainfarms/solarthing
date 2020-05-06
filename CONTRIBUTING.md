@@ -7,8 +7,6 @@ Run `./compile_and_move.sh`. (You only need to do this if you've changed the cod
 
 ## Submitting Changes
 When you submit changes, you should make sure you follow conventions. Most of the time you should test your changes.
-However, when you submit a PR, you should not have `program/solarthing.jar` or `program/graphql/solarthing.jar` added.
-This is because I want to be the one to compile it to avoid a possible security risk or unsupported JDK version.
 
 If the `.gitignore` file needs something added to it, please add it **at the bottom**.
 
