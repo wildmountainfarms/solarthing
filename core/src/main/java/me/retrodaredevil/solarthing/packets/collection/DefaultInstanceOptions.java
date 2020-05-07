@@ -1,9 +1,9 @@
 package me.retrodaredevil.solarthing.packets.collection;
 
 import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePacket;
-import org.jetbrains.annotations.Nullable;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 
-import javax.validation.constraints.NotNull;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
 

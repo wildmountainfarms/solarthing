@@ -54,6 +54,7 @@ public class OutbackListUpdater implements PacketListReceiver {
 
 	private final TimeIdentifier timeIdentifier;
 	private final PacketListReceiver eventReceiver;
+	@Deprecated
 	private final File fxJsonSaveFile;
 	private final File mxJsonSaveFile;
 

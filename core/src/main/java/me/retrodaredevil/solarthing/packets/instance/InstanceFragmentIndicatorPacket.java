@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 
-import javax.validation.constraints.NotNull;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 
 /**
  * This packet is used to indicate that multiple {@link me.retrodaredevil.solarthing.packets.collection.PacketCollection}s

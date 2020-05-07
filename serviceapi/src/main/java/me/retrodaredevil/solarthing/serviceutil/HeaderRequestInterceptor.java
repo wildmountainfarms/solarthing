@@ -2,7 +2,7 @@ package me.retrodaredevil.solarthing.serviceutil;
 
 import okhttp3.Interceptor;
 import okhttp3.Response;
-import javax.validation.constraints.NotNull;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 
 import java.io.IOException;
 

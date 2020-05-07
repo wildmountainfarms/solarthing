@@ -10,7 +10,7 @@ import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.event.SupplementarySolarEventPacket;
 import me.retrodaredevil.solarthing.solar.outback.OutbackData;
 
-import javax.validation.constraints.NotNull;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 
 @JsonTypeName("MXFM_RAW_DAY_END")
 @JsonDeserialize(as = ImmutableMXRawDayEndPacket.class)

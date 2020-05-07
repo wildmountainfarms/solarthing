@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.solar.outback.fx.common;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifier;
@@ -9,7 +10,6 @@ import me.retrodaredevil.solarthing.packets.identification.UnknownSupplementaryI
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXIdentityInfo;
 
-import javax.validation.constraints.NotNull;
 import java.util.Collection;
 
 public class ImmutableFXDailyData implements FXDailyData {
@@ -60,15 +60,13 @@ public class ImmutableFXDailyData implements FXDailyData {
 		identityInfo = new FXIdentityInfo(address);
 	}
 
-	@NotNull
 	@Override
-	public Identifier getIdentifier() {
+	public @NotNull Identifier getIdentifier() {
 		return identifier;
 	}
 
-	@NotNull
 	@Override
-	public IdentityInfo getIdentityInfo() {
+	public @NotNull IdentityInfo getIdentityInfo() {
 		return identityInfo;
 	}
 

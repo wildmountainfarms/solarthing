@@ -7,7 +7,7 @@ import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import me.retrodaredevil.solarthing.solar.renogy.RenogyPacket;
 
-import javax.validation.constraints.NotNull;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 
 /**
  * Represents a Rover Status Packet. This implements {@link RoverReadTable}

@@ -1,6 +1,6 @@
 package me.retrodaredevil.solarthing.packets.identification;
 
-import javax.validation.constraints.NotNull;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 
 import java.util.Objects;
 

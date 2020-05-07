@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 import me.retrodaredevil.solarthing.solar.common.*;
@@ -15,17 +16,15 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.special.ImmutableSpecialP
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.ImmutableSpecialPowerControl_E02D;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerControl_E021;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerControl_E02D;
-import javax.validation.constraints.NotNull;
 
 import java.util.Collection;
 
 @JsonExplicit
 public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeController, DailyChargeController, DailyBatteryVoltage, Identifiable {
 
-	@NotNull
 	@Override
 	@GraphQLInclude("identifier")
-	RoverIdentifier getIdentifier();
+	@NotNull RoverIdentifier getIdentifier();
 
 	@Override
 	default boolean isNewDay(DailyData previousDailyData) {

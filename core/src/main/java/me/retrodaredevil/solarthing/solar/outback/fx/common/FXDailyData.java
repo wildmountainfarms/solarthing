@@ -12,7 +12,7 @@ import me.retrodaredevil.solarthing.solar.outback.fx.ACMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXErrorMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.OperationalMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.extra.DailyFXPacket;
-import org.jetbrains.annotations.Nullable;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Set;

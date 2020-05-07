@@ -4,7 +4,7 @@ import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.TimestampedPacket;
 import me.retrodaredevil.solarthing.solar.common.DailyData;
 
-import javax.validation.constraints.NotNull;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
 

@@ -3,14 +3,13 @@ package me.retrodaredevil.solarthing.solar.outback.fx.charge;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.identification.DefaultSupplementaryIdentifier;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifier;
 import me.retrodaredevil.solarthing.solar.extra.SolarExtraPacketType;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXIdentityInfo;
-
-import javax.validation.constraints.NotNull;
 
 public class ImmutableFXChargingPacket implements FXChargingPacket {
 	private final int address;
@@ -63,15 +62,13 @@ public class ImmutableFXChargingPacket implements FXChargingPacket {
 		this(new OutbackIdentifier(address), fxChargingMode, remainingAbsorbTimeMillis, remainingFloatTimeMillis, remainingEqualizeTimeMillis, totalAbsorbTimeMillis, totalFloatTimeMillis, totalEqualizeTimeMillis);
 	}
 
-	@NotNull
     @Override
-	public SupplementaryIdentifier getIdentifier() {
+	public @NotNull SupplementaryIdentifier getIdentifier() {
 		return identifier;
 	}
 
-	@NotNull
 	@Override
-	public IdentityInfo getIdentityInfo() {
+	public @NotNull IdentityInfo getIdentityInfo() {
 		return identityInfo;
 	}
 

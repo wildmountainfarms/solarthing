@@ -3,17 +3,9 @@ package me.retrodaredevil.solarthing.solar.outback.fx;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonNode;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
-
-import javax.validation.constraints.NotNull;
-import java.io.IOException;
-
-import static me.retrodaredevil.util.json.JacksonHelper.require;
 
 @JsonIgnoreProperties(value = {
 		"operatingModeName", "errors", "acModeName", "miscModes", "warnings",
@@ -112,9 +104,8 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 		);
 	}
 
-	@NotNull
 	@Override
-	public IdentityInfo getIdentityInfo() {
+	public @NotNull IdentityInfo getIdentityInfo() {
 		return identityInfo;
 	}
 
@@ -218,9 +209,8 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 		return address;
 	}
 
-	@NotNull
     @Override
-	public OutbackIdentifier getIdentifier() {
+	public @NotNull OutbackIdentifier getIdentifier() {
 		return identifier;
 	}
 

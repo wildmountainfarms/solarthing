@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
 
-import javax.validation.constraints.NotNull;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 
 @JsonTypeName("MATE_COMMAND_SUCCESS")
 @JsonDeserialize(as = ImmutableSuccessMateCommandPacket.class)

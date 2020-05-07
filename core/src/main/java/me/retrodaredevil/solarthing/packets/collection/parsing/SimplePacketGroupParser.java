@@ -6,7 +6,7 @@ import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
 
-import javax.validation.constraints.NotNull;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 

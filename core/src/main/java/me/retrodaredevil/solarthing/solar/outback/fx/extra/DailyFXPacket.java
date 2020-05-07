@@ -6,7 +6,7 @@ import me.retrodaredevil.solarthing.solar.extra.SolarExtraPacketType;
 import me.retrodaredevil.solarthing.solar.extra.SupplementarySolarExtraPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.FXDailyData;
 
-import javax.validation.constraints.NotNull;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 
 @JsonDeserialize(as = ImmutableDailyFXPacket.class)
 @JsonTypeName("FX_DAILY")

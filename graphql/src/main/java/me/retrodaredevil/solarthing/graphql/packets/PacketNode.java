@@ -2,9 +2,9 @@ package me.retrodaredevil.solarthing.graphql.packets;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import org.jetbrains.annotations.Nullable;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 
-import javax.validation.constraints.NotNull;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
 

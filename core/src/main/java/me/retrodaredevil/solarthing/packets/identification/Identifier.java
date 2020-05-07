@@ -2,7 +2,7 @@ package me.retrodaredevil.solarthing.packets.identification;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.validation.constraints.NotNull;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 
 /**
  * All {@link Identifier}s have their {@link #equals(Object)} and {@link #hashCode()} methods implemented so
@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
  * <p>
  * {@link Identifier}s also inherit {@link Comparable<Identifier>} so they can be sorted using the default SolarThing order. (Their natural order).
  */
-public interface Identifier extends Comparable<Identifier> {
+public interface Identifier extends Comparable<Identifier> { // TODO make this not comparable
 	/**
 	 * @return A representation of this identifier
 	 */

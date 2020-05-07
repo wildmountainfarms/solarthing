@@ -2,7 +2,7 @@ package me.retrodaredevil.solarthing.packets.identification;
 
 import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
 
-import javax.validation.constraints.NotNull;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 
 /**
  * Represents something that is "identifiable"

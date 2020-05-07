@@ -3,9 +3,8 @@ package me.retrodaredevil.solarthing.solar.renogy.rover;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
-
-import javax.validation.constraints.NotNull;
 
 @JsonIgnoreProperties(value = {"productModelString", "hardwareVersionString", "softwareVersionString", "streetLightBrightness", "streetLightOn", "chargingStateName", "errors", "batteryTypeName", "loadWorkingModeName"}, allowGetters = true)
 public class ImmutableRoverStatusPacket implements RoverStatusPacket {
@@ -199,15 +198,13 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 		identityInfo = new RoverIdentityInfo(productSerialNumber);
 	}
 
-	@NotNull
     @Override
-	public RoverIdentifier getIdentifier() {
+	public @NotNull RoverIdentifier getIdentifier() {
 		return identifier;
 	}
 
-	@NotNull
 	@Override
-	public IdentityInfo getIdentityInfo() {
+	public @NotNull IdentityInfo getIdentityInfo() {
 		return identityInfo;
 	}
 

@@ -7,6 +7,8 @@ import io.leangen.graphql.annotations.GraphQLQuery;
 import me.retrodaredevil.couchdb.CouchProperties;
 import me.retrodaredevil.couchdb.EktorpUtil;
 import me.retrodaredevil.solarthing.SolarThingConstants;
+import me.retrodaredevil.solarthing.annotations.NotNull;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.couchdb.CouchDbQueryHandler;
 import me.retrodaredevil.solarthing.graphql.packets.*;
 import me.retrodaredevil.solarthing.misc.device.CpuTemperaturePacket;
@@ -33,11 +35,9 @@ import org.ektorp.ViewQuery;
 import org.ektorp.http.HttpClient;
 import org.ektorp.impl.StdCouchDbConnector;
 import org.ektorp.impl.StdCouchDbInstance;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.validation.constraints.NotNull;
 import java.util.*;
 
 import static java.util.Objects.requireNonNull;

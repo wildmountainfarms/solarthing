@@ -2,7 +2,7 @@ package me.retrodaredevil.solarthing.solar.common;
 
 import me.retrodaredevil.solarthing.packets.Mode;
 
-import javax.validation.constraints.NotNull;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 
 public interface BasicChargeController extends ChargeController, BatteryVoltage, PVCurrentAndVoltage {
 

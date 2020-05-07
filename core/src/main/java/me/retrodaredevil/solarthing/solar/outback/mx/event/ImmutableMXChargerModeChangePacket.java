@@ -2,15 +2,14 @@ package me.retrodaredevil.solarthing.solar.outback.mx.event;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import me.retrodaredevil.solarthing.annotations.NotNull;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.identification.DefaultSupplementaryIdentifier;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifier;
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXIdentityInfo;
-import org.jetbrains.annotations.Nullable;
-
-import javax.validation.constraints.NotNull;
 
 public class ImmutableMXChargerModeChangePacket implements MXChargerModeChangePacket {
 	private final int address;
@@ -47,14 +46,12 @@ public class ImmutableMXChargerModeChangePacket implements MXChargerModeChangePa
 		return previousChargerModeValue;
 	}
 
-	@NotNull
     @Override
-	public SupplementaryIdentifier getIdentifier() {
+	public @NotNull SupplementaryIdentifier getIdentifier() {
 		return identifier;
 	}
-	@NotNull
 	@Override
-	public IdentityInfo getIdentityInfo() {
+	public @NotNull IdentityInfo getIdentityInfo() {
 		return identityInfo;
 	}
 

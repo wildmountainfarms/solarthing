@@ -7,7 +7,8 @@ import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.packets.support.Support;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
-import javax.validation.constraints.NotNull;
+
+import me.retrodaredevil.solarthing.annotations.NotNull;
 
 @JsonIgnoreProperties(value = {
 		"auxModeName", "errors", "chargerModeName",
@@ -73,9 +74,8 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 		return address;
 	}
 
-	@NotNull
 	@Override
-	public OutbackIdentifier getIdentifier() {
+	public @NotNull OutbackIdentifier getIdentifier() {
 		return identifier;
 	}
 

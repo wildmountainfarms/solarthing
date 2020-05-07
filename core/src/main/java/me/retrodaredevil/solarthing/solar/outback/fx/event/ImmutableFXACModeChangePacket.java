@@ -8,9 +8,9 @@ import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifi
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXIdentityInfo;
-import org.jetbrains.annotations.Nullable;
 
-import javax.validation.constraints.NotNull;
+import me.retrodaredevil.solarthing.annotations.NotNull;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 
 public class ImmutableFXACModeChangePacket implements FXACModeChangePacket {
 	private final int address;
@@ -52,15 +52,13 @@ public class ImmutableFXACModeChangePacket implements FXACModeChangePacket {
 		return previousACModeValue;
 	}
 
-	@NotNull
 	@Override
-	public SupplementaryIdentifier getIdentifier() {
+	public @NotNull SupplementaryIdentifier getIdentifier() {
 		return identifier;
 	}
 
-	@NotNull
 	@Override
-	public IdentityInfo getIdentityInfo() {
+	public @NotNull IdentityInfo getIdentityInfo() {
 		return identityInfo;
 	}
 }

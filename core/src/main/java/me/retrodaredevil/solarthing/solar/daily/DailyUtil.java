@@ -51,6 +51,7 @@ public class DailyUtil {
 		}
 		return r;
 	}
+	// TODO think about removing Packet bound as it makes using something like DailyChargeControllerDifficult.
 	public static <T extends Packet & DailyData> Map<IdentifierFragment, List<DailyPair<T>>> getDailyPairs(Map<IdentifierFragment, List<TimestampedPacket<T>>> packetMap, DailyConfig dailyConfig) {
 		Map<IdentifierFragment, List<DailyPair<T>>> r = new HashMap<>(packetMap.size());
 		for (Map.Entry<IdentifierFragment, List<TimestampedPacket<T>>> entry : packetMap.entrySet()) {
@@ -81,17 +82,5 @@ public class DailyUtil {
 			}
 		}
 		return packetMap;
-	}
-	@Deprecated
-	public static float getDailyKWHTotal(List<DailyPair<? extends DailyChargeController>> dailyPairs) {
-		float r = 0;
-		for (DailyPair<? extends DailyChargeController> dailyPair : dailyPairs) {
-			if (dailyPair.getStartPacketType() == DailyPair.StartPacketType.CUT_OFF) {
-				r += dailyPair.getLatestPacket().getPacket().getDailyKWH() - dailyPair.getStartPacket().getPacket().getDailyKWH();
-			} else {
-				r += dailyPair.getLatestPacket().getPacket().getDailyKWH();
-			}
-		}
-		return r;
 	}
 }

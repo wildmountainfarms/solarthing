@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 
-import javax.validation.constraints.NotNull;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 
 @JsonTypeName("INTEGRITY_PACKET")
 @JsonDeserialize(as = ImmutableIntegrityPacket.class)

@@ -5,7 +5,7 @@ import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 import me.retrodaredevil.solarthing.solar.outback.fx.WarningMode;
 
-import javax.validation.constraints.NotNull;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import java.util.Set;
 
 public interface FXWarningReporter extends Identifiable {

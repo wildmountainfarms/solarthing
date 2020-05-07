@@ -6,7 +6,7 @@ import me.retrodaredevil.solarthing.solar.SolarStatusPacket;
 import me.retrodaredevil.solarthing.solar.outback.OutbackData;
 import me.retrodaredevil.solarthing.solar.outback.OutbackUtil;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
-import org.jetbrains.annotations.Nullable;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

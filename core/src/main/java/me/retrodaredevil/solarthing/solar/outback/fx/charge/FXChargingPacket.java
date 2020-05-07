@@ -8,9 +8,9 @@ import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.solar.extra.SolarExtraPacketType;
 import me.retrodaredevil.solarthing.solar.extra.SupplementarySolarExtraPacket;
 import me.retrodaredevil.solarthing.solar.outback.OutbackData;
-import org.jetbrains.annotations.Nullable;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 
-import javax.validation.constraints.NotNull;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 
 @JsonDeserialize(as = ImmutableFXChargingPacket.class)
 @JsonTypeName("FX_CHARGING")

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.actions.ActionNode;
 import me.retrodaredevil.solarthing.solar.outback.fx.charge.FXChargingSettings;
 import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
-import org.jetbrains.annotations.Nullable;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 
 import java.io.File;
 import java.util.Collections;

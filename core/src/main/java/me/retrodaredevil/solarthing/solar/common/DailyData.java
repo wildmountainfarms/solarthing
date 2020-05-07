@@ -1,7 +1,7 @@
 package me.retrodaredevil.solarthing.solar.common;
 
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
-import org.jetbrains.annotations.Nullable;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 
 public interface DailyData extends Identifiable {
 	/**

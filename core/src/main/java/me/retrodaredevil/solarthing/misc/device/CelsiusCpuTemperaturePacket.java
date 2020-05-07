@@ -7,7 +7,7 @@ import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.packets.identification.SingleTypeIdentifier;
 
-import javax.validation.constraints.NotNull;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 
 @JsonIgnoreProperties(value = {"cpuTemperatureFahrenheit"}, allowGetters = true)
 public class CelsiusCpuTemperaturePacket implements CpuTemperaturePacket {

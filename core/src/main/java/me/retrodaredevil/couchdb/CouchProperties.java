@@ -1,8 +1,8 @@
 package me.retrodaredevil.couchdb;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import javax.validation.constraints.NotNull;
-import org.jetbrains.annotations.Nullable;
+import me.retrodaredevil.solarthing.annotations.NotNull;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 
 @JsonDeserialize(as = ImmutableCouchProperties.class)
 public interface CouchProperties {

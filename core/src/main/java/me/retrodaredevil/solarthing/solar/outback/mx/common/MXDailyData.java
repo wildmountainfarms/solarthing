@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.solar.outback.mx.common;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.packets.support.Support;
 import me.retrodaredevil.solarthing.solar.common.DailyBatteryVoltage;
@@ -9,7 +10,6 @@ import me.retrodaredevil.solarthing.solar.common.DailyData;
 import me.retrodaredevil.solarthing.solar.common.ErrorReporter;
 import me.retrodaredevil.solarthing.solar.outback.OutbackData;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXErrorMode;
-import javax.validation.constraints.NotNull;
 
 import java.util.Set;
 
@@ -34,8 +34,7 @@ public interface MXDailyData extends OutbackData, DailyChargeController, DailyBa
 
 	@JsonProperty("startDateMillis")
 	@Override
-	@NotNull
-	Long getStartDateMillis();
+	@NotNull Long getStartDateMillis();
 
 	@NotNull
 	@JsonProperty("dailyAHSupport")

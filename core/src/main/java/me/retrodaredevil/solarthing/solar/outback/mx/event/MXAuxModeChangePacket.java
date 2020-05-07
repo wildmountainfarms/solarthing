@@ -10,8 +10,8 @@ import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.event.SupplementarySolarEventPacket;
 import me.retrodaredevil.solarthing.solar.outback.OutbackData;
 import me.retrodaredevil.solarthing.solar.outback.mx.AuxMode;
-import javax.validation.constraints.NotNull;
-import org.jetbrains.annotations.Nullable;
+import me.retrodaredevil.solarthing.annotations.NotNull;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 
 @JsonDeserialize(as = ImmutableMXAuxModeChangePacket.class)
 @JsonTypeName("MXFM_AUX_MODE_CHANGE")

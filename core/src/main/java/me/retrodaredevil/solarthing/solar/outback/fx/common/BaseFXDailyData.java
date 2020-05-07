@@ -1,12 +1,11 @@
 package me.retrodaredevil.solarthing.solar.outback.fx.common;
 
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.DocumentedPacketType;
 import me.retrodaredevil.solarthing.packets.identification.DefaultSupplementaryIdentifier;
 import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifiable;
 import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
-
-import javax.validation.constraints.NotNull;
 
 public abstract class BaseFXDailyData extends ImmutableFXDailyData implements SupplementaryIdentifiable {
 
@@ -30,9 +29,8 @@ public abstract class BaseFXDailyData extends ImmutableFXDailyData implements Su
 		supplementaryIdentifier = new DefaultSupplementaryIdentifier<>(outbackIdentifier, packetType.toString());
 	}
 
-	@NotNull
     @Override
-	public SupplementaryIdentifier getIdentifier() {
+	public @NotNull SupplementaryIdentifier getIdentifier() {
 		return supplementaryIdentifier;
 	}
 

@@ -304,10 +304,6 @@ public class PVOutputUploadMain {
 		Call<String> call = service.addStatus(addStatusParameters);
 		executeCall(call);
 	}
-	private static void uploadBatchOutput(PVOutputService service, AddBatchOutputParameters parameters) {
-		Call<String> call = service.addBatchOutput(parameters);
-		executeCall(call);
-	}
 	private static void executeCall(Call<String> call) {
 		LOGGER.debug("Executing call");
 		Response<String> response = null;
@@ -322,7 +318,6 @@ public class PVOutputUploadMain {
 			} else {
 				LOGGER.debug("Unsuccessful. Message: " + response.message() + " code: " + response.code());
 			}
-
 		}
 	}
 }

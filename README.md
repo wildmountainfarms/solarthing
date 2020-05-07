@@ -1,6 +1,14 @@
 ![SolarThing](other/docs/solarthing_logo.png "SolarThing")
 Stores solar data in a database to view on Android, Grafana, or PVOutput
 
+<p align="center">
+    <a href="#supported-products">Supported Products</a> &bull;
+    <a href="other/docs/quickstart.md">Quickstart</a> &bull;
+    <a href="#features">Features</a> &bull;
+    <a href="#supported-databases">Supported Databases</a> &bull;
+    <a href="#examples">Examples</a>
+</p>
+
 ## Supported Products
 * **Outback MATEs** (FX Inverter, MX/FM Charge Controller)
 * **Renogy Rover** (And other Renogy products) over modbus serial.

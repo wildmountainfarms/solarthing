@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 
-import javax.validation.constraints.NotNull;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 
 @Deprecated // never used. Maybe used in the future
 @JsonTypeName("TARGET")

@@ -2,7 +2,7 @@ package me.retrodaredevil.solarthing.packets.identification;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.validation.constraints.NotNull;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 
 public interface SupplementaryIdentifier extends Identifier {
 	/**

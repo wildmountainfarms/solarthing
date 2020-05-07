@@ -13,7 +13,7 @@ import me.retrodaredevil.solarthing.solar.outback.OutbackStatusPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.FXMiscReporter;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.FXWarningReporter;
 
-import javax.validation.constraints.NotNull;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import java.util.Set;
 
 /**

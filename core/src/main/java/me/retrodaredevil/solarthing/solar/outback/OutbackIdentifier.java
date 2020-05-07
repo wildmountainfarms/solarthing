@@ -2,7 +2,7 @@ package me.retrodaredevil.solarthing.solar.outback;
 
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.packets.identification.IntegerIdentifier;
-import javax.validation.constraints.NotNull;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 
 import java.util.Objects;
 

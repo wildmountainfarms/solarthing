@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 
-import javax.validation.constraints.NotNull;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 
 @JsonDeserialize(as = CelsiusCpuTemperaturePacket.class)
 @JsonExplicit

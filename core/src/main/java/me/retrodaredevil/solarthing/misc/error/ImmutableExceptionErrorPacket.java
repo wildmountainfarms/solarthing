@@ -5,7 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 
-import javax.validation.constraints.NotNull;
+import me.retrodaredevil.solarthing.annotations.NotNull;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
 
@@ -33,9 +34,8 @@ public class ImmutableExceptionErrorPacket implements ExceptionErrorPacket {
 		identityInfo = new ExceptionErrorIdentityInfo(identifier);
 	}
 
-	@NotNull
 	@Override
-	public Identifier getIdentifier() {
+	public @NotNull Identifier getIdentifier() {
 		return identifier;
 	}
 

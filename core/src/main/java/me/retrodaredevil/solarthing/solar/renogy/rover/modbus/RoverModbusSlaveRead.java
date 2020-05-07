@@ -3,11 +3,11 @@ package me.retrodaredevil.solarthing.solar.renogy.rover.modbus;
 import me.retrodaredevil.io.modbus.ModbusSlave;
 import me.retrodaredevil.io.modbus.handling.MessageHandler;
 import me.retrodaredevil.io.modbus.handling.ReadRegistersHandler;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverIdentifier;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverIdentityInfo;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverReadTable;
-import javax.validation.constraints.NotNull;
 
 public class RoverModbusSlaveRead implements RoverReadTable {
 	private static final float KWH_DIVIDER = 1_000; // units are returned in Watt Hours
@@ -17,9 +17,8 @@ public class RoverModbusSlaveRead implements RoverReadTable {
 	public RoverModbusSlaveRead(ModbusSlave modbus) {
 		this.modbus = modbus;
 	}
-	@NotNull
     @Override
-	public RoverIdentifier getIdentifier() {
+	public @NotNull RoverIdentifier getIdentifier() {
 		return new RoverIdentifier(getProductSerialNumber());
 	}
 

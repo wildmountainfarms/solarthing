@@ -6,7 +6,7 @@ import me.retrodaredevil.solarthing.solar.extra.SolarExtraPacketType;
 import me.retrodaredevil.solarthing.solar.extra.SupplementarySolarExtraPacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.common.MXDailyData;
 
-import javax.validation.constraints.NotNull;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 
 @JsonTypeName("MXFM_DAILY")
 @JsonDeserialize(as = ImmutableDailyMXPacket.class)

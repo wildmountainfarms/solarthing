@@ -11,9 +11,9 @@ import me.retrodaredevil.solarthing.solar.event.SupplementarySolarEventPacket;
 import me.retrodaredevil.solarthing.solar.outback.OutbackData;
 import me.retrodaredevil.solarthing.solar.outback.fx.WarningMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.FXWarningReporter;
-import org.jetbrains.annotations.Nullable;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 
-import javax.validation.constraints.NotNull;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import java.util.Set;
 
 @JsonDeserialize(as = ImmutableFXWarningModeChangePacket.class)

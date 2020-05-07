@@ -2,7 +2,7 @@ package me.retrodaredevil.solarthing.packets.collection.parsing;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import me.retrodaredevil.solarthing.packets.Packet;
-import org.jetbrains.annotations.Nullable;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;

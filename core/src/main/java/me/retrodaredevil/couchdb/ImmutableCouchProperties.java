@@ -1,7 +1,7 @@
 package me.retrodaredevil.couchdb;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import javax.validation.constraints.NotNull;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
 

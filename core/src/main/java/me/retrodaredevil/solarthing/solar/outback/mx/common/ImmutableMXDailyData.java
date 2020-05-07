@@ -2,14 +2,13 @@ package me.retrodaredevil.solarthing.solar.outback.mx.common;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifier;
 import me.retrodaredevil.solarthing.packets.identification.UnknownSupplementaryIdentifier;
 import me.retrodaredevil.solarthing.packets.support.Support;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXIdentityInfo;
-
-import javax.validation.constraints.NotNull;
 
 public class ImmutableMXDailyData implements MXDailyData {
 
@@ -50,15 +49,13 @@ public class ImmutableMXDailyData implements MXDailyData {
 		identityInfo = new FXIdentityInfo(address);
 	}
 
-	@NotNull
 	@Override
-	public SupplementaryIdentifier getIdentifier() {
+	public @NotNull SupplementaryIdentifier getIdentifier() {
 		return identifier;
 	}
 
-	@NotNull
 	@Override
-	public IdentityInfo getIdentityInfo() {
+	public @NotNull IdentityInfo getIdentityInfo() {
 		return identityInfo;
 	}
 
@@ -87,9 +84,8 @@ public class ImmutableMXDailyData implements MXDailyData {
 		return dailyAH;
 	}
 
-	@NotNull
 	@Override
-	public Support getDailyAHSupport() {
+	public @NotNull Support getDailyAHSupport() {
 		return dailyAHSupport;
 	}
 

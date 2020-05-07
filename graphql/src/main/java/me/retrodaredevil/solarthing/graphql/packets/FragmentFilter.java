@@ -1,6 +1,6 @@
 package me.retrodaredevil.solarthing.graphql.packets;
 
-import org.jetbrains.annotations.Nullable;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 
 import java.util.Objects;
 

@@ -2,7 +2,7 @@ package me.retrodaredevil.solarthing.misc.error;
 
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 
-import javax.validation.constraints.NotNull;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;

@@ -6,7 +6,7 @@ import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import org.junit.jupiter.api.Test;
 
-import javax.validation.constraints.NotNull;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -64,9 +64,9 @@ class OutbackDuplicatePacketRemoverTest {
 				return address;
 			}
 
-			@NotNull
+
             @Override
-			public OutbackIdentifier getIdentifier() {
+			public @NotNull OutbackIdentifier getIdentifier() {
 				throw new UnsupportedOperationException();
 			}
 
@@ -75,9 +75,8 @@ class OutbackDuplicatePacketRemoverTest {
 				throw new UnsupportedOperationException();
 			}
 
-			@NotNull
             @Override
-			public SolarStatusPacketType getPacketType() {
+			public @NotNull SolarStatusPacketType getPacketType() {
 				throw new UnsupportedOperationException();
 			}
 

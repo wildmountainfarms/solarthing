@@ -8,9 +8,9 @@ import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifi
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXIdentityInfo;
-import org.jetbrains.annotations.Nullable;
 
-import javax.validation.constraints.NotNull;
+import me.retrodaredevil.solarthing.annotations.NotNull;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 
 public class ImmutableFXErrorModeChangePacket implements FXErrorModeChangePacket {
 
@@ -47,15 +47,13 @@ public class ImmutableFXErrorModeChangePacket implements FXErrorModeChangePacket
 		return previousErrorModeValue;
 	}
 
-	@NotNull
     @Override
-	public SupplementaryIdentifier getIdentifier() {
+	public @NotNull SupplementaryIdentifier getIdentifier() {
 		return identifier;
 	}
 
-	@NotNull
 	@Override
-	public IdentityInfo getIdentityInfo() {
+	public @NotNull IdentityInfo getIdentityInfo() {
 		return identityInfo;
 	}
 

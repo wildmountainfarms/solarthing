@@ -3,7 +3,7 @@ package me.retrodaredevil.solarthing.solar.common;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.packets.support.Support;
 
-import javax.validation.constraints.NotNull;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 
 public interface AccumulatedChargeController extends ChargeController {
 	@JsonProperty("dailyKWH")

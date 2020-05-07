@@ -13,10 +13,9 @@ import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
 import me.retrodaredevil.solarthing.solar.common.DailyChargeController;
 import me.retrodaredevil.solarthing.solar.common.DailyData;
 import me.retrodaredevil.solarthing.solar.outback.OutbackStatusPacket;
-import org.jetbrains.annotations.Nullable;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 
 import java.util.Set;
 
@@ -46,7 +45,6 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 
 	@Override
 	@Nullable
-	@Null
 	default Long getStartDateMillis() { return null; }
 
 	@GraphQLInclude("pvWattage")

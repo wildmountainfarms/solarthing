@@ -1,9 +1,9 @@
 package me.retrodaredevil.solarthing.packets.identification;
 
 import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
-import org.jetbrains.annotations.Nullable;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 
-import javax.validation.constraints.NotNull;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
@@ -13,7 +13,7 @@ import static java.util.Objects.requireNonNull;
  * {@link Comparable<IdentifierFragment>} to allow a group of {@link IdentifierFragment}s to be compared or sorted first by their
  * fragmentId, next by {@link Identifier#compareTo(Identifier)}
  */
-public final class IdentifierFragment implements Comparable<IdentifierFragment> {
+public final class IdentifierFragment implements Comparable<IdentifierFragment> { // TODO make all implementations serializable into JSON
 	private final Integer fragmentId;
 	private final Identifier identifier;
 
