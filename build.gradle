@@ -72,3 +72,8 @@ project(":graphql"){
         api project(":common")
     }
 }
+
+wrapper {
+    gradleVersion = '6.4'
+    distributionType = Wrapper.DistributionType.ALL
+}

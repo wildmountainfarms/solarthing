@@ -27,6 +27,8 @@
 /program/**/config/commands/*
 !/program/**/config/commands/README.md
 
+!/program/graphql/download_solarting_graphql.sh
+
 
 */__pycache__/*
 
