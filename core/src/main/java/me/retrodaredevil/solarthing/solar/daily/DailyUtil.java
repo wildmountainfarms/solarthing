@@ -13,7 +13,8 @@ import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("Java8MapApi") // needs to compatible with Android SDK 19
-public class DailyUtil {
+public final class DailyUtil {
+	private DailyUtil(){ throw new UnsupportedOperationException(); }
 	private static <T extends DailyData> DailyPair<T> createDailyPair(boolean isFirst, TimestampedPacket<T> firstPacket, TimestampedPacket<T> endPacket, DailyConfig dailyConfig) {
 		final DailyPair.StartPacketType startPacketType;
 		if (isFirst) {
@@ -58,7 +59,7 @@ public class DailyUtil {
 		return r;
 	}
 	@SuppressWarnings("unchecked")
-	public static <T extends Packet & Identifiable> Map<IdentifierFragment, List<TimestampedPacket<T>>> mapPackets(Class<T> clazz, List<FragmentedPacketGroup> packetGroups) {
+	public static <T extends Identifiable> Map<IdentifierFragment, List<TimestampedPacket<T>>> mapPackets(Class<T> clazz, List<FragmentedPacketGroup> packetGroups) {
 		Map<IdentifierFragment, List<TimestampedPacket<T>>> packetMap = new HashMap<>();
 		for (FragmentedPacketGroup packetGroup : packetGroups) {
 			for (Packet packet : packetGroup.getPackets()) {

@@ -10,7 +10,7 @@ import me.retrodaredevil.solarthing.pvoutput.SimpleDate;
 import me.retrodaredevil.solarthing.pvoutput.SimpleTime;
 import me.retrodaredevil.solarthing.pvoutput.data.AddStatusParameters;
 import me.retrodaredevil.solarthing.pvoutput.data.AddStatusParametersBuilder;
-import me.retrodaredevil.solarthing.solar.common.DailyData;
+import me.retrodaredevil.solarthing.solar.daily.DailyCalc;
 import me.retrodaredevil.solarthing.solar.daily.DailyConfig;
 import me.retrodaredevil.solarthing.solar.daily.DailyPair;
 import me.retrodaredevil.solarthing.solar.daily.DailyUtil;
@@ -118,32 +118,16 @@ public class PVOutputHandler {
 		Map<IdentifierFragment, List<DailyPair<RoverStatusPacket>>> roverMap = DailyUtil.getDailyPairs(DailyUtil.mapPackets(RoverStatusPacket.class, packetGroups), dailyConfig);
 		Map<IdentifierFragment, List<DailyPair<DailyFXPacket>>> dailyFXMap = DailyUtil.getDailyPairs(DailyUtil.mapPackets(DailyFXPacket.class, packetGroups), dailyConfig);
 		if (!mxMap.isEmpty() || !roverMap.isEmpty()) { // energy produced
-			float generationKWH = getTotal(mxMap.values(), MXStatusPacket::getDailyKWH) +
-					getTotal(roverMap.values(), RoverStatusPacket::getDailyKWH);
+			float generationKWH = DailyCalc.getSumTotal(mxMap.values(), MXStatusPacket::getDailyKWH) +
+					DailyCalc.getSumTotal(roverMap.values(), RoverStatusPacket::getDailyKWH);
 			builder.setEnergyGeneration(Math.round(generationKWH * 1000.0f));
 		}
 		if (!dailyFXMap.isEmpty()) { // energy consumed // right now, only do this if there are fx dailies
-			float consumptionKWH = getTotal(roverMap.values(), RoverStatusPacket::getDailyKWHConsumption) +
-					getTotal(dailyFXMap.values(), dailyFXPacket -> dailyFXPacket.getInverterKWH() + dailyFXPacket.getBuyKWH() - dailyFXPacket.getChargerKWH());
+			float consumptionKWH = DailyCalc.getSumTotal(roverMap.values(), RoverStatusPacket::getDailyKWHConsumption) +
+					DailyCalc.getSumTotal(dailyFXMap.values(), dailyFXPacket -> dailyFXPacket.getInverterKWH() + dailyFXPacket.getBuyKWH() - dailyFXPacket.getChargerKWH());
 			builder.setEnergyConsumption(Math.round(consumptionKWH * 1000.0f));
 		}
 		return builder;
-	}
-	private static <T extends Packet & DailyData> float getTotal(Collection<List<DailyPair<T>>> dailyPairListCollection, TotalGetter<T> totalGetter) {
-		float total = 0;
-		for (List<DailyPair<T>> dailyPairs : dailyPairListCollection) {
-			for (DailyPair<T> dailyPair : dailyPairs) {
-				if (dailyPair.getStartPacketType() == DailyPair.StartPacketType.CUT_OFF) {
-					total += totalGetter.getTotal(dailyPair.getLatestPacket().getPacket()) - totalGetter.getTotal(dailyPair.getStartPacket().getPacket());
-				} else {
-					total += totalGetter.getTotal(dailyPair.getLatestPacket().getPacket());
-				}
-			}
-		}
-		return total;
-	}
-	private interface TotalGetter<T> {
-		float getTotal(T t);
 	}
 
 }
