@@ -6,7 +6,7 @@ import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 
-public class DefaultSupplementaryIdentifier<T extends Identifier> implements SupplementaryIdentifier {
+public class DefaultSupplementaryIdentifier<T extends Identifier> implements KnownSupplementaryIdentifier<T> {
 	private final T identifier;
 	private final String supplementaryType;
 

@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.solar.outback.mx.common;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.DocumentedPacketType;
 import me.retrodaredevil.solarthing.packets.identification.DefaultSupplementaryIdentifier;
+import me.retrodaredevil.solarthing.packets.identification.KnownSupplementaryIdentifier;
 import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifiable;
 import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
@@ -11,7 +12,7 @@ import me.retrodaredevil.solarthing.annotations.NotNull;
 
 @JsonExplicit
 public abstract class BaseMXDailyData extends ImmutableMXDailyData implements SupplementaryIdentifiable {
-	private final SupplementaryIdentifier supplementaryIdentifier;
+	private final KnownSupplementaryIdentifier<OutbackIdentifier> supplementaryIdentifier;
 
 	public BaseMXDailyData(
 			DocumentedPacketType packetType,
@@ -28,7 +29,7 @@ public abstract class BaseMXDailyData extends ImmutableMXDailyData implements Su
 	}
 
 	@Override
-	public @NotNull SupplementaryIdentifier getIdentifier() {
+	public @NotNull KnownSupplementaryIdentifier<OutbackIdentifier> getIdentifier() {
 		return supplementaryIdentifier;
 	}
 }

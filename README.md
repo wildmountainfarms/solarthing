@@ -29,8 +29,11 @@ Ready to install? Use the [Quickstart](other/docs/quickstart.md)!
 * CouchDB
   * Allows for [SolarThing Android](https://github.com/wildmountainfarms/solarthing-android) and [SolarThing Web](https://github.com/wildmountainfarms/solarthing-web) to function
   * Used for PVOutput data collection
+* GraphQL
+  * Allows use of CouchDB SolarThing data with Grafana
+  * Supplements the CouchDB database
 * InfluxDB
-  * Allows for viewing of data in Grafana
+  * Simplest to set up with Grafana
 * [PVOutput.org](https://pvoutput.org)
   * Allows for viewing of data on [pvoutput.org](https://pvoutput.org)
   * Requires CouchDB to be set up
