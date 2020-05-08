@@ -30,12 +30,4 @@ public class SingleTypeIdentifier implements Identifier {
 		return Objects.hash(type);
 	}
 
-	@Override
-	public int compareTo(@NotNull Identifier identifier) {
-		if (identifier instanceof SingleTypeIdentifier) {
-			return type.compareTo(((SingleTypeIdentifier) identifier).type);
-		}
-		return 1;
-	}
-
 }

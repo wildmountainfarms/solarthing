@@ -2,7 +2,7 @@ package me.retrodaredevil.solarthing.packets;
 
 import static java.util.Objects.requireNonNull;
 
-public final class TimestampedPacket<T extends Packet> {
+public final class TimestampedPacket<T> {
 	private final T packet;
 	private final long dateMillis;
 

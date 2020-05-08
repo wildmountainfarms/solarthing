@@ -46,17 +46,4 @@ public class ExceptionErrorIdentifier implements Identifier {
 	public int hashCode() {
 		return Objects.hash(exceptionCatchLocationIdentifier, exceptionInstanceIdentifier);
 	}
-
-	@Deprecated
-	@Override
-	public int compareTo(@NotNull Identifier identifier) {
-		if (identifier instanceof ExceptionErrorIdentifier) {
-			int a = exceptionCatchLocationIdentifier.compareTo(((ExceptionErrorIdentifier) identifier).exceptionCatchLocationIdentifier);
-			if (a != 0) {
-				return a;
-			}
-			return exceptionInstanceIdentifier.compareTo(((ExceptionErrorIdentifier) identifier).exceptionInstanceIdentifier);
-		}
-		return -1;
-	}
 }

@@ -28,9 +28,5 @@ public class UnknownSupplementaryIdentifier<T extends Identifier> implements Sup
 		return "UnknownSupplementaryIdentifier(identifier=" + identifier + ")";
 	}
 
-	@Override
-	public int compareTo(@NotNull Identifier identifier) {
-		return 1;
-	}
 	// don't override equals or hashCode
 }

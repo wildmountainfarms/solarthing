@@ -13,13 +13,11 @@ import me.retrodaredevil.solarthing.annotations.NotNull;
  * <p>
  * {@link Identifier}s also inherit {@link Comparable<Identifier>} so they can be sorted using the default SolarThing order. (Their natural order).
  */
-public interface Identifier extends Comparable<Identifier> { // TODO make this not comparable
+public interface Identifier {
 	/**
 	 * @return A representation of this identifier
 	 */
 	@JsonProperty("representation")
 	@NotNull String getRepresentation();
 
-	@Override
-	int compareTo(@NotNull Identifier identifier);
 }

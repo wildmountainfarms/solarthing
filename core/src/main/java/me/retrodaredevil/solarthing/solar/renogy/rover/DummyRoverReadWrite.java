@@ -123,7 +123,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 
 	@Override
 	public @NotNull RoverIdentifier getIdentifier() {
-		return new RoverIdentifier(getProductSerialNumber());
+		return RoverIdentifier.createFromSerialNumber(getProductSerialNumber());
 	}
 
 	@Override

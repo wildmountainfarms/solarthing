@@ -5,7 +5,6 @@ import me.retrodaredevil.solarthing.packets.TimestampedPacket;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 import me.retrodaredevil.solarthing.packets.identification.IdentifierFragment;
-import me.retrodaredevil.solarthing.solar.common.DailyChargeController;
 import me.retrodaredevil.solarthing.solar.common.DailyData;
 
 import java.util.ArrayList;
@@ -15,7 +14,7 @@ import java.util.Map;
 
 @SuppressWarnings("Java8MapApi") // needs to compatible with Android SDK 19
 public class DailyUtil {
-	private static <T extends Packet & DailyData> DailyPair<T> createDailyPair(boolean isFirst, TimestampedPacket<T> firstPacket, TimestampedPacket<T> endPacket, DailyConfig dailyConfig) {
+	private static <T extends DailyData> DailyPair<T> createDailyPair(boolean isFirst, TimestampedPacket<T> firstPacket, TimestampedPacket<T> endPacket, DailyConfig dailyConfig) {
 		final DailyPair.StartPacketType startPacketType;
 		if (isFirst) {
 			if (firstPacket.getDateMillis() < dailyConfig.getCutOffIfStartBeforeDateMillis() || endPacket.getDateMillis() < dailyConfig.getCutOffIfEndBeforeDateMillis()) {
@@ -28,7 +27,7 @@ public class DailyUtil {
 		}
 		return new DailyPair<>(firstPacket, endPacket, startPacketType);
 	}
-	public static <T extends Packet & DailyData> List<DailyPair<T>> getDailyPairs(List<TimestampedPacket<T>> packets, DailyConfig dailyConfig) {
+	public static <T extends DailyData> List<DailyPair<T>> getDailyPairs(List<TimestampedPacket<T>> packets, DailyConfig dailyConfig) {
 		List<DailyPair<T>> r = new ArrayList<>();
 		TimestampedPacket<T> firstPacket = null;
 		TimestampedPacket<T> lastPacket = null;
@@ -51,8 +50,7 @@ public class DailyUtil {
 		}
 		return r;
 	}
-	// TODO think about removing Packet bound as it makes using something like DailyChargeControllerDifficult.
-	public static <T extends Packet & DailyData> Map<IdentifierFragment, List<DailyPair<T>>> getDailyPairs(Map<IdentifierFragment, List<TimestampedPacket<T>>> packetMap, DailyConfig dailyConfig) {
+	public static <T extends DailyData> Map<IdentifierFragment, List<DailyPair<T>>> getDailyPairs(Map<IdentifierFragment, List<TimestampedPacket<T>>> packetMap, DailyConfig dailyConfig) {
 		Map<IdentifierFragment, List<DailyPair<T>>> r = new HashMap<>(packetMap.size());
 		for (Map.Entry<IdentifierFragment, List<TimestampedPacket<T>>> entry : packetMap.entrySet()) {
 			r.put(entry.getKey(), getDailyPairs(entry.getValue(), dailyConfig));
@@ -67,7 +65,7 @@ public class DailyUtil {
 				if (clazz.isInstance(packet)) {
 					Integer fragmentId = packetGroup.getFragmentId(packet);
 					T t = (T) packet;
-					IdentifierFragment identifierFragment = new IdentifierFragment(fragmentId, t.getIdentifier());
+					IdentifierFragment identifierFragment = IdentifierFragment.create(fragmentId, t.getIdentifier());
 					List<TimestampedPacket<T>> packetList = packetMap.get(identifierFragment);
 					if (packetList == null) {
 						packetList = new ArrayList<>();

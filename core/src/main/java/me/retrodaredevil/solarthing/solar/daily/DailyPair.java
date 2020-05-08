@@ -1,14 +1,12 @@
 package me.retrodaredevil.solarthing.solar.daily;
 
-import me.retrodaredevil.solarthing.packets.Packet;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.TimestampedPacket;
 import me.retrodaredevil.solarthing.solar.common.DailyData;
 
-import me.retrodaredevil.solarthing.annotations.NotNull;
-
 import static java.util.Objects.requireNonNull;
 
-public final class DailyPair<T extends DailyData & Packet> {
+public final class DailyPair<T extends DailyData> {
 	private final TimestampedPacket<T> startPacket;
 	private final TimestampedPacket<T> latestPacket;
 	private final StartPacketType startPacketType;

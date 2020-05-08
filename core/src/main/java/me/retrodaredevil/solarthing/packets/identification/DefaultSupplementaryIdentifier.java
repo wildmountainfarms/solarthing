@@ -40,11 +40,4 @@ public class DefaultSupplementaryIdentifier<T extends Identifier> implements Sup
 		return Objects.hash(identifier, supplementaryType);
 	}
 
-	@Override
-	public int compareTo(@NotNull Identifier identifier) {
-		if (identifier instanceof SupplementaryIdentifier) {
-			return this.identifier.compareTo(((SupplementaryIdentifier) identifier).getSupplementaryTo());
-		}
-		return 1;
-	}
 }
