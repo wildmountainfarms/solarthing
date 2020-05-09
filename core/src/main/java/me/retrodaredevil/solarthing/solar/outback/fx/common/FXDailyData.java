@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.solar.outback.fx.common;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.solar.common.DailyBatteryVoltage;
 import me.retrodaredevil.solarthing.solar.common.DailyData;
@@ -28,6 +29,9 @@ public interface FXDailyData extends OutbackData, DailyBatteryVoltage, ErrorRepo
 		/*
 		In the early versions of DailyFXPacket, startDateMillis was not serialized. In new versions, they are always serialized.
 		This is why we have to perform a null check and deal with either one being null. (One could be a packet from a previous version)
+
+		However, this happened for like less than a week such a long time ago, that I'm thinking about ditching support for those packets.
+		As of 2020.05.09, there's not really a way to ditch support for packets gracefully. Maybe there will be in the future.
 		 */
 		Long dateMillis = getStartDateMillis();
 		Long previousMillis = previous.getStartDateMillis();
@@ -55,9 +59,9 @@ public interface FXDailyData extends OutbackData, DailyBatteryVoltage, ErrorRepo
 	float getSellKWH();
 
 	@JsonProperty("operationalModeValues")
-	Collection<Integer> getOperationalModeValues();
+	@NotNull Collection<@NotNull Integer> getOperationalModeValues();
 	@GraphQLInclude("operationalModes")
-	default Set<OperationalMode> getOperationalModes(){ return Modes.getActiveModes(OperationalMode.class, getOperationalModeValues()); }
+	default @NotNull Set<@NotNull OperationalMode> getOperationalModes(){ return Modes.getActiveModes(OperationalMode.class, getOperationalModeValues()); }
 
 	/**
 	 * Should be serialized as "errorModeValue"
@@ -78,7 +82,7 @@ public interface FXDailyData extends OutbackData, DailyBatteryVoltage, ErrorRepo
 	int getMiscValue();
 
 	@JsonProperty("acModeValues")
-	Collection<Integer> getACModeValues();
+	@NotNull Collection<@NotNull Integer> getACModeValues();
 	@GraphQLInclude("acModes")
-	default Set<ACMode> getACModes(){ return Modes.getActiveModes(ACMode.class, getACModeValues()); }
+	default @NotNull Set<@NotNull ACMode> getACModes(){ return Modes.getActiveModes(ACMode.class, getACModeValues()); }
 }

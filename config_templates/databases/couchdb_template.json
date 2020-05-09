@@ -16,7 +16,7 @@
     "port": 5984,
     "username": "admin",
     "password": "relax",
-    "connection_timeout": null,
-    "socket_timeout": null
+    "connection_timeout": 1.5,
+    "socket_timeout": 10
   }
 }

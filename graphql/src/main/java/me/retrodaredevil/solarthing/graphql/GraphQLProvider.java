@@ -4,9 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import graphql.GraphQL;
 import graphql.schema.GraphQLSchema;
 import io.leangen.graphql.GraphQLSchemaGenerator;
+import io.leangen.graphql.generator.mapping.common.NonNullMapper;
 import io.leangen.graphql.metadata.strategy.query.AnnotatedResolverBuilder;
 import io.leangen.graphql.metadata.strategy.query.ResolverBuilder;
 import io.leangen.graphql.metadata.strategy.value.jackson.JacksonValueMapperFactory;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.packets.collection.DefaultInstanceOptions;
@@ -22,21 +24,43 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.Arrays;
 
 @Component
 public class GraphQLProvider {
 
 	@Value("${solarthing.config.database}")
 	private File databaseFile;
-	@Value("${solarthing.config.default_source}")
-	private String defaultSourceId = InstanceSourcePacket.DEFAULT_SOURCE_ID;
-	@Value("${solarthing.config.default_fragment}")
-	private Integer defaultFragmentId = null;
+	@Value("${solarthing.config.default_source:default}")
+	private String defaultSourceId;
+	@Value("${solarthing.config.default_fragment:#{null}}")
+	private Integer defaultFragmentId;
 
 	private GraphQL graphQL;
 
+	private void updateNonNull() throws NoSuchFieldException, IllegalAccessException {
+		Field field = NonNullMapper.class.getDeclaredField("COMMON_NON_NULL_ANNOTATIONS");
+		field.setAccessible(true);
+
+		Field modifiersField = Field.class.getDeclaredField("modifiers");
+		modifiersField.setAccessible(true);
+		modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+
+		String[] nonNullAnnotations = (String[]) field.get(null);
+		String[] newAnnotations = Arrays.copyOf(nonNullAnnotations, nonNullAnnotations.length + 1);
+		newAnnotations[newAnnotations.length - 1] = NotNull.class.getName();
+		field.set(null, newAnnotations);
+	}
+
 	@PostConstruct
 	public void init() {
+		try {
+			updateNonNull();
+		} catch (NoSuchFieldException | IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
 		ObjectMapper objectMapper = JacksonUtil.defaultMapper();
 		objectMapper.getSubtypeResolver().registerSubtypes(
 				DatabaseSettings.class,

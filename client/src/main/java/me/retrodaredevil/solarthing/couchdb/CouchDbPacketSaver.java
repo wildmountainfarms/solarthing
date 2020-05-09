@@ -9,6 +9,7 @@ import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.CouchDbInstance;
 import org.ektorp.DbAccessException;
@@ -20,6 +21,7 @@ import org.ektorp.impl.StdObjectMapperFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -99,7 +101,11 @@ public class CouchDbPacketSaver implements PacketHandler {
 			}
 			throw new PacketHandleException("Conflict while saving something to couchdb. id=" + id + " rev=" + object.getRevision() + ". This usually means we put a packet in the database, but we weren't able to cache its rev id.", ex);
 		} catch(DbAccessException ex){
-			throw new PacketHandleException("We got a DbAccessException probably meaning we couldn't reach the database.", ex);
+			if (ex.getCause() instanceof IOException) {
+				throw new PacketHandleException("We got a DbAccessException probably meaning we couldn't reach the database.", ex);
+			} else {
+				throw new PacketHandleException("Got a DbAccessException with IOException as cause. Something must be wrong.", ex);
+			}
 		}
 	}
 

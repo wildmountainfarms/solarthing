@@ -90,9 +90,9 @@ public class OutbackMateMain {
 				new PacketListReceiverMultiplexer(
 						sourceAndFragmentUpdater,
 						(packets, wasInstant) -> {
-							LOGGER.debug("Debugging event packets");
+							LOGGER.debug(SolarThingConstants.NO_CONSOLE, "Debugging event packets");
 							try {
-								LOGGER.debug(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(packets));
+								LOGGER.debug(SolarThingConstants.NO_CONSOLE, MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(packets));
 							} catch (JsonProcessingException e) {
 								LOGGER.debug("Never mind about that...", e);
 							}

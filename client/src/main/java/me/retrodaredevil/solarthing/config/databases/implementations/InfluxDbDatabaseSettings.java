@@ -1,18 +1,17 @@
 package me.retrodaredevil.solarthing.config.databases.implementations;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import me.retrodaredevil.influxdb.InfluxProperties;
 import me.retrodaredevil.okhttp3.OkHttpProperties;
-import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.DatabaseType;
 import me.retrodaredevil.solarthing.config.databases.SimpleDatabaseType;
 import me.retrodaredevil.solarthing.influxdb.retention.RetentionPolicySetting;
 import me.retrodaredevil.solarthing.util.frequency.FrequentObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,7 +23,6 @@ import static java.util.Objects.requireNonNull;
 @JsonTypeName("influxdb")
 @JsonDeserialize(builder = InfluxDbDatabaseSettings.Builder.class)
 public final class InfluxDbDatabaseSettings implements DatabaseSettings {
-	private static final Logger LOGGER = LoggerFactory.getLogger(InfluxDbDatabaseSettings.class);
 	public static final DatabaseType TYPE = new SimpleDatabaseType("influxdb");
 
 	private final InfluxProperties influxProperties;
@@ -76,6 +74,7 @@ public final class InfluxDbDatabaseSettings implements DatabaseSettings {
 		private Collection<FrequentObject<RetentionPolicySetting>> frequentStatusRetentionPolicies;
 		private RetentionPolicySetting eventRetentionPolicySetting;
 
+		// TODO fix this https://github.com/FasterXML/jackson-databind/issues/1061
 		@JsonUnwrapped
 		public Builder setInfluxProperties(InfluxProperties influxProperties) {
 			this.influxProperties = influxProperties;
@@ -103,14 +102,6 @@ public final class InfluxDbDatabaseSettings implements DatabaseSettings {
 		@JsonProperty("status_retention_policies")
 		@JsonDeserialize(as = ArrayList.class)
 		public Builder setFrequentStatusRetentionPolicies(Collection<FrequentObject<RetentionPolicySetting>> frequentStatusRetentionPolicies) {
-			this.frequentStatusRetentionPolicies = frequentStatusRetentionPolicies;
-			return this;
-		}
-		@Deprecated
-		@JsonProperty("retention_policies")
-		@JsonDeserialize(as = ArrayList.class)
-		private Builder setFrequentRetentionPolicies(Collection<FrequentObject<RetentionPolicySetting>> frequentStatusRetentionPolicies) {
-			LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Using 'retention_policies' instead of 'status_retention_policies'. This may be removed in a future version! Start using 'status_retention_policies'!");
 			this.frequentStatusRetentionPolicies = frequentStatusRetentionPolicies;
 			return this;
 		}

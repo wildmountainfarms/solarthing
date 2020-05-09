@@ -24,8 +24,8 @@ This is for couchdb
     "port": 5984,
     "username": "admin",
     "password": "relax",
-    "connection_timeout": 0,
-    "socket_timeout": 0
+    "connection_timeout": 5,
+    "socket_timeout": 5
   }
 }
 ```

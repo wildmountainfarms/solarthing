@@ -1,5 +1,6 @@
 package me.retrodaredevil.okhttp3;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
@@ -50,7 +51,8 @@ public class OkHttpPropertiesBuilder implements OkHttpProperties {
 		return this;
 	}
 
-	@JsonSetter("connect_timeout")
+	@JsonSetter("connection_timeout")
+	@JsonAlias("connect_timeout")
 	public OkHttpPropertiesBuilder setConnectTimeoutSeconds(float seconds){
 		return setConnectTimeoutMillis(Math.round(seconds * 1000));
 	}

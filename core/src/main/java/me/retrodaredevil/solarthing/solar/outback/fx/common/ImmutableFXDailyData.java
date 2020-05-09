@@ -88,9 +88,9 @@ public class ImmutableFXDailyData implements FXDailyData {
 	@Override public float getBuyKWH() { return buyKWH; }
 	@Override public float getSellKWH() { return sellKWH; }
 
-	@Override public Collection<Integer> getOperationalModeValues() { return operationalModeValues; }
+	@Override public @NotNull Collection<@NotNull Integer> getOperationalModeValues() { return operationalModeValues; }
 	@Override public int getErrorModeValue() { return errorModeValue; }
 	@Override public int getWarningModeValue() { return warningModeValue; }
 	@Override public int getMiscValue() { return miscValue; }
-	@Override public Collection<Integer> getACModeValues() { return acModeValues; }
+	@Override public @NotNull Collection<@NotNull Integer> getACModeValues() { return acModeValues; }
 }

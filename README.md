@@ -1,4 +1,11 @@
 ![SolarThing](other/docs/solarthing_logo.png "SolarThing")
+
+[![](https://img.shields.io/github/last-commit/wildmountainfarms/solarthing.svg)]()
+[![](https://img.shields.io/github/stars/wildmountainfarms/solarthing.svg?style=social)]()
+[![](https://img.shields.io/github/v/release/wildmountainfarms/solarthing.svg)]()
+[![](https://img.shields.io/github/release-date/wildmountainfarms/solarthing.svg)]()
+[![](https://img.shields.io/github/downloads/wildmountainfarms/solarthing/total.svg)]()
+
 Stores solar data in a database to view on Android, Grafana, or PVOutput
 
 <p align="center">
@@ -106,3 +113,11 @@ hear from you! [SolarThing Issues](https://github.com/wildmountainfarms/solarthi
 
 If you get confused while trying to configure solarthing, that's probably because the documentation is
 always a work in progress. If you find something confusing, please report it, so I can make it clearer.
+
+---
+
+[![](https://img.shields.io/badge/author-Joshua%20Shannon-brightgreen.svg)](https://github.com/retrodaredevil)
+[![](https://img.shields.io/github/repo-size/wildmountainfarms/solarthing.svg)]()
+[![](https://img.shields.io/github/languages/code-size/wildmountainfarms/solarthing.svg)]()
+[![](https://img.shields.io/librariesio/github/wildmountainfarms/solarthing.svg)]()
+[![](https://img.shields.io/github/commit-activity/m/wildmountainfarms/solarthing.svg)]()

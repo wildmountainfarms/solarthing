@@ -20,11 +20,11 @@ public final class CouchDbDatabaseSettings implements DatabaseSettings {
 
 	@JsonUnwrapped
 	private final CouchProperties couchProperties;
-	
+
 	public CouchDbDatabaseSettings(CouchProperties couchProperties) {
 		this.couchProperties = couchProperties;
 	}
-	
+
 	public CouchProperties getCouchProperties() {
 		return couchProperties;
 	}

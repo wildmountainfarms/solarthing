@@ -16,6 +16,9 @@ easy displaying in Grafana
   * This could go into a database called `solarthing-meta`
 * If the serial port for some reason changes from `/dev/ttyUSB0` to `/dev/ttyUSB1`, dynamically switch
 * Make command requests use JSON
+* Make systemd programs use "solarthing" user instead of root
+* Add files for launchctl (Mac OSX) and other services besides systemd
+* Make CouchDB and InfluxDB database configuration warn when setting unused values
   
 ### Android TODO
 * Notification for when FXs are in EQ, but any MX is in absorb or float
