@@ -31,6 +31,7 @@ Ready to install? Use the [Quickstart](other/docs/quickstart.md)!
 * Fully customizable through JSON (**No programming experience required**).
 * Supports CouchDB, InfluxDB, local JSON file, and PVOutput exporting.
 * Can [report Raspberry Pi CPU temperature](other/docs/raspberry_pi_cpu_temperature.md).
+* Easy setup on Linux. Runs *without* root.
 
 ## Supported Databases
 * CouchDB

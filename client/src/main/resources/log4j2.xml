@@ -3,13 +3,15 @@
     <Properties>
         <Property name="logPath">logs</Property>
         <Property name="LOG_PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</Property>
+        <Property name="filePermissions">rw-rw-r--</Property>
     </Properties>
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
             <MarkerFilter marker="NO_CONSOLE" onMatch="DENY" onMismatch="NEUTRAL"/>
             <PatternLayout pattern="${LOG_PATTERN}"/>
         </Console>
-        <RollingFile name="logAll" fileName="${logPath}/log_debug.log" filePattern="${logPath}/log_debug_%d{yyyy.MM.dd}-%i.log.gz">
+        <RollingFile name="logAll" fileName="${logPath}/log_debug.log" filePattern="${logPath}/log_debug_%d{yyyy.MM.dd}-%i.log.gz"
+                     immediateFlush="false" bufferSize="16384" filePermissions="${filePermissions}">
             <PatternLayout pattern="${LOG_PATTERN}"/>
             <Policies>
                 <OnStartupTriggeringPolicy />
@@ -23,7 +25,8 @@
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingFile>
-        <RollingFile name="logInfo" fileName="${logPath}/log_info.log" filePattern="${logPath}/log_info_%d{yyyy.MM.dd}-%i.log.gz">
+        <RollingFile name="logInfo" fileName="${logPath}/log_info.log" filePattern="${logPath}/log_info_%d{yyyy.MM.dd}-%i.log.gz"
+                     filePermissions="${filePermissions}">
             <PatternLayout pattern="${LOG_PATTERN}"/>
             <Policies>
                 <OnStartupTriggeringPolicy />
@@ -37,7 +40,8 @@
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingFile>
-        <RollingFile name="logSummary" fileName="${logPath}/log_summary.log" filePattern="${logPath}/log_summary_%d{yyyy.MM.dd}-%i.log.gz">
+        <RollingFile name="logSummary" fileName="${logPath}/log_summary.log" filePattern="${logPath}/log_summary_%d{yyyy.MM.dd}-%i.log.gz"
+                     filePermissions="${filePermissions}">
             <PatternLayout pattern="${LOG_PATTERN}"/>
             <MarkerFilter marker="SUMMARY" onMatch="ACCEPT" onMismatch="DENY"/>
             <Policies>
