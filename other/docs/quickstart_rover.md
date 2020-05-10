@@ -5,7 +5,6 @@ If you don't have a cable to connect to your device, [click here](../solar/READM
 
 Once everything is installed, you're ready to edit the configs. You will cd to the `program` directory.
 ```
-# If you have it installed in /opt
 cd /opt/solarthing/program/rover
 ```
 

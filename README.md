@@ -1,10 +1,10 @@
 ![SolarThing](other/docs/solarthing_logo.png "SolarThing")
 
-[![](https://img.shields.io/github/last-commit/wildmountainfarms/solarthing.svg)]()
-[![](https://img.shields.io/github/stars/wildmountainfarms/solarthing.svg?style=social)]()
-[![](https://img.shields.io/github/v/release/wildmountainfarms/solarthing.svg)]()
-[![](https://img.shields.io/github/release-date/wildmountainfarms/solarthing.svg)]()
-[![](https://img.shields.io/github/downloads/wildmountainfarms/solarthing/total.svg)]()
+[![](https://img.shields.io/github/last-commit/wildmountainfarms/solarthing.svg)](https://github.com/wildmountainfarms/solarthing/commits/master)
+[![](https://img.shields.io/github/stars/wildmountainfarms/solarthing.svg?style=social)](https://github.com/wildmountainfarms/solarthing/stargazers)
+[![](https://img.shields.io/github/v/release/wildmountainfarms/solarthing.svg)](https://github.com/wildmountainfarms/solarthing/releases)
+[![](https://img.shields.io/github/release-date/wildmountainfarms/solarthing.svg)](https://github.com/wildmountainfarms/solarthing/releases)
+[![](https://img.shields.io/github/downloads/wildmountainfarms/solarthing/total.svg)](other/docs/quickstart.md)
 
 Stores solar data in a database to view on Android, Grafana, or PVOutput
 
@@ -117,7 +117,7 @@ always a work in progress. If you find something confusing, please report it, so
 ---
 
 [![](https://img.shields.io/badge/author-Joshua%20Shannon-brightgreen.svg)](https://github.com/retrodaredevil)
-[![](https://img.shields.io/github/repo-size/wildmountainfarms/solarthing.svg)]()
-[![](https://img.shields.io/github/languages/code-size/wildmountainfarms/solarthing.svg)]()
-[![](https://img.shields.io/librariesio/github/wildmountainfarms/solarthing.svg)]()
-[![](https://img.shields.io/github/commit-activity/m/wildmountainfarms/solarthing.svg)]()
+[![](https://img.shields.io/github/repo-size/wildmountainfarms/solarthing.svg)](#)
+[![](https://img.shields.io/github/languages/code-size/wildmountainfarms/solarthing.svg)](#)
+[![](https://img.shields.io/librariesio/github/wildmountainfarms/solarthing.svg)](build.gradle)
+[![](https://img.shields.io/github/commit-activity/m/wildmountainfarms/solarthing.svg)](#)

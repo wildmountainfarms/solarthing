@@ -6,7 +6,6 @@ from solar devices.
 
 Once everything is installed, you're ready to edit the configs. You will cd to the `program` directory.
 ```
-# If you have it installed in /opt
 cd /opt/solarthing/program/pvoutput
 ```
 
@@ -41,7 +40,4 @@ This project is set up this way because it makes future changes easier. If you w
 this project such as fragmented packets, the only way to upload all of your data to pvoutput would be to do it
 in one program instead of two.
 
-Yes, this makes setting everything up on a single computer more difficult. Right now I haven't created an
-easy way to install multiple systemd services which makes setting this up on Debian based computers using systemd (such as a Raspberry Pi)
-difficult. This is already difficult to set up on other types of computers (because there's no easy way to start SolarThing on boot).
-This is something that needs to be worked on.
+
