@@ -26,31 +26,8 @@ this validation function to make sure when someone makes a request to CouchDB wi
 change or add any documents.
 
 Some credit to https://github.com/iriscouch/manage_couchdb
-```javascript 1.5
-function(newDoc, oldDoc, userCtx, secObj) {
 
-  secObj.admins = secObj.admins || {};
-  secObj.admins.names = secObj.admins.names || [];
-  secObj.admins.roles = secObj.admins.roles || [];
-
-  var isAdmin = false;
-  if(userCtx.roles.indexOf('_admin') !== -1) {
-    isAdmin = true;
-  }
-  if(secObj.admins.names.indexOf(userCtx.name) !== -1) {
-    isAdmin = true;
-  }
-  for(var i = 0; i < userCtx.roles; i++) {
-    if(secObj.admins.roles.indexOf(userCtx.roles[i]) !== -1) {
-      isAdmin = true;
-    }
-  }
-
-  if(!isAdmin) {
-    throw {'unauthorized':'This is read only when unauthorized'};
-  }
-}
-```
+There are some examples [here](../couchdb/design_docs).
 
 What the document will look like:
 ```json

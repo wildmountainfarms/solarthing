@@ -41,6 +41,7 @@ public class GraphQLProvider {
 	private GraphQL graphQL;
 
 	private void updateNonNull() throws NoSuchFieldException, IllegalAccessException {
+		// more info here: https://github.com/leangen/graphql-spqr/issues/334
 		Field field = NonNullMapper.class.getDeclaredField("COMMON_NON_NULL_ANNOTATIONS");
 		field.setAccessible(true);
 

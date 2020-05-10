@@ -3,13 +3,13 @@ Ready to get started? Run these commands:
 
 If you're using Windows, check [this](windows_usage.md) out!
 
+Run this to quickly get setup:
 ```shell script
-cd /opt # You can clone it somewhere else, however if you do that, you will have to change the solarthing.service file if you plan to install the systemd service
-sudo git clone --depth=1 --single-branch https://github.com/wildmountainfarms/solarthing
-cd solarthing
-sudo 
-sudo other/systemd/install.sh <mate|rover|graphql|pvoutput> # This only works on Linux systems that use systemd. Using this makes running the program long term very easy
+# This clones this repository in /opt, then creates a user and group named solarthing, then updates the ownership of the cloned repository
+# This does NOT configure other random files on your system
+curl https://github.com/wildmountainfarms/solarthing/blob/master/other/linux/clone_install.sh | bash
 ```
+Or if you want to check out how the **simple** installation works: [click here](../linux/clone_install.sh)
 
 ## Edit Configurations
 Now the service is installed, all you have to do is edit configurations in `/opt/solarthing/program/<mate|rover|graphql|pvoutput>/config`.

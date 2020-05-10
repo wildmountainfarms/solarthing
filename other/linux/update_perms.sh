@@ -10,5 +10,5 @@ read -r UNUSED_VARIABLE || exit 1
 echo Updating...
 chmod -R g+rw . || exit 1 # all files and directories get group read/write permissions
 find . -type d -exec chmod g+s {} \; || exit 1 # When you create a file in any directory, its group should be that of its directory
-chgrp -R solarthing . || exit 1
+chown -R solarthing:solarthing . || exit 1
 echo Done
