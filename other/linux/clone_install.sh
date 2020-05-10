@@ -5,4 +5,4 @@ git clone --depth=1 --single-branch https://github.com/wildmountainfarms/solarth
 
 cd solarthing || exit 1
 other/linux/create_user.sh || exit 1
-other/linux/update_perms.sh || exit 1
+other/linux/update_perms.sh continue || exit 1

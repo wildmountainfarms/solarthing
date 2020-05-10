@@ -7,7 +7,8 @@ Run this to quickly get setup:
 ```shell script
 # This clones this repository in /opt, then creates a user and group named solarthing, then updates the ownership of the cloned repository
 # This does NOT configure other random files on your system
-curl https://github.com/wildmountainfarms/solarthing/blob/master/other/linux/clone_install.sh | bash
+sudo curl https://raw.githubusercontent.com/wildmountainfarms/solarthing/master/other/linux/clone_install.sh | sudo bash
+sudo usermod -a -G solarthing,dialout $USER
 ```
 Or if you want to check out how the **simple** installation works: [click here](../linux/clone_install.sh)
 
