@@ -4,6 +4,8 @@ Description=The service for SolarThing Rover
 [Service]
 TimeoutStartSec=1
 ExecStart=/opt/solarthing/program/rover/run.sh
+User=solarthing
+Group=solarthing
 
 [Install]
 WantedBy=multi-user.target

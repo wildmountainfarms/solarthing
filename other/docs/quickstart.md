@@ -3,17 +3,18 @@ Ready to get started? Run these commands:
 
 If you're using Windows, check [this](windows_usage.md) out!
 
-Run this to quickly get setup:
+Run this to quickly get setup (Linux Only):
 ```shell script
 # This clones this repository in /opt, then creates a user and group named solarthing, then updates the ownership of the cloned repository
 # This does NOT configure other random files on your system
-sudo curl https://raw.githubusercontent.com/wildmountainfarms/solarthing/master/other/linux/clone_install.sh | sudo bash
+curl https://raw.githubusercontent.com/wildmountainfarms/solarthing/master/other/linux/clone_install.sh | sudo bash
+# If when testing the program, it helps to have permission to edit files owned by the solarthing group, and you will also want to be allowed to use serial ports
 sudo usermod -a -G solarthing,dialout $USER
 ```
 Or if you want to check out how the **simple** installation works: [click here](../linux/clone_install.sh)
 
 ## Edit Configurations
-Now the service is installed, all you have to do is edit configurations in `/opt/solarthing/program/<mate|rover|graphql|pvoutput>/config`.
+Now SolarThing is installed, all you have to do is edit configurations in `/opt/solarthing/program/<mate|rover|graphql|pvoutput>/config`.
 ```shell script
 # Navigate to your program's directory
 cd /opt/solarthing/program/<mate|rover|graphql|pvoutput>
@@ -82,23 +83,22 @@ Note that if you decided to put them in the [program/config](../../program/confi
 ### Running for the first time
 Once you have your configuration the way you want it, it's time for a test run. Run this command:
 ```shell script
-# sudo is required for now, but this may change in the future.
-sudo ./run.sh
+# Using 'sudo' may be required depending on how you set it up
+./run.sh
 ```
 Note that you can also do this:
 ```shell script
-sudo ./run.sh config/base.json # you can specify your base config if you want
+./run.sh config/base.json # you can specify your base config if you want
 ```
 
 If you got an error, you can look at this (hopefully) helpful [debug errors](debug_errors.md) page.
 
 ### Running in the long run
-If you installed the instructions at the top and installed the systemd service, you can enable it now:
+If your Linux distro uses systemd, you can go [here](../systemd/README.md) to learn how to install the service. Then run these commands.
 ```shell script
 sudo systemctl enable solarthing-<program type> # Run on boot
 sudo systemctl start solarthing-<program type> # Start the service now
 ```
-More information about the systemd service [here](../systemd/README.md)
 
 ### Run Without systemd service
 There are many platforms that don't have systemd: Mac, Windows, and plenty of different Linux Distros.
