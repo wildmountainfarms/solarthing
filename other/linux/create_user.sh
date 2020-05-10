@@ -8,9 +8,9 @@ if sysadminctl 2>&1 | grep adminUser; then
 fi
 
 # Add group
-if ! id -g solarthing >/dev/null 2>&1; then
+if ! grep -q solarthing /etc/group >/dev/null 2>&1; then
   groupadd solarthing
-  if ! id -g solarthing >/dev/null 2>&1; then
+  if ! grep -q solarthing /etc/group >/dev/null 2>&1; then
     echo Unable to create solarthing group
     exit 1
   fi
