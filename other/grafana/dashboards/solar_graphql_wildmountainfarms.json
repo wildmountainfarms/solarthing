@@ -1,0 +1,1897 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      },
+      {
+        "datasource": "InfluxDB",
+        "enable": true,
+        "hide": false,
+        "iconColor": "rgba(255, 96, 96, 1)",
+        "limit": 100,
+        "name": "AC Mode Change",
+        "query": "SELECT \"acModeValue\" FROM \"normal_forever_retention\".\"solarthing_events\" WHERE (\"packetType\" = 'FX_AC_MODE_CHANGE') AND \"previousACModeValue\" > -1 AND \"address\" = 1 AND $timeFilter",
+        "showIn": 0,
+        "tags": [],
+        "type": "tags"
+      },
+      {
+        "datasource": "InfluxDB",
+        "enable": true,
+        "hide": false,
+        "iconColor": "#FFCB7D",
+        "limit": 100,
+        "name": "Commands Sent",
+        "query": "SELECT \"command\" FROM \"normal_forever_retention\".\"solarthing_events\" WHERE (\"packetType\" = 'MATE_COMMAND_SUCCESS') AND $timeFilter",
+        "showIn": 0,
+        "tags": [],
+        "type": "tags"
+      },
+      {
+        "datasource": "InfluxDB",
+        "enable": true,
+        "hide": false,
+        "iconColor": "#F2CC0C",
+        "limit": 100,
+        "name": "FX1 Mode Change",
+        "query": "SELECT \"operationalModeValue\" FROM \"normal_forever_retention\".\"solarthing_events\" WHERE (\"packetType\" = 'FX_OPERATIONAL_MODE_CHANGE') AND \"previousOperationalModeValue\" > -1 AND \"address\" = 1 AND $timeFilter",
+        "showIn": 0,
+        "tags": [],
+        "type": "tags"
+      },
+      {
+        "datasource": "InfluxDB",
+        "enable": false,
+        "hide": false,
+        "iconColor": "#E0B400",
+        "limit": 100,
+        "name": "FX2 Mode Change",
+        "query": "SELECT \"operationalModeValue\" FROM \"normal_forever_retention\".\"solarthing_events\" WHERE (\"packetType\" = 'FX_OPERATIONAL_MODE_CHANGE') AND \"previousOperationalModeValue\" > -1 AND \"address\" = 2 AND $timeFilter",
+        "showIn": 0,
+        "tags": [],
+        "type": "tags"
+      },
+      {
+        "datasource": "InfluxDB",
+        "enable": false,
+        "hide": false,
+        "iconColor": "#8F3BB8",
+        "limit": 100,
+        "name": "MX3 Charger Mode Change",
+        "query": "SELECT \"chargerModeValue\" FROM \"normal_forever_retention\".\"solarthing_events\" WHERE (\"packetType\" = 'MXFM_CHARGER_MODE_CHANGE') AND \"previousChargerModeValue\" > -1 AND \"address\" = 3 AND $timeFilter",
+        "showIn": 0,
+        "tags": [],
+        "type": "tags"
+      },
+      {
+        "datasource": "InfluxDB",
+        "enable": false,
+        "hide": false,
+        "iconColor": "#1F60C4",
+        "limit": 100,
+        "name": "MX4 Charger Mode Change",
+        "query": "SELECT \"chargerModeValue\" FROM \"normal_forever_retention\".\"solarthing_events\" WHERE (\"packetType\" = 'MXFM_CHARGER_MODE_CHANGE') AND \"previousChargerModeValue\" > -1 AND \"address\" = 4 AND $timeFilter",
+        "showIn": 0,
+        "tags": [],
+        "type": "tags"
+      }
+    ]
+  },
+  "description": "The SolarThing dashboard that shows the status of the solar panels and batteries.",
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": 2,
+  "links": [],
+  "panels": [
+    {
+      "aliasColors": {
+        "OutbackIdentifier(address=1)": "red",
+        "OutbackIdentifier(address=3)": "green",
+        "OutbackIdentifier(address=4)": "purple",
+        "RoverIdentifier(serialNumber=100)": "light-blue"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "GraphQL Data Source",
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "hiddenSeries": false,
+      "id": 22,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "aliasBy": "$field_packet.identityInfo.displayName",
+          "annotationTags": "",
+          "annotationText": "",
+          "annotationTitle": "",
+          "constant": 6.5,
+          "dataPath": "data.batteryVoltage",
+          "groupBy": "packet.identifier.representation",
+          "queryText": "{\n        data:queryStatus(from:\"$timeFrom\", to:\"$timeTo\", sourceId:\"default\") {\n            batteryVoltage {\n                Time:dateMillis\n                packet {\n                    batteryVoltage\n                    identifier { representation }\n                    identityInfo { displayName }\n                }\n            }\n        }\n    }",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Battery Voltages",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": 1,
+          "format": "volt",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "datasource": null,
+      "gridPos": {
+        "h": 9,
+        "w": 4,
+        "x": 12,
+        "y": 0
+      },
+      "id": 8,
+      "options": {
+        "fieldOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "decimals": 1,
+            "mappings": [],
+            "max": 30.4,
+            "min": 21.5,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "dark-red",
+                  "value": null
+                },
+                {
+                  "color": "semi-dark-orange",
+                  "value": 22
+                },
+                {
+                  "color": "semi-dark-yellow",
+                  "value": 23
+                },
+                {
+                  "color": "super-light-green",
+                  "value": 23.8
+                },
+                {
+                  "color": "green",
+                  "value": 26
+                },
+                {
+                  "color": "blue",
+                  "value": 29
+                },
+                {
+                  "color": "#6ED0E0",
+                  "value": 30
+                },
+                {
+                  "color": "red",
+                  "value": 30.2
+                }
+              ]
+            },
+            "title": "",
+            "unit": "volt"
+          },
+          "overrides": [],
+          "values": false
+        },
+        "orientation": "auto",
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "pluginVersion": "6.7.3",
+      "targets": [
+        {
+          "aliasBy": "",
+          "annotationTags": "",
+          "annotationText": "",
+          "annotationTitle": "",
+          "constant": 6.5,
+          "dataPath": "data.batteryVoltage",
+          "groupBy": "",
+          "measurement": "solarthing",
+          "orderByTime": "ASC",
+          "policy": "normal_short_retention",
+          "queryText": "{\n  data:queryStatusLast(to:\"$timeTo\", sourceId:\"default\") {\n    batteryVoltage {\n      Time:dateMillis\n      packet {\n        batteryVoltage\n      }\n    }\n  }\n}",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "batteryVoltage"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Battery Voltage",
+      "type": "gauge"
+    },
+    {
+      "columns": [],
+      "datasource": null,
+      "description": "The mode that each device is in",
+      "fontSize": "80%",
+      "gridPos": {
+        "h": 9,
+        "w": 5,
+        "x": 19,
+        "y": 0
+      },
+      "id": 16,
+      "pageSize": 100,
+      "showHeader": true,
+      "sort": {
+        "col": 2,
+        "desc": false
+      },
+      "styles": [
+        {
+          "alias": "Time",
+          "align": "auto",
+          "dateFormat": "HH:mm:ss",
+          "pattern": "Time",
+          "type": "date"
+        },
+        {
+          "alias": "Mode",
+          "align": "auto",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "packet.modeName",
+          "thresholds": [],
+          "type": "string",
+          "unit": "short"
+        },
+        {
+          "alias": "",
+          "align": "auto",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "packet.identifier.representation",
+          "thresholds": [],
+          "type": "hidden",
+          "unit": "short"
+        },
+        {
+          "alias": "Device",
+          "align": "auto",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "packet.identityInfo.displayName",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        }
+      ],
+      "targets": [
+        {
+          "alias": "[[tag_identifier]]",
+          "aliasBy": "",
+          "annotationTags": "",
+          "annotationText": "",
+          "annotationTitle": "",
+          "constant": 6.5,
+          "dataPath": "data.fxStatus, data.mxStatus, data.roverStatus",
+          "groupBy": "packet.identifier.representation",
+          "measurement": "solarthing",
+          "orderByTime": "ASC",
+          "policy": "normal_short_retention",
+          "query": "SELECT \"operatingModeName\" FROM \"normal_short_retention\".\"solarthing\" WHERE (\"packetType\" = 'FX_STATUS') AND $timeFilter GROUP BY \"identifier\" ORDER BY DESC LIMIT 1",
+          "queryText": "{\n  data:queryStatusLast(to:\"$timeTo\", sourceId:\"default\", reversed: true) {\n    fxStatus {\n      packet {\n        identityInfo { displayName }\n        modeName:operatingModeName\n        identifier { representation }\n      }\n    }\n    mxStatus {\n      packet {\n        identityInfo { displayName }\n        modeName:chargerModeName\n        identifier { representation }\n      }\n    }\n\n    roverStatus {\n      packet {\n        identityInfo { displayName }\n        modeName:chargingStateName\n        identifier { representation }\n      }\n    }\n  }\n}",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "operatingModeName"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "packetType",
+              "operator": "=",
+              "value": "FX_STATUS"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Device Mode",
+      "transform": "table",
+      "type": "table"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 9
+      },
+      "hiddenSeries": false,
+      "id": 6,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "[[tag_identifier]]",
+          "aliasBy": "$field_packet.identityInfo.displayName",
+          "annotationTags": "",
+          "annotationText": "",
+          "annotationTitle": "",
+          "constant": 6.5,
+          "dataPath": "data.mxStatus",
+          "groupBy": "packet.identifier.representation",
+          "measurement": "solarthing",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT \"pvCurrent\" * \"inputVoltage\" FROM \"solarthing\" WHERE (\"packetType\" = 'MXFM_STATUS') AND $timeFilter GROUP BY \"identifier\"",
+          "queryText": "{\n  data:queryStatus(from:\"$timeFrom\", to:\"$timeTo\", sourceId:\"default\") {\n    mxStatus {\n      Time:dateMillis\n      packet {\n        pvWattage  # TODO change\n        identifier {representation}\n        identityInfo { displayName }\n      }\n    }\n  }\n}",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "pvCurrent"
+                ],
+                "type": "field"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "inputVoltage"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "packetType",
+              "operator": "=",
+              "value": "MXFM_STATUS"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "PV Wattage",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "watt",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 9
+      },
+      "hiddenSeries": false,
+      "id": 4,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "MX: [[tag_identifier]]",
+          "aliasBy": "$field_packet.identityInfo.displayName",
+          "annotationTags": "",
+          "annotationText": "",
+          "annotationTitle": "",
+          "constant": 6.5,
+          "dataPath": "data.mxStatus",
+          "groupBy": "packet.identifier.representation",
+          "measurement": "solarthing",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT \"dailyKWH\" FROM \"solarthing\" WHERE (\"packetType\" = 'MXFM_DAILY') AND $timeFilter GROUP BY \"identifier\"",
+          "queryText": "{\n  data:queryStatus(from:\"$timeFrom\", to:\"$timeTo\", sourceId:\"default\") {\n    mxStatus {\n      Time:dateMillis\n      packet {\n        dailyKWH\n        identifier {representation}\n        identityInfo { displayName }\n      }\n    }\n  }\n}",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "dailyKWH"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "packetType",
+              "operator": "=",
+              "value": "MXFM_STATUS"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Daily kWH",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": 1,
+          "format": "kwatth",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fill": 1,
+      "fillGradient": 9,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "hiddenSeries": false,
+      "id": 18,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "[[tag_identifier]]",
+          "aliasBy": "$field_packet.identityInfo.displayName",
+          "annotationTags": "",
+          "annotationText": "",
+          "annotationTitle": "",
+          "constant": 6.5,
+          "dataPath": "data.fxStatus",
+          "groupBy": "packet.identifier.representation",
+          "measurement": "solarthing",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT (\"inverterCurrent\" * \"outputVoltage\") + (\"buyCurrent\" - \"chargerCurrent\") * \"inputVoltage\" FROM \"solarthing\" WHERE (\"packetType\" = 'FX_STATUS') AND $timeFilter GROUP BY \"identifier\"",
+          "queryText": "{\n  data:queryStatus(from:\"$timeFrom\", to:\"$timeTo\", sourceId:\"default\") {\n    fxStatus {\n      Time:dateMillis\n      packet {\n        powerUsageWattage\n        identifier {representation}\n        identityInfo { displayName }\n      }\n    }\n  }\n}",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "inverterCurrent"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "packetType",
+              "operator": "=",
+              "value": "FX_STATUS"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Power Usage",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "watt",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 16
+      },
+      "hiddenSeries": false,
+      "id": 28,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "[[tag_identifier]]",
+          "aliasBy": "$field_packet.identityInfo.displayName",
+          "annotationTags": "",
+          "annotationText": "",
+          "annotationTitle": "",
+          "constant": 6.5,
+          "dataPath": "data.fxStatus",
+          "groupBy": "packet.identifier.representation",
+          "measurement": "solarthing",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT \"chargerCurrent\" * \"inputVoltage\" FROM \"solarthing\" WHERE (\"packetType\" = 'FX_STATUS') AND $timeFilter GROUP BY \"identifier\"",
+          "queryText": "{\n  data:queryStatus(from:\"$timeFrom\", to:\"$timeTo\", sourceId:\"default\") {\n    fxStatus {\n      Time:dateMillis\n      packet {\n        chargerWattage\n        identifier {representation}\n        identityInfo { displayName }\n      }\n    }\n  }\n}",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "chargerCurrent"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "packetType",
+              "operator": "=",
+              "value": "FX_STATUS"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Generator Charging",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": null,
+          "format": "watt",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fill": 1,
+      "fillGradient": 9,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 24
+      },
+      "hiddenSeries": false,
+      "id": 31,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "[[tag_identifier]]",
+          "aliasBy": "$field_packet.identityInfo.displayName",
+          "annotationTags": "",
+          "annotationText": "",
+          "annotationTitle": "",
+          "constant": 6.5,
+          "dataPath": "data.fxStatus",
+          "groupBy": "packet.identifier.representation",
+          "measurement": "solarthing",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT \"inverterCurrent\" * \"outputVoltage\" FROM \"solarthing\" WHERE (\"packetType\" = 'FX_STATUS') AND $timeFilter GROUP BY \"identifier\"",
+          "queryText": "{\n  data:queryStatus(from:\"$timeFrom\", to:\"$timeTo\", sourceId:\"default\") {\n    fxStatus {\n      Time:dateMillis\n      packet {\n        inverterWattage\n        identifier {representation}\n        identityInfo { displayName }\n      }\n    }\n  }\n}",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "inverterCurrent"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "packetType",
+              "operator": "=",
+              "value": "FX_STATUS"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Load on Battery",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "watt",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 24
+      },
+      "hiddenSeries": false,
+      "id": 29,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "[[tag_identifier]]",
+          "aliasBy": "$field_packet.identityInfo.displayName",
+          "annotationTags": "",
+          "annotationText": "",
+          "annotationTitle": "",
+          "constant": 6.5,
+          "dataPath": "data.fxStatus",
+          "groupBy": "packet.identifier.representation",
+          "measurement": "solarthing",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT \"buyCurrent\" * \"inputVoltage\" FROM \"solarthing\" WHERE (\"packetType\" = 'FX_STATUS') AND $timeFilter GROUP BY \"identifier\"",
+          "queryText": "{\n  data:queryStatus(from:\"$timeFrom\", to:\"$timeTo\", sourceId:\"default\") {\n    fxStatus {\n      Time:dateMillis\n      packet {\n        buyWattage\n        identifier {representation}\n        identityInfo { displayName }\n      }\n    }\n  }\n}",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "chargerCurrent"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "packetType",
+              "operator": "=",
+              "value": "FX_STATUS"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Generator Buying",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": null,
+          "format": "watt",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 32
+      },
+      "hiddenSeries": false,
+      "id": 33,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "aliasBy": "$field_packet.identityInfo.displayName",
+          "annotationTags": "",
+          "annotationText": "",
+          "annotationTitle": "",
+          "constant": 6.5,
+          "dataPath": "data.mxStatus",
+          "groupBy": "packet.identifier.representation",
+          "measurement": "solarthing",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT \"chargerCurrent\" * \"batteryVoltage\" FROM \"solarthing\" WHERE (\"packetType\" = 'MXFM_STATUS') AND $timeFilter GROUP BY \"identifier\"",
+          "queryText": "{\n  data:queryStatus(from:\"$timeFrom\", to:\"$timeTo\", sourceId:\"default\") {\n    mxStatus {\n      Time:dateMillis\n      packet {\n        chargingPower\n        identifier {representation}\n        identityInfo { displayName }\n      }\n    }\n  }\n}",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "chargerCurrent"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "packetType",
+              "operator": "=",
+              "value": "MXFM_STATUS"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Charger Wattage",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": 0,
+          "format": "watt",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 32
+      },
+      "hiddenSeries": false,
+      "id": 30,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "[[tag_identifier]]",
+          "aliasBy": "$field_packet.identityInfo.displayName",
+          "annotationTags": "",
+          "annotationText": "",
+          "annotationTitle": "",
+          "constant": 6.5,
+          "dataPath": "data.fxStatus",
+          "groupBy": "packet.identifier.representation",
+          "measurement": "solarthing",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT (\"buyCurrent\" - \"chargerCurrent\") * \"inputVoltage\" FROM \"solarthing\" WHERE (\"packetType\" = 'FX_STATUS') AND $timeFilter GROUP BY \"identifier\"",
+          "queryText": "{\n  data:queryStatus(from:\"$timeFrom\", to:\"$timeTo\", sourceId:\"default\") {\n    fxStatus {\n      Time:dateMillis\n      packet {\n        passThruWattage\n        identifier {representation}\n        identityInfo { displayName }\n      }\n    }\n  }\n}",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "chargerCurrent"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "packetType",
+              "operator": "=",
+              "value": "FX_STATUS"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Generator Pass Thru",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": 0,
+          "format": "watt",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "GraphQL Data Source",
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 40
+      },
+      "hiddenSeries": false,
+      "id": 37,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "Raspberry Pi #[[tag_fragmentId]]",
+          "aliasBy": "$fieldName",
+          "annotationTags": "",
+          "annotationText": "",
+          "annotationTitle": "",
+          "constant": 6.5,
+          "dataPath": "data.roverStatus",
+          "groupBy": "packet.identifier.representation",
+          "measurement": "solarthing",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "queryText": "{\n  data:queryStatus(from:\"$timeFrom\", to:\"$timeTo\", sourceId:\"default\") {\n    roverStatus {\n      Time:dateMillis\n      packet {\n        batteryTemperatureFahrenheit\n        controllerTemperatureFahrenheit\n        identifier {representation}\n      }\n    }\n  }\n}",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "cpuTemperatureFahrenheit"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "packetType",
+              "operator": "=",
+              "value": "DEVICE_CPU_TEMPERATURE"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Temperature (F)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "farenheit",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fill": 10,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 40
+      },
+      "hiddenSeries": false,
+      "id": 14,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "hideZero": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "AC Mode | 0: No AC | 1: AC Drop | 2: AC Use",
+          "aliasBy": "0: No AC | 1: AC Drop | 2: AC Use",
+          "annotationTags": "",
+          "annotationText": "",
+          "annotationTitle": "",
+          "constant": 6.5,
+          "dataPath": "data.fxStatus",
+          "groupBy": "",
+          "measurement": "solarthing",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "queryText": "{\n  data:queryStatus(from:\"$timeFrom\", to:\"$timeTo\", sourceId:\"default\") {\n    fxStatus {\n      Time:dateMillis\n      packet {\n        acMode\n        identifier {representation}\n        identityInfo { displayName }\n      }\n    }\n  }\n}",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "acMode"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "packetType",
+              "operator": "=",
+              "value": "FX_STATUS"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "AC Mode Graph (Is Generator on or off?)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": 0,
+          "format": "short",
+          "label": "Mode",
+          "logBase": 1,
+          "max": "2",
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 48
+      },
+      "hiddenSeries": false,
+      "id": 35,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "$tag_identifier",
+          "aliasBy": "$field_packet.identityInfo.displayName",
+          "annotationTags": "",
+          "annotationText": "",
+          "annotationTitle": "",
+          "constant": 6.5,
+          "dataPath": "data.fxDaily",
+          "groupBy": "packet.identifier.representation",
+          "measurement": "solarthing",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "queryText": "{\n  data:queryStatus(from:\"$timeFrom\", to:\"$timeTo\", sourceId:\"default\") {\n    fxDaily {\n      Time:dateMillis\n      packet {\n        inverterKWH\n        identifier {representation}\n        identityInfo { displayName }\n      }\n    }\n  }\n}",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "inverterKWH"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "packetType",
+              "operator": "=",
+              "value": "FX_DAILY"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Energy Used Over Time",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": 2,
+          "format": "kwatth",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 48
+      },
+      "hiddenSeries": false,
+      "id": 26,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "$col  [[tag_identifier]]",
+          "aliasBy": "Raspberry Pi #$field_fragmentIdString",
+          "annotationTags": "",
+          "annotationText": "",
+          "annotationTitle": "",
+          "constant": 6.5,
+          "dataPath": "data.cpuTemperature",
+          "groupBy": "fragmentIdString",
+          "measurement": "solarthing",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "queryText": "{\n  data:queryStatus(from:\"$timeFrom\", to:\"$timeTo\", sourceId:\"default\") {\n    cpuTemperature {\n      Time:dateMillis\n      fragmentIdString\n      packet {\n        cpuTemperatureFahrenheit\n      }\n    }\n  }\n}",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "batteryTemperatureRaw"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [
+                  "*9/5 +32"
+                ],
+                "type": "math"
+              },
+              {
+                "params": [
+                  "Batteries"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "controllerTemperatureRaw"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [
+                  "*9/5 +32"
+                ],
+                "type": "math"
+              },
+              {
+                "params": [
+                  "Controller"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "packetType",
+              "operator": "=",
+              "value": "RENOGY_ROVER_STATUS"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "CPU Temperature (F)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "farenheit",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 22,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "",
+  "title": "SolarThing Dashboard",
+  "uid": "J_lYK_3Zk",
+  "variables": {
+    "list": []
+  },
+  "version": 11
+}
