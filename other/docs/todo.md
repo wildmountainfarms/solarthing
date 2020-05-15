@@ -16,9 +16,16 @@ easy displaying in Grafana
   * This could go into a database called `solarthing-meta`
 * If the serial port for some reason changes from `/dev/ttyUSB0` to `/dev/ttyUSB1`, dynamically switch
 * Make command requests use JSON
-* Make systemd programs use "solarthing" user instead of root
 * Add files for launchctl (Mac OSX) and other services besides systemd
 * Make CouchDB and InfluxDB database configuration warn when setting unused values
+* Add option to use jrxtx library: https://github.com/openmuc/jrxtx
+  * Or try out https://github.com/rxtx/rxtx (again)
+  * Disadvantage is that we'd have to use `-Djava.library.path=/usr/lib/jni`
+* Use Mattermost as a way to send push notifications for things
+  * https://docs.mattermost.com/install/prod-docker.html?src=dl
+  * https://api.mattermost.com/#tag/posts/paths/~1posts/post
+  * https://docs.mattermost.com/developer/bot-accounts.html
+    * https://docs.mattermost.com/developer/personal-access-tokens.html
   
 ### Android TODO
 * Notification for when FXs are in EQ, but any MX is in absorb or float
@@ -45,6 +52,7 @@ easy displaying in Grafana
 * Query all Renogy Rover data at once by reading almost all the registers.
 * Use Google Analytics Collection API https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters
   * Could use this: https://github.com/brsanthu/google-analytics-java
+* Make systemd programs use "solarthing" user instead of root
 
 ### TODO Look into
 * Look into supporting Elasticsearch, MongoDB, Graphite
@@ -53,10 +61,8 @@ easy displaying in Grafana
 * Support https://dweet.io
   * Will make using freeboard easy
 * https://thingspeak.com/
-* MQTT
 * https://github.com/netdata (grafana alternative?)
 * https://github.com/grafana/loki (for logging)
-* Add optional telemetry https://github.com/open-telemetry/opentelemetry-java
 * thingsboard.io
 * Cypher [guide here](https://neo4j.com/developer/guide-sql-to-cypher/)
   * Looks interesting
@@ -71,6 +77,8 @@ These might be useful to some people. I will not implement these in the future, 
   * This is not useful to me, but anyone else is welcome to do this
 * Use https://emoncms.org/ to graph data (https://emoncms.org/site/api#input)
   * Some of this is done, but it will not be worked on any further by me
+* Use Matrix Chat as a notification service https://github.com/matrix-org
+  * I found Synapse a pain to set up, but might be worth trying in the future
   
   
 #### Interesting stuff that will probably never be implemented
