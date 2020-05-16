@@ -10,6 +10,7 @@ import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.couchdb.CouchDbQueryHandler;
+import me.retrodaredevil.solarthing.couchdb.SolarThingCouchDb;
 import me.retrodaredevil.solarthing.graphql.packets.*;
 import me.retrodaredevil.solarthing.misc.device.CpuTemperaturePacket;
 import me.retrodaredevil.solarthing.misc.device.DevicePacket;
@@ -75,9 +76,7 @@ public class SolarThingGraphQLService {
 	private List<? extends InstancePacketGroup> queryPackets(CouchDbQueryHandler queryHandler, PacketGroupParser parser, long from, long to, String sourceId) {
 		final List<ObjectNode> packets;
 		try {
-			packets = queryHandler.query(new ViewQuery()
-					.designDocId("_design/packets")
-					.viewName("millis")
+			packets = queryHandler.query(SolarThingCouchDb.createMillisView()
 					.startKey(from)
 					.endKey(to)
 					.cacheOk(true));

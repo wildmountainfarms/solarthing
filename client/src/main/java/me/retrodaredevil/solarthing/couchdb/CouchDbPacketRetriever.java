@@ -30,7 +30,7 @@ public class CouchDbPacketRetriever {
 		return view;
 	}
 	public List<ObjectNode> query() throws PacketHandleException {
-		ViewQuery query = alterView(new ViewQuery().designDocId("_design/packets").viewName("millis"));
+		ViewQuery query = alterView(SolarThingCouchDb.createMillisView());
 		return queryHandler.query(query);
 	}
 }

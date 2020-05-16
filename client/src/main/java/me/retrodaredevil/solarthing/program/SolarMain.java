@@ -2,16 +2,20 @@ package me.retrodaredevil.solarthing.program;
 
 import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import me.retrodaredevil.couchdb.CouchProperties;
+import me.retrodaredevil.couchdb.EktorpUtil;
 import me.retrodaredevil.io.IOBundle;
 import me.retrodaredevil.io.serial.SerialConfig;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
+import me.retrodaredevil.solarthing.config.databases.DatabaseType;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.InfluxDbDatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.LatestFileDatabaseSettings;
 import me.retrodaredevil.solarthing.config.io.IOConfig;
 import me.retrodaredevil.solarthing.config.io.SerialIOConfig;
 import me.retrodaredevil.solarthing.config.options.*;
+import me.retrodaredevil.solarthing.couchdb.CouchDbQueryHandler;
 import me.retrodaredevil.solarthing.packets.collection.HourIntervalPacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.creation.TextPacketCreator;
@@ -21,6 +25,10 @@ import me.retrodaredevil.solarthing.packets.instance.InstanceFragmentIndicatorPa
 import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePackets;
 import me.retrodaredevil.solarthing.program.pvoutput.PVOutputUploadMain;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
+import org.ektorp.CouchDbInstance;
+import org.ektorp.http.HttpClient;
+import org.ektorp.impl.StdCouchDbConnector;
+import org.ektorp.impl.StdCouchDbInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -137,6 +145,18 @@ public final class SolarMain {
 		}
 		return config.createIOBundle();
 	}
+	public static CouchDbQueryHandler createCouchDbQueryHandler(DatabaseOption options) {
+		DatabaseConfig databaseConfig = SolarMain.getDatabaseConfig(options.getDatabase());
+		DatabaseType databaseType = databaseConfig.getType();
+		if(databaseType != CouchDbDatabaseSettings.TYPE){
+			throw new IllegalArgumentException("Only CouchDb can be used for this program type right now!");
+		}
+		CouchDbDatabaseSettings couchDbDatabaseSettings = (CouchDbDatabaseSettings) databaseConfig.getSettings();
+		CouchProperties couchProperties = couchDbDatabaseSettings.getCouchProperties();
+		final HttpClient httpClient = EktorpUtil.createHttpClient(couchProperties);
+		CouchDbInstance instance = new StdCouchDbInstance(httpClient);
+		return new CouchDbQueryHandler(new StdCouchDbConnector(SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, instance), false);
+	}
 
 	public static int doMain(String[] args){
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "[LOG] Beginning main");
@@ -176,6 +196,8 @@ public final class SolarMain {
 				return RoverMain.connectRoverSetup((RoverSetupProgramOptions) options);
 			} else if(programType == ProgramType.PVOUTPUT_UPLOAD){
 				return PVOutputUploadMain.startPVOutputUpload((PVOutputUploadProgramOptions) options, Arrays.copyOfRange(args, 1, args.length), dataDirectory);
+			} else if(programType == ProgramType.MESSAGE_SENDER){
+				return MessageSenderMain.startMessageSender((MessageSenderProgramOptions) options);
 			}
 			throw new AssertionError("Unknown program type... type=" + programType + " programOptions=" + options);
 		} catch (Throwable t) {

@@ -55,7 +55,7 @@ public final class SimpleDate implements Comparable<SimpleDate>, PVOutputString 
 	public Calendar toCalendar(TimeZone timeZone) {
 		Calendar calendar = new GregorianCalendar(timeZone);
 		calendar.set(year, month - 1, day, 0, 0, 0);
-		calendar.setTimeInMillis(calendar.getTimeInMillis() - (calendar.getTimeInMillis() % 1000));
+		calendar.set(Calendar.MILLISECOND, 0);
 		return calendar;
 	}
 	public Date toDate(TimeZone timeZone) {
@@ -66,8 +66,7 @@ public final class SimpleDate implements Comparable<SimpleDate>, PVOutputString 
 		return toCalendar(timeZone).getTimeInMillis();
 	}
 	public SimpleDate tomorrow() {
-		Calendar calendar = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
-		calendar.set(year, month - 1, day);
+		Calendar calendar = toCalendar(TimeZone.getTimeZone("UTC"));
 		calendar.add(Calendar.DAY_OF_YEAR, 1);
 		return fromCalendar(calendar);
 	}

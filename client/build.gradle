@@ -15,6 +15,8 @@ dependencies {
     implementation "org.apache.logging.log4j:log4j-slf4j-impl:$log4jVersion"
     implementation 'com.github.retrodaredevil:action-lib:v1.2.0'
     implementation 'com.brsanthu:google-analytics-java:2.0.0'
+
+    implementation 'net.bis5.mattermost4j:mattermost4j-core:0.21.0'
 }
 
 shadowJar {

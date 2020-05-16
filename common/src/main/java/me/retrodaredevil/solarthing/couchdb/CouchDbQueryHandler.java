@@ -24,9 +24,12 @@ public class CouchDbQueryHandler {
 		try {
 			result = connector.queryView(query);
 		} catch(DocumentNotFoundException e){
-			throw new PacketHandleException("Document not found... Maybe the 'millis' view hasn't been created in design 'packets'?", e);
+			throw new PacketHandleException("Document not found... Maybe the view hasn't been created in design? query: " + query, e);
 		} catch(DbAccessException e){
-//			e.getMessage().contains("No rows can match your key range") // TODO we could throw a different exception for this (argument exception?)
+			String message = e.getMessage();
+			if (message != null && message.contains("No rows can match your key range")) {
+				throw new PacketHandleException("There must be something wrong with your query. query: " + query, e);
+			}
 			throw new PacketHandleException("This probably means we couldn't reach the database", e);
 		}
 		List<ViewResult.Row> rows = result.getRows();

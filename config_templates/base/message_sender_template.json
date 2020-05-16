@@ -1,0 +1,43 @@
+{
+  "type": "message-sender",
+  "senders": {
+    "important": "config/mattermost_important.json",
+    "basic": "config/mattermost.json"
+  },
+  "database": "../config/couchdb.json",
+  "source": "default",
+  "events": [
+    {
+      "event": {
+        "type": "lowbatteryvoltage",
+        "voltage": 22.8,
+        "timeout": 120.0
+      },
+      "send_to": ["basic"]
+    },
+    {
+      "event": {
+        "type": "lowbatteryvoltage",
+        "voltage": 22.2,
+        "timeout": 5.0
+      },
+      "send_to": ["important"]
+    },
+    {
+      "event": {
+        "type": "acmodechange",
+        "to": ["NO_AC"],
+        "from": ["NO_AC"]
+      },
+      "send_to": ["basic"]
+    },
+    {
+      "event": {
+        "type": "fxchange",
+        "to": ["SILENT"]
+      },
+      "send_to": ["basic"]
+    }
+  ]
+}
+
