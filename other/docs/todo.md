@@ -26,6 +26,9 @@ easy displaying in Grafana
   * https://api.mattermost.com/#tag/posts/paths/~1posts/post
   * https://docs.mattermost.com/developer/bot-accounts.html
     * https://docs.mattermost.com/developer/personal-access-tokens.html
+  * https://docs.mattermost.com/administration/config-settings.html#push-notification-contents
+    * Set "PushNotificationContents" to "full" in config.json
+    * Note that this uses an outside server, so you need real Internet for this to work
   
 ### Android TODO
 * Notification for when FXs are in EQ, but any MX is in absorb or float

@@ -12,7 +12,7 @@
 /program/mate/*
 /program/rover/*
 /program/pvoutput/*
-/program/mattermost/*
+/program/message/*
 
 !/program/**/config
 /program/**/config/*

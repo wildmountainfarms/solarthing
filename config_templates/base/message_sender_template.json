@@ -1,0 +1,7 @@
+{
+  "type": "message-sender",
+  "senders": ["config/mattermost.json"],
+  "database": "../config/couchdb.json",
+  "source": "default"
+}
+
