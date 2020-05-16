@@ -19,6 +19,7 @@ import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.packets.handling.RawPacketReceiver;
 import me.retrodaredevil.solarthing.packets.instance.InstanceFragmentIndicatorPackets;
 import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePackets;
+import me.retrodaredevil.solarthing.program.mattermost.MattermostMain;
 import me.retrodaredevil.solarthing.program.pvoutput.PVOutputUploadMain;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.slf4j.Logger;
@@ -176,6 +177,8 @@ public final class SolarMain {
 				return RoverMain.connectRoverSetup((RoverSetupProgramOptions) options);
 			} else if(programType == ProgramType.PVOUTPUT_UPLOAD){
 				return PVOutputUploadMain.startPVOutputUpload((PVOutputUploadProgramOptions) options, Arrays.copyOfRange(args, 1, args.length), dataDirectory);
+			} else if(programType == ProgramType.MATTERMOST){
+				return MattermostMain.startMattermost((MattermostProgramOptions) options);
 			}
 			throw new AssertionError("Unknown program type... type=" + programType + " programOptions=" + options);
 		} catch (Throwable t) {

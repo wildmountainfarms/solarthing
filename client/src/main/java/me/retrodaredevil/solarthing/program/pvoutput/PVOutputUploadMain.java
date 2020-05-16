@@ -12,6 +12,7 @@ import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbData
 import me.retrodaredevil.solarthing.config.options.PVOutputUploadProgramOptions;
 import me.retrodaredevil.solarthing.config.options.ProgramType;
 import me.retrodaredevil.solarthing.couchdb.CouchDbQueryHandler;
+import me.retrodaredevil.solarthing.couchdb.SolarThingCouchDb;
 import me.retrodaredevil.solarthing.misc.device.DevicePacket;
 import me.retrodaredevil.solarthing.misc.error.ErrorPacket;
 import me.retrodaredevil.solarthing.packets.collection.DefaultInstanceOptions;
@@ -21,6 +22,7 @@ import me.retrodaredevil.solarthing.packets.collection.parsing.*;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.instance.InstancePacket;
 import me.retrodaredevil.solarthing.program.DatabaseConfig;
+import me.retrodaredevil.solarthing.program.PacketUtil;
 import me.retrodaredevil.solarthing.program.SolarMain;
 import me.retrodaredevil.solarthing.pvoutput.CsvUtil;
 import me.retrodaredevil.solarthing.pvoutput.SimpleDate;
@@ -55,22 +57,6 @@ public class PVOutputUploadMain {
 	private static final ObjectMapper MAPPER = JacksonUtil.lenientMapper(JacksonUtil.defaultMapper());
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
-	private static List<FragmentedPacketGroup> getPacketGroups(String sourceId, DefaultInstanceOptions defaultInstanceOptions, List<? extends ObjectNode> packetNodes, PacketGroupParser parser){
-		Map<String, List<FragmentedPacketGroup>> packetGroupsMap = PacketGroups.sortPackets(PacketParseUtil.parseRawPacketsLenient(packetNodes, parser), defaultInstanceOptions, 2 * 60 * 1000);
-		if(sourceId == null){ // no preference on the source
-			if(packetGroupsMap.containsKey(defaultInstanceOptions.getDefaultSourceId())){
-				return packetGroupsMap.get(defaultInstanceOptions.getDefaultSourceId());
-			} else {
-				Iterator<List<FragmentedPacketGroup>> iterator = packetGroupsMap.values().iterator();
-				if(iterator.hasNext()){
-					return iterator.next();
-				} else {
-					return null;
-				}
-			}
-		}
-		return packetGroupsMap.get(sourceId);
-	}
 
 	@SuppressWarnings("SameReturnValue")
 	public static int startPVOutputUpload(PVOutputUploadProgramOptions options, String[] extraArgs, File dataDirectory){
@@ -148,9 +134,7 @@ public class PVOutputUploadMain {
 
 			List<ObjectNode> statusPacketNodes = null;
 			try {
-				statusPacketNodes = queryHandler.query(new ViewQuery()
-						.designDocId("_design/packets")
-						.viewName("millis")
+				statusPacketNodes = queryHandler.query(SolarThingCouchDb.createMillisView()
 						.startKey(dayStart)
 						.endKey(dayEnd).inclusiveEnd(false));
 				System.out.println("Got " + statusPacketNodes.size() + " packets for date: " + date.toPVOutputString());
@@ -159,7 +143,7 @@ public class PVOutputUploadMain {
 				System.err.println("Couldn't query packets. Skipping " + date.toPVOutputString());
 			}
 			if (statusPacketNodes != null) {
-				List<FragmentedPacketGroup> packetGroups = getPacketGroups(options.getSourceId(), options.getDefaultInstanceOptions(), statusPacketNodes, statusParser);
+				List<FragmentedPacketGroup> packetGroups = PacketUtil.getPacketGroups(options.getSourceId(), options.getDefaultInstanceOptions(), statusPacketNodes, statusParser);
 
 				if (packetGroups != null) {
 					if (!handler.checkPackets(dayStart, packetGroups)) {
@@ -260,9 +244,7 @@ public class PVOutputUploadMain {
 			long dayStartTimeMillis = today.getDayStartDateMillis(timeZone);
 			List<ObjectNode> statusPacketNodes = null;
 			try {
-				statusPacketNodes = queryHandler.query(new ViewQuery()
-						.designDocId("_design/packets")
-						.viewName("millis")
+				statusPacketNodes = queryHandler.query(SolarThingCouchDb.createMillisView()
 						.startKey(dayStartTimeMillis)
 						.endKey(now));
 				LOGGER.debug("Got packets");
@@ -270,7 +252,7 @@ public class PVOutputUploadMain {
 				LOGGER.error("Couldn't get status packets", e);
 			}
 			if(statusPacketNodes != null){
-				List<FragmentedPacketGroup> packetGroups = getPacketGroups(options.getSourceId(), options.getDefaultInstanceOptions(), statusPacketNodes, statusParser);
+				List<FragmentedPacketGroup> packetGroups = PacketUtil.getPacketGroups(options.getSourceId(), options.getDefaultInstanceOptions(), statusPacketNodes, statusParser);
 				if (packetGroups != null) {
 					FragmentedPacketGroup latestPacketGroup = packetGroups.get(packetGroups.size() - 1);
 					if (latestPacketGroup.getDateMillis() < System.currentTimeMillis() - 5 * 60 * 1000) {

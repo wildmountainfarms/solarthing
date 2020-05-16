@@ -1,0 +1,13 @@
+{
+  "type": "pvoutput-upload",
+  "database": "../config/couchdb.json",
+  "system_id": 100,
+  "api_key": "<API KEY>",
+  "time_zone": "US/Mountain",
+  "source": "default",
+  "default_fragment": 1,
+  "include_undefined_sources": true,
+  "required": {
+    "1": ["OutbackIdentifier(address=3)", "OutbackIdentifier(address=4)"]
+  }
+}

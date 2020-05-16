@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("FieldCanBeLocal")
-class PacketHandlingOptionBase implements PacketHandlingOption {
+abstract class PacketHandlingOptionBase implements PacketHandlingOption {
 	@JsonProperty
 	@JsonPropertyDescription("An array of strings that each represent a database configuration file relative to the program directory.")
 	private List<File> databases = null;
@@ -16,6 +16,9 @@ class PacketHandlingOptionBase implements PacketHandlingOption {
 	private String source = "default";
 	@JsonProperty(value = "fragment", required = true)
 	private Integer fragment = null;
+	/**
+	 * If someone wants to explicitly use a null fragment, they have to set this to true
+	 */
 	@JsonProperty("allow_null_fragment")
 	private boolean allowNullFragment = false;
 	@JsonProperty
