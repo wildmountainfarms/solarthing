@@ -3,7 +3,7 @@ package me.retrodaredevil.solarthing.program.modbus;
 import me.retrodaredevil.io.modbus.ModbusMessage;
 import me.retrodaredevil.io.modbus.ModbusSlave;
 import me.retrodaredevil.io.modbus.handling.MessageHandler;
-import me.retrodaredevil.io.modbus.handling.ReadRegistersHandler;
+import me.retrodaredevil.io.modbus.handling.ReadHoldingRegisters;
 import me.retrodaredevil.io.modbus.parsing.DefaultMessageParser;
 import me.retrodaredevil.io.modbus.parsing.MessageParseException;
 import me.retrodaredevil.io.modbus.parsing.MessageParser;
@@ -25,7 +25,7 @@ public class ModbusCacheSlave implements ModbusSlave {
 	}
 
 	public void cache(int startRegister, int numberOfRegisters) {
-		int[] registers = modbusSlave.sendRequestMessage(new ReadRegistersHandler(startRegister, numberOfRegisters));
+		int[] registers = modbusSlave.sendRequestMessage(new ReadHoldingRegisters(startRegister, numberOfRegisters));
 		for (int i = 0; i < registers.length; i++) {
 			int register = startRegister + i;
 			int value = registers[i];
@@ -44,11 +44,11 @@ public class ModbusCacheSlave implements ModbusSlave {
 		} catch (MessageParseException e) {
 			throw new RuntimeException("Got error while parsing message. This should never happen because message should be from a trusted (local) source.", e);
 		}
-		if (messageHandler instanceof ReadRegistersHandler) {
-			ReadRegistersHandler read = (ReadRegistersHandler) messageHandler;
+		if (messageHandler instanceof ReadHoldingRegisters) {
+			ReadHoldingRegisters read = (ReadHoldingRegisters) messageHandler;
 			int[] values = new int[read.getNumberOfRegisters()];
 			for (int i = 0; i < values.length; i++) {
-				int register = read.getRegister() + i;
+				int register = read.getStartingDataAddress() + i;
 				Integer value = cache.get(register);
 				if (value == null) {
 					LOGGER.debug("Register: " + register + " didn't have a cached value.");

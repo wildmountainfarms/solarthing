@@ -1,8 +1,8 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover.modbus;
 
 import me.retrodaredevil.io.modbus.ModbusSlave;
-import me.retrodaredevil.io.modbus.handling.MultipleWriteHandler;
-import me.retrodaredevil.io.modbus.handling.SingleWriteHandler;
+import me.retrodaredevil.io.modbus.handling.WriteMultipleRegisters;
+import me.retrodaredevil.io.modbus.handling.WriteSingleRegister;
 import me.retrodaredevil.solarthing.solar.renogy.BatteryType;
 import me.retrodaredevil.solarthing.solar.renogy.Voltage;
 import me.retrodaredevil.solarthing.solar.renogy.rover.LoadWorkingMode;
@@ -22,7 +22,7 @@ public class RoverModbusSlaveWrite implements RoverWriteTable {
 	}
 
 	private void write(int register, int value){
-		modbus.sendRequestMessage(new SingleWriteHandler(register, value));
+		modbus.sendRequestMessage(new WriteSingleRegister(register, value));
 	}
 
 	@Override
@@ -75,7 +75,7 @@ public class RoverModbusSlaveWrite implements RoverWriteTable {
 		int overDischargeTimeDelaySeconds, int equalizingChargingTimeMinutes, int boostChargingTimeMinutes,
 		int equalizingChargingIntervalDays, int temperatureCompensationFactor
 	) {
-		modbus.sendRequestMessage(new MultipleWriteHandler(0xE005, get8BitDataFrom16BitArray(
+		modbus.sendRequestMessage(new WriteMultipleRegisters(0xE005, get8BitDataFrom16BitArray(
 			overVoltageThreshold, chargingVoltageLimit, equalizingChargingVoltage, boostChargingVoltage,
 			floatingChargingVoltage, boostChargingRecoveryVoltage, overDischargeRecoveryVoltage,
 			underVoltageWarningLevel, overDischargeVoltage, dischargingLimitVoltage,

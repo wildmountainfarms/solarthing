@@ -175,7 +175,7 @@ public class RoverMain {
 			return 0;
 		} else {
 			try(IOBundle ioBundle = SolarMain.createIOBundle(options.getIOBundleFile(), ROVER_CONFIG)) {
-				ModbusSlaveBus modbus = new IOModbusSlaveBus(ioBundle, new RTUDataEncoder(2000, 20, 4));
+				ModbusSlaveBus modbus = new IOModbusSlaveBus(ioBundle, new RtuDataEncoder(2000, 20, 4));
 				ModbusSlave slave = new ImmutableAddressModbusSlave(options.getModbusAddress(), modbus);
 				final RoverReadTable read;
 				final Runnable reloadCache;
