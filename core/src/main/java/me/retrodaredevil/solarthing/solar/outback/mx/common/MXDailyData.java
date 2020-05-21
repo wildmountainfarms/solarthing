@@ -41,5 +41,13 @@ public interface MXDailyData extends OutbackData, DailyChargeController, DailyBa
 	@Override
 	Support getDailyAHSupport();
 
+
+	@Deprecated
+	@Override
+	float getDailyKWH();
+
+	@Deprecated
+	@Override
+	int getDailyAH();
 }
 

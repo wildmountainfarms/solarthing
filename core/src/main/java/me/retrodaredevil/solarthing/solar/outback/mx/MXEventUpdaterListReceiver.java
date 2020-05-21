@@ -6,6 +6,7 @@ import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.solar.outback.mx.event.ImmutableMXAuxModeChangePacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.event.ImmutableMXChargerModeChangePacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.event.ImmutableMXErrorModeChangePacket;
+import me.retrodaredevil.solarthing.solar.outback.mx.event.ImmutableMXRawDayEndPacket;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,6 +57,9 @@ public class MXEventUpdaterListReceiver implements PacketListReceiver {
 		}
 		if(previousErrorModeValue == null || errorModeValue != previousErrorModeValue){
 			eventPackets.add(new ImmutableMXErrorModeChangePacket(mx.getIdentifier(), errorModeValue, previousErrorModeValue));
+		}
+		if (last != null && mx.isNewDay(last)) {
+			eventPackets.add(new ImmutableMXRawDayEndPacket(mx.getAddress(), mx.getDailyKWH(), mx.getDailyAH(), mx.getDailyAHSupport()));
 		}
 		if (!eventPackets.isEmpty()) {
 			eventReceiver.receive(eventPackets, wasInstant);

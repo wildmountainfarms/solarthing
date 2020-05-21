@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.identification.DefaultSupplementaryIdentifier;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
+import me.retrodaredevil.solarthing.packets.identification.KnownSupplementaryIdentifier;
 import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifier;
 import me.retrodaredevil.solarthing.packets.support.Support;
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
@@ -18,7 +19,7 @@ public class ImmutableMXRawDayEndPacket implements MXRawDayEndPacket {
 	private final int dailyAH;
 	private final Support dailyAHSupport;
 
-	private final SupplementaryIdentifier identifier;
+	private final KnownSupplementaryIdentifier<OutbackIdentifier> identifier;
 	private final IdentityInfo identityInfo;
 
 	@JsonCreator
@@ -37,7 +38,7 @@ public class ImmutableMXRawDayEndPacket implements MXRawDayEndPacket {
 	}
 
 	@Override
-	public @NotNull SupplementaryIdentifier getIdentifier() {
+	public @NotNull KnownSupplementaryIdentifier<OutbackIdentifier> getIdentifier() {
 		return identifier;
 	}
 

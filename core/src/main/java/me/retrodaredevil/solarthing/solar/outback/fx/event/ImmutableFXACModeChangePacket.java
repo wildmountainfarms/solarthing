@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.packets.identification.DefaultSupplementaryIdentifier;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
+import me.retrodaredevil.solarthing.packets.identification.KnownSupplementaryIdentifier;
 import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifier;
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
@@ -17,7 +18,7 @@ public class ImmutableFXACModeChangePacket implements FXACModeChangePacket {
 	private final int acModeValue;
 	private final Integer previousACModeValue;
 
-	private final SupplementaryIdentifier identifier;
+	private final KnownSupplementaryIdentifier<OutbackIdentifier> identifier;
 	private final IdentityInfo identityInfo;
 
 	@JsonCreator
@@ -53,7 +54,7 @@ public class ImmutableFXACModeChangePacket implements FXACModeChangePacket {
 	}
 
 	@Override
-	public @NotNull SupplementaryIdentifier getIdentifier() {
+	public @NotNull KnownSupplementaryIdentifier<OutbackIdentifier> getIdentifier() {
 		return identifier;
 	}
 

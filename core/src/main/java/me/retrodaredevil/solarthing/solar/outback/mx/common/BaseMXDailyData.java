@@ -9,11 +9,13 @@ import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifi
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 
 import me.retrodaredevil.solarthing.annotations.NotNull;
+import me.retrodaredevil.solarthing.solar.outback.SupplementaryOutbackPacket;
 
 @JsonExplicit
-public abstract class BaseMXDailyData extends ImmutableMXDailyData implements SupplementaryIdentifiable {
+public abstract class BaseMXDailyData extends ImmutableMXDailyData implements SupplementaryOutbackPacket {
 	private final KnownSupplementaryIdentifier<OutbackIdentifier> supplementaryIdentifier;
 
+	@Deprecated
 	public BaseMXDailyData(
 			DocumentedPacketType packetType,
 			MXDailyData dailyData,

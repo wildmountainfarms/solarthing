@@ -11,11 +11,12 @@ import me.retrodaredevil.solarthing.solar.outback.OutbackData;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 
 import me.retrodaredevil.solarthing.annotations.NotNull;
+import me.retrodaredevil.solarthing.solar.outback.SupplementaryOutbackPacket;
 
 @JsonDeserialize(as = ImmutableFXAuxStateChangePacket.class)
 @JsonTypeName("FX_AUX_STATE_CHANGE")
 @JsonExplicit
-public interface FXAuxStateChangePacket extends SupplementarySolarEventPacket, OutbackData, ChangePacket {
+public interface FXAuxStateChangePacket extends SupplementarySolarEventPacket, SupplementaryOutbackPacket, ChangePacket {
 	@NotNull
     @Override
 	default SolarEventPacketType getPacketType(){

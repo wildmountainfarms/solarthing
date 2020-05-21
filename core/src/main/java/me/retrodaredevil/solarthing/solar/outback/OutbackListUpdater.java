@@ -12,14 +12,6 @@ import me.retrodaredevil.solarthing.solar.outback.fx.common.ImmutableFXDailyData
 import me.retrodaredevil.solarthing.solar.outback.fx.event.ImmutableFXDayEndPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.extra.DailyFXPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.extra.ImmutableDailyFXPacket;
-import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPacket;
-import me.retrodaredevil.solarthing.solar.outback.mx.common.ImmutableMXDailyData;
-import me.retrodaredevil.solarthing.solar.outback.mx.common.MXDailyData;
-import me.retrodaredevil.solarthing.solar.outback.mx.event.ImmutableMXDayEndPacket;
-import me.retrodaredevil.solarthing.solar.outback.mx.event.ImmutableMXRawDayEndPacket;
-import me.retrodaredevil.solarthing.solar.outback.mx.event.MXRawDayEndPacket;
-import me.retrodaredevil.solarthing.solar.outback.mx.extra.DailyMXPacket;
-import me.retrodaredevil.solarthing.solar.outback.mx.extra.ImmutableDailyMXPacket;
 import me.retrodaredevil.solarthing.util.integration.MutableIntegral;
 import me.retrodaredevil.solarthing.util.integration.TrapezoidalRuleAccumulator;
 import me.retrodaredevil.solarthing.util.time.TimeIdentifier;
@@ -46,7 +38,6 @@ public class OutbackListUpdater implements PacketListReceiver {
 	private final PacketListReceiver eventReceiver;
 
 	private final Map<Identifier, FXListUpdater> fxMap = new HashMap<>();
-	private final Map<Identifier, MXListUpdater> mxMap = new HashMap<>();
 	private Long lastTimeId = null;
 
 	public OutbackListUpdater(TimeIdentifier timeIdentifier, PacketListReceiver eventReceiver) {
@@ -64,11 +55,7 @@ public class OutbackListUpdater implements PacketListReceiver {
 			for(FXListUpdater updater : fxMap.values()){
 				updater.doDayEnd(wasInstant);
 			}
-			for(MXListUpdater updater : mxMap.values()){
-				updater.doDayEnd(wasInstant);
-			}
 			fxMap.clear();
-			mxMap.clear();
 		}
 
 		for(Packet packet : new ArrayList<>(packets)){
@@ -83,15 +70,6 @@ public class OutbackListUpdater implements PacketListReceiver {
 						fxMap.put(identifier, updater);
 					}
 					updater.update(now, packets, fx, wasInstant);
-				} else if(packetType == SolarStatusPacketType.MXFM_STATUS){
-					MXStatusPacket mx = (MXStatusPacket) packet;
-					Identifier identifier = mx.getIdentifier();
-					MXListUpdater updater = mxMap.get(identifier);
-					if(updater == null){
-						updater = new MXListUpdater(eventReceiver);
-						mxMap.put(identifier, updater);
-					}
-					updater.update(now, packets, mx, wasInstant);
 				}
 			}
 		}
@@ -168,74 +146,6 @@ public class OutbackListUpdater implements PacketListReceiver {
 		private void doDayEnd(boolean wasInstant){
 			FXStatusPacket fx = requireNonNull(lastFX);
 			eventReceiver.receive(Collections.singletonList(new ImmutableFXDayEndPacket(createData(fx), fx.getIdentifier())), wasInstant);
-		}
-	}
-	private static final class MXListUpdater {
-		private final PacketListReceiver eventReceiver;
-		private int errorMode = 0;
-		private Long startDateMillis = null;
-		private Float minimumBatteryVoltage = null;
-		private Float maximumBatteryVoltage = null;
-
-		private float accumulatedKWH = 0;
-		private int accumulatedAH = 0;
-
-		private MXStatusPacket lastMX = null;
-
-		private MXListUpdater(PacketListReceiver eventReceiver) {
-			this.eventReceiver = requireNonNull(eventReceiver);
-		}
-
-		private void update(long currentTimeMillis, List<? super Packet> packets, MXStatusPacket mx, boolean wasInstant){
-			final MXStatusPacket last = this.lastMX;
-			this.lastMX = mx;
-
-			if(last != null && mx.isNewDay(last)){
-				MXRawDayEndPacket dayEndPacket = new ImmutableMXRawDayEndPacket(last.getAddress(), last.getDailyKWH(), last.getDailyAH(), last.getDailyAHSupport());
-				eventReceiver.receive(Collections.singletonList(dayEndPacket), wasInstant);
-			}
-
-			Long startDateMillis = this.startDateMillis;
-			if(startDateMillis == null){
-				startDateMillis = currentTimeMillis;
-				this.startDateMillis = startDateMillis;
-			}
-
-			float batteryVoltage = mx.getBatteryVoltage();
-			Float currentMin = minimumBatteryVoltage;
-			Float currentMax = maximumBatteryVoltage;
-			if(currentMin == null || batteryVoltage < currentMin){
-				minimumBatteryVoltage = batteryVoltage;
-			}
-			if(currentMax == null || batteryVoltage > currentMax){
-				maximumBatteryVoltage = batteryVoltage;
-			}
-			errorMode |= mx.getErrorModeValue();
-
-			if(last != null){
-				float lastKWH = last.getDailyKWH();
-				int lastAH = last.getDailyAH();
-				float kwh = mx.getDailyKWH();
-				int ah = mx.getDailyAH();
-				if(kwh > lastKWH){
-					accumulatedKWH += kwh - lastKWH;
-				}
-				if(ah > lastAH){
-					accumulatedAH += ah - lastAH;
-				}
-			}
-			MXDailyData data = createData(mx);
-			DailyMXPacket packet = new ImmutableDailyMXPacket(data, mx.getIdentifier());
-			packets.add(packet);
-
-		}
-		private MXDailyData createData(MXStatusPacket mx){
-			return new ImmutableMXDailyData(mx.getAddress(), errorMode, startDateMillis, accumulatedKWH, accumulatedAH, mx.getDailyAHSupport(), minimumBatteryVoltage, maximumBatteryVoltage);
-		}
-
-		private void doDayEnd(boolean wasInstant) {
-			MXStatusPacket mx = requireNonNull(lastMX);
-			eventReceiver.receive(Collections.singletonList(new ImmutableMXDayEndPacket(createData(mx), mx.getIdentifier())), wasInstant);
 		}
 	}
 }

@@ -10,6 +10,7 @@ import me.retrodaredevil.solarthing.solar.common.ErrorReporter;
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.event.SupplementarySolarEventPacket;
 import me.retrodaredevil.solarthing.solar.outback.OutbackData;
+import me.retrodaredevil.solarthing.solar.outback.SupplementaryOutbackPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXErrorMode;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 
@@ -19,7 +20,7 @@ import java.util.Set;
 @JsonDeserialize(as = ImmutableFXErrorModeChangePacket.class)
 @JsonTypeName("FX_ERROR_MODE_CHANGE")
 @JsonExplicit
-public interface FXErrorModeChangePacket extends SupplementarySolarEventPacket, OutbackData, ErrorReporter, ChangePacket {
+public interface FXErrorModeChangePacket extends SupplementarySolarEventPacket, SupplementaryOutbackPacket, ErrorReporter, ChangePacket {
 	@NotNull
     @Override
 	default SolarEventPacketType getPacketType(){

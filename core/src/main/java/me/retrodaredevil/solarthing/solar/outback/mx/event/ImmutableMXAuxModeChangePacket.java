@@ -6,6 +6,7 @@ import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.identification.DefaultSupplementaryIdentifier;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
+import me.retrodaredevil.solarthing.packets.identification.KnownSupplementaryIdentifier;
 import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifier;
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
@@ -15,7 +16,7 @@ public class ImmutableMXAuxModeChangePacket implements MXAuxModeChangePacket {
 	private final int address;
 	private final int rawAuxModeValue;
 	private final Integer previousRawAuxModeValue;
-	private final SupplementaryIdentifier identifier;
+	private final KnownSupplementaryIdentifier<OutbackIdentifier> identifier;
 	private final IdentityInfo identityInfo;
 	@JsonCreator
 	private ImmutableMXAuxModeChangePacket(
@@ -51,7 +52,7 @@ public class ImmutableMXAuxModeChangePacket implements MXAuxModeChangePacket {
 	}
 
     @Override
-	public @NotNull SupplementaryIdentifier getIdentifier() {
+	public @NotNull KnownSupplementaryIdentifier<OutbackIdentifier> getIdentifier() {
 		return identifier;
 	}
 

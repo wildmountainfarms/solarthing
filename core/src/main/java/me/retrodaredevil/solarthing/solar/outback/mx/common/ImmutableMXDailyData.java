@@ -74,11 +74,13 @@ public class ImmutableMXDailyData implements MXDailyData {
 		return startDateMillis;
 	}
 
+	@Deprecated
 	@Override
 	public float getDailyKWH() {
 		return dailyKWH;
 	}
 
+	@Deprecated
 	@Override
 	public int getDailyAH() {
 		return dailyAH;

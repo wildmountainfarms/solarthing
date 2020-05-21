@@ -7,13 +7,14 @@ import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifi
 import me.retrodaredevil.solarthing.solar.extra.SolarExtraPacketType;
 import me.retrodaredevil.solarthing.solar.extra.SupplementarySolarExtraPacket;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
+import me.retrodaredevil.solarthing.solar.outback.SupplementaryOutbackPacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.common.MXDailyData;
 
 import me.retrodaredevil.solarthing.annotations.NotNull;
 
 @JsonTypeName("MXFM_DAILY")
 @JsonDeserialize(as = ImmutableDailyMXPacket.class)
-public interface DailyMXPacket extends SupplementarySolarExtraPacket, MXDailyData {
+public interface DailyMXPacket extends SupplementarySolarExtraPacket, MXDailyData, SupplementaryOutbackPacket {
 	@NotNull
 	@Override
 	default SolarExtraPacketType getPacketType() {
@@ -22,12 +23,4 @@ public interface DailyMXPacket extends SupplementarySolarExtraPacket, MXDailyDat
 
 	@Override
 	@NotNull KnownSupplementaryIdentifier<OutbackIdentifier> getIdentifier();
-
-	@Deprecated
-	@Override
-	float getDailyKWH();
-
-	@Deprecated
-	@Override
-	int getDailyAH();
 }

@@ -9,6 +9,7 @@ import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.event.SupplementarySolarEventPacket;
 import me.retrodaredevil.solarthing.solar.outback.OutbackData;
+import me.retrodaredevil.solarthing.solar.outback.SupplementaryOutbackPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.WarningMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.FXWarningReporter;
 import me.retrodaredevil.solarthing.annotations.Nullable;
@@ -19,7 +20,7 @@ import java.util.Set;
 @JsonDeserialize(as = ImmutableFXWarningModeChangePacket.class)
 @JsonTypeName("FX_WARNING_MODE_CHANGE")
 @JsonExplicit
-public interface FXWarningModeChangePacket extends SupplementarySolarEventPacket, OutbackData, FXWarningReporter, ChangePacket {
+public interface FXWarningModeChangePacket extends SupplementarySolarEventPacket, SupplementaryOutbackPacket, FXWarningReporter, ChangePacket {
 	int DEFAULT_IGNORED_WARNING_MODE_VALUE_CONSTANT = 0;
 
 	@NotNull

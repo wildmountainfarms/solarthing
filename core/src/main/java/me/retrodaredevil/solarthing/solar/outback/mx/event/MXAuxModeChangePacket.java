@@ -9,6 +9,7 @@ import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.event.SupplementarySolarEventPacket;
 import me.retrodaredevil.solarthing.solar.outback.OutbackData;
+import me.retrodaredevil.solarthing.solar.outback.SupplementaryOutbackPacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.AuxMode;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
@@ -16,7 +17,7 @@ import me.retrodaredevil.solarthing.annotations.Nullable;
 @JsonDeserialize(as = ImmutableMXAuxModeChangePacket.class)
 @JsonTypeName("MXFM_AUX_MODE_CHANGE")
 @JsonExplicit
-public interface MXAuxModeChangePacket extends SupplementarySolarEventPacket, OutbackData, ChangePacket {
+public interface MXAuxModeChangePacket extends SupplementarySolarEventPacket, SupplementaryOutbackPacket, OutbackData, ChangePacket {
 	@NotNull
     @Override
 	default SolarEventPacketType getPacketType(){

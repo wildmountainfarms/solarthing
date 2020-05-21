@@ -13,4 +13,6 @@ public interface OutbackData {
 	@JsonProperty("address")
 	@JsonPropertyDescription("The address of the port that this device is plugged in to. If 0, this is plugged in to the mate")
 	int getAddress();
+
+	// we could make this Identifiable and make change the type of OutbackIdentifier, but some subclasses of this make it KnownSupplementaryIdentifier<OutbackIdentifier>
 }

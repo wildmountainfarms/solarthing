@@ -9,6 +9,7 @@ import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.event.SupplementarySolarEventPacket;
 import me.retrodaredevil.solarthing.solar.outback.OutbackData;
+import me.retrodaredevil.solarthing.solar.outback.SupplementaryOutbackPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.OperationalMode;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 
@@ -18,7 +19,7 @@ import me.retrodaredevil.solarthing.annotations.NotNull;
 @JsonDeserialize(as = ImmutableFXOperationalModeChangePacket.class)
 @JsonTypeName("FX_OPERATIONAL_MODE_CHANGE")
 @JsonExplicit
-public interface FXOperationalModeChangePacket extends SupplementarySolarEventPacket, OutbackData, ChangePacket {
+public interface FXOperationalModeChangePacket extends SupplementarySolarEventPacket, SupplementaryOutbackPacket, ChangePacket {
 	@NotNull
     @Override
 	default SolarEventPacketType getPacketType(){
