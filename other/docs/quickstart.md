@@ -9,7 +9,7 @@ Run this to quickly get setup (Linux Only):
 # This does NOT configure other random files on your system
 curl https://raw.githubusercontent.com/wildmountainfarms/solarthing/master/other/linux/clone_install.sh | sudo bash
 # If when testing the program, it helps to have permission to edit files owned by the solarthing group, and you will also want to be allowed to use serial ports
-sudo usermod -a -G solarthing,dialout $USER
+sudo usermod -a -G solarthing,dialout,tty,video $USER
 ```
 Or if you want to check out how the **simple** installation works: [click here](../linux/clone_install.sh)
 

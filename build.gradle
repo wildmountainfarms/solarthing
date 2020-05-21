@@ -9,7 +9,7 @@ buildscript {
         jacksonVersion = '2.11.0'
         retrofitVersion = "2.8.1" // context: https://stackoverflow.com/questions/60915381/retrofit2-maven-project-illegal-reflective-access-warning // https://github.com/square/retrofit/issues/3341
         shadowVersion = '5.2.0'
-        ioLibVersion = '2.0.0'
+        ioLibVersion = '2.1.0'
     }
 }
 allprojects {

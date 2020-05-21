@@ -70,6 +70,9 @@ https://www.wmrc.edu/projects/BARenergy/manuals/outback-manuals/MX60_REV_C.pdf
 ## Renogy References:
 Rover manual: https://www.renogy.com/template/files/Manuals/Rover%20203040%20Manual.pdf
 
+https://renogy.boards.net/thread/565/hp-series-smart-solar-cc
+* "administrator", "111111"
+
 Software download: https://www.renogy.com/template/files/Solar%20Station%20Monitor.zip
 
 Modbus protocol: renogy.boards.net/thread/266/rover-modbus

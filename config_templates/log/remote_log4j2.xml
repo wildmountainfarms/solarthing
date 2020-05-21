@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--NOTE: This is not complete yet-->
+<Configuration status="WARN">
+    <Properties>
+        <Property name="logPath">logs</Property>
+        <Property name="LOG_PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</Property>
+        <Property name="filePermissions">rw-rw-r--</Property>
+    </Properties>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <MarkerFilter marker="NO_CONSOLE" onMatch="DENY" onMismatch="NEUTRAL"/>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </Console>
+        <Syslog name="logAll" host="192.168.10.250" port="8514" facility="SYSLOG" protocol="TCP"/>
+
+        <RollingFile name="logSummary" fileName="${logPath}/log_summary.log" filePattern="${logPath}/log_summary_%d{yyyy.MM.dd}-%i.log.gz"
+                     filePermissions="${filePermissions}">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <MarkerFilter marker="SUMMARY" onMatch="ACCEPT" onMismatch="DENY"/>
+            <Policies>
+                <OnStartupTriggeringPolicy />
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="3GB" />
+            </Policies>
+            <DefaultRolloverStrategy>
+                <Delete basePath="${logPath}" maxDepth="1">
+                    <IfFileName glob="log_summary_*.log.gz" />
+                    <IfLastModified age="400d" />
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Root level="DEBUG" >
+            <AppenderRef ref="Console" level="DEBUG"/>
+        </Root>
+        <Logger name="me.retrodaredevil.solarthing">
+            <AppenderRef ref="logAll" level="DEBUG"/>
+            <AppenderRef ref="logInfo" level="INFO"/>
+            <AppenderRef ref="logSummary" level="DEBUG"/> <!-- We can allow debugs to go through because it will filter for explicit SUMMARY marker -->
+        </Logger>
+        <Logger name="org.ektorp" level="INFO">
+            <AppenderRef ref="logAll"/>
+        </Logger>
+        <Logger name="org.apache.http" level="INFO">
+            <AppenderRef ref="logAll"/>
+        </Logger>
+        <Logger name="org.influxdb" level="INFO">
+            <AppenderRef ref="logAll"/>
+        </Logger>
+    </Loggers>
+</Configuration>

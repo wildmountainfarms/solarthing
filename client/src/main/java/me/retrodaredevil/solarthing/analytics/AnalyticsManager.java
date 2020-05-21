@@ -36,6 +36,7 @@ public class AnalyticsManager {
 			}
 			if (analyticsData == null) {
 				analyticsData = new AnalyticsData(UUID.randomUUID());
+				LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Generated a new Analytics UUID");
 				try {
 					MAPPER.writeValue(file, analyticsData);
 				} catch (IOException e) {

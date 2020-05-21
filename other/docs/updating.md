@@ -14,6 +14,6 @@ If you don't have permission to update, it is recommended you run:
 ```shell script
 sudo other/linux/create_user.sh
 sudo other/linux/update_perms.sh
-sudo usermod -a -G solarthing,dialout $USER
+sudo usermod -a -G solarthing,dialout,tty,video $USER
 ```
 This should have already been run if you installed SolarThing using the one line command.
