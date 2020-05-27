@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.solar.renogy.rover.modbus;
 import me.retrodaredevil.io.modbus.ModbusSlave;
 import me.retrodaredevil.io.modbus.handling.WriteMultipleRegisters;
 import me.retrodaredevil.io.modbus.handling.WriteSingleRegister;
+import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
 import me.retrodaredevil.solarthing.solar.renogy.BatteryType;
 import me.retrodaredevil.solarthing.solar.renogy.Voltage;
 import me.retrodaredevil.solarthing.solar.renogy.rover.LoadWorkingMode;
@@ -51,6 +52,29 @@ public class RoverModbusSlaveWrite implements RoverWriteTable {
 		checkRange(0, 100, brightnessPercent);
 		write(0xE001, brightnessPercent);
 	}
+	@Override
+	public void setBatteryParameters(
+			Voltage systemVoltage,
+			BatteryType batteryType,
+			int overVoltageThreshold, int chargingVoltageLimit, int equalizingChargingVoltage, int boostChargingVoltage,
+			int floatingChargingVoltage, int boostChargingRecoveryVoltage, int overDischargeRecoveryVoltage,
+			int underVoltageWarningLevel, int overDischargeVoltage, int dischargingLimitVoltage,
+			int endOfChargeSOCValue, int endOfDischargeSOCValue,
+			int overDischargeTimeDelaySeconds, int equalizingChargingTimeMinutes, int boostChargingTimeMinutes,
+			int equalizingChargingIntervalDays, int temperatureCompensationFactor
+	) {
+		modbus.sendRequestMessage(new WriteMultipleRegisters(0xE002, get8BitDataFrom16BitArray(
+				200, // we need to set this parameter, but it can't be changed and 200 is the default
+				systemVoltage.getValueCode() << 8,
+				batteryType.getValueCode(),
+				overVoltageThreshold, chargingVoltageLimit, equalizingChargingVoltage, boostChargingVoltage,
+				floatingChargingVoltage, boostChargingRecoveryVoltage, overDischargeRecoveryVoltage,
+				underVoltageWarningLevel, overDischargeVoltage, dischargingLimitVoltage,
+				(endOfChargeSOCValue << 8) | endOfDischargeSOCValue,
+				overDischargeTimeDelaySeconds, equalizingChargingTimeMinutes, boostChargingTimeMinutes,
+				equalizingChargingIntervalDays, temperatureCompensationFactor
+		)));
+	}
 
 	@Override
 	public void setSystemVoltageSetting(Voltage voltage) {
@@ -66,24 +90,6 @@ public class RoverModbusSlaveWrite implements RoverWriteTable {
 		write(0xE004, batteryType.getValueCode());
 	}
 
-	@Override
-	public void setVoltageSetPoints(
-		int overVoltageThreshold, int chargingVoltageLimit, int equalizingChargingVoltage, int boostChargingVoltage,
-		int floatingChargingVoltage, int boostChargingRecoveryVoltage, int overDischargeRecoveryVoltage,
-		int underVoltageWarningLevel, int overDischargeVoltage, int dischargingLimitVoltage,
-		int endOfChargeSOCValue, int endOfDischargeSOCValue,
-		int overDischargeTimeDelaySeconds, int equalizingChargingTimeMinutes, int boostChargingTimeMinutes,
-		int equalizingChargingIntervalDays, int temperatureCompensationFactor
-	) {
-		modbus.sendRequestMessage(new WriteMultipleRegisters(0xE005, get8BitDataFrom16BitArray(
-			overVoltageThreshold, chargingVoltageLimit, equalizingChargingVoltage, boostChargingVoltage,
-			floatingChargingVoltage, boostChargingRecoveryVoltage, overDischargeRecoveryVoltage,
-			underVoltageWarningLevel, overDischargeVoltage, dischargingLimitVoltage,
-			(endOfChargeSOCValue << 8) | endOfDischargeSOCValue,
-			overDischargeTimeDelaySeconds, equalizingChargingTimeMinutes, boostChargingTimeMinutes,
-			equalizingChargingIntervalDays, temperatureCompensationFactor
-		)));
-	}
 
 	// region 17 set point values
 	@Override

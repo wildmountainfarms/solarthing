@@ -9,31 +9,29 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerContr
 public interface RoverWriteTable extends Rover {
 	void factoryReset();
 	void clearHistory();
-	
+
 	void setControllerDeviceAddress(int address);
 	void setStreetLightStatus(StreetLight streetLightStatus);
 	void setStreetLightBrightnessPercent(int brightnessPercent);
-	void setSystemVoltageSetting(Voltage voltage);
-	// I don't think we can set the recognized voltage
-	void setBatteryType(BatteryType batteryType);
-	
-	default void setVoltageSetPoints(
-		int overVoltageThreshold,
-		int chargingVoltageLimit,
-		int equalizingChargingVoltage,
-		int boostChargingVoltage,
-		int floatingChargingVoltage,
-		int boostChargingRecoveryVoltage,
-		int overDischargeRecoveryVoltage,
-		int underVoltageWarningLevel,
-		int overDischargeVoltage,
-		int dischargingLimitVoltage,
-		int endOfChargeSOCValue, int endOfDischargeSOCValue,
-		int overDischargeTimeDelaySeconds,
-		int equalizingChargingTimeMinutes, // not raw
-		int boostChargingTimeMinutes, // not raw
-		int equalizingChargingIntervalDays, // not raw
-		int temperatureCompensationFactor // not raw
+	default void setBatteryParameters(
+			Voltage systemVoltage,
+			BatteryType batteryType,
+			int overVoltageThreshold,
+			int chargingVoltageLimit,
+			int equalizingChargingVoltage,
+			int boostChargingVoltage,
+			int floatingChargingVoltage,
+			int boostChargingRecoveryVoltage,
+			int overDischargeRecoveryVoltage,
+			int underVoltageWarningLevel,
+			int overDischargeVoltage,
+			int dischargingLimitVoltage,
+			int endOfChargeSOCValue, int endOfDischargeSOCValue,
+			int overDischargeTimeDelaySeconds,
+			int equalizingChargingTimeMinutes, // not raw
+			int boostChargingTimeMinutes, // not raw
+			int equalizingChargingIntervalDays, // not raw
+			int temperatureCompensationFactor // not raw
 	){
 		setOverVoltageThresholdRaw(overVoltageThreshold);
 		setChargingVoltageLimitRaw(chargingVoltageLimit);
@@ -45,15 +43,20 @@ public interface RoverWriteTable extends Rover {
 		setUnderVoltageWarningLevelRaw(underVoltageWarningLevel);
 		setOverDischargeVoltageRaw(overDischargeVoltage);
 		setDischargingLimitVoltageRaw(dischargingLimitVoltage);
-		
+
 		setEndOfChargeSOCEndOfDischargeSOC(endOfChargeSOCValue, endOfDischargeSOCValue);
-		
+
 		setOverDischargeTimeDelaySeconds(overDischargeTimeDelaySeconds);
 		setEqualizingChargingTimeMinutes(equalizingChargingTimeMinutes);
 		setBoostChargingTimeMinutes(boostChargingTimeMinutes);
 		setEqualizingChargingIntervalDays(equalizingChargingIntervalDays);
 		setTemperatureCompensationFactor(temperatureCompensationFactor);
 	}
+
+	void setSystemVoltageSetting(Voltage voltage);
+	// I don't think we can set the recognized voltage
+	void setBatteryType(BatteryType batteryType);
+
 	void setOverVoltageThresholdRaw(int value);
 	void setChargingVoltageLimitRaw(int value);
 	void setEqualizingChargingVoltageRaw(int value);
@@ -64,11 +67,11 @@ public interface RoverWriteTable extends Rover {
 	void setUnderVoltageWarningLevelRaw(int value);
 	void setOverDischargeVoltageRaw(int value);
 	void setDischargingLimitVoltageRaw(int value);
-	
+
 	void setEndOfChargeSOCEndOfDischargeSOC(int endOfChargeSOCValue, int endOfDischargeSOCValue);
-	
+
 	void setOverDischargeTimeDelaySeconds(int seconds);
-	
+
 	@Deprecated
 	static int getEqualizingChargingTimeRawFromMinutes(int minutes){
 		if(minutes < 10){
@@ -83,7 +86,7 @@ public interface RoverWriteTable extends Rover {
 	default void setEqualizingChargingTimeMinutes(int minutes){
 		setEqualizingChargingTimeRaw(minutes);
 	}
-	
+
 	@Deprecated
 	static int getBoostChargingTimeRawFromMinutes(int minutes){
 		if(minutes < 20){
@@ -98,7 +101,7 @@ public interface RoverWriteTable extends Rover {
 	default void setBoostChargingTimeMinutes(int minutes){
 		setBoostChargingTimeRaw(minutes);
 	}
-	
+
 	@Deprecated
 	static int getEqualizingChargingIntervalRawFromDays(int days){
 		if(days == 0){
@@ -117,7 +120,7 @@ public interface RoverWriteTable extends Rover {
 	default void setEqualizingChargingIntervalDays(int days){
 		setEqualizingChargingIntervalRaw(days);
 	}
-	
+
 	@Deprecated
 	static int getTemperatureCompensationFactorRaw(int nonRaw){
 		if(nonRaw == 0){
@@ -140,19 +143,19 @@ public interface RoverWriteTable extends Rover {
 	}
 	void setOperatingDurationHours(OperatingSetting setting, int hours);
 	void setOperatingPowerPercentage(OperatingSetting setting, int operatingPowerPercentage);
-	
+
 	void setLoadWorkingMode(LoadWorkingMode loadWorkingMode);
-	
+
 	/**
 	 * @param minutes A number in range [0..60]
 	 */
 	void setLightControlDelayMinutes(int minutes);
-	
+
 	/**
 	 * @param voltage A number in range [1..40]
 	 */
 	void setLightControlVoltage(int voltage);
-	
+
 	/**
 	 * @param value Unknown range.
 	 */
@@ -163,17 +166,17 @@ public interface RoverWriteTable extends Rover {
 		}
 		setLEDLoadCurrentSettingRaw(milliAmps / 10);
 	}
-	
+
 	void setSpecialPowerControlE021Raw(int value);
 	default void setSpecialPowerControl(SpecialPowerControl_E021 specialPowerControl){ setSpecialPowerControlE021Raw(specialPowerControl.getCombined()); }
-	
+
 	void setWorkingHoursRaw(Sensing sensing, int value);
 	default void setWorkingHours(Sensing sensing, int hours){ setWorkingHoursRaw(sensing, hours - 1); }
 	void setPowerWithPeopleSensedRaw(Sensing sensing, int value);
 	default void setPowerWithPeopleSensedPercentage(Sensing sensing, int percentage) { setPowerWithPeopleSensedRaw(sensing, percentage - 10); }
 	void setPowerWithNoPeopleSensedRaw(Sensing sensing, int value);
 	default void setPowerWithNoPeopleSensedPercentage(Sensing sensing, int percentage) { setPowerWithNoPeopleSensedRaw(sensing, percentage - 10); }
-	
+
 	void setSensingTimeDelayRaw(int value);
 	default void setSensingTimeDelaySeconds(int seconds){
 		if(seconds < 10){
@@ -184,7 +187,7 @@ public interface RoverWriteTable extends Rover {
 		}
 		setSensingTimeDelayRaw(seconds - 10);
 	}
-	
+
 	void setLEDLoadCurrentRaw(int value);
 	default void setLEDLoadCurrentMilliAmps(int milliAmps){
 		if(milliAmps % 10 != 0){
@@ -192,7 +195,7 @@ public interface RoverWriteTable extends Rover {
 		}
 		setLEDLoadCurrentRaw(milliAmps / 10);
 	}
-	
+
 	void setSpecialPowerControlE02DRaw(int value);
 	default void setSpecialPowerControl(SpecialPowerControl_E02D specialPowerControl){ setSpecialPowerControlE02DRaw(specialPowerControl.getCombined()); }
 }

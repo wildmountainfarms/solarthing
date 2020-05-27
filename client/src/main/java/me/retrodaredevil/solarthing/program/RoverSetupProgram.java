@@ -292,14 +292,7 @@ public final class RoverSetupProgram {
 							write.setStreetLightBrightnessPercent(brightness);
 							break;
 						case "systemvoltage": case "systemvoltagesetting":
-							Voltage systemVoltage = null;
-							try {
-								systemVoltage = Modes.getActiveMode(Voltage.class, Integer.parseInt(toSet), Voltage.AUTO);
-							} catch(NumberFormatException ex){
-							}
-							if(systemVoltage == null){
-								systemVoltage = Voltage.AUTO;
-							}
+							Voltage systemVoltage = parseVoltage(toSet);
 							boolean supported = systemVoltage.isSupported(read.getMaxVoltage());
 							if(!supported){
 								System.err.println(systemVoltage.getModeName() + " is not supported!");
@@ -308,17 +301,12 @@ public final class RoverSetupProgram {
 							}
 							break;
 						case "batterytype":
-							final BatteryType batteryType;
-							switch(toSet){
-								case "open": case "flooded": batteryType = BatteryType.OPEN; break;
-								case "sealed": batteryType = BatteryType.SEALED; break;
-								case "gel": batteryType = BatteryType.GEL; break;
-								case "lithium": batteryType = BatteryType.LITHIUM; break;
-								case "self-customized": case "custom": case "customized": case "user": batteryType = BatteryType.SELF_CUSTOMIZED; break;
-								default: System.err.println(toSet + " not supported as a battery type!"); batteryType = null; break;
-							}
+							BatteryType batteryType = parseBatteryType(toSet);
+
 							if(batteryType != null) {
 								write.setBatteryType(batteryType);
+							} else {
+								System.err.println(toSet + " not supported as a battery type!");
 							}
 							break;
 						case "overvoltagethresholdraw":
@@ -410,24 +398,38 @@ public final class RoverSetupProgram {
 							break;
 					}
 					break;
-				case 1 + 17:
+				case 1 + 19:
 					// set some data
-					// For testing: "set17 170 155 146 144 138 132 126 120 110 105 100 50 5 60 60 30 5"
-					if(!split[0].equalsIgnoreCase("set17")){
+					// For testing: "set17 24 user 170 155 146 144 138 132 126 120 110 105 100 50 5 60 60 30 5"
+					if(!split[0].equalsIgnoreCase("bigset")){
 						System.err.println("Not supported!");
+						break;
+					}
+					Voltage systemVoltage = parseVoltage(split[1]);
+					boolean supported = systemVoltage.isSupported(read.getMaxVoltage());
+					if(!supported){
+						System.err.println(systemVoltage.getModeName() + " is not supported!");
+						break;
+					} else {
+						write.setSystemVoltageSetting(systemVoltage);
+					}
+					BatteryType batteryType = parseBatteryType(split[2]);
+					if (batteryType == null) {
+						System.out.println("Unsupported battery type: " + split[2]);
 						break;
 					}
 					int[] data = new int[17];
 					for(int i = 0; i < data.length; i++){
-						String argument = split[i + 1];
+						String argument = split[i + 3];
 						data[i] = Integer.parseInt(argument);
 					}
-					write.setVoltageSetPoints(
-						data[0], data[1], data[2], data[3],
-						data[4], data[5], data[6], data[7],
-						data[8], data[9], data[10], data[11],
-						data[12], data[13], data[14], data[15],
-						data[16]
+					write.setBatteryParameters(
+							systemVoltage, batteryType,
+							data[0], data[1], data[2], data[3],
+							data[4], data[5], data[6], data[7],
+							data[8], data[9], data[10], data[11],
+							data[12], data[13], data[14], data[15],
+							data[16]
 					);
 					break;
 				default:
@@ -444,5 +446,26 @@ public final class RoverSetupProgram {
 			throw new IllegalArgumentException("raw voltage cannot be greater than 170!");
 		}
 		return rawVoltage;
+	}
+	private static BatteryType parseBatteryType(String string) {
+		switch(string){
+			case "open": case "flooded": return BatteryType.OPEN;
+			case "sealed": return BatteryType.SEALED;
+			case "gel": return BatteryType.GEL;
+			case "lithium": return BatteryType.LITHIUM;
+			case "self-customized": case "custom": case "customized": case "user": return BatteryType.SELF_CUSTOMIZED;
+			default: return null;
+		}
+	}
+	private static Voltage parseVoltage(String string) {
+		Voltage systemVoltage = null;
+		try {
+			systemVoltage = Modes.getActiveMode(Voltage.class, Integer.parseInt(string), Voltage.AUTO);
+		} catch(NumberFormatException ex){
+		}
+		if(systemVoltage == null){
+			return Voltage.AUTO;
+		}
+		return systemVoltage;
 	}
 }
