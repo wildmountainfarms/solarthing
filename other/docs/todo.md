@@ -25,6 +25,7 @@ easy displaying in Grafana
     * Set "PushNotificationContents" to "full" in config.json
     * Note that this uses an outside server, so you need real Internet for this to work
   * Put this info in a read me
+* https://www.deviceplus.com/raspberry-pi/raspberrypi_entry_018/
   
 ### Android TODO
 * Notification for when FXs are in EQ, but any MX is in absorb or float
@@ -42,7 +43,6 @@ easy displaying in Grafana
 * Integrate power usage
 * Detect when Mate packets go from address 4->1 or 1->1 to detect a new collection of packets
   * This was done by just removing duplicate packets. Not ideal, but it works.
-* Save DailyFX data to a file so if the program restarts mid-day, accumulated data is not reset
 * Change command_feedback to something generic and use that database for "event"-like data
   * Also upload this to InfluxDB
 * Have packets for inverters going on/off, AC Drop/AC Use, Daily kWh->0, etc

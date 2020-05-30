@@ -26,7 +26,7 @@ This data **cannot** be used to uniquely identify you or your system. The data i
 
 ## Resetting ID
 To uniquely identify each SolarThing instance, a UUID is used and is stored. If you have this repository cloned, you should
-see the file [program/.data/analytics_data.json](../../program/.data/analytics_data.json). You can delete this file
+see the file `.data/analytics_data.json` in one of the working directories located in [program](../../program). You can delete this file
 to reset the ID and if Google Analytics is enabled, the next time you start SolarThing a new ID will be generated.
 
 There is no reason you should have to reset this, but it's there if you want to.
