@@ -54,7 +54,7 @@ public class ImmutableFXAuxStateChangePacket implements FXAuxStateChangePacket {
 		return wasAuxActive;
 	}
 
-    @Override
+	@Override
 	public @NotNull KnownSupplementaryIdentifier<OutbackIdentifier> getIdentifier() {
 		return identifier;
 	}

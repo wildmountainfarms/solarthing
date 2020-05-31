@@ -13,7 +13,7 @@ import me.retrodaredevil.solarthing.annotations.NotNull;
 @JsonTypeName("DEVICE_CPU_TEMPERATURE")
 public interface CpuTemperaturePacket extends DevicePacket, Identifiable {
 	@NotNull
-    @Override
+	@Override
 	default DevicePacketType getPacketType(){
 		return DevicePacketType.DEVICE_CPU_TEMPERATURE;
 	}

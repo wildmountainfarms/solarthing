@@ -62,7 +62,7 @@ public class ImmutableFXChargingPacket implements FXChargingPacket {
 		this(new OutbackIdentifier(address), fxChargingMode, remainingAbsorbTimeMillis, remainingFloatTimeMillis, remainingEqualizeTimeMillis, totalAbsorbTimeMillis, totalFloatTimeMillis, totalEqualizeTimeMillis);
 	}
 
-    @Override
+	@Override
 	public @NotNull SupplementaryIdentifier getIdentifier() {
 		return identifier;
 	}

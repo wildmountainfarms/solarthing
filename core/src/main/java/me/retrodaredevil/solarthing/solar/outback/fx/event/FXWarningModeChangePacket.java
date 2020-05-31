@@ -24,7 +24,7 @@ public interface FXWarningModeChangePacket extends SupplementarySolarEventPacket
 	int DEFAULT_IGNORED_WARNING_MODE_VALUE_CONSTANT = 0;
 
 	@NotNull
-    @Override
+	@Override
 	default SolarEventPacketType getPacketType(){
 		return SolarEventPacketType.FX_WARNING_MODE_CHANGE;
 	}

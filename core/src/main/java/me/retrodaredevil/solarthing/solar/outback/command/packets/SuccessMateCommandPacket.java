@@ -13,7 +13,7 @@ import me.retrodaredevil.solarthing.annotations.NotNull;
 @JsonExplicit
 public interface SuccessMateCommandPacket extends MateCommandFeedbackPacket {
 	@NotNull
-    @Override
+	@Override
 	default MateCommandFeedbackPacketType getPacketType() {
 		return MateCommandFeedbackPacketType.MATE_COMMAND_SUCCESS;
 	}

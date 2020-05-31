@@ -92,7 +92,7 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 	}
 
 	@NotNull
-    @Override
+	@Override
 	public Integer getInputVoltage() {
 		return inputVoltage;
 	}

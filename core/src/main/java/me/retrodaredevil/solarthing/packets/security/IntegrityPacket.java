@@ -12,7 +12,7 @@ import me.retrodaredevil.solarthing.annotations.NotNull;
 @JsonExplicit
 public interface IntegrityPacket extends SecurityPacket, SenderPacket {
 	@NotNull
-    @Override
+	@Override
 	default SecurityPacketType getPacketType(){
 		return SecurityPacketType.INTEGRITY_PACKET;
 	}

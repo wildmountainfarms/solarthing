@@ -159,7 +159,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 	@Override public float getLoadCurrent() { return roverReadTable.getLoadCurrent(); }
 	@Override public int getLoadPower() { return roverReadTable.getLoadPower(); }
 	@NotNull
-    @Override public Float getInputVoltage() { return roverReadTable.getInputVoltage(); }
+	@Override public Float getInputVoltage() { return roverReadTable.getInputVoltage(); }
 	@NotNull
 	@Override public Float getPVCurrent() { return roverReadTable.getPVCurrent(); }
 	@Override public @NotNull Integer getChargingPower() { return roverReadTable.getChargingPower(); }

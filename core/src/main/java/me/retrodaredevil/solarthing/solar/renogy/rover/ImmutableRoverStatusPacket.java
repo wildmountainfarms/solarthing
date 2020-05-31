@@ -198,7 +198,7 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 		identityInfo = new RoverIdentityInfo(productSerialNumber);
 	}
 
-    @Override
+	@Override
 	public @NotNull RoverIdentifier getIdentifier() {
 		return identifier;
 	}
@@ -294,7 +294,7 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	}
 
 	@NotNull
-    @Override
+	@Override
 	public Float getInputVoltage() {
 		return inputVoltage;
 	}

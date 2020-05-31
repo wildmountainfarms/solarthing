@@ -11,6 +11,6 @@ import me.retrodaredevil.solarthing.annotations.NotNull;
 @JsonPropertyOrder({"packetType", "address"})
 public interface OutbackStatusPacket extends SolarStatusPacket, ErrorReporter, OutbackData {
 	@GraphQLInclude("identifier")
-    @Override
+	@Override
 	@NotNull OutbackIdentifier getIdentifier();
 }

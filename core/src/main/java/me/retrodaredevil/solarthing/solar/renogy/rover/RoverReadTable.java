@@ -224,7 +224,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 
 	/** AKA PV/Solar Panel voltage*/
 	@NotNull
-    @JsonProperty("inputVoltage")
+	@JsonProperty("inputVoltage")
 	@Override
 	Float getInputVoltage();
 	@NotNull

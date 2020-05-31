@@ -46,7 +46,7 @@ public class ImmutableMXErrorModeChangePacket implements MXErrorModeChangePacket
 		return previousErrorModeValue;
 	}
 
-    @Override
+	@Override
 	public @NotNull KnownSupplementaryIdentifier<OutbackIdentifier> getIdentifier() {
 		return identifier;
 	}

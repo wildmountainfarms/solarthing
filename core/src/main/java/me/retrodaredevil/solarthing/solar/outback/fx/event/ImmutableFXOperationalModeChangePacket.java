@@ -56,7 +56,7 @@ public class ImmutableFXOperationalModeChangePacket implements FXOperationalMode
 	}
 
 	@NotNull
-    @Override
+	@Override
 	public KnownSupplementaryIdentifier<OutbackIdentifier> getIdentifier() {
 		return identifier;
 	}

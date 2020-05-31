@@ -24,7 +24,7 @@ public class ImmutableMXDayEndPacket extends BaseMXDailyData implements MXDayEnd
 	}
 
 	@NotNull
-    @Override
+	@Override
 	public SolarEventPacketType getPacketType() {
 		return SolarEventPacketType.MXFM_DAILY_DAY_END;
 	}

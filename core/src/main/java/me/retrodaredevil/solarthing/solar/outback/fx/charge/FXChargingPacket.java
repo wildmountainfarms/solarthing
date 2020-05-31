@@ -17,7 +17,7 @@ import me.retrodaredevil.solarthing.annotations.NotNull;
 @JsonExplicit
 public interface FXChargingPacket extends SupplementarySolarExtraPacket, OutbackData {
 	@NotNull
-    @Override
+	@Override
 	default SolarExtraPacketType getPacketType(){
 		return SolarExtraPacketType.FX_CHARGING;
 	}

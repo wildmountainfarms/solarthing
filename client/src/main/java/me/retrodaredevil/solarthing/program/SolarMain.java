@@ -159,7 +159,7 @@ public final class SolarMain {
 	}
 
 	public static int doMain(String[] args){
-		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "[LOG] Beginning main");
+		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "[LOG] Beginning main. Jar: " + JarUtil.getJarFileName());
 		System.out.println("[stdout] Beginning main");
 		if(args.length < 1){
 			System.err.println("Usage: <java -jar ...> {base config file}");

@@ -21,7 +21,7 @@ import me.retrodaredevil.solarthing.annotations.NotNull;
 @JsonExplicit
 public interface FXOperationalModeChangePacket extends SupplementarySolarEventPacket, SupplementaryOutbackPacket, ChangePacket {
 	@NotNull
-    @Override
+	@Override
 	default SolarEventPacketType getPacketType(){
 		return SolarEventPacketType.FX_OPERATIONAL_MODE_CHANGE;
 	}

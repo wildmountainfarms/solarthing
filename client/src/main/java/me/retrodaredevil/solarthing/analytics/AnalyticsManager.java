@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.config.options.ProgramType;
+import me.retrodaredevil.solarthing.program.JarUtil;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,6 +72,7 @@ public class AnalyticsManager {
 			googleAnalytics.event()
 					.eventCategory("startup")
 					.eventAction(programType.getName())
+					.eventLabel(JarUtil.getJarFileName()) // so we know what version they're running
 					.sendAsync();
 		}
 	}

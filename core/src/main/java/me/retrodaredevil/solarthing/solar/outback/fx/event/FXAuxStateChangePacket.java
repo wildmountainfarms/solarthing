@@ -18,7 +18,7 @@ import me.retrodaredevil.solarthing.solar.outback.SupplementaryOutbackPacket;
 @JsonExplicit
 public interface FXAuxStateChangePacket extends SupplementarySolarEventPacket, SupplementaryOutbackPacket, ChangePacket {
 	@NotNull
-    @Override
+	@Override
 	default SolarEventPacketType getPacketType(){
 		return SolarEventPacketType.FX_AUX_STATE_CHANGE;
 	}

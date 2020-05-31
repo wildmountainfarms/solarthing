@@ -14,7 +14,7 @@ import me.retrodaredevil.solarthing.annotations.NotNull;
 public interface InstanceTargetPacket extends InstancePacket {
 
 	@NotNull
-    @Override
+	@Override
 	default InstancePacketType getPacketType() {
 		return InstancePacketType.TARGET;
 	}

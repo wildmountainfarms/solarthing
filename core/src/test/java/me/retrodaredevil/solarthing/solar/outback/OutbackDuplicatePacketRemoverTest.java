@@ -65,7 +65,7 @@ class OutbackDuplicatePacketRemoverTest {
 			}
 
 
-            @Override
+			@Override
 			public @NotNull OutbackIdentifier getIdentifier() {
 				throw new UnsupportedOperationException();
 			}
@@ -75,7 +75,7 @@ class OutbackDuplicatePacketRemoverTest {
 				throw new UnsupportedOperationException();
 			}
 
-            @Override
+			@Override
 			public @NotNull SolarStatusPacketType getPacketType() {
 				throw new UnsupportedOperationException();
 			}

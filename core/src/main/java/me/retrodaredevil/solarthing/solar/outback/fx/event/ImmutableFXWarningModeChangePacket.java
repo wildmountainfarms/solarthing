@@ -53,7 +53,7 @@ public class ImmutableFXWarningModeChangePacket implements FXWarningModeChangePa
 		return ignoredWarningModeValueConstant;
 	}
 
-    @Override
+	@Override
 	public @NotNull KnownSupplementaryIdentifier<OutbackIdentifier> getIdentifier() {
 		return identifier;
 	}

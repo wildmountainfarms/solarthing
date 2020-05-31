@@ -22,7 +22,7 @@ import java.util.Set;
 @JsonExplicit
 public interface MXErrorModeChangePacket extends SupplementarySolarEventPacket, SupplementaryOutbackPacket, ErrorReporter, ChangePacket {
 	@NotNull
-    @Override
+	@Override
 	default SolarEventPacketType getPacketType(){
 		return SolarEventPacketType.MXFM_ERROR_MODE_CHANGE;
 	}

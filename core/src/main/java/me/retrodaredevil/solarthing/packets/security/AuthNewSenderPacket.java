@@ -13,7 +13,7 @@ import java.security.PublicKey;
 @JsonExplicit
 public interface AuthNewSenderPacket extends SecurityPacket, SenderPacket {
 	@NotNull
-    @Override
+	@Override
 	default SecurityPacketType getPacketType() {
 		return SecurityPacketType.AUTH_NEW_SENDER;
 	}

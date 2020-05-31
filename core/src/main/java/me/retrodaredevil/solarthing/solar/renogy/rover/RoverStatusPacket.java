@@ -23,7 +23,7 @@ import me.retrodaredevil.solarthing.annotations.NotNull;
 @JsonExplicit
 public interface RoverStatusPacket extends RenogyPacket, RoverReadTable {
 	@NotNull
-    @Override
+	@Override
 	default SolarStatusPacketType getPacketType(){
 		return SolarStatusPacketType.RENOGY_ROVER_STATUS;
 	}

@@ -47,7 +47,7 @@ public class ImmutableMXChargerModeChangePacket implements MXChargerModeChangePa
 		return previousChargerModeValue;
 	}
 
-    @Override
+	@Override
 	public @NotNull KnownSupplementaryIdentifier<OutbackIdentifier> getIdentifier() {
 		return identifier;
 	}

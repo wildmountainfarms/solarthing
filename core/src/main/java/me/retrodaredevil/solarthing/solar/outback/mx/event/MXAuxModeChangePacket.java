@@ -19,7 +19,7 @@ import me.retrodaredevil.solarthing.annotations.Nullable;
 @JsonExplicit
 public interface MXAuxModeChangePacket extends SupplementarySolarEventPacket, SupplementaryOutbackPacket, OutbackData, ChangePacket {
 	@NotNull
-    @Override
+	@Override
 	default SolarEventPacketType getPacketType(){
 		return SolarEventPacketType.MXFM_AUX_MODE_CHANGE;
 	}

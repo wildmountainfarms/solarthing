@@ -30,7 +30,7 @@ public abstract class BaseFXDailyData extends ImmutableFXDailyData implements Su
 		supplementaryIdentifier = new DefaultSupplementaryIdentifier<>(outbackIdentifier, packetType.toString());
 	}
 
-    @Override
+	@Override
 	public @NotNull KnownSupplementaryIdentifier<OutbackIdentifier> getIdentifier() {
 		return supplementaryIdentifier;
 	}

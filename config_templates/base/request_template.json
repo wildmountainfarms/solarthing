@@ -19,7 +19,8 @@
     },
     {
       "type": "w1-temperature",
-      "directory": "/sys/bus/w1/devices/28-000006470bec"
+      "directory": "/sys/bus/w1/devices/28-000006470bec",
+      "data_id": 1
     }
   ]
 }

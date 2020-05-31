@@ -48,7 +48,7 @@ public class ImmutableFXErrorModeChangePacket implements FXErrorModeChangePacket
 		return previousErrorModeValue;
 	}
 
-    @Override
+	@Override
 	public @NotNull KnownSupplementaryIdentifier<OutbackIdentifier> getIdentifier() {
 		return identifier;
 	}

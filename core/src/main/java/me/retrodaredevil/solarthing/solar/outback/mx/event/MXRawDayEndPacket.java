@@ -18,7 +18,7 @@ import me.retrodaredevil.solarthing.solar.outback.SupplementaryOutbackPacket;
 @JsonExplicit
 public interface MXRawDayEndPacket extends SupplementarySolarEventPacket, AccumulatedChargeController, SupplementaryOutbackPacket {
 	@NotNull
-    @Override
+	@Override
 	default SolarEventPacketType getPacketType(){
 		return SolarEventPacketType.MXFM_RAW_DAY_END;
 	}

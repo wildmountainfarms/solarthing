@@ -19,7 +19,7 @@ import me.retrodaredevil.solarthing.solar.outback.fx.ACMode;
 @JsonExplicit
 public interface FXACModeChangePacket extends SupplementarySolarEventPacket, SupplementaryOutbackPacket, ChangePacket {
 	@NotNull
-    @Override
+	@Override
 	default SolarEventPacketType getPacketType(){
 		return SolarEventPacketType.FX_AC_MODE_CHANGE;
 	}

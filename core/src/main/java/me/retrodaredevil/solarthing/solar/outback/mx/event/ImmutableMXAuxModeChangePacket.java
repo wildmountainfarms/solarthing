@@ -51,7 +51,7 @@ public class ImmutableMXAuxModeChangePacket implements MXAuxModeChangePacket {
 		return previousRawAuxModeValue;
 	}
 
-    @Override
+	@Override
 	public @NotNull KnownSupplementaryIdentifier<OutbackIdentifier> getIdentifier() {
 		return identifier;
 	}

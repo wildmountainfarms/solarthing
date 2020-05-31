@@ -13,7 +13,7 @@ import me.retrodaredevil.solarthing.solar.outback.fx.common.FXDailyData;
 public interface DailyFXPacket extends FXDailyData, SupplementarySolarExtraPacket, SupplementaryOutbackPacket {
 
 	@NotNull
-    @Override
+	@Override
 	default SolarExtraPacketType getPacketType() {
 		return SolarExtraPacketType.FX_DAILY;
 	}

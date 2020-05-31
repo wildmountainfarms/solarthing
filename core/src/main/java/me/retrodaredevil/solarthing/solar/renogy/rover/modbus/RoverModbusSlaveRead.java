@@ -17,7 +17,7 @@ public class RoverModbusSlaveRead implements RoverReadTable {
 	public RoverModbusSlaveRead(ModbusSlave modbus) {
 		this.modbus = modbus;
 	}
-    @Override
+	@Override
 	public @NotNull RoverIdentifier getIdentifier() {
 		return RoverIdentifier.createFromSerialNumber(getProductSerialNumber());
 	}
@@ -137,7 +137,7 @@ public class RoverModbusSlaveRead implements RoverReadTable {
 
 	private static final MessageHandler<int[]> PV_VOLTAGE = new ReadHoldingRegisters(0x0107, 1);
 	@NotNull
-    @Override public Float getInputVoltage() { // pv voltage/solar panel voltage
+	@Override public Float getInputVoltage() { // pv voltage/solar panel voltage
 		return oneRegister(PV_VOLTAGE) / 10.0F;
 	}
 	private static final MessageHandler<int[]> PV_CURRENT = new ReadHoldingRegisters(0x0108, 1);
