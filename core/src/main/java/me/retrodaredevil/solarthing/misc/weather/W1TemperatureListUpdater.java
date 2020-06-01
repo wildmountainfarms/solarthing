@@ -49,6 +49,24 @@ public class W1TemperatureListUpdater implements PacketListReceiver {
 		}
 		String line1 = lines.get(0);
 		String line2 = lines.get(1);
+
+		String[] split1 = line1.split(" ");
+		String message = split1[split1.length - 1];
+		if (!"YES".equals(message)) {
+			LOGGER.warn("Unsuccessful message: " + message);
+			return;
+		}
+		String[] split2 = line2.split("=");
+		String temperatureString = split2[split2.length - 1];
+		final int temperatureRaw;
+		try {
+			temperatureRaw = Integer.parseInt(temperatureString);
+		} catch (NumberFormatException ex) {
+			LOGGER.warn("Unable to parse. line2=" + line2, ex);
+			return;
+		}
+		float temperatureCelsius = temperatureRaw / 1000.0f;
+		packets.add(new CelsiusTemperaturePacket(0, temperatureCelsius)); // TODO dataId
 	}
 	private static String readContents(File file) throws IOException {
 		return new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);

@@ -26,6 +26,8 @@ easy displaying in Grafana
     * Note that this uses an outside server, so you need real Internet for this to work
   * Put this info in a read me
 * https://www.deviceplus.com/raspberry-pi/raspberrypi_entry_018/
+  * https://pinout.xyz/pinout/1_wire
+  * https://www.waveshare.com/wiki/Raspberry_Pi_Tutorial_Series:_1-Wire_DS18B20_Sensor
   
 ### Android TODO
 * Notification for when FXs are in EQ, but any MX is in absorb or float
