@@ -17,7 +17,8 @@ public enum ProgramType {
 	@Deprecated
 	OUTHOUSE("outhouse"),
 	PVOUTPUT_UPLOAD("pvoutput-upload"),
-	MESSAGE_SENDER("message-sender")
+	MESSAGE_SENDER("message-sender"),
+	REQUEST("request")
 	;
 	private final String name;
 

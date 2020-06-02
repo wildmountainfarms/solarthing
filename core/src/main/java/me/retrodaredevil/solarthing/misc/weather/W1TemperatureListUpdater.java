@@ -18,9 +18,12 @@ public class W1TemperatureListUpdater implements PacketListReceiver {
 	private final File slaveFile;
 	private final File nameFile;
 
-	public W1TemperatureListUpdater(File directory) {
+	private final int dataId;
+
+	public W1TemperatureListUpdater(File directory, int dataId) {
 		slaveFile = new File(directory, "w1_slave");
 		nameFile = new File(directory, "name");
+		this.dataId = dataId;
 
 		if (!directory.isDirectory()) {
 			LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "file: " + directory + " is not a directory! Program will continue. (Maybe it will connect later)");
@@ -31,7 +34,7 @@ public class W1TemperatureListUpdater implements PacketListReceiver {
 	public void receive(List<Packet> packets, boolean wasInstant) {
 		final String name;
 		try {
-			name = readContents(nameFile);
+			name = readContents(nameFile).replaceAll("\n", ""); // remove new line at end
 		} catch (IOException e) {
 			LOGGER.error("Could not read name file", e);
 			return;
@@ -40,7 +43,7 @@ public class W1TemperatureListUpdater implements PacketListReceiver {
 		try {
 			lines = Files.readAllLines(slaveFile.toPath(), StandardCharsets.UTF_8);
 		} catch (IOException e) {
-			LOGGER.error("Could not read slave file", e);
+			LOGGER.error("Could not read slave file for name=" + name, e);
 			return;
 		}
 		if (lines.size() != 2) {
@@ -53,7 +56,7 @@ public class W1TemperatureListUpdater implements PacketListReceiver {
 		String[] split1 = line1.split(" ");
 		String message = split1[split1.length - 1];
 		if (!"YES".equals(message)) {
-			LOGGER.warn("Unsuccessful message: " + message);
+			LOGGER.warn("Unsuccessful message: " + message + " name=" + name);
 			return;
 		}
 		String[] split2 = line2.split("=");
@@ -62,11 +65,16 @@ public class W1TemperatureListUpdater implements PacketListReceiver {
 		try {
 			temperatureRaw = Integer.parseInt(temperatureString);
 		} catch (NumberFormatException ex) {
-			LOGGER.warn("Unable to parse. line2=" + line2, ex);
+			LOGGER.warn("Unable to parse. line2=" + line2 + " name=" + name, ex);
+			return;
+		}
+		if (temperatureRaw == 0) {
+			LOGGER.warn("Temperature is exactly 0! name=" + name);
 			return;
 		}
 		float temperatureCelsius = temperatureRaw / 1000.0f;
-		packets.add(new CelsiusTemperaturePacket(0, temperatureCelsius)); // TODO dataId
+		packets.add(new CelsiusTemperaturePacket(dataId, temperatureCelsius));
+		LOGGER.debug("Read temperature " + temperatureCelsius + "C from " + name);
 	}
 	private static String readContents(File file) throws IOException {
 		return new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);

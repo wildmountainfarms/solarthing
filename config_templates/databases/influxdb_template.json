@@ -9,38 +9,13 @@
 
     "status_retention_policies": [
       {
-        "frequency": 29,
-        "name": "medium_duration_retention",
-        "duration": "4w",
-        "auto_alter": true,
-        "set_as_default": true
-      },
-      {
-        "frequency": 7,
-        "name": "normal_forever_retention",
-        "duration": "INF",
-        "replication": null,
-        "shard_duration": null,
-        "set_as_default": false,
-        "auto_alter": false,
-        "ignore_unsuccessful_create": false
-      },
-      {
-        "frequency": null,
-        "name": "normal_short_retention",
-        "duration": "1h"
+        "frequency": 120,
+        "name": "autogen"
       }
     ],
 
     "event_retention_policy": {
-      "name": "normal_forever_retention"
-    },
-
-    "retry_on_connection_failure": true,
-    "call_timeout": 0.0,
-    "connection_timeout": 10.0,
-    "read_timeout": 10.0,
-    "write_timeout": 10.0,
-    "ping_interval": 0.0
+      "name": "autogen"
+    }
   }
 }

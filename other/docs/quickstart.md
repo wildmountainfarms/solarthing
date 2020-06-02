@@ -13,6 +13,9 @@ sudo usermod -a -G solarthing,dialout,tty,video $USER
 ```
 Or if you want to check out how the **simple** installation works: [click here](../linux/clone_install.sh)
 
+It is also recommended to make sure your timezone is correct. To check the time on your system, run `date`. If it is incorrect and
+you are using a Raspberry Pi, you can run `sudo raspi-config` to change it.
+
 ## Edit Configurations
 Now SolarThing is installed, all you have to do is edit configurations in `/opt/solarthing/program/<mate|rover|graphql|pvoutput>/config`.
 ```shell script

@@ -13,6 +13,7 @@
 /program/rover/*
 /program/pvoutput/*
 /program/message/*
+/program/request/*
 
 !/program/**/config
 /program/**/config/*

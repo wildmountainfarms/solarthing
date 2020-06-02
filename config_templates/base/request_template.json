@@ -1,5 +1,4 @@
 {
-  "note": "This is just an example of a feature that doesn't exist yet. This will change. Do not use this file",
   "type": "request",
   "source": "default",
   "fragment": 2,
@@ -8,12 +7,6 @@
     "config/couchdb.json"
   ],
   "request": [
-    {
-      "type": "rover",
-      "io": "../../config_templates/io/default_linux_serial.json",
-      "modbus": 1,
-      "bulk_request": true
-    },
     {
       "type": "rpi-cpu-temp"
     },

@@ -198,6 +198,8 @@ public final class SolarMain {
 				return PVOutputUploadMain.startPVOutputUpload((PVOutputUploadProgramOptions) options, Arrays.copyOfRange(args, 1, args.length), dataDirectory);
 			} else if(programType == ProgramType.MESSAGE_SENDER){
 				return MessageSenderMain.startMessageSender((MessageSenderProgramOptions) options);
+			} else if(programType == ProgramType.REQUEST) {
+				return RequestMain.startRequestProgram((RequestProgramOptions) options, dataDirectory);
 			}
 			throw new AssertionError("Unknown program type... type=" + programType + " programOptions=" + options);
 		} catch (Throwable t) {
