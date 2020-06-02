@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing.solar;
+package me.retrodaredevil.solarthing;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

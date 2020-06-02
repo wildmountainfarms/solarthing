@@ -2,7 +2,7 @@ package me.retrodaredevil.solarthing.solar.outback;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import me.retrodaredevil.solarthing.packets.support.Support;
-import me.retrodaredevil.solarthing.solar.PacketTestUtil;
+import me.retrodaredevil.solarthing.PacketTestUtil;
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacket;
 import me.retrodaredevil.solarthing.solar.extra.SolarExtraPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.OperationalMode;

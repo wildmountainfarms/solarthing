@@ -1,7 +1,7 @@
 package me.retrodaredevil.solarthing.solar.outback.command.packets;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import me.retrodaredevil.solarthing.solar.PacketTestUtil;
+import me.retrodaredevil.solarthing.PacketTestUtil;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
 import org.junit.jupiter.api.Test;
 

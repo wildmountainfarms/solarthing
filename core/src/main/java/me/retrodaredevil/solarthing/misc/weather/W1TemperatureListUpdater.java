@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.misc.weather;
 
 import me.retrodaredevil.solarthing.SolarThingConstants;
+import me.retrodaredevil.solarthing.misc.source.W1Source;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import org.slf4j.Logger;
@@ -73,7 +74,7 @@ public class W1TemperatureListUpdater implements PacketListReceiver {
 			return;
 		}
 		float temperatureCelsius = temperatureRaw / 1000.0f;
-		packets.add(new CelsiusTemperaturePacket(dataId, temperatureCelsius));
+		packets.add(new CelsiusTemperaturePacket(dataId, new W1Source(name), temperatureCelsius));
 		LOGGER.debug("Read temperature " + temperatureCelsius + "C from " + name);
 	}
 	private static String readContents(File file) throws IOException {

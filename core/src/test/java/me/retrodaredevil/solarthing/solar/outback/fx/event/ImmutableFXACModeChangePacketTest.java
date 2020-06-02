@@ -2,7 +2,7 @@ package me.retrodaredevil.solarthing.solar.outback.fx.event;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import me.retrodaredevil.solarthing.solar.PacketTestUtil;
+import me.retrodaredevil.solarthing.PacketTestUtil;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import org.junit.jupiter.api.Test;
 

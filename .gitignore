@@ -6,14 +6,7 @@
 /program/*
 !/program/**
 !/program/README.md
-/program/config/*
-/program/.downloads/*
-/program/graphql/*
-/program/mate/*
-/program/rover/*
-/program/pvoutput/*
-/program/message/*
-/program/request/*
+/program/**/*
 
 !/program/**/config
 /program/**/config/*
