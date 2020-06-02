@@ -82,17 +82,23 @@ public class RequestMain {
 				eventPacketListReceiverHandler.getPacketListReceiverHandler()
 		));
 		PacketListReceiver packetListReceiver = new PacketListReceiverMultiplexer(packetListReceiverList);
-		try {
-			while (!Thread.currentThread().isInterrupted()) {
-				List<Packet> packets = new ArrayList<>();
-				packetListReceiver.receive(packets, true);
-				Thread.sleep(5000);
+		while (!Thread.currentThread().isInterrupted()) {
+			long startTime = System.currentTimeMillis();
+			List<Packet> packets = new ArrayList<>();
+			packetListReceiver.receive(packets, true);
+			long timeTaken = System.currentTimeMillis() - startTime;
+
+			long sleepTime = Math.max(options.getMinimumWait(), options.getPeriod() - timeTaken);
+			LOGGER.debug("Going to sleep for " + sleepTime + "ms");
+			try {
+				Thread.sleep(sleepTime);
+			} catch (InterruptedException ex) {
+				Thread.currentThread().interrupt();
+				break;
 			}
-		} catch (InterruptedException ex) {
-			Thread.currentThread().interrupt();
 		}
 		LOGGER.info("Ending program. Must have been interrupted.");
-		return 0;
+		return 1;
 	}
 
 }

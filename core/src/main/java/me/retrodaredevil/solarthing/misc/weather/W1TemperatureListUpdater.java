@@ -33,6 +33,7 @@ public class W1TemperatureListUpdater implements PacketListReceiver {
 
 	@Override
 	public void receive(List<Packet> packets, boolean wasInstant) {
+		long startTime = System.currentTimeMillis();
 		final String name;
 		try {
 			name = readContents(nameFile).replaceAll("\n", ""); // remove new line at end
@@ -73,9 +74,10 @@ public class W1TemperatureListUpdater implements PacketListReceiver {
 			LOGGER.warn("Temperature is exactly 0! name=" + name);
 			return;
 		}
+		long timeTaken = System.currentTimeMillis() - startTime;
 		float temperatureCelsius = temperatureRaw / 1000.0f;
 		packets.add(new CelsiusTemperaturePacket(dataId, new W1Source(name), temperatureCelsius));
-		LOGGER.debug("Read temperature " + temperatureCelsius + "C from " + name);
+		LOGGER.debug("Read temperature " + temperatureCelsius + "C from " + name + " in " + timeTaken + "ms");
 	}
 	private static String readContents(File file) throws IOException {
 		return new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);

@@ -14,6 +14,11 @@ public class RequestProgramOptions extends PacketHandlingOptionBase implements A
 	@JsonProperty(value = "request", required = true)
 	private List<DataRequester> dataRequesterList;
 
+	@JsonProperty("period")
+	private float periodSeconds = 5.0f;
+	@JsonProperty("minimum_wait")
+	private float minimumWaitSeconds = 1.0f;
+
 	@Override
 	public boolean isAnalyticsEnabled() {
 		return isAnalyticsEnabled;
@@ -26,5 +31,11 @@ public class RequestProgramOptions extends PacketHandlingOptionBase implements A
 
 	public List<DataRequester> getDataRequesterList() {
 		return dataRequesterList;
+	}
+	public long getPeriod() {
+		return Math.round(periodSeconds * 1000.0f);
+	}
+	public long getMinimumWait() {
+		return Math.round(minimumWaitSeconds * 1000.0f);
 	}
 }
