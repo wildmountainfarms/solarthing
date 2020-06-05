@@ -449,11 +449,12 @@ public final class RoverSetupProgram {
 	}
 	private static BatteryType parseBatteryType(String string) {
 		switch(string){
+			case "user": return BatteryType.USER;
 			case "open": case "flooded": return BatteryType.OPEN;
 			case "sealed": return BatteryType.SEALED;
 			case "gel": return BatteryType.GEL;
 			case "lithium": return BatteryType.LITHIUM;
-			case "self-customized": case "custom": case "customized": case "user": return BatteryType.SELF_CUSTOMIZED;
+			case "self-customized": case "custom": case "customized": return BatteryType.SELF_CUSTOMIZED;
 			default: return null;
 		}
 	}
