@@ -1,0 +1,43 @@
+{
+  "type": "meta",
+  "databases": [
+    "config/couchdb.json"
+  ],
+  "meta": {
+    "default": {
+      "1": [
+        {
+          "packets": [
+            {
+              "type": "wattage",
+              "identifier": "OutbackIdentifier(address=3)",
+              "wattage": 1200
+            }
+          ]
+        }
+      ],
+      "2": [
+        {
+          "end": 1591287455323,
+          "packets": [
+            {
+              "type": "wattage",
+              "identifier": "RoverIdentifier()",
+              "wattage": 0
+            }
+          ]
+        },
+        {
+          "start": 1591287455323,
+          "packets": [
+            {
+              "type": "wattage",
+              "identifier": "RoverIdentifier()",
+              "wattage": 500
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
