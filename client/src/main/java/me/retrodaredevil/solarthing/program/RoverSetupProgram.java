@@ -13,7 +13,7 @@ import java.util.Scanner;
 public final class RoverSetupProgram {
 	private RoverSetupProgram(){ throw new UnsupportedOperationException(); }
 
-	public static void startRoverSetup(RoverReadTable read, RoverWriteTable write, Runnable reloadCache){
+	public static int startRoverSetup(RoverReadTable read, RoverWriteTable write, Runnable reloadCache){
 		Scanner scanner = new Scanner(System.in);
 		loop: while (scanner.hasNextLine()) {
 			String command = scanner.nextLine();
@@ -437,6 +437,7 @@ public final class RoverSetupProgram {
 					break;
 			}
 		}
+		return 0;
 	}
 	private static int checkRawVoltage(int rawVoltage){
 		if(rawVoltage < 70){

@@ -27,6 +27,7 @@ public enum BatteryType implements CodeMode {
 	 */
 	SELF_CUSTOMIZED("self-customized", 5)
 	;
+	// manual here has battery types: https://www.renogy.com/content/RNG-CTRL-RVR60/RVR60-Manual.pdf
 
 	private final String name;
 	private final int code;

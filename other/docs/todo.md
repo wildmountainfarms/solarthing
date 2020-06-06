@@ -28,6 +28,7 @@ easy displaying in Grafana
 * https://www.deviceplus.com/raspberry-pi/raspberrypi_entry_018/
   * https://pinout.xyz/pinout/1_wire
   * https://www.waveshare.com/wiki/Raspberry_Pi_Tutorial_Series:_1-Wire_DS18B20_Sensor
+* Check if stopping vcgencmd in the middle is what's throwing off RoverPi
   
 ### Android TODO
 * Notification for when FXs are in EQ, but any MX is in absorb or float

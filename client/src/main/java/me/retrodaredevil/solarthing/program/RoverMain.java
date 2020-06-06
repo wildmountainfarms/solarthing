@@ -10,6 +10,8 @@ import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.analytics.AnalyticsManager;
 import me.retrodaredevil.solarthing.analytics.RoverAnalyticsHandler;
 import me.retrodaredevil.solarthing.config.options.*;
+import me.retrodaredevil.solarthing.config.request.DataRequester;
+import me.retrodaredevil.solarthing.config.request.RaspberryPiCpuTemperatureDataRequester;
 import me.retrodaredevil.solarthing.misc.device.RaspberryPiCpuTemperatureListUpdater;
 import me.retrodaredevil.solarthing.misc.error.ImmutableExceptionErrorPacket;
 import me.retrodaredevil.solarthing.packets.Packet;
@@ -32,13 +34,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class RoverMain {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RoverMain.class);
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
-	private static final String MODBUS_RUNTIME_EXCEPTION_CATCH_LOCATION_IDENTIFIER = "rover.read.modbus";
-	private static final String MODBUS_RUNTIME_INSTANCE_IDENTIFIER = "instance.1";
 
 	private static final SerialConfig ROVER_CONFIG = new SerialConfigBuilder(9600)
 			.setDataBits(8)
@@ -46,52 +47,12 @@ public class RoverMain {
 			.setStopBits(SerialConfig.StopBits.ONE)
 			.build();
 
-	private static int doRover(RoverProgramOptions options, PacketListReceiver packetListReceiver){
+	private static int doRover(RoverProgramOptions options, AnalyticsManager analyticsManager, List<DataRequester> dataRequesterList){
 		return doRoverProgram(options, (read, write, reloadCache) -> {
-			try {
-				while (!Thread.currentThread().isInterrupted()) {
-					final long startTime = System.currentTimeMillis();
-					final RoverStatusPacket packet;
-					try {
-						reloadCache.run();
-						packet = RoverStatusPackets.createFromReadTable(read);
-					} catch(ModbusRuntimeException e){
-						LOGGER.error("Modbus exception", e);
-
-						if (options.isSendErrorPackets()) {
-							List<Packet> packets = new ArrayList<>();
-							LOGGER.debug("Sending error packets");
-							packets.add(new ImmutableExceptionErrorPacket(
-									e.getClass().getName(),
-									e.getMessage(),
-									MODBUS_RUNTIME_EXCEPTION_CATCH_LOCATION_IDENTIFIER,
-									MODBUS_RUNTIME_INSTANCE_IDENTIFIER
-							));
-							packetListReceiver.receive(packets, true);
-						}
-
-						//noinspection BusyWait
-						Thread.sleep(5000);
-						continue;
-					}
-					LOGGER.debug("Debugging special power control values: (Will debug all packets later)\n" +
-							packet.getSpecialPowerControlE021().getFormattedInfo().replaceAll("\n", "\n\t") + "\n" +
-							packet.getSpecialPowerControlE02D().getFormattedInfo().replaceAll("\n", "\n\t")
-					);
-					List<Packet> packets = new ArrayList<>();
-					packets.add(packet);
-					final long readDuration = System.currentTimeMillis() - startTime;
-					LOGGER.debug("took " + readDuration + "ms to read from Rover");
-					final long saveStartTime = System.currentTimeMillis();
-					packetListReceiver.receive(packets, true);
-					final long saveDuration = System.currentTimeMillis() - saveStartTime;
-					LOGGER.debug("took " + saveDuration + "ms to handle packets");
-					//noinspection BusyWait
-					Thread.sleep(Math.max(1000, 6000 - readDuration)); // sleep between 1 and 6 seconds
-				}
-			} catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-			}
+			List<DataRequester> list = new ArrayList<>(dataRequesterList);
+			list.add((o) -> new RoverPacketListUpdater(read, write, reloadCache, options.isSendErrorPackets()));
+			return RequestMain.startRequestProgram(options, analyticsManager, list, 5000, 1000);
+//			statusPacketHandlers.add(new RoverAnalyticsHandler(analyticsManager));
 		}, options.isBulkRequest() ? modbusCacheSlave -> {
 //			modbusCacheSlave.cacheRangeInclusive(0x000A, 0x001A);
 //			modbusCacheSlave.cacheRangeInclusive(0x0100, 0x0122);
@@ -111,43 +72,15 @@ public class RoverMain {
 
 	public static int connectRover(RoverProgramOptions options, File dataDirectory) {
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Beginning rover program");
-		PacketHandlerBundle packetHandlerBundle = PacketHandlerInit.getPacketHandlerBundle(SolarMain.getDatabaseConfigs(options), SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, SolarThingConstants.SOLAR_EVENT_UNIQUE_NAME);
 		AnalyticsManager analyticsManager = new AnalyticsManager(options.isAnalyticsEnabled(), dataDirectory);
 		analyticsManager.sendStartUp(ProgramType.ROVER);
 		boolean rpiCpuTemperature = options.getExtraOptionFlags().contains(ExtraOptionFlag.RPI_LOG_CPU_TEMPERATURE);
-		// TODO packetHandlerBundle.getEventPacketHandlers()
-		List<PacketHandler> statusPacketHandlers = new ArrayList<>(packetHandlerBundle.getStatusPacketHandlers());
-		statusPacketHandlers.add(new RoverAnalyticsHandler(analyticsManager));
 
-		PacketListReceiver sourceAndFragmentUpdater = SolarMain.getSourceAndFragmentUpdater(options);
-		PacketCollectionIdGenerator idGenerator = SolarMain.createIdGenerator(options.getUniqueIdsInOneHour());
-		PacketListReceiverHandler statusPacketListReceiverHandler = new PacketListReceiverHandler(
-				new PacketListReceiverMultiplexer(
-						sourceAndFragmentUpdater,
-						(packets, wasInstant) -> {
-							LOGGER.debug("Debugging all packets");
-							try {
-								LOGGER.debug(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(packets));
-							} catch (JsonProcessingException e) {
-								LOGGER.debug("Never mind about that...", e);
-							}
-						}
-				),
-				new PacketHandlerMultiplexer(statusPacketHandlers),
-				idGenerator
-		);
-		List<PacketListReceiver> packetListReceiverList = new ArrayList<>();
+		List<DataRequester> dataRequesterList = new ArrayList<>();
 		if(rpiCpuTemperature){
-			packetListReceiverList.add(new RaspberryPiCpuTemperatureListUpdater());
+			dataRequesterList.add(new RaspberryPiCpuTemperatureDataRequester());
 		}
-		packetListReceiverList.addAll(Arrays.asList(
-				statusPacketListReceiverHandler.getPacketListReceiverAccepter(),
-				statusPacketListReceiverHandler.getPacketListReceiverPacker(),
-//				eventPacketListReceiverHandler.getPacketListReceiverPacker(),
-				statusPacketListReceiverHandler.getPacketListReceiverHandler()
-//				eventPacketListReceiverHandler.getPacketListReceiverHandler()
-		));
-		return doRover(options, new PacketListReceiverMultiplexer(packetListReceiverList));
+		return doRover(options, analyticsManager, dataRequesterList);
 	}
 	public static int connectRoverSetup(RoverSetupProgramOptions options) {
 		return doRoverProgram(options, RoverSetupProgram::startRoverSetup, null);
@@ -188,8 +121,7 @@ public class RoverMain {
 					reloadCache = () -> {};
 				}
 				RoverWriteTable write = new RoverModbusSlaveWrite(slave);
-				runner.doProgram(read, write, reloadCache);
-				return 0;
+				return runner.doProgram(read, write, reloadCache);
 			} catch (Exception e) {
 				LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)Got exception!", e);
 				return 1;
@@ -198,7 +130,7 @@ public class RoverMain {
 	}
 	@FunctionalInterface
 	private interface RoverProgramRunner {
-		void doProgram(RoverReadTable read, RoverWriteTable write, Runnable reloadCache);
+		int doProgram(RoverReadTable read, RoverWriteTable write, Runnable reloadCache);
 	}
 	@FunctionalInterface
 	private interface RegisterCacheHandler {

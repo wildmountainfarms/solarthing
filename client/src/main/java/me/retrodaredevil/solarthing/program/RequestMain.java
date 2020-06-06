@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.analytics.AnalyticsManager;
 import me.retrodaredevil.solarthing.analytics.RoverAnalyticsHandler;
-import me.retrodaredevil.solarthing.config.options.ExtraOptionFlag;
+import me.retrodaredevil.solarthing.config.options.PacketHandlingOption;
 import me.retrodaredevil.solarthing.config.options.ProgramType;
 import me.retrodaredevil.solarthing.config.options.RequestProgramOptions;
 import me.retrodaredevil.solarthing.config.request.DataRequester;
@@ -27,12 +27,15 @@ import java.util.List;
 public class RequestMain {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RequestMain.class);
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
-
 	public static int startRequestProgram(RequestProgramOptions options, File dataDirectory) {
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Beginning request program");
-		PacketHandlerBundle packetHandlerBundle = PacketHandlerInit.getPacketHandlerBundle(SolarMain.getDatabaseConfigs(options), SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, SolarThingConstants.SOLAR_EVENT_UNIQUE_NAME);
 		AnalyticsManager analyticsManager = new AnalyticsManager(options.isAnalyticsEnabled(), dataDirectory);
 		analyticsManager.sendStartUp(ProgramType.REQUEST);
+		return startRequestProgram(options, analyticsManager, options.getDataRequesterList(), options.getPeriod(), options.getMinimumWait());
+	}
+
+	public static int startRequestProgram(PacketHandlingOption options, AnalyticsManager analyticsManager, List<DataRequester> dataRequesterList, long period, long minimumWait) {
+		PacketHandlerBundle packetHandlerBundle = PacketHandlerInit.getPacketHandlerBundle(SolarMain.getDatabaseConfigs(options), SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, SolarThingConstants.SOLAR_EVENT_UNIQUE_NAME);
 		List<PacketHandler> statusPacketHandlers = new ArrayList<>(packetHandlerBundle.getStatusPacketHandlers());
 		statusPacketHandlers.add(new RoverAnalyticsHandler(analyticsManager));
 
@@ -71,7 +74,7 @@ public class RequestMain {
 				SolarMain.createIdGenerator(options.getUniqueIdsInOneHour())
 		);
 		List<PacketListReceiver> packetListReceiverList = new ArrayList<>();
-		for (DataRequester dataRequester : options.getDataRequesterList()) {
+		for (DataRequester dataRequester : dataRequesterList) {
 			packetListReceiverList.add(dataRequester.createPacketListReceiver(eventPacketListReceiverHandler.getPacketListReceiverAccepter()));
 		}
 		packetListReceiverList.addAll(Arrays.asList(
@@ -88,7 +91,7 @@ public class RequestMain {
 			packetListReceiver.receive(packets, true);
 			long timeTaken = System.currentTimeMillis() - startTime;
 
-			long sleepTime = Math.max(options.getMinimumWait(), options.getPeriod() - timeTaken);
+			long sleepTime = Math.max(minimumWait, period - timeTaken);
 			LOGGER.debug("Going to sleep for " + sleepTime + "ms");
 			try {
 				Thread.sleep(sleepTime);
