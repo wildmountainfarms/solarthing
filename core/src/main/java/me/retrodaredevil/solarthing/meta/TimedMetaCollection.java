@@ -6,6 +6,9 @@ import me.retrodaredevil.solarthing.util.TimeRange;
 import java.util.List;
 
 public class TimedMetaCollection {
+	// check this out https://github.com/FasterXML/jackson-databind/issues/511 we could use fail on invalid subtype
+
+
 	private final TimeRange timeRange;
 	private final List<MetaPacket> packets;
 

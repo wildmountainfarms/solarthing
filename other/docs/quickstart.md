@@ -16,6 +16,8 @@ Or if you want to check out how the **simple** installation works: [click here](
 It is also recommended to make sure your timezone is correct. To check the time on your system, run `date`. If it is incorrect and
 you are using a Raspberry Pi, you can run `sudo raspi-config` to change it.
 
+If you don't have Java installed, [click here](installing_java.md).
+
 ## Edit Configurations
 Now SolarThing is installed, all you have to do is edit configurations in `/opt/solarthing/program/<mate|rover|graphql|pvoutput>/config`.
 ```shell script
