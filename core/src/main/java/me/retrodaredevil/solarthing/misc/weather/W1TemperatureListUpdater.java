@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -37,6 +38,9 @@ public class W1TemperatureListUpdater implements PacketListReceiver {
 		final String name;
 		try {
 			name = readContents(nameFile).replaceAll("\n", ""); // remove new line at end
+		} catch (FileNotFoundException e){
+			LOGGER.error("name file does not exist. file: " + nameFile);
+			return;
 		} catch (IOException e) {
 			LOGGER.error("Could not read name file", e);
 			return;
@@ -58,7 +62,7 @@ public class W1TemperatureListUpdater implements PacketListReceiver {
 		String[] split1 = line1.split(" ");
 		String message = split1[split1.length - 1];
 		if (!"YES".equals(message)) {
-			LOGGER.warn("Unsuccessful message: " + message + " name=" + name);
+			LOGGER.warn("Unsuccessful message: " + message + ". name=" + name);
 			return;
 		}
 		String[] split2 = line2.split("=");

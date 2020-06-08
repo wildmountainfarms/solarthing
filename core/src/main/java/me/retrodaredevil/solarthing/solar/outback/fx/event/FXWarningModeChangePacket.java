@@ -21,7 +21,7 @@ import java.util.Set;
 @JsonTypeName("FX_WARNING_MODE_CHANGE")
 @JsonExplicit
 public interface FXWarningModeChangePacket extends SupplementarySolarEventPacket, SupplementaryOutbackPacket, FXWarningReporter, ChangePacket {
-	int DEFAULT_IGNORED_WARNING_MODE_VALUE_CONSTANT = 0;
+	int DEFAULT_IGNORED_WARNING_MODE_VALUE_CONSTANT = 32;
 
 	@NotNull
 	@Override
