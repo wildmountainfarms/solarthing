@@ -13,6 +13,7 @@ import me.retrodaredevil.solarthing.solar.outback.mx.MXErrorMode;
 
 import java.util.Set;
 
+@Deprecated
 public interface MXDailyData extends OutbackData, DailyChargeController, DailyBatteryVoltage, ErrorReporter {
 	@Override
 	default boolean isNewDay(DailyData previousDailyData){

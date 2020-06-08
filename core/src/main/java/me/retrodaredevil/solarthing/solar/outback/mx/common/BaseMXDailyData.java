@@ -12,6 +12,7 @@ import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.solar.outback.SupplementaryOutbackPacket;
 
 @JsonExplicit
+@Deprecated
 public abstract class BaseMXDailyData extends ImmutableMXDailyData implements SupplementaryOutbackPacket {
 	private final KnownSupplementaryIdentifier<OutbackIdentifier> supplementaryIdentifier;
 

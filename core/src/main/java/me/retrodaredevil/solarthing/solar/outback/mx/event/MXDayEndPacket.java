@@ -8,5 +8,6 @@ import me.retrodaredevil.solarthing.solar.outback.mx.common.MXDailyData;
 
 @JsonDeserialize(as = ImmutableMXDayEndPacket.class)
 @JsonTypeName("MXFM_DAILY_DAY_END")
+@Deprecated
 public interface MXDayEndPacket extends SupplementarySolarEventPacket, SupplementaryOutbackPacket, MXDailyData {
 }

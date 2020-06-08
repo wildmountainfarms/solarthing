@@ -14,6 +14,7 @@ import me.retrodaredevil.solarthing.annotations.NotNull;
 import static java.util.Objects.requireNonNull;
 
 @JsonDeserialize(builder = ImmutableFXDayEndPacket.Builder.class)
+@Deprecated
 public class ImmutableFXDayEndPacket extends BaseFXDailyData implements FXDayEndPacket {
 	public ImmutableFXDayEndPacket(FXDailyData dailyData, OutbackIdentifier outbackIdentifier) {
 		super(SolarEventPacketType.FX_DAILY_DAY_END, dailyData, outbackIdentifier);
@@ -27,12 +28,6 @@ public class ImmutableFXDayEndPacket extends BaseFXDailyData implements FXDayEnd
 	@Override
 	public Long getStartDateMillis() {
 		return requireNonNull(super.getStartDateMillis());
-	}
-
-	@NotNull
-	@Override
-	public SolarEventPacketType getPacketType() {
-		return SolarEventPacketType.FX_DAILY_DAY_END;
 	}
 
 	@JsonPOJOBuilder

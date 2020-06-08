@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.packets.handling;
 
 import me.retrodaredevil.solarthing.InstantType;
+import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +23,7 @@ public class PrintPacketHandleExceptionWrapper implements PacketHandler {
 			packetHandler.handle(packetCollection, instantType);
 		} catch (PacketHandleException e) {
 			LOGGER.error("Caught PacketHandleException from " + packetHandler + ". Message: " + e.getMessage());
-			LOGGER.debug("Caught PacketHandleException from " + packetHandler, e);
+			LOGGER.debug(SolarThingConstants.NO_CONSOLE, "Caught PacketHandleException from " + packetHandler, e);
 		}
 	}
 }

@@ -205,7 +205,7 @@ public class OutbackMateMain {
 					OutbackDuplicatePacketRemover.INSTANCE,
 					new FXEventUpdaterListReceiver(eventPacketListReceiverHandler.getPacketListReceiverAccepter(), options.getFXWarningIgnoreMap()),
 					new MXEventUpdaterListReceiver(eventPacketListReceiverHandler.getPacketListReceiverAccepter()),
-					new OutbackListUpdater(new DailyIdentifier(), eventPacketListReceiverHandler.getPacketListReceiverAccepter())
+					new OutbackListUpdater(eventPacketListReceiverHandler.getPacketListReceiverAccepter())
 			));
 			FXChargingSettings fxChargingSettings = options.getFXChargingSettings();
 			if(fxChargingSettings != null){

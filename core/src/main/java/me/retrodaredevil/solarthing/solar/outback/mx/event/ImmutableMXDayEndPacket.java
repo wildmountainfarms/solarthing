@@ -13,6 +13,7 @@ import me.retrodaredevil.solarthing.solar.outback.mx.common.MXDailyData;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 
 @JsonDeserialize(builder = ImmutableMXDayEndPacket.Builder.class)
+@Deprecated
 public class ImmutableMXDayEndPacket extends BaseMXDailyData implements MXDayEndPacket {
 	@Deprecated
 	public ImmutableMXDayEndPacket(MXDailyData dailyData, OutbackIdentifier outbackIdentifier) {

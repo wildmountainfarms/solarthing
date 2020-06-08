@@ -38,19 +38,6 @@ public class OutbackPacketsTest {
 			PacketTestUtil.testJson(packet, DailyFXPacket.class);
 		}
 		{
-			MXDailyData data = new ImmutableMXDailyData(0, 0, System.currentTimeMillis(), 11.2f, 5, Support.FULLY_SUPPORTED, 22.0f, 25.4f);
-			{
-				DailyMXPacket packet = new ImmutableDailyMXPacket(data);
-				assertEquals(22.0f, packet.getDailyMinBatteryVoltage());
-				PacketTestUtil.testJson(packet, DailyMXPacket.class);
-			}
-			{
-				MXDayEndPacket packet = new ImmutableMXDayEndPacket(data);
-				assertEquals(22.0f, packet.getDailyMinBatteryVoltage());
-				PacketTestUtil.testJson(packet, MXDayEndPacket.class);
-			}
-		}
-		{
 			FXAuxStateChangePacket packet = new ImmutableFXAuxStateChangePacket(new OutbackIdentifier(1), true, false);
 			assertTrue(packet.isAuxActive());
 			PacketTestUtil.testJson(packet, FXAuxStateChangePacket.class);

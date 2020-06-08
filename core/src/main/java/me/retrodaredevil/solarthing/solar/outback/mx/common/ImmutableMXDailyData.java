@@ -10,6 +10,7 @@ import me.retrodaredevil.solarthing.packets.support.Support;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXIdentityInfo;
 
+@Deprecated
 public class ImmutableMXDailyData implements MXDailyData {
 
 	private final SupplementaryIdentifier identifier;
