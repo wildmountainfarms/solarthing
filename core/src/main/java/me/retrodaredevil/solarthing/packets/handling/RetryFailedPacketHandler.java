@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.packets.handling;
 
+import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,12 +28,12 @@ public class RetryFailedPacketHandler implements PacketHandler {
 	}
 
 	@Override
-	public void handle(PacketCollection packetCollection, boolean wasInstant) {
+	public void handle(PacketCollection packetCollection, InstantType instantType) {
 		packetCollectionList.add(packetCollection);
 		for (Iterator<PacketCollection> iterator = packetCollectionList.iterator(); iterator.hasNext(); ) {
 			PacketCollection element = iterator.next();
 			try {
-				packetHandler.handle(element, wasInstant);
+				packetHandler.handle(element, instantType);
 				iterator.remove();
 			} catch (PacketHandleException e) {
 				LOGGER.error("Couldn't packet collection id: " + packetCollection.getDbId() + " dateMillis: " + packetCollection.getDateMillis(), ". Might try again later.", e);

@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.solar.outback.fx.charge;
 
+import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacket;
@@ -29,7 +30,7 @@ public class FXChargingUpdaterListReceiver implements PacketListReceiver {
 	}
 
 	@Override
-	public void receive(List<Packet> packets, boolean wasInstant) {
+	public void receive(List<Packet> packets, InstantType instantType) {
 		if(masterFXAddress == null){
 			FXStatusPacket fxStatusPacket = OutbackUtil.getMasterFX(packets);
 			if(fxStatusPacket != null){

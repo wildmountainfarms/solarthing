@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.packets.handling;
 
+import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 
 /**
@@ -9,11 +10,10 @@ public interface PacketHandler {
 	/**
 	 * Handles the packetCollection
 	 * @param packetCollection The {@link PacketCollection} to handle
-	 * @param wasInstant true if {@code packetCollection} was created instantly/reliably/recently
 	 */
-	void handle(PacketCollection packetCollection, boolean wasInstant) throws PacketHandleException;
+	void handle(PacketCollection packetCollection, InstantType instantType) throws PacketHandleException;
 
 	class Defaults {
-		public static final PacketHandler HANDLE_NOTHING = (packetCollection, wasInstant) -> {};
+		public static final PacketHandler HANDLE_NOTHING = (packetCollection, instantType) -> {};
 	}
 }

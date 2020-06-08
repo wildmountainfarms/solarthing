@@ -8,10 +8,9 @@ public interface OnDataReceive {
 	/**
 	 *
 	 * @param firstData true if the data being received is the first data of a set of data to come in the future. false otherwise
-	 * @param wasInstant true if the data is from right now. false if the data has been piling up.
 	 */
-	void onDataReceive(boolean firstData, boolean wasInstant);
+	void onDataReceive(boolean firstData, InstantType instantType);
 	class Defaults {
-		public static final OnDataReceive NOTHING = (firstData, wasInstant) -> {};
+		public static final OnDataReceive NOTHING = (firstData, instantType) -> {};
 	}
 }

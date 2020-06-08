@@ -87,7 +87,7 @@ public final class SolarMain {
 		if (fragment == null) {
 			LOGGER.warn("'fragment' is null! This is OK, but is NOT recommended!");
 		}
-		return (list, wasInstant) -> {
+		return (list, instantType) -> {
 			list.add(InstanceSourcePackets.create(source));
 			if(fragment != null){
 				list.add(InstanceFragmentIndicatorPackets.create(fragment));

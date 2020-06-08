@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.solar.outback;
 
+import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import org.slf4j.Logger;
@@ -16,7 +17,7 @@ public class OutbackDuplicatePacketRemover implements PacketListReceiver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(OutbackDuplicatePacketRemover.class);
 
 	@Override
-	public void receive(List<Packet> packets, boolean wasInstant) {
+	public void receive(List<Packet> packets, InstantType instantType) {
 		OutbackStatusPacket last = null;
 		List<Integer> split = new ArrayList<>();
 		split.add(0);

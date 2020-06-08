@@ -89,7 +89,7 @@ public class OutbackMateMain {
 		PacketListReceiverHandler eventPacketListReceiverHandler = new PacketListReceiverHandler(
 				new PacketListReceiverMultiplexer(
 						sourceAndFragmentUpdater,
-						(packets, wasInstant) -> {
+						(packets, instantType) -> {
 							LOGGER.debug(SolarThingConstants.NO_CONSOLE, "Debugging event packets");
 							try {
 								LOGGER.debug(SolarThingConstants.NO_CONSOLE, MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(packets));
@@ -187,7 +187,7 @@ public class OutbackMateMain {
 		PacketListReceiverHandler statusPacketListReceiverHandler = new PacketListReceiverHandler(
 				new PacketListReceiverMultiplexer(
 						sourceAndFragmentUpdater,
-						(packets, wasInstant) -> {
+						(packets, instantType) -> {
 							LOGGER.debug("Debugging all packets");
 							try {
 								LOGGER.debug(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(packets));

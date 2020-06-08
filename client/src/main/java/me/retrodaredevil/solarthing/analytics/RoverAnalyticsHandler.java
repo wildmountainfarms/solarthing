@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.analytics;
 
+import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
@@ -15,8 +16,8 @@ public class RoverAnalyticsHandler implements PacketHandler {
 	}
 
 	@Override
-	public void handle(PacketCollection packetCollection, boolean wasInstant) {
-		if (!wasInstant) {
+	public void handle(PacketCollection packetCollection, InstantType instantType) {
+		if (!instantType.isInstant()) {
 			return;
 		}
 		if (timer.shouldSend()) {

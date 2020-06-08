@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.packets.handling.implementations;
 
+import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.OnDataReceive;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
@@ -47,7 +48,7 @@ public class TimedPacketReceiver implements RawPacketReceiver {
 		if (firstData) {
 			lastFirstReceivedData = now; // set this to the first time we get bytes
 		}
-		onDataReceive.onDataReceive(firstData, instant);
+		onDataReceive.onDataReceive(firstData, instant ? InstantType.INSTANT : InstantType.NOT_INSTANT);
 		packetList.addAll(newPackets);
 	}
 
@@ -58,10 +59,10 @@ public class TimedPacketReceiver implements RawPacketReceiver {
 			if (packetList.isEmpty()) {
 				instant = true;
 			} else {
-				final boolean wasInstant = instant;
+				final InstantType instantType = instant ? InstantType.INSTANT : InstantType.NOT_INSTANT;
 				instant = false;
 				try {
-					packetListReceiver.receive(packetList, wasInstant);
+					packetListReceiver.receive(packetList, instantType);
 				} finally {
 					packetList.clear();
 				}

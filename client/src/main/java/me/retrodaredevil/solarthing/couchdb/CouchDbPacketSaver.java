@@ -5,6 +5,7 @@ import me.retrodaredevil.couchdb.CouchProperties;
 import me.retrodaredevil.couchdb.DocumentWrapper;
 import me.retrodaredevil.couchdb.EktorpUtil;
 import me.retrodaredevil.couchdb.design.DefaultPacketsDesign;
+import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
@@ -52,7 +53,7 @@ public class CouchDbPacketSaver implements PacketHandler {
 	}
 
 	@Override
-	public void handle(PacketCollection packetCollection, boolean wasInstant) throws PacketHandleException {
+	public void handle(PacketCollection packetCollection, InstantType instantType) throws PacketHandleException {
 		try {
 			client.createDatabaseIfNotExists();
 		} catch(DbAccessException ex){

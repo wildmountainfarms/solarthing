@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.program;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.analytics.AnalyticsManager;
 import me.retrodaredevil.solarthing.analytics.RoverAnalyticsHandler;
@@ -46,7 +47,7 @@ public class RequestMain {
 		PacketListReceiverHandler eventPacketListReceiverHandler = new PacketListReceiverHandler(
 				new PacketListReceiverMultiplexer(
 						sourceAndFragmentUpdater,
-						(packets, wasInstant) -> {
+						(packets, instantType) -> {
 							LOGGER.debug(SolarThingConstants.NO_CONSOLE, "Debugging event packets");
 							try {
 								LOGGER.debug(SolarThingConstants.NO_CONSOLE, MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(packets));
@@ -61,7 +62,7 @@ public class RequestMain {
 		PacketListReceiverHandler statusPacketListReceiverHandler = new PacketListReceiverHandler(
 				new PacketListReceiverMultiplexer(
 						sourceAndFragmentUpdater,
-						(packets, wasInstant) -> {
+						(packets, instantType) -> {
 							LOGGER.debug("Debugging all packets");
 							try {
 								LOGGER.debug(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(packets));
@@ -88,7 +89,7 @@ public class RequestMain {
 		while (!Thread.currentThread().isInterrupted()) {
 			long startTime = System.currentTimeMillis();
 			List<Packet> packets = new ArrayList<>();
-			packetListReceiver.receive(packets, true);
+			packetListReceiver.receive(packets, InstantType.INSTANT);
 			long timeTaken = System.currentTimeMillis() - startTime;
 
 			long sleepTime = Math.max(minimumWait, period - timeTaken);

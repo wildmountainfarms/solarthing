@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.misc.device;
 
+import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import org.slf4j.Logger;
@@ -14,7 +15,7 @@ public class RaspberryPiCpuTemperatureListUpdater implements PacketListReceiver 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RaspberryPiCpuTemperatureListUpdater.class);
 	private final byte[] buffer = new byte[1024];
 	@Override
-	public void receive(List<Packet> packets, boolean wasInstant) {
+	public void receive(List<Packet> packets, InstantType instantType) {
 		ProcessBuilder processBuilder = new ProcessBuilder("vcgencmd", "measure_temp");
 		processBuilder.redirectErrorStream(true);
 		try {

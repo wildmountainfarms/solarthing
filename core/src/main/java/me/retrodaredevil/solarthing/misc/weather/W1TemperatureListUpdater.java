@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.misc.weather;
 
+import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.misc.source.W1Source;
 import me.retrodaredevil.solarthing.packets.Packet;
@@ -33,7 +34,7 @@ public class W1TemperatureListUpdater implements PacketListReceiver {
 	}
 
 	@Override
-	public void receive(List<Packet> packets, boolean wasInstant) {
+	public void receive(List<Packet> packets, InstantType instantType) {
 		long startTime = System.currentTimeMillis();
 		final String name;
 		try {

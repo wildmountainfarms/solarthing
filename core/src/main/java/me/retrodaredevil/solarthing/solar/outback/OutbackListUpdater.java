@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.solar.outback;
 
+import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.packets.DocumentedPacket;
 import me.retrodaredevil.solarthing.packets.DocumentedPacketType;
 import me.retrodaredevil.solarthing.packets.Packet;
@@ -46,14 +47,14 @@ public class OutbackListUpdater implements PacketListReceiver {
 	}
 
 	@Override
-	public void receive(List<Packet> packets, boolean wasInstant) {
+	public void receive(List<Packet> packets, InstantType instantType) {
 		long now = System.currentTimeMillis();
 		long timeId = timeIdentifier.getTimeId(now);
 		final Long lastTimeId = this.lastTimeId;
 		this.lastTimeId = timeId;
 		if(lastTimeId != null && lastTimeId != timeId){
 			for(FXListUpdater updater : fxMap.values()){
-				updater.doDayEnd(wasInstant);
+				updater.doDayEnd(instantType);
 			}
 			fxMap.clear();
 		}
@@ -69,7 +70,7 @@ public class OutbackListUpdater implements PacketListReceiver {
 						updater = new FXListUpdater(eventReceiver);
 						fxMap.put(identifier, updater);
 					}
-					updater.update(now, packets, fx, wasInstant);
+					updater.update(now, packets, fx, instantType);
 				}
 			}
 		}
@@ -100,7 +101,7 @@ public class OutbackListUpdater implements PacketListReceiver {
 			this.eventReceiver = requireNonNull(eventReceiver);
 		}
 
-		private void update(long currentTimeMillis, List<? super Packet> packets, FXStatusPacket fx, boolean wasInstant){
+		private void update(long currentTimeMillis, List<? super Packet> packets, FXStatusPacket fx, InstantType instantType){
 			Long startDateMillis = this.startDateMillis;
 			if(startDateMillis == null){
 				startDateMillis = currentTimeMillis;
@@ -143,9 +144,9 @@ public class OutbackListUpdater implements PacketListReceiver {
 					operationalModeValues, errorMode, warningMode, misc, acModeValues
 			);
 		}
-		private void doDayEnd(boolean wasInstant){
+		private void doDayEnd(InstantType instantType){
 			FXStatusPacket fx = requireNonNull(lastFX);
-			eventReceiver.receive(Collections.singletonList(new ImmutableFXDayEndPacket(createData(fx), fx.getIdentifier())), wasInstant);
+			eventReceiver.receive(Collections.singletonList(new ImmutableFXDayEndPacket(createData(fx), fx.getIdentifier())), instantType);
 		}
 	}
 }

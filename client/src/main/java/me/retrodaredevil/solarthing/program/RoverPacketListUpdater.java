@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.program;
 
 import me.retrodaredevil.io.modbus.ModbusRuntimeException;
+import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.misc.error.ImmutableExceptionErrorPacket;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
@@ -32,7 +33,7 @@ public class RoverPacketListUpdater implements PacketListReceiver {
 	}
 
 	@Override
-	public void receive(List<Packet> packets, boolean wasInstant) {
+	public void receive(List<Packet> packets, InstantType instantType) {
 		final long startTime = System.currentTimeMillis();
 		final RoverStatusPacket packet;
 		try {

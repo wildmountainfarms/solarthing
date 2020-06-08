@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.packets.handling.implementations;
 
+import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollections;
@@ -23,9 +24,9 @@ public class PacketHandlerPacketListReceiver implements PacketListReceiver {
 	}
 
 	@Override
-	public void receive(List<Packet> packets, boolean wasInstant) {
+	public void receive(List<Packet> packets, InstantType instantType) {
 		try {
-			packetHandler.handle(PacketCollections.createFromPackets(packets, idGenerator), wasInstant);
+			packetHandler.handle(PacketCollections.createFromPackets(packets, idGenerator), instantType);
 		} catch (PacketHandleException e) {
 			LOGGER.error("Was unable to handle " + packets.size() + " packet(s)!", e);
 		}

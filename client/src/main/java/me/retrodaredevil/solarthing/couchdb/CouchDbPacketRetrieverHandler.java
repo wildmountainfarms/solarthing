@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.couchdb;
 
+import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.JsonPacketReceiver;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
@@ -15,7 +16,7 @@ public class CouchDbPacketRetrieverHandler implements PacketHandler {
 		this.jsonPacketReceiver = jsonPacketReceiver;
 	}
 	@Override
-	public void handle(PacketCollection packetCollection, boolean wasInstant) throws PacketHandleException {
+	public void handle(PacketCollection packetCollection, InstantType instantType) throws PacketHandleException {
 		jsonPacketReceiver.receivePackets(couchDbPacketRetriever.query());
 	}
 }

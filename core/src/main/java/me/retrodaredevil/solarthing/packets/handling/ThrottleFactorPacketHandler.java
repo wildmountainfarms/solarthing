@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.packets.handling;
 
+import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 
 import static java.util.Objects.requireNonNull;
@@ -15,7 +16,7 @@ public class ThrottleFactorPacketHandler implements PacketHandler {
 	/**
 	 * @param packetHandler The packet handler
 	 * @param frequencySettings The frequency settings
-	 * @param instantOnly true if neither {@code packetHandler} nor {@code otherPacketHandler} should be called if {@code wasInstant} is false
+	 * @param instantOnly true if neither {@code packetHandler} nor {@code otherPacketHandler} should be called if the packets are not INSTANT
 	 */
 	public ThrottleFactorPacketHandler(PacketHandler packetHandler, FrequencySettings frequencySettings, boolean instantOnly) {
 		this.packetHandler = requireNonNull(packetHandler);
@@ -24,8 +25,8 @@ public class ThrottleFactorPacketHandler implements PacketHandler {
 	}
 
 	@Override
-	public void handle(PacketCollection packetCollection, boolean wasInstant) throws PacketHandleException {
-		if(instantOnly && !wasInstant){
+	public void handle(PacketCollection packetCollection, InstantType instantType) throws PacketHandleException {
+		if(instantOnly && !instantType.isInstant()){
 			return; // return and don't increment counter
 		}
 		if(initialCounter < frequencySettings.getInitialSkipFactor()){
@@ -33,7 +34,7 @@ public class ThrottleFactorPacketHandler implements PacketHandler {
 			return;
 		}
 		if(counter++ % frequencySettings.getThrottleFactor() == 0){
-			packetHandler.handle(packetCollection, wasInstant);
+			packetHandler.handle(packetCollection, instantType);
 		}
 	}
 }

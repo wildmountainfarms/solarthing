@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.program;
 
+import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.commands.OnCommandExecute;
 import me.retrodaredevil.solarthing.commands.SourcedCommand;
 import me.retrodaredevil.solarthing.packets.Packet;
@@ -21,6 +22,6 @@ public class OnMateCommandSent implements OnCommandExecute<MateCommand> {
 	@Override
 	public void onCommandExecute(SourcedCommand<MateCommand> command) {
 		Packet packet = new ImmutableSuccessMateCommandPacket(command.getCommand(), command.getSource());
-		packetListReceiver.receive(Collections.singletonList(packet), true);
+		packetListReceiver.receive(Collections.singletonList(packet), InstantType.INSTANT);
 	}
 }
