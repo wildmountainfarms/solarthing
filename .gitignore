@@ -4,9 +4,9 @@
 *.log.gz
 
 /program/*
-!/program/**
 !/program/README.md
-/program/**/*
+/program/**/**
+!/program/**/
 
 !/program/**/config
 /program/**/config/*
