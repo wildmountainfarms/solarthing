@@ -118,7 +118,7 @@ public class SecurityPacketReceiver implements JsonPacketReceiver {
 								if(dateMillis != null){
 									Long lastCommand = senderLastCommandMap.get(sender);
 									long currentTime = System.currentTimeMillis();
-									if(dateMillis > currentTime) {
+									if(dateMillis > currentTime + 5000) { // there's a 5 second grace period in case the clock is slightly off
 										LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Message from " + sender + " is from the future??? dateMillis: " + dateMillis + " currentTime: " + currentTime);
 									} else if(dateMillis < minTime){
 										LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Message from " + sender + " was parsed, but it too old! dateMillis: " + dateMillis + " minTime: " + minTime);

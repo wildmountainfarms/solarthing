@@ -2,11 +2,6 @@
 * Create Arduino or Java program to simulate MATE or Rover
 * Create a calendar program to be able to view daily kWh on a calendar interface
   * If we do something with a calendar, we could use Google calendar https://developers.google.com/calendar/create-events/
-* For PVOutput, when the PV Current is 0 and the input voltage is high, we might be able to assume that
-the charge controller is not accepting more power
-  * Use this so incorrect statistics are not reported
-  * If PVVoltage != 0 and PV Current == 0 and charging current == 0 and mode != Silent (and probably != bulk), then assume it's stopped
-  * Alternatively, don't report statistics if the CC is in Float, Absorb, or EQ
 * Create button/widget on Grafana that sends an encrypted command to shut off the generator
 * Create GraphQL query that allows someone to get dailyKWH from a large time period (many days) for
 easy displaying in Grafana
@@ -14,7 +9,6 @@ easy displaying in Grafana
 * Store data such as the panel tilt that can change over time
   * This could go into a database called `solarthing-meta`
 * Make command requests use JSON
-* Add files for launchctl (Mac OSX) and other services besides systemd
 * Make CouchDB and InfluxDB database configuration warn when setting unused values
 * Use Mattermost as a way to send push notifications for things
   * https://docs.mattermost.com/install/prod-docker.html?src=dl
