@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("FieldCanBeLocal")
-abstract class PacketHandlingOptionBase implements PacketHandlingOption {
+abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements PacketHandlingOption {
 	@JsonProperty
 	@JsonPropertyDescription("An array of strings that each represent a database configuration file relative to the program directory.")
 	private List<File> databases = null;

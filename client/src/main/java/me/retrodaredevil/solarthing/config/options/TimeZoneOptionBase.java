@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.TimeZone;
 
-public abstract class TimeZoneOptionBase implements TimeZoneOption {
+abstract class TimeZoneOptionBase implements TimeZoneOption {
 	@JsonProperty("time_zone")
 	private TimeZone timeZone = null;
 	@Override

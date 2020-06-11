@@ -48,3 +48,8 @@ Final result:
 ```
 
 More info here: https://docs.couchdb.org/en/stable/ddocs/ddocs.html
+
+## Adding an uploader user
+You should follow this to create a user to upload data: https://stackoverflow.com/questions/3684749/creating-regular-users-in-couchdb
+
+You can also use that to create a user that can be used to read the database if you decide to require authentication to read the database

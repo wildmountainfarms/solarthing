@@ -39,10 +39,22 @@ public class MateCommandSender implements OnDataReceive {
 					LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Command: " + command + " is not allowed!");
 					return;
 				}
+				/*
+				I can confirm that if you don't send the command in the correct time window, the Mate will not receive it
+
+				This solution is only here because instantType is not always reliable.
+				 */
+				LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Sending command: " + command);
 				try {
-					command.send(outputStream);
-				} catch (IOException e) {
-					throw new RuntimeException("Unable to send command: " + command, e);
+					for (int i = 0; i < 8; i++) { // send this over the period of 0.8 second so we can be sure it got received
+						if (i != 0) {
+							Thread.sleep(100);
+						}
+						command.send(outputStream);
+					}
+				} catch (IOException | InterruptedException e) {
+					LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Unable to send command: " + command, e);
+					return;
 				}
 				LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Sent command: " + command + " at " + System.currentTimeMillis());
 				onCommandExecute.onCommandExecute(sourcedCommand);

@@ -57,7 +57,8 @@ public class RequestMain {
 						}
 				),
 				eventPacketHandler,
-				PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR
+				PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR,
+                options.getTimeZone()
 		);
 		PacketListReceiverHandler statusPacketListReceiverHandler = new PacketListReceiverHandler(
 				new PacketListReceiverMultiplexer(
@@ -72,7 +73,8 @@ public class RequestMain {
 						}
 				),
 				new PacketHandlerMultiplexer(statusPacketHandlers),
-				SolarMain.createIdGenerator(options.getUniqueIdsInOneHour())
+				SolarMain.createIdGenerator(options.getUniqueIdsInOneHour()),
+                options.getTimeZone()
 		);
 		List<PacketListReceiver> packetListReceiverList = new ArrayList<>();
 		for (DataRequester dataRequester : dataRequesterList) {

@@ -3,15 +3,13 @@ package me.retrodaredevil.solarthing.config.options;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.actions.ActionNode;
+import me.retrodaredevil.solarthing.commands.CommandInfo;
 import me.retrodaredevil.solarthing.solar.outback.fx.charge.FXChargingSettings;
 import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 
 import java.io.File;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 
@@ -103,6 +101,13 @@ public class MateProgramOptions extends PacketHandlingOptionBase implements IOBu
 		}
 		return commandFileMap;
 	}
+	public List<CommandInfo> getCommandInfoList() {
+		List<CommandInfo> r = new ArrayList<>(commands.size());
+		for (Command command : commands) {
+			r.add(command.createCommandInfo());
+		}
+		return r;
+	}
 	private static class MateFXChargingSettings {
 		@JsonProperty("rebulk_voltage")
 		private Float rebulkSetpoint;
@@ -134,5 +139,9 @@ public class MateProgramOptions extends PacketHandlingOptionBase implements IOBu
 		private String description = "";
 		@JsonProperty("action")
 		private File actionFile;
+
+		private CommandInfo createCommandInfo() {
+			return new CommandInfo(name, displayName, description);
+		}
 	}
 }

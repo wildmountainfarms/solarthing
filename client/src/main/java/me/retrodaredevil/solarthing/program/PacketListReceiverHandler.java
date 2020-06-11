@@ -13,20 +13,23 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
 
 public class PacketListReceiverHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PacketListReceiverHandler.class);
 	private final PacketListReceiver packetListReceiver;
 	private final PacketHandler packetHandler;
 	private final PacketCollectionIdGenerator idGenerator;
+	private final TimeZone timeZone;
 
 	private final List<Packet> packetList = new ArrayList<>();
 	private final List<PacketCollection> packetCollectionList = new ArrayList<>();
 
-	public PacketListReceiverHandler(PacketListReceiver packetListReceiver, PacketHandler packetHandler, PacketCollectionIdGenerator idGenerator) {
+	public PacketListReceiverHandler(PacketListReceiver packetListReceiver, PacketHandler packetHandler, PacketCollectionIdGenerator idGenerator, TimeZone timeZone) {
 		this.packetListReceiver = packetListReceiver;
 		this.packetHandler = packetHandler;
 		this.idGenerator = idGenerator;
+		this.timeZone = timeZone;
 	}
 
 	/**
@@ -61,7 +64,7 @@ public class PacketListReceiverHandler {
 			return;
 		}
 		packetListReceiver.receive(packetList, instantType);
-		PacketCollection packetCollection = PacketCollections.createFromPackets(packetList, idGenerator);
+		PacketCollection packetCollection = PacketCollections.createFromPackets(packetList, idGenerator, timeZone);
 		packetList.clear();
 		packetCollectionList.add(packetCollection);
 	}
