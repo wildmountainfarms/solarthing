@@ -5,20 +5,18 @@ import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
 public class DailyIdentifier implements TimeIdentifier {
-	private final TimeZone timeZone;
+	private final Calendar calendar;
 
 
-	public DailyIdentifier(){
-		this(TimeZone.getDefault());
-	}
 	public DailyIdentifier(TimeZone timeZone) {
-		this.timeZone = timeZone;
+		calendar = new GregorianCalendar(timeZone);
 	}
 
 	@Override
 	public long getTimeId(long timeMillis) {
-		Calendar calendar = new GregorianCalendar(timeZone);
-		calendar.setTimeInMillis(timeMillis);
-		return 400 * calendar.get(Calendar.YEAR) + calendar.get(Calendar.DAY_OF_YEAR);
+		synchronized (calendar) {
+			calendar.setTimeInMillis(timeMillis);
+			return 400 * calendar.get(Calendar.YEAR) + calendar.get(Calendar.DAY_OF_YEAR); // this is arbitrary, so using 400 is fine
+		}
 	}
 }

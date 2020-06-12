@@ -14,6 +14,7 @@ import me.retrodaredevil.solarthing.solar.outback.fx.extra.DailyFXPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.extra.ImmutableDailyFXPacket;
 import me.retrodaredevil.solarthing.util.integration.MutableIntegral;
 import me.retrodaredevil.solarthing.util.integration.TrapezoidalRuleAccumulator;
+import me.retrodaredevil.solarthing.util.time.TimeIdentifier;
 
 import java.util.*;
 
@@ -24,20 +25,28 @@ import static java.util.Objects.requireNonNull;
  * <p>
  * This expects that there are no duplicate packets. If there are duplicate packets, the behaviour is undefined.
  */
-public class OutbackListUpdater implements PacketListReceiver {
+public class FXStatusListUpdater implements PacketListReceiver {
 //	private static final Logger LOGGER = LoggerFactory.getLogger(OutbackListUpdater.class);
 
-	private final PacketListReceiver eventReceiver;
+	private final TimeIdentifier timeIdentifier;
 
 	private final Map<Identifier, FXListUpdater> fxMap = new HashMap<>();
+	private Long lastTimeId = null;
 
-	public OutbackListUpdater(PacketListReceiver eventReceiver) {
-		this.eventReceiver = requireNonNull(eventReceiver);
+	public FXStatusListUpdater(TimeIdentifier timeIdentifier) {
+		this.timeIdentifier = requireNonNull(timeIdentifier);
 	}
 
 	@Override
 	public void receive(List<Packet> packets, InstantType instantType) {
 		long now = System.currentTimeMillis();
+
+		long timeId = timeIdentifier.getTimeId(now);
+		final Long lastTimeId = this.lastTimeId;
+		this.lastTimeId = timeId;
+		if(lastTimeId != null && lastTimeId != timeId){
+			fxMap.clear();
+		}
 
 		for(Packet packet : new ArrayList<>(packets)){
 			if(packet instanceof DocumentedPacket){
@@ -47,7 +56,7 @@ public class OutbackListUpdater implements PacketListReceiver {
 					Identifier identifier = fx.getIdentifier();
 					FXListUpdater updater = fxMap.get(identifier);
 					if(updater == null){
-						updater = new FXListUpdater(eventReceiver);
+						updater = new FXListUpdater();
 						fxMap.put(identifier, updater);
 					}
 					updater.update(now, packets, fx, instantType);
@@ -59,7 +68,6 @@ public class OutbackListUpdater implements PacketListReceiver {
 		return new TrapezoidalRuleAccumulator();
 	}
 	private static final class FXListUpdater {
-		private final PacketListReceiver eventReceiver;
 		private Long startDateMillis = null;
 		private Float minimumBatteryVoltage = null;
 		private Float maximumBatteryVoltage = null;
@@ -74,12 +82,6 @@ public class OutbackListUpdater implements PacketListReceiver {
 		private int warningMode = 0;
 		private int misc = 0;
 		private final Set<Integer> acModeValues = new HashSet<>();
-
-		private FXStatusPacket lastFX = null;
-
-		private FXListUpdater(PacketListReceiver eventReceiver) {
-			this.eventReceiver = requireNonNull(eventReceiver);
-		}
 
 		private void update(long currentTimeMillis, List<? super Packet> packets, FXStatusPacket fx, InstantType instantType){
 			Long startDateMillis = this.startDateMillis;
@@ -112,7 +114,6 @@ public class OutbackListUpdater implements PacketListReceiver {
 			DailyFXPacket packet = new ImmutableDailyFXPacket(createData(fx), fx.getIdentifier());
 
 			packets.add(packet);
-			this.lastFX = fx;
 		}
 		private FXDailyData createData(FXStatusPacket fx){
 			return new ImmutableFXDailyData(
