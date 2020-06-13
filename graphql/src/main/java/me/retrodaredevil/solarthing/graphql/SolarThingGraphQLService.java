@@ -69,8 +69,8 @@ public class SolarThingGraphQLService {
 
 		final HttpClient httpClient = EktorpUtil.createHttpClient(couchProperties);
 		CouchDbInstance instance = new StdCouchDbInstance(httpClient);
-		statusQueryHandler = new CouchDbQueryHandler(new StdCouchDbConnector(SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, instance), false);
-		eventQueryHandler = new CouchDbQueryHandler(new StdCouchDbConnector(SolarThingConstants.SOLAR_EVENT_UNIQUE_NAME, instance), false);
+		statusQueryHandler = new CouchDbQueryHandler(new StdCouchDbConnector(SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, instance));
+		eventQueryHandler = new CouchDbQueryHandler(new StdCouchDbConnector(SolarThingConstants.SOLAR_EVENT_UNIQUE_NAME, instance));
 	}
 	private List<? extends InstancePacketGroup> queryPackets(CouchDbQueryHandler queryHandler, PacketGroupParser parser, long from, long to, String sourceId) {
 		final List<ObjectNode> packets;

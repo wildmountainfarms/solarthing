@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing.commands.packets;
+package me.retrodaredevil.solarthing.commands.packets.status;
 
 import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.commands.CommandInfo;

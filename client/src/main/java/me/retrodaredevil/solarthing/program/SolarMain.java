@@ -155,7 +155,7 @@ public final class SolarMain {
 		CouchProperties couchProperties = couchDbDatabaseSettings.getCouchProperties();
 		final HttpClient httpClient = EktorpUtil.createHttpClient(couchProperties);
 		CouchDbInstance instance = new StdCouchDbInstance(httpClient);
-		return new CouchDbQueryHandler(new StdCouchDbConnector(SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, instance), false);
+		return new CouchDbQueryHandler(new StdCouchDbConnector(SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, instance));
 	}
 
 	public static int doMain(String[] args){

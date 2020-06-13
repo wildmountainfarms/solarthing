@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing.commands.packets;
+package me.retrodaredevil.solarthing.commands.packets.status;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import me.retrodaredevil.solarthing.packets.DocumentedPacket;

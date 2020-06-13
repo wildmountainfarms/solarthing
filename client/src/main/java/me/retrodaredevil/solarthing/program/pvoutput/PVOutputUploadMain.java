@@ -76,7 +76,7 @@ public class PVOutputUploadMain {
 		{
 			final HttpClient httpClient = EktorpUtil.createHttpClient(couchProperties);
 			CouchDbInstance instance = new StdCouchDbInstance(httpClient);
-			queryHandler = new CouchDbQueryHandler(new StdCouchDbConnector(SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, instance), false);
+			queryHandler = new CouchDbQueryHandler(new StdCouchDbConnector(SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, instance));
 		}
 		PacketGroupParser statusParser = new SimplePacketGroupParser(new PacketParserMultiplexer(Arrays.asList(
 				new ObjectMapperPacketConverter(MAPPER, SolarStatusPacket.class),

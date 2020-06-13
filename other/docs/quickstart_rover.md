@@ -51,15 +51,15 @@ See [Rover Setup Info](rover_setup_info.md) for information on how to use the `r
 
 ---
 
+### Setting voltage values of the User battery type
+If you want to set values of the user battery type, this cannot be completely done from SolarThing.
+You have to manually go to your Rover and set it to the User battery type. SolarThing can set the battery type of
+your Rover, but if you set it to User through SolarThing, the values will be locked.
+
 #### \<Insert Advanced Feature\> isn't working on my Rover!
 Yes, I hear you. When I first started trying to configure certain things on my Rover, it just straight up didn't work.
 Here's an incomplete list of things I was unable to do:
-* Set the voltage thresholds
-  * This doesn't work on CCs like the Wanderer, Adventurer. It only works on the Rover
-  * This only works if you set your battery type to "user" aka self-customized. Some settings can be changed on the "lithium" mode too.
-  * Even though I tried configuring the voltage thresholds on a *Rover*, I couldn't get it to work. This program
-  might not be setup correctly to even change these values, I'm not sure.
-* Settings most of the values
+* Settings certain values
 * Getting (accurate) special power control values
   * These values didn't really seem correct (maybe they only work on certain charge controllers or only when the battery type is lithium)
 

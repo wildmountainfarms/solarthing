@@ -3,6 +3,9 @@ package me.retrodaredevil.solarthing.commands.packets;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import me.retrodaredevil.solarthing.PacketTestUtil;
 import me.retrodaredevil.solarthing.commands.CommandInfo;
+import me.retrodaredevil.solarthing.commands.packets.status.AvailableCommandsPacket;
+import me.retrodaredevil.solarthing.commands.packets.status.CommandStatusPacket;
+import me.retrodaredevil.solarthing.commands.packets.status.ImmutableAvailableCommandsPacket;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;

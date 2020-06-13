@@ -6,6 +6,7 @@ import java.security.PublicKey;
 
 import static java.util.Objects.requireNonNull;
 
+@Deprecated
 public class DirectoryKeyMap implements PublicKeyLookUp, PublicKeySave {
 	private final File directory;
 	private final SenderSaveNameGenerator senderFileName;
@@ -35,7 +36,7 @@ public class DirectoryKeyMap implements PublicKeyLookUp, PublicKeySave {
 			throw new RuntimeException("A saved key was invalid! file: " + file, e);
 		}
 	}
-	
+
 	@Override
 	public void putKey(String sender, PublicKey key) {
 		String fileName = senderFileName.getFileName(requireNonNull(sender));

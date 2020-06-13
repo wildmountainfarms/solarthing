@@ -17,7 +17,7 @@ import me.retrodaredevil.solarthing.analytics.AnalyticsManager;
 import me.retrodaredevil.solarthing.analytics.MateAnalyticsHandler;
 import me.retrodaredevil.solarthing.commands.CommandProvider;
 import me.retrodaredevil.solarthing.commands.CommandProviderMultiplexer;
-import me.retrodaredevil.solarthing.commands.packets.AvailableCommandsListUpdater;
+import me.retrodaredevil.solarthing.commands.packets.status.AvailableCommandsListUpdater;
 import me.retrodaredevil.solarthing.config.databases.IndividualSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.config.options.ExtraOptionFlag;
@@ -158,8 +158,7 @@ public class OutbackMateMain {
 								new CouchDbPacketRetrieverHandler(
 										new CouchDbPacketRetriever(
 												couchProperties,
-												SolarThingConstants.COMMANDS_UNIQUE_NAME,
-												true
+												SolarThingConstants.OPEN_UNIQUE_NAME
 										),
 										new SecurityPacketReceiver(new DirectoryKeyMap(new File("authorized")), actionNodeDataReceiver, new DirectoryKeyMap(new File("unauthorized")))
 								)
