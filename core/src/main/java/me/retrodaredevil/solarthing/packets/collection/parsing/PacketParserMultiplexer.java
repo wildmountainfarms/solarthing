@@ -1,8 +1,8 @@
 package me.retrodaredevil.solarthing.packets.collection.parsing;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.annotations.Nullable;
+import me.retrodaredevil.solarthing.packets.Packet;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,9 +21,6 @@ public class PacketParserMultiplexer implements JsonPacketParser {
 		}
 		this.parserList = Collections.unmodifiableList(new ArrayList<>(parserList));
 		this.lenientType = requireNonNull(lenientType);
-	}
-	public PacketParserMultiplexer(List<JsonPacketParser> parserList) {
-		this(parserList, LenientType.FAIL_WHEN_UNHANDLED_WITH_EXCEPTION);
 	}
 
 	@Override

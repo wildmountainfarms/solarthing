@@ -9,7 +9,7 @@ public interface PacketHandlingOption extends TimeZoneOption {
 	List<File> getDatabaseConfigurationFiles();
 
 	String getSourceId();
-	Integer getFragmentId();
+	int getFragmentId();
 
 	Integer getUniqueIdsInOneHour();
 

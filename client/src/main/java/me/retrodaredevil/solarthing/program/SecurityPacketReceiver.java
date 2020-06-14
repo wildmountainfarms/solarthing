@@ -1,21 +1,18 @@
 package me.retrodaredevil.solarthing.program;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import me.retrodaredevil.solarthing.DataReceiver;
 import me.retrodaredevil.solarthing.JsonPacketReceiver;
+import me.retrodaredevil.solarthing.PacketGroupReceiver;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.packets.Packet;
-import me.retrodaredevil.solarthing.packets.collection.DefaultInstanceOptions;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
-import me.retrodaredevil.solarthing.packets.collection.parsing.ObjectMapperPacketConverter;
-import me.retrodaredevil.solarthing.packets.collection.parsing.PacketGroupParser;
-import me.retrodaredevil.solarthing.packets.collection.parsing.PacketParserMultiplexer;
-import me.retrodaredevil.solarthing.packets.collection.parsing.SimplePacketGroupParser;
+import me.retrodaredevil.solarthing.packets.collection.TargetPacketGroup;
+import me.retrodaredevil.solarthing.packets.collection.parsing.*;
 import me.retrodaredevil.solarthing.packets.instance.InstancePacket;
-import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePacket;
-import me.retrodaredevil.solarthing.packets.security.AuthNewSenderPacket;
 import me.retrodaredevil.solarthing.packets.security.IntegrityPacket;
 import me.retrodaredevil.solarthing.packets.security.SecurityPacket;
 import me.retrodaredevil.solarthing.packets.security.SecurityPacketType;
@@ -27,7 +24,6 @@ import org.slf4j.LoggerFactory;
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
 import java.util.*;
 
 public class SecurityPacketReceiver implements JsonPacketReceiver {
@@ -40,7 +36,11 @@ public class SecurityPacketReceiver implements JsonPacketReceiver {
 	), PacketParserMultiplexer.LenientType.FAIL_WHEN_UNHANDLED)); // This parser will fail if there's a packet it doesn't recognize
 
 	private final PublicKeyLookUp publicKeyLookUp;
-	private final DataReceiver dataReceiver;
+	private final PacketGroupReceiver packetGroupReceiver;
+	private final String sourceId;
+	private final int fragmentId;
+
+	private final PacketGroupParser integrityParser;
 
 	private final Cipher cipher;
 
@@ -49,13 +49,23 @@ public class SecurityPacketReceiver implements JsonPacketReceiver {
 	private final long listenStartTime;
 
 	/**
-	 *
 	 * @param publicKeyLookUp The {@link PublicKeyLookUp} to get the PublicKey for a received {@link IntegrityPacket}
-	 * @param dataReceiver The {@link DataReceiver} that receives data decrypted successfully from {@link IntegrityPacket}s
+	 * @param packetGroupReceiver
+	 * @param sourceId
+	 * @param fragmentId
 	 */
-	public SecurityPacketReceiver(PublicKeyLookUp publicKeyLookUp, DataReceiver dataReceiver) {
+	public SecurityPacketReceiver(PublicKeyLookUp publicKeyLookUp, PacketGroupReceiver packetGroupReceiver, String sourceId, int fragmentId, List<JsonPacketParser> parsers) {
 		this.publicKeyLookUp = publicKeyLookUp;
-		this.dataReceiver = dataReceiver;
+		this.packetGroupReceiver = packetGroupReceiver;
+		this.sourceId = sourceId;
+		this.fragmentId = fragmentId;
+
+		List<JsonPacketParser> integrityParsers = new ArrayList<>(parsers);
+		integrityParsers.addAll(Arrays.asList(
+				new ObjectMapperPacketConverter(MAPPER, SecurityPacket.class),
+				new ObjectMapperPacketConverter(MAPPER, InstancePacket.class)
+		));
+		integrityParser = new SimplePacketGroupParser(new PacketParserMultiplexer(integrityParsers, PacketParserMultiplexer.LenientType.FAIL_WHEN_UNHANDLED));
 
 		try {
 			cipher = Cipher.getInstance(KeyUtil.CIPHER_TRANSFORMATION);
@@ -68,7 +78,7 @@ public class SecurityPacketReceiver implements JsonPacketReceiver {
 	@Override
 	public void receivePackets(List<ObjectNode> jsonPackets) {
 		LOGGER.debug("received packets! size: " + jsonPackets.size());
-		List<PacketGroup> packets = new ArrayList<>(jsonPackets.size());
+		List<TargetPacketGroup> packets = new ArrayList<>(jsonPackets.size());
 		long minTime = System.currentTimeMillis() - 5 * 60 * 1000; // last 5 minutes allowed
 		for(ObjectNode packet : jsonPackets){
 			final PacketGroup packetGroup;
@@ -82,15 +92,22 @@ public class SecurityPacketReceiver implements JsonPacketReceiver {
 				LOGGER.info("Ignoring old packet");
 				continue;
 			}
-			PacketGroups.parseToInstancePacketGroup(packetGroup, new DefaultInstanceOptions(InstanceSourcePacket.UNUSED_SOURCE_ID, null));
-			packets.add(packetGroup);
+			TargetPacketGroup targetPacketGroup = PacketGroups.parseToTargetPacketGroup(packetGroup);
+			String packetSourceId = targetPacketGroup.getSourceId();
+			if (!packetSourceId.equals(sourceId)) {
+				LOGGER.debug("Received packet was for source: " + packetSourceId);
+			} else if(!targetPacketGroup.isTarget(fragmentId)) {
+				LOGGER.debug("Received packet wasn't for fragmentId: " + fragmentId + ". It was for these: " + targetPacketGroup.getTargetFragmentIds());
+			} else {
+				packets.add(targetPacketGroup);
+			}
 		}
 		/*
 		 * If someone sends multiple commands in a single PacketCollection, those commands might have the same time in millis,
 		 * which we want to allow. If we just updated senderLastCommandMap directly, this would not be allowed.
 		 */
 		Map<String, Long> lastCommands = new HashMap<>();
-		for(PacketGroup packetGroup : packets){
+		for(TargetPacketGroup packetGroup : packets){
 			for(Packet packet : packetGroup.getPackets()){
 				SecurityPacket securityPacket = (SecurityPacket) packet;
 				SecurityPacketType packetType = securityPacket.getPacketType();
@@ -129,7 +146,18 @@ public class SecurityPacketReceiver implements JsonPacketReceiver {
 										LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Message from " + sender + " was parsed, but it was sent before we started listening! dateMillis: " + dateMillis + " listenStartTime: " + listenStartTime);
 									} else {
 										lastCommands.put(sender, dateMillis);
-										dataReceiver.receiveData(sender, dateMillis, message);
+										JsonNode node = null;
+										try {
+											node = MAPPER.readTree(message);
+										} catch (JsonProcessingException e) {
+											LOGGER.warn("Couldn't parse message to JSON. message=" + message);
+										}
+										if (node != null) {
+											if (node.isObject()) {
+												ObjectNode objectNode = (ObjectNode) node;
+												handleObjectNode(sender, dateMillis, objectNode);
+											}
+										}
 									}
 								}
 							}
@@ -145,5 +173,25 @@ public class SecurityPacketReceiver implements JsonPacketReceiver {
 			}
 		}
 		senderLastCommandMap.putAll(lastCommands);
+	}
+	private void handleObjectNode(String sender, long expectedDateMillis, ObjectNode objectNode) {
+		final PacketGroup packetGroup;
+		try {
+			packetGroup = PARSER.parse(objectNode);
+		} catch (PacketParseException e) {
+			LOGGER.error("Unable to parse packet group", e);
+			return;
+		}
+		TargetPacketGroup targetPacketGroup = PacketGroups.parseToTargetPacketGroup(packetGroup);
+		String targetSourceId = targetPacketGroup.getSourceId();
+		if (!targetSourceId.equals(sourceId)) {
+			LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "This packet is for sourceId: " + targetSourceId);
+		} else if (!targetPacketGroup.isTarget(fragmentId)) {
+			LOGGER.info("Received packet wasn't for fragmentId: " + fragmentId + ". It was for these: " + targetPacketGroup.getTargetFragmentIds());
+		} else if (targetPacketGroup.getDateMillis() != expectedDateMillis){
+			LOGGER.warn("dateMillis didn't match expected. expectedDateMillis=" + expectedDateMillis + " actual=" + targetPacketGroup.getDateMillis());
+		} else {
+			packetGroupReceiver.receivePacketGroup(sender, targetPacketGroup);
+		}
 	}
 }

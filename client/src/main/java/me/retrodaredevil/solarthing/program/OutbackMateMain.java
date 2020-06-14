@@ -17,16 +17,19 @@ import me.retrodaredevil.solarthing.analytics.AnalyticsManager;
 import me.retrodaredevil.solarthing.analytics.MateAnalyticsHandler;
 import me.retrodaredevil.solarthing.commands.CommandProvider;
 import me.retrodaredevil.solarthing.commands.CommandProviderMultiplexer;
+import me.retrodaredevil.solarthing.commands.packets.open.CommandOpenPacket;
 import me.retrodaredevil.solarthing.commands.packets.status.AvailableCommandsListUpdater;
 import me.retrodaredevil.solarthing.config.databases.IndividualSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.config.options.ExtraOptionFlag;
 import me.retrodaredevil.solarthing.config.options.MateProgramOptions;
 import me.retrodaredevil.solarthing.config.options.ProgramType;
+import me.retrodaredevil.solarthing.couchdb.CouchDbDocumentKeyMap;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketRetriever;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketRetrieverHandler;
 import me.retrodaredevil.solarthing.misc.device.RaspberryPiCpuTemperatureListUpdater;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
+import me.retrodaredevil.solarthing.packets.collection.parsing.ObjectMapperPacketConverter;
 import me.retrodaredevil.solarthing.packets.handling.*;
 import me.retrodaredevil.solarthing.packets.handling.implementations.TimedPacketReceiver;
 import me.retrodaredevil.solarthing.packets.security.crypto.DirectoryKeyMap;
@@ -160,7 +163,12 @@ public class OutbackMateMain {
 												couchProperties,
 												SolarThingConstants.OPEN_UNIQUE_NAME
 										),
-										new SecurityPacketReceiver(new DirectoryKeyMap(new File("authorized")), actionNodeDataReceiver)
+										new SecurityPacketReceiver(
+												CouchDbDocumentKeyMap.createDefault(couchProperties),
+												actionNodeDataReceiver,
+												options.getSourceId(), options.getFragmentId(),
+												Collections.singletonList(new ObjectMapperPacketConverter(MAPPER, CommandOpenPacket.class))
+										)
 								)
 						), frequencySettings, true));
 					}

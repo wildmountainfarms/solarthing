@@ -7,6 +7,8 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
+import static java.util.Objects.requireNonNull;
+
 @SuppressWarnings("FieldCanBeLocal")
 abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements PacketHandlingOption {
 	@JsonProperty
@@ -15,12 +17,7 @@ abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements Pa
 	@JsonProperty(value = "source", required = true)
 	private String source = "default";
 	@JsonProperty(value = "fragment", required = true)
-	private Integer fragment = null;
-	/**
-	 * If someone wants to explicitly use a null fragment, they have to set this to true
-	 */
-	@JsonProperty("allow_null_fragment")
-	private boolean allowNullFragment = false;
+	private int fragment;
 	@JsonProperty
 	private Integer unique = null;
 
@@ -38,14 +35,11 @@ abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements Pa
 
 	@Override
 	public String getSourceId() {
-		return source;
+		return requireNonNull(source);
 	}
 
 	@Override
-	public Integer getFragmentId() {
-		if (fragment == null && !allowNullFragment) {
-			throw new IllegalStateException("fragment is null when allowNullFragment == false! If you want to allow null fragments, set `allow_null_fragment` to true");
-		}
+	public int getFragmentId() {
 		return fragment;
 	}
 
