@@ -10,7 +10,7 @@ import me.retrodaredevil.solarthing.annotations.NotNull;
 @JsonTypeName("SOURCE")
 @JsonDeserialize(as = ImmutableInstanceSourcePacket.class)
 @JsonExplicit
-public interface InstanceSourcePacket extends InstancePacket {
+public interface InstanceSourcePacket extends InstancePacket, SourcedPacket {
 	String DEFAULT_SOURCE_ID = "default";
 	String UNUSED_SOURCE_ID = "<UNUSED SOURCE ID THAT WILL NEVER BE IN A PACKET>";
 
@@ -25,5 +25,6 @@ public interface InstanceSourcePacket extends InstancePacket {
 	 * @return The source id
 	 */
 	@JsonProperty("sourceId")
+	@Override
 	String getSourceId();
 }

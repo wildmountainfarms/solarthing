@@ -1,9 +1,11 @@
 package me.retrodaredevil.solarthing.packets.instance;
 
-@Deprecated
+import java.util.Collection;
+
 public final class InstanceTargetPackets {
 	private InstanceTargetPackets(){ throw new UnsupportedOperationException(); }
-	public static InstanceTargetPacket create(String targetId){
-		return new ImmutableInstanceTargetPacket(targetId);
+
+	public static InstanceTargetPacket create(Collection<Integer> targetFragmentIds){
+		return new ImmutableInstanceTargetPacket(targetFragmentIds);
 	}
 }

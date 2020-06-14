@@ -6,6 +6,8 @@ package me.retrodaredevil.solarthing.packets;
  * <p>
  * It is recommended that you avoid having fields with certain words.
  * @see <a href="https://github.com/influxdata/influxql/blob/master/README.md#keywords">InfluxDB keywords to avoid</a>
+ * <p>
+ * If you're implementing this class, your subclass should be immutable.
  */
 public interface Packet {
 }

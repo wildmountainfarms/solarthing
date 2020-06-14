@@ -6,12 +6,15 @@ import me.retrodaredevil.solarthing.DataReceiver;
 import me.retrodaredevil.solarthing.JsonPacketReceiver;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.packets.Packet;
+import me.retrodaredevil.solarthing.packets.collection.DefaultInstanceOptions;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
+import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
 import me.retrodaredevil.solarthing.packets.collection.parsing.ObjectMapperPacketConverter;
 import me.retrodaredevil.solarthing.packets.collection.parsing.PacketGroupParser;
 import me.retrodaredevil.solarthing.packets.collection.parsing.PacketParserMultiplexer;
 import me.retrodaredevil.solarthing.packets.collection.parsing.SimplePacketGroupParser;
 import me.retrodaredevil.solarthing.packets.instance.InstancePacket;
+import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePacket;
 import me.retrodaredevil.solarthing.packets.security.AuthNewSenderPacket;
 import me.retrodaredevil.solarthing.packets.security.IntegrityPacket;
 import me.retrodaredevil.solarthing.packets.security.SecurityPacket;
@@ -38,7 +41,6 @@ public class SecurityPacketReceiver implements JsonPacketReceiver {
 
 	private final PublicKeyLookUp publicKeyLookUp;
 	private final DataReceiver dataReceiver;
-	private final PublicKeySave publicKeySave;
 
 	private final Cipher cipher;
 
@@ -50,12 +52,10 @@ public class SecurityPacketReceiver implements JsonPacketReceiver {
 	 *
 	 * @param publicKeyLookUp The {@link PublicKeyLookUp} to get the PublicKey for a received {@link IntegrityPacket}
 	 * @param dataReceiver The {@link DataReceiver} that receives data decrypted successfully from {@link IntegrityPacket}s
-	 * @param publicKeySave The {@link PublicKeySave} that is called for all {@link AuthNewSenderPacket} packets. It is recommended not to authorize each request unless you confirm it.
 	 */
-	public SecurityPacketReceiver(PublicKeyLookUp publicKeyLookUp, DataReceiver dataReceiver, PublicKeySave publicKeySave) {
+	public SecurityPacketReceiver(PublicKeyLookUp publicKeyLookUp, DataReceiver dataReceiver) {
 		this.publicKeyLookUp = publicKeyLookUp;
 		this.dataReceiver = dataReceiver;
-		this.publicKeySave = publicKeySave;
 
 		try {
 			cipher = Cipher.getInstance(KeyUtil.CIPHER_TRANSFORMATION);
@@ -82,6 +82,7 @@ public class SecurityPacketReceiver implements JsonPacketReceiver {
 				LOGGER.info("Ignoring old packet");
 				continue;
 			}
+			PacketGroups.parseToInstancePacketGroup(packetGroup, new DefaultInstanceOptions(InstanceSourcePacket.UNUSED_SOURCE_ID, null));
 			packets.add(packetGroup);
 		}
 		/*
@@ -139,17 +140,6 @@ public class SecurityPacketReceiver implements JsonPacketReceiver {
 						} catch (NotAuthorizedException e) {
 							LOGGER.info(SolarThingConstants.SUMMARY_MARKER, sender + " is not authorized!", e);
 						}
-					}
-				} else if(packetType == SecurityPacketType.AUTH_NEW_SENDER){
-					AuthNewSenderPacket auth = (AuthNewSenderPacket) packet;
-					String sender = auth.getSender();
-					PublicKey key = auth.getPublicKeyObject();
-					final String invalidSenderReason = sender == null ? "sender is null!" : SenderUtil.getInvalidSenderNameReason(sender);
-					if(invalidSenderReason != null){
-						LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, invalidSenderReason);
-					} else {
-						LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Saving public key. Sender: " + sender);
-						publicKeySave.putKey(sender, key);
 					}
 				}
 			}

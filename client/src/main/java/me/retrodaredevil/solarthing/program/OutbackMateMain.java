@@ -160,7 +160,7 @@ public class OutbackMateMain {
 												couchProperties,
 												SolarThingConstants.OPEN_UNIQUE_NAME
 										),
-										new SecurityPacketReceiver(new DirectoryKeyMap(new File("authorized")), actionNodeDataReceiver, new DirectoryKeyMap(new File("unauthorized")))
+										new SecurityPacketReceiver(new DirectoryKeyMap(new File("authorized")), actionNodeDataReceiver)
 								)
 						), frequencySettings, true));
 					}

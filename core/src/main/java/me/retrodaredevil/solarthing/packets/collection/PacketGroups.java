@@ -4,6 +4,7 @@ import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.instance.InstanceFragmentIndicatorPacket;
 import me.retrodaredevil.solarthing.packets.instance.InstancePacket;
 import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePacket;
+import me.retrodaredevil.solarthing.packets.instance.InstanceTargetPacket;
 
 import java.util.*;
 
@@ -37,10 +38,6 @@ public final class PacketGroups {
 	public static FragmentedPacketGroup createFragmentedPacketGroup(Collection<? extends InstancePacketGroup> instancePackets, long dateMillis) {
 		return new ImmutableFragmentedPacketGroup(instancePackets, dateMillis);
 	}
-	@Deprecated
-	public static InstancePacketGroup parseToInstancePacketGroup(PacketGroup group){
-		return parseToInstancePacketGroup(group, DefaultInstanceOptions.DEFAULT_DEFAULT_INSTANCE_OPTIONS);
-	}
 	public static InstancePacketGroup parseToInstancePacketGroup(PacketGroup group, DefaultInstanceOptions defaultInstanceOptions){
 		if(group instanceof InstancePacketGroup){
 			return (InstancePacketGroup) group;
@@ -62,10 +59,35 @@ public final class PacketGroups {
 		}
 		return createInstancePacketGroup(packets, group.getDateMillis(), sourceId, fragmentId);
 	}
-	@Deprecated
-	public static Map<String, List<InstancePacketGroup>> parsePackets(Collection<? extends PacketGroup> groups){
-		return parsePackets(groups, DefaultInstanceOptions.DEFAULT_DEFAULT_INSTANCE_OPTIONS);
+	public static TargetPacketGroup createTargetPacketGroup(Collection<? extends Packet> packets, long dateMillis, String sourceId, Collection<Integer> targetFragmentIds) {
+		return new ImmutableTargetPacketGroup(packets, dateMillis, sourceId, targetFragmentIds);
 	}
+	public static TargetPacketGroup parseToTargetPacketGroup(PacketGroup packetGroup) {
+		if (packetGroup instanceof TargetPacketGroup) {
+			return (TargetPacketGroup) packetGroup;
+		}
+		List<Packet> packets = new ArrayList<>();
+		InstanceSourcePacket sourcePacket = null;
+		InstanceTargetPacket targetPacket = null;
+		for (Packet packet : packetGroup.getPackets()) {
+			if (packet instanceof InstancePacket) {
+				InstancePacket instancePacket = (InstancePacket) packet;
+				switch (instancePacket.getPacketType()) {
+					case SOURCE: sourcePacket = (InstanceSourcePacket) packet; break;
+					case TARGET: targetPacket = (InstanceTargetPacket) packet; break;
+				}
+			} else {
+				packets.add(packet);
+			}
+		}
+		return createTargetPacketGroup(
+				packets,
+				packetGroup.getDateMillis(),
+				sourcePacket == null ? InstanceSourcePacket.UNUSED_SOURCE_ID : sourcePacket.getSourceId(),
+				targetPacket == null ? Collections.emptyList() : targetPacket.getTargetFragmentIds()
+		);
+	}
+
 	public static Map<String, List<InstancePacketGroup>> parsePackets(Collection<? extends PacketGroup> groups, DefaultInstanceOptions defaultInstanceOptions){
 		Map<String, List<InstancePacketGroup>> map = new HashMap<>();
 		for(PacketGroup group : groups){

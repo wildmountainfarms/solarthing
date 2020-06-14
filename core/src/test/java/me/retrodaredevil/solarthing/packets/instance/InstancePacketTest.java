@@ -1,28 +1,31 @@
 package me.retrodaredevil.solarthing.packets.instance;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import me.retrodaredevil.solarthing.util.JacksonUtil;
+import me.retrodaredevil.solarthing.PacketTestUtil;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.Arrays;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class InstancePacketTest {
 
 	@Test
 	void test() throws JsonProcessingException {
-		ObjectMapper mapper = JacksonUtil.defaultMapper();
 
 		InstanceFragmentIndicatorPacket fragmentPacket = InstanceFragmentIndicatorPackets.create(3);
-		String fragmentJson = mapper.writeValueAsString(fragmentPacket);
-		InstanceFragmentIndicatorPacket deserializedFragment = mapper.readValue(fragmentJson, InstanceFragmentIndicatorPacket.class);
-		String fragmentJson2 = mapper.writeValueAsString(deserializedFragment);
-		assertEquals(fragmentJson, fragmentJson2);
+		PacketTestUtil.testJson(fragmentPacket, InstanceFragmentIndicatorPacket.class);
+		PacketTestUtil.testJson(fragmentPacket, InstancePacket.class);
 
 		InstanceSourcePacket sourcePacket = InstanceSourcePackets.create("coolio");
-		String sourceJson = mapper.writeValueAsString(sourcePacket);
-		InstanceSourcePacket deserializedSource = mapper.readValue(sourceJson, InstanceSourcePacket.class);
-		String sourceJson2 = mapper.writeValueAsString(deserializedSource);
-		assertEquals(sourceJson, sourceJson2);
+		PacketTestUtil.testJson(sourcePacket, InstanceSourcePacket.class);
+		PacketTestUtil.testJson(sourcePacket, InstancePacket.class);
+
+		InstanceTargetPacket targetPacket = InstanceTargetPackets.create(Arrays.asList(1, 5, 9));
+		assertTrue(targetPacket.isTarget(1));
+		assertFalse(targetPacket.isTarget(2));
+		PacketTestUtil.testJson(targetPacket, InstanceTargetPacket.class);
+		PacketTestUtil.testJson(targetPacket, InstancePacket.class);
 	}
 }

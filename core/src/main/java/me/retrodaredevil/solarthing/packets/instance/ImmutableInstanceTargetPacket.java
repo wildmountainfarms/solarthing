@@ -2,18 +2,22 @@ package me.retrodaredevil.solarthing.packets.instance;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 
-@Deprecated
+import java.util.Collection;
+import java.util.LinkedHashSet;
+
 final class ImmutableInstanceTargetPacket implements InstanceTargetPacket {
-	private final String targetId;
+	private final Collection<Integer> targetFragmentIds;
 
 	@JsonCreator
-	ImmutableInstanceTargetPacket(@JsonProperty(value = "targetId", required = true) String targetId) {
-		this.targetId = targetId;
+	ImmutableInstanceTargetPacket(@JsonProperty(value = "targets", required = true) Collection<Integer> targetFragmentIds) {
+		this.targetFragmentIds = targetFragmentIds == null ? null : new LinkedHashSet<>(targetFragmentIds);
 	}
 
-	@Override
-	public String getTargetId() {
-		return targetId;
+	@JsonProperty("targets")
+    @Override
+	public @Nullable Collection<Integer> getTargetFragmentIds() {
+		return targetFragmentIds;
 	}
 }

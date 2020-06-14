@@ -7,13 +7,15 @@ import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 
 import me.retrodaredevil.solarthing.annotations.NotNull;
 
+/**
+ * This type of packet can be used to make sure data is coming from a certain sender.
+ */
 @JsonTypeName("INTEGRITY_PACKET")
 @JsonDeserialize(as = ImmutableIntegrityPacket.class)
 @JsonExplicit
 public interface IntegrityPacket extends SecurityPacket, SenderPacket {
-	@NotNull
 	@Override
-	default SecurityPacketType getPacketType(){
+	default @NotNull SecurityPacketType getPacketType(){
 		return SecurityPacketType.INTEGRITY_PACKET;
 	}
 
@@ -22,7 +24,7 @@ public interface IntegrityPacket extends SecurityPacket, SenderPacket {
 	 * <p>
 	 * When unencrypted it looks like this:
 	 * [dateMillis in hex],[data]
-	 * @return The data. First encrypted with the sender's private key, then encrypted in base64
+	 * @return The data. First encrypted with the sender's private key, then encoded in base64
 	 */
 	@JsonProperty("encryptedData")
 	String getEncryptedData();

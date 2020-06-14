@@ -4,24 +4,22 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-
 import me.retrodaredevil.solarthing.annotations.NotNull;
+import me.retrodaredevil.solarthing.annotations.Nullable;
+
+import java.util.Collection;
 
 @JsonTypeName("TARGET")
 @JsonDeserialize(as = ImmutableInstanceTargetPacket.class)
 @JsonExplicit
-public interface InstanceTargetPacket extends InstancePacket {
+public interface InstanceTargetPacket extends InstancePacket, TargetPacket {
 
-	@NotNull
 	@Override
-	default InstancePacketType getPacketType() {
+	default @NotNull InstancePacketType getPacketType() {
 		return InstancePacketType.TARGET;
 	}
 
-	/**
-	 * Should be serialized as "targetId"
-	 * @return The target id
-	 */
-	@JsonProperty("targetId")
-	String getTargetId();
+	@JsonProperty("targets")
+	@Override
+	@Nullable Collection<Integer> getTargetFragmentIds();
 }

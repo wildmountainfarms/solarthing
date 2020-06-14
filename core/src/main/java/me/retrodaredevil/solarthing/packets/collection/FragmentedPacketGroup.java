@@ -7,8 +7,7 @@ import java.util.Objects;
 /**
  * Represents a {@link PacketGroup} where individual packets could have different fragment IDs
  */
-public interface FragmentedPacketGroup extends PacketGroup {
-	String getSourceId();
+public interface FragmentedPacketGroup extends SourcedPacketGroup {
 	Integer getFragmentId(Packet packet);
 
 	default boolean hasFragmentId(Integer fragmentId) {
