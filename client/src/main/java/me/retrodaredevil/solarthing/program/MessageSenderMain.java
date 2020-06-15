@@ -12,10 +12,7 @@ import me.retrodaredevil.solarthing.misc.device.DevicePacket;
 import me.retrodaredevil.solarthing.misc.error.ErrorPacket;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
-import me.retrodaredevil.solarthing.packets.collection.parsing.ObjectMapperPacketConverter;
-import me.retrodaredevil.solarthing.packets.collection.parsing.PacketGroupParser;
-import me.retrodaredevil.solarthing.packets.collection.parsing.PacketParserMultiplexer;
-import me.retrodaredevil.solarthing.packets.collection.parsing.SimplePacketGroupParser;
+import me.retrodaredevil.solarthing.packets.collection.parsing.*;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.instance.InstancePacket;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacket;
@@ -49,13 +46,9 @@ public class MessageSenderMain {
 
 	public static int startMessageSender(MessageSenderProgramOptions options) {
 		CouchDbQueryHandler queryHandler = SolarMain.createCouchDbQueryHandler(options);
-		PacketGroupParser statusParser = new SimplePacketGroupParser(new PacketParserMultiplexer(Arrays.asList(
-				new ObjectMapperPacketConverter(PARSE_MAPPER, SolarStatusPacket.class),
-				new ObjectMapperPacketConverter(PARSE_MAPPER, SolarExtraPacket.class),
-				new ObjectMapperPacketConverter(PARSE_MAPPER, DevicePacket.class),
-				new ObjectMapperPacketConverter(PARSE_MAPPER, ErrorPacket.class),
-				new ObjectMapperPacketConverter(PARSE_MAPPER, InstancePacket.class)
-		), PacketParserMultiplexer.LenientType.FAIL_WHEN_UNHANDLED_WITH_EXCEPTION));
+		PacketGroupParser statusParser = new SimplePacketGroupParser(new LenientPacketParser(
+				MultiPacketConverter.createFrom(PARSE_MAPPER, SolarStatusPacket.class, SolarExtraPacket.class, DevicePacket.class, ErrorPacket.class, InstancePacket.class)
+		));
 		final Map<String, MessageSender> messageSenderMap;
 		try {
 			messageSenderMap = getMessageSenderMap(options);

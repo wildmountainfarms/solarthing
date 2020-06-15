@@ -28,7 +28,6 @@ import me.retrodaredevil.solarthing.solar.outback.fx.event.FXACModeChangePacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.event.FXOperationalModeChangePacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.extra.DailyFXPacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPacket;
-import me.retrodaredevil.solarthing.solar.outback.mx.extra.DailyMXPacket;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.ektorp.CouchDbInstance;
@@ -55,17 +54,12 @@ public class SolarThingGraphQLService {
 	public SolarThingGraphQLService(DefaultInstanceOptions defaultInstanceOptions, ObjectMapper originalObjectMapper, CouchProperties couchProperties) {
 		this.defaultInstanceOptions = defaultInstanceOptions;
 		ObjectMapper objectMapper = JacksonUtil.lenientMapper(originalObjectMapper.copy());
-		statusParser = new SimplePacketGroupParser(new PacketParserMultiplexer(Arrays.asList(
-				new ObjectMapperPacketConverter(objectMapper, SolarStatusPacket.class),
-				new ObjectMapperPacketConverter(objectMapper, SolarExtraPacket.class),
-				new ObjectMapperPacketConverter(objectMapper, DevicePacket.class),
-				new ObjectMapperPacketConverter(objectMapper, InstancePacket.class)
-		), PacketParserMultiplexer.LenientType.FULLY_LENIENT));
-		eventParser = new SimplePacketGroupParser(new PacketParserMultiplexer(Arrays.asList(
-				new ObjectMapperPacketConverter(objectMapper, SolarEventPacket.class),
-				new ObjectMapperPacketConverter(objectMapper, MateCommandFeedbackPacket.class),
-				new ObjectMapperPacketConverter(objectMapper, InstancePacket.class)
-		), PacketParserMultiplexer.LenientType.FULLY_LENIENT));
+		statusParser = new SimplePacketGroupParser(new LenientPacketParser(
+				MultiPacketConverter.createFrom(objectMapper, SolarStatusPacket.class, SolarExtraPacket.class, DevicePacket.class, InstancePacket.class)
+		));
+		eventParser = new SimplePacketGroupParser(new LenientPacketParser(
+				MultiPacketConverter.createFrom(objectMapper, SolarEventPacket.class, MateCommandFeedbackPacket.class, MateCommandFeedbackPacket.class, InstancePacket.class)
+		));
 
 		final HttpClient httpClient = EktorpUtil.createHttpClient(couchProperties);
 		CouchDbInstance instance = new StdCouchDbInstance(httpClient);

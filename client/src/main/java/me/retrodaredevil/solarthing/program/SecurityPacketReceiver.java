@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import me.retrodaredevil.solarthing.JsonPacketReceiver;
 import me.retrodaredevil.solarthing.PacketGroupReceiver;
 import me.retrodaredevil.solarthing.SolarThingConstants;
+import me.retrodaredevil.solarthing.packets.DocumentedPacket;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
@@ -30,10 +31,7 @@ public class SecurityPacketReceiver implements JsonPacketReceiver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SecurityPacketReceiver.class);
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
 
-	private static final PacketGroupParser PARSER = new SimplePacketGroupParser(new PacketParserMultiplexer(Arrays.asList(
-			new ObjectMapperPacketConverter(MAPPER, SecurityPacket.class),
-			new ObjectMapperPacketConverter(MAPPER, InstancePacket.class)
-	), PacketParserMultiplexer.LenientType.FAIL_WHEN_UNHANDLED)); // This parser will fail if there's a packet it doesn't recognize
+	private static final PacketGroupParser PARSER = new SimplePacketGroupParser(MultiPacketConverter.createFrom(MAPPER, SecurityPacket.class, InstancePacket.class)); // This parser will fail if there's a packet it doesn't recognize
 
 	private final PublicKeyLookUp publicKeyLookUp;
 	private final PacketGroupReceiver packetGroupReceiver;
@@ -54,18 +52,15 @@ public class SecurityPacketReceiver implements JsonPacketReceiver {
 	 * @param sourceId
 	 * @param fragmentId
 	 */
-	public SecurityPacketReceiver(PublicKeyLookUp publicKeyLookUp, PacketGroupReceiver packetGroupReceiver, String sourceId, int fragmentId, List<JsonPacketParser> parsers) {
+	public SecurityPacketReceiver(PublicKeyLookUp publicKeyLookUp, PacketGroupReceiver packetGroupReceiver, String sourceId, int fragmentId, Collection<? extends Class<? extends DocumentedPacket<?>>> packetClasses) {
 		this.publicKeyLookUp = publicKeyLookUp;
 		this.packetGroupReceiver = packetGroupReceiver;
 		this.sourceId = sourceId;
 		this.fragmentId = fragmentId;
 
-		List<JsonPacketParser> integrityParsers = new ArrayList<>(parsers);
-		integrityParsers.addAll(Arrays.asList(
-				new ObjectMapperPacketConverter(MAPPER, SecurityPacket.class),
-				new ObjectMapperPacketConverter(MAPPER, InstancePacket.class)
-		));
-		integrityParser = new SimplePacketGroupParser(new PacketParserMultiplexer(integrityParsers, PacketParserMultiplexer.LenientType.FAIL_WHEN_UNHANDLED));
+		List<Class<? extends DocumentedPacket<?>>> classList = new ArrayList<>(packetClasses);
+		classList.add(InstancePacket.class);
+		integrityParser = new SimplePacketGroupParser(MultiPacketConverter.createFrom(MAPPER, classList));
 
 		try {
 			cipher = Cipher.getInstance(KeyUtil.CIPHER_TRANSFORMATION);
@@ -177,7 +172,7 @@ public class SecurityPacketReceiver implements JsonPacketReceiver {
 	private void handleObjectNode(String sender, long expectedDateMillis, ObjectNode objectNode) {
 		final PacketGroup packetGroup;
 		try {
-			packetGroup = PARSER.parse(objectNode);
+			packetGroup = integrityParser.parse(objectNode);
 		} catch (PacketParseException e) {
 			LOGGER.error("Unable to parse packet group", e);
 			return;

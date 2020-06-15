@@ -29,13 +29,11 @@ import me.retrodaredevil.solarthing.couchdb.CouchDbPacketRetriever;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketRetrieverHandler;
 import me.retrodaredevil.solarthing.misc.device.RaspberryPiCpuTemperatureListUpdater;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
-import me.retrodaredevil.solarthing.packets.collection.parsing.ObjectMapperPacketConverter;
 import me.retrodaredevil.solarthing.packets.handling.*;
 import me.retrodaredevil.solarthing.packets.handling.implementations.TimedPacketReceiver;
-import me.retrodaredevil.solarthing.packets.security.crypto.DirectoryKeyMap;
+import me.retrodaredevil.solarthing.solar.outback.FXStatusListUpdater;
 import me.retrodaredevil.solarthing.solar.outback.MatePacketCreator49;
 import me.retrodaredevil.solarthing.solar.outback.OutbackDuplicatePacketRemover;
-import me.retrodaredevil.solarthing.solar.outback.FXStatusListUpdater;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXEventUpdaterListReceiver;
 import me.retrodaredevil.solarthing.solar.outback.fx.charge.FXChargingSettings;
@@ -167,7 +165,7 @@ public class OutbackMateMain {
 												CouchDbDocumentKeyMap.createDefault(couchProperties),
 												actionNodeDataReceiver,
 												options.getSourceId(), options.getFragmentId(),
-												Collections.singletonList(new ObjectMapperPacketConverter(MAPPER, CommandOpenPacket.class))
+												Collections.singleton(CommandOpenPacket.class)
 										)
 								)
 						), frequencySettings, true));

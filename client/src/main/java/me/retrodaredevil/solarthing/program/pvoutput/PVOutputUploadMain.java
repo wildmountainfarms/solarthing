@@ -78,13 +78,9 @@ public class PVOutputUploadMain {
 			CouchDbInstance instance = new StdCouchDbInstance(httpClient);
 			queryHandler = new CouchDbQueryHandler(new StdCouchDbConnector(SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, instance));
 		}
-		PacketGroupParser statusParser = new SimplePacketGroupParser(new PacketParserMultiplexer(Arrays.asList(
-				new ObjectMapperPacketConverter(MAPPER, SolarStatusPacket.class),
-				new ObjectMapperPacketConverter(MAPPER, SolarExtraPacket.class),
-				new ObjectMapperPacketConverter(MAPPER, DevicePacket.class),
-				new ObjectMapperPacketConverter(MAPPER, ErrorPacket.class),
-				new ObjectMapperPacketConverter(MAPPER, InstancePacket.class)
-		), PacketParserMultiplexer.LenientType.FAIL_WHEN_UNHANDLED_WITH_EXCEPTION));
+		PacketGroupParser statusParser = new SimplePacketGroupParser(new LenientPacketParser(
+				MultiPacketConverter.createFrom(MAPPER, SolarStatusPacket.class, SolarExtraPacket.class, DevicePacket.class, ErrorPacket.class, InstancePacket.class)
+		));
 
 		OkHttpClient client = OkHttpUtil.configure(new OkHttpClient.Builder(), options.getApiKey(), options.getSystemId())
 				.addInterceptor(new HttpLoggingInterceptor(LOGGER::debug).setLevel(HttpLoggingInterceptor.Level.BASIC))
