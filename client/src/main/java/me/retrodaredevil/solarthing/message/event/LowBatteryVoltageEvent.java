@@ -34,7 +34,7 @@ public class LowBatteryVoltageEvent implements MessageEvent {
 		for (Packet packet : current.getPackets()) {
 			if (packet instanceof BatteryVoltage) {
 				float voltage = ((BatteryVoltage) packet).getBatteryVoltage();
-				if (voltage + 0.001f <= batteryVoltage) {
+				if (voltage - 0.001f <= batteryVoltage) {
 					currentBatteryVoltage = voltage;
 					break;
 				}

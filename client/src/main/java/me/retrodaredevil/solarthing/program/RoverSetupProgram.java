@@ -305,6 +305,9 @@ public final class RoverSetupProgram {
 
 							if(batteryType != null) {
 								write.setBatteryType(batteryType);
+								if (batteryType.isUser()) {
+									System.err.println("You set one of the user battery types. This will likely not work. You will have to manually change this on your Rover");
+								}
 							} else {
 								System.err.println(toSet + " not supported as a battery type!");
 							}
@@ -450,12 +453,12 @@ public final class RoverSetupProgram {
 	}
 	private static BatteryType parseBatteryType(String string) {
 		switch(string){
-			case "user": return BatteryType.USER;
+			case "user-unlocked": return BatteryType.USER_UNLOCKED;
 			case "open": case "flooded": return BatteryType.OPEN;
 			case "sealed": return BatteryType.SEALED;
 			case "gel": return BatteryType.GEL;
 			case "lithium": return BatteryType.LITHIUM;
-			case "self-customized": case "custom": case "customized": return BatteryType.SELF_CUSTOMIZED;
+			case "self-customized": case "custom": case "customized": case "user": return BatteryType.USER_LOCKED;
 			default: return null;
 		}
 	}

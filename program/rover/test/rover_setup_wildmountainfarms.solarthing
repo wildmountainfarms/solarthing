@@ -1,5 +1,5 @@
 # Rover Setup Config
-batterytype                     custom
+#batterytype                     user # You cannot set this here (you can only set this manually)
 systemvoltage                   24
 
 # Under Voltage

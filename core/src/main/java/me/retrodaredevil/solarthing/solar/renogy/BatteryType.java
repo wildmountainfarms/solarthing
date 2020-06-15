@@ -7,14 +7,16 @@ import me.retrodaredevil.solarthing.packets.CodeMode;
  * <p><p>
  * PDU address: 0xE004, Bytes: 2
  * <p>
- * Note: {@link BatteryType#USER} and {@link BatteryType#SELF_CUSTOMIZED} represent the same thing but, {@link BatteryType#USER}
+ * Note: {@link BatteryType#USER_UNLOCKED} and {@link BatteryType#USER_LOCKED} represent the same thing but, {@link BatteryType#USER_UNLOCKED}
  * is used on Rover Li models
  */
 public enum BatteryType implements CodeMode {
 	/**
-	 * Although this isn't documented, this is used for the USER type on Rover Li 60A
+	 * This represents the User battery type when it is directly configured from the Rover. When this is selected, charging parameters are unlocked
+	 * <p>
+	 * AKA self customized
 	 */
-	USER("user", 0),
+	USER_UNLOCKED("user-unlocked", 0),
 	/**
 	 * AKA Flooded
 	 */
@@ -23,9 +25,11 @@ public enum BatteryType implements CodeMode {
 	GEL("gel", 3),
 	LITHIUM("lithium", 4),
 	/**
-	 * AKA User
+	 * This represents the User battery type when it is configured over Modbus (remotely). When this is selected, charging parameters are locked and cannot be changed over Modbus (remotely)
+	 * <p>
+	 * AKA self customized
 	 */
-	SELF_CUSTOMIZED("self-customized", 5)
+	USER_LOCKED("user-locked", 5)
 	;
 	// manual here has battery types: https://www.renogy.com/content/RNG-CTRL-RVR60/RVR60-Manual.pdf
 
@@ -45,5 +49,9 @@ public enum BatteryType implements CodeMode {
 	@Override
 	public String getModeName() {
 		return name;
+	}
+
+	public boolean isUser() {
+		return this == USER_LOCKED || this == USER_UNLOCKED;
 	}
 }
