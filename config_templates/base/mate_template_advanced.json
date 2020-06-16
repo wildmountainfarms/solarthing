@@ -12,16 +12,5 @@
     "1": 0,
     "2": 32
   },
-  "master_fx": 1,
-  "fx_charge_settings": {
-    "rebulk_voltage": null,
-    "absorb_voltage": 29.2,
-    "absorb_time_hours": 1.5,
-    "float_voltage": 27.2,
-    "float_time_hours": 1.0,
-    "refloat_voltage": 25.0,
-    "equalize_voltage": 30.0,
-    "equalize_time_hours": 2.0
-  },
   "analytics_enabled": true
 }

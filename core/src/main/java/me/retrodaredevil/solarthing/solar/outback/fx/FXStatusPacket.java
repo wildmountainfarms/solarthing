@@ -18,6 +18,8 @@ import java.util.Set;
 
 /**
  * Represents an FX Status Packet from an Outback Mate
+ * <p>
+ * Note that FXs connected to port 1 are master inverters if stacking is enabled. If on port 0 stacking is not enabled and this FX can be treated as the master FX.
  */
 @JsonDeserialize(as = ImmutableFXStatusPacket.class)
 @JsonTypeName("FX_STATUS")

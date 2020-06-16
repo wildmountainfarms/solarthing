@@ -28,10 +28,6 @@ public class MateProgramOptions extends PacketHandlingOptionBase implements IOBu
 
 	@JsonProperty("fx_warning_ignore")
 	private Map<Integer, Integer> fxWarningIgnoreMap;
-	@JsonProperty("master_fx")
-	private Integer masterFX = null;
-	@JsonProperty("fx_charge_settings")
-	private MateFXChargingSettings mateFXChargingSettings;
 
 	@JsonProperty("commands")
 	private List<Command> commands;
@@ -79,20 +75,6 @@ public class MateProgramOptions extends PacketHandlingOptionBase implements IOBu
 			return Collections.emptyMap();
 		}
 		return r;
-	}
-	public @Nullable Integer getMasterFXAddress(){
-		return masterFX;
-	}
-	public @Nullable FXChargingSettings getFXChargingSettings(){
-		MateFXChargingSettings settings = this.mateFXChargingSettings;
-		if(settings == null){
-			return null;
-		}
-		return new FXChargingSettings(
-				settings.rebulkSetpoint, settings.absorbSetpoint, Math.round(settings.absorbSetTimeLimit * 60 * 60 * 1000),
-				settings.floatSetpoint, Math.round(settings.floatTimePeriod * 60 * 60 * 1000), settings.refloatSetpoint,
-				settings.equalizeSetpoint, Math.round(settings.equalizeTimePeriod * 60 * 60 * 1000)
-		);
 	}
 	public Map<String, File> getCommandFileMap() {
 		Map<String, File> commandFileMap = new HashMap<>();

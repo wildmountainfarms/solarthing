@@ -11,6 +11,7 @@ import me.retrodaredevil.solarthing.solar.extra.SolarExtraPacketType;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXIdentityInfo;
 
+@Deprecated
 public class ImmutableFXChargingPacket implements FXChargingPacket {
 	private final int address;
 
@@ -27,6 +28,7 @@ public class ImmutableFXChargingPacket implements FXChargingPacket {
 	private final SupplementaryIdentifier identifier;
 	private final IdentityInfo identityInfo;
 
+	@Deprecated
 	public ImmutableFXChargingPacket(
 			OutbackIdentifier outbackIdentifier,
 			FXChargingMode fxChargingMode,

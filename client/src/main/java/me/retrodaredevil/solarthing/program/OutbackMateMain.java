@@ -36,8 +36,6 @@ import me.retrodaredevil.solarthing.solar.outback.MatePacketCreator49;
 import me.retrodaredevil.solarthing.solar.outback.OutbackDuplicatePacketRemover;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXEventUpdaterListReceiver;
-import me.retrodaredevil.solarthing.solar.outback.fx.charge.FXChargingSettings;
-import me.retrodaredevil.solarthing.solar.outback.fx.charge.FXChargingUpdaterListReceiver;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXEventUpdaterListReceiver;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import me.retrodaredevil.solarthing.util.time.DailyIdentifier;
@@ -214,10 +212,6 @@ public class OutbackMateMain {
 					new MXEventUpdaterListReceiver(eventPacketListReceiverHandler.getPacketListReceiverAccepter()),
 					new FXStatusListUpdater(new DailyIdentifier(options.getTimeZone()))
 			));
-			FXChargingSettings fxChargingSettings = options.getFXChargingSettings();
-			if(fxChargingSettings != null){
-				packetListReceiverList.add(new FXChargingUpdaterListReceiver(options.getMasterFXAddress(), fxChargingSettings));
-			}
 			if (options.isAllowCommands()) {
 				packetListReceiverList.add(new AvailableCommandsListUpdater(options.getCommandInfoList()));
 			}

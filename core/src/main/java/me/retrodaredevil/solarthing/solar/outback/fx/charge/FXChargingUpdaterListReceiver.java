@@ -15,6 +15,7 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
+@Deprecated
 public class FXChargingUpdaterListReceiver implements PacketListReceiver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FXChargingUpdaterListReceiver.class);
 	private final @Nullable Integer masterFXAddress;

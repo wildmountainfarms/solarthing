@@ -12,9 +12,13 @@ import me.retrodaredevil.solarthing.annotations.Nullable;
 
 import me.retrodaredevil.solarthing.annotations.NotNull;
 
+/**
+ * Note that data from this was never accurate because it didn't take temperature compensation into account
+ */
 @JsonDeserialize(as = ImmutableFXChargingPacket.class)
 @JsonTypeName("FX_CHARGING")
 @JsonExplicit
+@Deprecated
 public interface FXChargingPacket extends SupplementarySolarExtraPacket, OutbackData {
 	@NotNull
 	@Override
