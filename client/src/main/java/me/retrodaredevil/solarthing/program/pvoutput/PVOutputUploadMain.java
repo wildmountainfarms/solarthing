@@ -15,9 +15,7 @@ import me.retrodaredevil.solarthing.couchdb.CouchDbQueryHandler;
 import me.retrodaredevil.solarthing.couchdb.SolarThingCouchDb;
 import me.retrodaredevil.solarthing.misc.device.DevicePacket;
 import me.retrodaredevil.solarthing.misc.error.ErrorPacket;
-import me.retrodaredevil.solarthing.packets.collection.DefaultInstanceOptions;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
-import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
 import me.retrodaredevil.solarthing.packets.collection.parsing.*;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.instance.InstancePacket;
@@ -36,7 +34,6 @@ import me.retrodaredevil.solarthing.util.JacksonUtil;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.ektorp.CouchDbInstance;
-import org.ektorp.ViewQuery;
 import org.ektorp.http.HttpClient;
 import org.ektorp.impl.StdCouchDbConnector;
 import org.ektorp.impl.StdCouchDbInstance;
@@ -87,7 +84,7 @@ public class PVOutputUploadMain {
 				.build();
 		Retrofit retrofit = RetrofitUtil.defaultBuilder().client(client).build();
 		PVOutputService service = retrofit.create(PVOutputService.class);
-		PVOutputHandler handler = new PVOutputHandler(timeZone, options.getRequiredIdentifierMap());
+		PVOutputHandler handler = new PVOutputHandler(timeZone, options.getRequiredIdentifierMap(), options.getVoltageIdentifierFragmentMatcher());
 		if(extraArgs.length >= 2) {
 			System.out.println("Starting range upload");
 			String fromDateString = extraArgs[0];

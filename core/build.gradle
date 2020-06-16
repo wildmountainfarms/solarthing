@@ -15,5 +15,10 @@ dependencies {
     api "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
 
     api 'org.ektorp:org.ektorp:1.5.0'
+
+
+    // we'll add this soon
+    // https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on
+//    api group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.65.01'
 }
 

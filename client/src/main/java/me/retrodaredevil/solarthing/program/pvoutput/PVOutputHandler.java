@@ -6,10 +6,12 @@ import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.packets.identification.IdentifierFragment;
+import me.retrodaredevil.solarthing.packets.identification.IdentifierFragmentMatcher;
 import me.retrodaredevil.solarthing.pvoutput.SimpleDate;
 import me.retrodaredevil.solarthing.pvoutput.SimpleTime;
 import me.retrodaredevil.solarthing.pvoutput.data.AddStatusParameters;
 import me.retrodaredevil.solarthing.pvoutput.data.AddStatusParametersBuilder;
+import me.retrodaredevil.solarthing.solar.common.PVCurrentAndVoltage;
 import me.retrodaredevil.solarthing.solar.daily.DailyCalc;
 import me.retrodaredevil.solarthing.solar.daily.DailyConfig;
 import me.retrodaredevil.solarthing.solar.daily.DailyPair;
@@ -28,10 +30,12 @@ public class PVOutputHandler {
 
 	private final TimeZone timeZone;
 	private final Map<Integer, List<String>> requiredIdentifierMap;
+	private final IdentifierFragmentMatcher voltageIdentifierFragmentMatcher;
 
-	public PVOutputHandler(TimeZone timeZone, Map<Integer, List<String>> requiredIdentifierMap) {
+	public PVOutputHandler(TimeZone timeZone, Map<Integer, List<String>> requiredIdentifierMap, IdentifierFragmentMatcher voltageIdentifierFragmentMatcher) {
 		this.timeZone = timeZone;
 		this.requiredIdentifierMap = requiredIdentifierMap;
+		this.voltageIdentifierFragmentMatcher = voltageIdentifierFragmentMatcher;
 	}
 	public boolean checkPackets(long dayStartTimeMillis, List<FragmentedPacketGroup> packetGroupList) {
 		if (packetGroupList.isEmpty()) {
@@ -75,6 +79,18 @@ public class PVOutputHandler {
 				packetGroupList,
 				new DailyConfig(dayStartTimeMillis + 3 * 60 * 60 * 1000, dayStartTimeMillis + 10 * 60 * 60 * 1000)
 		);
+		for (Packet packet : latestPacketGroup.getPackets()) {
+			if (packet instanceof PVCurrentAndVoltage) {
+				Integer fragmentId = latestPacketGroup.getFragmentId(packet);
+				PVCurrentAndVoltage pvCurrentAndVoltage = (PVCurrentAndVoltage) packet;
+				IdentifierFragment identifierFragment = IdentifierFragment.create(fragmentId, pvCurrentAndVoltage.getIdentifier());
+				if (voltageIdentifierFragmentMatcher.matches(identifierFragment)) {
+					float voltage = pvCurrentAndVoltage.getInputVoltage().floatValue();
+					addStatusParametersBuilder.setVoltage(voltage);
+					break;
+				}
+			}
+		}
 		return addStatusParametersBuilder.build();
 	}
 	private static AddStatusParametersBuilder createStatusBuilder(TimeZone timeZone, long dateMillis) {

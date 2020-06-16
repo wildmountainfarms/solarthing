@@ -1,8 +1,12 @@
 package me.retrodaredevil.solarthing.config.options;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
+import me.retrodaredevil.solarthing.packets.identification.IdentifierFragment;
+import me.retrodaredevil.solarthing.packets.identification.IdentifierFragmentMatcher;
+import me.retrodaredevil.solarthing.packets.identification.StringIdentifierFragmentMatcher;
 
 import java.util.Collections;
 import java.util.List;
@@ -21,6 +25,9 @@ public class PVOutputUploadProgramOptions extends DatabaseTimeZoneOptionBase imp
 
 	@JsonProperty(AnalyticsOption.PROPERTY_NAME)
 	private boolean isAnalyticsEnabled = AnalyticsOption.DEFAULT_IS_ANALYTICS_ENABLED;
+
+	@JsonProperty("voltage_identifier")
+	private IdentifierFragmentObject voltageIdentifierFragmentObject = null;
 
 	@Override
 	public ProgramType getProgramType() {
@@ -45,5 +52,23 @@ public class PVOutputUploadProgramOptions extends DatabaseTimeZoneOptionBase imp
 			return Collections.emptyMap();
 		}
 		return r;
+	}
+	public IdentifierFragmentMatcher getVoltageIdentifierFragmentMatcher() {
+		IdentifierFragmentObject object = voltageIdentifierFragmentObject;
+		if (object == null) {
+			return IdentifierFragmentMatcher.NO_MATCH;
+		}
+		return object.identifierFragmentMatcher;
+	}
+
+	static class IdentifierFragmentObject {
+		private final IdentifierFragmentMatcher identifierFragmentMatcher;
+		@JsonCreator
+		IdentifierFragmentObject(
+				@JsonProperty("fragment") int fragmentId,
+				@JsonProperty("identifier") String identifierString
+		) {
+			identifierFragmentMatcher = new StringIdentifierFragmentMatcher(fragmentId, identifierString);
+		}
 	}
 }
