@@ -46,7 +46,8 @@ public class MateCommandSender implements OnDataReceive {
 				 */
 				LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Sending command: " + command);
 				try {
-					for (int i = 0; i < 8; i++) { // send this over the period of 0.8 second so we can be sure it got received
+					Thread.sleep(10);
+					for (int i = 0; i <= 20; i++) { // send this over the period of 0.8 second so we can be sure it got received
 						if (i != 0) {
 							Thread.sleep(100);
 						}

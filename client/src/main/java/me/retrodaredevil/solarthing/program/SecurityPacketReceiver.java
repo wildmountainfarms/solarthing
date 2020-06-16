@@ -172,12 +172,13 @@ public class SecurityPacketReceiver implements JsonPacketReceiver {
 					long currentTime = System.currentTimeMillis();
 					if(dateMillis > currentTime + 5000) { // there's a 5 second grace period in case the clock is slightly off
 						LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Message from " + sender + " is from the future??? dateMillis: " + dateMillis + " currentTime: " + currentTime);
+						lastCommands.put(sender, dateMillis); // put this here anyway so it can't be used later
 					} else if(dateMillis < minTime){
 						LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Message from " + sender + " was parsed, but it too old! dateMillis: " + dateMillis + " minTime: " + minTime);
 					} else if(lastCommand != null && dateMillis <= lastCommand) { // if this command is old or if someone is trying to send the exact same command twice
-						LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Message from " + sender + " was parsed, but was older than the last command they sent! dateMillis: " + dateMillis + " lastCommand: " + lastCommand);
+						LOGGER.debug(SolarThingConstants.SUMMARY_MARKER, "Message from " + sender + " was parsed, but was older than the last command they sent! dateMillis: " + dateMillis + " lastCommand: " + lastCommand);
 					} else if(dateMillis < listenStartTime){
-						LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Message from " + sender + " was parsed, but it was sent before we started listening! dateMillis: " + dateMillis + " listenStartTime: " + listenStartTime);
+						LOGGER.debug(SolarThingConstants.SUMMARY_MARKER, "Message from " + sender + " was parsed, but it was sent before we started listening! dateMillis: " + dateMillis + " listenStartTime: " + listenStartTime);
 					} else {
 						lastCommands.put(sender, dateMillis);
 						return message;

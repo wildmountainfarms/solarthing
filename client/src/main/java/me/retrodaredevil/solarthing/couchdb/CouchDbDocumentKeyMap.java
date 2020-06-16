@@ -42,6 +42,7 @@ public class CouchDbDocumentKeyMap implements PublicKeyLookUp {
 		try {
 			authorizationPacket = connector.find(AuthorizationPacket.class, documentName);
 			notFound = false;
+			LOGGER.debug("Got new auth packet. senders: " + authorizationPacket.getSenderPermissions().keySet());
 		} catch (DocumentNotFoundException e) {
 			notFound = true;
 			LOGGER.info("Could not find document: " + documentName + " on database: " + connector.getDatabaseName());

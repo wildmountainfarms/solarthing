@@ -39,6 +39,7 @@ import me.retrodaredevil.solarthing.solar.outback.fx.FXEventUpdaterListReceiver;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXEventUpdaterListReceiver;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import me.retrodaredevil.solarthing.util.time.DailyIdentifier;
+import org.ektorp.ViewQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -158,7 +159,12 @@ public class OutbackMateMain {
 										new CouchDbPacketRetriever(
 												couchProperties,
 												SolarThingConstants.OPEN_UNIQUE_NAME
-										),
+										) {
+											@Override
+											protected ViewQuery alterView(ViewQuery view) {
+												return super.alterView(view).startKey(System.currentTimeMillis() - 5 * 60 * 1000); // last 5 minutes
+											}
+										},
 										new SecurityPacketReceiver(
 												CouchDbDocumentKeyMap.createDefault(couchProperties),
 												actionNodeDataReceiver,
