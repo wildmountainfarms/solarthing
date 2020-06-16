@@ -9,6 +9,7 @@ import static java.util.Objects.requireNonNull;
  * A state machine that can calculate the timer values on the FX that are shown in one of the Mate display screens
  */
 public class FXChargingStateHandler {
+	// page 24: http://outbackpower.com/downloads/documents/inverter_chargers/m_series/fx_mobile_operator.pdf
 	private static final float ROUNDING_ERROR = 0.00001f;
 	/*
 	This class tries to emulate/calculate the timer for the FX's charging stages.

@@ -14,11 +14,14 @@ public final class Decrypt {
 	private Decrypt(){ throw new UnsupportedOperationException(); }
 
 	public static String decrypt(Cipher cipher, PublicKeyLookUp publicKeyLookUp, IntegrityPacket packet) throws NotAuthorizedException, DecryptException, InvalidKeyException {
-		PublicKey key = publicKeyLookUp.getKey(packet.getSender());
+		return decrypt(cipher, publicKeyLookUp, packet.getSender(), packet.getEncryptedData());
+	}
+	public static String decrypt(Cipher cipher, PublicKeyLookUp publicKeyLookUp, String sender, String base64EncryptedData) throws NotAuthorizedException, DecryptException, InvalidKeyException {
+		PublicKey key = publicKeyLookUp.getKey(sender);
 		if(key == null){
-			throw new NotAuthorizedException(packet.getSender() + " is not authenticated");
+			throw new NotAuthorizedException(sender + " is not authenticated");
 		}
-		return decrypt(cipher, key, packet.getEncryptedData());
+		return decrypt(cipher, key, base64EncryptedData);
 	}
 	public static String decrypt(Cipher cipher, PublicKey key, String base64EncryptedData) throws InvalidKeyException, DecryptException {
 		requireNonNull(cipher);
