@@ -3,11 +3,7 @@ package me.retrodaredevil.solarthing.solar.outback;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import me.retrodaredevil.solarthing.PacketTestUtil;
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacket;
-import me.retrodaredevil.solarthing.solar.extra.SolarExtraPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.OperationalMode;
-import me.retrodaredevil.solarthing.solar.outback.fx.charge.FXChargingMode;
-import me.retrodaredevil.solarthing.solar.outback.fx.charge.FXChargingPacket;
-import me.retrodaredevil.solarthing.solar.outback.fx.charge.ImmutableFXChargingPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.FXDailyData;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.ImmutableFXDailyData;
 import me.retrodaredevil.solarthing.solar.outback.fx.event.*;
@@ -73,13 +69,6 @@ public class OutbackPacketsTest {
 			assertEquals(32, packet.getWarningModeValue());
 			PacketTestUtil.testJson(packet, FXWarningModeChangePacket.class);
 			PacketTestUtil.testJson(packet, SolarEventPacket.class);
-		}
-		{
-			FXChargingPacket packet = new ImmutableFXChargingPacket(new OutbackIdentifier(1), FXChargingMode.BULK_TO_ABSORB, 60 * 1000, 60 * 60 * 1000, 60 * 60 * 1000, 60 * 60 * 1000, 60 * 60 * 1000, 60 * 60 * 1000);
-			assertEquals(1, packet.getAddress());
-			assertEquals(60 * 1000, packet.getRemainingAbsorbTimeMillis());
-			PacketTestUtil.testJson(packet, FXChargingPacket.class);
-			PacketTestUtil.testJson(packet, SolarExtraPacket.class);
 		}
 	}
 }

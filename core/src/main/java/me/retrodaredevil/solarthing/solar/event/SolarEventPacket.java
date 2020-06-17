@@ -10,8 +10,6 @@ import me.retrodaredevil.solarthing.solar.outback.mx.event.*;
  */
 @JsonSubTypes({
 		@JsonSubTypes.Type(FXACModeChangePacket.class),
-		@JsonSubTypes.Type(FXDayEndPacket.class),
-		@JsonSubTypes.Type(MXDayEndPacket.class),
 		@JsonSubTypes.Type(MXRawDayEndPacket.class),
 		@JsonSubTypes.Type(FXAuxStateChangePacket.class),
 		@JsonSubTypes.Type(FXOperationalModeChangePacket.class),

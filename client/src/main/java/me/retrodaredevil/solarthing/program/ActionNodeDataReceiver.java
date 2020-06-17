@@ -3,7 +3,6 @@ package me.retrodaredevil.solarthing.program;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.ActionMultiplexer;
 import me.retrodaredevil.action.Actions;
-import me.retrodaredevil.solarthing.DataReceiver;
 import me.retrodaredevil.solarthing.DataSource;
 import me.retrodaredevil.solarthing.PacketGroupReceiver;
 import me.retrodaredevil.solarthing.SolarThingConstants;

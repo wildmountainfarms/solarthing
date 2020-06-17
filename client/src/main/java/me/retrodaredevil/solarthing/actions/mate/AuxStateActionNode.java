@@ -10,37 +10,19 @@ import me.retrodaredevil.solarthing.actions.PacketGroupProvider;
 import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnvironment;
 import me.retrodaredevil.solarthing.solar.outback.OutbackUtil;
-import me.retrodaredevil.solarthing.solar.outback.fx.ACMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
+import me.retrodaredevil.solarthing.solar.outback.fx.MiscMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@JsonTypeName("acmode")
-public class ACModeActionNode implements ActionNode {
-	private static final Logger LOGGER = LoggerFactory.getLogger(ACModeActionNode.class);
-	private final ACMode acMode;
-	private final boolean not;
+@JsonTypeName("auxstate")
+public class AuxStateActionNode implements ActionNode {
+	private static final Logger LOGGER = LoggerFactory.getLogger(AuxStateActionNode.class);
+	private final boolean on;
 
 	@JsonCreator
-	public ACModeActionNode(@JsonProperty(value = "mode", required = true) String mode, @JsonProperty("not") Boolean not) {
-		this(parseMode(mode), Boolean.TRUE.equals(not));
-	}
-
-	public ACModeActionNode(ACMode acMode, boolean not) {
-		this.acMode = acMode;
-		this.not = not;
-	}
-	private static ACMode parseMode(String modeName) {
-		modeName = modeName.replaceAll(" ", "").toLowerCase();
-		switch (modeName) {
-			case "noac":
-				return ACMode.NO_AC;
-			case "acdrop":
-				return ACMode.AC_DROP;
-			case "acuse":
-				return ACMode.AC_USE;
-		}
-		throw new IllegalArgumentException("ACMode: '" + modeName + "' does not exist!");
+	public AuxStateActionNode(@JsonProperty(value = "on", required = true) boolean on) {
+		this.on = on;
 	}
 
 	@Override
@@ -55,9 +37,10 @@ public class ACModeActionNode implements ActionNode {
 				if (fxStatusPacket == null) {
 					LOGGER.warn("No master FX Status Packet!");
 				} else {
-					setDone((fxStatusPacket.getACMode() == acMode) == !not);
+					setDone(fxStatusPacket.getMiscModes().contains(MiscMode.AUX_OUTPUT_ON) == on);
 				}
 			}
 		};
+
 	}
 }

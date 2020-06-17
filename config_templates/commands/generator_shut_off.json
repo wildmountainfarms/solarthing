@@ -13,12 +13,66 @@
       { "type": "unlock", "name": "send_commands" }
     ]
   },
-  "run_commands": {
+  "force_drop": {
     "type": "queue",
     "actions": [
       { "type": "matecommand", "command": "DROP" },
+      { "type": "matecommandwait" },
+      {
+        "type": "race",
+        "racers": [
+          [{ "type": "acmode", "mode": "AC USE", "not": true }, { "type": "pass"}],
+          [{ "type": "waitms", "wait": 2300}, { "type": "call", "name": "force_drop"}]
+        ]
+      }
+    ]
+  },
+  "force_aux_on": {
+    "type": "queue",
+    "actions": [
       { "type": "matecommand", "command": "AUX ON" },
       { "type": "matecommandwait" },
+      {
+        "type": "race",
+        "racers": [
+          [{ "type": "auxstate", "on": true}, { "type": "pass"}],
+          [{ "type": "waitms", "wait": 2300}, { "type": "call", "name": "force_aux_on"}]
+        ]
+      }
+    ]
+  },
+  "force_aux_off": {
+    "type": "queue",
+    "actions": [
+      { "type": "matecommand", "command": "AUX OFF" },
+      { "type": "matecommandwait" },
+      {
+        "type": "race",
+        "racers": [
+          [{ "type": "auxstate", "on": false}, { "type": "pass"}],
+          [{ "type": "waitms", "wait": 2300}, { "type": "call", "name": "force_aux_off"}]
+        ]
+      }
+    ]
+  },
+  "run_commands": {
+    "type": "queue",
+    "actions": [
+      {
+        "type": "race",
+        "racers": [
+          [{ "type": "call", "name": "force_drop" }, { "type": "pass" }],
+          [{ "type": "waitms", "wait": 5300}, { "type": "pass" }]
+        ]
+      },
+      { "type": "waitms", "wait": 1000},
+      {
+        "type": "race",
+        "racers": [
+          [{ "type": "call", "name": "force_aux_on" }, { "type": "pass" }],
+          [{ "type": "waitms", "wait": 5300}, { "type": "pass" }]
+        ]
+      },
       {
         "type": "race",
         "racers": [
@@ -26,7 +80,15 @@
           [{ "type": "waitms", "wait": 10000 }, { "type": "log", "message": "AC is still present!"}]
         ]
       },
-      { "type": "matecommand", "command": "AUX OFF"},
+      { "type": "waitms", "wait": 500},
+      {
+        "type": "race",
+        "racers": [
+          [{ "type": "call", "name": "force_aux_off" }, { "type": "pass" }],
+          [{ "type": "waitms", "wait": 5300}, { "type": "pass" }]
+        ]
+      },
+      { "type": "waitms", "wait": 2000},
       { "type": "matecommand", "command": "USE"},
       { "type": "matecommandwait" },
       { "type": "log", "message": "Sent all commands!"}
