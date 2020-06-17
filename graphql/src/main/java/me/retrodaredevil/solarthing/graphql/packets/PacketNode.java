@@ -9,7 +9,7 @@ import me.retrodaredevil.solarthing.annotations.NotNull;
 import static java.util.Objects.requireNonNull;
 
 @JsonExplicit
-public class PacketNode<T> {
+public final class PacketNode<T> {
 	private final T packet;
 	private final long dateMillis;
 	private final String sourceId;
@@ -42,6 +42,11 @@ public class PacketNode<T> {
 		return fragmentId;
 	}
 
+	/**
+	 * The GraphQL datasource takes all numeric values, so if you don't want it to automatically take the fragmentId and use it,
+	 * you can call this instead to get a string representation of it.
+	 * @return String representation of fragmentId
+	 */
 	@JsonProperty("fragmentIdString")
 	public @NotNull String getFragmentIdString() {
 		return "" + getFragmentId();

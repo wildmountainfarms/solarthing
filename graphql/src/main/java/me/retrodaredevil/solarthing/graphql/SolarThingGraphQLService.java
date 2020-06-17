@@ -16,6 +16,7 @@ import me.retrodaredevil.solarthing.misc.device.CpuTemperaturePacket;
 import me.retrodaredevil.solarthing.misc.device.DevicePacket;
 import me.retrodaredevil.solarthing.misc.weather.TemperaturePacket;
 import me.retrodaredevil.solarthing.misc.weather.WeatherPacket;
+import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.*;
 import me.retrodaredevil.solarthing.packets.collection.parsing.*;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
@@ -103,11 +104,15 @@ public class SolarThingGraphQLService {
 		throw new NoSuchElementException("No element with sourceId: '" + sourceId + "' available keys are: " + map.keySet());
 	}
 
+	private List<? extends FragmentedPacketGroup> sortPackets(List<? extends InstancePacketGroup> packets, String sourceId) {
+		return PacketGroups.sortPackets(packets, defaultInstanceOptions, 2 * 60 * 1000).getOrDefault(sourceId, Collections.emptyList());
+	}
 	@GraphQLQuery
 	public SolarThingStatusQuery queryStatus(
 			@GraphQLArgument(name = "from") long from, @GraphQLArgument(name = "to") long to,
 			@GraphQLArgument(name = "sourceId") @NotNull String sourceId){
-		return new SolarThingStatusQuery(new BasicPacketGetter(queryPackets(statusQueryHandler, statusParser, from, to, sourceId), PacketFilter.KEEP_ALL));
+		List<? extends InstancePacketGroup> packets = queryPackets(statusQueryHandler, statusParser, from, to, sourceId);
+		return new SolarThingStatusQuery(new BasicPacketGetter(packets, PacketFilter.KEEP_ALL), sortPackets(packets, sourceId));
 	}
 	@GraphQLQuery
 	public SolarThingStatusQuery queryStatusLast(
@@ -118,7 +123,7 @@ public class SolarThingGraphQLService {
 		for(List<InstancePacketGroup> packetGroups : PacketGroups.mapFragments(packets).values()) {
 			lastPackets.add(packetGroups.get(packetGroups.size() - 1));
 		}
-		return new SolarThingStatusQuery(new ReversedPacketGetter(new BasicPacketGetter(lastPackets, PacketFilter.KEEP_ALL), Boolean.TRUE.equals(reversed)));
+		return new SolarThingStatusQuery(new ReversedPacketGetter(new BasicPacketGetter(lastPackets, PacketFilter.KEEP_ALL), Boolean.TRUE.equals(reversed)), sortPackets(lastPackets, sourceId));
 	}
 	@GraphQLQuery
 	public SolarThingEventQuery queryEvent(
@@ -189,9 +194,11 @@ public class SolarThingGraphQLService {
 	}
 	public static class SolarThingStatusQuery {
 		private final PacketGetter packetGetter;
+		private final List<? extends FragmentedPacketGroup> sortedPackets;
 
-		public SolarThingStatusQuery(PacketGetter packetGetter) {
+		public SolarThingStatusQuery(PacketGetter packetGetter, List<? extends FragmentedPacketGroup> sortedPackets) {
 			this.packetGetter = packetGetter;
+			this.sortedPackets = sortedPackets;
 		}
 
 		@GraphQLQuery
@@ -221,6 +228,47 @@ public class SolarThingGraphQLService {
 		@GraphQLQuery
 		public @NotNull List<@NotNull PacketNode<TemperaturePacket>> temperature() {
 			return packetGetter.getPackets(TemperaturePacket.class);
+		}
+
+
+		@GraphQLQuery
+		public @NotNull List<@NotNull DataNode<Float>> batteryVoltageTemperatureCompensated() {
+			List<DataNode<Float>> r = new ArrayList<>();
+			for (FragmentedPacketGroup packetGroup : sortedPackets) {
+				RoverStatusPacket rover = null;
+				for (Packet packet : packetGroup.getPackets()) {
+					if (packet instanceof RoverStatusPacket) {
+						rover = (RoverStatusPacket) packet;
+					}
+				}
+				if (rover == null) {
+					continue;
+				}
+				int temperatureCelsius = rover.getBatteryTemperatureCelsius();
+				int normalizedTemperature = Math.max(-20, Math.min(20, temperatureCelsius - 25)); // outback FXs limit how much to compensate by
+				for (Packet packet : packetGroup.getPackets()) {
+					if (packet instanceof BatteryVoltage) {
+						BatteryVoltage batteryVoltagePacket = (BatteryVoltage) packet;
+						float batteryVoltage = batteryVoltagePacket.getBatteryVoltage();
+						int numberOfCells;
+						if (batteryVoltage < 19.0f) { // 12V
+							numberOfCells = 6;
+						} else if (batteryVoltage < 31.5f) { // 24V
+							numberOfCells = 12;
+						} else { // 48V
+							numberOfCells = 24;
+						}
+						int deltaMV = numberOfCells * 5 * normalizedTemperature; // hard code 5mV/cell/C for now (outback products are like this)
+						float compensated = batteryVoltage + deltaMV / 1000.0f;
+						Long dateMillis = packetGroup.getDateMillis(packet);
+						if (dateMillis == null) {
+							dateMillis = packetGroup.getDateMillis();
+						}
+						r.add(new DataNode<>(compensated, batteryVoltagePacket, dateMillis, packetGroup.getSourceId()));
+					}
+				}
+			}
+			return r;
 		}
 	}
 	public static class SolarThingEventQuery {
@@ -258,6 +306,5 @@ public class SolarThingGraphQLService {
 		public @NotNull List<@NotNull PacketNode<MateCommandFeedbackPacket>> mateCommandFeedback() {
 			return packetGetter.getPackets(MateCommandFeedbackPacket.class);
 		}
-
 	}
 }

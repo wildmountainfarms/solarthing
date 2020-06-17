@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.solar.outback.fx.event;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
@@ -18,9 +19,8 @@ import me.retrodaredevil.solarthing.solar.outback.fx.ACMode;
 @JsonTypeName("FX_AC_MODE_CHANGE")
 @JsonExplicit
 public interface FXACModeChangePacket extends SupplementarySolarEventPacket, SupplementaryOutbackPacket, ChangePacket {
-	@NotNull
 	@Override
-	default SolarEventPacketType getPacketType(){
+	default @NotNull SolarEventPacketType getPacketType(){
 		return SolarEventPacketType.FX_AC_MODE_CHANGE;
 	}
 
@@ -29,10 +29,11 @@ public interface FXACModeChangePacket extends SupplementarySolarEventPacket, Sup
 	@JsonProperty("previousACModeValue")
 	@Nullable Integer getPreviousACModeValue();
 
-	@NotNull
-	default ACMode getACMode(){ return Modes.getActiveMode(ACMode.class, getACModeValue()); }
-	@Nullable
-	default ACMode getPreviousACMode(){
+	@GraphQLInclude("acMode")
+	default @NotNull ACMode getACMode(){ return Modes.getActiveMode(ACMode.class, getACModeValue()); }
+
+	@GraphQLInclude("previousACMode")
+	default @Nullable ACMode getPreviousACMode(){
 		Integer previous = getPreviousACModeValue();
 		if(previous == null){
 			return null;

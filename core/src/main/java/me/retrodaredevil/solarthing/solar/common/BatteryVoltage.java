@@ -11,6 +11,8 @@ public interface BatteryVoltage extends Identifiable {
 
 	/**
 	 * Should be serialized as "batteryVoltage"
+	 * <p>
+	 * Note that this is NOT temperature compensated. This is the raw battery voltage
 	 * @return The battery voltage as a float
 	 */
 	@JsonProperty("batteryVoltage")
