@@ -34,7 +34,7 @@ public class PVOutputUploadProgramOptions extends DatabaseTimeZoneOptionBase imp
 		return ProgramType.PVOUTPUT_UPLOAD;
 	}
 	@Override
-	public boolean isAnalyticsEnabled() {
+	public boolean isAnalyticsOptionEnabled() {
 		return isAnalyticsEnabled;
 	}
 

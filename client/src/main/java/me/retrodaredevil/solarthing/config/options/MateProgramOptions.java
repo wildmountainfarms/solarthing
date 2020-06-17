@@ -47,7 +47,7 @@ public class MateProgramOptions extends PacketHandlingOptionBase implements IOBu
 	}
 
 	@Override
-	public boolean isAnalyticsEnabled() {
+	public boolean isAnalyticsOptionEnabled() {
 		return isAnalyticsEnabled;
 	}
 

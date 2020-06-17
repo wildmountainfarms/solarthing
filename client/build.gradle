@@ -9,16 +9,15 @@ project.ext.mainClassName = "me.retrodaredevil.solarthing.program.SolarMain"
 
 dependencies {
     implementation "com.github.retrodaredevil.io-lib:jSerialComm:$ioLibVersion"
-    implementation "com.github.retrodaredevil.io-lib:purejavacomm:$ioLibVersion"
-    implementation group: 'org.influxdb', name: 'influxdb-java', version: '2.15'
-    implementation group: 'org.mongodb', name: 'mongodb-driver-sync', version: '3.11.0'
+    implementation group: 'org.influxdb', name: 'influxdb-java', version: '2.19'
+//    implementation group: 'org.mongodb', name: 'mongodb-driver-sync', version: '3.11.0' // causes solarthing.jar to be +2MB~ and we don't need this right now
 
     implementation "org.apache.logging.log4j:log4j-jcl:$log4jVersion" // commons logging bridge.
     implementation "org.apache.logging.log4j:log4j-slf4j-impl:$log4jVersion"
     implementation 'com.github.retrodaredevil:action-lib:v1.2.0'
     implementation 'com.brsanthu:google-analytics-java:2.0.0'
 
-    implementation 'net.bis5.mattermost4j:mattermost4j-core:0.21.0'
+    implementation 'net.bis5.mattermost4j:mattermost4j-core:0.22.1'
 }
 
 shadowJar {

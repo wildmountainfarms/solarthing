@@ -30,16 +30,24 @@ For instance if you are running the `rover` program, paths will be relative to [
 ### Program Specific Configuration
 You will have to adjust the configuration to your needs and based on the type of program you want to run.
 
-[Mate Quickstart](quickstart_mate.md)
+[**Mate Quickstart**](quickstart_mate.md) - Monitors Outback Mate1/2 devices
 
-[Rover Quickstart](quickstart_rover.md)
+[**Rover Quickstart**](quickstart_rover.md) - Monitors Renogy Rover and other supported products
 
-[PVOutput Quickstart](quickstart_pvoutput.md) (requires CouchDB and either the Mate or Rover program)
+[PVOutput Quickstart](quickstart_pvoutput.md) - uploads to PVOutput (requires CouchDB and Mate or Rover program)
+
+[Message Quickstart](quickstart_message.md) - Mattermost bot for notifications (requires CouchDB and Mate or Rover program)
+
+[Request Quickstart](quickstart_request.md) - Upload temperature sensor data
+
+[GraphQL Quickstart](quickstart_graphql.md) - Expose CouchDB as a GraphQL API (used for Grafana)
 
 ## Configuration Continued
 Also learn about [analytics data we collect](./google_analytics.md).
 Now you have started to configure your `base.json` file, decide what databases you want to use below. 
 Also, note that you can choose to use none of them if you just want to get data before going further.
+
+Need help [choosing a database](database_choice.md)?
 
 ### CouchDB "Database"
 ```shell script
@@ -53,6 +61,8 @@ cp ../../config_templates/databases/influxdb_template.json config/influxdb.json
 # Edit it with your editor of choice
 ```
 ### Latest "Database"
+NOTE: This is not recommended on Raspberry Pi devices because there will be many writes to the disk. Also, this data isn't very
+useful by itself since there's nothing that uses it. This can be a good way to debug.
 ```shell script
 cp ../../config_templates/databases/latest_save_json_template.json config/latest.json
 # Edit it with your editor of choice
@@ -65,8 +75,7 @@ Edit `config/base.json` with your editor of choice
   //...
   "databases": [
     "config/couchdb.json",
-    "config/influxdb.json",
-    "config/latest.json"
+    "config/influxdb.json"
   ]
 }
 ```

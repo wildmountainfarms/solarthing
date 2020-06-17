@@ -5,9 +5,10 @@ buildscript {
     ext {
         junit5Version = '5.6.2'
         slf4jVersion = '1.7.30'
-        log4jVersion = '2.13.2'
+        log4jVersion = '2.13.3'
         jacksonVersion = '2.11.0'
-        retrofitVersion = "2.8.1" // context: https://stackoverflow.com/questions/60915381/retrofit2-maven-project-illegal-reflective-access-warning // https://github.com/square/retrofit/issues/3341
+        // retrofit is why we need allow-opens. context: https://stackoverflow.com/questions/60915381/retrofit2-maven-project-illegal-reflective-access-warning // https://github.com/square/retrofit/issues/3341
+        retrofitVersion = "2.9.0"
         shadowVersion = '5.2.0'
         ioLibVersion = '2.1.0'
     }

@@ -20,7 +20,7 @@ public class RequestProgramOptions extends PacketHandlingOptionBase implements A
 	private float minimumWaitSeconds = 1.0f;
 
 	@Override
-	public boolean isAnalyticsEnabled() {
+	public boolean isAnalyticsOptionEnabled() {
 		return isAnalyticsEnabled;
 	}
 

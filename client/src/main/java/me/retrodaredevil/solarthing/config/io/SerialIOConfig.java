@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fazecast.jSerialComm.SerialPort;
 import me.retrodaredevil.io.IOBundle;
 import me.retrodaredevil.io.serial.JSerialIOBundle;
-import me.retrodaredevil.io.serial.PureJavaCommIOBundle;
 import me.retrodaredevil.io.serial.SerialConfig;
 import me.retrodaredevil.io.serial.SerialConfigBuilder;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
@@ -30,9 +29,6 @@ public class SerialIOConfig implements IOConfig {
 	@JsonDeserialize(as = SerialConfigBuilderJackson.class)
 	private SerialConfig serialConfig;
 
-	@JsonProperty("purejavacomm")
-	private boolean usePureJavaComm = false;
-
 	@Override
 	public IOBundle createIOBundle() throws Exception {
 		SerialConfig serialConfig = this.serialConfig;
@@ -45,9 +41,6 @@ public class SerialIOConfig implements IOConfig {
 		String port = this.port;
 		if(port == null){
 			throw new NullPointerException("null is not a valid value for the port!");
-		}
-		if (usePureJavaComm) {
-			return PureJavaCommIOBundle.create(port, serialConfig);
 		}
 		SerialPort serialPort = JSerialIOBundle.createSerialPortFromName(port);
 		return new JSerialIOBundle(

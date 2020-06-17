@@ -32,7 +32,7 @@ public class RoverProgramOptions extends PacketHandlingOptionBase implements Rov
 	}
 
 	@Override
-	public boolean isAnalyticsEnabled() {
+	public boolean isAnalyticsOptionEnabled() {
 		return isAnalyticsEnabled;
 	}
 

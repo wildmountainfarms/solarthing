@@ -9,5 +9,10 @@
   "include_undefined_sources": true,
   "required": {
     "1": ["OutbackIdentifier(address=3)", "OutbackIdentifier(address=4)"]
+  },
+  "analytics_enabled": true,
+  "voltage_identifier": {
+    "fragment": 1,
+    "identifier": "OutbackIdentifier(address=3)"
   }
 }
