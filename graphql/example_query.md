@@ -22,9 +22,9 @@
 
 ```graphql
 {
-  data:queryEventIdentifier(from:"1587049200000", to:"9586711496125", sourceId:"default", fragmentId:1, identifier:"SupplementaryIdentifier(identifier=OutbackIdentifier(address=2), supplementaryType=FX_OPERATIONAL_MODE_CHANGE)") {
+  data:queryEventIdentifier(from:"$__from", to:"$__to", sourceId:"default", fragmentId:1, identifier:"SupplementaryIdentifier(identifier=OutbackIdentifier(address=2), supplementaryType=FX_OPERATIONAL_MODE_CHANGE)") {
     fxOperationalModeChange {
-      dateMillis
+      Time:dateMillis
       packet {
         operationalModeValue
       }

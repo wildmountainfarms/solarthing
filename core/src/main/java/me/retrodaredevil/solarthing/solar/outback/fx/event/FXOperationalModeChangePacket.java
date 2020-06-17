@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.solar.outback.fx.event;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.ChangePacket;
 import me.retrodaredevil.solarthing.packets.Modes;
@@ -31,7 +32,9 @@ public interface FXOperationalModeChangePacket extends SupplementarySolarEventPa
 	@JsonProperty("previousOperationalModeValue")
 	@Nullable Integer getPreviousOperationalModeValue();
 
+	@GraphQLInclude("operationalMode")
 	default OperationalMode getOperationalMode(){ return Modes.getActiveMode(OperationalMode.class, getOperationalModeValue()); }
+	@GraphQLInclude("previousOperationalMode")
 	default @Nullable OperationalMode getPreviousOperationalMode(){
 		Integer previous = getPreviousOperationalModeValue();
 		if(previous == null){

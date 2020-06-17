@@ -14,6 +14,8 @@ import me.retrodaredevil.solarthing.couchdb.SolarThingCouchDb;
 import me.retrodaredevil.solarthing.graphql.packets.*;
 import me.retrodaredevil.solarthing.misc.device.CpuTemperaturePacket;
 import me.retrodaredevil.solarthing.misc.device.DevicePacket;
+import me.retrodaredevil.solarthing.misc.weather.TemperaturePacket;
+import me.retrodaredevil.solarthing.misc.weather.WeatherPacket;
 import me.retrodaredevil.solarthing.packets.collection.*;
 import me.retrodaredevil.solarthing.packets.collection.parsing.*;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
@@ -25,9 +27,13 @@ import me.retrodaredevil.solarthing.solar.extra.SolarExtraPacket;
 import me.retrodaredevil.solarthing.solar.outback.command.packets.MateCommandFeedbackPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.event.FXACModeChangePacket;
+import me.retrodaredevil.solarthing.solar.outback.fx.event.FXAuxStateChangePacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.event.FXOperationalModeChangePacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.extra.DailyFXPacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPacket;
+import me.retrodaredevil.solarthing.solar.outback.mx.event.MXAuxModeChangePacket;
+import me.retrodaredevil.solarthing.solar.outback.mx.event.MXChargerModeChangePacket;
+import me.retrodaredevil.solarthing.solar.outback.mx.event.MXRawDayEndPacket;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.ektorp.CouchDbInstance;
@@ -55,10 +61,10 @@ public class SolarThingGraphQLService {
 		this.defaultInstanceOptions = defaultInstanceOptions;
 		ObjectMapper objectMapper = JacksonUtil.lenientMapper(originalObjectMapper.copy());
 		statusParser = new SimplePacketGroupParser(new LenientPacketParser(
-				MultiPacketConverter.createFrom(objectMapper, SolarStatusPacket.class, SolarExtraPacket.class, DevicePacket.class, InstancePacket.class)
+				MultiPacketConverter.createFrom(objectMapper, SolarStatusPacket.class, SolarExtraPacket.class, DevicePacket.class, WeatherPacket.class, InstancePacket.class)
 		));
 		eventParser = new SimplePacketGroupParser(new LenientPacketParser(
-				MultiPacketConverter.createFrom(objectMapper, SolarEventPacket.class, MateCommandFeedbackPacket.class, MateCommandFeedbackPacket.class, InstancePacket.class)
+				MultiPacketConverter.createFrom(objectMapper, SolarEventPacket.class, MateCommandFeedbackPacket.class, InstancePacket.class)
 		));
 
 		final HttpClient httpClient = EktorpUtil.createHttpClient(couchProperties);
@@ -212,6 +218,10 @@ public class SolarThingGraphQLService {
 		public @NotNull List<@NotNull PacketNode<CpuTemperaturePacket>> cpuTemperature() {
 			return packetGetter.getPackets(CpuTemperaturePacket.class);
 		}
+		@GraphQLQuery
+		public @NotNull List<@NotNull PacketNode<TemperaturePacket>> temperature() {
+			return packetGetter.getPackets(TemperaturePacket.class);
+		}
 	}
 	public static class SolarThingEventQuery {
 		private final PacketGetter packetGetter;
@@ -227,6 +237,26 @@ public class SolarThingGraphQLService {
 		@GraphQLQuery
 		public @NotNull List<@NotNull PacketNode<FXOperationalModeChangePacket>> fxOperationalModeChange() {
 			return packetGetter.getPackets(FXOperationalModeChangePacket.class);
+		}
+		@GraphQLQuery
+		public @NotNull List<@NotNull PacketNode<FXAuxStateChangePacket>> fxAuxStateChange() {
+			return packetGetter.getPackets(FXAuxStateChangePacket.class);
+		}
+		@GraphQLQuery
+		public @NotNull List<@NotNull PacketNode<MXAuxModeChangePacket>> mxAuxModeChange() {
+			return packetGetter.getPackets(MXAuxModeChangePacket.class);
+		}
+		@GraphQLQuery
+		public @NotNull List<@NotNull PacketNode<MXRawDayEndPacket>> mxRawDayEnd() {
+			return packetGetter.getPackets(MXRawDayEndPacket.class);
+		}
+		@GraphQLQuery
+		public @NotNull List<@NotNull PacketNode<MXChargerModeChangePacket>> mxChargerModeChange() {
+			return packetGetter.getPackets(MXChargerModeChangePacket.class);
+		}
+		@GraphQLQuery
+		public @NotNull List<@NotNull PacketNode<MateCommandFeedbackPacket>> mateCommandFeedback() {
+			return packetGetter.getPackets(MateCommandFeedbackPacket.class);
 		}
 
 	}
