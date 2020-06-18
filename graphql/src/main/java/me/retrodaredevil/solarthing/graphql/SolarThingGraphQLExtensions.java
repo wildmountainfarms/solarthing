@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.graphql;
 
 import io.leangen.graphql.annotations.GraphQLContext;
 import io.leangen.graphql.annotations.GraphQLQuery;
+import me.retrodaredevil.solarthing.solar.outback.command.packets.SuccessMateCommandPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.ACMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.OperationalMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.event.FXACModeChangePacket;
@@ -49,5 +50,10 @@ public class SolarThingGraphQLExtensions {
 	public @Nullable String getPreviousChargingModeName(@GraphQLContext MXChargerModeChangePacket mxChargerModeChangePacket) {
 		ChargerMode previousChargerMode = mxChargerModeChangePacket.getPreviousChargingMode();
 		return previousChargerMode == null ? null : previousChargerMode.getModeName();
+	}
+
+	@GraphQLQuery(name = "commandName")
+	public @NotNull String getCommandName(@GraphQLContext SuccessMateCommandPacket successMateCommandPacket) {
+		return successMateCommandPacket.getCommand().getCommandName();
 	}
 }

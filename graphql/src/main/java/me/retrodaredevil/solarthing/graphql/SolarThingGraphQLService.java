@@ -21,11 +21,13 @@ import me.retrodaredevil.solarthing.packets.collection.*;
 import me.retrodaredevil.solarthing.packets.collection.parsing.*;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.instance.InstancePacket;
+import me.retrodaredevil.solarthing.solar.BatteryUtil;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacket;
 import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacket;
 import me.retrodaredevil.solarthing.solar.extra.SolarExtraPacket;
 import me.retrodaredevil.solarthing.solar.outback.command.packets.MateCommandFeedbackPacket;
+import me.retrodaredevil.solarthing.solar.outback.command.packets.SuccessMateCommandPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.event.FXACModeChangePacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.event.FXAuxStateChangePacket;
@@ -245,21 +247,11 @@ public class SolarThingGraphQLService {
 					continue;
 				}
 				int temperatureCelsius = rover.getBatteryTemperatureCelsius();
-				int normalizedTemperature = Math.max(-20, Math.min(20, temperatureCelsius - 25)); // outback FXs limit how much to compensate by
 				for (Packet packet : packetGroup.getPackets()) {
 					if (packet instanceof BatteryVoltage) {
 						BatteryVoltage batteryVoltagePacket = (BatteryVoltage) packet;
 						float batteryVoltage = batteryVoltagePacket.getBatteryVoltage();
-						int numberOfCells;
-						if (batteryVoltage < 19.0f) { // 12V
-							numberOfCells = 6;
-						} else if (batteryVoltage < 31.5f) { // 24V
-							numberOfCells = 12;
-						} else { // 48V
-							numberOfCells = 24;
-						}
-						int deltaMV = numberOfCells * 5 * normalizedTemperature; // hard code 5mV/cell/C for now (outback products are like this)
-						float compensated = batteryVoltage + deltaMV / 1000.0f;
+						float compensated = BatteryUtil.getOutbackCompensatedBatteryVoltage(batteryVoltage, temperatureCelsius);
 						Long dateMillis = packetGroup.getDateMillis(packet);
 						if (dateMillis == null) {
 							dateMillis = packetGroup.getDateMillis();
@@ -303,8 +295,8 @@ public class SolarThingGraphQLService {
 			return packetGetter.getPackets(MXChargerModeChangePacket.class);
 		}
 		@GraphQLQuery
-		public @NotNull List<@NotNull PacketNode<MateCommandFeedbackPacket>> mateCommandFeedback() {
-			return packetGetter.getPackets(MateCommandFeedbackPacket.class);
+		public @NotNull List<@NotNull PacketNode<SuccessMateCommandPacket>> mateCommand() {
+			return packetGetter.getPackets(SuccessMateCommandPacket.class);
 		}
 	}
 }

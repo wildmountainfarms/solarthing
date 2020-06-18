@@ -80,8 +80,11 @@ you get SolarThing up and running.
 
 ## Usage at Wild Mountain Farms
 We monitor an Outback MATE2 with a Raspberry Pi 1 and a Renogy Rover charge controller with a Raspberry Pi Zero W.
-Both SolarThing instances upload data to CouchDB and InfluxDB, both hosted on the computer also hosting Grafana and SolarThing Web.
-Another computer gets data from CouchDB and uploads it to PVOutput using the `pvoutput-upload` program.
+Both SolarThing instances upload data to CouchDB, hosted on the computer also hosting Grafana and SolarThing Web.
+This computer also gets data from CouchDB and uploads it to PVOutput using the `pvoutput-upload` program.
+
+We used to also use InfluxDB for allowing easy displaying of data on Grafana, but we now use CouchDB and
+SolarThing GraphQL for that.
 
 ## Using the program
 You can see the [Outback/Renogy Rover](other/solar/README.md) README for using the program with outback or renogy products.
