@@ -49,6 +49,10 @@ Ready to install? Use the [Quickstart](other/docs/quickstart.md)!
 
 
 ### Examples
+PVOutput Wild Mountain Farms: https://pvoutput.org/intraday.jsp?sid=72206
+
+---
+
 SolarThing Android: [Github](https://github.com/wildmountainfarms/solarthing-android)
 |
 [Google Play](https://play.google.com/store/apps/details?id=me.retrodaredevil.solarthing.android)
@@ -62,13 +66,14 @@ If you decide to use InfluxDB, you can easily create your own Dashboard with [Gr
 Grafana is very customizable. Rearrange graphs and make it how you want!
 ![alt text](other/docs/grafana-screenshot-1.png "SolarThing with Grafana")
 
-<hr/>
+---
 
 [SolarThing Web](https://github.com/wildmountainfarms/solarthing-web)
 
 While it takes some configuring, SolarThing web is a simple way to display solar data.
 ![alt text](other/docs/solarthing-web-screenshot-1.png "SolarThing Web")
-<hr/>
+
+---
 
 ### Can I run this?
 Of course! This runs on Java 8+ and has been tested to work with Java 8 and Java 11. This runs on Linux, Windows and Mac,

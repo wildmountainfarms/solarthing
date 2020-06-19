@@ -1,6 +1,12 @@
 package me.retrodaredevil.solarthing.util.integration;
 
 public interface MutableIntegral {
+	/**
+	 *
+	 * @param x
+	 * @param y
+	 * @throws IllegalArgumentException If {@code x} is less than the last passed x value
+	 */
 	void add(double x, double y);
 	void reset(boolean fullReset);
 	default void reset(){ reset(false); }

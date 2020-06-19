@@ -15,6 +15,8 @@ import me.retrodaredevil.solarthing.solar.outback.fx.extra.ImmutableDailyFXPacke
 import me.retrodaredevil.solarthing.util.integration.MutableIntegral;
 import me.retrodaredevil.solarthing.util.integration.TrapezoidalRuleAccumulator;
 import me.retrodaredevil.solarthing.util.time.TimeIdentifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -26,7 +28,7 @@ import static java.util.Objects.requireNonNull;
  * This expects that there are no duplicate packets. If there are duplicate packets, the behaviour is undefined.
  */
 public class FXStatusListUpdater implements PacketListReceiver {
-//	private static final Logger LOGGER = LoggerFactory.getLogger(OutbackListUpdater.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(FXStatusListUpdater.class);
 
 	private final TimeIdentifier timeIdentifier;
 
@@ -101,10 +103,14 @@ public class FXStatusListUpdater implements PacketListReceiver {
 			}
 
 			double hours = currentTimeMillis / (1000.0 * 60 * 60);
-			inverterWH.add(hours, fx.getInverterWattage());
-			chargerWH.add(hours, fx.getChargerWattage());
-			buyWH.add(hours, fx.getBuyWattage());
-			sellWH.add(hours, fx.getSellWattage());
+			try {
+				inverterWH.add(hours, fx.getInverterWattage());
+				chargerWH.add(hours, fx.getChargerWattage());
+				buyWH.add(hours, fx.getBuyWattage());
+				sellWH.add(hours, fx.getSellWattage());
+			} catch (IllegalArgumentException e) {
+				LOGGER.info("The clock must have changed on us!", e);
+			}
 
 			operationalModeValues.add(fx.getOperationalModeValue());
 			errorMode |= fx.getErrorModeValue();
