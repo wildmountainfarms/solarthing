@@ -25,8 +25,8 @@ Edit `base.json`
 ```
 
 ### Other parameters
-You can use the optional `bulk_request` parameter to make requests to the rover much faster. There may be unknown side effects to
-using this, but it is recommended to be enabled as I've tested it successfully. It is disabled by default.
+The `bulk_request` parameter is by default true in SolarThing versions >= 2020.3.2. By keeping it true, requests to the rover
+are a lot faster.
 
 ### Configuring the dummy file
 If you want to test this program **without a rover**, both the `rover` and `rover-setup` program types support it.
@@ -34,11 +34,10 @@ You can edit your `base.json` like so:
 ```json5
 {
   //...
-  "dummy": "solar/dummy_rover.json"
+  "dummy": "test/dummy_rover.json"
 }
 ```
-If the default file in `solar/dummy_rover.json` doesn't work for you, feel free to copy it to your `program` directory or into
-the `config` directory and change it.
+If the default file in `test/dummy_rover.json` doesn't work for you, feel free to copy it to your `config` directory and change it.
 
 ### I want to test this without a Renogy Rover
 Make sure to configure the `dummy` field as the above section describes, then just run `./run.sh`.

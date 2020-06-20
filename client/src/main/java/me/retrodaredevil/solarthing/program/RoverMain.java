@@ -51,8 +51,7 @@ public class RoverMain {
 		return doRoverProgram(options, (read, write, reloadCache) -> {
 			List<DataRequester> list = new ArrayList<>(dataRequesterList);
 			list.add((o) -> new RoverPacketListUpdater(read, write, reloadCache, options.isSendErrorPackets()));
-			return RequestMain.startRequestProgram(options, analyticsManager, list, 5000, 1000);
-//			statusPacketHandlers.add(new RoverAnalyticsHandler(analyticsManager));
+			return RequestMain.startRequestProgram(options, analyticsManager, list, options.getPeriod(), options.getMinimumWait());
 		}, options.isBulkRequest() ? modbusCacheSlave -> {
 //			modbusCacheSlave.cacheRangeInclusive(0x000A, 0x001A);
 //			modbusCacheSlave.cacheRangeInclusive(0x0100, 0x0122);
@@ -80,6 +79,7 @@ public class RoverMain {
 		if(rpiCpuTemperature){
 			dataRequesterList.add(new RaspberryPiCpuTemperatureDataRequester());
 		}
+		dataRequesterList.addAll(options.getDataRequesterList());
 		return doRover(options, analyticsManager, dataRequesterList);
 	}
 	public static int connectRoverSetup(RoverSetupProgramOptions options) {

@@ -24,6 +24,7 @@ import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbData
 import me.retrodaredevil.solarthing.config.options.ExtraOptionFlag;
 import me.retrodaredevil.solarthing.config.options.MateProgramOptions;
 import me.retrodaredevil.solarthing.config.options.ProgramType;
+import me.retrodaredevil.solarthing.config.request.DataRequester;
 import me.retrodaredevil.solarthing.couchdb.CouchDbDocumentKeyMap;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketRetriever;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketRetrieverHandler;
@@ -223,6 +224,9 @@ public class OutbackMateMain {
 			}
 			if(rpiCpuTemperature){
 				packetListReceiverList.add(new RaspberryPiCpuTemperatureListUpdater());
+			}
+			for (DataRequester dataRequester : options.getDataRequesterList()) {
+				packetListReceiverList.add(dataRequester.createPacketListReceiver(eventPacketListReceiverHandler.getPacketListReceiverAccepter()));
 			}
 			packetListReceiverList.addAll(Arrays.asList(
 					statusPacketListReceiverHandler.getPacketListReceiverAccepter(),

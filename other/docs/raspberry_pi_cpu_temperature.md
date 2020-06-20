@@ -4,7 +4,9 @@ as a packet. You just have to add this json to your `base.json`:
 ```json5
 {
   //...
-  "extra_option_flags": [ "rpi_cpu_temp" ]
+  "request": [ 
+    { "type": "rpi-cpu-temp" }
+  ]
 }
 ```
 
@@ -22,5 +24,5 @@ set up correctly, the user 'solarthing' should be a member of the group 'video'.
 running `groups solarthing` and make sure 'video' appears. If it doesn't, the easiest thing to do is to run `/other/linux/create_user.sh`
 which will make sure the 'solarthing' user is in the correct groups.
 
-If that doesn't work, make sure you have everything spelled correctly in 'extra_option_flags'. And if that still doesn't work,
-drop by [our issues page](https://github.com/wildmountainfarms/solarthing/issues) and give us a section of your `log_debug.log` file.
+If that doesn't work, make sure you have everything spelled correctly. And if that still doesn't work,
+drop by [our issues page](https://github.com/wildmountainfarms/solarthing/issues) and give us a section of your `logs/log_info.log` file and your `config/base.json`.

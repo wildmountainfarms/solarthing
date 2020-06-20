@@ -38,7 +38,7 @@ public class RequestMain {
 	public static int startRequestProgram(PacketHandlingOption options, AnalyticsManager analyticsManager, List<DataRequester> dataRequesterList, long period, long minimumWait) {
 		PacketHandlerBundle packetHandlerBundle = PacketHandlerInit.getPacketHandlerBundle(SolarMain.getDatabaseConfigs(options), SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, SolarThingConstants.SOLAR_EVENT_UNIQUE_NAME);
 		List<PacketHandler> statusPacketHandlers = new ArrayList<>(packetHandlerBundle.getStatusPacketHandlers());
-		statusPacketHandlers.add(new RoverAnalyticsHandler(analyticsManager));
+		statusPacketHandlers.add(new RoverAnalyticsHandler(analyticsManager)); // this only does anything if there are rover status packets.
 
 //		List<PacketHandler> eventPacketHandlers = new ArrayList<>(packetHandlerBundle.getEventPacketHandlers());
 		PacketHandler eventPacketHandler = new PacketHandlerMultiplexer(packetHandlerBundle.getEventPacketHandlers());
