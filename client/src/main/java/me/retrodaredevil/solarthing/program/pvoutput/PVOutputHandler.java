@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.program.pvoutput;
 
+import me.retrodaredevil.solarthing.misc.weather.TemperaturePacket;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
@@ -31,11 +32,13 @@ public class PVOutputHandler {
 	private final TimeZone timeZone;
 	private final Map<Integer, List<String>> requiredIdentifierMap;
 	private final IdentifierFragmentMatcher voltageIdentifierFragmentMatcher;
+	private final IdentifierFragmentMatcher temperatureIdentifierFragmentMatcher;
 
-	public PVOutputHandler(TimeZone timeZone, Map<Integer, List<String>> requiredIdentifierMap, IdentifierFragmentMatcher voltageIdentifierFragmentMatcher) {
+	public PVOutputHandler(TimeZone timeZone, Map<Integer, List<String>> requiredIdentifierMap, IdentifierFragmentMatcher voltageIdentifierFragmentMatcher, IdentifierFragmentMatcher temperatureIdentifierFragmentMatcher) {
 		this.timeZone = timeZone;
 		this.requiredIdentifierMap = requiredIdentifierMap;
 		this.voltageIdentifierFragmentMatcher = voltageIdentifierFragmentMatcher;
+		this.temperatureIdentifierFragmentMatcher = temperatureIdentifierFragmentMatcher;
 	}
 	public boolean checkPackets(long dayStartTimeMillis, List<FragmentedPacketGroup> packetGroupList) {
 		if (packetGroupList.isEmpty()) {
@@ -87,7 +90,14 @@ public class PVOutputHandler {
 				if (voltageIdentifierFragmentMatcher.matches(identifierFragment)) {
 					float voltage = pvCurrentAndVoltage.getInputVoltage().floatValue();
 					addStatusParametersBuilder.setVoltage(voltage);
-					break;
+				}
+			} else if (packet instanceof TemperaturePacket) {
+				Integer fragmentId = latestPacketGroup.getFragmentId(packet);
+				TemperaturePacket temperaturePacket = (TemperaturePacket) packet;
+				IdentifierFragment identifierFragment = IdentifierFragment.create(fragmentId, temperaturePacket.getIdentifier());
+				if (temperatureIdentifierFragmentMatcher.matches(identifierFragment)) {
+					float temperatureCelsius = temperaturePacket.getTemperatureCelsius();
+					addStatusParametersBuilder.setTemperatureCelsius(temperatureCelsius);
 				}
 			}
 		}

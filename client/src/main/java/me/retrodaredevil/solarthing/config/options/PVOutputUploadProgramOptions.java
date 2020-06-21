@@ -28,6 +28,8 @@ public class PVOutputUploadProgramOptions extends DatabaseTimeZoneOptionBase imp
 
 	@JsonProperty("voltage_identifier")
 	private IdentifierFragmentObject voltageIdentifierFragmentObject = null;
+	@JsonProperty("temperature_identifier")
+	private IdentifierFragmentObject temperatureIdentifierFragmentObject = null;
 
 	@Override
 	public ProgramType getProgramType() {
@@ -55,6 +57,13 @@ public class PVOutputUploadProgramOptions extends DatabaseTimeZoneOptionBase imp
 	}
 	public IdentifierFragmentMatcher getVoltageIdentifierFragmentMatcher() {
 		IdentifierFragmentObject object = voltageIdentifierFragmentObject;
+		if (object == null) {
+			return IdentifierFragmentMatcher.NO_MATCH;
+		}
+		return object.identifierFragmentMatcher;
+	}
+	public IdentifierFragmentMatcher getTemperatureIdentifierFragmentMatcher() {
+		IdentifierFragmentObject object = temperatureIdentifierFragmentObject;
 		if (object == null) {
 			return IdentifierFragmentMatcher.NO_MATCH;
 		}
