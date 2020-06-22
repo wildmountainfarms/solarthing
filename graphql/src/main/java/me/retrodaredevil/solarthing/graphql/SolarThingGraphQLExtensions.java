@@ -2,6 +2,8 @@ package me.retrodaredevil.solarthing.graphql;
 
 import io.leangen.graphql.annotations.GraphQLContext;
 import io.leangen.graphql.annotations.GraphQLQuery;
+import me.retrodaredevil.solarthing.misc.common.DataIdentifiable;
+import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 import me.retrodaredevil.solarthing.solar.outback.command.packets.SuccessMateCommandPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.ACMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.OperationalMode;
@@ -55,5 +57,10 @@ public class SolarThingGraphQLExtensions {
 	@GraphQLQuery(name = "commandName")
 	public @NotNull String getCommandName(@GraphQLContext SuccessMateCommandPacket successMateCommandPacket) {
 		return successMateCommandPacket.getCommand().getCommandName();
+	}
+
+	@GraphQLQuery(name = "dataIdString")
+	public @NotNull String getDataIdString(@GraphQLContext DataIdentifiable identifiable) {
+		return "" + identifiable.getDataId();
 	}
 }

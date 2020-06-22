@@ -8,8 +8,6 @@ public final class SolarThingConstants {
 
 	public static final String SOLAR_STATUS_UNIQUE_NAME = "solarthing";
 	public static final String SOLAR_EVENT_UNIQUE_NAME = "solarthing_events";
-	@Deprecated
-	public static final String COMMANDS_UNIQUE_NAME = "commands";
 	public static final String OPEN_UNIQUE_NAME = "solarthing_open";
 	public static final String CLOSED_UNIQUE_NAME = "solarthing_closed";
 

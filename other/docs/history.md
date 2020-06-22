@@ -33,6 +33,7 @@ have the ability to have multiple instances uploading packets to a single databa
 * MatePi finally became corrupt. It was re-flashed, worked, then became corrupt again. (Need new SD card).
 * Google Analytics were added
 * Did a huge rebase to remove all solarthing.jar files, restructured program directory
+* Added ability to read from DS18B20 temperature sensors
 
 
 ### Moving from Gson to Jackson

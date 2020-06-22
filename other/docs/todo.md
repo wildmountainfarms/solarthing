@@ -7,22 +7,10 @@
 easy displaying in Grafana
 * Packet for disk usage
 * Store data such as the panel tilt that can change over time
-  * This could go into a database called `solarthing-meta`
-* Make command requests use JSON
+  * ~~this could go into a database called solarthing-meta~~
+  * Put this in a document named `meta` in `solarthing_closed
 * Make CouchDB and InfluxDB database configuration warn when setting unused values
-* Use Mattermost as a way to send push notifications for things
-  * https://docs.mattermost.com/install/prod-docker.html?src=dl
-  * https://api.mattermost.com/#tag/posts/paths/~1posts/post
-  * https://docs.mattermost.com/developer/bot-accounts.html
-    * https://docs.mattermost.com/developer/personal-access-tokens.html
-  * https://docs.mattermost.com/administration/config-settings.html#push-notification-contents
-    * Set "PushNotificationContents" to "full" in config.json
-    * Note that this uses an outside server, so you need real Internet for this to work
-  * Put this info in a read me
-* https://www.deviceplus.com/raspberry-pi/raspberrypi_entry_018/
-  * https://pinout.xyz/pinout/1_wire
-  * https://www.waveshare.com/wiki/Raspberry_Pi_Tutorial_Series:_1-Wire_DS18B20_Sensor
-* Check if stopping vcgencmd in the middle is what's throwing off RoverPi
+* Make sure that the latest packet handler is really the latest. (Aux On has been frequently sent twice with the generator shutoff)
   
 ### Android TODO
 * Notification for when FXs are in EQ, but any MX is in absorb or float
@@ -49,6 +37,9 @@ easy displaying in Grafana
 * Use Google Analytics Collection API https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters
   * Could use this: https://github.com/brsanthu/google-analytics-java
 * Make systemd programs use "solarthing" user instead of root
+* Use Mattermost as a way to send push notifications for things
+* DS18B20 temperature sensor
+* Make command requests use JSON
 
 ### TODO Look into
 * Look into supporting Elasticsearch, MongoDB, Graphite

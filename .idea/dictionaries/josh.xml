@@ -13,6 +13,7 @@
       <w>gson</w>
       <w>influxdb</w>
       <w>lightcouch</w>
+      <w>mattermost</w>
       <w>modbus</w>
       <w>mppt</w>
       <w>mxfm</w>
