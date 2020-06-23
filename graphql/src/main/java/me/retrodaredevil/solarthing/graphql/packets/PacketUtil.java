@@ -13,12 +13,12 @@ public final class PacketUtil {
 	public static <T> List<PacketNode<T>> convertPackets(List<? extends FragmentedPacketGroup> packetGroups, Class<T> acceptClass, PacketFilter filter){
 		List<PacketNode<T>> r = new ArrayList<>();
 		for(FragmentedPacketGroup packetGroup : packetGroups) {
-			String sourceId = packetGroup.getSourceId();
 			for(Packet packet : packetGroup.getPackets()) {
 				if (!acceptClass.isInstance(packet)) {
 					continue;
 				}
-				Integer fragmentId = packetGroup.getFragmentId(packet);
+				int fragmentId = packetGroup.getFragmentId(packet);
+				String sourceId = packetGroup.getSourceId(packet);
 				Long dateMillis = packetGroup.getDateMillis(packet);
 				if(dateMillis == null) {
 					dateMillis = packetGroup.getDateMillis();

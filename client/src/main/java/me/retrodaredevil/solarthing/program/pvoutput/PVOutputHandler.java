@@ -47,14 +47,14 @@ public class PVOutputHandler {
 		}
 		FragmentedPacketGroup latestPacketGroup = packetGroupList.get(packetGroupList.size() - 1);
 		outerLoop: for (Map.Entry<Integer, List<String>> entry : requiredIdentifierMap.entrySet()) {
-			Integer desiredFragmentId = entry.getKey();
+			int desiredFragmentId = entry.getKey();
 			if (!latestPacketGroup.hasFragmentId(desiredFragmentId)) {
 				LOGGER.warn("The latest packet group doesn't contain the " + desiredFragmentId + " fragment id!");
 				return false;
 			}
 			for (String desiredIdentifierRepresentation : entry.getValue()) {
 				for (Packet packet : latestPacketGroup.getPackets()) {
-					Integer fragmentId = latestPacketGroup.getFragmentId(packet);
+					int fragmentId = latestPacketGroup.getFragmentId(packet);
 					if (!Objects.equals(fragmentId, desiredFragmentId)) {
 						continue;
 					}
@@ -84,7 +84,7 @@ public class PVOutputHandler {
 		);
 		for (Packet packet : latestPacketGroup.getPackets()) {
 			if (packet instanceof PVCurrentAndVoltage) {
-				Integer fragmentId = latestPacketGroup.getFragmentId(packet);
+				int fragmentId = latestPacketGroup.getFragmentId(packet);
 				PVCurrentAndVoltage pvCurrentAndVoltage = (PVCurrentAndVoltage) packet;
 				IdentifierFragment identifierFragment = IdentifierFragment.create(fragmentId, pvCurrentAndVoltage.getIdentifier());
 				if (voltageIdentifierFragmentMatcher.matches(identifierFragment)) {
@@ -92,7 +92,7 @@ public class PVOutputHandler {
 					addStatusParametersBuilder.setVoltage(voltage);
 				}
 			} else if (packet instanceof TemperaturePacket) {
-				Integer fragmentId = latestPacketGroup.getFragmentId(packet);
+				int fragmentId = latestPacketGroup.getFragmentId(packet);
 				TemperaturePacket temperaturePacket = (TemperaturePacket) packet;
 				IdentifierFragment identifierFragment = IdentifierFragment.create(fragmentId, temperaturePacket.getIdentifier());
 				if (temperatureIdentifierFragmentMatcher.matches(identifierFragment)) {

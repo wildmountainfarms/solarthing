@@ -64,7 +64,7 @@ public final class DailyUtil {
 		for (FragmentedPacketGroup packetGroup : packetGroups) {
 			for (Packet packet : packetGroup.getPackets()) {
 				if (clazz.isInstance(packet)) {
-					Integer fragmentId = packetGroup.getFragmentId(packet);
+					int fragmentId = packetGroup.getFragmentId(packet);
 					T t = (T) packet;
 					IdentifierFragment identifierFragment = IdentifierFragment.create(fragmentId, t.getIdentifier());
 					List<TimestampedPacket<T>> packetList = packetMap.get(identifierFragment);

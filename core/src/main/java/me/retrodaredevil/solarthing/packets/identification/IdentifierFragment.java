@@ -9,7 +9,7 @@ import java.util.Objects;
  * This is usually used as a unique key that groups a fragmentId and an {@link Identifier} together.
  */
 public interface IdentifierFragment extends IdentifierFragmentMatcher { // TODO make all implementations serializable into JSON
-	@Nullable Integer getFragmentId();
+	int getFragmentId();
 	@NotNull Identifier getIdentifier();
 
 	@Override
@@ -17,7 +17,7 @@ public interface IdentifierFragment extends IdentifierFragmentMatcher { // TODO 
 		return Objects.equals(getFragmentId(), identifierFragment.getFragmentId()) && getIdentifier().equals(identifierFragment.getIdentifier());
 	}
 
-	static <T extends Identifier> KnownIdentifierFragment<T> create(Integer fragmentId, T identifier) {
+	static <T extends Identifier> KnownIdentifierFragment<T> create(int fragmentId, T identifier) {
 		return new IdentifierFragmentBase<T>(fragmentId, identifier);
 	}
 }

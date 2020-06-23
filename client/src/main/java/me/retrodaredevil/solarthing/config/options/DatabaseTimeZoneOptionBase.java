@@ -18,7 +18,7 @@ public abstract class DatabaseTimeZoneOptionBase extends TimeZoneOptionBase impl
 	@JsonProperty("include_undefined_sources")
 	private Boolean includeUndefinedSources = null;
 	@JsonProperty("default_fragment")
-	private Integer defaultFragment = null;
+	private int defaultFragment = DefaultInstanceOptions.DEFAULT_DEFAULT_INSTANCE_OPTIONS.getDefaultFragmentId();
 	@Override
 	public File getDatabase() {
 		return database;

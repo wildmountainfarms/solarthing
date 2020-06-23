@@ -1,23 +1,31 @@
 package me.retrodaredevil.solarthing.packets.collection;
 
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.Packet;
 
 import java.util.*;
 
+import static java.util.Objects.requireNonNull;
+
 class ImmutableFragmentedPacketGroup extends ImmutablePacketGroup implements FragmentedPacketGroup {
-	private final String sourceId;
+	private final Map<Packet, String> sourceIdMap;
 	private final Map<Packet, Integer> fragmentIdMap;
 
 	ImmutableFragmentedPacketGroup(Collection<? extends InstancePacketGroup> instancePackets, long dateMillis) {
 		super(packetHelper(instancePackets), dateMillis, dateMillisHelper(instancePackets));
-		sourceId = instancePackets.iterator().next().getSourceId();
 		Map<Packet, Integer> fragmentIdMap = new HashMap<>();
+		Map<Packet, String> sourceIdMap = new HashMap<>();
+
 		for(InstancePacketGroup instancePacketGroup : instancePackets){
+			String sourceId = instancePacketGroup.getSourceId();
+			int fragmentId = instancePacketGroup.getFragmentId();
 			for(Packet packet : instancePacketGroup.getPackets()){
-				fragmentIdMap.put(packet, instancePacketGroup.getFragmentId());
+				sourceIdMap.put(packet, sourceId);
+				fragmentIdMap.put(packet, fragmentId);
 			}
 		}
-		this.fragmentIdMap = fragmentIdMap;
+		this.sourceIdMap = Collections.unmodifiableMap(sourceIdMap);
+		this.fragmentIdMap = Collections.unmodifiableMap(fragmentIdMap);
 	}
 	private static List<Packet> packetHelper(Collection<? extends InstancePacketGroup> instancePackets){
 		List<Packet> packetList = new ArrayList<>();
@@ -39,14 +47,19 @@ class ImmutableFragmentedPacketGroup extends ImmutablePacketGroup implements Fra
 		}
 		return dateMillisPacketMap;
 	}
+
 	@Override
-	public String getSourceId() {
-		return sourceId;
+	public @NotNull String getSourceId(Packet packet) {
+		return requireNonNull(sourceIdMap.get(packet));
 	}
 
 	@Override
-	public Integer getFragmentId(Packet packet) {
+	public int getFragmentId(Packet packet) {
 		return fragmentIdMap.get(packet);
 	}
 
+	@Override
+	public boolean hasFragmentId(int fragmentId) {
+		return fragmentIdMap.containsValue(fragmentId);
+	}
 }

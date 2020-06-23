@@ -14,14 +14,7 @@ import static java.util.Objects.requireNonNull;
 public final class PacketGroups {
 	private PacketGroups(){ throw new UnsupportedOperationException(); }
 
-	public static final Comparator<Integer> DEFAULT_FRAGMENT_ID_COMPARATOR = (o1, o2) -> {
-		if (o1 == null) {
-			if (o2 == null) return 0;
-			return 1; // null is last in the set. Other values are ascending
-		}
-		if (o2 == null) return -1;
-		return o1 - o2;
-	};
+	public static final Comparator<Integer> DEFAULT_FRAGMENT_ID_COMPARATOR = Integer::compare;
 
 	public static PacketGroup createPacketGroup(Collection<? extends Packet> groups, long dateMillis){
 		return createPacketGroup(groups, dateMillis, Collections.emptyMap());
@@ -29,10 +22,10 @@ public final class PacketGroups {
 	public static PacketGroup createPacketGroup(Collection<? extends Packet> groups, long dateMillis, Map<? extends Packet, Long> dateMillisPacketMap){
 		return new ImmutablePacketGroup(groups, dateMillis, dateMillisPacketMap);
 	}
-	public static InstancePacketGroup createInstancePacketGroup(Collection<? extends Packet> groups, long dateMillis, String sourceId, Integer fragmentId){
+	public static InstancePacketGroup createInstancePacketGroup(Collection<? extends Packet> groups, long dateMillis, String sourceId, int fragmentId){
 		return createInstancePacketGroup(groups, dateMillis, sourceId, fragmentId, Collections.emptyMap());
 	}
-	public static InstancePacketGroup createInstancePacketGroup(Collection<? extends Packet> groups, long dateMillis, String sourceId, Integer fragmentId, Map<? extends Packet, Long> dateMillisPacketMap){
+	public static InstancePacketGroup createInstancePacketGroup(Collection<? extends Packet> groups, long dateMillis, String sourceId, int fragmentId, Map<? extends Packet, Long> dateMillisPacketMap){
 		return new ImmutableInstancePacketGroup(groups, dateMillis, dateMillisPacketMap, sourceId, fragmentId);
 	}
 	public static FragmentedPacketGroup createFragmentedPacketGroup(Collection<? extends InstancePacketGroup> instancePackets, long dateMillis) {
@@ -44,7 +37,7 @@ public final class PacketGroups {
 		}
 		List<Packet> packets = new ArrayList<>();
 		String sourceId = defaultInstanceOptions.getDefaultSourceId();
-		Integer fragmentId = defaultInstanceOptions.getDefaultFragmentId();
+		int fragmentId = defaultInstanceOptions.getDefaultFragmentId();
 		for(Packet packet : group.getPackets()){
 			if (packet instanceof InstancePacket) {
 				InstancePacket instancePacket = (InstancePacket) packet;
@@ -103,48 +96,53 @@ public final class PacketGroups {
 		}
 		return map;
 	}
-	@Deprecated
-	public static Map<String, List<FragmentedPacketGroup>> sortPackets(Collection<? extends PacketGroup> groups, long maxTimeDistance){
-		return sortPackets(groups, DefaultInstanceOptions.DEFAULT_DEFAULT_INSTANCE_OPTIONS, maxTimeDistance);
-	}
-	@Deprecated
-	public static Map<String, List<FragmentedPacketGroup>> sortPackets(Collection<? extends PacketGroup> groups, long maxTimeDistance, Long masterIdIgnoreDistance){
-		return sortPackets(groups, DefaultInstanceOptions.DEFAULT_DEFAULT_INSTANCE_OPTIONS, maxTimeDistance, masterIdIgnoreDistance);
-	}
 	public static Map<String, List<FragmentedPacketGroup>> sortPackets(Collection<? extends PacketGroup> groups, DefaultInstanceOptions defaultInstanceOptions, long maxTimeDistance){
 		return sortPackets(groups, defaultInstanceOptions, maxTimeDistance, null);
 	}
 	public static Map<String, List<FragmentedPacketGroup>> sortPackets(Collection<? extends PacketGroup> groups, DefaultInstanceOptions defaultInstanceOptions, long maxTimeDistance, Long masterIdIgnoreDistance){
 		Map<String, List<InstancePacketGroup>> map = parsePackets(groups, defaultInstanceOptions);
 		Map<String, List<FragmentedPacketGroup>> r = new HashMap<>();
-		for(Map.Entry<String, List<InstancePacketGroup>> entry : map.entrySet()){
-			Map<Integer, List<InstancePacketGroup>> fragmentMap = new HashMap<>();
-			for(InstancePacketGroup packetGroup : entry.getValue()){ // this for loop initializes fragmentMap
-				final Integer fragmentId = packetGroup.getFragmentId();
-				List<InstancePacketGroup> fragmentList = fragmentMap.get(packetGroup.getFragmentId());
-				if(fragmentList == null){
-					fragmentList = new ArrayList<>();
-					fragmentMap.put(fragmentId, fragmentList);
-				}
-				fragmentList.add(packetGroup);
-			}
-			final List<Integer> fragmentIds;
-			{ // initialize fragmentIds
-				SortedSet<Integer> fragmentIdsSet = new TreeSet<>(DEFAULT_FRAGMENT_ID_COMPARATOR);
-				fragmentIdsSet.addAll(fragmentMap.keySet());
-				fragmentIds = new ArrayList<>(fragmentIdsSet); // now this is sorted
-			}
-			List<FragmentedPacketGroup> packetGroups = new ArrayList<>();
-			addToPacketGroups(
-					maxTimeDistance, masterIdIgnoreDistance,
-					Long.MIN_VALUE, Long.MAX_VALUE,
-					fragmentIds,
-					fragmentMap,
-					packetGroups
-			);
-			r.put(entry.getKey(), packetGroups);
+		for(Map.Entry<String, List<InstancePacketGroup>> entry : map.entrySet()) {
+			r.put(entry.getKey(), sortPackets(entry.getValue(), maxTimeDistance, masterIdIgnoreDistance));
 		}
 		return r;
+	}
+
+	/**
+	 * This method takes a list of {@link InstancePacketGroup}s and then merges them together. It does this by using the lowest fragment ID as the "master" ID and then it finds
+	 * other fragments closest to it for each {@link InstancePacketGroup} with a master fragment ID. If there's a time gap for a certain master fragment ID, the next
+	 * lowest fragment ID will be used for the time where the lowest is absent. This is recursive for all fragment IDs, so if there are many gaps, it will use the next lowest fragment ID.
+	 * @param instancePacketGroups
+	 * @param maxTimeDistance
+	 * @param masterIdIgnoreDistance
+	 * @return
+	 */
+	public static List<FragmentedPacketGroup> sortPackets(List<? extends InstancePacketGroup> instancePacketGroups, long maxTimeDistance, Long masterIdIgnoreDistance){
+		Map<Integer, List<InstancePacketGroup>> fragmentMap = new HashMap<>();
+		for(InstancePacketGroup packetGroup : instancePacketGroups){ // this for loop initializes fragmentMap
+			final int fragmentId = packetGroup.getFragmentId();
+			List<InstancePacketGroup> fragmentList = fragmentMap.get(packetGroup.getFragmentId());
+			if(fragmentList == null){
+				fragmentList = new ArrayList<>();
+				fragmentMap.put(fragmentId, fragmentList);
+			}
+			fragmentList.add(packetGroup);
+		}
+		final List<Integer> fragmentIds;
+		{ // initialize fragmentIds
+			SortedSet<Integer> fragmentIdsSet = new TreeSet<>(DEFAULT_FRAGMENT_ID_COMPARATOR);
+			fragmentIdsSet.addAll(fragmentMap.keySet());
+			fragmentIds = new ArrayList<>(fragmentIdsSet); // now this is sorted
+		}
+		List<FragmentedPacketGroup> packetGroups = new ArrayList<>();
+		addToPacketGroups(
+				maxTimeDistance, masterIdIgnoreDistance,
+				Long.MIN_VALUE, Long.MAX_VALUE,
+				fragmentIds,
+				fragmentMap,
+				packetGroups
+		);
+		return packetGroups;
 	}
 	private static void addToPacketGroups(
 			long maxTimeDistance, Long masterIdIgnoreDistance,
@@ -156,7 +154,7 @@ public final class PacketGroups {
 		if(minTime > maxTime){
 			return;
 		}
-		Integer masterFragmentId = fragmentIds.get(0);
+		int masterFragmentId = fragmentIds.get(0);
 		List<? extends InstancePacketGroup> masterList = requireNonNull(fragmentMap.get(masterFragmentId));
 		if(masterIdIgnoreDistance != null && fragmentIds.size() > 1){
 			InstancePacketGroup last = null;
@@ -221,8 +219,9 @@ public final class PacketGroups {
 			}
 			List<InstancePacketGroup> instancePacketGroupList = new ArrayList<>();
 			instancePacketGroupList.add(masterGroup);
-			for(Integer fragmentId : fragmentIds){
-				if(Objects.equals(fragmentId, masterFragmentId)) continue;
+			for(int fragmentId : fragmentIds){
+				//noinspection ConstantConditions // NOTE: This is not constant, but IntelliJ thinks it is because of the wildcard
+				if(fragmentId == masterFragmentId) continue;
 				List<? extends InstancePacketGroup> packetGroupList = requireNonNull(fragmentMap.get(fragmentId));
 				// now we want to find the closest packet group
 				InstancePacketGroup closest = getClosest(packetGroupList, masterGroup.getDateMillis());
@@ -251,7 +250,7 @@ public final class PacketGroups {
 	public static Map<Integer, List<InstancePacketGroup>> mapFragments(Collection<? extends InstancePacketGroup> packetGroups) {
 		Map<Integer, List<InstancePacketGroup>> r = new HashMap<>();
 		for(InstancePacketGroup packetGroup : packetGroups) {
-			Integer fragmentId = packetGroup.getFragmentId();
+			int fragmentId = packetGroup.getFragmentId();
 			List<InstancePacketGroup> list = r.get(fragmentId);
 			if (list == null) {
 				list = new ArrayList<>();
@@ -269,7 +268,7 @@ public final class PacketGroups {
 		Collection<Integer> sortedFragmentKeys = new TreeSet<>(fragmentComparator);
 		sortedFragmentKeys.addAll(mappedPackets.keySet());
 		List<InstancePacketGroup> r = new ArrayList<>();
-		for(Integer fragmentId : sortedFragmentKeys) {
+		for(int fragmentId : sortedFragmentKeys) {
 			r.addAll(mappedPackets.get(fragmentId));
 		}
 		return r;

@@ -82,16 +82,11 @@ public final class SolarMain {
 
 	public static PacketListReceiver getSourceAndFragmentUpdater(PacketHandlingOption options){
 		String source = options.getSourceId();
-		Integer fragment = options.getFragmentId();
+		int fragment = options.getFragmentId();
 		requireNonNull(source);
-		if (fragment == null) {
-			LOGGER.warn("'fragment' is null! This is OK, but is NOT recommended!");
-		}
 		return (list, instantType) -> {
 			list.add(InstanceSourcePackets.create(source));
-			if(fragment != null){
-				list.add(InstanceFragmentIndicatorPackets.create(fragment));
-			}
+			list.add(InstanceFragmentIndicatorPackets.create(fragment));
 		};
 	}
 	public static PacketCollectionIdGenerator createIdGenerator(Integer uniqueIdsInOneHour){

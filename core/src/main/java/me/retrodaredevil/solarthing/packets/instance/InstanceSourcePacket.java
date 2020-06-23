@@ -14,9 +14,8 @@ public interface InstanceSourcePacket extends InstancePacket, SourcedPacket {
 	String DEFAULT_SOURCE_ID = "default";
 	String UNUSED_SOURCE_ID = "<UNUSED SOURCE ID THAT WILL NEVER BE IN A PACKET>";
 
-	@NotNull
 	@Override
-	default InstancePacketType getPacketType(){
+	default @NotNull InstancePacketType getPacketType(){
 		return InstancePacketType.SOURCE;
 	}
 
@@ -26,5 +25,5 @@ public interface InstanceSourcePacket extends InstancePacket, SourcedPacket {
 	 */
 	@JsonProperty("sourceId")
 	@Override
-	String getSourceId();
+    @NotNull String getSourceId();
 }

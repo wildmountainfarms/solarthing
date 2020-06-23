@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.packets.collection;
 
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.Packet;
 
@@ -21,7 +22,7 @@ class ImmutableTargetPacketGroup extends ImmutablePacketGroup implements TargetP
 	}
 
 	@Override
-	public String getSourceId() {
+	public @NotNull String getSourceId() {
 		return sourceId;
 	}
 

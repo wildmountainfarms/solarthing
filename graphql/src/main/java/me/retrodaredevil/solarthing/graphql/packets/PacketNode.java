@@ -13,9 +13,9 @@ public final class PacketNode<T> {
 	private final T packet;
 	private final long dateMillis;
 	private final String sourceId;
-	private final Integer fragmentId;
+	private final int fragmentId;
 
-	public PacketNode(@NotNull T packet, long dateMillis, @NotNull String sourceId, @Nullable Integer fragmentId) {
+	public PacketNode(@NotNull T packet, long dateMillis, @NotNull String sourceId, int fragmentId) {
 		requireNonNull(this.packet = packet);
 		this.dateMillis = dateMillis;
 		requireNonNull(this.sourceId = sourceId);
@@ -38,7 +38,7 @@ public final class PacketNode<T> {
 	}
 
 	@JsonProperty("fragmentId")
-	public @Nullable Integer getFragmentId() {
+	public int getFragmentId() {
 		return fragmentId;
 	}
 

@@ -40,6 +40,14 @@ public class GraphQLProvider {
 
 	private GraphQL graphQL;
 
+	private int getDefaultFragmentId() {
+		Integer r = defaultFragmentId;
+		if (r == null) {
+			return DefaultInstanceOptions.DEFAULT_DEFAULT_INSTANCE_OPTIONS.getDefaultFragmentId();
+		}
+		return r;
+	}
+
 	private void updateNonNull() throws NoSuchFieldException, IllegalAccessException {
 		// more info here: https://github.com/leangen/graphql-spqr/issues/334
 		Field field = NonNullMapper.class.getDeclaredField("COMMON_NON_NULL_ANNOTATIONS");
@@ -90,7 +98,7 @@ public class GraphQLProvider {
 				.withPrototype(objectMapper)
 				.build();
 		ResolverBuilder resolverBuilder = new AnnotatedResolverBuilder();
-		DefaultInstanceOptions defaultInstanceOptions = new DefaultInstanceOptions(defaultSourceId, defaultFragmentId);
+		DefaultInstanceOptions defaultInstanceOptions = new DefaultInstanceOptions(defaultSourceId, getDefaultFragmentId());
 		System.out.println("Using defaultInstanceOptions=" + defaultInstanceOptions);
 		GraphQLSchema schema = new GraphQLSchemaGenerator()
 				.withBasePackages("me.retrodaredevil.solarthing")

@@ -1,18 +1,14 @@
 package me.retrodaredevil.solarthing.graphql.packets;
 
-import me.retrodaredevil.solarthing.annotations.Nullable;
-
-import java.util.Objects;
-
 public class FragmentFilter implements PacketFilter {
-	private final Integer fragmentId;
+	private final int fragmentId;
 
-	public FragmentFilter(@Nullable Integer fragmentId) {
+	public FragmentFilter(int fragmentId) {
 		this.fragmentId = fragmentId;
 	}
 
 	@Override
 	public boolean keep(PacketNode<?> packetNode) {
-		return Objects.equals(packetNode.getFragmentId(), fragmentId);
+		return packetNode.getFragmentId() == fragmentId;
 	}
 }

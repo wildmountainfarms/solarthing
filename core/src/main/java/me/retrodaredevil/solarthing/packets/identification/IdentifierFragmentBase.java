@@ -8,14 +8,14 @@ import java.util.Objects;
 import static java.util.Objects.requireNonNull;
 
 public class IdentifierFragmentBase<T extends Identifier> implements KnownIdentifierFragment<T> {
-	private final Integer fragmentId;
+	private final int fragmentId;
 	private final T identifier;
 
-	protected IdentifierFragmentBase(Integer fragmentId, T identifier) {
+	protected IdentifierFragmentBase(int fragmentId, T identifier) {
 		this.fragmentId = fragmentId;
 		requireNonNull(this.identifier = identifier);
 	}
-	public @Nullable Integer getFragmentId() {
+	public int getFragmentId() {
 		return fragmentId;
 	}
 	public @NotNull T getIdentifier() {

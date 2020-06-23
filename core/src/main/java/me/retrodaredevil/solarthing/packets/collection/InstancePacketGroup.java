@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.packets.collection;
 
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.Packet;
 
 import java.util.Objects;
@@ -9,14 +10,12 @@ import java.util.Objects;
  * <p>
  * Usually, this also means that each packet has the same timestamp which means that {@link #getDateMillis(Packet)} should return null
  */
-public interface InstancePacketGroup extends FragmentedPacketGroup {
-	@Override
-	String getSourceId();
+public interface InstancePacketGroup extends FragmentedPacketGroup, SourcedPacketGroup {
 
 	/**
 	 * @return The fragmentId, which is the same for each packet
 	 */
-	Integer getFragmentId();
+	int getFragmentId();
 
 	/**
 	 * @deprecated Use {@link #getFragmentId()} instead
@@ -25,12 +24,18 @@ public interface InstancePacketGroup extends FragmentedPacketGroup {
 	 */
 	@Deprecated
 	@Override
-	default Integer getFragmentId(Packet packet) {
+	default int getFragmentId(Packet packet) {
 		return getFragmentId();
 	}
 
+	@Deprecated
 	@Override
-	default boolean hasFragmentId(Integer fragmentId) {
+	default @NotNull String getSourceId(Packet packet) {
+		return getSourceId();
+	}
+
+	@Override
+	default boolean hasFragmentId(int fragmentId) {
 		return Objects.equals(fragmentId, getFragmentId());
 	}
 }

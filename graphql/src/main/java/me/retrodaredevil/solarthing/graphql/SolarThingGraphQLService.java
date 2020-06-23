@@ -139,7 +139,7 @@ public class SolarThingGraphQLService {
 	public SolarThingEventQuery queryEventIdentifier(
 			@GraphQLArgument(name = "from") long from, @GraphQLArgument(name = "to") long to,
 			@GraphQLArgument(name = "sourceId") @NotNull String sourceId,
-			@GraphQLArgument(name = "fragmentId") @Nullable Integer fragmentId,
+			@GraphQLArgument(name = "fragmentId") int fragmentId,
 			@GraphQLArgument(name = "identifier") @NotNull String identifierRepresentation,
 			@GraphQLArgument(name = "includeUnknownChangePackets", defaultValue = "false") boolean includeUnknownChangePackets
 	) {
@@ -152,7 +152,7 @@ public class SolarThingGraphQLService {
 	public SolarThingEventQuery queryEventFragment(
 			@GraphQLArgument(name = "from") long from, @GraphQLArgument(name = "to") long to,
 			@GraphQLArgument(name = "sourceId") @NotNull String sourceId,
-			@GraphQLArgument(name = "fragmentId") @Nullable Integer fragmentId,
+			@GraphQLArgument(name = "fragmentId") int fragmentId,
 			@GraphQLArgument(name = "includeUnknownChangePackets", defaultValue = "false") boolean includeUnknownChangePackets
 	) {
 		return new SolarThingEventQuery(new BasicPacketGetter(
@@ -256,7 +256,7 @@ public class SolarThingGraphQLService {
 						if (dateMillis == null) {
 							dateMillis = packetGroup.getDateMillis();
 						}
-						r.add(new DataNode<>(compensated, batteryVoltagePacket, dateMillis, packetGroup.getSourceId()));
+						r.add(new DataNode<>(compensated, batteryVoltagePacket, dateMillis, packetGroup.getSourceId(packet)));
 					}
 				}
 			}

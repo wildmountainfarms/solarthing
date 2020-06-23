@@ -12,10 +12,10 @@ final class ImmutableInstanceSourcePacket implements InstanceSourcePacket {
 	ImmutableInstanceSourcePacket(@JsonProperty(value = "sourceId", required = true) String sourceId) {
 		this.sourceId = requireNonNull(sourceId);
 	}
-	
+
 	@Override
-	public String getSourceId() {
+	public @me.retrodaredevil.solarthing.annotations.NotNull String getSourceId() {
 		return sourceId;
 	}
-	
+
 }
