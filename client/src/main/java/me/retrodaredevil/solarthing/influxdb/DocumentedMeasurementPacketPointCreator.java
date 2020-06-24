@@ -9,11 +9,10 @@ import org.influxdb.dto.Point;
 
 public enum DocumentedMeasurementPacketPointCreator implements PacketPointCreator {
 	INSTANCE;
-	@SuppressWarnings("unchecked")
 	@Override
 	public Point.Builder createBuilder(Packet packet) {
 		if(packet instanceof DocumentedPacket){
-			DocumentedPacket<? extends DocumentedPacketType> documentedPacket = (DocumentedPacket<? extends DocumentedPacketType>) packet;
+			DocumentedPacket documentedPacket = (DocumentedPacket) packet;
 			DocumentedPacketType type = documentedPacket.getPacketType();
 			if(packet instanceof Identifiable){
 				Identifier identifier = ((Identifiable) packet).getIdentifier();

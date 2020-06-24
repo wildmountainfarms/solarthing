@@ -108,6 +108,7 @@ public class GraphQLProvider {
 						couchDbDatabaseSettings.getCouchProperties()
 				))
 				.withOperationsFromSingleton(new SolarThingGraphQLExtensions())
+				.withOperationsFromSingleton(new SolarThingGraphQLMetaExtensions(null))
 				.withValueMapperFactory(jacksonValueMapperFactory)
 				.withResolverBuilders(resolverBuilder)
 				.withNestedResolverBuilders(

@@ -28,7 +28,7 @@ class MultiPacketConverterTest {
 		testPacket(parser, new CelsiusCpuTemperaturePacket(40.0f), CpuTemperaturePacket.class);
 		testPacket(parser, new CelsiusTemperaturePacket(1, new W1Source("asdf"), 40.0f), TemperaturePacket.class);
 	}
-	void testPacket(JsonPacketParser parser, DocumentedPacket<?> packet, Class<? extends DocumentedPacket<?>> clazz) throws JsonProcessingException, PacketParseException {
+	void testPacket(JsonPacketParser parser, DocumentedPacket packet, Class<? extends DocumentedPacket> clazz) throws JsonProcessingException, PacketParseException {
 		String json = MAPPER.writeValueAsString(packet);
 		JsonNode jsonNode = MAPPER.readTree(json);
 		assertTrue(clazz.isInstance(parser.parsePacket(jsonNode)));

@@ -16,7 +16,7 @@ final class ImmutableInstanceTargetPacket implements InstanceTargetPacket {
 	}
 
 	@JsonProperty("targets")
-    @Override
+	@Override
 	public @Nullable Collection<Integer> getTargetFragmentIds() {
 		return targetFragmentIds;
 	}

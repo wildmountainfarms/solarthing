@@ -54,13 +54,13 @@ public class SecurityPacketReceiver implements JsonPacketReceiver {
 	 * @param sourceId
 	 * @param fragmentId
 	 */
-	public SecurityPacketReceiver(PublicKeyLookUp publicKeyLookUp, PacketGroupReceiver packetGroupReceiver, String sourceId, int fragmentId, Collection<? extends Class<? extends DocumentedPacket<?>>> packetClasses) {
+	public SecurityPacketReceiver(PublicKeyLookUp publicKeyLookUp, PacketGroupReceiver packetGroupReceiver, String sourceId, int fragmentId, Collection<? extends Class<? extends DocumentedPacket>> packetClasses) {
 		this.publicKeyLookUp = publicKeyLookUp;
 		this.packetGroupReceiver = packetGroupReceiver;
 		this.sourceId = sourceId;
 		this.fragmentId = fragmentId;
 
-		List<Class<? extends DocumentedPacket<?>>> classList = new ArrayList<>(packetClasses);
+		List<Class<? extends DocumentedPacket>> classList = new ArrayList<>(packetClasses);
 		classList.add(InstancePacket.class);
 		integrityParser = new SimplePacketGroupParser(MultiPacketConverter.createFrom(MAPPER, classList));
 

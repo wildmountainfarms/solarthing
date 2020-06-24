@@ -15,7 +15,6 @@ public class ConstantMeasurementPacketPointCreator implements PacketPointCreator
 		this.measurement = measurement;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public Point.Builder createBuilder(Packet packet) {
 		Point.Builder r = Point.measurement(measurement);
@@ -28,7 +27,7 @@ public class ConstantMeasurementPacketPointCreator implements PacketPointCreator
 			}
 		}
 		if(packet instanceof DocumentedPacket){
-			DocumentedPacket<? extends DocumentedPacketType> documentedPacket = (DocumentedPacket<? extends DocumentedPacketType>) packet;
+			DocumentedPacket documentedPacket = (DocumentedPacket) packet;
 			DocumentedPacketType type = documentedPacket.getPacketType();
 			r.tag("packetType", type.toString());
 		}

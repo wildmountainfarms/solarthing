@@ -63,12 +63,6 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 		return identityInfo;
 	}
 
-	@NotNull
-	@Override
-	public SolarStatusPacketType getPacketType() {
-		return SolarStatusPacketType.MXFM_STATUS;
-	}
-
 	@Override
 	public int getAddress() {
 		return address;

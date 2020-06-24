@@ -16,17 +16,17 @@ public class MultiPacketConverter implements JsonPacketParser {
 		this.mapper = mapper;
 	}
 	@SafeVarargs
-	public static MultiPacketConverter createFrom(ObjectMapper baseMapper, Class<? extends DocumentedPacket<?>>... packetClasses) {
+	public static MultiPacketConverter createFrom(ObjectMapper baseMapper, Class<? extends DocumentedPacket>... packetClasses) {
 		return createFrom(baseMapper, Arrays.asList(packetClasses));
 	}
-	public static MultiPacketConverter createFrom(ObjectMapper baseMapper, Collection<? extends Class<? extends DocumentedPacket<?>>> packetClasses) {
+	public static MultiPacketConverter createFrom(ObjectMapper baseMapper, Collection<? extends Class<? extends DocumentedPacket>> packetClasses) {
 		ObjectMapper mapper = baseMapper.copy();
 		mapper.getSubtypeResolver().registerSubtypes(Collections.unmodifiableCollection(packetClasses));
 		return new MultiPacketConverter(mapper);
 	}
 
 	@Override
-	public @NotNull DocumentedPacket<?> parsePacket(JsonNode packetNode) throws PacketParseException {
+	public @NotNull DocumentedPacket parsePacket(JsonNode packetNode) throws PacketParseException {
 		try {
 			return mapper.convertValue(packetNode, DocumentedPacket.class);
 		} catch (IllegalArgumentException ex){

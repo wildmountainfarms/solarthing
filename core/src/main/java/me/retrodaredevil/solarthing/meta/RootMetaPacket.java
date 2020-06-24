@@ -11,5 +11,6 @@ public interface RootMetaPacket extends PacketEntry {
 		return "meta";
 	}
 
-	Map<String, Map<Integer, List<TimedMetaCollection>>> getData();
+//	Map<Integer, List<TimedMetaCollection>> getData();
+	List<TimedMetaCollection> getData();
 }

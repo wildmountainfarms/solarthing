@@ -52,7 +52,7 @@ public class FXStatusListUpdater implements PacketListReceiver {
 
 		for(Packet packet : new ArrayList<>(packets)){
 			if(packet instanceof DocumentedPacket){
-				DocumentedPacketType packetType = ((DocumentedPacket<?>) packet).getPacketType();
+				DocumentedPacketType packetType = ((DocumentedPacket) packet).getPacketType();
 				if(packetType == SolarStatusPacketType.FX_STATUS){
 					FXStatusPacket fx = (FXStatusPacket) packet;
 					Identifier identifier = fx.getIdentifier();
