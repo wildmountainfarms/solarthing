@@ -9,7 +9,7 @@ import me.retrodaredevil.solarthing.annotations.NotNull;
 import static java.util.Objects.requireNonNull;
 
 @JsonExplicit
-public final class PacketNode<T> {
+public final class PacketNode<T> implements SimplePacketNode {
 	private final T packet;
 	private final long dateMillis;
 	private final String sourceId;
@@ -22,22 +22,22 @@ public final class PacketNode<T> {
 		this.fragmentId = fragmentId;
 	}
 
-	@JsonProperty("packet")
+	@Override
 	public @NotNull T getPacket() {
 		return packet;
 	}
 
-	@JsonProperty("dateMillis")
+	@Override
 	public long getDateMillis() {
 		return dateMillis;
 	}
 
-	@JsonProperty("sourceId")
+	@Override
 	public @NotNull String getSourceId() {
 		return sourceId;
 	}
 
-	@JsonProperty("fragmentId")
+	@Override
 	public int getFragmentId() {
 		return fragmentId;
 	}

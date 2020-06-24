@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '2.2.2.RELEASE'
+        springBootVersion = '2.3.1.RELEASE'
     }
     repositories {
         mavenCentral()
@@ -22,11 +22,9 @@ compileJava {
 
 dependencies {
     implementation "com.fasterxml.jackson.module:jackson-module-jsonSchema:$jacksonVersion"
-    implementation 'com.graphql-java:graphql-java-spring-boot-starter-webmvc:1.0'
     implementation 'com.google.guava:guava:26.0-jre'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-//    providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+    implementation 'com.graphql-java:graphql-java-spring-boot-starter-webmvc:1.0'
 
 //    implementation 'com.graphql-java:graphql-java:14.0' graphql-spqr adds this dependency
     implementation 'io.leangen.graphql:spqr:0.10.1'

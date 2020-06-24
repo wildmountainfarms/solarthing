@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.graphql;
 import io.leangen.graphql.annotations.GraphQLContext;
 import io.leangen.graphql.annotations.GraphQLQuery;
 import me.retrodaredevil.solarthing.graphql.packets.PacketNode;
+import me.retrodaredevil.solarthing.graphql.packets.SimplePacketNode;
 import me.retrodaredevil.solarthing.meta.DeviceInfoPacket;
 import me.retrodaredevil.solarthing.meta.MetaDatabase;
 import me.retrodaredevil.solarthing.meta.BasicMetaPacket;
@@ -39,7 +40,7 @@ public class SolarThingGraphQLMetaExtensions {
 		return null;
 	}
 	@GraphQLQuery(name = "deviceInfo")
-	public DeviceInfoPacket getDeviceInfo(@GraphQLContext PacketNode<?> packetNode){
+	public DeviceInfoPacket getDeviceInfo(@GraphQLContext SimplePacketNode packetNode){
 		int fragmentId = packetNode.getFragmentId();
 		MetaDatabase metaDatabase = metaDatabaseSupplier.get();
 		for (TargetedMetaPacket targetedMetaPacket : metaDatabase.getMeta(packetNode.getDateMillis(), fragmentId)) {

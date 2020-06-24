@@ -8,11 +8,11 @@ import io.leangen.graphql.generator.mapping.common.NonNullMapper;
 import io.leangen.graphql.metadata.strategy.query.AnnotatedResolverBuilder;
 import io.leangen.graphql.metadata.strategy.query.ResolverBuilder;
 import io.leangen.graphql.metadata.strategy.value.jackson.JacksonValueMapperFactory;
+import me.retrodaredevil.couchdb.CouchProperties;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.packets.collection.DefaultInstanceOptions;
-import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePacket;
 import me.retrodaredevil.solarthing.program.DatabaseConfig;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.springframework.beans.factory.annotation.Value;
@@ -94,18 +94,24 @@ public class GraphQLProvider {
 		}
 		CouchDbDatabaseSettings couchDbDatabaseSettings = (CouchDbDatabaseSettings) databaseSettings;
 
+		DefaultInstanceOptions defaultInstanceOptions = new DefaultInstanceOptions(defaultSourceId, getDefaultFragmentId());
+		System.out.println("Using defaultInstanceOptions=" + defaultInstanceOptions);
+		GraphQLSchema schema = createGraphQLSchemaGenerator(objectMapper, couchDbDatabaseSettings.getCouchProperties(), defaultInstanceOptions).generate();
+
+		this.graphQL = GraphQL.newGraphQL(schema).build();
+	}
+
+	static GraphQLSchemaGenerator createGraphQLSchemaGenerator(ObjectMapper objectMapper, CouchProperties couchProperties, DefaultInstanceOptions defaultInstanceOptions) {
 		JacksonValueMapperFactory jacksonValueMapperFactory = JacksonValueMapperFactory.builder()
 				.withPrototype(objectMapper)
 				.build();
 		ResolverBuilder resolverBuilder = new AnnotatedResolverBuilder();
-		DefaultInstanceOptions defaultInstanceOptions = new DefaultInstanceOptions(defaultSourceId, getDefaultFragmentId());
-		System.out.println("Using defaultInstanceOptions=" + defaultInstanceOptions);
-		GraphQLSchema schema = new GraphQLSchemaGenerator()
+		return new GraphQLSchemaGenerator()
 				.withBasePackages("me.retrodaredevil.solarthing")
 				.withOperationsFromSingleton(new SolarThingGraphQLService(
 						defaultInstanceOptions,
 						objectMapper,
-						couchDbDatabaseSettings.getCouchProperties()
+						couchProperties
 				))
 				.withOperationsFromSingleton(new SolarThingGraphQLExtensions())
 				.withOperationsFromSingleton(new SolarThingGraphQLMetaExtensions(null))
@@ -115,10 +121,7 @@ public class GraphQLProvider {
 						resolverBuilder,
 						new JacksonResolverBuilder().withObjectMapper(objectMapper),
 						new SolarThingResolverBuilder()
-				)
-				.generate();
-
-		this.graphQL = GraphQL.newGraphQL(schema).build();
+				);
 	}
 
 

@@ -34,6 +34,7 @@ subprojects {
     }
     dependencies {
         testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit5Version
+        testImplementation "org.junit.jupiter:junit-jupiter-params:$junit5Version"
         testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit5Version
         // https://mvnrepository.com/artifact/com.google.code.findbugs/jsr305
         implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
@@ -76,6 +77,6 @@ project(":graphql"){
 }
 
 wrapper {
-    gradleVersion = '6.4'
+    gradleVersion = '6.5'
     distributionType = Wrapper.DistributionType.ALL
 }
