@@ -15,7 +15,7 @@ public class PacketUtil {
 	private PacketUtil() { throw new UnsupportedOperationException(); }
 
 	public static List<FragmentedPacketGroup> getPacketGroups(String sourceId, DefaultInstanceOptions defaultInstanceOptions, List<? extends ObjectNode> packetNodes, PacketGroupParser parser){
-		Map<String, List<FragmentedPacketGroup>> packetGroupsMap = PacketGroups.sortPackets(PacketParseUtil.parseRawPacketsLenient(packetNodes, parser), defaultInstanceOptions, 2 * 60 * 1000);
+		Map<String, List<FragmentedPacketGroup>> packetGroupsMap = PacketGroups.sortPackets(PacketParseUtil.parseRawPacketsLenient(packetNodes, parser), defaultInstanceOptions, 2 * 60 * 1000, 2 * 60 * 1000L);
 		if(sourceId == null){ // no preference on the source
 			if(packetGroupsMap.containsKey(defaultInstanceOptions.getDefaultSourceId())){
 				return packetGroupsMap.get(defaultInstanceOptions.getDefaultSourceId());

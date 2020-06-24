@@ -15,12 +15,9 @@ public final class HourIntervalPacketCollectionIdGenerator implements PacketColl
 	 */
 	public HourIntervalPacketCollectionIdGenerator(int uniqueIdsInOneHour, Integer uniqueCode) {
 		this.uniqueIdsInOneHour = uniqueIdsInOneHour;
+		this.uniqueCode = uniqueCode;
 		if(uniqueIdsInOneHour <= 0){
 			throw new IllegalArgumentException("uniqueIdsInOneHour cannot be <= 0. It is: " + uniqueIdsInOneHour);
-		}
-		this.uniqueCode = uniqueCode;
-		if (uniqueCode != null && uniqueCode < 0) {
-			throw new IllegalArgumentException("uniqueCode cannot be < 0! It is: " + uniqueCode);
 		}
 	}
 

@@ -1,11 +1,21 @@
 ### `program` directory
-This directory contains many other directories. See their descriptions below
+This directory contains many other directories. See their descriptions below.
+
+Note: running `./download_solarthing.sh` or `./graphql_download_solarthing.sh` will update/download SolarThing.
+When doing this make sure to run a `git pull` before hand to get the latest version.
+
+---
+
+### Descriptions
 
 #### Directories
 * `mate` the working directory for the mate program.
 * `rover` the working directory for the rover program.
 * `pvoutput` the working directory for the PVOutput program.
 * `graphql` the working directory for the GraphQL program.
+* `message` the working directory for the message program.
+* `request` the working directory for the request program.
+* `custom1` the working directory for your program of choice.
 
 #### other directories
 * `.downloads` downloaded SolarThing jar files are stored here.

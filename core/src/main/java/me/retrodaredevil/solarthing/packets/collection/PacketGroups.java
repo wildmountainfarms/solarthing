@@ -81,6 +81,14 @@ public final class PacketGroups {
 		);
 	}
 
+	public static List<InstancePacketGroup> parseToInstancePacketGroups(Collection<? extends PacketGroup> groups, DefaultInstanceOptions defaultInstanceOptions) {
+		List<InstancePacketGroup> r = new ArrayList<>();
+		for(PacketGroup group : groups){
+			InstancePacketGroup instancePacketGroup = parseToInstancePacketGroup(group, defaultInstanceOptions);
+			r.add(instancePacketGroup);
+		}
+		return r;
+	}
 	public static Map<String, List<InstancePacketGroup>> parsePackets(Collection<? extends PacketGroup> groups, DefaultInstanceOptions defaultInstanceOptions){
 		Map<String, List<InstancePacketGroup>> map = new HashMap<>();
 		for(PacketGroup group : groups){
@@ -96,6 +104,7 @@ public final class PacketGroups {
 		}
 		return map;
 	}
+	@Deprecated
 	public static Map<String, List<FragmentedPacketGroup>> sortPackets(Collection<? extends PacketGroup> groups, DefaultInstanceOptions defaultInstanceOptions, long maxTimeDistance){
 		return sortPackets(groups, defaultInstanceOptions, maxTimeDistance, null);
 	}
@@ -103,7 +112,7 @@ public final class PacketGroups {
 		Map<String, List<InstancePacketGroup>> map = parsePackets(groups, defaultInstanceOptions);
 		Map<String, List<FragmentedPacketGroup>> r = new HashMap<>();
 		for(Map.Entry<String, List<InstancePacketGroup>> entry : map.entrySet()) {
-			r.put(entry.getKey(), sortPackets(entry.getValue(), maxTimeDistance, masterIdIgnoreDistance));
+			r.put(entry.getKey(), mergePackets(entry.getValue(), maxTimeDistance, masterIdIgnoreDistance));
 		}
 		return r;
 	}
@@ -113,11 +122,11 @@ public final class PacketGroups {
 	 * other fragments closest to it for each {@link InstancePacketGroup} with a master fragment ID. If there's a time gap for a certain master fragment ID, the next
 	 * lowest fragment ID will be used for the time where the lowest is absent. This is recursive for all fragment IDs, so if there are many gaps, it will use the next lowest fragment ID.
 	 * @param instancePacketGroups
-	 * @param maxTimeDistance
-	 * @param masterIdIgnoreDistance
-	 * @return
+	 * @param maxTimeDistance The maximum amount of time in milliseconds between a master packet and a packet of another fragment ID
+	 * @param masterIdIgnoreDistance The amount of time in milliseconds to allow no master ID packet until it falls through to the next ID, or null. If null, it's the same as being infinite.
+	 * @return A list of the merged packets
 	 */
-	public static List<FragmentedPacketGroup> sortPackets(List<? extends InstancePacketGroup> instancePacketGroups, long maxTimeDistance, Long masterIdIgnoreDistance){
+	public static List<FragmentedPacketGroup> mergePackets(List<? extends InstancePacketGroup> instancePacketGroups, long maxTimeDistance, Long masterIdIgnoreDistance){
 		Map<Integer, List<InstancePacketGroup>> fragmentMap = new HashMap<>();
 		for(InstancePacketGroup packetGroup : instancePacketGroups){ // this for loop initializes fragmentMap
 			final int fragmentId = packetGroup.getFragmentId();
@@ -147,7 +156,7 @@ public final class PacketGroups {
 	private static void addToPacketGroups(
 			long maxTimeDistance, Long masterIdIgnoreDistance,
 			long minTime, long maxTime,
-			List<? extends Integer> fragmentIds,
+			List<Integer> fragmentIds,
 			Map<Integer, ? extends List<? extends InstancePacketGroup>> fragmentMap,
 			List<? super FragmentedPacketGroup> packetGroupsOut
 	){
@@ -156,7 +165,7 @@ public final class PacketGroups {
 		}
 		int masterFragmentId = fragmentIds.get(0);
 		List<? extends InstancePacketGroup> masterList = requireNonNull(fragmentMap.get(masterFragmentId));
-		if(masterIdIgnoreDistance != null && fragmentIds.size() > 1){
+		if(masterIdIgnoreDistance != null && fragmentIds.size() > 1){ // see if we need to check for gaps in the master list
 			InstancePacketGroup last = null;
 			List<Integer> splitIndexes = new ArrayList<>();
 			for(int i = 0; i < masterList.size(); i++){
@@ -174,7 +183,7 @@ public final class PacketGroups {
 			}
 			subListList.add(masterList.subList(lastIndex, masterList.size()));
 
-			List<? extends Integer> subFragmentIds = fragmentIds.subList(1, fragmentIds.size());
+			List<Integer> subFragmentIds = fragmentIds.subList(1, fragmentIds.size());
 			InstancePacketGroup firstPacket = subListList
 					.get(0) // we know this won't fail because we added at least one element above
 					.get(0); // we're going to infer that this won't fail because it should never be empty
@@ -220,7 +229,6 @@ public final class PacketGroups {
 			List<InstancePacketGroup> instancePacketGroupList = new ArrayList<>();
 			instancePacketGroupList.add(masterGroup);
 			for(int fragmentId : fragmentIds){
-				//noinspection ConstantConditions // NOTE: This is not constant, but IntelliJ thinks it is because of the wildcard
 				if(fragmentId == masterFragmentId) continue;
 				List<? extends InstancePacketGroup> packetGroupList = requireNonNull(fragmentMap.get(fragmentId));
 				// now we want to find the closest packet group
@@ -233,15 +241,30 @@ public final class PacketGroups {
 			packetGroupsOut.add(createFragmentedPacketGroup(instancePacketGroupList, masterGroup.getDateMillis()));
 		}
 	}
-	private static InstancePacketGroup getClosest(List<? extends InstancePacketGroup> packetGroupList, long masterGroupDateMillis){
-		// TODO This is a perfect place to use binary search
-		InstancePacketGroup closest = null;
+
+	/**
+	 *
+	 * @param packetGroupList The list of {@link InstancePacketGroup}. This MUST be in order from oldest to newest
+	 * @param masterGroupDateMillis The dateMillis to get the packet closest to
+	 * @return The packet group with a dateMillis closest to {@code masterGroupDateMillis}
+	 */
+	static <T extends PacketGroup> T getClosest(List<? extends T> packetGroupList, long masterGroupDateMillis){
+		T closest = null;
 		Long smallestTime = null;
-		for(InstancePacketGroup packetGroup : packetGroupList){
+		int low = 0;
+		int high = packetGroupList.size() - 1;
+		while (low <= high) {
+			int mid = low + (high - low) / 2;
+			T packetGroup = packetGroupList.get(mid);
 			long timeDistance = Math.abs(packetGroup.getDateMillis() - masterGroupDateMillis);
 			if(smallestTime == null || timeDistance < smallestTime){
 				closest = packetGroup;
 				smallestTime = timeDistance;
+			}
+			if (packetGroup.getDateMillis() < masterGroupDateMillis) { // search further
+				low = mid + 1;
+			} else { // search backward
+				high = mid - 1;
 			}
 		}
 		return requireNonNull(closest);
