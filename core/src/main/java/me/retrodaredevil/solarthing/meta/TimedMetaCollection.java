@@ -1,23 +1,58 @@
 package me.retrodaredevil.solarthing.meta;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.util.TimeRange;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.Objects.requireNonNull;
 
 public class TimedMetaCollection {
 	// check this out https://github.com/FasterXML/jackson-databind/issues/511 we could use fail on invalid subtype
 
 
 	private final TimeRange timeRange;
-	private final List<MetaPacket> packets;
+	private final List<BasicMetaPacket> packets;
 
-	public TimedMetaCollection(
+	public TimedMetaCollection(Long startTime, Long endTime, List<BasicMetaPacket> packets) {
+		timeRange = new TimeRange(startTime, endTime);
+		requireNonNull(this.packets = packets);
+	}
+	@JsonCreator
+	public static TimedMetaCollection createRemoveNullValues(
 			@JsonProperty("start") Long startTime,
 			@JsonProperty("end") Long endTime,
-			@JsonProperty(value = "packets", required = true) List<MetaPacket> packets
+			@JsonProperty(value = "packets", required = true) List<BasicMetaPacket> nullablePackets
 	) {
-		timeRange = new TimeRange(startTime, endTime);
-		this.packets = packets;
+		List<BasicMetaPacket> packets = new ArrayList<>();
+		for (BasicMetaPacket packet : nullablePackets) {
+			if (packet != null) {
+				packets.add(packet);
+			}
+		}
+		return new TimedMetaCollection(startTime, endTime, packets);
+	}
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	@JsonProperty("startTime")
+	public Long getStartTime() {
+		return timeRange.getStartTime();
+	}
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	@JsonProperty("endTime")
+	public Long getEndTime() {
+		return timeRange.getEndTime();
+	}
+	@JsonProperty("packets")
+	public @NotNull List<BasicMetaPacket> getPackets() {
+		return packets;
+	}
+
+	public TimeRange getTimeRange() {
+		return timeRange;
 	}
 }

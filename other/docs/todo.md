@@ -11,6 +11,7 @@ easy displaying in Grafana
   * Put this in a document named `meta` in `solarthing_closed
 * Make CouchDB and InfluxDB database configuration warn when setting unused values
 * Make sure that the latest packet handler is really the latest. (Aux On has been frequently sent twice with the generator shutoff)
+* Add temperature event to message program
   
 ### Android TODO
 * Notification for when FXs are in EQ, but any MX is in absorb or float

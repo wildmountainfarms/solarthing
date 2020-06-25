@@ -22,7 +22,7 @@ compileJava {
 
 dependencies {
     implementation "com.fasterxml.jackson.module:jackson-module-jsonSchema:$jacksonVersion"
-    implementation 'com.google.guava:guava:26.0-jre'
+//    implementation 'com.google.guava:guava:26.0-jre'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'com.graphql-java:graphql-java-spring-boot-starter-webmvc:1.0'
 

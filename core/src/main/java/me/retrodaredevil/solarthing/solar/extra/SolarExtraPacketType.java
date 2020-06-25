@@ -7,6 +7,6 @@ public enum SolarExtraPacketType implements DocumentedPacketType {
 	@Deprecated
 	FX_CHARGING,
 
+	@Deprecated
 	MXFM_DAILY,
-
 }

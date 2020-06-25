@@ -32,7 +32,41 @@ public final class TimeRange {
 	public Long getEndTime() {
 		return endTime;
 	}
+	public boolean isForever() {
+		return startTime == null && endTime == null;
+	}
 	public boolean contains(long timeMillis) {
 		return (startTime == null || timeMillis >= startTime) && (endTime == null || timeMillis < endTime);
+	}
+
+	// TODO add unit tests for this
+	public boolean fullyContains(TimeRange timeRange) {
+		if (startTime == null && endTime == null) {
+			return true;
+		}
+		if (startTime != null && timeRange.startTime == null) {
+			return false;
+		}
+		if (endTime != null && timeRange.endTime == null) {
+			return false;
+		}
+		if (startTime == null) {
+			return endTime >= timeRange.endTime;
+		}
+		if (endTime == null) {
+			return startTime <= timeRange.startTime;
+		}
+		return startTime <= timeRange.startTime && endTime >= timeRange.endTime;
+	}
+	private boolean doIntersects(TimeRange timeRange) {
+		return isForever()
+				|| (startTime == null && timeRange.startTime == null)
+				|| (endTime == null && timeRange.endTime == null)
+				|| (timeRange.startTime != null && contains(timeRange.startTime))
+				|| (timeRange.endTime != null && contains(timeRange.endTime))
+				|| fullyContains(timeRange);
+	}
+	public boolean intersects(TimeRange timeRange) {
+		return doIntersects(timeRange) || timeRange.doIntersects(this);
 	}
 }

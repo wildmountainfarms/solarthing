@@ -1,15 +1,71 @@
 package me.retrodaredevil.solarthing.misc.common.meta;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.meta.TargetedMetaPacket;
+import me.retrodaredevil.solarthing.meta.TargetedMetaPacketType;
 import me.retrodaredevil.solarthing.misc.common.DataIdentifiable;
+import me.retrodaredevil.solarthing.misc.common.DataIdentifier;
+import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 
-public interface DataMetaPacket extends TargetedMetaPacket, DataIdentifiable {
+@JsonTypeName("DATA_INFO")
+public class DataMetaPacket implements TargetedMetaPacket, DataIdentifiable {
+	private final int dataId;
+	private final String name;
+	private final String description;
+	private final String location;
+
+	private final DataIdentifier dataIdentifier;
+	private final IdentityInfo identityInfo;
+
+	@JsonCreator
+	public DataMetaPacket(
+			@JsonProperty("dataId") int dataId,
+			@JsonProperty("name") String name,
+			@JsonProperty("description") String description,
+			@JsonProperty("location") String location) {
+		this.dataId = dataId;
+		this.name = name;
+		this.description = description;
+		this.location = location;
+		dataIdentifier = new DataIdentifier(dataId);
+		identityInfo = new DataMetaIdentityInfo(name);
+	}
+
+	@Override
+	public @NotNull TargetedMetaPacketType getPacketType() {
+		return TargetedMetaPacketType.DATA_INFO;
+	}
+
 	@JsonProperty("name")
-	@NotNull String getName();
+	public @NotNull String getName() {
+		return name;
+	}
+
 	@JsonProperty("description")
-	@NotNull String getDescription();
+	public @NotNull String getDescription() {
+		return description;
+	}
+
 	@JsonProperty("location")
-	@NotNull String getLocation();
+	public @NotNull String getLocation() {
+		return location;
+	}
+
+	@Override
+	public @NotNull DataIdentifier getIdentifier() {
+		return dataIdentifier;
+	}
+
+	@Override
+	public @NotNull IdentityInfo getIdentityInfo() {
+		return identityInfo;
+	}
+
+	@Override
+	public int getDataId() {
+		return dataId;
+	}
 }

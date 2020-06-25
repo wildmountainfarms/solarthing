@@ -2,9 +2,11 @@ package me.retrodaredevil.solarthing.meta;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 
+@JsonTypeName("DEVICE_INFO")
 @JsonExplicit
 public class DeviceInfoPacket implements TargetedMetaPacket {
 	private final String deviceName;

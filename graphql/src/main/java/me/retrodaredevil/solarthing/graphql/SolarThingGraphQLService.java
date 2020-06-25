@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.graphql;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.leangen.graphql.annotations.GraphQLArgument;
+import io.leangen.graphql.annotations.GraphQLContext;
 import io.leangen.graphql.annotations.GraphQLQuery;
 import me.retrodaredevil.couchdb.CouchProperties;
 import me.retrodaredevil.couchdb.EktorpUtil;
@@ -12,6 +13,9 @@ import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.couchdb.CouchDbQueryHandler;
 import me.retrodaredevil.solarthing.couchdb.SolarThingCouchDb;
 import me.retrodaredevil.solarthing.graphql.packets.*;
+import me.retrodaredevil.solarthing.meta.*;
+import me.retrodaredevil.solarthing.misc.common.DataIdentifiable;
+import me.retrodaredevil.solarthing.misc.common.meta.DataMetaPacket;
 import me.retrodaredevil.solarthing.misc.device.CpuTemperaturePacket;
 import me.retrodaredevil.solarthing.misc.device.DevicePacket;
 import me.retrodaredevil.solarthing.misc.weather.TemperaturePacket;
@@ -57,6 +61,7 @@ public class SolarThingGraphQLService {
 
 	private final CouchDbQueryHandler statusQueryHandler;
 	private final CouchDbQueryHandler eventQueryHandler;
+	private final MetaQueryHandler metaQueryHandler;
 	private final PacketGroupParser statusParser;
 	private final PacketGroupParser eventParser;
 
@@ -74,6 +79,9 @@ public class SolarThingGraphQLService {
 		CouchDbInstance instance = new StdCouchDbInstance(httpClient);
 		statusQueryHandler = new CouchDbQueryHandler(new StdCouchDbConnector(SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, instance));
 		eventQueryHandler = new CouchDbQueryHandler(new StdCouchDbConnector(SolarThingConstants.SOLAR_EVENT_UNIQUE_NAME, instance));
+		ObjectMapper metaObjectMapper = objectMapper.copy();
+		metaObjectMapper.getSubtypeResolver().registerSubtypes(TargetMetaPacket.class, DeviceInfoPacket.class, DataMetaPacket.class);
+		metaQueryHandler = new MetaQueryHandler(new StdCouchDbConnector(SolarThingConstants.CLOSED_UNIQUE_NAME, instance), metaObjectMapper);
 	}
 
 	/**
@@ -312,5 +320,40 @@ public class SolarThingGraphQLService {
 		public @NotNull List<@NotNull PacketNode<SuccessMateCommandPacket>> mateCommand() {
 			return packetGetter.getPackets(SuccessMateCommandPacket.class);
 		}
+	}
+
+	private MetaDatabase queryMeta() {
+		return new DefaultMetaDatabase(metaQueryHandler.query());
+	}
+
+	@GraphQLQuery(name = "meta")
+	public DataMetaPacket getMetaTemperaturePacket(@GraphQLContext PacketNode<TemperaturePacket> packetNode){
+		return getMeta(packetNode);
+	}
+	private @Nullable DataMetaPacket getMeta(PacketNode<? extends DataIdentifiable> packetNode) {
+		int fragmentId = packetNode.getFragmentId();
+		int dataId = packetNode.getPacket().getDataId();
+		MetaDatabase metaDatabase = queryMeta();
+		for (TargetedMetaPacket targetedMetaPacket : metaDatabase.getMeta(packetNode.getDateMillis(), fragmentId)) {
+			if (targetedMetaPacket instanceof DataMetaPacket) {
+				DataMetaPacket dataMetaPacket = (DataMetaPacket) targetedMetaPacket;
+				if (dataMetaPacket.getDataId() == dataId) {
+					return dataMetaPacket;
+				}
+			}
+		}
+		return null;
+	}
+
+	@GraphQLQuery(name = "fragmentDeviceInfo")
+	public @Nullable DeviceInfoPacket getFragmentDeviceInfo(@GraphQLContext SimplePacketNode packetNode){
+		int fragmentId = packetNode.getFragmentId();
+		MetaDatabase metaDatabase = queryMeta();
+		for (TargetedMetaPacket targetedMetaPacket : metaDatabase.getMeta(packetNode.getDateMillis(), fragmentId)) {
+			if (targetedMetaPacket instanceof DeviceInfoPacket) {
+				return (DeviceInfoPacket) targetedMetaPacket;
+			}
+		}
+		return null;
 	}
 }

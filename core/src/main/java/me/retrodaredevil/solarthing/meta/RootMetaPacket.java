@@ -1,16 +1,28 @@
 package me.retrodaredevil.solarthing.meta;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.packets.PacketEntry;
 
 import java.util.List;
-import java.util.Map;
 
-public interface RootMetaPacket extends PacketEntry {
+@JsonIgnoreProperties(value = { "_id", "_rev" }, allowGetters = true)
+public class RootMetaPacket implements PacketEntry {
+	private final List<TimedMetaCollection> meta;
+
+	@JsonCreator
+	public RootMetaPacket(@JsonProperty("meta") List<TimedMetaCollection> meta) {
+		this.meta = meta;
+	}
+
 	@Override
-	default String getDbId() {
+	public String getDbId() {
 		return "meta";
 	}
 
-//	Map<Integer, List<TimedMetaCollection>> getData();
-	List<TimedMetaCollection> getData();
+	@JsonProperty("meta")
+	public List<TimedMetaCollection> getMeta() {
+		return meta;
+	}
 }
