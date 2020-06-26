@@ -9,6 +9,7 @@ import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 		@JsonSubTypes.Type(LowBatteryVoltageEvent.class),
 		@JsonSubTypes.Type(FXOperationalModeChangeEvent.class),
 		@JsonSubTypes.Type(ACModeChangeEvent.class),
+		@JsonSubTypes.Type(TemperatureEvent.class),
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
 public interface MessageEvent {

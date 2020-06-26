@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.program;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.config.message.MessageEventNode;
 import me.retrodaredevil.solarthing.config.options.MessageSenderProgramOptions;
 import me.retrodaredevil.solarthing.couchdb.CouchDbQueryHandler;
@@ -45,6 +46,8 @@ public class MessageSenderMain {
 	}
 
 	public static int startMessageSender(MessageSenderProgramOptions options) {
+		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Starting message program.");
+		LOGGER.debug("Note that this has to get packets twice before this sends anything.");
 		CouchDbQueryHandler queryHandler = SolarMain.createCouchDbQueryHandler(options);
 		PacketGroupParser statusParser = new SimplePacketGroupParser(new LenientPacketParser(
 				MultiPacketConverter.createFrom(PARSE_MAPPER, SolarStatusPacket.class, SolarExtraPacket.class, DevicePacket.class, ErrorPacket.class, InstancePacket.class)
@@ -55,8 +58,6 @@ public class MessageSenderMain {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-//		senders.add(message -> LOGGER.debug("Sending message: {}", message));
-//		MessageSender sender = new MessageSenderMultiplexer(senders);
 		List<MessageEventNode> messageEventNodes = options.getMessageEventNodes();
 
 		FragmentedPacketGroup last = null;

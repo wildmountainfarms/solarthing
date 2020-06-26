@@ -6,12 +6,8 @@
 * Create GraphQL query that allows someone to get dailyKWH from a large time period (many days) for
 easy displaying in Grafana
 * Packet for disk usage
-* Store data such as the panel tilt that can change over time
-  * ~~this could go into a database called solarthing-meta~~
-  * Put this in a document named `meta` in `solarthing_closed
 * Make CouchDB and InfluxDB database configuration warn when setting unused values
 * Make sure that the latest packet handler is really the latest. (Aux On has been frequently sent twice with the generator shutoff)
-* Add temperature event to message program
   
 ### Android TODO
 * Notification for when FXs are in EQ, but any MX is in absorb or float
@@ -41,6 +37,9 @@ easy displaying in Grafana
 * Use Mattermost as a way to send push notifications for things
 * DS18B20 temperature sensor
 * Make command requests use JSON
+* Store metadata
+  * Put this in a document named `meta` in `solarthing_closed
+* Add temperature event to message program
 
 ### TODO Look into
 * Look into supporting Elasticsearch, MongoDB, Graphite
