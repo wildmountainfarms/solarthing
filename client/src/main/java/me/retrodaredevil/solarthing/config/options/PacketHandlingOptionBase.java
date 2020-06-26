@@ -2,6 +2,8 @@ package me.retrodaredevil.solarthing.config.options;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+import me.retrodaredevil.solarthing.annotations.NotNull;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.config.request.DataRequester;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,12 +29,12 @@ abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements Pa
 	private Integer unique = null;
 
 	@JsonProperty("extra_option_flags")
-	private List<ExtraOptionFlag> extraOptionFlags;
+	private @Nullable List<ExtraOptionFlag> extraOptionFlags;
 	@JsonProperty("request")
-	private List<DataRequester> dataRequesterList;
+	private @Nullable List<DataRequester> dataRequesterList;
 
 	@Override
-	public List<File> getDatabaseConfigurationFiles() {
+	public @NotNull List<File> getDatabaseConfigurationFiles() {
 		List<File> r = databases;
 		if(r == null){
 			return Collections.emptyList();
@@ -41,7 +43,7 @@ abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements Pa
 	}
 
 	@Override
-	public String getSourceId() {
+	public @NotNull String getSourceId() {
 		return requireNonNull(source);
 	}
 
@@ -56,7 +58,7 @@ abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements Pa
 	}
 
 	@Override
-	public List<ExtraOptionFlag> getExtraOptionFlags() {
+	public @NotNull List<ExtraOptionFlag> getExtraOptionFlags() {
 		List<ExtraOptionFlag> r = extraOptionFlags;
 		if(r == null){
 			return Collections.emptyList();
@@ -65,7 +67,11 @@ abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements Pa
 		return r;
 	}
 	@Override
-	public List<DataRequester> getDataRequesterList() {
-		return dataRequesterList;
+	public @NotNull List<DataRequester> getDataRequesterList() {
+		List<DataRequester> r = dataRequesterList;
+		if (r == null) {
+			return Collections.emptyList();
+		}
+		return r;
 	}
 }
