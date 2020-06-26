@@ -10,6 +10,8 @@ as a packet. You just have to add this json to your `base.json`:
 }
 ```
 
+Learn more about the `request` field [here](request_field.md).
+
 This works by using the `vcgencmd measure_temp` that is only available on Raspberry Pis
 
 You can see an example [here](../../config_templates/base/mate_template_with_rpi_cpu_temperature.json)

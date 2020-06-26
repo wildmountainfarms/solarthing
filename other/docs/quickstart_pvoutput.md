@@ -29,6 +29,40 @@ up your output at https://pvoutput.org. `source` is the source id of the data an
 
 This requires that you set up an account on https://pvoutput.org. This also requires you to set up a CouchDB database.
 
+#### Advanced Configuration
+You can view an advanced configuration [here](../../config_templates/base/pvoutput_upload_template_advanced.json).
+
+```json5
+{
+  // ...
+  "time_zone": "US/Mountain",
+  "default_fragment": 1,
+  "include_undefined_sources": true,
+  "required": {
+    "1": ["OutbackIdentifier(address=3)", "OutbackIdentifier(address=4)"]
+  },
+  "analytics_enabled": true,
+  "voltage_identifier": {
+    "fragment": 1,
+    "identifier": "OutbackIdentifier(address=3)"
+  },
+  "temperature_identifier": {
+    "fragment": 3, "identifier": "DataIdentifier(dataId=1)"
+  }
+}
+```
+* `time_zone` can be used to set the time zone if you want to use a different time zone than the current system time zone.
+* `default_fragment` usually should never be defined. It's only for users who've been using SolarThing since before 2020.
+* `include_undefined_sources` usually should never be defined. It's only for users who've been using SolarThing since before 2020.
+* `required` can be used to make sure that certain data is present before uploading to PVOutput
+  * In this case, two outback devices with addresses of 3 and 4 must be present. Both of these devices are being monitored by
+  a device with a fragment ID of 1.
+* `analytics_enabled` can be set to false to disable Google Analytics
+* `voltage_identifier` can be used to upload voltage data to PVOutput.
+  * In this case, an MX device with an address of 3 on fragment 1 will be used for its `inputVoltage` (pv voltage).
+* `temperature_identifier` can be used to upload temperature data to PVOutput.
+  * In this case, a DS18B20 sensor on fragment 3 with a data ID of 1 is used
+
 
 ### I'm ready to use this for real!
 Once your configuration is how you want it, you can go back to the [quickstart](quickstart.md#configuration-continued) to enable and start the service.
@@ -40,4 +74,5 @@ This project is set up this way because it makes future changes easier. If you w
 this project such as fragmented packets, the only way to upload all of your data to pvoutput would be to do it
 in one program instead of two.
 
-
+This means that you can have multiple instances of SolarThing running and compile data from
+each program and upload to PVOutput all at once.

@@ -2,6 +2,6 @@
   "type": "pvoutput-upload",
   "system_id": 100,
   "api_key": "<YOUR API KEY>",
-  "database": "config/couchdb.json",
+  "database": "../config/couchdb.json",
   "source": "default"
 }

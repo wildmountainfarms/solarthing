@@ -11,10 +11,12 @@ import io.leangen.graphql.metadata.strategy.value.jackson.JacksonValueMapperFact
 import me.retrodaredevil.couchdb.CouchProperties;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.NotNull;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.meta.DefaultMetaDatabase;
 import me.retrodaredevil.solarthing.packets.collection.DefaultInstanceOptions;
+import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePacket;
 import me.retrodaredevil.solarthing.program.DatabaseConfig;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.ektorp.impl.StdCouchDbConnector;
@@ -36,12 +38,20 @@ public class GraphQLProvider {
 
 	@Value("${solarthing.config.database}")
 	private File databaseFile;
-	@Value("${solarthing.config.default_source:default}")
-	private String defaultSourceId;
+	@Value("${solarthing.config.default_source:#{null}}")
+	private @Nullable String defaultSourceId;
 	@Value("${solarthing.config.default_fragment:#{null}}")
-	private Integer defaultFragmentId;
+	private @Nullable Integer defaultFragmentId;
 
 	private GraphQL graphQL;
+
+	private String getDefaultSourceId() {
+		String r = defaultSourceId;
+		if (r == null) {
+			return InstanceSourcePacket.UNUSED_SOURCE_ID;
+		}
+		return r;
+	}
 
 	private int getDefaultFragmentId() {
 		Integer r = defaultFragmentId;
@@ -97,7 +107,7 @@ public class GraphQLProvider {
 		}
 		CouchDbDatabaseSettings couchDbDatabaseSettings = (CouchDbDatabaseSettings) databaseSettings;
 
-		DefaultInstanceOptions defaultInstanceOptions = new DefaultInstanceOptions(defaultSourceId, getDefaultFragmentId());
+		DefaultInstanceOptions defaultInstanceOptions = new DefaultInstanceOptions(getDefaultSourceId(), getDefaultFragmentId());
 		System.out.println("Using defaultInstanceOptions=" + defaultInstanceOptions);
 		GraphQLSchema schema = createGraphQLSchemaGenerator(objectMapper, couchDbDatabaseSettings.getCouchProperties(), defaultInstanceOptions).generate();
 
