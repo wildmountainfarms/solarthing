@@ -36,6 +36,6 @@ public interface InstancePacketGroup extends FragmentedPacketGroup, SourcedPacke
 
 	@Override
 	default boolean hasFragmentId(int fragmentId) {
-		return Objects.equals(fragmentId, getFragmentId());
+		return fragmentId == getFragmentId();
 	}
 }

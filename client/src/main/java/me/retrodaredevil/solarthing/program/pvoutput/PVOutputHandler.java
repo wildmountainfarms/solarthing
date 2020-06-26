@@ -55,7 +55,7 @@ public class PVOutputHandler {
 			for (String desiredIdentifierRepresentation : entry.getValue()) {
 				for (Packet packet : latestPacketGroup.getPackets()) {
 					int fragmentId = latestPacketGroup.getFragmentId(packet);
-					if (!Objects.equals(fragmentId, desiredFragmentId)) {
+					if (fragmentId != desiredFragmentId) {
 						continue;
 					}
 					if (packet instanceof Identifiable) {

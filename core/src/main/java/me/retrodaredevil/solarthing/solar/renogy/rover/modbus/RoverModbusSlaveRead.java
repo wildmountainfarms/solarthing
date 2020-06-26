@@ -19,7 +19,7 @@ public class RoverModbusSlaveRead implements RoverReadTable {
 	}
 	@Override
 	public @NotNull RoverIdentifier getIdentifier() {
-		return RoverIdentifier.createFromSerialNumber(getProductSerialNumber());
+		return RoverIdentifier.getDefaultIdentifier();
 	}
 
 	@Override

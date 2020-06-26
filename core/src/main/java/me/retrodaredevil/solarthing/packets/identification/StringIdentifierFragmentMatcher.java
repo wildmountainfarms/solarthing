@@ -17,6 +17,6 @@ public class StringIdentifierFragmentMatcher implements IdentifierFragmentMatche
 
 	@Override
 	public boolean matches(IdentifierFragment identifierFragment) {
-		return Objects.equals(fragmentId, identifierFragment.getFragmentId()) && identifierRepresentation.equals(identifierFragment.getIdentifier().getRepresentation());
+		return fragmentId == identifierFragment.getFragmentId() && identifierRepresentation.equals(identifierFragment.getIdentifier().getRepresentation());
 	}
 }

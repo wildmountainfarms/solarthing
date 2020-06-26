@@ -35,7 +35,7 @@ public class IdentifierFragmentBase<T extends Identifier> implements KnownIdenti
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		IdentifierFragment that = (IdentifierFragment) o;
-		return Objects.equals(fragmentId, that.getFragmentId()) &&
+		return fragmentId == that.getFragmentId() &&
 				identifier.equals(that.getIdentifier());
 	}
 

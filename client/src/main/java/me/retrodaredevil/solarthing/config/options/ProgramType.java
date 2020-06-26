@@ -14,8 +14,6 @@ public enum ProgramType {
 	MATE("mate"),
 	ROVER("rover"),
 	ROVER_SETUP("rover-setup"),
-	@Deprecated
-	OUTHOUSE("outhouse"),
 	PVOUTPUT_UPLOAD("pvoutput-upload"),
 	MESSAGE_SENDER("message-sender"),
 	REQUEST("request")

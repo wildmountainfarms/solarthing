@@ -14,7 +14,7 @@ public interface IdentifierFragment extends IdentifierFragmentMatcher { // TODO 
 
 	@Override
 	default boolean matches(IdentifierFragment identifierFragment) {
-		return Objects.equals(getFragmentId(), identifierFragment.getFragmentId()) && getIdentifier().equals(identifierFragment.getIdentifier());
+		return getFragmentId() == identifierFragment.getFragmentId() && getIdentifier().equals(identifierFragment.getIdentifier());
 	}
 
 	static <T extends Identifier> KnownIdentifierFragment<T> create(int fragmentId, T identifier) {

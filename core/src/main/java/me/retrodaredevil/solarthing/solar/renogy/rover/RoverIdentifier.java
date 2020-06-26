@@ -7,20 +7,19 @@ import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import java.util.Objects;
 
 /**
- * Currently, all {@link RoverIdentifier}s are equal to each other, no matter what their serial number is. Eventually
- * the serial number will not be used any more.
+ * All {@link RoverIdentifier}s are equal to each other.
  * <p>
  * In the future, if multiple rovers are able to be read at the same time/in the same program, that means that
  * there could be multiple rovers across a single fragment. Right now, this is not the case so, we can assume that
  * all {@link RoverIdentifier}s are equal to each other.
  */
 public final class RoverIdentifier implements Identifier, Comparable<Identifier> {
-	private static final RoverIdentifier DEFAULT_IDENTIFIER = RoverIdentifier.createFromSerialNumber(0);
+	private static final RoverIdentifier DEFAULT_IDENTIFIER = new RoverIdentifier();
 
-	private final int serialNumber;
 	@Deprecated
 	public RoverIdentifier(int serialNumber) {
-		this.serialNumber = serialNumber;
+	}
+	private RoverIdentifier() {
 	}
 
 	/**
@@ -30,8 +29,9 @@ public final class RoverIdentifier implements Identifier, Comparable<Identifier>
 	 * @param serialNumber The serial number of the Rover
 	 * @return The {@link RoverIdentifier} with the specific serial number
 	 */
+	@Deprecated
 	public static RoverIdentifier createFromSerialNumber(int serialNumber) {
-		return new RoverIdentifier(serialNumber);
+		return DEFAULT_IDENTIFIER;
 	}
 
 	/**
@@ -41,14 +41,9 @@ public final class RoverIdentifier implements Identifier, Comparable<Identifier>
 		return DEFAULT_IDENTIFIER;
 	}
 
-	@Deprecated
-	public int getProductSerialNumber(){
-		return serialNumber;
-	}
-
 	@Override
 	public @NotNull String getRepresentation() {
-		return "RoverIdentifier(serialNumber=" + serialNumber + ")";
+		return "RoverIdentifier()";
 	}
 
 	@Override
@@ -64,7 +59,7 @@ public final class RoverIdentifier implements Identifier, Comparable<Identifier>
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(serialNumber);
+		return -1908729263;
 	}
 
 
