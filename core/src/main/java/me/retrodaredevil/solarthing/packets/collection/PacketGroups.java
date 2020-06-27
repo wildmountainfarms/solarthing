@@ -81,6 +81,12 @@ public final class PacketGroups {
 		);
 	}
 
+	/**
+	 * Parses to a list of {@link InstancePacketGroup}s without organizing them based on their source ID
+	 * @param groups The PacketGroup list to parse
+	 * @param defaultInstanceOptions The default instance options
+	 * @return A list of {@link InstancePacketGroup}s.
+	 */
 	public static List<InstancePacketGroup> parseToInstancePacketGroups(Collection<? extends PacketGroup> groups, DefaultInstanceOptions defaultInstanceOptions) {
 		List<InstancePacketGroup> r = new ArrayList<>();
 		for(PacketGroup group : groups){
@@ -89,6 +95,13 @@ public final class PacketGroups {
 		}
 		return r;
 	}
+
+	/**
+	 * Organizes and parses a list of {@link PacketGroup}s into a map of parsed {@link InstancePacketGroup}s based on their source ID.
+	 * @param groups The PacketGroup list to parse
+	 * @param defaultInstanceOptions The default instance options
+	 * @return A map of a list of {@link InstancePacketGroup}s where each key in the map is a different source ID.
+	 */
 	public static Map<String, List<InstancePacketGroup>> parsePackets(Collection<? extends PacketGroup> groups, DefaultInstanceOptions defaultInstanceOptions){
 		Map<String, List<InstancePacketGroup>> map = new HashMap<>();
 		for(PacketGroup group : groups){
@@ -103,10 +116,6 @@ public final class PacketGroups {
 			list.add(instancePacketGroup);
 		}
 		return map;
-	}
-	@Deprecated
-	public static Map<String, List<FragmentedPacketGroup>> sortPackets(Collection<? extends PacketGroup> groups, DefaultInstanceOptions defaultInstanceOptions, long maxTimeDistance){
-		return sortPackets(groups, defaultInstanceOptions, maxTimeDistance, null);
 	}
 	public static Map<String, List<FragmentedPacketGroup>> sortPackets(Collection<? extends PacketGroup> groups, DefaultInstanceOptions defaultInstanceOptions, long maxTimeDistance, Long masterIdIgnoreDistance){
 		Map<String, List<InstancePacketGroup>> map = parsePackets(groups, defaultInstanceOptions);
@@ -143,7 +152,7 @@ public final class PacketGroups {
 			fragmentIdsSet.addAll(fragmentMap.keySet());
 			fragmentIds = new ArrayList<>(fragmentIdsSet); // now this is sorted
 		}
-		List<FragmentedPacketGroup> packetGroups = new ArrayList<>();
+		TreeSet<FragmentedPacketGroup> packetGroups = new TreeSet<>(Comparator.comparingLong(PacketGroup::getDateMillis));
 		addToPacketGroups(
 				maxTimeDistance, masterIdIgnoreDistance,
 				Long.MIN_VALUE, Long.MAX_VALUE,
@@ -151,14 +160,20 @@ public final class PacketGroups {
 				fragmentMap,
 				packetGroups
 		);
-		return packetGroups;
+		return new ArrayList<>(packetGroups);
 	}
+
+	/**
+	 * A recursive function to add packets to {@code packetGroupsOut}
+	 *
+	 * @param packetGroupsOut The collection to put packets in. Note that packets may not be inserted in order.
+	 */
 	private static void addToPacketGroups(
 			long maxTimeDistance, Long masterIdIgnoreDistance,
 			long minTime, long maxTime,
 			List<Integer> fragmentIds,
 			Map<Integer, ? extends List<? extends InstancePacketGroup>> fragmentMap,
-			List<? super FragmentedPacketGroup> packetGroupsOut
+			Collection<? super FragmentedPacketGroup> packetGroupsOut
 	){
 		if(minTime > maxTime){
 			return;

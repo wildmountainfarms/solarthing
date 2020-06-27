@@ -77,17 +77,21 @@ public class MessageSenderMain {
 				if (packetGroups != null) {
 					FragmentedPacketGroup packetGroup = packetGroups.get(packetGroups.size() - 1);
 					if (last != null) {
-						for (MessageEventNode messageEventNode : messageEventNodes) {
-							List<MessageSender> messageSenders = new ArrayList<>();
-							for (String senderName : messageEventNode.getSendTo()) {
-								MessageSender sender = messageSenderMap.get(senderName);
-								if (sender == null) {
-									throw new IllegalArgumentException("senderName: " + senderName + " is not defined!");
+						if (last.getDateMillis() >= packetGroup.getDateMillis()) {
+							LOGGER.warn("No new packets! last date=" + last.getDateMillis() + " current packet date=" + packetGroup.getDateMillis());
+						} else {
+							for (MessageEventNode messageEventNode : messageEventNodes) {
+								List<MessageSender> messageSenders = new ArrayList<>();
+								for (String senderName : messageEventNode.getSendTo()) {
+									MessageSender sender = messageSenderMap.get(senderName);
+									if (sender == null) {
+										throw new IllegalArgumentException("senderName: " + senderName + " is not defined!");
+									}
+									messageSenders.add(sender);
 								}
-								messageSenders.add(sender);
+								MessageSender sender = new MessageSenderMultiplexer(messageSenders);
+								messageEventNode.getMessageEvent().run(sender, last, packetGroup);
 							}
-							MessageSender sender = new MessageSenderMultiplexer(messageSenders);
-							messageEventNode.getMessageEvent().run(sender, last, packetGroup);
 						}
 					}
 					last = packetGroup;

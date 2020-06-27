@@ -249,8 +249,13 @@ public class PVOutputUploadMain {
 				List<FragmentedPacketGroup> packetGroups = PacketUtil.getPacketGroups(options.getSourceId(), options.getDefaultInstanceOptions(), statusPacketNodes, statusParser);
 				if (packetGroups != null) {
 					FragmentedPacketGroup latestPacketGroup = packetGroups.get(packetGroups.size() - 1);
-					if (latestPacketGroup.getDateMillis() < System.currentTimeMillis() - 5 * 60 * 1000) {
-						LOGGER.warn("The last packet is more than 5 minutes in the past!");
+					if (latestPacketGroup.getDateMillis() < now - 5 * 60 * 1000) {
+						LOGGER.warn("The last packet is more than 5 minutes in the past! now=" + now + " packet date=" + latestPacketGroup.getDateMillis());
+						try {
+							LOGGER.debug("Packets: " + MAPPER.writeValueAsString(latestPacketGroup.getPackets()));
+						} catch (JsonProcessingException e) {
+							LOGGER.warn("Couldn't serialize for some reason", e);
+						}
 					} else if (!handler.checkPackets(dayStartTimeMillis, packetGroups)){
 						LOGGER.warn("Checking packets unsuccessful.");
 					} else {
