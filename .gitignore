@@ -3,6 +3,8 @@
 .~lock*
 *.log.gz
 
+/logs/
+
 /program/*
 !/program/README.md
 /program/**/**

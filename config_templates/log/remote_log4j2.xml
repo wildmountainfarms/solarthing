@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--NOTE: This is not complete yet-->
 <Configuration status="WARN">
     <Properties>
         <Property name="logPath">logs</Property>
@@ -11,7 +10,13 @@
             <MarkerFilter marker="NO_CONSOLE" onMatch="DENY" onMismatch="NEUTRAL"/>
             <PatternLayout pattern="${LOG_PATTERN}"/>
         </Console>
-        <Syslog name="logAll" host="192.168.10.250" port="8514" facility="SYSLOG" protocol="TCP"/>
+<!--        <Syslog name="logAll" host="192.168.10.251" port="601" protocol="TCP" format="RFC5424" appName="SolarThing" includeMDC="true"-->
+<!--                facility="local0" newLine="true"-->
+<!--                id="solarthing"/>-->
+        <Syslog name="logAll" format="RFC5424" host="192.168.10.251" port="514"
+                protocol="UDP" appName="SolarThing" includeMDC="true"
+                facility="local0" enterpriseNumber="18060" newLine="true"
+                messageId="Audit" id="solarthing"/>
 
         <RollingFile name="logSummary" fileName="${logPath}/log_summary.log" filePattern="${logPath}/log_summary_%d{yyyy.MM.dd}-%i.log.gz"
                      filePermissions="${filePermissions}">
@@ -36,7 +41,7 @@
         </Root>
         <Logger name="me.retrodaredevil.solarthing">
             <AppenderRef ref="logAll" level="DEBUG"/>
-            <AppenderRef ref="logInfo" level="INFO"/>
+<!--            <AppenderRef ref="logInfo" level="INFO"/>-->
             <AppenderRef ref="logSummary" level="DEBUG"/> <!-- We can allow debugs to go through because it will filter for explicit SUMMARY marker -->
         </Logger>
         <Logger name="org.ektorp" level="INFO">
