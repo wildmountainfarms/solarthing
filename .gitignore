@@ -4,6 +4,7 @@
 *.log.gz
 
 /logs/
+/logrotate.conf
 
 /program/*
 !/program/README.md

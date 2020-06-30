@@ -18,6 +18,6 @@ fi
 
 echo Updating...
 chmod -R g+rw . || exit 1 # all files and directories get group read/write permissions
-find . -type d -exec chmod g+s {} \; || exit 1 # When you create a file in any directory, its group should be that of its directory
+find . -type d -exec chmod g+xs {} \; || exit 1 # When you create a file in any directory, its group should be that of its directory
 chown -R solarthing:solarthing . || exit 1
 echo Done

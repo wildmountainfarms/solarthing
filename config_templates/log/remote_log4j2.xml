@@ -10,11 +10,8 @@
             <MarkerFilter marker="NO_CONSOLE" onMatch="DENY" onMismatch="NEUTRAL"/>
             <PatternLayout pattern="${LOG_PATTERN}"/>
         </Console>
-<!--        <Syslog name="logAll" host="192.168.10.251" port="601" protocol="TCP" format="RFC5424" appName="SolarThing" includeMDC="true"-->
-<!--                facility="local0" newLine="true"-->
-<!--                id="solarthing"/>-->
         <Syslog name="logAll" format="RFC5424" host="192.168.10.251" port="514"
-                protocol="UDP" appName="SolarThing" includeMDC="true"
+                protocol="UDP" appName="mate" includeMDC="true"
                 facility="local0" enterpriseNumber="18060" newLine="true"
                 messageId="Audit" id="solarthing"/>
 
