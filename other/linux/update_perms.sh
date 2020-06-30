@@ -21,3 +21,6 @@ chmod -R g+rw . || exit 1 # all files and directories get group read/write permi
 find . -type d -exec chmod g+xs {} \; || exit 1 # When you create a file in any directory, its group should be that of its directory
 chown -R solarthing:solarthing . || exit 1
 echo Done
+
+# If you screw something up while messing with permissions, this may help:
+# diff <(find . -perm /g+x -type f) <(find . -perm /o+x -type f) | grep \< | tr -d '< ' | sudo xargs chmod g-x
