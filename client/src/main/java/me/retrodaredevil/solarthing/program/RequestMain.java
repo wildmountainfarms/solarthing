@@ -10,6 +10,7 @@ import me.retrodaredevil.solarthing.config.options.PacketHandlingOption;
 import me.retrodaredevil.solarthing.config.options.ProgramType;
 import me.retrodaredevil.solarthing.config.options.RequestProgramOptions;
 import me.retrodaredevil.solarthing.config.request.DataRequester;
+import me.retrodaredevil.solarthing.misc.common.DataIdentifiablePacketListChecker;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
@@ -80,6 +81,7 @@ public class RequestMain {
 		for (DataRequester dataRequester : dataRequesterList) {
 			packetListReceiverList.add(dataRequester.createPacketListReceiver(eventPacketListReceiverHandler.getPacketListReceiverAccepter()));
 		}
+		packetListReceiverList.add(new DataIdentifiablePacketListChecker());
 		packetListReceiverList.addAll(Arrays.asList(
 				statusPacketListReceiverHandler.getPacketListReceiverAccepter(),
 				statusPacketListReceiverHandler.getPacketListReceiverPacker(),

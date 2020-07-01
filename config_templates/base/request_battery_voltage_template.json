@@ -1,0 +1,23 @@
+{
+  "type": "request",
+  "source": "default",
+  "fragment": 3,
+  "unique": 30,
+  "databases": [
+    "config/couchdb.json"
+  ],
+  "request": [
+    {
+      "type": "rpi-cpu-temp"
+    },
+    {
+      "type": "battery-voltage-io",
+      "io": "../../default_linux_serial.json",
+      "data_id": 1,
+      "multiplier": 18.4,
+      "divisor": 1024,
+      "invalid_when_below": 7.0,
+      "invalid_when_above": 18.35
+    }
+  ]
+}

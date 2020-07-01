@@ -7,6 +7,7 @@ import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 @JsonSubTypes({
 		@JsonSubTypes.Type(RaspberryPiCpuTemperatureDataRequester.class),
 		@JsonSubTypes.Type(W1TemperatureDataRequester.class),
+		@JsonSubTypes.Type(BatteryVoltageIODataRequester.class),
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 public interface DataRequester {

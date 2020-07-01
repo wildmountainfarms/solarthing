@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.program;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.io.IOBundle;
 import me.retrodaredevil.io.modbus.*;
@@ -8,20 +7,14 @@ import me.retrodaredevil.io.serial.SerialConfig;
 import me.retrodaredevil.io.serial.SerialConfigBuilder;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.analytics.AnalyticsManager;
-import me.retrodaredevil.solarthing.analytics.RoverAnalyticsHandler;
 import me.retrodaredevil.solarthing.config.options.*;
 import me.retrodaredevil.solarthing.config.request.DataRequester;
 import me.retrodaredevil.solarthing.config.request.RaspberryPiCpuTemperatureDataRequester;
-import me.retrodaredevil.solarthing.misc.device.RaspberryPiCpuTemperatureListUpdater;
-import me.retrodaredevil.solarthing.misc.error.ImmutableExceptionErrorPacket;
-import me.retrodaredevil.solarthing.packets.Packet;
-import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
-import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
-import me.retrodaredevil.solarthing.packets.handling.PacketHandlerMultiplexer;
-import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
-import me.retrodaredevil.solarthing.packets.handling.PacketListReceiverMultiplexer;
 import me.retrodaredevil.solarthing.program.modbus.ModbusCacheSlave;
-import me.retrodaredevil.solarthing.solar.renogy.rover.*;
+import me.retrodaredevil.solarthing.solar.renogy.rover.DummyRoverReadWrite;
+import me.retrodaredevil.solarthing.solar.renogy.rover.RoverReadTable;
+import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
+import me.retrodaredevil.solarthing.solar.renogy.rover.RoverWriteTable;
 import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusSlaveRead;
 import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusSlaveWrite;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
@@ -33,15 +26,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class RoverMain {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RoverMain.class);
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
 
-	private static final SerialConfig ROVER_CONFIG = new SerialConfigBuilder(9600)
+	public static final SerialConfig ROVER_CONFIG = new SerialConfigBuilder(9600)
 			.setDataBits(8)
 			.setParity(SerialConfig.Parity.NONE)
 			.setStopBits(SerialConfig.StopBits.ONE)

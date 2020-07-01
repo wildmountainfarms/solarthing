@@ -120,7 +120,7 @@ public final class SolarMain {
 		}
 	}
 
-	public static IOBundle createIOBundle(File configFile, SerialConfig defaultSerialConfig) throws Exception {
+	public static IOBundle createIOBundle(File configFile, SerialConfig defaultSerialConfig) {
 		final FileInputStream inputStream;
 		try {
 			inputStream = new FileInputStream(configFile);
@@ -138,7 +138,11 @@ public final class SolarMain {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		return config.createIOBundle();
+		try {
+			return config.createIOBundle();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 	public static CouchDbQueryHandler createCouchDbQueryHandler(DatabaseOption options) {
 		DatabaseConfig databaseConfig = SolarMain.getDatabaseConfig(options.getDatabase());

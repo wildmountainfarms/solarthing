@@ -27,4 +27,6 @@ public enum SolarStatusPacketType implements DocumentedPacketType {
 	 * Renogy Rover Charge Controller Status Packet
 	 */
 	RENOGY_ROVER_STATUS,
+
+	BATTERY_VOLTAGE_ONLY
 }
