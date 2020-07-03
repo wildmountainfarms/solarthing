@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.solar.daily;
 
 import me.retrodaredevil.solarthing.packets.TimestampedPacket;
 import me.retrodaredevil.solarthing.solar.common.DailyData;
+import org.jetbrains.annotations.Contract;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,6 +11,7 @@ import java.util.List;
 public final class DailyCalc {
 	private DailyCalc() { throw new UnsupportedOperationException(); }
 
+	@Contract(pure = true)
 	public static <T extends DailyData> float getSumTotal(Collection<? extends List<DailyPair<T>>> dailyPairListCollection, TotalGetter<T> totalGetter) {
 		float total = 0;
 		for (List<DailyPair<T>> dailyPairs : dailyPairListCollection) {
@@ -17,6 +19,7 @@ public final class DailyCalc {
 		}
 		return total;
 	}
+	@Contract(pure = true)
 	public static <T extends DailyData> float getTotal(List<? extends DailyPair<T>> dailyPairs, TotalGetter<T> totalGetter) {
 		float total = 0;
 		for (DailyPair<T> dailyPair : dailyPairs) {
@@ -28,19 +31,20 @@ public final class DailyCalc {
 		}
 		return total;
 	}
+	@Contract(pure = true)
 	public static <T extends DailyData> List<SumNode> getTotals(List<DailyPair<T>> dailyPairs, TotalGetter<T> totalGetter, List<TimestampedPacket<T>> packets) {
 		List<SumNode> r = new ArrayList<>();
 		for (TimestampedPacket<T> packet : packets) {
 			long dateMillis = packet.getDateMillis();
 			List<DailyPair<T>> previousDailyPairs = new ArrayList<>();
 			for (DailyPair<T> element : dailyPairs) {
-				if (dateMillis > element.getLatestPacket().getDateMillis()) {
+				previousDailyPairs.add(element);
+				if (dateMillis <= element.getLatestPacket().getDateMillis()) {
 					break;
 				}
-				previousDailyPairs.add(element);
 			}
 			if (previousDailyPairs.isEmpty()) {
-				throw new IllegalArgumentException("Could not find DailyPair for dateMillis=" + dateMillis);
+				throw new IllegalArgumentException("Could not find DailyPair for dateMillis=" + dateMillis + ". First DailyPair latest packet dateMillis=" + dailyPairs.get(0).getLatestPacket().getDateMillis());
 			}
 			DailyPair<T> lastDailyPair = previousDailyPairs.get(previousDailyPairs.size() - 1);
 			previousDailyPairs.set(previousDailyPairs.size() - 1, new DailyPair<>(lastDailyPair.getStartPacket(), packet, lastDailyPair.getStartPacketType()));

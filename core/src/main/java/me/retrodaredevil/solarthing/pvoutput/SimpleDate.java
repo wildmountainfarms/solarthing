@@ -7,13 +7,10 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.time.Instant;
 import java.time.temporal.ChronoField;
 import java.time.temporal.Temporal;
-import java.time.temporal.TemporalField;
 import java.util.*;
 
 /**
@@ -99,7 +96,7 @@ public final class SimpleDate implements Comparable<SimpleDate>, PVOutputString 
 	}
 
 	@Override
-	public int compareTo(@NotNull SimpleDate simpleDate) {
+	public int compareTo(SimpleDate simpleDate) {
 		int a = Integer.compare(year, simpleDate.year);
 		if (a != 0) {
 			return a;

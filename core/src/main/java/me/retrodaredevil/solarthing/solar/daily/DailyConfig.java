@@ -1,13 +1,15 @@
 package me.retrodaredevil.solarthing.solar.daily;
 
-public class DailyConfig {
+public final class DailyConfig {
 	private final long cutOffIfStartBeforeDateMillis;
 	private final long cutOffIfEndBeforeDateMillis;
-//	private final long cutOffBeforeDateMillis;
 
 	public DailyConfig(long cutOffIfStartBeforeDateMillis, long cutOffIfEndBeforeDateMillis) {
 		this.cutOffIfStartBeforeDateMillis = cutOffIfStartBeforeDateMillis;
 		this.cutOffIfEndBeforeDateMillis = cutOffIfEndBeforeDateMillis;
+	}
+	public static DailyConfig createDefault(long dayStartTimeMillis) {
+		return new DailyConfig(dayStartTimeMillis + 3 * 60 * 60 * 1000, dayStartTimeMillis + 10 * 60 * 60 * 1000);
 	}
 
 	public long getCutOffIfStartBeforeDateMillis() {

@@ -9,17 +9,16 @@ import io.leangen.graphql.metadata.strategy.query.AnnotatedResolverBuilder;
 import io.leangen.graphql.metadata.strategy.query.ResolverBuilder;
 import io.leangen.graphql.metadata.strategy.value.jackson.JacksonValueMapperFactory;
 import me.retrodaredevil.couchdb.CouchProperties;
-import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
-import me.retrodaredevil.solarthing.meta.DefaultMetaDatabase;
+import me.retrodaredevil.solarthing.graphql.service.SolarThingGraphQLDailyService;
+import me.retrodaredevil.solarthing.graphql.service.SolarThingGraphQLService;
 import me.retrodaredevil.solarthing.packets.collection.DefaultInstanceOptions;
 import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePacket;
 import me.retrodaredevil.solarthing.program.DatabaseConfig;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
-import org.ektorp.impl.StdCouchDbConnector;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -32,6 +31,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import java.util.TimeZone;
 
 @Component
 public class GraphQLProvider {
@@ -119,13 +119,12 @@ public class GraphQLProvider {
 				.withPrototype(objectMapper)
 				.build();
 		ResolverBuilder resolverBuilder = new AnnotatedResolverBuilder();
+		SimpleQueryHandler simpleQueryHandler = new SimpleQueryHandler(defaultInstanceOptions, objectMapper, couchProperties);
 		return new GraphQLSchemaGenerator()
 				.withBasePackages("me.retrodaredevil.solarthing")
-				.withOperationsFromSingleton(new SolarThingGraphQLService(
-						defaultInstanceOptions,
-						objectMapper,
-						couchProperties
-				))
+				.withOperationsFromSingleton(new SolarThingGraphQLService(simpleQueryHandler))
+				.withOperationsFromSingleton(new SolarThingGraphQLDailyService(simpleQueryHandler, TimeZone.getDefault())) // TODO do we really want a default time zone?
+				.withOperationsFromSingleton(new SolarThingGraphQLMetaService(simpleQueryHandler))
 				.withOperationsFromSingleton(new SolarThingGraphQLExtensions())
 				.withValueMapperFactory(jacksonValueMapperFactory)
 				.withResolverBuilders(resolverBuilder)

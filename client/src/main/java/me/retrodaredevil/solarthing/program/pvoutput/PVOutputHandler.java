@@ -80,7 +80,7 @@ public class PVOutputHandler {
 		setStatusEnergyValues(
 				addStatusParametersBuilder,
 				packetGroupList,
-				new DailyConfig(dayStartTimeMillis + 3 * 60 * 60 * 1000, dayStartTimeMillis + 10 * 60 * 60 * 1000)
+				DailyConfig.createDefault(dayStartTimeMillis)
 		);
 		for (Packet packet : latestPacketGroup.getPackets()) {
 			if (packet instanceof PVCurrentAndVoltage) {

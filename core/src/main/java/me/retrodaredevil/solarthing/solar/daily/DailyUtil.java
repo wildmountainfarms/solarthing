@@ -6,6 +6,7 @@ import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 import me.retrodaredevil.solarthing.packets.identification.IdentifierFragment;
 import me.retrodaredevil.solarthing.solar.common.DailyData;
+import org.jetbrains.annotations.Contract;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,6 +16,7 @@ import java.util.Map;
 @SuppressWarnings("Java8MapApi") // needs to compatible with Android SDK 19
 public final class DailyUtil {
 	private DailyUtil(){ throw new UnsupportedOperationException(); }
+	@Contract(pure = true)
 	private static <T extends DailyData> DailyPair<T> createDailyPair(boolean isFirst, TimestampedPacket<T> firstPacket, TimestampedPacket<T> endPacket, DailyConfig dailyConfig) {
 		final DailyPair.StartPacketType startPacketType;
 		if (isFirst) {
@@ -28,6 +30,7 @@ public final class DailyUtil {
 		}
 		return new DailyPair<>(firstPacket, endPacket, startPacketType);
 	}
+	@Contract(pure = true)
 	public static <T extends DailyData> List<DailyPair<T>> getDailyPairs(List<TimestampedPacket<T>> packets, DailyConfig dailyConfig) {
 		List<DailyPair<T>> r = new ArrayList<>();
 		TimestampedPacket<T> firstPacket = null;
@@ -51,6 +54,7 @@ public final class DailyUtil {
 		}
 		return r;
 	}
+	@Contract(pure = true)
 	public static <T extends DailyData> Map<IdentifierFragment, List<DailyPair<T>>> getDailyPairs(Map<IdentifierFragment, List<TimestampedPacket<T>>> packetMap, DailyConfig dailyConfig) {
 		Map<IdentifierFragment, List<DailyPair<T>>> r = new HashMap<>(packetMap.size());
 		for (Map.Entry<IdentifierFragment, List<TimestampedPacket<T>>> entry : packetMap.entrySet()) {
@@ -59,6 +63,7 @@ public final class DailyUtil {
 		return r;
 	}
 	@SuppressWarnings("unchecked")
+	@Contract(pure = true)
 	public static <T extends Identifiable> Map<IdentifierFragment, List<TimestampedPacket<T>>> mapPackets(Class<T> clazz, List<FragmentedPacketGroup> packetGroups) {
 		Map<IdentifierFragment, List<TimestampedPacket<T>>> packetMap = new HashMap<>();
 		for (FragmentedPacketGroup packetGroup : packetGroups) {

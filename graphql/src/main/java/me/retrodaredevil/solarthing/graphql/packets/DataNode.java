@@ -13,8 +13,10 @@ public final class DataNode<T> {
 	private final Identifiable identifiable;
 	private final long dateMillis;
 	private final String sourceId;
+	private final int fragmentId;
 
-	public DataNode(@NotNull T data, @NotNull Identifiable identifiable, long dateMillis, @NotNull String sourceId) {
+	public DataNode(@NotNull T data, @NotNull Identifiable identifiable, long dateMillis, @NotNull String sourceId, int fragmentId) {
+		this.fragmentId = fragmentId;
 		requireNonNull(this.data = data);
 		requireNonNull(this.identifiable = identifiable);
 		this.dateMillis = dateMillis;
@@ -40,4 +42,12 @@ public final class DataNode<T> {
 		return sourceId;
 	}
 
+	@JsonProperty("fragmentId")
+	public int getFragmentId() {
+		return fragmentId;
+	}
+	@JsonProperty("fragmentIdString")
+	public String getFragmentIdString() {
+		return "" + fragmentId;
+	}
 }
