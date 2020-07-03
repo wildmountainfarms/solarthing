@@ -12,17 +12,17 @@ public final class DailyCalc {
 	private DailyCalc() { throw new UnsupportedOperationException(); }
 
 	@Contract(pure = true)
-	public static <T extends DailyData> float getSumTotal(Collection<? extends List<DailyPair<T>>> dailyPairListCollection, TotalGetter<T> totalGetter) {
+	public static <T extends DailyData> float getSumTotal(Collection<? extends List<? extends DailyPair<? extends T>>> dailyPairListCollection, TotalGetter<? super T> totalGetter) {
 		float total = 0;
-		for (List<DailyPair<T>> dailyPairs : dailyPairListCollection) {
+		for (List<? extends DailyPair<? extends T>> dailyPairs : dailyPairListCollection) {
 			total += getTotal(dailyPairs, totalGetter);
 		}
 		return total;
 	}
 	@Contract(pure = true)
-	public static <T extends DailyData> float getTotal(List<? extends DailyPair<T>> dailyPairs, TotalGetter<T> totalGetter) {
+	public static <T extends DailyData> float getTotal(List<? extends DailyPair<? extends T>> dailyPairs, TotalGetter<? super T> totalGetter) {
 		float total = 0;
-		for (DailyPair<T> dailyPair : dailyPairs) {
+		for (DailyPair<? extends T> dailyPair : dailyPairs) {
 			if (dailyPair.getStartPacketType() == DailyPair.StartPacketType.CUT_OFF) {
 				total += totalGetter.getTotal(dailyPair.getLatestPacket().getPacket()) - totalGetter.getTotal(dailyPair.getStartPacket().getPacket());
 			} else {
@@ -32,7 +32,10 @@ public final class DailyCalc {
 		return total;
 	}
 	@Contract(pure = true)
-	public static <T extends DailyData> List<SumNode> getTotals(List<DailyPair<T>> dailyPairs, TotalGetter<T> totalGetter, List<TimestampedPacket<T>> packets) {
+	public static <T extends DailyData> List<SumNode> getTotals(List<? extends DailyPair<T>> dailyPairs, TotalGetter<? super T> totalGetter, List<? extends TimestampedPacket<T>> packets) {
+		if (dailyPairs.isEmpty()) {
+			throw new IllegalArgumentException("dailyPairs is empty!");
+		}
 		List<SumNode> r = new ArrayList<>();
 		for (TimestampedPacket<T> packet : packets) {
 			long dateMillis = packet.getDateMillis();
@@ -44,10 +47,10 @@ public final class DailyCalc {
 				}
 			}
 			if (previousDailyPairs.isEmpty()) {
-				throw new IllegalArgumentException("Could not find DailyPair for dateMillis=" + dateMillis + ". First DailyPair latest packet dateMillis=" + dailyPairs.get(0).getLatestPacket().getDateMillis());
+				throw new AssertionError("We checked to make sure dailyPairs is not empty, so why is previousDailyPairs empty?");
 			}
 			DailyPair<T> lastDailyPair = previousDailyPairs.get(previousDailyPairs.size() - 1);
-			previousDailyPairs.set(previousDailyPairs.size() - 1, new DailyPair<>(lastDailyPair.getStartPacket(), packet, lastDailyPair.getStartPacketType()));
+			previousDailyPairs.set(previousDailyPairs.size() - 1, new DailyPair<T>(lastDailyPair.getStartPacket(), packet, lastDailyPair.getStartPacketType()));
 			float sum = getTotal(previousDailyPairs, totalGetter);
 			r.add(new SumNode(sum, dateMillis));
 		}

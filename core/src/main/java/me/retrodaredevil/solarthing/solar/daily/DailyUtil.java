@@ -31,7 +31,7 @@ public final class DailyUtil {
 		return new DailyPair<>(firstPacket, endPacket, startPacketType);
 	}
 	@Contract(pure = true)
-	public static <T extends DailyData> List<DailyPair<T>> getDailyPairs(List<TimestampedPacket<T>> packets, DailyConfig dailyConfig) {
+	public static <T extends DailyData> List<DailyPair<T>> getDailyPairs(List<? extends TimestampedPacket<T>> packets, DailyConfig dailyConfig) {
 		List<DailyPair<T>> r = new ArrayList<>();
 		TimestampedPacket<T> firstPacket = null;
 		TimestampedPacket<T> lastPacket = null;

@@ -13,15 +13,18 @@ import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.TimestampedPacket;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.InstancePacketGroup;
+import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 import me.retrodaredevil.solarthing.packets.identification.IdentifierFragment;
 import me.retrodaredevil.solarthing.pvoutput.SimpleDate;
 import me.retrodaredevil.solarthing.solar.common.DailyChargeController;
+import me.retrodaredevil.solarthing.solar.common.DailyData;
 import me.retrodaredevil.solarthing.solar.daily.DailyCalc;
 import me.retrodaredevil.solarthing.solar.daily.DailyConfig;
 import me.retrodaredevil.solarthing.solar.daily.DailyPair;
 import me.retrodaredevil.solarthing.solar.daily.DailyUtil;
 
 import java.util.*;
+import java.util.function.Function;
 
 public class SolarThingGraphQLDailyService {
 	private final SimpleQueryHandler simpleQueryHandler;
@@ -32,6 +35,10 @@ public class SolarThingGraphQLDailyService {
 		this.timeZone = timeZone;
 	}
 
+	interface NodeAdder <T extends DailyData> {
+		void addNodes(Collection<? super DataNode<Float>> nodesOut, List<TimestampedPacket<T>> timestampedPackets, List<DailyPair<T>> dailyPairs, String sourceId, int fragmentId, long dayStartTimeMillis);
+	}
+
 	public class SolarThingFullDayStatusQuery {
 		private final PacketGetter packetGetter;
 		private final List<? extends FragmentedPacketGroup> sortedPackets;
@@ -40,47 +47,66 @@ public class SolarThingGraphQLDailyService {
 			this.packetGetter = packetGetter;
 			this.sortedPackets = sortedPackets;
 		}
-		@GraphQLQuery
-		public @NotNull List<@NotNull DataNode<Float>> dailyKWH() {
-			Map<SimpleDate, Map<IdentifierFragment, List<TimestampedPacket<DailyChargeController>>>> map = new HashMap<>();
+
+		private <T extends Identifiable & DailyData> List<DataNode<Float>> getPoints(Class<T> clazz, NodeAdder<T> nodeAdder) {
+			Map<SimpleDate, Map<IdentifierFragment, List<TimestampedPacket<T>>>> map = new HashMap<>();
 			Map<IdentifierFragment, String> identifierFragmentSourceMap = new HashMap<>();
-			for (PacketNode<DailyChargeController> packetNode : packetGetter.getPackets(DailyChargeController.class)) {
+			for (PacketNode<T> packetNode : packetGetter.getPackets(clazz)) {
 				long dateMillis = packetNode.getDateMillis();
 				SimpleDate date = SimpleDate.fromDateMillis(dateMillis, timeZone);
-				DailyChargeController dailyChargeController = packetNode.getPacket();
-				IdentifierFragment identifierFragment = IdentifierFragment.create(packetNode.getFragmentId(), dailyChargeController.getIdentifier());
+				T packet = packetNode.getPacket();
+				IdentifierFragment identifierFragment = IdentifierFragment.create(packetNode.getFragmentId(), packet.getIdentifier());
 				identifierFragmentSourceMap.put(identifierFragment, packetNode.getSourceId());
-				Map<IdentifierFragment, List<TimestampedPacket<DailyChargeController>>> identifierMap = map.computeIfAbsent(date, (_date) -> new HashMap<>());
-				identifierMap.computeIfAbsent(identifierFragment, (_identifier) -> new ArrayList<>()).add(new TimestampedPacket<>(dailyChargeController, dateMillis));
+				Map<IdentifierFragment, List<TimestampedPacket<T>>> identifierMap = map.computeIfAbsent(date, (_date) -> new HashMap<>());
+				identifierMap.computeIfAbsent(identifierFragment, (_identifier) -> new ArrayList<>()).add(new TimestampedPacket<>(packet, dateMillis));
 			}
-			List<DataNode<Float>> r = new ArrayList<>();
-			for (Map.Entry<SimpleDate, Map<IdentifierFragment, List<TimestampedPacket<DailyChargeController>>>> entry : map.entrySet()) { // TODO iterate over past dates first
+			Collection<DataNode<Float>> r = new TreeSet<>((o1, o2) -> {
+				int ra = Long.compare(o1.getDateMillis(), o2.getDateMillis());
+				if (ra == 0) {
+					return o1.getIdentifiable().getIdentifier().hashCode() - o2.getIdentifiable().getIdentifier().hashCode();
+				}
+				return ra;
+			});
+//			Collection<DataNode<Float>> r = new ArrayList<>();
+			for (Map.Entry<SimpleDate, Map<IdentifierFragment, List<TimestampedPacket<T>>>> entry : map.entrySet()) {
 				SimpleDate date = entry.getKey();
 				long dayStartTimeMillis = date.getDayStartDateMillis(timeZone);
-				Map<IdentifierFragment, List<TimestampedPacket<DailyChargeController>>> identifierMap = entry.getValue();
+				Map<IdentifierFragment, List<TimestampedPacket<T>>> identifierMap = entry.getValue();
 				DailyConfig dailyConfig = DailyConfig.createDefault(dayStartTimeMillis);
-				for (Map.Entry<IdentifierFragment, List<TimestampedPacket<DailyChargeController>>> identifierFragmentListEntry : identifierMap.entrySet()) {
+				for (Map.Entry<IdentifierFragment, List<TimestampedPacket<T>>> identifierFragmentListEntry : identifierMap.entrySet()) {
 					IdentifierFragment identifierFragment = identifierFragmentListEntry.getKey();
-					List<TimestampedPacket<DailyChargeController>> timestampedPackets = identifierFragmentListEntry.getValue();
-					DailyChargeController firstPacket = timestampedPackets.get(0).getPacket();
-					List<DailyPair<DailyChargeController>> dailyPairs = DailyUtil.getDailyPairs(timestampedPackets, dailyConfig);
-					if (dailyPairs.get(0).getStartPacket().getPacket() != timestampedPackets.get(0).getPacket()) {
-						throw new AssertionError("Start packet is not expected!");
-					}
-					if (dailyPairs.get(dailyPairs.size() - 1).getLatestPacket().getPacket() != timestampedPackets.get(timestampedPackets.size() - 1).getPacket()) {
-						throw new AssertionError("End packet is not expected!");
-					}
-					List<DailyCalc.SumNode> sumNodes = DailyCalc.getTotals(dailyPairs, DailyChargeController::getDailyKWH, timestampedPackets);
+					List<TimestampedPacket<T>> timestampedPackets = identifierFragmentListEntry.getValue();
+					List<DailyPair<T>> dailyPairs = DailyUtil.getDailyPairs(timestampedPackets, dailyConfig);
 					String sourceId = identifierFragmentSourceMap.get(identifierFragment);
 					if (sourceId == null) {
 						throw new AssertionError("No source ID for identifier fragment: " + identifierFragment);
 					}
-					for (DailyCalc.SumNode sumNode : sumNodes) {
-						r.add(new DataNode<>(sumNode.getSum(), firstPacket, sumNode.getDateMillis(), sourceId, identifierFragment.getFragmentId()));
-					}
+
+					nodeAdder.addNodes(r, timestampedPackets, dailyPairs, sourceId, identifierFragment.getFragmentId(), dayStartTimeMillis);
 				}
 			}
-			return r;
+			return new ArrayList<>(r);
+		}
+		private <T extends DailyData> void addAllPoints(Collection<? super DataNode<Float>> nodesOut, List<TimestampedPacket<T>> timestampedPackets, List<DailyPair<T>> dailyPairs, String sourceId, int fragmentId, Function<T, Float> totalGetter) {
+			T firstPacket = timestampedPackets.get(0).getPacket();
+			List<DailyCalc.SumNode> sumNodes = DailyCalc.getTotals(dailyPairs, totalGetter::apply, timestampedPackets);
+			for (DailyCalc.SumNode sumNode : sumNodes) {
+				nodesOut.add(new DataNode<>(sumNode.getSum(), firstPacket, sumNode.getDateMillis(), sourceId, fragmentId));
+			}
+		}
+		private <T extends DailyData> void addDayPoints(Collection<? super DataNode<Float>> nodesOut, List<TimestampedPacket<T>> timestampedPackets, List<DailyPair<T>> dailyPairs, String sourceId, int fragmentId, long dayStartTimeMillis, Function<T, Float> totalGetter) {
+			T firstPacket = timestampedPackets.get(0).getPacket();
+			float total = DailyCalc.getTotal(dailyPairs, totalGetter::apply);
+			nodesOut.add(new DataNode<>(total, firstPacket, dayStartTimeMillis, sourceId, fragmentId));
+		}
+
+		@GraphQLQuery
+		public @NotNull List<@NotNull DataNode<Float>> dailyKWH() {
+			return getPoints(
+					DailyChargeController.class,
+					(nodesOut, timestampedPackets, dailyPairs, sourceId, fragmentId, dayStartTimeMillis) ->
+							addAllPoints(nodesOut, timestampedPackets, dailyPairs, sourceId, fragmentId, DailyChargeController::getDailyKWH)
+			);
 		}
 		@GraphQLQuery
 		public @NotNull List<@NotNull SimpleNode<Float>> dailyKWHSum() {
@@ -120,10 +146,23 @@ public class SolarThingGraphQLDailyService {
 			return new ArrayList<>(r);
 		}
 
+		/**
+		 *
+		 * @return A list of {@link SimpleNode}s where each node is a different day
+		 */
+		@GraphQLQuery
+		public @NotNull List<@NotNull DataNode<Float>> singleDailyKWH() {
+			return getPoints(
+					DailyChargeController.class,
+					(nodesOut, timestampedPackets, dailyPairs, sourceId, fragmentId, dayStartTimeMillis) ->
+							addDayPoints(nodesOut, timestampedPackets, dailyPairs, sourceId, fragmentId, dayStartTimeMillis, DailyChargeController::getDailyKWH)
+			);
+		}
+
 //		@GraphQLQuery
-//		public @NotNull List<@NotNull SimpleNode<Float>> singleDailyKWH();
-//		@GraphQLQuery
-//		public @NotNull List<@NotNull SimpleNode<Float>> singleDailyKWHSum();
+//		public @NotNull List<@NotNull SimpleNode<Float>> singleDailyKWHSum() {
+//			return null;
+//		}
 	}
 
 
@@ -134,7 +173,7 @@ public class SolarThingGraphQLDailyService {
 
 		SimpleDate fromDate = SimpleDate.fromDateMillis(from, timeZone);
 		SimpleDate toDate = SimpleDate.fromDateMillis(to, timeZone);
-		List<? extends InstancePacketGroup> packets = simpleQueryHandler.queryStatus(fromDate.getDayStartDateMillis(timeZone), to, sourceId);
+		List<? extends InstancePacketGroup> packets = simpleQueryHandler.queryStatus(fromDate.getDayStartDateMillis(timeZone), toDate.tomorrow().getDayStartDateMillis(timeZone) - 1, sourceId);
 		return new SolarThingFullDayStatusQuery(new BasicPacketGetter(packets, PacketFilter.KEEP_ALL), simpleQueryHandler.sortPackets(packets, sourceId));
 	}
 }
