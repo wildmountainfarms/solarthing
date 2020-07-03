@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 
 public class BatteryVoltageIOListUpdater implements PacketListReceiver {
@@ -51,8 +52,8 @@ public class BatteryVoltageIOListUpdater implements PacketListReceiver {
 		String[] split = result.split("\n", -1);
 		String lastSplit = split[split.length - 1];
 		if (!lastSplit.isEmpty()) {
-			LOGGER.warn("The last split was not a new line!");
-			return null;
+			LOGGER.debug("The last split was not a new line!");
+			// we wont' do anything about this, it's fine. Because the voltage-sensor program spits out data fast enough, it should ignore the incomplete data next time
 		}
 
 		if (split.length >= 3) {

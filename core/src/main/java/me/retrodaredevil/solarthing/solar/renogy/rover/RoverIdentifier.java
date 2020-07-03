@@ -16,22 +16,7 @@ import java.util.Objects;
 public final class RoverIdentifier implements Identifier, Comparable<Identifier> {
 	private static final RoverIdentifier DEFAULT_IDENTIFIER = new RoverIdentifier();
 
-	@Deprecated
-	public RoverIdentifier(int serialNumber) {
-	}
 	private RoverIdentifier() {
-	}
-
-	/**
-	 * This will eventually be deprecated in the future, but is still in use to make sure {@link #getRepresentation()} returns consistently
-	 * for a while into the future.
-	 *
-	 * @param serialNumber The serial number of the Rover
-	 * @return The {@link RoverIdentifier} with the specific serial number
-	 */
-	@Deprecated
-	public static RoverIdentifier createFromSerialNumber(int serialNumber) {
-		return DEFAULT_IDENTIFIER;
 	}
 
 	/**

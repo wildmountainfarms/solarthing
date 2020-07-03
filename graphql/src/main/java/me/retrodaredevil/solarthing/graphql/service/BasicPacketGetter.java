@@ -15,8 +15,8 @@ public class BasicPacketGetter implements PacketGetter {
 	private final PacketFilter packetFilter;
 
 	public BasicPacketGetter(List<? extends FragmentedPacketGroup> packets, PacketFilter packetFilter) {
-		this.packets = requireNonNull(packets);
-		this.packetFilter = packetFilter;
+		requireNonNull(this.packets = packets);
+		requireNonNull(this.packetFilter = packetFilter);
 	}
 	@Override
 	public <T> @NotNull List<@NotNull PacketNode<T>> getPackets(Class<T> clazz) {

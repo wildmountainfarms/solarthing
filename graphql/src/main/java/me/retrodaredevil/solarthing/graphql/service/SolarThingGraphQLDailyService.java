@@ -60,14 +60,7 @@ public class SolarThingGraphQLDailyService {
 				Map<IdentifierFragment, List<TimestampedPacket<T>>> identifierMap = map.computeIfAbsent(date, (_date) -> new HashMap<>());
 				identifierMap.computeIfAbsent(identifierFragment, (_identifier) -> new ArrayList<>()).add(new TimestampedPacket<>(packet, dateMillis));
 			}
-			Collection<DataNode<Float>> r = new TreeSet<>((o1, o2) -> {
-				int ra = Long.compare(o1.getDateMillis(), o2.getDateMillis());
-				if (ra == 0) {
-					return o1.getIdentifiable().getIdentifier().hashCode() - o2.getIdentifiable().getIdentifier().hashCode();
-				}
-				return ra;
-			});
-//			Collection<DataNode<Float>> r = new ArrayList<>();
+			Collection<DataNode<Float>> r = new TreeSet<>(DataNode::compareTo);
 			for (Map.Entry<SimpleDate, Map<IdentifierFragment, List<TimestampedPacket<T>>>> entry : map.entrySet()) {
 				SimpleDate date = entry.getKey();
 				long dayStartTimeMillis = date.getDayStartDateMillis(timeZone);

@@ -4,11 +4,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
+import me.retrodaredevil.solarthing.packets.identification.Identifier;
 
 import static java.util.Objects.requireNonNull;
 
 @JsonExplicit
-public final class DataNode<T> {
+public final class DataNode<T> implements Comparable<DataNode<?>> {
 	private final T data;
 	private final Identifiable identifiable;
 	private final long dateMillis;
@@ -49,5 +50,14 @@ public final class DataNode<T> {
 	@JsonProperty("fragmentIdString")
 	public String getFragmentIdString() {
 		return "" + fragmentId;
+	}
+
+	@Override
+	public int compareTo(DataNode<?> dataNode) {
+		int r = Long.compare(dateMillis, dataNode.dateMillis);
+		if (r == 0) {
+			return identifiable.getIdentifier().hashCode() - dataNode.identifiable.getIdentifier().hashCode();
+		}
+		return r;
 	}
 }
