@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.packets.collection.parsing;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.jsontype.impl.StdSubtypeResolver;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.DocumentedPacket;
 
@@ -21,6 +22,7 @@ public class MultiPacketConverter implements JsonPacketParser {
 	}
 	public static MultiPacketConverter createFrom(ObjectMapper baseMapper, Collection<? extends Class<? extends DocumentedPacket>> packetClasses) {
 		ObjectMapper mapper = baseMapper.copy();
+		mapper.setSubtypeResolver(baseMapper.getSubtypeResolver().copy());
 		mapper.getSubtypeResolver().registerSubtypes(Collections.unmodifiableCollection(packetClasses));
 		return new MultiPacketConverter(mapper);
 	}
