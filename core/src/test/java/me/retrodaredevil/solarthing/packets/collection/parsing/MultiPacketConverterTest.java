@@ -14,7 +14,7 @@ import me.retrodaredevil.solarthing.packets.DocumentedPacket;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MultiPacketConverterTest {
 
