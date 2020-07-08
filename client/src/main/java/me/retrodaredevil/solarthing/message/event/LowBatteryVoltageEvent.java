@@ -16,16 +16,26 @@ public class LowBatteryVoltageEvent implements MessageEvent {
 	private static final NumberFormat FORMAT = new DecimalFormat("0.0");
 	private final float batteryVoltage;
 	private final long timeoutMillis;
+	private final long belowForMillis;
 
+	private Long belowStartTime = null;
 	private Long lastSend = null;
 
 	@JsonCreator
 	public LowBatteryVoltageEvent(
 			@JsonProperty(value = "voltage", required = true) float batteryVoltage,
-			@JsonProperty(value = "timeout", required = true) float timeoutMinutes
+			@JsonProperty(value = "timeout", required = true) float timeoutMinutes,
+			@JsonProperty("time") float belowForSeconds // not required. Jackson should default this to 0 if not included
 	) {
+		if (timeoutMinutes < 0) {
+			throw new IllegalArgumentException("timeoutMinutes (\"timeout\") cannot be negative!");
+		}
+		if (belowForSeconds < 0) {
+			throw new IllegalArgumentException("belowForSeconds (\"time\") cannot be negative!");
+		}
 		this.batteryVoltage = batteryVoltage;
 		this.timeoutMillis = Math.round(timeoutMinutes * 60 * 1000);
+		this.belowForMillis = Math.round(belowForSeconds * 1000);
 	}
 
 	@Override
@@ -41,12 +51,23 @@ public class LowBatteryVoltageEvent implements MessageEvent {
 			}
 		}
 		if (currentBatteryVoltage != null) {
-			final Long lastSend = this.lastSend;
 			long now = System.currentTimeMillis();
-			if (lastSend == null || lastSend + timeoutMillis <= now) {
-				this.lastSend = now;
-				sender.sendMessage("Low Battery: " + FORMAT.format(currentBatteryVoltage));
+			if (belowStartTime == null) {
+				belowStartTime = now;
 			}
+			final long belowStartTime = this.belowStartTime;
+			final Long lastSend = this.lastSend;
+			if ((lastSend == null || lastSend + timeoutMillis <= now) && belowStartTime + belowForMillis <= now) {
+				this.lastSend = now;
+				long currentlyBelowForMillis = now - belowStartTime;
+				String extra = "";
+				if (currentlyBelowForMillis > 0) { // this means that belowForMillis != 0
+					extra += " (" + Math.round(currentlyBelowForMillis / 1000.0) + " seconds)";
+				}
+				sender.sendMessage("Low Battery: " + FORMAT.format(currentBatteryVoltage) + "V (" + FORMAT.format(batteryVoltage) + "V warning)" + extra);
+			}
+		} else {
+			belowStartTime = null;
 		}
 	}
 }

@@ -10,7 +10,7 @@ public final class JacksonUtil {
 		mapper.setConfig(
 				mapper.getDeserializationConfig()
 						.with(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE)
-						.with(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
+//						.with(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES) this really means fail on undefined, not null
 						.with(DeserializationFeature.FAIL_ON_READING_DUP_TREE_KEY)
 		);
 		return mapper;
