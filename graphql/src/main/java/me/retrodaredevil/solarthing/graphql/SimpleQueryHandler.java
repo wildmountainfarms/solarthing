@@ -119,4 +119,7 @@ public class SimpleQueryHandler {
 		return new DefaultMetaDatabase(metaQueryHandler.query());
 	}
 
+	public DefaultInstanceOptions getDefaultInstanceOptions() {
+		return defaultInstanceOptions;
+	}
 }

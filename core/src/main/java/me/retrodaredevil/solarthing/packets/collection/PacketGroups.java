@@ -5,6 +5,7 @@ import me.retrodaredevil.solarthing.packets.instance.InstanceFragmentIndicatorPa
 import me.retrodaredevil.solarthing.packets.instance.InstancePacket;
 import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePacket;
 import me.retrodaredevil.solarthing.packets.instance.InstanceTargetPacket;
+import org.jetbrains.annotations.Contract;
 
 import java.util.*;
 
@@ -14,7 +15,8 @@ import static java.util.Objects.requireNonNull;
 public final class PacketGroups {
 	private PacketGroups(){ throw new UnsupportedOperationException(); }
 
-	public static final Comparator<Integer> DEFAULT_FRAGMENT_ID_COMPARATOR = Integer::compare;
+	@Deprecated
+	public static final Comparator<Integer> DEFAULT_FRAGMENT_ID_COMPARATOR = FragmentUtil.DEFAULT_FRAGMENT_ID_COMPARATOR;
 
 	public static PacketGroup createPacketGroup(Collection<? extends Packet> groups, long dateMillis){
 		return createPacketGroup(groups, dateMillis, Collections.emptyMap());
@@ -87,6 +89,7 @@ public final class PacketGroups {
 	 * @param defaultInstanceOptions The default instance options
 	 * @return A list of {@link InstancePacketGroup}s.
 	 */
+	@Contract(pure = true)
 	public static List<InstancePacketGroup> parseToInstancePacketGroups(Collection<? extends PacketGroup> groups, DefaultInstanceOptions defaultInstanceOptions) {
 		List<InstancePacketGroup> r = new ArrayList<>();
 		for(PacketGroup group : groups){
@@ -102,6 +105,7 @@ public final class PacketGroups {
 	 * @param defaultInstanceOptions The default instance options
 	 * @return A map of a list of {@link InstancePacketGroup}s where each key in the map is a different source ID.
 	 */
+	@Contract(pure = true)
 	public static Map<String, List<InstancePacketGroup>> parsePackets(Collection<? extends PacketGroup> groups, DefaultInstanceOptions defaultInstanceOptions){
 		Map<String, List<InstancePacketGroup>> map = new HashMap<>();
 		for(PacketGroup group : groups){
@@ -117,15 +121,24 @@ public final class PacketGroups {
 		}
 		return map;
 	}
+
+	@Contract(pure = true)
 	public static Map<String, List<FragmentedPacketGroup>> sortPackets(Collection<? extends PacketGroup> groups, DefaultInstanceOptions defaultInstanceOptions, long maxTimeDistance, Long masterIdIgnoreDistance){
+		return sortPackets(groups, defaultInstanceOptions, maxTimeDistance, masterIdIgnoreDistance, FragmentUtil.DEFAULT_FRAGMENT_ID_COMPARATOR);
+	}
+	@Contract(pure = true)
+	public static Map<String, List<FragmentedPacketGroup>> sortPackets(Collection<? extends PacketGroup> groups, DefaultInstanceOptions defaultInstanceOptions, long maxTimeDistance, Long masterIdIgnoreDistance, Comparator<Integer> fragmentIdComparator){
 		Map<String, List<InstancePacketGroup>> map = parsePackets(groups, defaultInstanceOptions);
 		Map<String, List<FragmentedPacketGroup>> r = new HashMap<>();
 		for(Map.Entry<String, List<InstancePacketGroup>> entry : map.entrySet()) {
-			r.put(entry.getKey(), mergePackets(entry.getValue(), maxTimeDistance, masterIdIgnoreDistance));
+			r.put(entry.getKey(), mergePackets(entry.getValue(), maxTimeDistance, masterIdIgnoreDistance, fragmentIdComparator));
 		}
 		return r;
 	}
 
+	public static List<FragmentedPacketGroup> mergePackets(List<? extends InstancePacketGroup> instancePacketGroups, long maxTimeDistance, Long masterIdIgnoreDistance){
+		return mergePackets(instancePacketGroups, maxTimeDistance, masterIdIgnoreDistance, FragmentUtil.DEFAULT_FRAGMENT_ID_COMPARATOR);
+	}
 	/**
 	 * This method takes a list of {@link InstancePacketGroup}s and then merges them together. It does this by using the lowest fragment ID as the "master" ID and then it finds
 	 * other fragments closest to it for each {@link InstancePacketGroup} with a master fragment ID. If there's a time gap for a certain master fragment ID, the next
@@ -135,7 +148,8 @@ public final class PacketGroups {
 	 * @param masterIdIgnoreDistance The amount of time in milliseconds to allow no master ID packet until it falls through to the next ID, or null. If null, it's the same as being infinite.
 	 * @return A list of the merged packets
 	 */
-	public static List<FragmentedPacketGroup> mergePackets(List<? extends InstancePacketGroup> instancePacketGroups, long maxTimeDistance, Long masterIdIgnoreDistance){
+	@Contract(pure = true)
+	public static List<FragmentedPacketGroup> mergePackets(List<? extends InstancePacketGroup> instancePacketGroups, long maxTimeDistance, Long masterIdIgnoreDistance, Comparator<Integer> fragmentIdComparator){
 		Map<Integer, List<InstancePacketGroup>> fragmentMap = new HashMap<>();
 		for(InstancePacketGroup packetGroup : instancePacketGroups){ // this for loop initializes fragmentMap
 			final int fragmentId = packetGroup.getFragmentId();
@@ -148,7 +162,7 @@ public final class PacketGroups {
 		}
 		final List<Integer> fragmentIds;
 		{ // initialize fragmentIds
-			SortedSet<Integer> fragmentIdsSet = new TreeSet<>(DEFAULT_FRAGMENT_ID_COMPARATOR);
+			SortedSet<Integer> fragmentIdsSet = new TreeSet<>(fragmentIdComparator);
 			fragmentIdsSet.addAll(fragmentMap.keySet());
 			fragmentIds = new ArrayList<>(fragmentIdsSet); // now this is sorted
 		}
@@ -299,7 +313,7 @@ public final class PacketGroups {
 		return r;
 	}
 	public static List<InstancePacketGroup> orderByFragment(Collection<? extends InstancePacketGroup> instancePacketGroups) {
-		return orderByFragment(instancePacketGroups, DEFAULT_FRAGMENT_ID_COMPARATOR);
+		return orderByFragment(instancePacketGroups, FragmentUtil.DEFAULT_FRAGMENT_ID_COMPARATOR);
 	}
 	public static List<InstancePacketGroup> orderByFragment(Collection<? extends InstancePacketGroup> instancePacketGroups, Comparator<Integer> fragmentComparator) {
 		Map<Integer, List<InstancePacketGroup>> mappedPackets = mapFragments(instancePacketGroups);

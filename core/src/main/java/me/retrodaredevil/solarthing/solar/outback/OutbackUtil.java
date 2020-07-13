@@ -5,6 +5,7 @@ import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacket;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
+import org.jetbrains.annotations.Contract;
 
 import java.util.Collection;
 
@@ -14,6 +15,7 @@ public final class OutbackUtil {
 	 * @param packets A collection of packets containing {@link SolarStatusPacket}s. Other types of packets will be ignored
 	 * @return The {@link FXStatusPacket} from {@code packetCollection} or null if there were no FX packets in {@code packetCollection}
 	 */
+	@Contract(pure = true)
 	public static FXStatusPacket getMasterFX(Collection<? extends Packet> packets){
 		FXStatusPacket fx = null;
 		for(Packet packet : packets){
@@ -34,6 +36,7 @@ public final class OutbackUtil {
 	 * @param packetGroup The packet collection containing {@link SolarStatusPacket}s. Other types of packets will be ignored
 	 * @return The {@link FXStatusPacket} from {@code packetCollection} or null if there were no FX packets in {@code packetCollection}
 	 */
+	@Contract(pure = true)
 	public static FXStatusPacket getMasterFX(PacketGroup packetGroup){
 		return getMasterFX(packetGroup.getPackets());
 	}

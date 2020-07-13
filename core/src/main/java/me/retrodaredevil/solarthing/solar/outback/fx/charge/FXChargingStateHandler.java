@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.solar.outback.fx.charge;
 
+import me.retrodaredevil.solarthing.solar.BatteryUtil;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.OperationalMode;
 
@@ -43,9 +44,8 @@ public class FXChargingStateHandler {
 		equalizeTimer = new ModeTimer(fxChargingSettings.getEqualizeTimeMillis());
 	}
 
-
-	public void update(long deltaTimeMillis, FXStatusPacket fx){
-		update(deltaTimeMillis, fx.getOperationalMode(), fx.getBatteryVoltage());
+	public void update(long deltaTimeMillis, FXStatusPacket fx, int temperatureCelsius){
+		update(deltaTimeMillis, fx.getOperationalMode(), BatteryUtil.getOutbackCompensatedBatteryVoltage(fx.getBatteryVoltage(), temperatureCelsius));
 	}
 	public void update(long deltaTimeMillis, OperationalMode operationalMode, float batteryVoltage){
 		OperationalMode previousOperationalMode = this.previousOperationalMode;

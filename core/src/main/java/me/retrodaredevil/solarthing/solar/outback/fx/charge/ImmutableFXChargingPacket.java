@@ -11,7 +11,6 @@ import me.retrodaredevil.solarthing.solar.extra.SolarExtraPacketType;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXIdentityInfo;
 
-@Deprecated
 public class ImmutableFXChargingPacket implements FXChargingPacket {
 	private final int address;
 
@@ -25,10 +24,7 @@ public class ImmutableFXChargingPacket implements FXChargingPacket {
 	private final long totalFloatTimeMillis;
 	private final long totalEqualizeTimeMillis;
 
-	private final SupplementaryIdentifier identifier;
-	private final IdentityInfo identityInfo;
 
-	@Deprecated
 	public ImmutableFXChargingPacket(
 			OutbackIdentifier outbackIdentifier,
 			FXChargingMode fxChargingMode,
@@ -48,8 +44,6 @@ public class ImmutableFXChargingPacket implements FXChargingPacket {
 
 		this.address = outbackIdentifier.getAddress();
 
-		identifier = new DefaultSupplementaryIdentifier<>(outbackIdentifier, SolarExtraPacketType.FX_CHARGING.toString());
-		identityInfo = new FXIdentityInfo(address);
 	}
 	@JsonCreator
 	private ImmutableFXChargingPacket(
@@ -62,16 +56,6 @@ public class ImmutableFXChargingPacket implements FXChargingPacket {
 			@JsonProperty(value = "totalFloatTimeMillis", required = true) long totalFloatTimeMillis,
 			@JsonProperty(value = "totalEqualizeTimeMillis", required = true) long totalEqualizeTimeMillis) {
 		this(new OutbackIdentifier(address), fxChargingMode, remainingAbsorbTimeMillis, remainingFloatTimeMillis, remainingEqualizeTimeMillis, totalAbsorbTimeMillis, totalFloatTimeMillis, totalEqualizeTimeMillis);
-	}
-
-	@Override
-	public @NotNull SupplementaryIdentifier getIdentifier() {
-		return identifier;
-	}
-
-	@Override
-	public @NotNull IdentityInfo getIdentityInfo() {
-		return identityInfo;
 	}
 
 	@Override

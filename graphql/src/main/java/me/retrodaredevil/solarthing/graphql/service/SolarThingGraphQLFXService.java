@@ -1,0 +1,110 @@
+package me.retrodaredevil.solarthing.graphql.service;
+
+import io.leangen.graphql.annotations.GraphQLArgument;
+import io.leangen.graphql.annotations.GraphQLQuery;
+import me.retrodaredevil.solarthing.annotations.Nullable;
+import me.retrodaredevil.solarthing.graphql.SimpleQueryHandler;
+import me.retrodaredevil.solarthing.graphql.packets.DataNode;
+import me.retrodaredevil.solarthing.graphql.packets.PacketFilter;
+import me.retrodaredevil.solarthing.meta.MetaDatabase;
+import me.retrodaredevil.solarthing.meta.TargetMetaPacket;
+import me.retrodaredevil.solarthing.meta.TargetedMetaPacket;
+import me.retrodaredevil.solarthing.meta.TargetedMetaPacketType;
+import me.retrodaredevil.solarthing.packets.Packet;
+import me.retrodaredevil.solarthing.packets.collection.FragmentUtil;
+import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
+import me.retrodaredevil.solarthing.packets.collection.InstancePacketGroup;
+import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
+import me.retrodaredevil.solarthing.solar.outback.OutbackUtil;
+import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
+import me.retrodaredevil.solarthing.solar.outback.fx.charge.FXChargingPacket;
+import me.retrodaredevil.solarthing.solar.outback.fx.charge.FXChargingStateHandler;
+import me.retrodaredevil.solarthing.solar.outback.fx.meta.FXChargingSettingsPacket;
+import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+public class SolarThingGraphQLFXService {
+	private final SimpleQueryHandler simpleQueryHandler;
+
+	public SolarThingGraphQLFXService(SimpleQueryHandler simpleQueryHandler) {
+		this.simpleQueryHandler = simpleQueryHandler;
+	}
+	public static class SolarThingFXQuery {
+		private final List<? extends FragmentedPacketGroup> sortedPackets;
+
+		public SolarThingFXQuery(List<? extends FragmentedPacketGroup> sortedPackets) {
+			this.sortedPackets = sortedPackets;
+		}
+	}
+	@GraphQLQuery
+	public List<DataNode<FXChargingPacket>> queryFXCharging(
+			@GraphQLArgument(name = "from") long from, @GraphQLArgument(name = "to") long to,
+			@GraphQLArgument(name = "fragmentId") int fragmentId){
+		/*
+		TODO: We return null a couple of times in this method. It may be better to throw an exception so the caller knows why something failed
+		 */
+		MetaDatabase metaDatabase = simpleQueryHandler.queryMeta();
+		FXChargingSettingsPacket fxChargingSettingsPacket = null;
+		for (TargetedMetaPacket targetedMetaPacket : metaDatabase.getMeta(to, fragmentId)) {
+			if (targetedMetaPacket.getPacketType() == TargetedMetaPacketType.FX_CHARGING_SETTINGS) {
+				fxChargingSettingsPacket = (FXChargingSettingsPacket) targetedMetaPacket;
+				break;
+			}
+		}
+		if (fxChargingSettingsPacket == null) {
+			return null;
+		}
+
+		long startTime = from - 5 * 60 * 1000; // 5 hours back
+		List<? extends InstancePacketGroup> packets = simpleQueryHandler.queryStatus(startTime, to, null);
+		Map<String, List<FragmentedPacketGroup>> map = PacketGroups.sortPackets( // separate based on source ID
+				packets, simpleQueryHandler.getDefaultInstanceOptions(), 5 * 60 * 1000, null,
+				FragmentUtil.createPriorityComparator(fragmentId) // make fragmentId be the master ID
+		);
+		List<FragmentedPacketGroup> sortedPackets = null;
+		for (List<FragmentedPacketGroup> fragmentedPacketGroups : map.values()) {
+			if (fragmentedPacketGroups.get(0).hasFragmentId(fragmentId)) {
+				sortedPackets = fragmentedPacketGroups;
+				break;
+			}
+		}
+		if (sortedPackets == null) {
+			return null;
+		}
+		FXChargingStateHandler stateHandler = new FXChargingStateHandler(fxChargingSettingsPacket.getFXChargingSettings());
+		Long lastUpdate = null;
+		for (FragmentedPacketGroup packetGroup : sortedPackets) {
+			List<FXStatusPacket> fxPackets = new ArrayList<>();
+			Integer temperature = null;
+			for (Packet packet : packetGroup.getPackets()) {
+				if (packet instanceof FXStatusPacket && packetGroup.getFragmentId(packet) == fragmentId) {
+					fxPackets.add((FXStatusPacket) packet);
+				} else if (packet instanceof RoverStatusPacket) {
+					temperature = ((RoverStatusPacket) packet).getBatteryTemperatureCelsius();
+				}
+			}
+			if (fxPackets.isEmpty()) {
+				continue;
+			}
+			if (temperature == null) {
+				continue; // we need temperature data for accurate results // TODO add option for systems that don't use temperature compensation
+			}
+			FXStatusPacket fx = OutbackUtil.getMasterFX(fxPackets);
+			if (fx == null) {
+				continue;
+			}
+			final long delta;
+			if (lastUpdate == null) {
+				delta = 1000;
+			} else {
+				delta = packetGroup.getDateMillis() - lastUpdate;
+			}
+			lastUpdate = packetGroup.getDateMillis();
+			stateHandler.update(delta, fx, temperature);
+		}
+		throw new UnsupportedOperationException("Not done implementing this method");
+	}
+}

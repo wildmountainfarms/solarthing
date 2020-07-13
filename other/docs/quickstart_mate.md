@@ -31,7 +31,6 @@ Advanced configuration:
     "1": 0,
     "2": 32
   },
-  "master_fx": 1,
   "fx_charge_settings": {
     "rebulk_voltage": null,
     "absorb_voltage": 29.2,
@@ -44,9 +43,7 @@ Advanced configuration:
   }
 }
 ```
-`fx_warning_ignore` is used for the "event" packets to ignore certain warnings. `master_fx` is used in addition to 
-`fx_charge_settings` to calculate/emulate the timers that can be viewed on the MATE. This is **optional**!!! This is also in beta
-and is not recommended to try unless you have everything else working.
+`fx_warning_ignore` is used for the "event" packets to ignore certain warnings.
 
 If you want to learn about commands, you can look at [commands](./commands.md). This is **optional** and should only be
 looked at once everything else is working.
