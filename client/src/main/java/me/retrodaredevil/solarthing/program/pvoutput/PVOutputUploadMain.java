@@ -30,6 +30,7 @@ import me.retrodaredevil.solarthing.pvoutput.service.OkHttpUtil;
 import me.retrodaredevil.solarthing.pvoutput.service.PVOutputService;
 import me.retrodaredevil.solarthing.pvoutput.service.RetrofitUtil;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacket;
+import me.retrodaredevil.solarthing.solar.daily.DailyConfig;
 import me.retrodaredevil.solarthing.solar.extra.SolarExtraPacket;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import okhttp3.OkHttpClient;
@@ -149,10 +150,11 @@ public class PVOutputUploadMain {
 						}
 					} else {
 						AddStatusParameters statusParameters = handler.getStatus(dayStart, packetGroups);
-						AddOutputParameters outputParameters = new AddOutputParametersBuilder(statusParameters.getDate())
+						AddOutputParametersBuilder outputParametersBuilder = new AddOutputParametersBuilder(statusParameters.getDate())
 								.setGenerated(statusParameters.getEnergyGeneration())
-								.setConsumption(statusParameters.getEnergyConsumption())
-								.build();
+								.setConsumption(statusParameters.getEnergyConsumption());
+						PVOutputHandler.setImportedExported(outputParametersBuilder, packetGroups, DailyConfig.createDefault(dayStart), options.isIncludeImport(), options.isIncludeExport());
+						AddOutputParameters outputParameters = outputParametersBuilder.build();
 						addOutputParameters.add(outputParameters);
 						System.out.println("Added parameters for " + date.toPVOutputString() + " to queue.");
 						System.out.println("Generated: " + statusParameters.getEnergyGeneration());
@@ -260,7 +262,13 @@ public class PVOutputUploadMain {
 						LOGGER.warn("Checking packets unsuccessful.");
 					} else {
 						AddStatusParameters parameters = handler.getStatus(dayStartTimeMillis, packetGroups);
-						uploadStatus(service, parameters);
+						if (uploadStatus(service, parameters) && (options.isIncludeImport() || options.isIncludeExport())) {
+							// only upload output if status is successful
+							AddOutputParametersBuilder outputParametersBuilder = new AddOutputParametersBuilder(parameters.getDate());
+							PVOutputHandler.setImportedExported(outputParametersBuilder, packetGroups, DailyConfig.createDefault(dayStartTimeMillis), options.isIncludeImport(), options.isIncludeExport());
+							AddOutputParameters outputParameters = outputParametersBuilder.build();
+							uploadOutput(service, outputParameters);
+						}
 					}
 				} else {
 					LOGGER.warn("Got " + statusPacketNodes.size() + " packets but, there must not have been any packets with the source: " + options.getSourceId());
@@ -276,29 +284,38 @@ public class PVOutputUploadMain {
 		}
 		return 1;
 	}
-	private static void uploadStatus(PVOutputService service, AddStatusParameters addStatusParameters) {
+	private static boolean uploadStatus(PVOutputService service, AddStatusParameters addStatusParameters) {
 		try {
 			LOGGER.debug("Status parameters as JSON: " + MAPPER.writeValueAsString(addStatusParameters));
 		} catch (JsonProcessingException e) {
 			LOGGER.error("Got error serializing JSON. This should never happen.", e);
 		}
 		Call<String> call = service.addStatus(addStatusParameters);
-		executeCall(call);
+		return executeCall(call);
 	}
-	private static void executeCall(Call<String> call) {
+	private static boolean uploadOutput(PVOutputService service, AddOutputParameters addOutputParameters) {
+		try {
+			LOGGER.debug("Output parameters as JSON: " + MAPPER.writeValueAsString(addOutputParameters));
+		} catch (JsonProcessingException e) {
+			LOGGER.error("Got error serializing JSON. This should never happen.", e);
+		}
+		Call<String> call = service.addOutput(addOutputParameters);
+		return executeCall(call);
+	}
+	private static boolean executeCall(Call<String> call) {
 		LOGGER.debug("Executing call");
-		Response<String> response = null;
+		final Response<String> response;
 		try {
 			response = call.execute();
 		} catch (IOException e) {
 			LOGGER.error("Exception while executing", e);
+			return false;
 		}
-		if (response != null) {
-			if (response.isSuccessful()) {
-				LOGGER.debug("Executed successfully. Result: " + response.body());
-			} else {
-				LOGGER.debug("Unsuccessful. Message: " + response.message() + " code: " + response.code());
-			}
+		if (response.isSuccessful()) {
+			LOGGER.debug("Executed successfully. Result: " + response.body());
+			return true;
 		}
+		LOGGER.debug("Unsuccessful. Message: " + response.message() + " code: " + response.code());
+		return false;
 	}
 }

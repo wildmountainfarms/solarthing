@@ -9,6 +9,7 @@ import org.ektorp.CouchDbConnector;
 import org.ektorp.DbAccessException;
 
 public class MetaQueryHandler {
+	// TODO move this into common code
 	private final CouchDbConnector closedConnector;
 	private final ObjectMapper objectMapper;
 

@@ -31,6 +31,11 @@ public class PVOutputUploadProgramOptions extends DatabaseTimeZoneOptionBase imp
 	@JsonProperty("temperature_identifier")
 	private IdentifierFragmentObject temperatureIdentifierFragmentObject = null;
 
+	@JsonProperty("include_import")
+	private boolean includeImport = false;
+	@JsonProperty("include_export")
+	private boolean includeExport = false;
+
 	@Override
 	public ProgramType getProgramType() {
 		return ProgramType.PVOUTPUT_UPLOAD;
@@ -68,6 +73,14 @@ public class PVOutputUploadProgramOptions extends DatabaseTimeZoneOptionBase imp
 			return IdentifierFragmentMatcher.NO_MATCH;
 		}
 		return object.identifierFragmentMatcher;
+	}
+
+	public boolean isIncludeImport() {
+		return includeImport;
+	}
+
+	public boolean isIncludeExport() {
+		return includeExport;
 	}
 
 	static class IdentifierFragmentObject {

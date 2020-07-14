@@ -10,6 +10,7 @@ import me.retrodaredevil.solarthing.packets.identification.IdentifierFragment;
 import me.retrodaredevil.solarthing.packets.identification.IdentifierFragmentMatcher;
 import me.retrodaredevil.solarthing.pvoutput.SimpleDate;
 import me.retrodaredevil.solarthing.pvoutput.SimpleTime;
+import me.retrodaredevil.solarthing.pvoutput.data.AddOutputParametersBuilder;
 import me.retrodaredevil.solarthing.pvoutput.data.AddStatusParameters;
 import me.retrodaredevil.solarthing.pvoutput.data.AddStatusParametersBuilder;
 import me.retrodaredevil.solarthing.solar.common.PVCurrentAndVoltage;
@@ -18,6 +19,7 @@ import me.retrodaredevil.solarthing.solar.daily.DailyConfig;
 import me.retrodaredevil.solarthing.solar.daily.DailyPair;
 import me.retrodaredevil.solarthing.solar.daily.DailyUtil;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
+import me.retrodaredevil.solarthing.solar.outback.fx.common.FXDailyData;
 import me.retrodaredevil.solarthing.solar.outback.fx.extra.DailyFXPacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPacket;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
@@ -153,6 +155,21 @@ public class PVOutputHandler {
 					DailyCalc.getSumTotal(dailyFXMap.values(), dailyFXPacket -> dailyFXPacket.getInverterKWH() + dailyFXPacket.getBuyKWH() - dailyFXPacket.getChargerKWH());
 			builder.setEnergyConsumption(Math.round(consumptionKWH * 1000.0f));
 		}
+		return builder;
+	}
+	public static AddOutputParametersBuilder setImportedExported(AddOutputParametersBuilder builder, List<FragmentedPacketGroup> packetGroups, DailyConfig dailyConfig, boolean includeImport, boolean includeExport) {
+		Map<IdentifierFragment, List<DailyPair<DailyFXPacket>>> dailyFXMap = DailyUtil.getDailyPairs(DailyUtil.mapPackets(DailyFXPacket.class, packetGroups), dailyConfig);
+		if (!dailyFXMap.isEmpty()) {
+			if (includeImport) {
+				float importKWH = DailyCalc.getSumTotal(dailyFXMap.values(), FXDailyData::getBuyKWH);
+				builder.setImportOffPeak(Math.round(importKWH * 1000.0f));
+			}
+			if (includeExport) {
+				float exportKWH = DailyCalc.getSumTotal(dailyFXMap.values(), FXDailyData::getSellKWH);
+				builder.setExported(Math.round(exportKWH * 1000.0f));
+			}
+		}
+
 		return builder;
 	}
 
