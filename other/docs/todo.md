@@ -3,11 +3,9 @@
 * Create a calendar program to be able to view daily kWh on a calendar interface
   * If we do something with a calendar, we could use Google calendar https://developers.google.com/calendar/create-events/
 * Create button/widget on Grafana that sends an encrypted command to shut off the generator
-* Create GraphQL query that allows someone to get dailyKWH from a large time period (many days) for
-easy displaying in Grafana
 * Packet for disk usage
 * Make CouchDB and InfluxDB database configuration warn when setting unused values
-* Make sure that the latest packet handler is really the latest. (Aux On has been frequently sent twice with the generator shutoff)
+* Make sure the latest packet handler is really the latest. (Aux On has been frequently sent twice with the generator shutoff)
   
 ### Android TODO
 * Notification for when FXs are in EQ, but any MX is in absorb or float
@@ -40,6 +38,8 @@ easy displaying in Grafana
 * Store metadata
   * Put this in a document named `meta` in `solarthing_closed
 * Add temperature event to message program
+* Create GraphQL query that allows someone to get dailyKWH from a large time period (many days) for
+easy displaying in Grafana
 
 ### TODO Look into
 * Look into supporting Elasticsearch, MongoDB, Graphite

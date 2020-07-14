@@ -150,6 +150,9 @@ public final class PacketGroups {
 	 */
 	@Contract(pure = true)
 	public static List<FragmentedPacketGroup> mergePackets(List<? extends InstancePacketGroup> instancePacketGroups, long maxTimeDistance, Long masterIdIgnoreDistance, Comparator<Integer> fragmentIdComparator){
+		if (instancePacketGroups.isEmpty()) {
+			throw new IllegalArgumentException("instancePacketGroups cannot be empty!");
+		}
 		Map<Integer, List<InstancePacketGroup>> fragmentMap = new HashMap<>();
 		for(InstancePacketGroup packetGroup : instancePacketGroups){ // this for loop initializes fragmentMap
 			final int fragmentId = packetGroup.getFragmentId();
@@ -191,6 +194,9 @@ public final class PacketGroups {
 	){
 		if(minTime > maxTime){
 			return;
+		}
+		if (fragmentIds.isEmpty()) {
+			throw new IllegalArgumentException("Fragment IDs is empty!");
 		}
 		int masterFragmentId = fragmentIds.get(0);
 		List<? extends InstancePacketGroup> masterList = requireNonNull(fragmentMap.get(masterFragmentId));

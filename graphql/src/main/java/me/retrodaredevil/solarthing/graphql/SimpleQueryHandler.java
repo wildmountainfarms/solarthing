@@ -63,6 +63,9 @@ public class SimpleQueryHandler {
 		metaQueryHandler = new MetaQueryHandler(new StdCouchDbConnector(SolarThingConstants.CLOSED_UNIQUE_NAME, instance), metaObjectMapper);
 	}
 	public List<? extends FragmentedPacketGroup> sortPackets(List<? extends InstancePacketGroup> packets, String sourceId) {
+		if (packets.isEmpty()) {
+			return Collections.emptyList();
+		}
 		if (sourceId == null) {
 			return PacketGroups.mergePackets(PacketGroups.parseToInstancePacketGroups(packets, defaultInstanceOptions), 2 * 60 * 1000, 2 * 60 * 1000L);
 		}
