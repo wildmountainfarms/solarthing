@@ -2,20 +2,24 @@ package me.retrodaredevil.solarthing.solar.outback.fx.meta;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.meta.TargetedMetaPacket;
 import me.retrodaredevil.solarthing.meta.TargetedMetaPacketType;
 import me.retrodaredevil.solarthing.solar.outback.fx.charge.FXChargingSettings;
 
+@JsonExplicit
+@JsonTypeName("FX_CHARGING_SETTINGS")
 public class FXChargingSettingsPacket implements TargetedMetaPacket {
 	private final FXChargingSettings fxChargingSettings;
 
 	@JsonCreator
 	public FXChargingSettingsPacket(@JsonProperty(value = "settings", required = true) Settings settings) {
 		this.fxChargingSettings = new FXChargingSettings(
-				settings.rebulkVoltage, settings.absorbVoltage, Math.round(settings.absorbTimeHours * 60 * 1000),
-				settings.floatVoltage, Math.round(settings.floatTimeHours * 60 * 1000),
-				settings.refloatVoltage, settings.equalizeVoltage, Math.round(settings.equalizeTimeHours * 60 * 1000)
+				settings.rebulkVoltage, settings.absorbVoltage, Math.round(settings.absorbTimeHours * 60 * 60 * 1000),
+				settings.floatVoltage, Math.round(settings.floatTimeHours * 60 * 60 * 1000),
+				settings.refloatVoltage, settings.equalizeVoltage, Math.round(settings.equalizeTimeHours * 60 * 60 * 1000)
 		);
 	}
 

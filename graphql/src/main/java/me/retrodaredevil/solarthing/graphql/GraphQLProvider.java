@@ -14,6 +14,7 @@ import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.graphql.service.SolarThingGraphQLDailyService;
+import me.retrodaredevil.solarthing.graphql.service.SolarThingGraphQLFXService;
 import me.retrodaredevil.solarthing.graphql.service.SolarThingGraphQLService;
 import me.retrodaredevil.solarthing.packets.collection.DefaultInstanceOptions;
 import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePacket;
@@ -126,6 +127,7 @@ public class GraphQLProvider {
 				.withOperationsFromSingleton(new SolarThingGraphQLDailyService(simpleQueryHandler, TimeZone.getDefault())) // TODO do we really want a default time zone?
 				.withOperationsFromSingleton(new SolarThingGraphQLMetaService(simpleQueryHandler))
 				.withOperationsFromSingleton(new SolarThingGraphQLExtensions())
+				.withOperationsFromSingleton(new SolarThingGraphQLFXService(simpleQueryHandler))
 				.withValueMapperFactory(jacksonValueMapperFactory)
 				.withResolverBuilders(resolverBuilder)
 				.withNestedResolverBuilders(

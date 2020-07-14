@@ -18,7 +18,9 @@ import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
 import me.retrodaredevil.solarthing.solar.outback.OutbackUtil;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.charge.FXChargingPacket;
+import me.retrodaredevil.solarthing.solar.outback.fx.charge.FXChargingSettings;
 import me.retrodaredevil.solarthing.solar.outback.fx.charge.FXChargingStateHandler;
+import me.retrodaredevil.solarthing.solar.outback.fx.charge.ImmutableFXChargingPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.meta.FXChargingSettingsPacket;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
 
@@ -31,13 +33,6 @@ public class SolarThingGraphQLFXService {
 
 	public SolarThingGraphQLFXService(SimpleQueryHandler simpleQueryHandler) {
 		this.simpleQueryHandler = simpleQueryHandler;
-	}
-	public static class SolarThingFXQuery {
-		private final List<? extends FragmentedPacketGroup> sortedPackets;
-
-		public SolarThingFXQuery(List<? extends FragmentedPacketGroup> sortedPackets) {
-			this.sortedPackets = sortedPackets;
-		}
 	}
 	@GraphQLQuery
 	public List<DataNode<FXChargingPacket>> queryFXCharging(
@@ -55,7 +50,7 @@ public class SolarThingGraphQLFXService {
 			}
 		}
 		if (fxChargingSettingsPacket == null) {
-			return null;
+			throw new RuntimeException("Could not find FX Charging settings in meta!");
 		}
 
 		long startTime = from - 5 * 60 * 1000; // 5 hours back
@@ -72,10 +67,13 @@ public class SolarThingGraphQLFXService {
 			}
 		}
 		if (sortedPackets == null) {
-			return null;
+			throw new RuntimeException("Could not find fragment ID: " + fragmentId);
 		}
-		FXChargingStateHandler stateHandler = new FXChargingStateHandler(fxChargingSettingsPacket.getFXChargingSettings());
+		FXChargingSettings settings = fxChargingSettingsPacket.getFXChargingSettings();
+		FXChargingStateHandler stateHandler = new FXChargingStateHandler(settings);
 		Long lastUpdate = null;
+
+		List<DataNode<FXChargingPacket>> r = new ArrayList<>();
 		for (FragmentedPacketGroup packetGroup : sortedPackets) {
 			List<FXStatusPacket> fxPackets = new ArrayList<>();
 			Integer temperature = null;
@@ -104,7 +102,16 @@ public class SolarThingGraphQLFXService {
 			}
 			lastUpdate = packetGroup.getDateMillis();
 			stateHandler.update(delta, fx, temperature);
+			FXChargingPacket fxChargingPacket = new ImmutableFXChargingPacket(
+					fx.getIdentifier(), stateHandler.getMode(),
+					stateHandler.getRemainingAbsorbTimeMillis(), stateHandler.getRemainingFloatTimeMillis(), stateHandler.getRemainingEqualizeTimeMillis(),
+					settings.getAbsorbTimeMillis(), settings.getFloatTimeMillis(), settings.getEqualizeTimeMillis()
+			);
+			r.add(new DataNode<>(fxChargingPacket, fx, packetGroup.getDateMillis(), packetGroup.getSourceId(fx), fragmentId));
 		}
-		throw new UnsupportedOperationException("Not done implementing this method");
+		if (r.isEmpty() && !sortedPackets.isEmpty()) {
+			throw new RuntimeException("There must have been no FX packets or no rover packets!");
+		}
+		return r;
 	}
 }
