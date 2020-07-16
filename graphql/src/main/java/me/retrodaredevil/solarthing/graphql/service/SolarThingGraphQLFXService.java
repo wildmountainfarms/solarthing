@@ -53,7 +53,7 @@ public class SolarThingGraphQLFXService {
 			throw new RuntimeException("Could not find FX Charging settings in meta!");
 		}
 
-		long startTime = from - 5 * 60 * 1000; // 5 hours back
+		long startTime = from - 3 * 60 * 60 * 1000; // 3 hours back
 		List<? extends InstancePacketGroup> packets = simpleQueryHandler.queryStatus(startTime, to, null);
 		Map<String, List<FragmentedPacketGroup>> map = PacketGroups.sortPackets( // separate based on source ID
 				packets, simpleQueryHandler.getDefaultInstanceOptions(), 5 * 60 * 1000, null,
