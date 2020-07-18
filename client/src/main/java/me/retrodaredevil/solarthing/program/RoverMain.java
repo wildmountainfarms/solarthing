@@ -6,6 +6,7 @@ import me.retrodaredevil.io.modbus.*;
 import me.retrodaredevil.io.serial.SerialConfig;
 import me.retrodaredevil.io.serial.SerialConfigBuilder;
 import me.retrodaredevil.solarthing.DataSource;
+import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.PacketGroupReceiver;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.actions.ActionNode;
@@ -15,8 +16,11 @@ import me.retrodaredevil.solarthing.analytics.AnalyticsManager;
 import me.retrodaredevil.solarthing.config.options.*;
 import me.retrodaredevil.solarthing.config.request.DataRequester;
 import me.retrodaredevil.solarthing.config.request.RaspberryPiCpuTemperatureDataRequester;
+import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.handling.LatestPacketHandler;
+import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
+import me.retrodaredevil.solarthing.packets.handling.PacketHandlerMultiplexer;
 import me.retrodaredevil.solarthing.program.modbus.ModbusCacheSlave;
 import me.retrodaredevil.solarthing.solar.renogy.rover.DummyRoverReadWrite;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverReadTable;
@@ -52,10 +56,12 @@ public class RoverMain {
 			list.add((o) -> new RoverPacketListUpdater(read, write, reloadCache, options.isSendErrorPackets()));
 
 			// this may be used in the future
-			LatestPacketHandler latestPacketHandler = new LatestPacketHandler(false); // this is used to determine the state of the system when a command is requested
+			List<PacketHandler> extraPacketHandlers = new ArrayList<>();
 
-			final PacketGroupReceiver commandReceiver;
+			final ActionNodeDataReceiver commandReceiver;
 			if (options.hasCommands()) {
+				LatestPacketHandler latestPacketHandler = new LatestPacketHandler(false); // this is used to determine the state of the system when a command is requested
+				extraPacketHandlers.add(latestPacketHandler);
 				final Map<String, ActionNode> actionNodeMap;
 				try {
 					actionNodeMap = ActionUtil.getActionNodeMap(MAPPER, options);
@@ -68,10 +74,13 @@ public class RoverMain {
 						injectEnvironmentBuilder.add(new RoverModbusEnvironment(read, write));
 					}
 				};
+				extraPacketHandlers.add((packetCollection, instantType) -> {
+					commandReceiver.getActionUpdater().update();
+				});
 			} else {
 				commandReceiver = null;
 			}
-			return RequestMain.startRequestProgram(options, analyticsManager, list, options.getPeriod(), options.getMinimumWait(), commandReceiver, options.getCommandInfoList(), latestPacketHandler);
+			return RequestMain.startRequestProgram(options, analyticsManager, list, options.getPeriod(), options.getMinimumWait(), commandReceiver, options.getCommandInfoList(), new PacketHandlerMultiplexer(extraPacketHandlers));
 		}, options.isBulkRequest() ? modbusCacheSlave -> {
 //			modbusCacheSlave.cacheRangeInclusive(0x000A, 0x001A);
 //			modbusCacheSlave.cacheRangeInclusive(0x0100, 0x0122);
