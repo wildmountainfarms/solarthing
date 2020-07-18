@@ -10,7 +10,7 @@ cd /opt/solarthing/program/rover
 
 Copy some template config files ([default_linux_serial](../../config_templates/io/default_linux_serial.json) and [rover_template](../../config_templates/base/rover_template.json) or [rover_setup_template](../../config_templates/base/rover_setup_template.json))
 ```
-# NOTE You will have to use sudo for all of these commands
+# sudo should not be required unless permissions were not set up correctly (add yourself to the solarthing group)
 cp ../../config_templates/io/default_linux_serial.json config/
 cp ../../config_templates/base/rover_template.json config/base.json
 # or do this if you want to run the setup program:

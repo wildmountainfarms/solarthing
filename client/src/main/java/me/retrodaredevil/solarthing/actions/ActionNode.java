@@ -8,6 +8,7 @@ import me.retrodaredevil.solarthing.actions.mate.ACModeActionNode;
 import me.retrodaredevil.solarthing.actions.mate.AuxStateActionNode;
 import me.retrodaredevil.solarthing.actions.mate.MateCommandActionNode;
 import me.retrodaredevil.solarthing.actions.mate.MateCommandWaitActionNode;
+import me.retrodaredevil.solarthing.actions.rover.RoverLoadActionNode;
 
 @JsonSubTypes({
 		@JsonSubTypes.Type(QueueActionNode.class),
@@ -24,6 +25,8 @@ import me.retrodaredevil.solarthing.actions.mate.MateCommandWaitActionNode;
 		@JsonSubTypes.Type(AuxStateActionNode.class),
 		@JsonSubTypes.Type(MateCommandActionNode.class),
 		@JsonSubTypes.Type(MateCommandWaitActionNode.class),
+
+		@JsonSubTypes.Type(RoverLoadActionNode.class),
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
 public interface ActionNode {

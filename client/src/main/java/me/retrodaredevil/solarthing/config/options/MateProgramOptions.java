@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.config.options;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.actions.ActionNode;
@@ -14,10 +15,9 @@ import java.util.*;
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("mate")
-public class MateProgramOptions extends PacketHandlingOptionBase implements IOBundleOption, AnalyticsOption, ProgramOptions {
+@JsonIgnoreProperties("allow_commands")
+public class MateProgramOptions extends PacketHandlingOptionBase implements IOBundleOption, AnalyticsOption, ProgramOptions, CommandOption {
 
-	@JsonProperty("allow_commands")
-	private boolean allowCommands = false;
 	@JsonProperty("ignore_check_sum")
 	private boolean ignoreCheckSum = false;
 	@JsonProperty("correct_check_sum")
@@ -35,8 +35,10 @@ public class MateProgramOptions extends PacketHandlingOptionBase implements IOBu
 	@JsonProperty(AnalyticsOption.PROPERTY_NAME)
 	private boolean isAnalyticsEnabled = AnalyticsOption.DEFAULT_IS_ANALYTICS_ENABLED;
 
-	public boolean isAllowCommands() {
-		return allowCommands;
+
+	@Override
+	public List<Command> getDeclaredCommands() {
+		return commands;
 	}
 
 	public boolean isIgnoreCheckSum() {
@@ -76,20 +78,7 @@ public class MateProgramOptions extends PacketHandlingOptionBase implements IOBu
 		}
 		return r;
 	}
-	public Map<String, File> getCommandFileMap() {
-		Map<String, File> commandFileMap = new HashMap<>();
-		for (Command command : commands) {
-			commandFileMap.put(command.name, command.actionFile);
-		}
-		return commandFileMap;
-	}
-	public List<CommandInfo> getCommandInfoList() {
-		List<CommandInfo> r = new ArrayList<>(commands.size());
-		for (Command command : commands) {
-			r.add(command.createCommandInfo());
-		}
-		return r;
-	}
+
 	private static class MateFXChargingSettings {
 		@JsonProperty("rebulk_voltage")
 		private Float rebulkSetpoint;
@@ -112,18 +101,4 @@ public class MateProgramOptions extends PacketHandlingOptionBase implements IOBu
 		private double equalizeTimePeriod;
 	}
 
-	private static class Command {
-		@JsonProperty(value = "name", required = true)
-		private String name;
-		@JsonProperty("display_name")
-		private String displayName = null;
-		@JsonProperty("description")
-		private String description = "";
-		@JsonProperty("action")
-		private File actionFile;
-
-		private CommandInfo createCommandInfo() {
-			return new CommandInfo(name, displayName, description);
-		}
-	}
 }

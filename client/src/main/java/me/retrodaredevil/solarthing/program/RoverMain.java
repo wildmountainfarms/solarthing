@@ -5,11 +5,18 @@ import me.retrodaredevil.io.IOBundle;
 import me.retrodaredevil.io.modbus.*;
 import me.retrodaredevil.io.serial.SerialConfig;
 import me.retrodaredevil.io.serial.SerialConfigBuilder;
+import me.retrodaredevil.solarthing.DataSource;
+import me.retrodaredevil.solarthing.PacketGroupReceiver;
 import me.retrodaredevil.solarthing.SolarThingConstants;
+import me.retrodaredevil.solarthing.actions.ActionNode;
+import me.retrodaredevil.solarthing.actions.environment.InjectEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.RoverModbusEnvironment;
 import me.retrodaredevil.solarthing.analytics.AnalyticsManager;
 import me.retrodaredevil.solarthing.config.options.*;
 import me.retrodaredevil.solarthing.config.request.DataRequester;
 import me.retrodaredevil.solarthing.config.request.RaspberryPiCpuTemperatureDataRequester;
+import me.retrodaredevil.solarthing.packets.handling.LatestPacketHandler;
+import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
 import me.retrodaredevil.solarthing.program.modbus.ModbusCacheSlave;
 import me.retrodaredevil.solarthing.solar.renogy.rover.DummyRoverReadWrite;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverReadTable;
@@ -27,6 +34,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class RoverMain {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RoverMain.class);
@@ -42,7 +50,28 @@ public class RoverMain {
 		return doRoverProgram(options, (read, write, reloadCache) -> {
 			List<DataRequester> list = new ArrayList<>(dataRequesterList);
 			list.add((o) -> new RoverPacketListUpdater(read, write, reloadCache, options.isSendErrorPackets()));
-			return RequestMain.startRequestProgram(options, analyticsManager, list, options.getPeriod(), options.getMinimumWait());
+
+			// this may be used in the future
+			LatestPacketHandler latestPacketHandler = new LatestPacketHandler(false); // this is used to determine the state of the system when a command is requested
+
+			final PacketGroupReceiver commandReceiver;
+			if (options.hasCommands()) {
+				final Map<String, ActionNode> actionNodeMap;
+				try {
+					actionNodeMap = ActionUtil.getActionNodeMap(MAPPER, options);
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+				commandReceiver = new ActionNodeDataReceiver(actionNodeMap) {
+					@Override
+					protected void updateInjectEnvironment(DataSource dataSource, InjectEnvironment.Builder injectEnvironmentBuilder) {
+						injectEnvironmentBuilder.add(new RoverModbusEnvironment(read, write));
+					}
+				};
+			} else {
+				commandReceiver = null;
+			}
+			return RequestMain.startRequestProgram(options, analyticsManager, list, options.getPeriod(), options.getMinimumWait(), commandReceiver, options.getCommandInfoList(), latestPacketHandler);
 		}, options.isBulkRequest() ? modbusCacheSlave -> {
 //			modbusCacheSlave.cacheRangeInclusive(0x000A, 0x001A);
 //			modbusCacheSlave.cacheRangeInclusive(0x0100, 0x0122);

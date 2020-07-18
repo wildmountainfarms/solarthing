@@ -10,9 +10,6 @@ import me.retrodaredevil.solarthing.actions.ActionNode;
 import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.InjectEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.VariableEnvironment;
-import me.retrodaredevil.solarthing.commands.Command;
-import me.retrodaredevil.solarthing.commands.CommandProvider;
-import me.retrodaredevil.solarthing.commands.SourcedCommand;
 import me.retrodaredevil.solarthing.commands.packets.open.CommandOpenPacket;
 import me.retrodaredevil.solarthing.commands.packets.open.CommandOpenPacketType;
 import me.retrodaredevil.solarthing.commands.packets.open.RequestCommandPacket;
@@ -21,19 +18,12 @@ import me.retrodaredevil.solarthing.packets.collection.TargetPacketGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.LinkedList;
 import java.util.Map;
-import java.util.Queue;
 
-public abstract class ActionNodeDataReceiver<T extends Command> implements PacketGroupReceiver {
+public abstract class ActionNodeDataReceiver implements PacketGroupReceiver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionNodeDataReceiver.class);
 	private final VariableEnvironment variableEnvironment = new VariableEnvironment();
-	protected final Queue<SourcedCommand<T>> queue = new LinkedList<>();
 	private final ActionMultiplexer actionMultiplexer = new Actions.ActionMultiplexerBuilder().build();
-	private final CommandProvider<T> commandProvider = () -> {
-		actionMultiplexer.update();
-		return queue.poll();
-	};
 
 	private final Map<String, ActionNode> actionNodeMap;
 
@@ -43,6 +33,9 @@ public abstract class ActionNodeDataReceiver<T extends Command> implements Packe
 
 	protected abstract void updateInjectEnvironment(DataSource dataSource, InjectEnvironment.Builder injectEnvironmentBuilder);
 
+	public Action getActionUpdater() {
+		return actionMultiplexer;
+	}
 
 	@Override
 	public void receivePacketGroup(String sender, TargetPacketGroup packetGroup) {
@@ -67,10 +60,6 @@ public abstract class ActionNodeDataReceiver<T extends Command> implements Packe
 			actionMultiplexer.add(action);
 			LOGGER.info(SolarThingConstants.SUMMARY_MARKER, sender + " has requested command sequence: " + data);
 		}
-	}
-
-	public CommandProvider<T> getCommandProvider(){
-		return commandProvider;
 	}
 
 }

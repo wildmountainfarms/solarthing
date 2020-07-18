@@ -4,9 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import java.io.File;
+import java.util.List;
 
 @JsonTypeName("rover")
-public class RoverProgramOptions extends RequestProgramOptionsBase implements RoverOption {
+public class RoverProgramOptions extends RequestProgramOptionsBase implements RoverOption, CommandOption {
 	@JsonProperty("modbus")
 	private int modbusAddress = 1;
 	@JsonProperty("dummy")
@@ -19,6 +20,14 @@ public class RoverProgramOptions extends RequestProgramOptionsBase implements Ro
 
 	@JsonProperty("bulk_request")
 	private boolean bulkRequest = true;
+
+	@JsonProperty("commands")
+	private List<Command> commands;
+
+	@Override
+	public List<Command> getDeclaredCommands() {
+		return commands;
+	}
 
 	public boolean isSendErrorPackets() {
 		return sendErrorPackets;

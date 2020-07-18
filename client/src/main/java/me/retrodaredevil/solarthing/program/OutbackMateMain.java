@@ -17,6 +17,7 @@ import me.retrodaredevil.solarthing.analytics.AnalyticsManager;
 import me.retrodaredevil.solarthing.analytics.MateAnalyticsHandler;
 import me.retrodaredevil.solarthing.commands.CommandProvider;
 import me.retrodaredevil.solarthing.commands.CommandProviderMultiplexer;
+import me.retrodaredevil.solarthing.commands.SourcedCommand;
 import me.retrodaredevil.solarthing.commands.packets.open.CommandOpenPacket;
 import me.retrodaredevil.solarthing.commands.packets.status.AvailableCommandsListUpdater;
 import me.retrodaredevil.solarthing.config.databases.IndividualSettings;
@@ -63,7 +64,7 @@ public class OutbackMateMain {
 
 	private static IOBundle createIOBundle(MateProgramOptions options) throws Exception {
 		final IOBundle createdIO = SolarMain.createIOBundle(options.getIOBundleFile(), MATE_CONFIG);
-		if(options.isAllowCommands()){
+		if(options.hasCommands()){
 			return createdIO;
 		}
 		// just a simple safe guard to stop people from accessing the OutputStream if this program becomes more complex in the future
@@ -107,7 +108,7 @@ public class OutbackMateMain {
 
 			final OnDataReceive onDataReceive;
 			List<PacketHandler> statusPacketHandlers = new ArrayList<>();
-			if(options.isAllowCommands()) {
+			if(options.hasCommands()) {
 				LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Commands are allowed");
 				List<CommandProvider<MateCommand>> commandProviders = new ArrayList<>();
 				{ // InputStreamCommandProvider command_input.txt block
@@ -124,58 +125,27 @@ public class OutbackMateMain {
 						commandProviders.add(InputStreamCommandProvider.createFrom(fileInputStream, "command_input.txt", EnumSet.allOf(MateCommand.class)));
 					}
 				}
-				Map<String, ActionNode> actionNodeMap = new HashMap<>();
-				for (Map.Entry<String, File> entry : options.getCommandFileMap().entrySet()) {
-					String name = entry.getKey();
-					File file = entry.getValue();
-					final ActionNode actionNode = MAPPER.readValue(file, ActionNode.class);
-					actionNodeMap.put(name, actionNode);
-				}
+				Map<String, ActionNode> actionNodeMap = ActionUtil.getActionNodeMap(MAPPER, options);
 				LOGGER.debug("actionNodeMap={}", actionNodeMap);
 
-				final List<PacketHandler> commandRequesterHandlerList = new ArrayList<>(); // Handlers to request and get new commands to send (This may block the current thread). (This doesn't actually handle packets)
-				for(DatabaseConfig config : databaseConfigs){
-					if(CouchDbDatabaseSettings.TYPE.equals(config.getType())){
-						CouchDbDatabaseSettings settings = (CouchDbDatabaseSettings) config.getSettings();
-						CouchProperties couchProperties = settings.getCouchProperties();
-						LatestPacketHandler latestPacketHandler = new LatestPacketHandler(true); // this is used to determine the state of the system when a command is requested
-						statusPacketHandlers.add(latestPacketHandler);
-						final ActionNodeDataReceiver<MateCommand> actionNodeDataReceiver;
-						{
-							actionNodeDataReceiver = new ActionNodeDataReceiver<MateCommand>(actionNodeMap) {
-								@Override
-								protected void updateInjectEnvironment(DataSource dataSource, InjectEnvironment.Builder injectEnvironmentBuilder) {
-									injectEnvironmentBuilder
-											.add(new MateCommandEnvironment(dataSource.toString(), queue))
-											.add(new LatestPacketGroupEnvironment(latestPacketHandler::getLatestPacketCollection));
-								}
-							};
-						}
-						commandProviders.add(actionNodeDataReceiver.getCommandProvider());
+				LatestPacketHandler latestPacketHandler = new LatestPacketHandler(false); // this is used to determine the state of the system when a command is requested
+				statusPacketHandlers.add(latestPacketHandler);
 
-						IndividualSettings individualSettings = config.getIndividualSettingsOrDefault(Constants.DATABASE_COMMAND_DOWNLOAD_ID, null);
-						FrequencySettings frequencySettings = individualSettings != null ? individualSettings.getFrequencySettings() : FrequencySettings.NORMAL_SETTINGS;
-						commandRequesterHandlerList.add(new ThrottleFactorPacketHandler(new PrintPacketHandleExceptionWrapper(
-								new CouchDbPacketRetrieverHandler(
-										new CouchDbPacketRetriever(
-												couchProperties,
-												SolarThingConstants.OPEN_UNIQUE_NAME
-										) {
-											@Override
-											protected ViewQuery alterView(ViewQuery view) {
-												return super.alterView(view).startKey(System.currentTimeMillis() - 5 * 60 * 1000); // last 5 minutes
-											}
-										},
-										new SecurityPacketReceiver(
-												CouchDbDocumentKeyMap.createDefault(couchProperties),
-												actionNodeDataReceiver,
-												options.getSourceId(), options.getFragmentId(),
-												Collections.singleton(CommandOpenPacket.class)
-										)
-								)
-						), frequencySettings, true));
+				Queue<SourcedCommand<MateCommand>> queue = new LinkedList<>();
+				final ActionNodeDataReceiver actionNodeDataReceiver = new ActionNodeDataReceiver(actionNodeMap) {
+					@Override
+					protected void updateInjectEnvironment(DataSource dataSource, InjectEnvironment.Builder injectEnvironmentBuilder) {
+						injectEnvironmentBuilder
+								.add(new MateCommandEnvironment(dataSource.toString(), queue))
+								.add(new LatestPacketGroupEnvironment(latestPacketHandler::getLatestPacketCollection));
 					}
-				}
+				};
+				final CommandProvider<MateCommand> commandProvider = () -> {
+					actionNodeDataReceiver.getActionUpdater().update();
+					return queue.poll();
+				};
+				commandProviders.add(commandProvider);
+				final List<PacketHandler> commandRequesterHandlerList = CommandUtil.getCommandRequesterHandlerList(databaseConfigs, actionNodeDataReceiver, options); // Handlers to request and get new commands to send (This may block the current thread). (This doesn't actually handle packets)
 
 				final PacketHandler commandRequesterHandler = new PacketHandlerMultiplexer(commandRequesterHandlerList);
 				Collection<MateCommand> allowedCommands = EnumSet.of(MateCommand.AUX_OFF, MateCommand.AUX_ON, MateCommand.USE, MateCommand.DROP);
@@ -219,7 +189,7 @@ public class OutbackMateMain {
 					new MXEventUpdaterListReceiver(eventPacketListReceiverHandler.getPacketListReceiverAccepter()),
 					new FXStatusListUpdater(new DailyIdentifier(options.getTimeZone()))
 			));
-			if (options.isAllowCommands()) {
+			if (options.hasCommands()) {
 				packetListReceiverList.add(new AvailableCommandsListUpdater(options.getCommandInfoList()));
 			}
 			if(rpiCpuTemperature){

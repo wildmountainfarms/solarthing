@@ -3,9 +3,13 @@ package me.retrodaredevil.solarthing.program;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.solarthing.InstantType;
+import me.retrodaredevil.solarthing.PacketGroupReceiver;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.analytics.AnalyticsManager;
 import me.retrodaredevil.solarthing.analytics.RoverAnalyticsHandler;
+import me.retrodaredevil.solarthing.annotations.Nullable;
+import me.retrodaredevil.solarthing.commands.CommandInfo;
+import me.retrodaredevil.solarthing.commands.packets.status.AvailableCommandsListUpdater;
 import me.retrodaredevil.solarthing.config.options.PacketHandlingOption;
 import me.retrodaredevil.solarthing.config.options.ProgramType;
 import me.retrodaredevil.solarthing.config.options.RequestProgramOptions;
@@ -26,6 +30,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static java.util.Objects.requireNonNull;
+
 public class RequestMain {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RequestMain.class);
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
@@ -33,14 +39,21 @@ public class RequestMain {
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Beginning request program");
 		AnalyticsManager analyticsManager = new AnalyticsManager(options.isAnalyticsEnabled(), dataDirectory);
 		analyticsManager.sendStartUp(ProgramType.REQUEST);
-		return startRequestProgram(options, analyticsManager, options.getDataRequesterList(), options.getPeriod(), options.getMinimumWait());
+		return startRequestProgram(options, analyticsManager, options.getDataRequesterList(), options.getPeriod(), options.getMinimumWait(), null, null, PacketHandler.Defaults.HANDLE_NOTHING);
 	}
 
-	public static int startRequestProgram(PacketHandlingOption options, AnalyticsManager analyticsManager, List<DataRequester> dataRequesterList, long period, long minimumWait) {
-		PacketHandlerBundle packetHandlerBundle = PacketHandlerInit.getPacketHandlerBundle(SolarMain.getDatabaseConfigs(options), SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, SolarThingConstants.SOLAR_EVENT_UNIQUE_NAME);
+	public static int startRequestProgram(PacketHandlingOption options, AnalyticsManager analyticsManager, List<DataRequester> dataRequesterList, long period, long minimumWait, @Nullable PacketGroupReceiver commandPacketGroupReceiver, @Nullable List<CommandInfo> commandInfoList, PacketHandler extraPacketHandler) {
+		List<DatabaseConfig> databaseConfigs = SolarMain.getDatabaseConfigs(options);
+		PacketHandlerBundle packetHandlerBundle = PacketHandlerInit.getPacketHandlerBundle(databaseConfigs, SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, SolarThingConstants.SOLAR_EVENT_UNIQUE_NAME);
 		List<PacketHandler> statusPacketHandlers = new ArrayList<>(packetHandlerBundle.getStatusPacketHandlers());
 		statusPacketHandlers.add(new RoverAnalyticsHandler(analyticsManager)); // this only does anything if there are rover status packets.
+		statusPacketHandlers.add(requireNonNull(extraPacketHandler));
 
+		if (commandPacketGroupReceiver != null) {
+			LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Command are enabled!");
+			List<PacketHandler> commandPacketHandlers = CommandUtil.getCommandRequesterHandlerList(databaseConfigs, commandPacketGroupReceiver, options);
+			statusPacketHandlers.add(new PacketHandlerMultiplexer(commandPacketHandlers));
+		}
 //		List<PacketHandler> eventPacketHandlers = new ArrayList<>(packetHandlerBundle.getEventPacketHandlers());
 		PacketHandler eventPacketHandler = new PacketHandlerMultiplexer(packetHandlerBundle.getEventPacketHandlers());
 
@@ -80,6 +93,9 @@ public class RequestMain {
 		List<PacketListReceiver> packetListReceiverList = new ArrayList<>();
 		for (DataRequester dataRequester : dataRequesterList) {
 			packetListReceiverList.add(dataRequester.createPacketListReceiver(eventPacketListReceiverHandler.getPacketListReceiverAccepter()));
+		}
+		if (commandPacketGroupReceiver != null) {
+			packetListReceiverList.add(new AvailableCommandsListUpdater(requireNonNull(commandInfoList)));
 		}
 		packetListReceiverList.add(new DataIdentifiablePacketListChecker());
 		packetListReceiverList.addAll(Arrays.asList(
