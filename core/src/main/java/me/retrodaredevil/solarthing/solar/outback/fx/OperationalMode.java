@@ -5,6 +5,10 @@ import me.retrodaredevil.solarthing.packets.CodeMode;
 
 /**
  * The FX Operational Mode
+ * <p>
+ * Note that modes such as {@link #CHARGE}, {@link #FLOAT} and {@link #EQ} do not tell you if the FX is in a constant voltage charging state. You can use
+ * {@link me.retrodaredevil.solarthing.solar.outback.fx.charge.FXChargingMode} and {@link me.retrodaredevil.solarthing.solar.outback.fx.charge.FXChargingStateHandler} to
+ * determine this.
  */
 public enum OperationalMode implements CodeMode { // one must be active
 	INV_OFF(0, "Inv Off"),

@@ -1,0 +1,9 @@
+{
+  "NOTE": "The automation program is not yet implemented! This config file does not work yet!",
+  "type": "automation",
+  "database": "../config/couchdb.json",
+  "source": "default",
+  "actions": [
+
+  ]
+}

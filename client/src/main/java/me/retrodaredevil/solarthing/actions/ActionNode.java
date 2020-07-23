@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
-import me.retrodaredevil.solarthing.actions.mate.ACModeActionNode;
-import me.retrodaredevil.solarthing.actions.mate.AuxStateActionNode;
-import me.retrodaredevil.solarthing.actions.mate.MateCommandActionNode;
-import me.retrodaredevil.solarthing.actions.mate.MateCommandWaitActionNode;
+import me.retrodaredevil.solarthing.actions.mate.*;
 import me.retrodaredevil.solarthing.actions.rover.RoverLoadActionNode;
 
 @JsonSubTypes({
@@ -23,6 +20,7 @@ import me.retrodaredevil.solarthing.actions.rover.RoverLoadActionNode;
 
 		@JsonSubTypes.Type(ACModeActionNode.class),
 		@JsonSubTypes.Type(AuxStateActionNode.class),
+		@JsonSubTypes.Type(FXOperationalModeActionNode.class),
 		@JsonSubTypes.Type(MateCommandActionNode.class),
 		@JsonSubTypes.Type(MateCommandWaitActionNode.class),
 

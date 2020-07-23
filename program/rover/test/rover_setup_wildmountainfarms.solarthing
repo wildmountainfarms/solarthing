@@ -9,7 +9,7 @@ overdischargerecoveryvoltageraw 112 # 22.4 # has to get back to 22.4
 overdischargetimedelayseconds   120 # 2 minutes before "over discharge"
 
 # Boost (Absorb)
-boostchargingvoltageraw         146 # 29.2
+boostchargingvoltageraw         147 # 29.4 # We give the FXs 29.2, but all charge controllers 29.4 so they don't "give up"
 boostchargingrecoveryvoltageraw 120 # 24.0
 boostchargingtimeminutes         90 # 1.5 hours
 
