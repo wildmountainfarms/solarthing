@@ -20,7 +20,7 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerContr
 import java.util.Collection;
 
 @JsonExplicit
-public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeController, DailyChargeController, DailyBatteryVoltage, Identifiable {
+public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeController, DailyChargeController, RecordBatteryVoltage, Identifiable {
 
 	@Override
 	@GraphQLInclude("identifier")
@@ -32,10 +32,16 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 			throw new IllegalArgumentException("previousDailyData is not a RoverReadTable! It's: " + previousDailyData.getClass().getName());
 		}
 		RoverReadTable previous = (RoverReadTable) previousDailyData;
+		/*
+		NOTE: That minimum battery voltage and operating days count reset at a different time than the other values
+
+		TODO determine if using max charging current/power messes this up like min battery and operating days count did
+		 */
 		return getDailyKWH() < previous.getDailyKWH() || getDailyAH() < previous.getDailyAH() ||
-				getDailyMinBatteryVoltage() > previous.getDailyMinBatteryVoltage() || // the min voltage was reset to a larger number
+//				getDailyMinBatteryVoltage() > previous.getDailyMinBatteryVoltage() || // the min voltage was reset to a larger number
 				getDailyMaxBatteryVoltage() < previous.getDailyMaxBatteryVoltage() || // the max voltage was reset to a smaller number
-				getOperatingDaysCount() > previous.getOperatingDaysCount() || // The day increased
+//				getOperatingDaysCount() > previous.getOperatingDaysCount() || // The day increased
+				getDailyMaxChargingCurrent() < previous.getDailyMaxChargingCurrent() ||
 				getDailyMaxChargingPower() < previous.getDailyMaxChargingPower(); // The max charging power was reset to a smaller number
 	}
 

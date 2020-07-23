@@ -13,7 +13,10 @@ import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.InstancePacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
 import me.retrodaredevil.solarthing.solar.BatteryUtil;
+import me.retrodaredevil.solarthing.solar.common.BasicChargeController;
 import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
+import me.retrodaredevil.solarthing.solar.common.DailyChargeController;
+import me.retrodaredevil.solarthing.solar.common.PVCurrentAndVoltage;
 import me.retrodaredevil.solarthing.solar.outback.command.packets.SuccessMateCommandPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.event.FXACModeChangePacket;
@@ -116,6 +119,18 @@ public class SolarThingGraphQLService {
 		@GraphQLQuery
 		public @NotNull List<@NotNull PacketNode<RoverStatusPacket>> roverStatus() {
 			return packetGetter.getPackets(RoverStatusPacket.class);
+		}
+		@GraphQLQuery
+		public @NotNull List<@NotNull PacketNode<PVCurrentAndVoltage>> solar() {
+			return packetGetter.getPackets(PVCurrentAndVoltage.class);
+		}
+		@GraphQLQuery
+		public @NotNull List<@NotNull PacketNode<BasicChargeController>> chargeController() {
+			return packetGetter.getPackets(BasicChargeController.class);
+		}
+		@GraphQLQuery
+		public @NotNull List<@NotNull PacketNode<DailyChargeController>> dailyChargeController() {
+			return packetGetter.getPackets(DailyChargeController.class);
 		}
 		@GraphQLQuery
 		public @NotNull List<@NotNull PacketNode<CpuTemperaturePacket>> cpuTemperature() {
