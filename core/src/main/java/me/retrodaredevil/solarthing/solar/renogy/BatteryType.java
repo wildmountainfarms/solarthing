@@ -6,9 +6,6 @@ import me.retrodaredevil.solarthing.packets.CodeMode;
  * The battery type
  * <p><p>
  * PDU address: 0xE004, Bytes: 2
- * <p>
- * Note: {@link BatteryType#USER_UNLOCKED} and {@link BatteryType#USER_LOCKED} represent the same thing but, {@link BatteryType#USER_UNLOCKED}
- * is used on Rover Li models
  */
 public enum BatteryType implements CodeMode {
 	/**
