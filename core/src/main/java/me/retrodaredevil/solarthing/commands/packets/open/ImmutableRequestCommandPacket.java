@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 
+import static java.util.Objects.requireNonNull;
+
 public class ImmutableRequestCommandPacket implements RequestCommandPacket {
 	private final String commandName;
 
@@ -11,7 +13,7 @@ public class ImmutableRequestCommandPacket implements RequestCommandPacket {
 	public ImmutableRequestCommandPacket(
 			@JsonProperty(value = "commandName", required = true) String commandName
 	) {
-		this.commandName = commandName;
+		requireNonNull(this.commandName = commandName);
 	}
 
 	@Override

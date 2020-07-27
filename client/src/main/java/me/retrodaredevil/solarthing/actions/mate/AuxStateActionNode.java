@@ -15,6 +15,9 @@ import me.retrodaredevil.solarthing.solar.outback.fx.MiscMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * An action that becomes done when aux is on or off, based on {@link #on}
+ */
 @JsonTypeName("auxstate")
 public class AuxStateActionNode implements ActionNode {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AuxStateActionNode.class);

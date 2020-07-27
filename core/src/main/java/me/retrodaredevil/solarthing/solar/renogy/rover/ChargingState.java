@@ -16,7 +16,7 @@ public enum ChargingState implements CodeMode {
 	BOOST("Boost", 4),
 	/** Charges at a reduced voltage, as it charges, the current is gradually reduced*/
 	FLOAT("Float", 5),
-	/** AKA overpower. Done with a constant current*/
+	/** AKA overpower. Done with a constant current. This is only done to lithium batteries in place of the {@link #BOOST} state*/
 	CURRENT_LIMITING("Current limiting", 6)
 	;
 

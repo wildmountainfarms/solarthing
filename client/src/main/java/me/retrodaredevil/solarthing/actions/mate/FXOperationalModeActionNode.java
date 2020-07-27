@@ -17,6 +17,9 @@ import org.slf4j.LoggerFactory;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * An action that becomes "done" when it is in a certain operational mode, or if {@link #not} is true, when it's not in a certain operational mode
+ */
 @JsonTypeName("fxoperational")
 public class FXOperationalModeActionNode implements ActionNode {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FXOperationalModeActionNode.class);
