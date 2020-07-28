@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.StandardOpenOption;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
@@ -93,7 +94,7 @@ public class SendCommandActionNode implements ActionNode {
 			PrivateKey privateKey = KeyUtil.decodePrivateKey(Files.readAllBytes(privateKeyFile.toPath()));
 			keyPair = new KeyPair(publicKey, privateKey);
 		} catch (IOException | InvalidKeyException e) {
-			if (e instanceof FileNotFoundException) {
+			if (e instanceof NoSuchFileException) {
 				LOGGER.info("Public or private key not found. Creating new ones");
 			} else {
 				LOGGER.error("Error while reading public or private key. Going to generate a new one.", e);

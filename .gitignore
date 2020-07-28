@@ -25,6 +25,10 @@
 /program/**/config/commands/*
 !/program/**/config/commands/README.md
 
+!/program/**/config/actions
+/program/**/config/actions/*
+!/program/**/config/actions/README.md
+
 !/program/graphql/download_solarting_graphql.sh
 
 
