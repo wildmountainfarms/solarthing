@@ -153,6 +153,7 @@ public class SendCommandActionNode implements ActionNode {
 				// TODO make this not block (separate thread?)
 				client.createDatabaseIfNotExists();
 				client.create(documentWrapper);
+				LOGGER.info("Uploaded command request document");
 			} catch (DbAccessException e) {
 				LOGGER.error("Error while uploading document.", e);
 			}

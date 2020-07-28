@@ -2,7 +2,12 @@ package me.retrodaredevil.solarthing.program;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import me.retrodaredevil.action.Action;
+import me.retrodaredevil.action.Actions;
 import me.retrodaredevil.solarthing.SolarThingConstants;
+import me.retrodaredevil.solarthing.actions.ActionNode;
+import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnvironment;
 import me.retrodaredevil.solarthing.config.message.MessageEventNode;
 import me.retrodaredevil.solarthing.config.options.MessageSenderProgramOptions;
 import me.retrodaredevil.solarthing.couchdb.CouchDbQueryHandler;
@@ -13,6 +18,7 @@ import me.retrodaredevil.solarthing.misc.device.DevicePacket;
 import me.retrodaredevil.solarthing.misc.error.ErrorPacket;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
+import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.parsing.*;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.instance.InstancePacket;
@@ -48,10 +54,6 @@ public class MessageSenderMain {
 	public static int startMessageSender(MessageSenderProgramOptions options) {
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Starting message program.");
 		LOGGER.debug("Note that this has to get packets twice before this sends anything.");
-		CouchDbQueryHandler queryHandler = SolarMain.createCouchDbQueryHandler(options);
-		PacketGroupParser statusParser = new SimplePacketGroupParser(new LenientPacketParser(
-				MultiPacketConverter.createFrom(PARSE_MAPPER, SolarStatusPacket.class, SolarExtraPacket.class, DevicePacket.class, ErrorPacket.class, InstancePacket.class)
-		));
 		final Map<String, MessageSender> messageSenderMap;
 		try {
 			messageSenderMap = getMessageSenderMap(options);
@@ -59,51 +61,32 @@ public class MessageSenderMain {
 			throw new RuntimeException(e);
 		}
 		List<MessageEventNode> messageEventNodes = options.getMessageEventNodes();
-
-		FragmentedPacketGroup last = null;
-		while (!Thread.currentThread().isInterrupted()) {
-			List<ObjectNode> statusPacketNodes = null;
-			try {
-				long now = System.currentTimeMillis();
-				statusPacketNodes = queryHandler.query(SolarThingCouchDb.createMillisView()
-						.startKey(now - 5 * 60 * 1000)
-						.endKey(now));
-				LOGGER.debug("Got packets");
-			} catch (PacketHandleException e) {
-				LOGGER.error("Couldn't get status packets", e);
-			}
-			if(statusPacketNodes != null) {
-				List<FragmentedPacketGroup> packetGroups = PacketUtil.getPacketGroups(options.getSourceId(), options.getDefaultInstanceOptions(), statusPacketNodes, statusParser);
-				if (packetGroups != null) {
-					FragmentedPacketGroup packetGroup = packetGroups.get(packetGroups.size() - 1);
+		ActionNode actionNode = new ActionNode() {
+			FragmentedPacketGroup last = null;
+			@Override
+			public Action createAction(ActionEnvironment actionEnvironment) {
+				LatestPacketGroupEnvironment latestPacketGroupEnvironment = actionEnvironment.getInjectEnvironment().get(LatestPacketGroupEnvironment.class);
+				return Actions.createRunOnce(() -> {
+					FragmentedPacketGroup packetGroup = (FragmentedPacketGroup) latestPacketGroupEnvironment.getPacketGroupProvider().getPacketGroup();
+					FragmentedPacketGroup last = this.last;
+					this.last = packetGroup;
 					if (last != null) {
-						if (last.getDateMillis() >= packetGroup.getDateMillis()) {
-							LOGGER.warn("No new packets! last date=" + last.getDateMillis() + " current packet date=" + packetGroup.getDateMillis());
-						} else {
-							for (MessageEventNode messageEventNode : messageEventNodes) {
-								List<MessageSender> messageSenders = new ArrayList<>();
-								for (String senderName : messageEventNode.getSendTo()) {
-									MessageSender sender = messageSenderMap.get(senderName);
-									if (sender == null) {
-										throw new IllegalArgumentException("senderName: " + senderName + " is not defined!");
-									}
-									messageSenders.add(sender);
+						for (MessageEventNode messageEventNode : messageEventNodes) {
+							List<MessageSender> messageSenders = new ArrayList<>();
+							for (String senderName : messageEventNode.getSendTo()) {
+								MessageSender sender = messageSenderMap.get(senderName);
+								if (sender == null) {
+									throw new IllegalArgumentException("senderName: " + senderName + " is not defined!");
 								}
-								MessageSender sender = new MessageSenderMultiplexer(messageSenders);
-								messageEventNode.getMessageEvent().run(sender, last, packetGroup);
+								messageSenders.add(sender);
 							}
+							MessageSender sender = new MessageSenderMultiplexer(messageSenders);
+							messageEventNode.getMessageEvent().run(sender, last, packetGroup);
 						}
 					}
-					last = packetGroup;
-				}
+				});
 			}
-			try {
-				Thread.sleep(5000);
-			} catch (InterruptedException ex) {
-				Thread.currentThread().interrupt();
-				throw new RuntimeException(ex);
-			}
-		}
-		return 0;
+		};
+		return AutomationMain.startAutomation(Collections.singletonList(actionNode), options);
 	}
 }

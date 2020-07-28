@@ -21,8 +21,11 @@ public class LockActionNode implements ActionNode {
 			protected void onUpdate() {
 				super.onUpdate();
 				if (!actionEnvironment.getGlobalEnvironment().isLocked(lockName)) {
+					System.out.println(lockName + " is not locked");
 					setDone(true);
 					actionEnvironment.getGlobalEnvironment().lock(lockName);
+				} else {
+					System.out.println(lockName + " is locked");
 				}
 			}
 		};

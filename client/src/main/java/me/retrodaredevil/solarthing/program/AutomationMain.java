@@ -2,15 +2,14 @@ package me.retrodaredevil.solarthing.program;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.ActionMultiplexer;
 import me.retrodaredevil.action.Actions;
 import me.retrodaredevil.couchdb.CouchProperties;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.actions.ActionNode;
 import me.retrodaredevil.solarthing.actions.environment.*;
+import me.retrodaredevil.solarthing.config.options.AutomationProgramOptions;
 import me.retrodaredevil.solarthing.config.options.DatabaseTimeZoneOptionBase;
-import me.retrodaredevil.solarthing.config.options.MessageSenderProgramOptions;
 import me.retrodaredevil.solarthing.couchdb.CouchDbQueryHandler;
 import me.retrodaredevil.solarthing.couchdb.SolarThingCouchDb;
 import me.retrodaredevil.solarthing.misc.device.DevicePacket;
@@ -28,6 +27,8 @@ import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +38,13 @@ public class AutomationMain {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AutomationMain.class);
 	private static final ObjectMapper CONFIG_MAPPER = JacksonUtil.defaultMapper();
 	private static final ObjectMapper PARSE_MAPPER = JacksonUtil.lenientMapper(JacksonUtil.defaultMapper());
-
+	public static int startAutomation(AutomationProgramOptions options) throws IOException {
+		List<ActionNode> actionNodes = new ArrayList<>();
+		for (File file : options.getActionNodeFiles()) {
+			actionNodes.add(CONFIG_MAPPER.readValue(file, ActionNode.class));
+		}
+		return startAutomation(actionNodes, options);
+	}
 	public static int startAutomation(List<ActionNode> actionNodes, DatabaseTimeZoneOptionBase options) {
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Starting automation program.");
 		CouchProperties couchProperties = SolarMain.createCouchProperties(options);
@@ -73,15 +80,14 @@ public class AutomationMain {
 				if (packetGroups != null) {
 					FragmentedPacketGroup packetGroup = packetGroups.get(packetGroups.size() - 1);
 					latestPacketGroupReference[0] = packetGroup;
-					if (last != null) {
-						if (last.getDateMillis() >= packetGroup.getDateMillis()) {
-							LOGGER.warn("No new packets! last date=" + last.getDateMillis() + " current packet date=" + packetGroup.getDateMillis());
-						} else {
-							for (ActionNode actionNode : actionNodes) {
-								multiplexer.add(actionNode.createAction(new ActionEnvironment(variableEnvironment, new VariableEnvironment(), injectEnvironment)));
-							}
-							multiplexer.update();
+					if (last != null && last.getDateMillis() >= packetGroup.getDateMillis()) {
+						LOGGER.warn("No new packets! last date=" + last.getDateMillis() + " current packet date=" + packetGroup.getDateMillis());
+					} else {
+						for (ActionNode actionNode : actionNodes) {
+							multiplexer.add(actionNode.createAction(new ActionEnvironment(variableEnvironment, new VariableEnvironment(), injectEnvironment)));
 						}
+						multiplexer.update();
+						LOGGER.debug("There are " + multiplexer.getActiveActions().size() + " active actions");
 					}
 					last = packetGroup;
 				}
@@ -95,4 +101,5 @@ public class AutomationMain {
 		}
 		return 0;
 	}
+
 }

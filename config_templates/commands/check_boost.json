@@ -10,7 +10,7 @@
           [{ "type": "pass" }, { "type": "log", "message": "Something else had a lock on check_boost"}]
         ]
       },
-      { "type": "waitms", "wait": 12000 },
+      { "type": "log", "message": "Unlocking..." },
       { "type": "unlock", "name": "check_boost" }
     ]
   },

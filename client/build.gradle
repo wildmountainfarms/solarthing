@@ -14,7 +14,7 @@ dependencies {
 
     implementation "org.apache.logging.log4j:log4j-jcl:$log4jVersion" // commons logging bridge.
     implementation "org.apache.logging.log4j:log4j-slf4j-impl:$log4jVersion"
-    implementation 'com.github.retrodaredevil:action-lib:v1.2.0'
+    implementation 'com.github.retrodaredevil:action-lib:v1.2.1'
     implementation 'com.brsanthu:google-analytics-java:2.0.0'
 
     implementation 'net.bis5.mattermost4j:mattermost4j-core:0.22.1'
