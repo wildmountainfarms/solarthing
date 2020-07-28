@@ -14,7 +14,7 @@ boostchargingrecoveryvoltageraw 120 # 24.0
 boostchargingtimeminutes         90 # 1.5 hours
 
 # EQ
-equalizingchargingvoltageraw    150 # 30.0
+equalizingchargingvoltageraw    151 # 30.2 # We give the FXs 30.0, and when we bump up the boost voltage, this needs to be >=
 equalizingchargingtimeminutes   120 # 2 hours
 equalizingchargingintervaldays    0 # Let's disable this for now
 
@@ -22,5 +22,5 @@ equalizingchargingintervaldays    0 # Let's disable this for now
 floatingchargingvoltageraw      136 # 27.2
 
 # Over Voltage
-chargingvoltagelimitraw         149 # 29.8 # default 155 # might have to change this if we enable EQ
-overvoltagethresholdraw         152 # 30.4 # default 160
+chargingvoltagelimitraw         154 # default 155
+overvoltagethresholdraw         156 # default 160
