@@ -144,14 +144,19 @@ public final class SolarMain {
 			throw new RuntimeException(e);
 		}
 	}
-	public static CouchDbQueryHandler createCouchDbQueryHandler(DatabaseOption options) {
+	public static CouchProperties createCouchProperties(DatabaseOption options) {
 		DatabaseConfig databaseConfig = SolarMain.getDatabaseConfig(options.getDatabase());
 		DatabaseType databaseType = databaseConfig.getType();
 		if(databaseType != CouchDbDatabaseSettings.TYPE){
 			throw new IllegalArgumentException("Only CouchDb can be used for this program type right now!");
 		}
 		CouchDbDatabaseSettings couchDbDatabaseSettings = (CouchDbDatabaseSettings) databaseConfig.getSettings();
-		CouchProperties couchProperties = couchDbDatabaseSettings.getCouchProperties();
+		return couchDbDatabaseSettings.getCouchProperties();
+	}
+	public static CouchDbQueryHandler createCouchDbQueryHandler(DatabaseOption options) {
+		return createCouchDbQueryHandler(createCouchProperties(options));
+	}
+	public static CouchDbQueryHandler createCouchDbQueryHandler(CouchProperties couchProperties) {
 		final HttpClient httpClient = EktorpUtil.createHttpClient(couchProperties);
 		CouchDbInstance instance = new StdCouchDbInstance(httpClient);
 		return new CouchDbQueryHandler(new StdCouchDbConnector(SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, instance));

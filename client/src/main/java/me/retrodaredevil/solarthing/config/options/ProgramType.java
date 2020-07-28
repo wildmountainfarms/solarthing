@@ -16,7 +16,8 @@ public enum ProgramType {
 	ROVER_SETUP("rover-setup"),
 	PVOUTPUT_UPLOAD("pvoutput-upload"),
 	MESSAGE_SENDER("message-sender"),
-	REQUEST("request")
+	REQUEST("request"),
+	AUTOMATION("automation"),
 	;
 	private final String name;
 

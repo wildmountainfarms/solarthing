@@ -10,14 +10,17 @@ import me.retrodaredevil.solarthing.actions.PacketGroupProvider;
 import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnvironment;
 import me.retrodaredevil.solarthing.packets.Packet;
-import me.retrodaredevil.solarthing.packets.collection.*;
+import me.retrodaredevil.solarthing.packets.collection.DefaultInstanceOptions;
+import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
+import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
+import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @JsonTypeName("roverboostvoltage")
 public class RoverBoostVoltageActionNode implements ActionNode {
-	private static final Logger LOGGER = LoggerFactory.getLogger(RoverBoostActionNode.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(RoverBoostVoltageActionNode.class);
 
 	private final int boostVoltageRaw;
 	private final boolean not;

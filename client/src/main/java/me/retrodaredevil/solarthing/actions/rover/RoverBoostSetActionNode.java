@@ -15,13 +15,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @JsonTypeName("roverboostset")
-public class RoverBoostActionNode implements ActionNode {
-	private static final Logger LOGGER = LoggerFactory.getLogger(RoverBoostActionNode.class);
+public class RoverBoostSetActionNode implements ActionNode {
+	private static final Logger LOGGER = LoggerFactory.getLogger(RoverBoostSetActionNode.class);
 
 	private final Integer boostVoltageRaw;
 	private final Integer boostTimeMinutes;
 	@JsonCreator
-	public RoverBoostActionNode(@JsonProperty("voltageraw") Integer boostVoltageRaw, @JsonProperty("minutes") Integer boostTimeMinutes) {
+	public RoverBoostSetActionNode(@JsonProperty("voltageraw") Integer boostVoltageRaw, @JsonProperty("minutes") Integer boostTimeMinutes) {
 		this.boostVoltageRaw = boostVoltageRaw;
 		this.boostTimeMinutes = boostTimeMinutes;
 		if (boostVoltageRaw == null && boostTimeMinutes == null) {

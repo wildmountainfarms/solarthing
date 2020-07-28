@@ -2,12 +2,19 @@ package me.retrodaredevil.solarthing.actions.command;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.Actions;
+import me.retrodaredevil.couchdb.CouchProperties;
+import me.retrodaredevil.couchdb.DocumentWrapper;
+import me.retrodaredevil.couchdb.EktorpUtil;
+import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.actions.ActionNode;
 import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.CouchDbEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.SourceIdEnvironment;
 import me.retrodaredevil.solarthing.commands.packets.open.ImmutableRequestCommandPacket;
 import me.retrodaredevil.solarthing.commands.packets.open.RequestCommandPacket;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
@@ -20,6 +27,10 @@ import me.retrodaredevil.solarthing.packets.instance.InstanceTargetPackets;
 import me.retrodaredevil.solarthing.packets.security.ImmutableLargeIntegrityPacket;
 import me.retrodaredevil.solarthing.packets.security.crypto.*;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
+import org.ektorp.CouchDbConnector;
+import org.ektorp.DbAccessException;
+import org.ektorp.impl.StdCouchDbConnector;
+import org.ektorp.impl.StdCouchDbInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +53,7 @@ import java.util.TimeZone;
 
 import static java.util.Objects.requireNonNull;
 
+@JsonTypeName("sendcommand")
 public class SendCommandActionNode implements ActionNode {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SendCommandActionNode.class);
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
@@ -58,18 +70,18 @@ public class SendCommandActionNode implements ActionNode {
 	private final File keyDirectory;
 	private final List<Integer> fragmentIdTargets;
 	private final RequestCommandPacket requestCommandPacket;
-	private final String senderOverride;
+	private final String sender;
 
 	@JsonCreator
 	public SendCommandActionNode(
 			@JsonProperty(value = "directory", required = true) File keyDirectory,
 			@JsonProperty("targets") List<Integer> fragmentIdTargets,
 			@JsonProperty("command") String commandName,
-			@JsonProperty("sender") String senderOverride) {
-		this.senderOverride = senderOverride;
+			@JsonProperty("sender") String sender) {
 		requireNonNull(this.keyDirectory = keyDirectory);
 		requireNonNull(this.fragmentIdTargets = fragmentIdTargets);
 		requestCommandPacket = new ImmutableRequestCommandPacket(commandName);
+		requireNonNull(this.sender = sender);
 	}
 
 	private KeyPair getKeyPair() {
@@ -88,6 +100,7 @@ public class SendCommandActionNode implements ActionNode {
 			}
 			keyPair = KeyUtil.generateKeyPair();
 			try {
+				keyDirectory.mkdirs();
 				Files.write(publicKeyFile.toPath(), keyPair.getPublic().getEncoded(), StandardOpenOption.CREATE);
 				Files.write(privateKeyFile.toPath(), keyPair.getPrivate().getEncoded(), StandardOpenOption.CREATE);
 			} catch (IOException ioException) {
@@ -100,9 +113,15 @@ public class SendCommandActionNode implements ActionNode {
 	@Override
 	public Action createAction(ActionEnvironment actionEnvironment) {
 		KeyPair keyPair = getKeyPair();
-
-		InstanceSourcePacket instanceSourcePacket = InstanceSourcePackets.create("");
+		String sourceId = actionEnvironment.getInjectEnvironment().get(SourceIdEnvironment.class).getSourceId();
+		InstanceSourcePacket instanceSourcePacket = InstanceSourcePackets.create(sourceId);
 		InstanceTargetPacket instanceTargetPacket = InstanceTargetPackets.create(fragmentIdTargets);
+
+		CouchProperties couchProperties = actionEnvironment.getInjectEnvironment().get(CouchDbEnvironment.class).getCouchProperties();
+		CouchDbConnector client = new StdCouchDbConnector(
+				SolarThingConstants.OPEN_UNIQUE_NAME,
+				new StdCouchDbInstance(EktorpUtil.createHttpClient(couchProperties))
+		);
 		return Actions.createRunOnce(() -> {
 			PacketCollection encryptedCollection = PacketCollections.createFromPackets(
 					Arrays.asList(requestCommandPacket, instanceSourcePacket, instanceTargetPacket),
@@ -121,12 +140,6 @@ public class SendCommandActionNode implements ActionNode {
 			} catch (InvalidKeyException | EncryptException e) {
 				throw new RuntimeException(e);
 			}
-			final String sender;
-			try {
-				sender = senderOverride != null ? senderOverride : InetAddress.getLocalHost().getHostName();
-			} catch (UnknownHostException e) {
-				throw new RuntimeException("Unable to get host name! Please declare 'sender' to override fallback", e);
-			}
 			PacketCollection packetCollection = PacketCollections.createFromPackets(
 					Arrays.asList(
 							new ImmutableLargeIntegrityPacket(sender, encrypted, payload),
@@ -134,7 +147,15 @@ public class SendCommandActionNode implements ActionNode {
 					),
 					PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR, TimeZone.getDefault()
 			);
-			// TODO upload to Couch DB
+			DocumentWrapper documentWrapper = new DocumentWrapper(packetCollection.getDbId());
+			documentWrapper.setObject(packetCollection);
+			try {
+				// TODO make this not block (separate thread?)
+				client.createDatabaseIfNotExists();
+				client.create(documentWrapper);
+			} catch (DbAccessException e) {
+				LOGGER.error("Error while uploading document.", e);
+			}
 		});
 	}
 }

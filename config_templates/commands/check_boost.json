@@ -1,0 +1,55 @@
+{
+  "type": "declaration",
+  "main": {
+    "type": "queue",
+    "actions": [
+      {
+        "type": "race",
+        "racers": [
+          [{ "type": "lock", "name": "check_boost"}, { "type": "call", "name": "check"}],
+          [{ "type": "pass" }, { "type": "log", "message": "Something else had a lock on check_boost"}]
+        ]
+      },
+      { "type": "waitms", "wait": 12000 },
+      { "type": "unlock", "name": "check_boost" }
+    ]
+  },
+  "check": {
+    "type": "race",
+    "racers": [
+      [{ "type": "fxoperational", "mode": "eq"}, { "type": "call", "name": "set_equalize"}],
+      [{ "type": "fxoperational", "mode": "eq", "not": true}, { "type": "call", "name": "set_normal"}],
+      [{ "type": "pass" }, { "type": "log", "message": "There must be no FX devices!"}]
+    ]
+  },
+  "set_normal": {
+    "type": "race",
+    "racers": [
+      [{ "type": "roverboostvoltage", "voltageraw": "147", "not": true}, { "type": "call", "name": "set_normal_command"}],
+      [{ "type": "roverboostvoltage", "voltageraw": "147" }, { "type": "log", "message": "Boost voltage is normal!"}],
+      [{ "type": "pass" }, { "type": "log", "message": "Rover not found!"}]
+    ]
+  },
+  "set_equalize": {
+    "type": "race",
+    "racers": [
+      [{ "type": "roverboostvoltage", "voltageraw": "147", "not": true}, { "type": "log", "message": "Already equalizing"}],
+      [{ "type": "roverboostvoltage", "voltageraw": "147" }, { "type": "call", "name": "set_equalize_command"}],
+      [{ "type": "pass" }, { "type": "log", "message": "Rover not found!"}]
+    ]
+  },
+  "set_normal_command": {
+    "type": "sendcommand",
+    "directory": ".data/keys",
+    "targets": [2],
+    "command": "SET BOOST NORMAL",
+    "sender": "nasplex"
+  },
+  "set_equalize_command": {
+    "type": "sendcommand",
+    "directory": ".data/keys",
+    "targets": [2],
+    "command": "SET BOOST EQUALIZE",
+    "sender": "nasplex"
+  }
+}
