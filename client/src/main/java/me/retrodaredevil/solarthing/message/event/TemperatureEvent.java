@@ -35,7 +35,7 @@ public class TemperatureEvent implements MessageEvent {
 		}
 		this.timeoutMillis = Math.round(timeoutMinutes * 60 * 1000);
 		if (temperatureType == null) {
-			this.temperatureType = TemperatureType.EITHER;
+			this.temperatureType = TemperatureType.BATTERY;
 		} else {
 			this.temperatureType = temperatureType;
 		}

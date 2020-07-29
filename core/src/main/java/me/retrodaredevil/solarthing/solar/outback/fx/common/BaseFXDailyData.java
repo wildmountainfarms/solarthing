@@ -20,7 +20,7 @@ public abstract class BaseFXDailyData extends ImmutableFXDailyData implements Su
 		super(
 				dailyData.getAddress(), dailyData.getStartDateMillis(), dailyData.getDailyMinBatteryVoltage(), dailyData.getDailyMaxBatteryVoltage(),
 				dailyData.getInverterKWH(), dailyData.getChargerKWH(), dailyData.getBuyKWH(), dailyData.getSellKWH(), dailyData.getOperationalModeValues(),
-				dailyData.getWarningModeValue(), dailyData.getWarningModeValue(), dailyData.getMiscValue(), dailyData.getACModeValues()
+				dailyData.getErrorModeValue(), dailyData.getWarningModeValue(), dailyData.getMiscValue(), dailyData.getACModeValues()
 		);
 		int address = dailyData.getAddress();
 		int identifierAddress = outbackIdentifier.getAddress();
