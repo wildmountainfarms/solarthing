@@ -42,8 +42,6 @@ interface UnimplementedPVOutputService {
 	// region Team
 	@GET("getteam.jsp")
 	Object getTeam();
-	@GET("jointeam.jsp")
-	Object joinTeam();
 	@GET("leaveteam.jsp")
 	void leaveTeam();
 	// endregion

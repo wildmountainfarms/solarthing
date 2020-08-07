@@ -6,6 +6,16 @@ import time
 from pathlib import Path
 
 
+"""
+Example usage:
+sudo -u solarthing /opt/solarthing/other/rpi/gpio_1wire_reload.py 14 /sys/bus/w1/devices/28-0301a279f5ff/name /sys/bus/w1/devices/28-0301a279ffb2/name
+I recommend using pin 17, but pin 14 works as long as you aren't using it for serial communication
+
+May need to run this:
+sudo apt-get install python3-dev python3-rpi.gpio
+"""
+
+
 def main(args):
     print("Running main args: {}".format(args))
     GPIO.setmode(GPIO.BCM)

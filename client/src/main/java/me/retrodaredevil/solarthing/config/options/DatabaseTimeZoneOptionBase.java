@@ -25,7 +25,7 @@ public abstract class DatabaseTimeZoneOptionBase extends TimeZoneOptionBase impl
 	}
 	@Override
 	public String getSourceId(){
-		return sourceId;
+		return SourceIdValidator.validateSourceId(sourceId);
 	}
 	@Override
 	public String getDefaultSourceId() {

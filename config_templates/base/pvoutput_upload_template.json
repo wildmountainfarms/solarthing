@@ -3,5 +3,6 @@
   "system_id": 100,
   "api_key": "<YOUR API KEY>",
   "database": "../config/couchdb.json",
-  "source": "default"
+  "source": "default",
+  "join_teams": true
 }

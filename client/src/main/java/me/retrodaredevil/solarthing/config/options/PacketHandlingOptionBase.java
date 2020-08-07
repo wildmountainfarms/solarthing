@@ -44,7 +44,7 @@ abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements Pa
 
 	@Override
 	public @NotNull String getSourceId() {
-		return requireNonNull(source);
+		return SourceIdValidator.validateSourceId(source);
 	}
 
 	@Override

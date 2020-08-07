@@ -36,6 +36,9 @@ public class PVOutputUploadProgramOptions extends DatabaseTimeZoneOptionBase imp
 	@JsonProperty("include_export")
 	private boolean includeExport = false;
 
+	@JsonProperty("join_teams")
+	private boolean joinTeams = false;
+
 	@Override
 	public ProgramType getProgramType() {
 		return ProgramType.PVOUTPUT_UPLOAD;
@@ -81,6 +84,10 @@ public class PVOutputUploadProgramOptions extends DatabaseTimeZoneOptionBase imp
 
 	public boolean isIncludeExport() {
 		return includeExport;
+	}
+
+	public boolean isJoinTeams() {
+		return joinTeams;
 	}
 
 	static class IdentifierFragmentObject {

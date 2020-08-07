@@ -33,6 +33,7 @@ import me.retrodaredevil.solarthing.solar.SolarStatusPacket;
 import me.retrodaredevil.solarthing.solar.daily.DailyConfig;
 import me.retrodaredevil.solarthing.solar.extra.SolarExtraPacket;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
+import net.bis5.mattermost.model.Team;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.ektorp.CouchDbInstance;
@@ -233,6 +234,34 @@ public class PVOutputUploadMain {
 			PVOutputUploadProgramOptions options, CouchDbQueryHandler queryHandler,
 			PacketGroupParser statusParser, PVOutputHandler handler, PVOutputService service, TimeZone timeZone
 	) {
+		if (options.isJoinTeams()) {
+			LOGGER.info("Going to join SolarThing team...");
+			Call<String> call = service.joinTeam(new TeamParameters(PVOutputConstants.SOLARTHING_TEAM_ID));
+			LOGGER.debug("Executing call");
+			Response<String> response = null;
+			try {
+				response = call.execute();
+			} catch (IOException e) {
+				LOGGER.error("Exception while executing", e);
+			}
+			if (response != null) {
+				int code = response.code();
+				String message = response.message();
+				if (code == 200) {
+					LOGGER.info("Joined the SolarThing team! Response: " + message);
+				} else if (code == 400) {
+					if (message.contains("already")) {
+						LOGGER.info("Already joined SolarThing team. Response: " + message);
+					} else if (message.contains("must have at least")) {
+						LOGGER.info("We will try joining SolarThing team later once we have more outputs. Response: " + message);
+					} else {
+						LOGGER.error("Error joining SolarThing team! Response: " + message);
+					}
+				} else {
+					LOGGER.error("Unknown error joining SolarThing team! Response: " + message);
+				}
+			}
+		}
 		while(!Thread.currentThread().isInterrupted()){
 			LOGGER.debug("Going to do stuff now.");
 			long now = System.currentTimeMillis();

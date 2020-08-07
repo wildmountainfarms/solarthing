@@ -4,6 +4,7 @@
   "api_key": "<API KEY>",
   "database": "../config/couchdb.json",
   "source": "default",
+  "join_teams": true,
   "time_zone": "US/Mountain",
   "default_fragment": 1,
   "include_undefined_sources": true,

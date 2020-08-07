@@ -6,7 +6,7 @@ buildscript {
         junit5Version = '5.6.2'
         slf4jVersion = '1.7.30'
         log4jVersion = '2.13.3'
-        jacksonVersion = '2.11.0' // 2.11.1 has bug, so we cannot use that. We could use 2.11.2-SNAPSHOT, but we need the jsonSchema, which does not have a snapshot version
+        jacksonVersion = '2.11.2'
         // retrofit is why we need allow-opens. context: https://stackoverflow.com/questions/60915381/retrofit2-maven-project-illegal-reflective-access-warning // https://github.com/square/retrofit/issues/3341
         retrofitVersion = "2.9.0"
         shadowVersion = '5.2.0'
