@@ -1,8 +1,7 @@
 # Quick Start With PVOutput
 If you haven't already, [click here](quickstart.md) to view how to clone this repo and install the service.
 
-**NOTE**: This program is a supplement to either the `mate` or `rover` program and is not set up to get data
-from solar devices.
+**NOTE**: This program is a supplement to other programs (such as `mate` or `rover`) and is not set up to get data from solar devices directly.
 
 Once everything is installed, you're ready to edit the configs. You will cd to the `program` directory.
 ```
@@ -35,6 +34,7 @@ You can view an advanced configuration [here](../../config_templates/base/pvoutp
 ```json5
 {
   // ...
+  "join_teams": true,
   "time_zone": "US/Mountain",
   "default_fragment": 1,
   "include_undefined_sources": true,
@@ -51,6 +51,8 @@ You can view an advanced configuration [here](../../config_templates/base/pvoutp
   }
 }
 ```
+* `join_teams` normally set to true. When true, the program will automatically join the SolarThing team. Keep this
+enabled to be on the SolarThing team! (Defaults to false if not defined)
 * `time_zone` can be used to set the time zone if you want to use a different time zone than the current system time zone.
 * `default_fragment` usually should never be defined. It's only for users who've been using SolarThing since before 2020.
 * `include_undefined_sources` usually should never be defined. It's only for users who've been using SolarThing since before 2020.
@@ -72,7 +74,8 @@ Once your configuration is how you want it, you can go back to the [quickstart](
 #### Why is this a separate program and not a "database"?
 This project is set up this way because it makes future changes easier. If you were to use an advanced feature of
 this project such as fragmented packets, the only way to upload all of your data to pvoutput would be to do it
-in one program instead of two.
+in one program instead of two. And if your charge controller resets in the middle of the day, 
+(maybe your clock is off or you have wind power) the daily kWh generation won't become off.
 
 This means that you can have multiple instances of SolarThing running and compile data from
 each program and upload to PVOutput all at once.
