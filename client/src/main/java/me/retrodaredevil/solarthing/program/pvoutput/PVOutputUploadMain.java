@@ -35,6 +35,7 @@ import me.retrodaredevil.solarthing.solar.extra.SolarExtraPacket;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import net.bis5.mattermost.model.Team;
 import okhttp3.OkHttpClient;
+import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.ektorp.CouchDbInstance;
 import org.ektorp.http.HttpClient;
@@ -236,7 +237,7 @@ public class PVOutputUploadMain {
 	) {
 		if (options.isJoinTeams()) {
 			LOGGER.info("Going to join SolarThing team...");
-			Call<String> call = service.joinTeam(new TeamParameters(PVOutputConstants.SOLARTHING_TEAM_ID));
+			Call<String> call = service.joinTeam(PVOutputConstants.SOLARTHING_TEAM_ID);
 			LOGGER.debug("Executing call");
 			Response<String> response = null;
 			try {
@@ -246,19 +247,30 @@ public class PVOutputUploadMain {
 			}
 			if (response != null) {
 				int code = response.code();
-				String message = response.message();
-				if (code == 200) {
-					LOGGER.info("Joined the SolarThing team! Response: " + message);
-				} else if (code == 400) {
-					if (message.contains("already")) {
-						LOGGER.info("Already joined SolarThing team. Response: " + message);
-					} else if (message.contains("must have at least")) {
-						LOGGER.info("We will try joining SolarThing team later once we have more outputs. Response: " + message);
+				String errorBody;
+				try {
+					ResponseBody responseBody = response.errorBody();
+					if (responseBody != null) {
+						errorBody = responseBody.string();
 					} else {
-						LOGGER.error("Error joining SolarThing team! Response: " + message);
+						errorBody = "null";
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+					errorBody = "exception occurred";
+				}
+				if (code == 200) {
+					LOGGER.info("Joined the SolarThing team! Response: " + response.body());
+				} else if (code == 400) {
+					if (errorBody.contains("already")) {
+						LOGGER.info("Already joined SolarThing team. Response: " + errorBody);
+					} else if (errorBody.contains("must have at least")) {
+						LOGGER.info("We will try joining SolarThing team later once we have more outputs. Response: " + errorBody);
+					} else {
+						LOGGER.error("Error joining SolarThing team! Response: " + errorBody);
 					}
 				} else {
-					LOGGER.error("Unknown error joining SolarThing team! Response: " + message);
+					LOGGER.error("Unknown error joining SolarThing team! Response: " + errorBody);
 				}
 			}
 		}

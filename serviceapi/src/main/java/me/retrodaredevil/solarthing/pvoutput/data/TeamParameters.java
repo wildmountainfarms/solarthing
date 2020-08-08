@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.pvoutput.data;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@Deprecated
 public final class TeamParameters {
 	private final int teamId;
 

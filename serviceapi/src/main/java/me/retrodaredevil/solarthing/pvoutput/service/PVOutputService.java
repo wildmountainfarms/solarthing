@@ -3,11 +3,11 @@ package me.retrodaredevil.solarthing.pvoutput.service;
 import me.retrodaredevil.solarthing.pvoutput.data.AddBatchOutputParameters;
 import me.retrodaredevil.solarthing.pvoutput.data.AddOutputParameters;
 import me.retrodaredevil.solarthing.pvoutput.data.AddStatusParameters;
-import me.retrodaredevil.solarthing.pvoutput.data.TeamParameters;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 
 public interface PVOutputService {
 	// Start Service API // https://pvoutput.org/help.html#api-spec
@@ -19,5 +19,5 @@ public interface PVOutputService {
 	Call<String> addBatchOutput(@Body AddBatchOutputParameters parameters);
 
 	@GET("jointeam.jsp")
-	Call<String> joinTeam(@Body TeamParameters teamParameters);
+	Call<String> joinTeam(@Query("tid") int teamId);
 }
