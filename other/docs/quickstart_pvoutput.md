@@ -69,6 +69,11 @@ enabled to be on the SolarThing team! (Defaults to false if not defined)
 ### I'm ready to use this for real!
 Once your configuration is how you want it, you can go back to the [quickstart](quickstart.md#configuration-continued) to enable and start the service.
 
+### Join our team!
+Here is a link to our team: https://pvoutput.org/listteam.jsp?tid=1528
+
+You can manually join it, or you can set `join_teams` to true to join it!
+
 ---
 
 #### Why is this a separate program and not a "database"?
