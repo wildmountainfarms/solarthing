@@ -1,16 +1,22 @@
 package me.retrodaredevil.solarthing.config.options;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import me.retrodaredevil.solarthing.annotations.NotNull;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.commands.CommandInfo;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public interface CommandOption {
-	List<Command> getDeclaredCommands();
+	@Nullable List<Command> getDeclaredCommandsNullable();
+	default @NotNull List<Command> getDeclaredCommands() {
+		List<Command> commands = getDeclaredCommandsNullable();
+		if (commands == null) {
+			return Collections.emptyList();
+		}
+		return commands;
+	}
 
 	default Map<String, File> getCommandFileMap() {
 		Map<String, File> commandFileMap = new HashMap<>();

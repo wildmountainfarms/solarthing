@@ -37,7 +37,7 @@ public class MateProgramOptions extends PacketHandlingOptionBase implements IOBu
 
 
 	@Override
-	public List<Command> getDeclaredCommands() {
+	public @Nullable List<Command> getDeclaredCommandsNullable() {
 		return commands;
 	}
 

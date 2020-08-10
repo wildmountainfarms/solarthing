@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.config.options;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 
 import java.io.File;
 import java.util.List;
@@ -25,7 +26,7 @@ public class RoverProgramOptions extends RequestProgramOptionsBase implements Ro
 	private List<Command> commands;
 
 	@Override
-	public List<Command> getDeclaredCommands() {
+	public @Nullable List<Command> getDeclaredCommandsNullable() {
 		return commands;
 	}
 
