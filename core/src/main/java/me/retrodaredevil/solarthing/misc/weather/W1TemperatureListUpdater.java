@@ -75,8 +75,8 @@ public class W1TemperatureListUpdater implements PacketListReceiver {
 			LOGGER.warn("Unable to parse. line2=" + line2 + " name=" + name, ex);
 			return;
 		}
-		if (temperatureRaw == 0) { // TODO Sometimes, this is actually accurate data
-			LOGGER.warn("Temperature is exactly 0! name=" + name + " line1: " + line1 + " line2: " + line2);
+		if (temperatureRaw == 0 && line1.contains("crc=00")) { // when it's a bad reading, the crc is 0
+			LOGGER.warn("crc=00! name=" + name + " line1: " + line1 + " line2: " + line2);
 			return;
 		}
 		long timeTaken = System.currentTimeMillis() - startTime;
