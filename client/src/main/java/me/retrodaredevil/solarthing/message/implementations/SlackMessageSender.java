@@ -1,14 +1,20 @@
 package me.retrodaredevil.solarthing.message.implementations;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.slack.api.Slack;
+import com.slack.api.SlackConfig;
 import com.slack.api.methods.SlackApiException;
+import com.slack.api.util.http.SlackHttpClient;
+import com.slack.api.util.http.UserAgentInterceptor;
 import me.retrodaredevil.solarthing.message.MessageSender;
+import okhttp3.OkHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Collections;
 
 @JsonTypeName("slack")
 public class SlackMessageSender implements MessageSender {
@@ -21,8 +27,12 @@ public class SlackMessageSender implements MessageSender {
 	private final String authToken;
 	private final String channelId;
 
+//	private final Slack slack = Slack.getInstance(new SlackConfig(), new SlackHttpClient(new OkHttpClient.Builder()
+//			.addInterceptor(new UserAgentInterceptor(Collections.emptyMap()))
+//			.build()));
 	private final Slack slack = Slack.getInstance();
 
+	@JsonCreator
 	public SlackMessageSender(@JsonProperty("token") String authToken, @JsonProperty("channel_id") String channelId) {
 		this.authToken = authToken;
 		this.channelId = channelId;

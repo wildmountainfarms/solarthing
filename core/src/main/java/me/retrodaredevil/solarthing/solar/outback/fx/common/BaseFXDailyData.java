@@ -12,6 +12,7 @@ public abstract class BaseFXDailyData extends ImmutableFXDailyData implements Su
 
 	private final KnownSupplementaryIdentifier<OutbackIdentifier> supplementaryIdentifier;
 
+	@SuppressWarnings("deprecation")
 	public BaseFXDailyData(
 			DocumentedPacketType packetType,
 			FXDailyData dailyData,

@@ -3,7 +3,8 @@ description = """SolarThing"""
 
 buildscript {
     ext {
-        junit5Version = '5.7.0'
+//        junit5Version = '5.7.0' for some reason the build doesn't like this version. We'll figure out why later.
+        junit5Version = '5.6.2'
         slf4jVersion = '1.7.30'
         log4jVersion = '2.13.3'
         jacksonVersion = '2.11.2'

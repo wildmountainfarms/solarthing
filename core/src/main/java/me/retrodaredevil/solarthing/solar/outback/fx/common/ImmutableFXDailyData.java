@@ -89,6 +89,7 @@ public class ImmutableFXDailyData implements FXDailyData {
 	@Override public float getSellKWH() { return sellKWH; }
 
 	@Override public @NotNull Collection<@NotNull Integer> getOperationalModeValues() { return operationalModeValues; }
+	@Deprecated
 	@Override public int getErrorModeValue() { return errorModeValue; }
 	@Override public int getWarningModeValue() { return warningModeValue; }
 	@Override public int getMiscValue() { return miscValue; }
