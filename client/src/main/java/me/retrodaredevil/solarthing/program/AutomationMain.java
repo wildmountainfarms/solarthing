@@ -81,7 +81,7 @@ public class AutomationMain {
 					FragmentedPacketGroup packetGroup = packetGroups.get(packetGroups.size() - 1);
 					latestPacketGroupReference[0] = packetGroup;
 					if (last != null && last.getDateMillis() >= packetGroup.getDateMillis()) {
-						LOGGER.warn("No new packets! last date=" + last.getDateMillis() + " current packet date=" + packetGroup.getDateMillis());
+						LOGGER.debug("No new packets! last date=" + last.getDateMillis() + " current packet date=" + packetGroup.getDateMillis());
 					} else {
 						for (ActionNode actionNode : actionNodes) {
 							multiplexer.add(actionNode.createAction(new ActionEnvironment(variableEnvironment, new VariableEnvironment(), injectEnvironment)));

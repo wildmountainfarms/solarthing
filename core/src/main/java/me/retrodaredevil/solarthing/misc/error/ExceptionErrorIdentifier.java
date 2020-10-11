@@ -26,7 +26,7 @@ public class ExceptionErrorIdentifier implements Identifier {
 
 	@Override
 	public @NotNull String getRepresentation() {
-		return "ExceptionIdentifier(exceptionCatchLocationIdentifier='" + exceptionCatchLocationIdentifier + "', exceptionInstanceIdentifier='" + exceptionInstanceIdentifier + "')";
+		return "ExceptionErrorIdentifier(exceptionCatchLocationIdentifier='" + exceptionCatchLocationIdentifier + "', exceptionInstanceIdentifier='" + exceptionInstanceIdentifier + "')";
 	}
 	@Override
 	public String toString() {

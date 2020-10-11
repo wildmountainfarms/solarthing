@@ -3,14 +3,15 @@ description = """SolarThing"""
 
 buildscript {
     ext {
-//        junit5Version = '5.7.0' for some reason the build doesn't like this version. We'll figure out why later.
-        junit5Version = '5.6.2'
+        junit5Version = '5.7.0'
+        junit5PlatformVersion = '1.7.0'
+
         slf4jVersion = '1.7.30'
         log4jVersion = '2.13.3'
-        jacksonVersion = '2.11.2'
+        jacksonVersion = '2.11.3'
         // retrofit is why we need allow-opens. context: https://stackoverflow.com/questions/60915381/retrofit2-maven-project-illegal-reflective-access-warning // https://github.com/square/retrofit/issues/3341
         retrofitVersion = "2.9.0"
-        shadowVersion = '5.2.0'
+        shadowVersion = '6.1.0'
         ioLibVersion = '2.1.0'
     }
 }
@@ -36,7 +37,9 @@ subprojects {
     dependencies {
         testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit5Version
         testImplementation "org.junit.jupiter:junit-jupiter-params:$junit5Version"
-        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit5Version
+        testImplementation "org.junit.platform:junit-platform-commons:$junit5PlatformVersion"
+        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: junit5Version
+
         // https://mvnrepository.com/artifact/com.google.code.findbugs/jsr305
         implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
         implementation 'org.jetbrains:annotations:15.0'
@@ -79,6 +82,6 @@ project(":graphql"){
 }
 
 wrapper {
-    gradleVersion = '6.5'
+    gradleVersion = '6.6.1'
     distributionType = Wrapper.DistributionType.ALL
 }

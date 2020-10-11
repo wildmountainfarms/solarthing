@@ -30,7 +30,8 @@ public class MultiPacketConverter implements JsonPacketParser {
 	public @NotNull DocumentedPacket parsePacket(JsonNode packetNode) throws PacketParseException {
 		try {
 			return mapper.convertValue(packetNode, DocumentedPacket.class);
-		} catch (IllegalArgumentException ex){
+		} catch (IllegalArgumentException | NoClassDefFoundError ex){
+			// We catch NoClassDefFoundError because that appeared once, so we'll be prepared next time
 			throw new PacketParseException(ex);
 		}
 	}

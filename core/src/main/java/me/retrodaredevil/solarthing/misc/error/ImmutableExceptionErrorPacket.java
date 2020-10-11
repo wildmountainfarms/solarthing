@@ -35,7 +35,7 @@ public class ImmutableExceptionErrorPacket implements ExceptionErrorPacket {
 	}
 
 	@Override
-	public @NotNull Identifier getIdentifier() {
+	public @NotNull ExceptionErrorIdentifier getIdentifier() {
 		return identifier;
 	}
 
