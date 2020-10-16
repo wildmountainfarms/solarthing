@@ -43,7 +43,7 @@ public class W1TemperatureListUpdater implements PacketListReceiver {
 			LOGGER.error("name file does not exist. file: " + nameFile);
 			return;
 		} catch (IOException e) {
-			LOGGER.error("Could not read name file", e);
+			LOGGER.debug("Could not read name file", e); // debug because this is so common
 			return;
 		}
 		final List<String> lines;
@@ -63,7 +63,7 @@ public class W1TemperatureListUpdater implements PacketListReceiver {
 		String[] split1 = line1.split(" ");
 		String message = split1[split1.length - 1];
 		if (!"YES".equals(message)) {
-			LOGGER.warn("Unsuccessful message: " + message + ". name=" + name);
+			LOGGER.debug("Unsuccessful message: " + message + ". name=" + name); // debug since this is so common
 			return;
 		}
 		String[] split2 = line2.split("=");
@@ -76,7 +76,7 @@ public class W1TemperatureListUpdater implements PacketListReceiver {
 			return;
 		}
 		if (temperatureRaw == 0 && line1.contains("crc=00")) { // when it's a bad reading, the crc is 0
-			LOGGER.warn("crc=00! name=" + name + " line1: " + line1 + " line2: " + line2);
+			LOGGER.debug("crc=00! name=" + name + " line1: " + line1 + " line2: " + line2); // debug since this is so common
 			return;
 		}
 		long timeTaken = System.currentTimeMillis() - startTime;
