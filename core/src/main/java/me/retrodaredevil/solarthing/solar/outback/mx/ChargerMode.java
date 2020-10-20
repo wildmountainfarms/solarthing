@@ -9,7 +9,7 @@ import me.retrodaredevil.solarthing.packets.CodeMode;
 @SuppressWarnings("unused")
 public enum ChargerMode implements CodeMode {
 	/**
-	 * Not changing the battery
+	 * Not charging the battery
 	 */
 	SILENT(0, "Silent"),
 	/**
