@@ -1,5 +1,5 @@
 {
   "type": "slack",
-  "token": "<YOUR BOT'S TOKEN HERE>",
-  "channel_name": "<CHANNEL NAME>"
+  "token": "<YOUR BOT'S TOKEN HERE ex: xoxb-...-...-... >",
+  "channel_id": "<CHANNEL ID>"
 }

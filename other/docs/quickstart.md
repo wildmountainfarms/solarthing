@@ -36,7 +36,7 @@ You will have to adjust the configuration to your needs and based on the type of
 
 [PVOutput Quickstart](quickstart_pvoutput.md) - uploads to PVOutput (requires CouchDB and Mate or Rover program)
 
-[Message Quickstart](quickstart_message.md) - Mattermost bot for notifications (requires CouchDB and Mate or Rover program)
+[Message Quickstart](quickstart_message.md) - Slack or Mattermost bot for notifications (requires CouchDB and Mate or Rover program)
 
 [Request Quickstart](quickstart_request.md) - Upload temperature sensor data
 
