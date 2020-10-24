@@ -22,6 +22,7 @@ import me.retrodaredevil.solarthing.solar.outback.fx.charge.FXChargingSettings;
 import me.retrodaredevil.solarthing.solar.outback.fx.charge.FXChargingStateHandler;
 import me.retrodaredevil.solarthing.solar.outback.fx.charge.ImmutableFXChargingPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.meta.FXChargingSettingsPacket;
+import me.retrodaredevil.solarthing.solar.outback.fx.meta.FXChargingTemperatureAdjustPacket;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
 
 import java.util.ArrayList;
@@ -38,15 +39,14 @@ public class SolarThingGraphQLFXService {
 	public List<DataNode<FXChargingPacket>> queryFXCharging(
 			@GraphQLArgument(name = "from") long from, @GraphQLArgument(name = "to") long to,
 			@GraphQLArgument(name = "fragmentId") int fragmentId){
-		/*
-		TODO: We return null a couple of times in this method. It may be better to throw an exception so the caller knows why something failed
-		 */
 		MetaDatabase metaDatabase = simpleQueryHandler.queryMeta();
 		FXChargingSettingsPacket fxChargingSettingsPacket = null;
+		FXChargingTemperatureAdjustPacket fxChargingTemperatureAdjustPacket = null;
 		for (TargetedMetaPacket targetedMetaPacket : metaDatabase.getMeta(to, fragmentId)) {
 			if (targetedMetaPacket.getPacketType() == TargetedMetaPacketType.FX_CHARGING_SETTINGS) {
 				fxChargingSettingsPacket = (FXChargingSettingsPacket) targetedMetaPacket;
-				break;
+			} else if (targetedMetaPacket.getPacketType() == TargetedMetaPacketType.FX_CHARGING_TEMPERATURE_ADJUST) {
+				fxChargingTemperatureAdjustPacket = (FXChargingTemperatureAdjustPacket) targetedMetaPacket;
 			}
 		}
 		if (fxChargingSettingsPacket == null) {
@@ -90,6 +90,7 @@ public class SolarThingGraphQLFXService {
 			if (temperature == null) {
 				continue; // we need temperature data for accurate results // TODO add option for systems that don't use temperature compensation
 			}
+			temperature += fxChargingTemperatureAdjustPacket == null ? 0 : fxChargingTemperatureAdjustPacket.getTemperatureAdjustCelsius();
 			FXStatusPacket fx = OutbackUtil.getMasterFX(fxPackets);
 			if (fx == null) {
 				continue;

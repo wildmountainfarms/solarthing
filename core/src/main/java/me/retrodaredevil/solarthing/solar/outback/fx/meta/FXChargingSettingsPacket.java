@@ -13,14 +13,18 @@ import me.retrodaredevil.solarthing.solar.outback.fx.charge.FXChargingSettings;
 @JsonTypeName("FX_CHARGING_SETTINGS")
 public class FXChargingSettingsPacket implements TargetedMetaPacket {
 	private final FXChargingSettings fxChargingSettings;
+	private final int temperatureAdjustCelsius;
 
 	@JsonCreator
-	public FXChargingSettingsPacket(@JsonProperty(value = "settings", required = true) Settings settings) {
+	public FXChargingSettingsPacket(
+			@JsonProperty(value = "settings", required = true) Settings settings,
+			@JsonProperty("temperatureAdjustCelsius") Integer temperatureAdjustCelsius) {
 		this.fxChargingSettings = new FXChargingSettings(
 				settings.rebulkVoltage, settings.absorbVoltage, Math.round(settings.absorbTimeHours * 60 * 60 * 1000),
 				settings.floatVoltage, Math.round(settings.floatTimeHours * 60 * 60 * 1000),
 				settings.refloatVoltage, settings.equalizeVoltage, Math.round(settings.equalizeTimeHours * 60 * 60 * 1000)
 		);
+		this.temperatureAdjustCelsius = temperatureAdjustCelsius == null ? 0 : temperatureAdjustCelsius;
 	}
 
 	@Override
@@ -30,6 +34,17 @@ public class FXChargingSettingsPacket implements TargetedMetaPacket {
 
 	public FXChargingSettings getFXChargingSettings() {
 		return fxChargingSettings;
+	}
+
+	/**
+	 * If the outback sensor is directly being used or the sensor
+	 * being used to read the temperature is the same as the outback sensor, this should be 0.
+	 *
+	 * @return The temperature in celsius to add to the reading of the sensor being used to measure the battery temperature. When this value is
+	 * added to the read value, it should be close to the outback temperature sensor reading.
+	 */
+	public int getTemperatureAdjustCelsius() {
+		return temperatureAdjustCelsius;
 	}
 
 
