@@ -6,6 +6,7 @@ import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.graphql.SimpleQueryHandler;
 import me.retrodaredevil.solarthing.graphql.packets.*;
+import me.retrodaredevil.solarthing.meta.*;
 import me.retrodaredevil.solarthing.misc.device.CpuTemperaturePacket;
 import me.retrodaredevil.solarthing.misc.weather.TemperaturePacket;
 import me.retrodaredevil.solarthing.packets.Packet;
@@ -23,6 +24,7 @@ import me.retrodaredevil.solarthing.solar.outback.fx.event.FXACModeChangePacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.event.FXAuxStateChangePacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.event.FXOperationalModeChangePacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.extra.DailyFXPacket;
+import me.retrodaredevil.solarthing.solar.outback.fx.meta.FXChargingTemperatureAdjustPacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.event.MXAuxModeChangePacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.event.MXChargerModeChangePacket;
@@ -47,7 +49,7 @@ public class SolarThingGraphQLService {
 			@GraphQLArgument(name = "from") long from, @GraphQLArgument(name = "to") long to,
 			@GraphQLArgument(name = "sourceId") @Nullable String sourceId){
 		List<? extends InstancePacketGroup> packets = simpleQueryHandler.queryStatus(from, to, sourceId);
-		return new SolarThingStatusQuery(new BasicPacketGetter(packets, PacketFilter.KEEP_ALL), simpleQueryHandler.sortPackets(packets, sourceId));
+		return new SolarThingStatusQuery(new BasicPacketGetter(packets, PacketFilter.KEEP_ALL), simpleQueryHandler.sortPackets(packets, sourceId), simpleQueryHandler);
 	}
 	@GraphQLQuery
 	public SolarThingStatusQuery queryStatusLast(
@@ -58,7 +60,7 @@ public class SolarThingGraphQLService {
 		for(List<InstancePacketGroup> packetGroups : PacketGroups.mapFragments(packets).values()) {
 			lastPackets.add(packetGroups.get(packetGroups.size() - 1));
 		}
-		return new SolarThingStatusQuery(new ReversedPacketGetter(new BasicPacketGetter(lastPackets, PacketFilter.KEEP_ALL), Boolean.TRUE.equals(reversed)), simpleQueryHandler.sortPackets(lastPackets, sourceId));
+		return new SolarThingStatusQuery(new ReversedPacketGetter(new BasicPacketGetter(lastPackets, PacketFilter.KEEP_ALL), Boolean.TRUE.equals(reversed)), simpleQueryHandler.sortPackets(lastPackets, sourceId), simpleQueryHandler);
 	}
 	@GraphQLQuery
 	public SolarThingEventQuery queryEvent(
@@ -94,10 +96,12 @@ public class SolarThingGraphQLService {
 	public static class SolarThingStatusQuery {
 		private final PacketGetter packetGetter;
 		private final List<? extends FragmentedPacketGroup> sortedPackets;
+		private final SimpleQueryHandler simpleQueryHandler;
 
-		public SolarThingStatusQuery(PacketGetter packetGetter, List<? extends FragmentedPacketGroup> sortedPackets) {
+		public SolarThingStatusQuery(PacketGetter packetGetter, List<? extends FragmentedPacketGroup> sortedPackets, SimpleQueryHandler simpleQueryHandler) {
 			this.packetGetter = packetGetter;
 			this.sortedPackets = sortedPackets;
+			this.simpleQueryHandler = simpleQueryHandler;
 		}
 
 		@GraphQLQuery
@@ -144,6 +148,20 @@ public class SolarThingGraphQLService {
 
 		@GraphQLQuery
 		public @NotNull List<@NotNull DataNode<Float>> batteryVoltageTemperatureCompensated() {
+			MetaDatabase metaDatabase = simpleQueryHandler.queryMeta();
+			FXChargingTemperatureAdjustPacket fxChargingTemperatureAdjustPacket = null;
+			for (BasicMetaPacket basicMetaPacket : metaDatabase.getMeta(sortedPackets.get(sortedPackets.size() - 1).getDateMillis())) {
+				if (basicMetaPacket instanceof TargetMetaPacket) {
+					TargetMetaPacket targetMetaPacket = (TargetMetaPacket) basicMetaPacket;
+					for (TargetedMetaPacket targetedMetaPacket : targetMetaPacket.getPackets()) {
+						if (targetedMetaPacket.getPacketType() == TargetedMetaPacketType.FX_CHARGING_TEMPERATURE_ADJUST) {
+							fxChargingTemperatureAdjustPacket = (FXChargingTemperatureAdjustPacket) targetedMetaPacket;
+							break; // just use the first one, we don't care which fragment it belongs to
+						}
+					}
+				}
+			}
+
 			List<DataNode<Float>> r = new ArrayList<>();
 			for (FragmentedPacketGroup packetGroup : sortedPackets) {
 				RoverStatusPacket rover = null;
@@ -155,7 +173,7 @@ public class SolarThingGraphQLService {
 				if (rover == null) {
 					continue;
 				}
-				int temperatureCelsius = rover.getBatteryTemperatureCelsius();
+				int temperatureCelsius = rover.getBatteryTemperatureCelsius() + (fxChargingTemperatureAdjustPacket == null ? 0 : fxChargingTemperatureAdjustPacket.getTemperatureAdjustCelsius());
 				for (Packet packet : packetGroup.getPackets()) {
 					if (packet instanceof BatteryVoltage) {
 						int fragmentId = packetGroup.getFragmentId(packet);
