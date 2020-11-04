@@ -19,7 +19,7 @@ fi
 
 # Add user
 if ! id -u solarthing >/dev/null 2>&1; then
-  useradd -r -g solarthing -G dialout,tty,video,gpio solarthing 2>/dev/null # create user with correct groups
+  useradd -r -g solarthing -G dialout,tty,video solarthing 2>/dev/null # create user with correct groups
   if ! id -u solarthing >/dev/null 2>&1; then
     echo Unable to create user
     exit 1
@@ -27,7 +27,8 @@ if ! id -u solarthing >/dev/null 2>&1; then
   passwd -l solarthing || (echo Could not lock solarthing passwd; exit 1)
 fi
 # Add user to groups
-usermod -a -G dialout,tty,video,gpio solarthing || exit 1 # add groups to user just to make sure they have all needed groups
+usermod -a -G dialout,tty,video solarthing || exit 1 # add groups to user just to make sure they have all needed groups
+usermod -a -G gpio solarthing 2>/dev/null && echo Added solarthing to gpio || echo No gpio group
 # dialout and tty is for serial port access
 # video is for 'vcgencmd' command
 

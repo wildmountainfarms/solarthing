@@ -15,5 +15,7 @@ If you don't have permission to update, it is recommended you run:
 sudo other/linux/create_user.sh
 sudo other/linux/update_perms.sh
 sudo usermod -a -G solarthing,dialout,tty,video,gpio $USER
+# Or use this if you don't need the gpio (if your system doesn't have the gpio group)
+sudo usermod -a -G solarthing,dialout,tty,video $USER
 ```
 This should have already been run if you installed SolarThing using the one line command.
