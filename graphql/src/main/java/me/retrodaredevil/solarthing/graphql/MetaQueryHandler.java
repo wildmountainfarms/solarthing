@@ -24,6 +24,10 @@ public class MetaQueryHandler {
 		} catch(DbAccessException e) {
 			throw new RuntimeException(e); // if we move this to a more general place such as the core module, we should make this a checked exception
 		}
+		// TODO create custom exception for this stuff
+		if (jsonNode == null) {
+			throw new RuntimeException("Could not find meta document! You should add a meta document even if you aren't going to use it so it can be cached!");
+		}
 		try {
 			return objectMapper.treeToValue(jsonNode, RootMetaPacket.class);
 		} catch (JsonProcessingException e) {

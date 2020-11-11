@@ -7,10 +7,7 @@ import me.retrodaredevil.couchdb.EktorpUtil;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.couchdb.CouchDbQueryHandler;
 import me.retrodaredevil.solarthing.couchdb.SolarThingCouchDb;
-import me.retrodaredevil.solarthing.meta.DefaultMetaDatabase;
-import me.retrodaredevil.solarthing.meta.DeviceInfoPacket;
-import me.retrodaredevil.solarthing.meta.MetaDatabase;
-import me.retrodaredevil.solarthing.meta.TargetMetaPacket;
+import me.retrodaredevil.solarthing.meta.*;
 import me.retrodaredevil.solarthing.misc.common.meta.DataMetaPacket;
 import me.retrodaredevil.solarthing.misc.device.DevicePacket;
 import me.retrodaredevil.solarthing.misc.weather.WeatherPacket;
@@ -122,7 +119,11 @@ public class SimpleQueryHandler {
 	}
 
 	public MetaDatabase queryMeta() {
-		return new DefaultMetaDatabase(metaQueryHandler.query());
+		try {
+			return new DefaultMetaDatabase(metaQueryHandler.query());
+		} catch(Exception e) {
+			return EmptyMetaDatabase.getInstance();
+		}
 	}
 
 	public DefaultInstanceOptions getDefaultInstanceOptions() {
