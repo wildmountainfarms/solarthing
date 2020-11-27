@@ -13,6 +13,7 @@ public final class JacksonUtil {
 //						.with(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES) this really means fail on undefined, not null
 						.with(DeserializationFeature.FAIL_ON_READING_DUP_TREE_KEY)
 		);
+		mapper.findAndRegisterModules(); // this is just plain useful. In serviceapi we depend on the JavaTimeModule, so this will auto add it if it is there.
 		return mapper;
 	}
 	public static ObjectMapper defaultMapper(){

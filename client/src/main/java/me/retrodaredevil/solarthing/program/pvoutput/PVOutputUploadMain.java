@@ -26,14 +26,13 @@ import me.retrodaredevil.solarthing.program.SolarMain;
 import me.retrodaredevil.solarthing.pvoutput.CsvUtil;
 import me.retrodaredevil.solarthing.pvoutput.SimpleDate;
 import me.retrodaredevil.solarthing.pvoutput.data.*;
-import me.retrodaredevil.solarthing.pvoutput.service.OkHttpUtil;
+import me.retrodaredevil.solarthing.pvoutput.service.PVOutputOkHttpUtil;
 import me.retrodaredevil.solarthing.pvoutput.service.PVOutputService;
-import me.retrodaredevil.solarthing.pvoutput.service.RetrofitUtil;
+import me.retrodaredevil.solarthing.pvoutput.service.PVOutputRetrofitUtil;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacket;
 import me.retrodaredevil.solarthing.solar.daily.DailyConfig;
 import me.retrodaredevil.solarthing.solar.extra.SolarExtraPacket;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
-import net.bis5.mattermost.model.Team;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -83,10 +82,10 @@ public class PVOutputUploadMain {
 				MultiPacketConverter.createFrom(MAPPER, SolarStatusPacket.class, SolarExtraPacket.class, DevicePacket.class, ErrorPacket.class, WeatherPacket.class, InstancePacket.class)
 		));
 
-		OkHttpClient client = OkHttpUtil.configure(new OkHttpClient.Builder(), options.getApiKey(), options.getSystemId())
+		OkHttpClient client = PVOutputOkHttpUtil.configure(new OkHttpClient.Builder(), options.getApiKey(), options.getSystemId())
 				.addInterceptor(new HttpLoggingInterceptor(LOGGER::debug).setLevel(HttpLoggingInterceptor.Level.BASIC))
 				.build();
-		Retrofit retrofit = RetrofitUtil.defaultBuilder().client(client).build();
+		Retrofit retrofit = PVOutputRetrofitUtil.defaultBuilder().client(client).build();
 		PVOutputService service = retrofit.create(PVOutputService.class);
 		PVOutputHandler handler = new PVOutputHandler(timeZone, options.getRequiredIdentifierMap(), options.getVoltageIdentifierFragmentMatcher(), options.getTemperatureIdentifierFragmentMatcher());
 		if(extraArgs.length >= 2) {

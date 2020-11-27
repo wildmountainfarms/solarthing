@@ -1,9 +1,9 @@
 package me.retrodaredevil.solarthing.pvoutput;
 
 import me.retrodaredevil.solarthing.pvoutput.data.AddOutputParametersBuilder;
-import me.retrodaredevil.solarthing.pvoutput.service.OkHttpUtil;
+import me.retrodaredevil.solarthing.pvoutput.service.PVOutputOkHttpUtil;
 import me.retrodaredevil.solarthing.pvoutput.service.PVOutputService;
-import me.retrodaredevil.solarthing.pvoutput.service.RetrofitUtil;
+import me.retrodaredevil.solarthing.pvoutput.service.PVOutputRetrofitUtil;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
@@ -14,7 +14,7 @@ import java.io.IOException;
 
 public class UploadTest {
 	private static void testRetrofit(OkHttpClient client) throws IOException {
-		Retrofit retrofit = RetrofitUtil.defaultBuilder()
+		Retrofit retrofit = PVOutputRetrofitUtil.defaultBuilder()
 				.client(client)
 				.build();
 		PVOutputService service = retrofit.create(PVOutputService.class);
@@ -27,7 +27,7 @@ public class UploadTest {
 		System.out.println(response);
 	}
 	public static void main(String[] args) throws IOException {
-		OkHttpClient client = OkHttpUtil.configure(new OkHttpClient.Builder(), "", 72206)
+		OkHttpClient client = PVOutputOkHttpUtil.configure(new OkHttpClient.Builder(), "", 72206)
 				.addInterceptor(new HttpLoggingInterceptor(System.out::println).setLevel(HttpLoggingInterceptor.Level.BODY))
 				.build();
 		testRetrofit(client);
