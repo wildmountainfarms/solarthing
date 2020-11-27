@@ -27,6 +27,7 @@ public class UploadTest {
 		System.out.println(result.body());
 	}
 	public static void main(String[] args) throws IOException {
+		// lmao yeah don't worry this token doesn't work anymore
 		String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3N2VhNzc4MTZkYTE0ZWEwYTY0MDljM2FkNmRiNGQ0MyIsImlhdCI6MTYwNjQ0NTA1OSwiZXhwIjoxOTIxODA1MDU5fQ.x3zQeH3JkybXx-y1Kn0KvSxoDCVXINyI6GqWc6yNmMQ";
 		OkHttpClient client = HomeAssistantOkHttpUtil.configure(new OkHttpClient.Builder(), token)
 				.addInterceptor(new HttpLoggingInterceptor(System.out::println).setLevel(HttpLoggingInterceptor.Level.BODY))

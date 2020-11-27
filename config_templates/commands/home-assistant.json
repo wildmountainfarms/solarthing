@@ -1,0 +1,5 @@
+{
+  "type": "homeassistant",
+  "url": "http://192.168.1.210:8123",
+  "token": "<TOKEN>"
+}

@@ -11,4 +11,8 @@ public interface HomeAssistantSensorInfo extends HomeAssistantSensorState {
 	Instant getLastChanged();
 	Instant getLastUpdated();
 	Map<String, String> getContext();
+
+	default boolean isBinary() {
+		return getEntityId().startsWith("binary_sensor.");
+	}
 }

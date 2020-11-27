@@ -7,6 +7,7 @@
 * Make CouchDB and InfluxDB database configuration warn when setting unused values
 * Make sure the latest packet handler is really the latest. (Aux On has been frequently sent twice with the generator shutoff)
 * Send packet when mate serial port hasn't output data for 30 seconds
+* Create Dockerfile and example docker-compose file
   
 ### Android TODO
 * Notification for when FXs are in EQ, but any MX is in absorb or float

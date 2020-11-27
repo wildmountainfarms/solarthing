@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.solarthing.actions.command.SendCommandActionNode;
 import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
+import me.retrodaredevil.solarthing.actions.homeassistant.HomeAssistantActionNode;
 import me.retrodaredevil.solarthing.actions.mate.*;
 import me.retrodaredevil.solarthing.actions.rover.RoverBoostSetActionNode;
 import me.retrodaredevil.solarthing.actions.rover.RoverBoostVoltageActionNode;
@@ -32,6 +33,8 @@ import me.retrodaredevil.solarthing.actions.rover.RoverLoadActionNode;
 		@JsonSubTypes.Type(RoverBoostVoltageActionNode.class),
 
 		@JsonSubTypes.Type(SendCommandActionNode.class),
+
+		@JsonSubTypes.Type(HomeAssistantActionNode.class),
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
 public interface ActionNode {

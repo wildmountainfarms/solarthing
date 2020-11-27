@@ -34,7 +34,9 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
-public class AutomationMain {
+public final class AutomationMain {
+	private AutomationMain() { throw new UnsupportedOperationException(); }
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(AutomationMain.class);
 	private static final ObjectMapper CONFIG_MAPPER = JacksonUtil.defaultMapper();
 	private static final ObjectMapper PARSE_MAPPER = JacksonUtil.lenientMapper(JacksonUtil.defaultMapper());
