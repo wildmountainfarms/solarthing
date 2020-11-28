@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.util;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 public final class JacksonUtil {
 	private JacksonUtil(){ throw new UnsupportedOperationException(); }
@@ -12,6 +13,11 @@ public final class JacksonUtil {
 						.with(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE)
 //						.with(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES) this really means fail on undefined, not null
 						.with(DeserializationFeature.FAIL_ON_READING_DUP_TREE_KEY)
+		);
+		mapper.setConfig(
+				mapper.getSerializationConfig()
+						.without(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS) // for things we want to be represented numerically, we usually use numeric types, otherwise use ISO-8601
+						.without(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS) // durations should be written with ISO-8601
 		);
 		mapper.findAndRegisterModules(); // this is just plain useful. In serviceapi we depend on the JavaTimeModule, so this will auto add it if it is there.
 		return mapper;
