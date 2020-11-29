@@ -10,6 +10,7 @@ import me.retrodaredevil.solarthing.actions.mate.*;
 import me.retrodaredevil.solarthing.actions.rover.RoverBoostSetActionNode;
 import me.retrodaredevil.solarthing.actions.rover.RoverBoostVoltageActionNode;
 import me.retrodaredevil.solarthing.actions.rover.RoverLoadActionNode;
+import me.retrodaredevil.solarthing.actions.solcast.SolcastActionNode;
 
 @JsonSubTypes({
 		@JsonSubTypes.Type(QueueActionNode.class),
@@ -35,6 +36,7 @@ import me.retrodaredevil.solarthing.actions.rover.RoverLoadActionNode;
 		@JsonSubTypes.Type(SendCommandActionNode.class),
 
 		@JsonSubTypes.Type(HomeAssistantActionNode.class),
+		@JsonSubTypes.Type(SolcastActionNode.class),
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
 public interface ActionNode {

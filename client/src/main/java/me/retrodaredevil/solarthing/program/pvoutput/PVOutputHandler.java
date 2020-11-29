@@ -13,6 +13,7 @@ import me.retrodaredevil.solarthing.pvoutput.SimpleTime;
 import me.retrodaredevil.solarthing.pvoutput.data.AddOutputParametersBuilder;
 import me.retrodaredevil.solarthing.pvoutput.data.AddStatusParameters;
 import me.retrodaredevil.solarthing.pvoutput.data.AddStatusParametersBuilder;
+import me.retrodaredevil.solarthing.solar.PowerUtil;
 import me.retrodaredevil.solarthing.solar.common.PVCurrentAndVoltage;
 import me.retrodaredevil.solarthing.solar.daily.DailyCalc;
 import me.retrodaredevil.solarthing.solar.daily.DailyConfig;
@@ -113,33 +114,9 @@ public class PVOutputHandler {
 		return new AddStatusParametersBuilder(date, time);
 	}
 	private static AddStatusParametersBuilder setStatusPowerValues(AddStatusParametersBuilder builder, PacketGroup latestPacketGroup){
-		Integer generatingW = null;
-		Integer usingW = null;
-		for(Packet packet : latestPacketGroup.getPackets()){
-			if(packet instanceof MXStatusPacket){
-				if (generatingW == null) {
-					generatingW = 0;
-				}
-				generatingW += ((MXStatusPacket) packet).getPVWattage();
-			} else if(packet instanceof FXStatusPacket){
-				if (usingW == null) {
-					usingW = 0;
-				}
-				usingW += ((FXStatusPacket) packet).getPowerUsageWattage();
-			} else if(packet instanceof RoverStatusPacket){
-				if (generatingW == null) {
-					generatingW = 0;
-				}
-				if (usingW == null) {
-					usingW = 0;
-				}
-				generatingW += ((RoverStatusPacket) packet).getPVWattage().intValue();
-				usingW += ((RoverStatusPacket) packet).getLoadPower();
-			}
-		}
-
-		return builder.setPowerGeneration(generatingW)
-				.setPowerConsumption(usingW);
+		PowerUtil.Data data = PowerUtil.getPowerData(latestPacketGroup);
+		return builder.setPowerGeneration(data.getGeneratingWatts())
+				.setPowerConsumption(data.getConsumingWatts());
 	}
 	private static AddStatusParametersBuilder setStatusEnergyValues(AddStatusParametersBuilder builder, List<FragmentedPacketGroup> packetGroups, DailyConfig dailyConfig) {
 		Map<IdentifierFragment, List<DailyPair<MXStatusPacket>>> mxMap = DailyUtil.getDailyPairs(DailyUtil.mapPackets(MXStatusPacket.class, packetGroups), dailyConfig);

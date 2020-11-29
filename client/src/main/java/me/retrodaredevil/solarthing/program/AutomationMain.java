@@ -45,9 +45,9 @@ public final class AutomationMain {
 		for (File file : options.getActionNodeFiles()) {
 			actionNodes.add(CONFIG_MAPPER.readValue(file, ActionNode.class));
 		}
-		return startAutomation(actionNodes, options);
+		return startAutomation(actionNodes, options, options.getPeriodMillis());
 	}
-	public static int startAutomation(List<ActionNode> actionNodes, DatabaseTimeZoneOptionBase options) {
+	public static int startAutomation(List<ActionNode> actionNodes, DatabaseTimeZoneOptionBase options, long periodMillis) {
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Starting automation program.");
 		CouchProperties couchProperties = SolarMain.createCouchProperties(options);
 		CouchDbQueryHandler queryHandler = SolarMain.createCouchDbQueryHandler(couchProperties);
@@ -95,7 +95,7 @@ public final class AutomationMain {
 				}
 			}
 			try {
-				Thread.sleep(5000);
+				Thread.sleep(periodMillis);
 			} catch (InterruptedException ex) {
 				Thread.currentThread().interrupt();
 				throw new RuntimeException(ex);

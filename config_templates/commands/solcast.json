@@ -1,0 +1,5 @@
+{
+  "type": "solcast",
+  "resource": "<resource ID>",
+  "key": "<api key>"
+}

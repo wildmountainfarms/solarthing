@@ -87,6 +87,6 @@ public class MessageSenderMain {
 				});
 			}
 		};
-		return AutomationMain.startAutomation(Collections.singletonList(actionNode), options);
+		return AutomationMain.startAutomation(Collections.singletonList(actionNode), options, 5000);
 	}
 }

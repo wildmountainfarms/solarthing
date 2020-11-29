@@ -15,6 +15,9 @@ public class AutomationProgramOptions extends DatabaseTimeZoneOptionBase {
 	@JsonProperty("actions")
 	private List<File> actionNodeFiles;
 
+	@JsonProperty("period")
+	private double periodSeconds = 5;
+
 	@Override
 	public ProgramType getProgramType() {
 		return ProgramType.AUTOMATION;
@@ -22,5 +25,8 @@ public class AutomationProgramOptions extends DatabaseTimeZoneOptionBase {
 
 	public List<File> getActionNodeFiles() {
 		return requireNonNull(actionNodeFiles);
+	}
+	public long getPeriodMillis() {
+		return Math.round(periodSeconds * 1000);
 	}
 }
