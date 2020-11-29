@@ -22,6 +22,7 @@ import me.retrodaredevil.solarthing.actions.solcast.SolcastActionNode;
 		@JsonSubTypes.Type(UnlockActionNode.class),
 		@JsonSubTypes.Type(DeclarationActionNode.class),
 		@JsonSubTypes.Type(RaceActionNode.class),
+		@JsonSubTypes.Type(TimeoutActionNode.class),
 
 		@JsonSubTypes.Type(ACModeActionNode.class),
 		@JsonSubTypes.Type(AuxStateActionNode.class),

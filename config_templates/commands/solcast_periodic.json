@@ -1,0 +1,15 @@
+{
+  "type": "timeout",
+  "timeout": "PT30S",
+  "action": {
+    "type": "queue",
+    "actions": [
+      { "type": "log", "message": "Going to upload to solcast now." },
+      {
+        "type": "solcast",
+        "resource": "<resource ID>",
+        "key": "<api key>"
+      }
+    ]
+  }
+}
