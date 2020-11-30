@@ -1,0 +1,6 @@
+{
+  "default": {
+    "resource": "<resource ID>",
+    "key": "<api key>"
+  }
+}

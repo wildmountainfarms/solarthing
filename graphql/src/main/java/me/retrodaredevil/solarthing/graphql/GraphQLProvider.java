@@ -1,5 +1,8 @@
 package me.retrodaredevil.solarthing.graphql;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import graphql.GraphQL;
 import graphql.schema.GraphQLSchema;
@@ -16,6 +19,8 @@ import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbData
 import me.retrodaredevil.solarthing.graphql.service.SolarThingGraphQLDailyService;
 import me.retrodaredevil.solarthing.graphql.service.SolarThingGraphQLFXService;
 import me.retrodaredevil.solarthing.graphql.service.SolarThingGraphQLService;
+import me.retrodaredevil.solarthing.graphql.service.SolarThingGraphQLSolcastService;
+import me.retrodaredevil.solarthing.graphql.solcast.SolcastConfig;
 import me.retrodaredevil.solarthing.packets.collection.DefaultInstanceOptions;
 import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePacket;
 import me.retrodaredevil.solarthing.program.DatabaseConfig;
@@ -32,6 +37,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.TimeZone;
 
 @Component
@@ -43,6 +49,9 @@ public class GraphQLProvider {
 	private @Nullable String defaultSourceId;
 	@Value("${solarthing.config.default_fragment:#{null}}")
 	private @Nullable Integer defaultFragmentId;
+
+	@Value("${solarthing.config.solcast_file:config/solcast.json}")
+	private File solcastFile;
 
 	private GraphQL graphQL;
 
@@ -108,14 +117,26 @@ public class GraphQLProvider {
 		}
 		CouchDbDatabaseSettings couchDbDatabaseSettings = (CouchDbDatabaseSettings) databaseSettings;
 
+		SolcastConfig solcastConfig = null;
+		try {
+			solcastConfig = objectMapper.readValue(solcastFile, SolcastConfig.class);
+		} catch (JsonParseException | JsonMappingException e) {
+			throw new RuntimeException("Bad solcast JSON!", e);
+		} catch (IOException e) {
+			System.out.println("No solcast config! Not using solcast!");
+		}
+		if (solcastConfig == null) {
+			solcastConfig = new SolcastConfig(Collections.emptyMap());
+		}
+
 		DefaultInstanceOptions defaultInstanceOptions = new DefaultInstanceOptions(getDefaultSourceId(), getDefaultFragmentId());
 		System.out.println("Using defaultInstanceOptions=" + defaultInstanceOptions);
-		GraphQLSchema schema = createGraphQLSchemaGenerator(objectMapper, couchDbDatabaseSettings.getCouchProperties(), defaultInstanceOptions).generate();
+		GraphQLSchema schema = createGraphQLSchemaGenerator(objectMapper, couchDbDatabaseSettings.getCouchProperties(), defaultInstanceOptions, solcastConfig).generate();
 
 		this.graphQL = GraphQL.newGraphQL(schema).build();
 	}
 
-	static GraphQLSchemaGenerator createGraphQLSchemaGenerator(ObjectMapper objectMapper, CouchProperties couchProperties, DefaultInstanceOptions defaultInstanceOptions) {
+	static GraphQLSchemaGenerator createGraphQLSchemaGenerator(ObjectMapper objectMapper, CouchProperties couchProperties, DefaultInstanceOptions defaultInstanceOptions, @NotNull SolcastConfig solcastConfig) {
 		JacksonValueMapperFactory jacksonValueMapperFactory = JacksonValueMapperFactory.builder()
 				.withPrototype(objectMapper)
 				.build();
@@ -128,6 +149,7 @@ public class GraphQLProvider {
 				.withOperationsFromSingleton(new SolarThingGraphQLMetaService(simpleQueryHandler))
 				.withOperationsFromSingleton(new SolarThingGraphQLExtensions())
 				.withOperationsFromSingleton(new SolarThingGraphQLFXService(simpleQueryHandler))
+				.withOperationsFromSingleton(new SolarThingGraphQLSolcastService(solcastConfig))
 				.withValueMapperFactory(jacksonValueMapperFactory)
 				.withResolverBuilders(resolverBuilder)
 				.withNestedResolverBuilders(

@@ -12,7 +12,7 @@ class GraphQLProviderTest {
 
 	@Test
 	void testGeneration() {
-		GraphQLSchema schema = GraphQLProvider.createGraphQLSchemaGenerator(JacksonUtil.defaultMapper(), new CouchPropertiesBuilder("http", "localhost", 5984, null, null).build(), DefaultInstanceOptions.DEFAULT_DEFAULT_INSTANCE_OPTIONS).generate();
+		GraphQLSchema schema = GraphQLProvider.createGraphQLSchemaGenerator(JacksonUtil.defaultMapper(), new CouchPropertiesBuilder("http", "localhost", 5984, null, null).build(), DefaultInstanceOptions.DEFAULT_DEFAULT_INSTANCE_OPTIONS, null).generate();
 		GraphQL.newGraphQL(schema).build();
 	}
 }

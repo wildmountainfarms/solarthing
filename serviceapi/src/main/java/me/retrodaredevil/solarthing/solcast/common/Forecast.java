@@ -2,7 +2,7 @@ package me.retrodaredevil.solarthing.solcast.common;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import me.retrodaredevil.solarthing.solcast.common.SimpleEstimatedActual;
+import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -31,12 +31,22 @@ public final class Forecast implements SimpleEstimatedActual {
 		return pvEstimate;
 	}
 
+	@JsonProperty("pv_estimate10")
 	public float getPVEstimate10() {
 		return pvEstimate10;
 	}
+	@GraphQLInclude("pv_estimate10_watts")
+	public float getPVEstimate10Watts() {
+		return getPVEstimate10() * 1000.0f;
+	}
 
+	@JsonProperty("pv_estimate90")
 	public float getPVEstimate90() {
 		return pvEstimate90;
+	}
+	@GraphQLInclude("pv_estimate90_watts")
+	public float getPVEstimate90Watts() {
+		return getPVEstimate90() * 1000.0f;
 	}
 
 	@Override
