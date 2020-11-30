@@ -1,0 +1,53 @@
+{
+  "type": "timeout",
+  "timeout": "PT5M",
+  "action": {
+    "type": "queue",
+    "actions": [
+      { "type": "log", "message": "Going to upload to try solcast now." },
+      {
+        "type": "race",
+        "racers": [
+          [
+            {
+              "type": "required",
+              "required": {
+                "1": ["OutbackIdentifier(address=3)", "OutbackIdentifier(address=4)"],
+                "2": ["RoverIdentifier()"]
+              }
+            },
+            {
+              "type": "race",
+              "racers": [
+                [
+                  {
+                    "type": "fulloutput",
+                    "required": {
+                      "1": ["OutbackIdentifier(address=3)", "OutbackIdentifier(address=4)"]
+                    }
+                  },
+                  {
+                    "type": "queue",
+                    "actions": [
+                      {
+                        "type": "log",
+                        "message": "Confirmed we will upload to solcast"
+                      },
+                      {
+                        "type": "solcast",
+                        "resource": "<resource ID>",
+                        "key": "<api key>"
+                      }
+                    ]
+                  }
+                ],
+                [{ "type": "pass" }, { "type": "log", "message": "Not at full output."}]
+              ]
+            }
+          ],
+          [{ "type": "pass" }, { "type": "log", "message": "Not all devices are connected!" }]
+        ]
+      }
+    ]
+  }
+}

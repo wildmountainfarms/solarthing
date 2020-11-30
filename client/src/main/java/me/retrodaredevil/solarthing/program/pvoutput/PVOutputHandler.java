@@ -24,6 +24,7 @@ import me.retrodaredevil.solarthing.solar.outback.fx.common.FXDailyData;
 import me.retrodaredevil.solarthing.solar.outback.fx.extra.DailyFXPacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPacket;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
+import me.retrodaredevil.solarthing.util.IdentifierUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,31 +49,12 @@ public class PVOutputHandler {
 			LOGGER.warn("No packets!");
 			return false;
 		}
-		FragmentedPacketGroup latestPacketGroup = packetGroupList.get(packetGroupList.size() - 1);
-		outerLoop: for (Map.Entry<Integer, List<String>> entry : requiredIdentifierMap.entrySet()) {
-			int desiredFragmentId = entry.getKey();
-			if (!latestPacketGroup.hasFragmentId(desiredFragmentId)) {
-				LOGGER.warn("The latest packet group doesn't contain the " + desiredFragmentId + " fragment id!");
-				return false;
-			}
-			for (String desiredIdentifierRepresentation : entry.getValue()) {
-				for (Packet packet : latestPacketGroup.getPackets()) {
-					int fragmentId = latestPacketGroup.getFragmentId(packet);
-					if (fragmentId != desiredFragmentId) {
-						continue;
-					}
-					if (packet instanceof Identifiable) {
-						Identifier identifier = ((Identifiable) packet).getIdentifier();
-						if (desiredIdentifierRepresentation.equals(identifier.getRepresentation())) {
-							continue outerLoop;
-						}
-					}
-				}
-				LOGGER.warn("The required identifier: " + entry.getValue() + " with fragmentId: " + entry.getKey() + " was not present in the latest packet group!");
-				return false;
-			}
+		String reason = IdentifierUtil.getRequirementNotMetReason(requiredIdentifierMap, packetGroupList.get(packetGroupList.size() - 1));
+		if (reason == null) {
+			return true;
 		}
-		return true;
+		LOGGER.warn(reason);
+		return false;
 	}
 
 	public AddStatusParameters getStatus(long dayStartTimeMillis, List<FragmentedPacketGroup> packetGroupList) {

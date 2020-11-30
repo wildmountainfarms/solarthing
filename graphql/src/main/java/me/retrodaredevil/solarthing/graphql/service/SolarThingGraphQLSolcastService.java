@@ -23,6 +23,10 @@ import java.util.Map;
 import static java.util.Objects.requireNonNull;
 
 public class SolarThingGraphQLSolcastService {
+	/*
+	Inspiration for this: https://forums.solcast.com.au/t/using-the-api-with-node-red-and-influxdb-grafana/221
+	Also discussed here: https://discourse.nodered.org/t/power-forecasts-and-data-tuning-for-solar-installations-node-red-solcast-api-influxdb-grafana/28037/2
+	 */
 
 	private final Map<String, SolcastHandler> sourceHandlerMap;
 

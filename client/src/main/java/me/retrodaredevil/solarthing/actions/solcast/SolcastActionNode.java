@@ -53,6 +53,7 @@ public class SolcastActionNode implements ActionNode {
 			PowerUtil.Data data = PowerUtil.getPowerData(packetGroup);
 			Integer watts = data.getGeneratingWatts();
 			if (watts != null) {
+				LOGGER.info("Total " + watts + " watts will be uploaded to Solcast");
 				Call<?> call = service.postMeasurement(resourceId, MeasurementData.createSingle(
 						new Measurement(
 								Instant.ofEpochMilli(packetGroup.getDateMillis()),
