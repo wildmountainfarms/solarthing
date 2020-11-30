@@ -11,6 +11,8 @@ import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnviron
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.solar.PowerUtil;
 import me.retrodaredevil.solarthing.solcast.*;
+import me.retrodaredevil.solarthing.solcast.rooftop.Measurement;
+import me.retrodaredevil.solarthing.solcast.rooftop.MeasurementData;
 import okhttp3.OkHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
