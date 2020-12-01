@@ -1,7 +1,6 @@
 package me.retrodaredevil.solarthing.graphql;
 
 import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import graphql.GraphQL;
@@ -149,7 +148,7 @@ public class GraphQLProvider {
 				.withOperationsFromSingleton(new SolarThingGraphQLMetaService(simpleQueryHandler))
 				.withOperationsFromSingleton(new SolarThingGraphQLExtensions())
 				.withOperationsFromSingleton(new SolarThingGraphQLFXService(simpleQueryHandler))
-				.withOperationsFromSingleton(new SolarThingGraphQLSolcastService(solcastConfig))
+				.withOperationsFromSingleton(new SolarThingGraphQLSolcastService(solcastConfig, TimeZone.getDefault()))
 				.withValueMapperFactory(jacksonValueMapperFactory)
 				.withResolverBuilders(resolverBuilder)
 				.withNestedResolverBuilders(

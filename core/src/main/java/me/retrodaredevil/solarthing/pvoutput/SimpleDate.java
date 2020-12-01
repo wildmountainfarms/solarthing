@@ -67,6 +67,11 @@ public final class SimpleDate implements Comparable<SimpleDate>, PVOutputString 
 		calendar.add(Calendar.DAY_OF_YEAR, 1);
 		return fromCalendar(calendar);
 	}
+	public SimpleDate yesterday() {
+		Calendar calendar = toCalendar(TimeZone.getTimeZone("UTC"));
+		calendar.add(Calendar.DAY_OF_YEAR, -1);
+		return fromCalendar(calendar);
+	}
 
 	public int getYear() {
 		return year;
