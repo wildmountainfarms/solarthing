@@ -15,7 +15,6 @@ import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.InstancePacketGroup;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 import me.retrodaredevil.solarthing.packets.identification.IdentifierFragment;
-import me.retrodaredevil.solarthing.pvoutput.SimpleDate;
 import me.retrodaredevil.solarthing.solar.common.DailyChargeController;
 import me.retrodaredevil.solarthing.solar.common.DailyData;
 import me.retrodaredevil.solarthing.solar.daily.DailyCalc;
@@ -23,16 +22,19 @@ import me.retrodaredevil.solarthing.solar.daily.DailyConfig;
 import me.retrodaredevil.solarthing.solar.daily.DailyPair;
 import me.retrodaredevil.solarthing.solar.daily.DailyUtil;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.function.Function;
 
 public class SolarThingGraphQLDailyService {
 	private final SimpleQueryHandler simpleQueryHandler;
-	private final TimeZone timeZone;
+	private final ZoneId zoneId;
 
-	public SolarThingGraphQLDailyService(SimpleQueryHandler simpleQueryHandler, TimeZone timeZone) {
+	public SolarThingGraphQLDailyService(SimpleQueryHandler simpleQueryHandler, ZoneId zoneId) {
 		this.simpleQueryHandler = simpleQueryHandler;
-		this.timeZone = timeZone;
+		this.zoneId = zoneId;
 	}
 
 	interface NodeAdder <T extends DailyData> {
@@ -49,11 +51,12 @@ public class SolarThingGraphQLDailyService {
 		}
 
 		private <T extends Identifiable & DailyData> List<DataNode<Float>> getPoints(Class<T> clazz, NodeAdder<T> nodeAdder) {
-			Map<SimpleDate, Map<IdentifierFragment, List<TimestampedPacket<T>>>> map = new HashMap<>();
+			Map<LocalDate, Map<IdentifierFragment, List<TimestampedPacket<T>>>> map = new HashMap<>();
 			Map<IdentifierFragment, String> identifierFragmentSourceMap = new HashMap<>();
 			for (PacketNode<T> packetNode : packetGetter.getPackets(clazz)) {
 				long dateMillis = packetNode.getDateMillis();
-				SimpleDate date = SimpleDate.fromDateMillis(dateMillis, timeZone);
+				LocalDate date = Instant.ofEpochSecond(dateMillis).atZone(zoneId).toLocalDate();
+
 				T packet = packetNode.getPacket();
 				IdentifierFragment identifierFragment = IdentifierFragment.create(packetNode.getFragmentId(), packet.getIdentifier());
 				identifierFragmentSourceMap.put(identifierFragment, packetNode.getSourceId());
@@ -61,9 +64,10 @@ public class SolarThingGraphQLDailyService {
 				identifierMap.computeIfAbsent(identifierFragment, (_identifier) -> new ArrayList<>()).add(new TimestampedPacket<>(packet, dateMillis));
 			}
 			Collection<DataNode<Float>> r = new TreeSet<>(DataNode::compareTo);
-			for (Map.Entry<SimpleDate, Map<IdentifierFragment, List<TimestampedPacket<T>>>> entry : map.entrySet()) {
-				SimpleDate date = entry.getKey();
-				long dayStartTimeMillis = date.getDayStartDateMillis(timeZone);
+			for (Map.Entry<LocalDate, Map<IdentifierFragment, List<TimestampedPacket<T>>>> entry : map.entrySet()) {
+				LocalDate date = entry.getKey();
+				long dayStartTimeMillis = date.atStartOfDay(zoneId).toInstant().toEpochMilli();
+
 				Map<IdentifierFragment, List<TimestampedPacket<T>>> identifierMap = entry.getValue();
 				DailyConfig dailyConfig = DailyConfig.createDefault(dayStartTimeMillis);
 				for (Map.Entry<IdentifierFragment, List<TimestampedPacket<T>>> identifierFragmentListEntry : identifierMap.entrySet()) {
@@ -103,10 +107,10 @@ public class SolarThingGraphQLDailyService {
 		}
 		@GraphQLQuery
 		public @NotNull List<@NotNull SimpleNode<Float>> dailyKWHSum() {
-			Map<SimpleDate, Map<IdentifierFragment, List<TimestampedPacket<DailyChargeController>>>> map = new HashMap<>();
+			Map<LocalDate, Map<IdentifierFragment, List<TimestampedPacket<DailyChargeController>>>> map = new HashMap<>();
 			for (FragmentedPacketGroup fragmentedPacketGroup : sortedPackets) {
 				long dateMillis = fragmentedPacketGroup.getDateMillis(); // we have a common dateMillis for each fragmented packet group
-				SimpleDate date = SimpleDate.fromDateMillis(dateMillis, timeZone);
+				LocalDate date = Instant.ofEpochSecond(dateMillis).atZone(zoneId).toLocalDate();
 				for (Packet packet : fragmentedPacketGroup.getPackets()) {
 					if (packet instanceof DailyChargeController) {
 						int fragmentId = fragmentedPacketGroup.getFragmentId(packet);
@@ -118,10 +122,10 @@ public class SolarThingGraphQLDailyService {
 				}
 			}
 			Collection<SimpleNode<Float>> r = new TreeSet<>(Comparator.comparingLong(SimpleNode::getDateMillis));
-			for (Map.Entry<SimpleDate, Map<IdentifierFragment, List<TimestampedPacket<DailyChargeController>>>> entry : map.entrySet()) {
-				SimpleDate date = entry.getKey();
+			for (Map.Entry<LocalDate, Map<IdentifierFragment, List<TimestampedPacket<DailyChargeController>>>> entry : map.entrySet()) {
+				LocalDate date = entry.getKey();
 				Map<Long, Float> sumMap = new HashMap<>();
-				long dayStartTimeMillis = date.getDayStartDateMillis(timeZone);
+				long dayStartTimeMillis = date.atStartOfDay(zoneId).toInstant().toEpochMilli();
 				Map<IdentifierFragment, List<TimestampedPacket<DailyChargeController>>> identifierMap = entry.getValue();
 				DailyConfig dailyConfig = DailyConfig.createDefault(dayStartTimeMillis);
 				for (Map.Entry<IdentifierFragment, List<TimestampedPacket<DailyChargeController>>> identifierFragmentListEntry : identifierMap.entrySet()) {
@@ -164,9 +168,13 @@ public class SolarThingGraphQLDailyService {
 			@GraphQLArgument(name = "from") long from, @GraphQLArgument(name = "to") long to,
 			@GraphQLArgument(name = "sourceId") @Nullable String sourceId){
 
-		SimpleDate fromDate = SimpleDate.fromDateMillis(from, timeZone);
-		SimpleDate toDate = SimpleDate.fromDateMillis(to, timeZone);
-		List<? extends InstancePacketGroup> packets = simpleQueryHandler.queryStatus(fromDate.getDayStartDateMillis(timeZone), toDate.tomorrow().getDayStartDateMillis(timeZone) - 1, sourceId);
+		LocalDate fromDate = Instant.ofEpochSecond(from).atZone(zoneId).toLocalDate();
+		LocalDate toDate = Instant.ofEpochSecond(to).atZone(zoneId).toLocalDate();
+		List<? extends InstancePacketGroup> packets = simpleQueryHandler.queryStatus(
+				fromDate.atStartOfDay(zoneId).toInstant().toEpochMilli(),
+				toDate.plusDays(1).atStartOfDay(zoneId).toInstant().toEpochMilli() - 1,
+				sourceId
+		);
 		return new SolarThingFullDayStatusQuery(new BasicPacketGetter(packets, PacketFilter.KEEP_ALL), simpleQueryHandler.sortPackets(packets, sourceId));
 	}
 }

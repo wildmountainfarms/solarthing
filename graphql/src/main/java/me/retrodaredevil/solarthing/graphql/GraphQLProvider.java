@@ -35,6 +35,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.TimeZone;
@@ -144,11 +145,11 @@ public class GraphQLProvider {
 		return new GraphQLSchemaGenerator()
 				.withBasePackages("me.retrodaredevil.solarthing")
 				.withOperationsFromSingleton(new SolarThingGraphQLService(simpleQueryHandler))
-				.withOperationsFromSingleton(new SolarThingGraphQLDailyService(simpleQueryHandler, TimeZone.getDefault())) // TODO do we really want a default time zone?
+				.withOperationsFromSingleton(new SolarThingGraphQLDailyService(simpleQueryHandler, ZoneId.systemDefault())) // TODO do we really want a default time zone?
 				.withOperationsFromSingleton(new SolarThingGraphQLMetaService(simpleQueryHandler))
 				.withOperationsFromSingleton(new SolarThingGraphQLExtensions())
 				.withOperationsFromSingleton(new SolarThingGraphQLFXService(simpleQueryHandler))
-				.withOperationsFromSingleton(new SolarThingGraphQLSolcastService(solcastConfig, TimeZone.getDefault()))
+				.withOperationsFromSingleton(new SolarThingGraphQLSolcastService(solcastConfig, ZoneId.systemDefault()))
 				.withValueMapperFactory(jacksonValueMapperFactory)
 				.withResolverBuilders(resolverBuilder)
 				.withNestedResolverBuilders(

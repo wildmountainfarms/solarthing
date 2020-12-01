@@ -42,11 +42,11 @@
 * Add temperature event to message program
 * Create GraphQL query that allows someone to get dailyKWH from a large time period (many days) for
 easy displaying in Grafana
+* Do something with https://www.home-assistant.io/ somehow
+* Log data to https://solcast.com.au/
 
 ### TODO Look into
 * Look into supporting Elasticsearch, MongoDB, Graphite
-* Do something with https://www.home-assistant.io/ somehow
-* Log data to https://solcast.com.au/
 * Support https://dweet.io
   * Will make using freeboard easy
 * https://thingspeak.com/

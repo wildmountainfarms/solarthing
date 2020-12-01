@@ -6,7 +6,6 @@ import io.leangen.graphql.annotations.GraphQLQuery;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.graphql.solcast.SolcastConfig;
-import me.retrodaredevil.solarthing.pvoutput.SimpleDate;
 import me.retrodaredevil.solarthing.solcast.SolcastOkHttpUtil;
 import me.retrodaredevil.solarthing.solcast.SolcastRetrofitUtil;
 import me.retrodaredevil.solarthing.solcast.SolcastService;
@@ -18,6 +17,9 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 
 import static java.util.Objects.requireNonNull;
@@ -29,10 +31,10 @@ public class SolarThingGraphQLSolcastService {
 	 */
 
 	private final Map<String, SolcastHandler> sourceHandlerMap;
-	private final TimeZone timeZone;
+	private final ZoneId zoneId;
 
-	public SolarThingGraphQLSolcastService(SolcastConfig solcastConfig, TimeZone timeZone) {
-		this.timeZone = timeZone;
+	public SolarThingGraphQLSolcastService(SolcastConfig solcastConfig, ZoneId zoneId) {
+		this.zoneId = zoneId;
 		sourceHandlerMap = new HashMap<>();
 		for (String sourceId : solcastConfig.getSources()) {
 			SolcastConfig.Entry entry = requireNonNull(solcastConfig.getEntry(sourceId));
@@ -57,19 +59,19 @@ public class SolarThingGraphQLSolcastService {
 			@GraphQLArgument(name = "from") long from, @GraphQLArgument(name = "to") long to,
 			@GraphQLArgument(name = "sourceId") @Nullable String sourceId){
 		SolcastHandler handler = sourceHandlerMap.get(sourceId);
-		return new SolarThingSolcastQuery(handler, from, to, timeZone);
+		return new SolarThingSolcastQuery(handler, from, to, zoneId);
 	}
 	public static class SolarThingSolcastQuery {
 		private final @Nullable SolcastHandler handler;
 		private final long from;
 		private final long to;
-		private final TimeZone timeZone;
+		private final ZoneId zoneId;
 
-		public SolarThingSolcastQuery(@Nullable SolcastHandler handler, long from, long to, TimeZone timeZone) {
+		public SolarThingSolcastQuery(@Nullable SolcastHandler handler, long from, long to, ZoneId zoneId) {
 			this.handler = handler;
 			this.from = from;
 			this.to = to;
-			this.timeZone = timeZone;
+			this.zoneId = zoneId;
 		}
 
 		@GraphQLQuery
@@ -98,17 +100,20 @@ public class SolarThingGraphQLSolcastService {
 			}
 			List<SimpleEstimatedActual> simpleEstimatedActuals = handler.cache.getEstimatedActuals(from, to);
 
-			SimpleDate startDate = SimpleDate.fromDateMillis(from, timeZone);
-			SimpleDate endDate = SimpleDate.fromDateMillis(to, timeZone).tomorrow();
+			LocalDate startDate = Instant.ofEpochMilli(from).atZone(zoneId).toLocalDate();
+//			LocalDate endDate = Instant.ofEpochMilli(from).atZone(timeZone.toZoneId()).toLocalDate();
+			LocalDate endDate = Instant.ofEpochMilli(from).atZone(zoneId).toLocalDate().plusDays(1); // TODO I don't think we have to add a day here
 
 			SimpleEstimatedActual first = simpleEstimatedActuals.get(0);
-			startDate = max(startDate, SimpleDate.fromDateMillis(first.getPeriodMidpoint().toEpochMilli(), timeZone).tomorrow());
-			SimpleEstimatedActual last = simpleEstimatedActuals.get(simpleEstimatedActuals.size() - 1);
-			endDate = min(endDate, SimpleDate.fromDateMillis(last.getPeriodMidpoint().toEpochMilli(), timeZone).yesterday());
 
-			Map<SimpleDate, Float> map = new HashMap<>();
+			startDate = max(startDate, first.getPeriodMidpoint().atZone(zoneId).toLocalDate().plusDays(1));
+			SimpleEstimatedActual last = simpleEstimatedActuals.get(simpleEstimatedActuals.size() - 1);
+
+			endDate = min(endDate, last.getPeriodMidpoint().atZone(zoneId).toLocalDate().minusDays(1));
+
+			Map<LocalDate, Float> map = new HashMap<>();
 			for (SimpleEstimatedActual estimatedActual : simpleEstimatedActuals) {
-				SimpleDate date = SimpleDate.fromDateMillis(estimatedActual.getPeriodMidpoint().toEpochMilli(), timeZone);
+				LocalDate date = estimatedActual.getPeriodMidpoint().atZone(zoneId).toLocalDate();
 				if (startDate.compareTo(date) > 0 || endDate.compareTo(date) < 0) {
 					continue;
 				}
@@ -120,12 +125,25 @@ public class SolarThingGraphQLSolcastService {
 				map.put(date, dailyKWH);
 			}
 			Set<DailyEnergy> r = new TreeSet<>(Comparator.comparing(DailyEnergy::getDayStart));
-			for (Map.Entry<SimpleDate, Float> entry : map.entrySet()) {
-				r.add(new DailyEnergy(entry.getKey().getDayStartDateMillis(timeZone), entry.getValue()));
+			for (Map.Entry<LocalDate, Float> entry : map.entrySet()) {
+				r.add(new DailyEnergy(entry.getKey().atStartOfDay(zoneId).toInstant().toEpochMilli(), entry.getValue()));
 			}
 			return new ArrayList<>(r);
 		}
 	}
+
+	public static class SolarThingSolcastDayQuery {
+		private final @Nullable SolcastHandler handler;
+		private final long to;
+		private final TimeZone timeZone;
+
+		public SolarThingSolcastDayQuery(@Nullable SolcastHandler handler, long to, TimeZone timeZone) {
+			this.handler = handler;
+			this.to = to;
+			this.timeZone = timeZone;
+		}
+	}
+
 	private static class SolcastHandler {
 		private final SolcastService service;
 		private final EstimatedActualCache cache;
@@ -155,16 +173,16 @@ public class SolarThingGraphQLSolcastService {
 			return dailyKWH;
 		}
 	}
-	private static <T extends Comparable<T>> T max(T a, T b) {
-		if (a.compareTo(b) < 0) {
-			return b;
-		}
-		return a;
-	}
-	private static <T extends Comparable<T>> T min(T a, T b) {
+	private static <T extends Comparable<? super T>> T min(T a, T b) {
 		if (a.compareTo(b) < 0) {
 			return a;
 		}
 		return b;
+	}
+	private static <T extends Comparable<? super T>> T max(T a, T b) {
+		if (a.compareTo(b) < 0) {
+			return b;
+		}
+		return a;
 	}
 }
