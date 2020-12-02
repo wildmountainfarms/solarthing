@@ -11,4 +11,12 @@ public interface SimpleEstimatedActual extends IntervalData {
 	default float getPVEstimateWatts() {
 		return getPVEstimate() * 1000.0f;
 	}
+
+	/**
+	 *
+	 * @return The energy generation in KWH over this period of time
+	 */
+	default float getEnergyGenerationEstimate() {
+		return getPVEstimate() * getPeriod().toMinutes() / 60.0f;
+	}
 }

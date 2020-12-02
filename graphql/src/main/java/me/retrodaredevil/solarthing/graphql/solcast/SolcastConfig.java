@@ -12,6 +12,11 @@ import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Represents a solcast config entry that is tied to a source ID. This is so if there are multiple sources, each source can
+ * have its own prediction. Technically, the source ID doesn't have to correspond to an actual source, but it is recommended to
+ * make it correspond to a certain source to avoid confusion.
+ */
 @JsonDeserialize(builder = SolcastConfig.Builder.class)
 public class SolcastConfig {
 	private final Map<String, Entry> sourceEntryMap;

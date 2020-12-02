@@ -22,7 +22,15 @@ public class EstimatedActualCache {
 	public EstimatedActualCache(EstimatedActualRetriever retriever) {
 		this.retriever = retriever;
 	}
-	public List<SimpleEstimatedActual> getEstimatedActuals(long startPointMillis, long endPointMillis) throws IOException {
+
+	/**
+	 *
+	 * @param startPointMillis Helps determine whether data needs to be requested
+	 * @param endPointMillis Helps determine whether data needs to be requested
+	 * @return A list of {@link SimpleEstimatedActual}s. Ordered from oldest to newest
+	 * @throws IOException
+	 */
+	public List<SimpleEstimatedActual> getEstimatedActuals(long startPointMillis, long endPointMillis, boolean clamp) throws IOException {
 //		List<Forecast> forecasts = getForecasts(startPointMillis, endPointMillis);
 //		if (!forecastSet.headSet(new Node(startPointMillis), true).isEmpty()) { // we're only asking for future results, so we can just use the getForecasts() method
 //			return new ArrayList<>(forecasts);
@@ -42,13 +50,13 @@ public class EstimatedActualCache {
 			updateEstimatedActuals();
 		}
 		List<SimpleEstimatedActual> r = new ArrayList<>();
-		for (Node node : simpleEstimatedActualSet.tailSet(new Node(startPointMillis), true).headSet(new Node(endPointMillis), true)) {
+		for (Node node : clamp ? simpleEstimatedActualSet.tailSet(new Node(startPointMillis), true).headSet(new Node(endPointMillis), true) : simpleEstimatedActualSet) {
 			r.add((SimpleEstimatedActual) node.data);
 		}
 		return r;
 	}
 
-	public List<Forecast> getForecasts(long startPointMillis, long endPointMillis) throws IOException {
+	public List<Forecast> getForecasts(long startPointMillis, long endPointMillis, boolean clamp) throws IOException {
 		long now = System.currentTimeMillis();
 		if (now + DURATION_7_DAYS.toMillis() < startPointMillis) {
 			return Collections.emptyList();
@@ -57,7 +65,7 @@ public class EstimatedActualCache {
 			updateForecasts();
 		}
 		List<Forecast> r = new ArrayList<>();
-		for (Node node : forecastSet.tailSet(new Node(startPointMillis), true).headSet(new Node(endPointMillis), true)) {
+		for (Node node : clamp ? forecastSet.tailSet(new Node(startPointMillis), true).headSet(new Node(endPointMillis), true) : forecastSet) {
 			r.add((Forecast) node.data);
 		}
 		return r;

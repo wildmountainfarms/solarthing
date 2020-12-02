@@ -55,7 +55,7 @@ public class SolarThingGraphQLDailyService {
 			Map<IdentifierFragment, String> identifierFragmentSourceMap = new HashMap<>();
 			for (PacketNode<T> packetNode : packetGetter.getPackets(clazz)) {
 				long dateMillis = packetNode.getDateMillis();
-				LocalDate date = Instant.ofEpochSecond(dateMillis).atZone(zoneId).toLocalDate();
+				LocalDate date = Instant.ofEpochMilli(dateMillis).atZone(zoneId).toLocalDate();
 
 				T packet = packetNode.getPacket();
 				IdentifierFragment identifierFragment = IdentifierFragment.create(packetNode.getFragmentId(), packet.getIdentifier());
@@ -110,7 +110,7 @@ public class SolarThingGraphQLDailyService {
 			Map<LocalDate, Map<IdentifierFragment, List<TimestampedPacket<DailyChargeController>>>> map = new HashMap<>();
 			for (FragmentedPacketGroup fragmentedPacketGroup : sortedPackets) {
 				long dateMillis = fragmentedPacketGroup.getDateMillis(); // we have a common dateMillis for each fragmented packet group
-				LocalDate date = Instant.ofEpochSecond(dateMillis).atZone(zoneId).toLocalDate();
+				LocalDate date = Instant.ofEpochMilli(dateMillis).atZone(zoneId).toLocalDate();
 				for (Packet packet : fragmentedPacketGroup.getPackets()) {
 					if (packet instanceof DailyChargeController) {
 						int fragmentId = fragmentedPacketGroup.getFragmentId(packet);
@@ -168,8 +168,8 @@ public class SolarThingGraphQLDailyService {
 			@GraphQLArgument(name = "from") long from, @GraphQLArgument(name = "to") long to,
 			@GraphQLArgument(name = "sourceId") @Nullable String sourceId){
 
-		LocalDate fromDate = Instant.ofEpochSecond(from).atZone(zoneId).toLocalDate();
-		LocalDate toDate = Instant.ofEpochSecond(to).atZone(zoneId).toLocalDate();
+		LocalDate fromDate = Instant.ofEpochMilli(from).atZone(zoneId).toLocalDate();
+		LocalDate toDate = Instant.ofEpochMilli(to).atZone(zoneId).toLocalDate();
 		List<? extends InstancePacketGroup> packets = simpleQueryHandler.queryStatus(
 				fromDate.atStartOfDay(zoneId).toInstant().toEpochMilli(),
 				toDate.plusDays(1).atStartOfDay(zoneId).toInstant().toEpochMilli() - 1,

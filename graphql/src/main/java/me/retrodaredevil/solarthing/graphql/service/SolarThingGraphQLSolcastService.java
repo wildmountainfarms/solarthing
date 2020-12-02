@@ -5,6 +5,7 @@ import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLQuery;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
+import me.retrodaredevil.solarthing.graphql.packets.SimpleNode;
 import me.retrodaredevil.solarthing.graphql.solcast.SolcastConfig;
 import me.retrodaredevil.solarthing.solcast.SolcastOkHttpUtil;
 import me.retrodaredevil.solarthing.solcast.SolcastRetrofitUtil;
@@ -55,54 +56,61 @@ public class SolarThingGraphQLSolcastService {
 
 
 	@GraphQLQuery
-	public SolarThingSolcastQuery querySolcast(
+	public @Nullable SolarThingSolcastQuery querySolcast(
 			@GraphQLArgument(name = "from") long from, @GraphQLArgument(name = "to") long to,
-			@GraphQLArgument(name = "sourceId") @Nullable String sourceId){
+			@GraphQLArgument(name = "sourceId") @NotNull String sourceId){
 		SolcastHandler handler = sourceHandlerMap.get(sourceId);
+		if (handler == null) {
+			return null;
+		}
 		return new SolarThingSolcastQuery(handler, from, to, zoneId);
 	}
+	@GraphQLQuery
+	public @Nullable SolarThingSolcastDayQuery querySolcastDay(
+			@GraphQLArgument(name = "to") long to,
+			@GraphQLArgument(name = "sourceId") @NotNull String sourceId){
+		SolcastHandler handler = sourceHandlerMap.get(sourceId);
+		if (handler == null) {
+			return null;
+		}
+		return new SolarThingSolcastDayQuery(handler, to, zoneId);
+	}
 	public static class SolarThingSolcastQuery {
-		private final @Nullable SolcastHandler handler;
+		private final SolcastHandler handler;
 		private final long from;
 		private final long to;
 		private final ZoneId zoneId;
 
-		public SolarThingSolcastQuery(@Nullable SolcastHandler handler, long from, long to, ZoneId zoneId) {
-			this.handler = handler;
+		public SolarThingSolcastQuery(SolcastHandler handler, long from, long to, ZoneId zoneId) {
+			requireNonNull(this.handler = handler);
 			this.from = from;
 			this.to = to;
-			this.zoneId = zoneId;
+			requireNonNull(this.zoneId = zoneId);
 		}
 
 		@GraphQLQuery
-		public List<SimpleEstimatedActual> queryEstimateActuals() throws IOException {
-			if (handler == null) {
-				return Collections.emptyList();
-			}
-			return handler.cache.getEstimatedActuals(from, to);
+		public @NotNull List<@NotNull SimpleEstimatedActual> queryEstimateActuals() throws IOException {
+			return handler.cache.getEstimatedActuals(from, to, true);
 		}
 		@GraphQLQuery
-		public List<Forecast> queryForecasts(@GraphQLArgument(name = "includePast", defaultValue = "false") boolean includePast) throws IOException {
-			if (handler == null) {
-				return Collections.emptyList();
-			}
+		public @NotNull List<@NotNull Forecast> queryForecasts(@GraphQLArgument(name = "includePast", defaultValue = "false") boolean includePast) throws IOException {
 			long now = System.currentTimeMillis();
 			if (!includePast && to < now) {
 				return Collections.emptyList(); // they don't want past data, but their constants are for past data
 			}
 			long start = includePast ? from : Math.max(from, now);
-			return handler.cache.getForecasts(start, to);
+			return handler.cache.getForecasts(start, to, true);
 		}
 		@GraphQLQuery
 		public @NotNull List<@NotNull DailyEnergy> queryDailyEnergyEstimates() throws IOException {
-			if (handler == null) {
-				return Collections.emptyList();
-			}
-			List<SimpleEstimatedActual> simpleEstimatedActuals = handler.cache.getEstimatedActuals(from, to);
-
 			LocalDate startDate = Instant.ofEpochMilli(from).atZone(zoneId).toLocalDate();
-//			LocalDate endDate = Instant.ofEpochMilli(from).atZone(timeZone.toZoneId()).toLocalDate();
-			LocalDate endDate = Instant.ofEpochMilli(from).atZone(zoneId).toLocalDate().plusDays(1); // TODO I don't think we have to add a day here
+			LocalDate endDate = Instant.ofEpochMilli(to).atZone(zoneId).toLocalDate();
+			List<SimpleEstimatedActual> simpleEstimatedActuals = handler.cache.getEstimatedActuals(
+					startDate.atStartOfDay(zoneId).toInstant().toEpochMilli(),
+					endDate.plusDays(1).atStartOfDay(zoneId).toInstant().toEpochMilli(),
+					false
+			);
+
 
 			SimpleEstimatedActual first = simpleEstimatedActuals.get(0);
 
@@ -121,7 +129,7 @@ public class SolarThingGraphQLSolcastService {
 				if (dailyKWH == null) {
 					dailyKWH = 0.0f;
 				}
-				dailyKWH += estimatedActual.getPVEstimate() * estimatedActual.getPeriod().toMinutes() / 60.0f;
+				dailyKWH += estimatedActual.getEnergyGenerationEstimate();
 				map.put(date, dailyKWH);
 			}
 			Set<DailyEnergy> r = new TreeSet<>(Comparator.comparing(DailyEnergy::getDayStart));
@@ -133,14 +141,26 @@ public class SolarThingGraphQLSolcastService {
 	}
 
 	public static class SolarThingSolcastDayQuery {
-		private final @Nullable SolcastHandler handler;
+		private final SolcastHandler handler;
 		private final long to;
-		private final TimeZone timeZone;
+		private final ZoneId zoneId;
 
-		public SolarThingSolcastDayQuery(@Nullable SolcastHandler handler, long to, TimeZone timeZone) {
-			this.handler = handler;
+		public SolarThingSolcastDayQuery(SolcastHandler handler, long to, ZoneId zoneId) {
+			requireNonNull(this.handler = handler);
 			this.to = to;
-			this.timeZone = timeZone;
+			requireNonNull(this.zoneId = zoneId);
+		}
+		@GraphQLQuery
+		public @NotNull DailyEnergy queryEnergyEstimate(@GraphQLArgument(name = "offset", defaultValue = "0") int offsetDays) throws IOException {
+			LocalDate date = Instant.ofEpochMilli(to).atZone(zoneId).toLocalDate().plusDays(offsetDays);
+			long start = date.atStartOfDay(zoneId).toInstant().toEpochMilli();
+			long end = date.plusDays(1).atStartOfDay(zoneId).toInstant().toEpochMilli() - 1;
+			List<SimpleEstimatedActual> estimatedActuals = handler.cache.getEstimatedActuals(start, end, true);
+			float dailyKWH = 0;
+			for (SimpleEstimatedActual simpleEstimatedActual : estimatedActuals) {
+				dailyKWH += simpleEstimatedActual.getEnergyGenerationEstimate();
+			}
+			return new DailyEnergy(start, dailyKWH);
 		}
 	}
 
