@@ -10,7 +10,7 @@ project.ext.mainClassName = "me.retrodaredevil.solarthing.program.SolarMain"
 dependencies {
     implementation "com.github.retrodaredevil.io-lib:jSerialComm:$ioLibVersion"
     implementation group: 'org.influxdb', name: 'influxdb-java', version: '2.19'
-//    implementation group: 'org.mongodb', name: 'mongodb-driver-sync', version: '3.11.0' // causes solarthing.jar to be +2MB~ and we don't need this right now
+//    implementation "com.influxdb:influxdb-client-java:1.13.0"
 
     implementation "org.apache.logging.log4j:log4j-jcl:$log4jVersion" // commons logging bridge.
     implementation "org.apache.logging.log4j:log4j-slf4j-impl:$log4jVersion"

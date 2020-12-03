@@ -1,4 +1,5 @@
 # Setting up InfluxDB Database
+**Note: SolarThing only works on InfluxDB 1.X! It does not support InfluxDB 2.0!**
 ### Installing
 Click [here](https://docs.influxdata.com/influxdb/v1.7/introduction/installation/) to go to the install page.
 Once installed, you don't need to do anything to the installation itself, it's ready to go!

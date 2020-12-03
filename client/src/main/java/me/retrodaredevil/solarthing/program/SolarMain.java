@@ -162,14 +162,7 @@ public final class SolarMain {
 		return new CouchDbQueryHandler(new StdCouchDbConnector(SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, instance));
 	}
 
-	public static int doMain(String[] args){
-		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "[LOG] Beginning main. Jar: " + JarUtil.getJarFileName());
-		System.out.println("[stdout] Beginning main");
-		if(args.length < 1){
-			System.err.println("Usage: <java -jar ...> {base config file}");
-			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)Incorrect args");
-			return 1;
-		}
+	public static int doMainCommand(String[] args) {
 		File baseConfigFile = new File(args[0]);
 		final FileReader fileReader;
 		try {
@@ -211,6 +204,44 @@ public final class SolarMain {
 		} catch (Throwable t) {
 			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)Got throwable", t);
 			return 1;
+		}
+	}
+
+	public static int doMain(String[] args){
+		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "[LOG] Beginning main. Jar: " + JarUtil.getJarFileName());
+		System.out.println("[stdout] Beginning main");
+		if(args.length < 1){
+			System.err.println("Usage: <java -jar ...> main {base config file}");
+			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)Incorrect args (Insufficient arguments)");
+			return 1;
+		}
+		if (args.length >= 2) {
+			String command = args[0];
+			if ("main".equals(command)) {
+				return doMainCommand(Arrays.copyOfRange(args, 1, args.length));
+			} else if ("couchdb".equals(command)) {
+				final DatabaseConfig config;
+				try {
+					config = MAPPER.readValue(new File(args[1]), DatabaseConfig.class);
+				} catch (IOException e) {
+					e.printStackTrace();
+					System.out.println("Problem reading CouchDB database settings file.");
+					return 1;
+				}
+				DatabaseSettings settings = config.getSettings();
+				if (!(settings instanceof CouchDbDatabaseSettings)) {
+					System.out.println("Must be CouchDB database settings!");
+					return 1;
+				}
+				return CouchDbSetupMain.doCouchDbSetupMain((CouchDbDatabaseSettings) settings);
+			} else {
+				System.err.println("Unknown command " + command);
+				LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)Incorrect args (Unknown command)");
+				return 1;
+			}
+		} else {
+			System.err.println("You should do java -jar solarthing.jar main base.json instead! Future versions will require at least 2 arguments!");
+			return doMainCommand(args);
 		}
 	}
 

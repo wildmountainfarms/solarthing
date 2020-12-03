@@ -4,13 +4,18 @@ Choosing a database may be difficult, but usually there's a good choice.
 Note that you can use multiple databases if you can't decide on a single one. (This is what we did
 for the longest time until moving to CouchDB + GraphQL).
 
+Note that SolarThing only supports InfluxDB 1.X.
+
 #### Want to create simple queries and display data in Grafana?
 Pick **InfluxDB**.
 
 #### Want to use the Android App?
 Pick **CouchDB**.
 
-#### Want to upload data to PVOutput?
+#### Want to upload data to PVOutput or Solcast?
+Pick **CouchDB**.
+
+#### Want to have a Slack bot notify you if your battery voltage gets low?
 Pick **CouchDB**.
 
 #### Want a secure and simple setup?

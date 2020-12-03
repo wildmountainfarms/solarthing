@@ -1,6 +1,8 @@
 # CouchDB
 All you need is a vanilla CouchDB instance to create a usable database. You can download it here: https://couchdb.apache.org/
 
+You should setup the database as a single node.
+
 Once you have it running, it defaults to port 5984.
 
 ## Configuring SolarThing for CouchDB
@@ -22,3 +24,9 @@ For some databases I want public, I remove the admin member from them. NOTE: Thi
 allow anyone to edit databases that are public. Add convenience at your own risk.
 
 #### [More info about CouchDB](./couchdb_info.md)
+
+### Temporary CouchDB
+If you are testing, you can create a temporary CouchDB (data will not be kept once it is stopped if you run this command)
+```shell
+sudo docker run -p 5984:5984 -e COUCHDB_USER=admin -e COUCHDB_PASSWORD=relax couchdb:latest
+```
