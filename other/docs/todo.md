@@ -5,14 +5,10 @@
 * Create button/widget on Grafana that sends an encrypted command to shut off the generator
 * Packet for disk usage
 * Make CouchDB and InfluxDB database configuration warn when setting unused values
-* Make sure the latest packet handler is really the latest. (Aux On has been frequently sent twice with the generator shutoff)
 * Send packet when mate serial port hasn't output data for 30 seconds
 * Create Dockerfile and example docker-compose file
+* Support InfluxDB 2.0
   
-### Android TODO
-* Notification for when FXs are in EQ, but any MX is in absorb or float
-* Notification for when MX wakes up and goes straight to float (happens on older models)
-
 ### Completed TODO:
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
     * Done by using fragmented packets. Will be stored in the same database but uses InstancePackets to indicate source and fragment ids
@@ -44,6 +40,7 @@
 easy displaying in Grafana
 * Do something with https://www.home-assistant.io/ somehow
 * Log data to https://solcast.com.au/
+* Notification for when MX wakes up and goes straight to float (happens on older models)
 
 ### TODO Look into
 * Look into supporting Elasticsearch, MongoDB, Graphite
