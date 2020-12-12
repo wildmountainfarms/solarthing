@@ -20,6 +20,9 @@ dependencies {
     implementation 'net.bis5.mattermost4j:mattermost4j-core:0.22.1'
 
     implementation 'com.slack.api:slack-api-client:1.1.5'
+
+    // https://mvnrepository.com/artifact/com.lexicalscope.jewelcli/jewelcli
+    implementation group: 'com.lexicalscope.jewelcli', name: 'jewelcli', version: '0.8.9'
 }
 
 shadowJar {

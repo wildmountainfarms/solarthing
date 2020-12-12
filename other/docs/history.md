@@ -34,6 +34,12 @@ have the ability to have multiple instances uploading packets to a single databa
 * Google Analytics were added
 * Did a huge rebase to remove all solarthing.jar files, restructured program directory
 * Added ability to read from DS18B20 temperature sensors
+* Added GraphQL program
+* Added message sending abilities for push notifications (Mattermost and eventually Slack)
+* Added automation program that can help automate sending of commands and eventually became the base program
+for the message-sender program and other general 'actions'
+* Added home assistant upload action  
+* Added ability to send data to Solcast along with GraphQL queries for Solcast  
 
 
 ### Moving from Gson to Jackson
@@ -59,6 +65,15 @@ to Jackson altogether as explained above.
 
 Currently the configuration is very easy to change. I can swap out what configuration I'm using easily and can
 use the same CouchDB or InfluxDB configuration on multiple devices running SolarThing.
+
+### Queries for Grafana
+When support for InfluxDB was added in late 2019, it became easy to make a Grafana dashboard to display data.
+However, this was not perfect. I had to maintain two different databases. CouchDB for nicely structured JSON
+data, and InfluxDB for easy to query data. In 2020, I decided I wanted to be able to query data from CouchDB
+without InfluxDB. After some searching, I found the graphql-datasource for Grafana. It was perfect. I did some
+research on how to do a code first approach for a GraphQL program and ran into graphql-spqr. Now my schema was
+already created without additional setup because of how awesome Java is. Now I could query CouchDB from Grafana
+and even add additional data calculations that weren't in the packets to begin with.
 
 ### Legacy
 [The perl script](../legacy/helloworld.pl) is a legacy program. It was the program that started solarthing.

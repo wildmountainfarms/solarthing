@@ -8,6 +8,7 @@ public final class JacksonUtil {
 	private JacksonUtil(){ throw new UnsupportedOperationException(); }
 
 	public static ObjectMapper defaultMapper(ObjectMapper mapper){
+		// We will eventually use a JsonMapper.Builder (JsonMapper.builder()) to create this, but there are some things that require the direct configuration of an ObjectMapper
 		mapper.setConfig(
 				mapper.getDeserializationConfig()
 						.with(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE)

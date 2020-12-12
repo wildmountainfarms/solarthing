@@ -20,6 +20,7 @@ import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.parsing.*;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.instance.InstancePacket;
+import me.retrodaredevil.solarthing.program.CommandOptions;
 import me.retrodaredevil.solarthing.program.DatabaseConfig;
 import me.retrodaredevil.solarthing.program.PacketUtil;
 import me.retrodaredevil.solarthing.program.SolarMain;
@@ -59,7 +60,7 @@ public class PVOutputUploadMain {
 
 
 	@SuppressWarnings("SameReturnValue")
-	public static int startPVOutputUpload(PVOutputUploadProgramOptions options, String[] extraArgs, File dataDirectory){
+	public static int startPVOutputUpload(PVOutputUploadProgramOptions options, CommandOptions commandOptions, File dataDirectory){
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Starting PV Output upload program");
 		TimeZone timeZone = options.getTimeZone();
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Using time zone: {}", timeZone.getDisplayName());
@@ -88,10 +89,11 @@ public class PVOutputUploadMain {
 		Retrofit retrofit = PVOutputRetrofitUtil.defaultBuilder().client(client).build();
 		PVOutputService service = retrofit.create(PVOutputService.class);
 		PVOutputHandler handler = new PVOutputHandler(timeZone, options.getRequiredIdentifierMap(), options.getVoltageIdentifierFragmentMatcher(), options.getTemperatureIdentifierFragmentMatcher());
-		if(extraArgs.length >= 2) {
+
+		String fromDateString = commandOptions.getPVOutputFromDate();
+		String toDateString = commandOptions.getPVOutputToDate();
+		if(fromDateString != null && toDateString != null) {
 			System.out.println("Starting range upload");
-			String fromDateString = extraArgs[0];
-			String toDateString = extraArgs[1];
 			final SimpleDate fromDate;
 			final SimpleDate toDate;
 			try {
@@ -106,8 +108,8 @@ public class PVOutputUploadMain {
 					fromDate, toDate,
 					options, queryHandler, statusParser, handler, service, options.getTimeZone()
 			);
-		} else if (extraArgs.length == 1) {
-			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)You need 2 arguments for range upload! You have 1!");
+		} else if ((fromDateString == null) != (toDateString == null)) {
+			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)You need to define both from and to, or define neither to do the normal PVOutput program!");
 			return 1;
 		}
 		AnalyticsManager analyticsManager = new AnalyticsManager(options.isAnalyticsEnabled(), dataDirectory);

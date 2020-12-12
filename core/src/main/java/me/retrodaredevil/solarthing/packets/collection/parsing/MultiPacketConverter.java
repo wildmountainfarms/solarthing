@@ -21,7 +21,6 @@ public class MultiPacketConverter implements JsonPacketParser {
 	}
 	public static MultiPacketConverter createFrom(ObjectMapper baseMapper, Collection<? extends Class<? extends DocumentedPacket>> packetClasses) {
 		ObjectMapper mapper = baseMapper.copy();
-//		mapper.setSubtypeResolver(baseMapper.getSubtypeResolver().copy()); // workaround if we use 2.11.1
 		mapper.getSubtypeResolver().registerSubtypes(Collections.unmodifiableCollection(packetClasses));
 		return new MultiPacketConverter(mapper);
 	}
