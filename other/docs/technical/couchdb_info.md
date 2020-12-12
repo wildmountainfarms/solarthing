@@ -5,10 +5,10 @@ For general info, go [here](couchdb_setup.md).
 
 ## Databases
 These databases are automatically created:
-* `solarthing` Stores status packets from the Outback MATE and Renogy Rover
-* `solarthing_events` Stores event-type packets from the Outback MATE and Renogy Rover
-* `commands` Commands are saved here then deleted to send commands to the Outback MATE. Commands in here are encrypted for integrity
-
+* `solarthing` Stores status packets
+* `solarthing_events` Stores event-type packets
+* `solarthing_open` Commands are saved here then deleted to send commands to the Outback MATE. Commands in here are encrypted for integrity
+* `solarthing_closed` for readonly configuration data
 
 ## Enabling CORS
 If you are using the web application, you should enable Cross Origin Reference Sharing.

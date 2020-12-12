@@ -3,6 +3,16 @@ SolarThing already automatically creates necessary databases and views, but if y
 
 For general info, go [here](couchdb_setup.md).
 
+## Password Protecting
+When you install CouchDB, it should add the admin member to each of your databases. However, this makes it so
+a password is required when using CouchDB. This is probably the best option, but that means you have to know
+the username and password when using the Android app, AND the web application requires CouchDB to NOT be password protected
+
+For some databases I want public, I remove the admin member from them. NOTE: This is a security risk and can
+allow anyone to edit databases that are public. Add convenience at your own risk.
+
+#### [More info about CouchDB](./couchdb_info.md)
+
 ### Adding Views
 1. First, create the databases you want as described above
 2. Create a design called `packets` and add a view named `millis` to that database. 
@@ -63,3 +73,10 @@ And this too:
 ```shell script
 curl -H "Content-Type: application/json" -X POST -u joshua http://localhost:5984/solarthing/_compact/packets
 ```
+
+### Temporary CouchDB
+If you are testing, you can create a temporary CouchDB (data will not be kept once it is stopped if you run this command)
+```shell
+sudo docker run -p 5984:5984 -e COUCHDB_USER=admin -e COUCHDB_PASSWORD=relax couchdb:latest
+```
+

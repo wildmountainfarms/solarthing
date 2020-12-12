@@ -10,23 +10,20 @@ An example configuration can be found [here](../../config_templates/databases/co
 
 * CouchDB can be configured to download commands from the `commands` database if the `allow-commands` is set to true
 in a mate program config.
-
 * `connection_timeout` and `socket_timeout` are in seconds and can be decimal values. Setting them to 0 makes it so there's no timeout
+* To start with, you should **put in admin credentials**. You can replace these credentials with a less privileged user later.
 
----
+## Required setup
+SolarThing has a special program to help you set up CouchDB. We're going to run that now. You should have
+created a couchdb.json file.
 
-## Password Protecting
-When you install CouchDB, it should add the admin member to each of your databases. However, this makes it so
-a password is required when using CouchDB. This is probably the best option, but that means you have to know
-the username and password when using the Android app, AND the web application requires CouchDB to NOT be password protected
-
-For some databases I want public, I remove the admin member from them. NOTE: This is a security risk and can
-allow anyone to edit databases that are public. Add convenience at your own risk.
-
-#### [More info about CouchDB](./couchdb_info.md)
-
-### Temporary CouchDB
-If you are testing, you can create a temporary CouchDB (data will not be kept once it is stopped if you run this command)
+You will now run this command:
 ```shell
-sudo docker run -p 5984:5984 -e COUCHDB_USER=admin -e COUCHDB_PASSWORD=relax couchdb:latest
+java -jar solarthing.jar --couchdb-setup config/couchdb.json
 ```
+That command will take you through some setup. Read what it says, you'll have to press enter a few times and
+you will have to give it input. It is recommended that the user you create is called `uploader`. Choose a password for
+this user. Once you've done that and completed this, you can replace the credentials in `couchdb.json` with these new credentials.
+
+It's possible that in the future features will be added to SolarThing that require you to run this setup again,
+but it is unlikely.
