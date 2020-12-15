@@ -8,7 +8,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 		@JsonSubTypes.Type(RoverProgramOptions.class),
 		@JsonSubTypes.Type(RoverSetupProgramOptions.class),
 		@JsonSubTypes.Type(PVOutputUploadProgramOptions.class),
-		@JsonSubTypes.Type(MessageSenderProgramOptions.class),
 		@JsonSubTypes.Type(RequestProgramOptions.class),
 		@JsonSubTypes.Type(AutomationProgramOptions.class),
 })

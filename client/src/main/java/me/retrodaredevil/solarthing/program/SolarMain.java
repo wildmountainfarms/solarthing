@@ -197,8 +197,6 @@ public final class SolarMain {
 				return RoverMain.connectRoverSetup((RoverSetupProgramOptions) options);
 			} else if(programType == ProgramType.PVOUTPUT_UPLOAD){
 				return PVOutputUploadMain.startPVOutputUpload((PVOutputUploadProgramOptions) options, commandOptions, dataDirectory);
-			} else if(programType == ProgramType.MESSAGE_SENDER){
-				return MessageSenderMain.startMessageSender((MessageSenderProgramOptions) options);
 			} else if(programType == ProgramType.REQUEST) {
 				return RequestMain.startRequestProgram((RequestProgramOptions) options, dataDirectory);
 			} else if(programType == ProgramType.AUTOMATION) {
