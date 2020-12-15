@@ -8,8 +8,6 @@ import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
 
 import java.time.Duration;
 
-import static java.util.Objects.requireNonNull;
-
 @JsonTypeName("timeout")
 public class TimeoutActionNode implements ActionNode {
 
@@ -19,13 +17,10 @@ public class TimeoutActionNode implements ActionNode {
 	private Long lastFire = null;
 
 	public TimeoutActionNode(
-			@JsonProperty("timeout") Duration timeout, @JsonProperty("millis") Long millis,
+			@JsonProperty(value = "timeout", required = true) String timeoutDurationString,
 			@JsonProperty(value = "action", required = true) ActionNode actionNode
 	) {
-		if (timeout != null) {
-			millis = timeout.toMillis();
-		}
-		timeoutMillis = requireNonNull(millis);
+		timeoutMillis = Duration.parse(timeoutDurationString).toMillis();
 		this.actionNode = actionNode;
 	}
 

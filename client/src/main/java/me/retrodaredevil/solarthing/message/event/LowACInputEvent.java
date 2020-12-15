@@ -8,6 +8,8 @@ import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.solar.outback.OutbackUtil;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 
+import java.time.Duration;
+
 @JsonTypeName("lowacinput")
 public class LowACInputEvent implements MessageEvent {
 	private final long gracePeriod;
@@ -17,9 +19,12 @@ public class LowACInputEvent implements MessageEvent {
 	private Long lastSend = null;
 
 	@JsonCreator
-	public LowACInputEvent(@JsonProperty("grace_period_seconds") double gracePeriod, @JsonProperty("timeout_minutes") double timeout) {
-		this.gracePeriod = Math.round(gracePeriod * 1000);
-		this.timeout = Math.round(timeout * 60 * 1000);
+	public LowACInputEvent(
+			@JsonProperty(value = "grace_period", required = true) String gracePeriodDurationString,
+			@JsonProperty(value = "timeout", required = true) String timeoutDurationString
+	) {
+		this.gracePeriod = Duration.parse(gracePeriodDurationString).toMillis();
+		this.timeout = Duration.parse(timeoutDurationString).toMillis();
 	}
 
 	@Override

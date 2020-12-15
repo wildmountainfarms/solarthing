@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.message.event;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.message.MessageSender;
@@ -10,6 +11,7 @@ import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.time.Duration;
 
 @JsonTypeName("lowbatteryvoltage")
 public class LowBatteryVoltageEvent implements MessageEvent {
@@ -24,18 +26,12 @@ public class LowBatteryVoltageEvent implements MessageEvent {
 	@JsonCreator
 	public LowBatteryVoltageEvent(
 			@JsonProperty(value = "voltage", required = true) float batteryVoltage,
-			@JsonProperty(value = "timeout", required = true) float timeoutMinutes,
-			@JsonProperty("time") float belowForSeconds // not required. Jackson should default this to 0 if not included
+			@JsonProperty(value = "timeout", required = true) String timeoutDurationString,
+			@JsonProperty("time") String belowForDurationString // not required. // Uses duration because if seconds are used, automatically parsed into seconds
 	) {
-		if (timeoutMinutes < 0) {
-			throw new IllegalArgumentException("timeoutMinutes (\"timeout\") cannot be negative!");
-		}
-		if (belowForSeconds < 0) {
-			throw new IllegalArgumentException("belowForSeconds (\"time\") cannot be negative!");
-		}
 		this.batteryVoltage = batteryVoltage;
-		this.timeoutMillis = Math.round(timeoutMinutes * 60 * 1000);
-		this.belowForMillis = Math.round(belowForSeconds * 1000);
+		this.timeoutMillis = Duration.parse(timeoutDurationString).toMillis();
+		this.belowForMillis = belowForDurationString == null ? 0 : Duration.parse(timeoutDurationString).toMillis();
 	}
 
 	@Override

@@ -15,6 +15,7 @@ import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPacket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,8 +33,10 @@ public class MXFloatModeStuckEvent implements MessageEvent {
 	private final long timeoutMillis;
 
 	@JsonCreator
-	public MXFloatModeStuckEvent(@JsonProperty("timeout_hours") int timeoutHours) {
-		this.timeoutMillis = timeoutHours * 60 * 60 * 1000;
+	public MXFloatModeStuckEvent(
+			@JsonProperty(value = "timeout", required = true) String timeoutDurationString
+	) {
+		this.timeoutMillis = Duration.parse(timeoutDurationString).toMillis();
 	}
 
 	@Override

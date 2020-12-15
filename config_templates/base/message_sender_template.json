@@ -11,7 +11,7 @@
       "event": {
         "type": "lowbatteryvoltage",
         "voltage": 22.8,
-        "timeout": 120.0
+        "timeout": "PT120M"
       },
       "send_to": ["basic"]
     },
@@ -19,7 +19,7 @@
       "event": {
         "type": "lowbatteryvoltage",
         "voltage": 22.2,
-        "timeout": 5.0
+        "timeout": "PT5M"
       },
       "send_to": ["important"]
     },

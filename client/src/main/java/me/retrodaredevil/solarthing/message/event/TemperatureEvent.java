@@ -7,6 +7,8 @@ import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
 
+import java.time.Duration;
+
 @JsonTypeName("temperature")
 public class TemperatureEvent implements MessageEvent {
 	private final boolean low;
@@ -21,7 +23,7 @@ public class TemperatureEvent implements MessageEvent {
 			@JsonProperty("low") Boolean low,
 			@JsonProperty("celsius") Float thresholdCelsius,
 			@JsonProperty("fahrenheit") Float thresholdFahrenheit,
-			@JsonProperty(value = "timeout", required = true) float timeoutMinutes,
+			@JsonProperty(value = "timeout", required = true) String timeoutDurationString,
 			@JsonProperty("from") TemperatureType temperatureType) {
 		this.low = low != null && low; // default to high temperature
 		if (thresholdCelsius != null) {
@@ -33,7 +35,7 @@ public class TemperatureEvent implements MessageEvent {
 		} else {
 			throw new IllegalArgumentException("Either celsius or fahrenheit must be defined!");
 		}
-		this.timeoutMillis = Math.round(timeoutMinutes * 60 * 1000);
+		this.timeoutMillis = Duration.parse(timeoutDurationString).toMillis();
 		if (temperatureType == null) {
 			this.temperatureType = TemperatureType.BATTERY;
 		} else {
