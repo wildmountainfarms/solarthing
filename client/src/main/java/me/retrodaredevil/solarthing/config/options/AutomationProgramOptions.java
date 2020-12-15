@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 
 import java.io.File;
+import java.time.Duration;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
@@ -16,7 +17,7 @@ public class AutomationProgramOptions extends DatabaseTimeZoneOptionBase {
 	private List<File> actionNodeFiles;
 
 	@JsonProperty("period")
-	private double periodSeconds = 5;
+	private String periodDurationString = "PT5S";
 
 	@Override
 	public ProgramType getProgramType() {
@@ -27,6 +28,6 @@ public class AutomationProgramOptions extends DatabaseTimeZoneOptionBase {
 		return requireNonNull(actionNodeFiles);
 	}
 	public long getPeriodMillis() {
-		return Math.round(periodSeconds * 1000);
+		return Duration.parse(periodDurationString).toMillis();
 	}
 }

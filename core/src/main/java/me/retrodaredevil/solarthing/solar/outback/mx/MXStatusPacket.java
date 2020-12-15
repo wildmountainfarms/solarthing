@@ -215,7 +215,7 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 	 */
 	default boolean isOldMateFirmware(){
 		// TODO Does this mean an old MX firmware, or does this mean an old MATE firmware?
-		double dailyAH = getDailyAH();
+		int dailyAH = getDailyAH();
 		if(dailyAH == 9999){
 			return false; // new MX
 		}
