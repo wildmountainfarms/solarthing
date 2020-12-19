@@ -38,7 +38,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -210,7 +209,7 @@ public final class SolarMain {
 	}
 
 	public static int doMain(String[] args){
-		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "[LOG] Beginning main. Jar: " + JarUtil.getJarFileName());
+		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "[LOG] Beginning main. Jar: " + JarUtil.getJarFileName() + " Java version: " + System.getProperty("java.version"));
 		System.out.println("[stdout] Beginning main");
 		Cli<CommandOptions> cli = CliFactory.createCli(CommandOptions.class);
 		final CommandOptions commandOptions;

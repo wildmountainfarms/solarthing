@@ -26,6 +26,7 @@ dependencies {
 }
 
 shadowJar {
+    mergeServiceFiles()
     manifest {
         attributes 'Main-Class': project.mainClassName
         attributes 'Multi-Release': true
