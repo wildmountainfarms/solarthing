@@ -83,7 +83,8 @@ public class InfluxDbPacketSaver implements PacketHandler {
 	@Override
 	public void handle(PacketCollection packetCollection, InstantType instantType) throws PacketHandleException {
 		try(InfluxDB db = createDatabase()) {
-			final InstancePacketGroup packetGroup = PacketGroups.parseToInstancePacketGroup(packetCollection, DefaultInstanceOptions.DEFAULT_DEFAULT_INSTANCE_OPTIONS);
+			final InstancePacketGroup packetGroup = PacketGroups.parseToInstancePacketGroup(packetCollection, DefaultInstanceOptions.REQUIRE_NO_DEFAULTS);
+			DefaultInstanceOptions.requireNoDefaults(packetGroup);
 			final String database = databaseNameGetter.getDatabaseName(packetGroup);
 			try {
 				QueryResult result = db.query(new Query("CREATE DATABASE " + database, null, true));

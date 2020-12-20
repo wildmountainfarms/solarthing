@@ -16,10 +16,12 @@ import me.retrodaredevil.solarthing.config.databases.DatabaseType;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.InfluxDbDatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.LatestFileDatabaseSettings;
+import me.retrodaredevil.solarthing.config.databases.implementations.PostDatabaseSettings;
 import me.retrodaredevil.solarthing.config.io.IOConfig;
 import me.retrodaredevil.solarthing.config.io.SerialIOConfig;
 import me.retrodaredevil.solarthing.config.options.*;
 import me.retrodaredevil.solarthing.couchdb.CouchDbQueryHandler;
+import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.HourIntervalPacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.creation.TextPacketCreator;
@@ -61,7 +63,8 @@ public final class SolarMain {
 				DatabaseSettings.class,
 				CouchDbDatabaseSettings.class,
 				InfluxDbDatabaseSettings.class,
-				LatestFileDatabaseSettings.class
+				LatestFileDatabaseSettings.class,
+				PostDatabaseSettings.class
 		);
 	}
 
@@ -87,9 +90,11 @@ public final class SolarMain {
 		String source = options.getSourceId();
 		int fragment = options.getFragmentId();
 		requireNonNull(source);
+		Packet sourcePacket = InstanceSourcePackets.create(source);
+		Packet fragmentPacket = InstanceFragmentIndicatorPackets.create(fragment);
 		return (list, instantType) -> {
-			list.add(InstanceSourcePackets.create(source));
-			list.add(InstanceFragmentIndicatorPackets.create(fragment));
+			list.add(sourcePacket);
+			list.add(fragmentPacket);
 		};
 	}
 	public static PacketCollectionIdGenerator createIdGenerator(Integer uniqueIdsInOneHour){

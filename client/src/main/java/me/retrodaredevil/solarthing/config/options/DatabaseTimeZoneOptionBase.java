@@ -40,6 +40,6 @@ public abstract class DatabaseTimeZoneOptionBase extends TimeZoneOptionBase impl
 	}
 	@Override
 	public DefaultInstanceOptions getDefaultInstanceOptions() {
-		return new DefaultInstanceOptions(getDefaultSourceId(), defaultFragment);
+		return DefaultInstanceOptions.create(getDefaultSourceId(), defaultFragment);
 	}
 }

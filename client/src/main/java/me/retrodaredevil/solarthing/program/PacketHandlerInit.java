@@ -7,6 +7,7 @@ import me.retrodaredevil.solarthing.config.databases.IndividualSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.InfluxDbDatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.LatestFileDatabaseSettings;
+import me.retrodaredevil.solarthing.config.databases.implementations.PostDatabaseSettings;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketSaver;
 import me.retrodaredevil.solarthing.influxdb.ConstantDatabaseNameGetter;
 import me.retrodaredevil.solarthing.influxdb.ConstantMeasurementPacketPointCreator;
@@ -17,8 +18,10 @@ import me.retrodaredevil.solarthing.influxdb.retention.FrequentRetentionPolicyGe
 import me.retrodaredevil.solarthing.packets.handling.*;
 import me.retrodaredevil.solarthing.packets.handling.implementations.FileWritePacketHandler;
 import me.retrodaredevil.solarthing.packets.handling.implementations.JacksonStringPacketHandler;
+import me.retrodaredevil.solarthing.packets.handling.implementations.PostPacketHandler;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import me.retrodaredevil.solarthing.util.frequency.FrequentHandler;
+import okhttp3.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -92,6 +95,14 @@ public class PacketHandlerInit {
 				LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Adding latest file 'database'. This currently only saves 'status' packets");
 				statusPacketHandlers.add(new ThrottleFactorPacketHandler(
 						new FileWritePacketHandler(settings.getFile(), new JacksonStringPacketHandler(MAPPER), false),
+						statusFrequencySettings,
+						false
+				));
+			} else if (PostDatabaseSettings.TYPE.equals(config.getType())) {
+				PostDatabaseSettings settings = (PostDatabaseSettings) config.getSettings();
+
+				statusPacketHandlers.add(new ThrottleFactorPacketHandler(
+						new PostPacketHandler(settings.getUrl(), new JacksonStringPacketHandler(MAPPER), MediaType.get("application/json")),
 						statusFrequencySettings,
 						false
 				));

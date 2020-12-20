@@ -129,7 +129,7 @@ public class GraphQLProvider {
 			solcastConfig = new SolcastConfig(Collections.emptyMap());
 		}
 
-		DefaultInstanceOptions defaultInstanceOptions = new DefaultInstanceOptions(getDefaultSourceId(), getDefaultFragmentId());
+		DefaultInstanceOptions defaultInstanceOptions = DefaultInstanceOptions.create(getDefaultSourceId(), getDefaultFragmentId());
 		System.out.println("Using defaultInstanceOptions=" + defaultInstanceOptions);
 		GraphQLSchema schema = createGraphQLSchemaGenerator(objectMapper, couchDbDatabaseSettings.getCouchProperties(), defaultInstanceOptions, solcastConfig).generate();
 

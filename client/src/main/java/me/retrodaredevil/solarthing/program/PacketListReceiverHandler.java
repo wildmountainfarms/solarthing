@@ -74,7 +74,7 @@ public class PacketListReceiverHandler {
 			try {
 				packetHandler.handle(packetCollection, instantType);
 			} catch (PacketHandleException e) {
-				LOGGER.error("Couldn't packet collection id: " + packetCollection.getDbId() + " dateMillis: " + packetCollection.getDateMillis(), ". Will NOT try again.", e);
+				LOGGER.error("Couldn't handle packet collection. id: " + packetCollection.getDbId() + " dateMillis: " + packetCollection.getDateMillis() + ". Will NOT try again.", e);
 			}
 		}
 		packetCollectionList.clear();

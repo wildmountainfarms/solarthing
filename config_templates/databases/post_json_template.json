@@ -1,0 +1,12 @@
+{
+  "type": "post",
+  "settings": {
+    "packet_upload": {
+      "throttle_factor": 1,
+      "initial_skip": 0
+    }
+  },
+  "config": {
+    "url": "http://localhost:8080/solarthing.json"
+  }
+}
