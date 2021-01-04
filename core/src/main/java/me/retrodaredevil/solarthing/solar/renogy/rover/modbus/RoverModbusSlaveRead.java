@@ -10,11 +10,8 @@ import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverIdentifier;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverIdentityInfo;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverReadTable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class RoverModbusSlaveRead implements RoverReadTable {
-	private static final Logger LOGGER = LoggerFactory.getLogger(RoverModbusSlaveRead.class);
 	private static final float KWH_DIVIDER = 1_000; // units are returned in Watt Hours
 
 	private final ModbusSlave modbus;
@@ -382,7 +379,6 @@ public class RoverModbusSlaveRead implements RoverReadTable {
 		try {
 			return oneRegister(new ReadHoldingRegisters(sensing.getWorkingHoursRegister(), 1));
 		} catch (ErrorCodeException ex) {
-			LOGGER.debug("Error code exception message: " + ex.getMessage());
 			return null;
 		}
 	}

@@ -49,10 +49,8 @@ likely for an SD card to become corrupt. However, if SolarThing spams errors, th
         </RollingFile>
     </Appenders>
     <Loggers>
-        <Root level="DEBUG" >
-            <AppenderRef ref="Console" level="INFO"/>
-        </Root>
         <Logger name="me.retrodaredevil.solarthing">
+            <AppenderRef ref="Console" level="INFO"/>
             <AppenderRef ref="logInfo" level="INFO"/>
             <AppenderRef ref="logSummary" level="DEBUG"/> <!-- We can allow debugs to go through because it will filter for explicit SUMMARY marker -->
         </Logger>
