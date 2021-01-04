@@ -1,0 +1,13 @@
+version: '3.7'
+
+services:
+  syslog:
+    image: 'balabit/syslog-ng'
+    restart: always
+    ports:
+      - '514:514/udp'
+      - '601:601'
+    volumes:
+      - './syslog-ng.conf:/etc/syslog-ng/syslog-ng.conf:ro'
+      - './default-syslog-ng:/etc/default/syslog-ng:ro'
+      - '/Volumes/TheBeast/logs/syslog/solarthing:/opt/solarthing/logs'

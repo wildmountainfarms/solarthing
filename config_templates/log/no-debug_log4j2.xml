@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-This is recommended to be used with the syslog-ng docker-compose configuration
+This configuration is recommended once you have SUCCESSFULLY got SolarThing working.
 
-This requires additional setup and is recommended if you want your log files in one place on one computer.
-Do not use this unless you have many devices all contributing to a single SolarThing database.
+This configuration removes all debug messages. This makes log files take MUCH less space and will make it less
+likely for an SD card to become corrupt. However, if SolarThing spams errors, they will still be logged - all of them.
 -->
 <Configuration status="WARN">
     <Properties>
@@ -16,11 +16,21 @@ Do not use this unless you have many devices all contributing to a single SolarT
             <MarkerFilter marker="NO_CONSOLE" onMatch="DENY" onMismatch="NEUTRAL"/>
             <PatternLayout pattern="${LOG_PATTERN}"/>
         </Console>
-        <Syslog name="logAll" format="RFC5424" host="192.168.10.251" port="514"
-                protocol="UDP" appName="mate" includeMDC="true"
-                facility="local0" enterpriseNumber="18060" newLine="true"
-                messageId="Audit" id="solarthing"/>
-
+        <RollingFile name="logInfo" fileName="${logPath}/log_info.log" filePattern="${logPath}/log_info_%d{yyyy.MM.dd}-%i.log.gz"
+                     filePermissions="${filePermissions}">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <OnStartupTriggeringPolicy />
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="3GB" />
+            </Policies>
+            <DefaultRolloverStrategy>
+                <Delete basePath="${logPath}" maxDepth="1">
+                    <IfFileName glob="log_info_*.log.gz" />
+                    <IfLastModified age="60d" />
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
         <RollingFile name="logSummary" fileName="${logPath}/log_summary.log" filePattern="${logPath}/log_summary_%d{yyyy.MM.dd}-%i.log.gz"
                      filePermissions="${filePermissions}">
             <PatternLayout pattern="${LOG_PATTERN}"/>
@@ -40,24 +50,11 @@ Do not use this unless you have many devices all contributing to a single SolarT
     </Appenders>
     <Loggers>
         <Root level="DEBUG" >
-            <AppenderRef ref="Console" level="DEBUG"/>
+            <AppenderRef ref="Console" level="INFO"/>
         </Root>
         <Logger name="me.retrodaredevil.solarthing">
-            <AppenderRef ref="logAll" level="DEBUG"/>
-<!--            <AppenderRef ref="logInfo" level="INFO"/>-->
+            <AppenderRef ref="logInfo" level="INFO"/>
             <AppenderRef ref="logSummary" level="DEBUG"/> <!-- We can allow debugs to go through because it will filter for explicit SUMMARY marker -->
-        </Logger>
-        <Logger name="org.ektorp" level="INFO">
-            <AppenderRef ref="logAll"/>
-        </Logger>
-        <Logger name="org.apache.http" level="INFO">
-            <AppenderRef ref="logAll"/>
-        </Logger>
-        <Logger name="org.influxdb" level="INFO">
-            <AppenderRef ref="logAll"/>
-        </Logger>
-        <Logger name="com.slack.api" level="INFO">
-            <AppenderRef ref="logAll"/>
         </Logger>
     </Loggers>
 </Configuration>

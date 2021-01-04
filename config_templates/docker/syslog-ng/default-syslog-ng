@@ -1,0 +1,1 @@
+SYSLOGNG_OPTS="--no-caps"

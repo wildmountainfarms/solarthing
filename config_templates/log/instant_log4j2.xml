@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+This log4j2 configuration is similar to the default, but debug outputs are instantly written to their target file.
+
+The reason this is not the default is because by not flushing immediately, SD cards are written to less frequently
+making them less likely to become corrupt.
+-->
 <Configuration status="WARN">
     <Properties>
         <Property name="logPath">logs</Property>

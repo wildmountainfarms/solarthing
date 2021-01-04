@@ -1,0 +1,15 @@
+version: '3.7'
+
+services:
+  couchdb:
+    image: 'apache/couchdb:3'
+    restart: always
+    environment: # first time username and password values
+      - 'COUCHDB_USER=admin'
+      - 'COUCHDB_PASSWORD=password'
+    ports:
+      - '5984:5984'
+    volumes:
+      - './data:/opt/couchdb/data' # used for the actual data
+      - './etc:/opt/couchdb/etc/local.d' # used to keep admin username and passwords persistent
+
