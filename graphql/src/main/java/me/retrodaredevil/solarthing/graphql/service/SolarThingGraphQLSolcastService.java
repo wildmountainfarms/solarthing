@@ -5,7 +5,6 @@ import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLQuery;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
-import me.retrodaredevil.solarthing.graphql.packets.SimpleNode;
 import me.retrodaredevil.solarthing.graphql.solcast.SolcastConfig;
 import me.retrodaredevil.solarthing.solcast.SolcastOkHttpUtil;
 import me.retrodaredevil.solarthing.solcast.SolcastRetrofitUtil;

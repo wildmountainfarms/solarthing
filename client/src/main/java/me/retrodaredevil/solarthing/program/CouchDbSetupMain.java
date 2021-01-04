@@ -61,7 +61,7 @@ public class CouchDbSetupMain {
 			UserEntry user = null;
 			try {
 				user = usersClient.get(UserEntry.class, "org.couchdb.user:" + username);
-			} catch (DocumentNotFoundException e) {
+			} catch (DocumentNotFoundException ignored) {
 			}
 			if (user != null) {
 				System.out.println("The specified user exists! Continuing");

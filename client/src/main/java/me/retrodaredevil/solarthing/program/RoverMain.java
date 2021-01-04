@@ -6,8 +6,6 @@ import me.retrodaredevil.io.modbus.*;
 import me.retrodaredevil.io.serial.SerialConfig;
 import me.retrodaredevil.io.serial.SerialConfigBuilder;
 import me.retrodaredevil.solarthing.DataSource;
-import me.retrodaredevil.solarthing.InstantType;
-import me.retrodaredevil.solarthing.PacketGroupReceiver;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.actions.ActionNode;
 import me.retrodaredevil.solarthing.actions.environment.InjectEnvironment;
@@ -16,9 +14,7 @@ import me.retrodaredevil.solarthing.analytics.AnalyticsManager;
 import me.retrodaredevil.solarthing.config.options.*;
 import me.retrodaredevil.solarthing.config.request.DataRequester;
 import me.retrodaredevil.solarthing.config.request.RaspberryPiCpuTemperatureDataRequester;
-import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.handling.LatestPacketHandler;
-import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandlerMultiplexer;
 import me.retrodaredevil.solarthing.program.modbus.ModbusCacheSlave;
@@ -74,9 +70,7 @@ public class RoverMain {
 						injectEnvironmentBuilder.add(new RoverModbusEnvironment(read, write));
 					}
 				};
-				extraPacketHandlers.add((packetCollection, instantType) -> {
-					commandReceiver.getActionUpdater().update();
-				});
+				extraPacketHandlers.add((packetCollection, instantType) -> commandReceiver.getActionUpdater().update());
 			} else {
 				commandReceiver = null;
 			}

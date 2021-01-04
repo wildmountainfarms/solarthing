@@ -472,7 +472,7 @@ public final class RoverSetupProgram {
 		Voltage systemVoltage = null;
 		try {
 			systemVoltage = Modes.getActiveMode(Voltage.class, Integer.parseInt(string), Voltage.AUTO);
-		} catch(NumberFormatException ex){
+		} catch(NumberFormatException ignored){
 		}
 		if(systemVoltage == null){
 			return Voltage.AUTO;

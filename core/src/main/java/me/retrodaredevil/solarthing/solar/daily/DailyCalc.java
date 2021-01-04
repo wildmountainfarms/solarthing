@@ -50,7 +50,7 @@ public final class DailyCalc {
 				throw new AssertionError("We checked to make sure dailyPairs is not empty, so why is previousDailyPairs empty?");
 			}
 			DailyPair<T> lastDailyPair = previousDailyPairs.get(previousDailyPairs.size() - 1);
-			previousDailyPairs.set(previousDailyPairs.size() - 1, new DailyPair<T>(lastDailyPair.getStartPacket(), packet, lastDailyPair.getStartPacketType()));
+			previousDailyPairs.set(previousDailyPairs.size() - 1, new DailyPair<>(lastDailyPair.getStartPacket(), packet, lastDailyPair.getStartPacketType()));
 			float sum = getTotal(previousDailyPairs, totalGetter);
 			r.add(new SumNode(sum, dateMillis));
 		}

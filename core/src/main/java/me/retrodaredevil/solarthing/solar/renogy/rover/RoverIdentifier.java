@@ -4,8 +4,6 @@ import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 
-import java.util.Objects;
-
 /**
  * All {@link RoverIdentifier}s are equal to each other.
  * <p>

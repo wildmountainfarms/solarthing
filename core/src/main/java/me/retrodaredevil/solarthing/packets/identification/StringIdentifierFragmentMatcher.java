@@ -2,8 +2,6 @@ package me.retrodaredevil.solarthing.packets.identification;
 
 import me.retrodaredevil.solarthing.annotations.NotNull;
 
-import java.util.Objects;
-
 import static java.util.Objects.requireNonNull;
 
 public class StringIdentifierFragmentMatcher implements IdentifierFragmentMatcher {

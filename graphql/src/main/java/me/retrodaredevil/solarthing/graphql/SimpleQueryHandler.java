@@ -19,7 +19,6 @@ import me.retrodaredevil.solarthing.solar.SolarStatusPacket;
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacket;
 import me.retrodaredevil.solarthing.solar.extra.SolarExtraPacket;
 import me.retrodaredevil.solarthing.solar.outback.command.packets.MateCommandFeedbackPacket;
-import me.retrodaredevil.solarthing.solar.outback.fx.charge.FXChargingSettings;
 import me.retrodaredevil.solarthing.solar.outback.fx.meta.FXChargingSettingsPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.meta.FXChargingTemperatureAdjustPacket;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
@@ -76,7 +75,7 @@ public class SimpleQueryHandler {
 	 * @param from The date millis from
 	 * @param to The date millis to
 	 * @param sourceId The source ID or null. If null, the returned List may contain packet groups from multiple sources
-	 * @return
+	 * @return The resulting packets
 	 */
 	private List<? extends InstancePacketGroup> queryPackets(CouchDbQueryHandler queryHandler, PacketGroupParser parser, long from, long to, String sourceId) {
 		final List<ObjectNode> packets;

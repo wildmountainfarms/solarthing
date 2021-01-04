@@ -16,7 +16,7 @@ public class DailyIdentifier implements TimeIdentifier {
 	public long getTimeId(long timeMillis) {
 		synchronized (calendar) {
 			calendar.setTimeInMillis(timeMillis);
-			return 400 * calendar.get(Calendar.YEAR) + calendar.get(Calendar.DAY_OF_YEAR); // this is arbitrary, so using 400 is fine
+			return 400L * calendar.get(Calendar.YEAR) + calendar.get(Calendar.DAY_OF_YEAR); // this is arbitrary, so using 400 is fine
 		}
 	}
 }

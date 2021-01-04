@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
-import me.retrodaredevil.solarthing.packets.identification.Identifier;
 
 import static java.util.Objects.requireNonNull;
 

@@ -3,14 +3,13 @@ package me.retrodaredevil.solarthing.config.options;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import me.retrodaredevil.solarthing.actions.ActionNode;
-import me.retrodaredevil.solarthing.commands.CommandInfo;
-import me.retrodaredevil.solarthing.solar.outback.fx.charge.FXChargingSettings;
-import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
 import me.retrodaredevil.solarthing.annotations.Nullable;
+import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
 
 import java.io.File;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 

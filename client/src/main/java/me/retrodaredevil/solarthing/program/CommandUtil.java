@@ -1,15 +1,8 @@
 package me.retrodaredevil.solarthing.program;
 
 import me.retrodaredevil.couchdb.CouchProperties;
-import me.retrodaredevil.solarthing.DataSource;
 import me.retrodaredevil.solarthing.PacketGroupReceiver;
 import me.retrodaredevil.solarthing.SolarThingConstants;
-import me.retrodaredevil.solarthing.actions.ActionNode;
-import me.retrodaredevil.solarthing.actions.environment.InjectEnvironment;
-import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnvironment;
-import me.retrodaredevil.solarthing.actions.environment.MateCommandEnvironment;
-import me.retrodaredevil.solarthing.commands.CommandProvider;
-import me.retrodaredevil.solarthing.commands.SourcedCommand;
 import me.retrodaredevil.solarthing.commands.packets.open.CommandOpenPacket;
 import me.retrodaredevil.solarthing.config.databases.IndividualSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
@@ -17,11 +10,15 @@ import me.retrodaredevil.solarthing.config.options.PacketHandlingOption;
 import me.retrodaredevil.solarthing.couchdb.CouchDbDocumentKeyMap;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketRetriever;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketRetrieverHandler;
-import me.retrodaredevil.solarthing.packets.handling.*;
-import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
+import me.retrodaredevil.solarthing.packets.handling.FrequencySettings;
+import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
+import me.retrodaredevil.solarthing.packets.handling.PrintPacketHandleExceptionWrapper;
+import me.retrodaredevil.solarthing.packets.handling.ThrottleFactorPacketHandler;
 import org.ektorp.ViewQuery;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class CommandUtil {
 

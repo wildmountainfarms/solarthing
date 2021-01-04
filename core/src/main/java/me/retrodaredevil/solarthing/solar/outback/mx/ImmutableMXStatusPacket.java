@@ -3,12 +3,10 @@ package me.retrodaredevil.solarthing.solar.outback.mx;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.packets.support.Support;
-import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
-
-import me.retrodaredevil.solarthing.annotations.NotNull;
 
 @JsonIgnoreProperties(value = {
 		"auxModeName", "errors", "chargerModeName",

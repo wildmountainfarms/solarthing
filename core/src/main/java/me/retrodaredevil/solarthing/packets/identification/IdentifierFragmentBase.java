@@ -1,7 +1,6 @@
 package me.retrodaredevil.solarthing.packets.identification;
 
 import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 
 import java.util.Objects;
 

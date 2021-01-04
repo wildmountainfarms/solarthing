@@ -143,7 +143,7 @@ public final class PacketGroups {
 	 * This method takes a list of {@link InstancePacketGroup}s and then merges them together. It does this by using the lowest fragment ID as the "master" ID and then it finds
 	 * other fragments closest to it for each {@link InstancePacketGroup} with a master fragment ID. If there's a time gap for a certain master fragment ID, the next
 	 * lowest fragment ID will be used for the time where the lowest is absent. This is recursive for all fragment IDs, so if there are many gaps, it will use the next lowest fragment ID.
-	 * @param instancePacketGroups
+	 * @param instancePacketGroups The instance packet groups. Should be ordered oldest to newest
 	 * @param maxTimeDistance The maximum amount of time in milliseconds between a master packet and a packet of another fragment ID
 	 * @param masterIdIgnoreDistance The amount of time in milliseconds to allow no master ID packet until it falls through to the next ID, or null. If null, it's the same as being infinite.
 	 * @return A list of the merged packets

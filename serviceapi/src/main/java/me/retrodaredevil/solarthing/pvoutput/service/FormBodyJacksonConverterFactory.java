@@ -21,6 +21,7 @@ public class FormBodyJacksonConverterFactory extends Converter.Factory {
 		this.mapper = mapper;
 	}
 
+	@SuppressWarnings("NullableProblems")
 	@Override
 	public Converter<?, RequestBody> requestBodyConverter(Type type, Annotation[] parameterAnnotations, Annotation[] methodAnnotations, Retrofit retrofit) {
 		return (Converter<Object, RequestBody>) value -> {

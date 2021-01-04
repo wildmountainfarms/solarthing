@@ -1,11 +1,12 @@
 package me.retrodaredevil.solarthing.pvoutput.data;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.pvoutput.*;
-
-import java.util.ArrayList;
-import java.util.List;
+import me.retrodaredevil.solarthing.pvoutput.PVOutputString;
+import me.retrodaredevil.solarthing.pvoutput.SimpleDate;
+import me.retrodaredevil.solarthing.pvoutput.SimpleTime;
+import me.retrodaredevil.solarthing.pvoutput.WeatherCondition;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonExplicit

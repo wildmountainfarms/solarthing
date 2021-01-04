@@ -2,8 +2,9 @@ package me.retrodaredevil.solarthing.graphql;
 
 import io.leangen.graphql.annotations.GraphQLContext;
 import io.leangen.graphql.annotations.GraphQLQuery;
+import me.retrodaredevil.solarthing.annotations.NotNull;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.misc.common.DataIdentifiable;
-import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 import me.retrodaredevil.solarthing.solar.outback.command.packets.SuccessMateCommandPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.ACMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.OperationalMode;
@@ -12,9 +13,6 @@ import me.retrodaredevil.solarthing.solar.outback.fx.event.FXOperationalModeChan
 import me.retrodaredevil.solarthing.solar.outback.mx.ChargerMode;
 import me.retrodaredevil.solarthing.solar.outback.mx.event.MXChargerModeChangePacket;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
-import me.retrodaredevil.solarthing.annotations.Nullable;
-
-import me.retrodaredevil.solarthing.annotations.NotNull;
 
 public class SolarThingGraphQLExtensions {
 	@GraphQLQuery(name = "controllerTemperatureFahrenheit")

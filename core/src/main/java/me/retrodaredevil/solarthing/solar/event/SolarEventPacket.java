@@ -1,10 +1,12 @@
 package me.retrodaredevil.solarthing.solar.event;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
-import me.retrodaredevil.solarthing.packets.DocumentedPacket;
 import me.retrodaredevil.solarthing.packets.TypedDocumentedPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.event.*;
-import me.retrodaredevil.solarthing.solar.outback.mx.event.*;
+import me.retrodaredevil.solarthing.solar.outback.mx.event.MXAuxModeChangePacket;
+import me.retrodaredevil.solarthing.solar.outback.mx.event.MXChargerModeChangePacket;
+import me.retrodaredevil.solarthing.solar.outback.mx.event.MXErrorModeChangePacket;
+import me.retrodaredevil.solarthing.solar.outback.mx.event.MXRawDayEndPacket;
 
 /**
  * A type of packet for solar data that goes into the "event" database. These packets have one of the types defined in {@link SolarEventPacketType}

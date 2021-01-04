@@ -50,9 +50,9 @@ public class SecurityPacketReceiver implements JsonPacketReceiver {
 
 	/**
 	 * @param publicKeyLookUp The {@link PublicKeyLookUp} to get the PublicKey for a received {@link IntegrityPacket}
-	 * @param packetGroupReceiver
-	 * @param sourceId
-	 * @param fragmentId
+	 * @param packetGroupReceiver Receives successfully decrypted messages
+	 * @param sourceId The source ID being used. Only accept from this source ID
+	 * @param fragmentId The fragment ID being used. Only accept from this fragment ID
 	 */
 	public SecurityPacketReceiver(PublicKeyLookUp publicKeyLookUp, PacketGroupReceiver packetGroupReceiver, String sourceId, int fragmentId, Collection<? extends Class<? extends DocumentedPacket>> packetClasses) {
 		this.publicKeyLookUp = publicKeyLookUp;

@@ -37,10 +37,7 @@ import org.slf4j.LoggerFactory;
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.StandardOpenOption;
@@ -101,7 +98,8 @@ public class SendCommandActionNode implements ActionNode {
 			}
 			keyPair = KeyUtil.generateKeyPair();
 			try {
-				keyDirectory.mkdirs();
+				//noinspection ResultOfMethodCallIgnored
+				keyDirectory.mkdirs(); // we don't care what the result of this is, we'll catch the exception if something goes wrong
 				Files.write(publicKeyFile.toPath(), keyPair.getPublic().getEncoded(), StandardOpenOption.CREATE);
 				Files.write(privateKeyFile.toPath(), keyPair.getPrivate().getEncoded(), StandardOpenOption.CREATE);
 			} catch (IOException ioException) {

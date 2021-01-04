@@ -3,8 +3,6 @@ package me.retrodaredevil.solarthing.packets.collection;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.Packet;
 
-import java.util.Objects;
-
 /**
  * Represents a {@link FragmentedPacketGroup} where each packet has the same fragment id.
  * <p>

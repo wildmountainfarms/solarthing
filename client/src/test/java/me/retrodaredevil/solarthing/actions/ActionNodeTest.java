@@ -1,7 +1,6 @@
 package me.retrodaredevil.solarthing.actions;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
@@ -10,7 +9,7 @@ import me.retrodaredevil.solarthing.actions.environment.VariableEnvironment;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ActionNodeTest {
 

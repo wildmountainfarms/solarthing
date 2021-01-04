@@ -12,8 +12,6 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
-import static java.util.Objects.requireNonNull;
-
 @SuppressWarnings("FieldCanBeLocal")
 abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements PacketHandlingOption {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PacketHandlingOptionBase.class);

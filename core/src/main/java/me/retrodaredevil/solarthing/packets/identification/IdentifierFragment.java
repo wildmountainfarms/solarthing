@@ -1,9 +1,6 @@
 package me.retrodaredevil.solarthing.packets.identification;
 
 import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
-
-import java.util.Objects;
 
 /**
  * This is usually used as a unique key that groups a fragmentId and an {@link Identifier} together.
@@ -18,6 +15,6 @@ public interface IdentifierFragment extends IdentifierFragmentMatcher { // TODO 
 	}
 
 	static <T extends Identifier> KnownIdentifierFragment<T> create(int fragmentId, T identifier) {
-		return new IdentifierFragmentBase<T>(fragmentId, identifier);
+		return new IdentifierFragmentBase<>(fragmentId, identifier);
 	}
 }

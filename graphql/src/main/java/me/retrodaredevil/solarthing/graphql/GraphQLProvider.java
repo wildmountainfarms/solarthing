@@ -38,7 +38,6 @@ import java.lang.reflect.Modifier;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.TimeZone;
 
 @Component
 public class GraphQLProvider {

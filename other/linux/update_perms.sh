@@ -13,6 +13,7 @@ if [ "$#" -gt 0 ]; then
   fi
 else
   echo "Press enter to continue"
+  # shellcheck disable=SC2034
   read -r UNUSED_VARIABLE || exit 1
 fi
 

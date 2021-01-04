@@ -51,6 +51,8 @@ public final class SimpleDate implements Comparable<SimpleDate>, PVOutputString 
 	}
 	public Calendar toCalendar(TimeZone timeZone) {
 		Calendar calendar = new GregorianCalendar(timeZone);
+		// Java Calender stuff is between 0 and 11 for months
+		//noinspection MagicConstant
 		calendar.set(year, month - 1, day, 0, 0, 0);
 		calendar.set(Calendar.MILLISECOND, 0);
 		return calendar;
