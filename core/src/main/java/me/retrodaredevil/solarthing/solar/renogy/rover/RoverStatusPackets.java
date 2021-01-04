@@ -43,7 +43,7 @@ public final class RoverStatusPackets {
 			read.getLightControlDelayMinutes(), read.getLightControlVoltage(),
 			read.getLEDLoadCurrentSettingRaw(),
 			read.getSpecialPowerControlE021Raw(),
-			read.getSensingBundle(Rover.Sensing.SENSING_1), read.getSensingBundle(Rover.Sensing.SENSING_2), read.getSensingBundle(Rover.Sensing.SENSING_3),
+			read.getSensed1(), read.getSensed2(), read.getSensed3(),
 			read.getSensingTimeDelayRaw(), read.getLEDLoadCurrentRaw(),
 			read.getSpecialPowerControlE02DRaw()
 		);

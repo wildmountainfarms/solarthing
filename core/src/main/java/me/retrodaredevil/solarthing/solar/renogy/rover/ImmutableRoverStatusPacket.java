@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.NotNull;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 
 @JsonIgnoreProperties(value = {"productModelString", "hardwareVersionString", "softwareVersionString", "streetLightBrightness", "streetLightOn", "chargingStateName", "errors", "batteryTypeName", "loadWorkingModeName"}, allowGetters = true)
@@ -82,11 +83,11 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	private final int ledLoadCurrentSettingRaw;
 	private final int specialPowerControlE021Raw; // maybe add convenient?
 
-	private final SensingBundle sensed1, sensed2, sensed3;
+	private final @Nullable SensingBundle sensed1, sensed2, sensed3;
 
-	private final int sensingTimeDelayRaw;
-	private final int ledLoadCurrentRaw;
-	private final int specialPowerControlE02DRaw;
+	private final @Nullable Integer sensingTimeDelayRaw;
+	private final @Nullable Integer ledLoadCurrentRaw;
+	private final @Nullable Integer specialPowerControlE02DRaw;
 
 
 	@JsonCreator
@@ -113,7 +114,8 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 			@JsonProperty(value = "overDischargeTimeDelaySeconds", required = true) int overDischargeTimeDelaySeconds, @JsonProperty(value = "equalizingChargingTimeRaw", required = true) int equalizingChargingTimeRaw,
 			@JsonProperty(value = "boostChargingTimeRaw", required = true) int boostChargingTimeRaw, @JsonProperty(value = "equalizingChargingIntervalRaw", required = true) int equalizingChargingIntervalRaw, @JsonProperty(value = "temperatureCompensationFactorRaw", required = true) int temperatureCompensationFactorRaw,
 			@JsonProperty(value = "operatingStage1", required = true) OperatingSettingBundle operatingStage1, @JsonProperty(value = "operatingStage2", required = true) OperatingSettingBundle operatingStage2, @JsonProperty(value = "operatingStage3", required = true) OperatingSettingBundle operatingStage3, @JsonProperty(value = "operatingMorningOn", required = true) OperatingSettingBundle operatingMorningOn, @JsonProperty(value = "loadWorkingMode", required = true) int loadWorkingMode, @JsonProperty(value = "lightControlDelayMinutes", required = true) int lightControlDelayMinutes, @JsonProperty(value = "lightControlVoltage", required = true) int lightControlVoltage, @JsonProperty(value = "ledLoadCurrentSettingRaw", required = true) int ledLoadCurrentSettingRaw,
-			@JsonProperty(value = "specialPowerControlE021Raw", required = true) int specialPowerControlE021Raw, @JsonProperty(value = "sensed1", required = true) SensingBundle sensed1, @JsonProperty(value = "sensed2", required = true) SensingBundle sensed2, @JsonProperty(value = "sensed3", required = true) SensingBundle sensed3, @JsonProperty(value = "sensingTimeDelayRaw", required = true) int sensingTimeDelayRaw, @JsonProperty(value = "ledLoadCurrentRaw", required = true) int ledLoadCurrentRaw, @JsonProperty(value = "specialPowerControlE02DRaw", required = true) int specialPowerControlE02DRaw
+			@JsonProperty(value = "specialPowerControlE021Raw", required = true) int specialPowerControlE021Raw,
+			@JsonProperty(value = "sensed1", required = true) @Nullable SensingBundle sensed1, @JsonProperty(value = "sensed2", required = true) @Nullable SensingBundle sensed2, @JsonProperty(value = "sensed3", required = true) @Nullable SensingBundle sensed3, @JsonProperty(value = "sensingTimeDelayRaw", required = true) @Nullable Integer sensingTimeDelayRaw, @JsonProperty(value = "ledLoadCurrentRaw", required = true) @Nullable Integer ledLoadCurrentRaw, @JsonProperty(value = "specialPowerControlE02DRaw", required = true) @Nullable Integer specialPowerControlE02DRaw
 	) {
 		// region initialization
 		this.maxVoltage = maxVoltage;
@@ -574,31 +576,31 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	}
 
 	@Override
-	public int getWorkingHoursRaw(Sensing sensing) {
+	public @Nullable Integer getWorkingHoursRaw(Sensing sensing) {
 		switch(sensing){
-			case SENSING_1: return sensed1.getWorkingHoursRaw();
-			case SENSING_2: return sensed2.getWorkingHoursRaw();
-			case SENSING_3: return sensed3.getWorkingHoursRaw();
+			case SENSING_1: return sensed1 == null ? null : sensed1.getWorkingHoursRaw();
+			case SENSING_2: return sensed2 == null ? null : sensed2.getWorkingHoursRaw();
+			case SENSING_3: return sensed3 == null ? null : sensed3.getWorkingHoursRaw();
 			default: throw new UnsupportedOperationException(sensing.toString());
 		}
 	}
 
 	@Override
-	public int getPowerWithPeopleSensedRaw(Sensing sensing) {
+	public Integer getPowerWithPeopleSensedRaw(Sensing sensing) {
 		switch(sensing){
-			case SENSING_1: return sensed1.getPowerWithPeopleSensedRaw();
-			case SENSING_2: return sensed2.getPowerWithPeopleSensedRaw();
-			case SENSING_3: return sensed3.getPowerWithPeopleSensedRaw();
+			case SENSING_1: return sensed1 == null ? null : sensed1.getPowerWithPeopleSensedRaw();
+			case SENSING_2: return sensed2 == null ? null : sensed2.getPowerWithPeopleSensedRaw();
+			case SENSING_3: return sensed3 == null ? null : sensed3.getPowerWithPeopleSensedRaw();
 			default: throw new UnsupportedOperationException(sensing.toString());
 		}
 	}
 
 	@Override
-	public int getPowerWithNoPeopleSensedRaw(Sensing sensing) {
+	public Integer getPowerWithNoPeopleSensedRaw(Sensing sensing) {
 		switch(sensing){
-			case SENSING_1: return sensed1.getPowerWithNoPeopleSensedRaw();
-			case SENSING_2: return sensed2.getPowerWithNoPeopleSensedRaw();
-			case SENSING_3: return sensed3.getPowerWithNoPeopleSensedRaw();
+			case SENSING_1: return sensed1 == null ? null : sensed1.getPowerWithNoPeopleSensedRaw();
+			case SENSING_2: return sensed2 == null ? null : sensed2.getPowerWithNoPeopleSensedRaw();
+			case SENSING_3: return sensed3 == null ? null : sensed3.getPowerWithNoPeopleSensedRaw();
 			default: throw new UnsupportedOperationException(sensing.toString());
 		}
 	}
@@ -612,22 +614,22 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 			default: throw new UnsupportedOperationException(sensing.toString());
 		}
 	}
-	@Override public SensingBundle getSensed1() { return sensed1; }
-	@Override public SensingBundle getSensed2() { return sensed2; }
-	@Override public SensingBundle getSensed3() { return sensed3; }
+	@Override public @Nullable SensingBundle getSensed1() { return sensed1; }
+	@Override public @Nullable SensingBundle getSensed2() { return sensed2; }
+	@Override public @Nullable SensingBundle getSensed3() { return sensed3; }
 
 	@Override
-	public int getSensingTimeDelayRaw() {
+	public @Nullable Integer getSensingTimeDelayRaw() {
 		return sensingTimeDelayRaw;
 	}
 
 	@Override
-	public int getLEDLoadCurrentRaw() {
+	public @Nullable Integer getLEDLoadCurrentRaw() {
 		return ledLoadCurrentRaw;
 	}
 
 	@Override
-	public int getSpecialPowerControlE02DRaw() {
+	public @Nullable Integer getSpecialPowerControlE02DRaw() {
 		return specialPowerControlE02DRaw;
 	}
 

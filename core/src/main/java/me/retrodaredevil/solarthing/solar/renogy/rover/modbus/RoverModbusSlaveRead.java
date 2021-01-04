@@ -1,15 +1,21 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover.modbus;
 
 import me.retrodaredevil.io.modbus.ModbusSlave;
+import me.retrodaredevil.io.modbus.handling.ErrorCodeException;
+import me.retrodaredevil.io.modbus.handling.FunctionCodeException;
 import me.retrodaredevil.io.modbus.handling.MessageHandler;
 import me.retrodaredevil.io.modbus.handling.ReadHoldingRegisters;
 import me.retrodaredevil.solarthing.annotations.NotNull;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverIdentifier;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverIdentityInfo;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverReadTable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RoverModbusSlaveRead implements RoverReadTable {
+	private static final Logger LOGGER = LoggerFactory.getLogger(RoverModbusSlaveRead.class);
 	private static final float KWH_DIVIDER = 1_000; // units are returned in Watt Hours
 
 	private final ModbusSlave modbus;
@@ -373,26 +379,51 @@ public class RoverModbusSlaveRead implements RoverReadTable {
 	@Override public int getSpecialPowerControlE021Raw() {
 		return oneRegister(SPECIAL_POWER_CONTROL_E021);
 	}
-	@Override public int getWorkingHoursRaw(Sensing sensing) {
-		return oneRegister(new ReadHoldingRegisters(sensing.getWorkingHoursRegister(), 1));
+	@Override public @Nullable Integer getWorkingHoursRaw(Sensing sensing) {
+		try {
+			return oneRegister(new ReadHoldingRegisters(sensing.getWorkingHoursRegister(), 1));
+		} catch (ErrorCodeException ex) {
+			LOGGER.debug("Error code exception message: " + ex.getMessage());
+			return null;
+		}
 	}
-	@Override public int getPowerWithPeopleSensedRaw(Sensing sensing) {
-		return oneRegister(new ReadHoldingRegisters(sensing.getPowerWithPeopleSensedRegister(), 1));
+	@Override public @Nullable Integer getPowerWithPeopleSensedRaw(Sensing sensing) {
+		try {
+			return oneRegister(new ReadHoldingRegisters(sensing.getPowerWithPeopleSensedRegister(), 1));
+		} catch (ErrorCodeException ex) {
+			return null;
+		}
 	}
-	@Override public int getPowerWithNoPeopleSensedRaw(Sensing sensing) {
-		return oneRegister(new ReadHoldingRegisters(sensing.getPowerWithNoPeopleSensedRegister(), 1));
+	@Override public @Nullable Integer getPowerWithNoPeopleSensedRaw(Sensing sensing) {
+		try {
+			return oneRegister(new ReadHoldingRegisters(sensing.getPowerWithNoPeopleSensedRegister(), 1));
+		} catch (ErrorCodeException ex) {
+			return null;
+		}
 	}
 
 	private static final MessageHandler<int[]> SENSING_TIME_DELAY = new ReadHoldingRegisters(0xE02B, 1);
-	@Override public int getSensingTimeDelayRaw() {
-		return oneRegister(SENSING_TIME_DELAY);
+	@Override public @Nullable Integer getSensingTimeDelayRaw() {
+		try {
+			return oneRegister(SENSING_TIME_DELAY);
+		} catch (ErrorCodeException ex) {
+			return null;
+		}
 	}
 	private static final MessageHandler<int[]> LED_LOAD_CURRENT = new ReadHoldingRegisters(0xE02C, 1);
-	@Override public int getLEDLoadCurrentRaw() {
-		return oneRegister(LED_LOAD_CURRENT);
+	@Override public @Nullable Integer getLEDLoadCurrentRaw() {
+		try {
+			return oneRegister(LED_LOAD_CURRENT);
+		} catch (ErrorCodeException ex) {
+			return null;
+		}
 	}
 	private static final MessageHandler<int[]> SPECIAL_POWER_CONTROL_E02D = new ReadHoldingRegisters(0xE02D, 1);
-	@Override public int getSpecialPowerControlE02DRaw() {
-		return oneRegister(SPECIAL_POWER_CONTROL_E02D);
+	@Override public @Nullable Integer getSpecialPowerControlE02DRaw() {
+		try {
+			return oneRegister(SPECIAL_POWER_CONTROL_E02D);
+		} catch (ErrorCodeException ex) {
+			return null;
+		}
 	}
 }

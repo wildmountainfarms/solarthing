@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.annotations.NotNull;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 import me.retrodaredevil.solarthing.solar.common.*;
@@ -18,6 +19,8 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerContr
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerControl_E02D;
 
 import java.util.Collection;
+
+import static java.util.Objects.requireNonNull;
 
 @JsonExplicit
 public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeController, DailyChargeController, RecordBatteryVoltage, Identifiable {
@@ -462,34 +465,54 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	int getSpecialPowerControlE021Raw();
 	default SpecialPowerControl_E021 getSpecialPowerControlE021(){ return new ImmutableSpecialPowerControl_E021(getSpecialPowerControlE021Raw()); }
 
-	int getWorkingHoursRaw(Sensing sensing);
-	default int getWorkingHours(Sensing sensing){ return getWorkingHoursRaw(sensing) + 1; }
-	int getPowerWithPeopleSensedRaw(Sensing sensing);
-	default int getPowerWithPeopleSensedPercentage(Sensing sensing){ return getPowerWithPeopleSensedRaw(sensing) + 10; }
-	int getPowerWithNoPeopleSensedRaw(Sensing sensing);
-	default int getPowerWithNoPeopleSensedPercentage(Sensing sensing){ return getPowerWithNoPeopleSensedRaw(sensing) + 10; }
-	default SensingBundle getSensingBundle(Sensing sensing){
-		return new SensingBundle(getWorkingHoursRaw(sensing), getPowerWithPeopleSensedRaw(sensing), getPowerWithNoPeopleSensedRaw(sensing));
+	// For the Rover Elite, everything below here isn't gonna work because it doesn't have a load.
+
+	@Nullable Integer getWorkingHoursRaw(Sensing sensing);
+	@Deprecated default int getWorkingHours(Sensing sensing){ return requireNonNull(getWorkingHoursRaw(sensing)) + 1; }
+
+	@Nullable Integer getPowerWithPeopleSensedRaw(Sensing sensing);
+	@Deprecated default int getPowerWithPeopleSensedPercentage(Sensing sensing){ return requireNonNull(getPowerWithPeopleSensedRaw(sensing)) + 10; }
+
+	@Nullable Integer getPowerWithNoPeopleSensedRaw(Sensing sensing);
+	@Deprecated default int getPowerWithNoPeopleSensedPercentage(Sensing sensing){ return requireNonNull(getPowerWithNoPeopleSensedRaw(sensing)) + 10; }
+
+	default @Nullable SensingBundle getSensingBundle(Sensing sensing){
+		Integer workingHoursRaw = getWorkingHoursRaw(sensing);
+		Integer powerWithPeopleSensedRaw = getPowerWithPeopleSensedRaw(sensing);
+		Integer powerWithNoPeopleSensedRaw = getPowerWithNoPeopleSensedRaw(sensing);
+		if (workingHoursRaw == null || powerWithPeopleSensedRaw == null || powerWithNoPeopleSensedRaw == null) {
+			return null;
+		}
+		return new SensingBundle(workingHoursRaw, powerWithPeopleSensedRaw, powerWithNoPeopleSensedRaw);
 	}
 	@JsonProperty("sensed1")
-	default SensingBundle getSensed1(){ return getSensingBundle(Sensing.SENSING_1); }
+	default @Nullable SensingBundle getSensed1(){ return getSensingBundle(Sensing.SENSING_1); }
 	@JsonProperty("sensed2")
-	default SensingBundle getSensed2(){ return getSensingBundle(Sensing.SENSING_2); }
+	default @Nullable SensingBundle getSensed2(){ return getSensingBundle(Sensing.SENSING_2); }
 	@JsonProperty("sensed3")
-	default SensingBundle getSensed3(){ return getSensingBundle(Sensing.SENSING_3); }
+	default @Nullable SensingBundle getSensed3(){ return getSensingBundle(Sensing.SENSING_3); }
 
 
 	@JsonProperty("sensingTimeDelayRaw")
-	int getSensingTimeDelayRaw();
-	default int getSensingTimeDelaySeconds(){ return getSensingTimeDelayRaw() + 10; }
+	@Nullable Integer getSensingTimeDelayRaw();
+	default @Nullable Integer getSensingTimeDelaySeconds(){
+		Integer raw = getSensingTimeDelayRaw();
+		return raw == null ? null : raw + 10;
+	}
 
 	@JsonProperty("ledLoadCurrentRaw")
-	int getLEDLoadCurrentRaw();
+	@Nullable Integer getLEDLoadCurrentRaw();
 	/** Units: mA */
-	default int getLEDLoadCurrentMilliAmps(){ return getLEDLoadCurrentRaw() * 10; }
+	default @Nullable Integer getLEDLoadCurrentMilliAmps(){
+		Integer raw = getLEDLoadCurrentRaw();
+		return raw == null ? null : raw * 10;
+	}
 
 	@JsonProperty("specialPowerControlE02DRaw")
-	int getSpecialPowerControlE02DRaw();
-	default SpecialPowerControl_E02D getSpecialPowerControlE02D(){ return new ImmutableSpecialPowerControl_E02D(getSpecialPowerControlE02DRaw()); }
+	@Nullable Integer getSpecialPowerControlE02DRaw();
+	default @Nullable SpecialPowerControl_E02D getSpecialPowerControlE02D(){
+		Integer raw = getSpecialPowerControlE02DRaw();
+		return raw == null ? null : new ImmutableSpecialPowerControl_E02D(raw);
+	}
 
 }

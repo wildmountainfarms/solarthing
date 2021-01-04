@@ -2,10 +2,9 @@ package me.retrodaredevil.solarthing.solar.renogy.rover.modbus;
 
 import me.retrodaredevil.io.modbus.ModbusMessage;
 import me.retrodaredevil.io.modbus.ModbusMessages;
-import me.retrodaredevil.io.modbus.handling.FunctionCodeException;
+import me.retrodaredevil.io.modbus.handling.HandleResponseHelper;
 import me.retrodaredevil.io.modbus.handling.MessageHandler;
-import me.retrodaredevil.io.modbus.handling.ResponseException;
-import me.retrodaredevil.io.modbus.handling.ResponseLengthException;
+import me.retrodaredevil.io.modbus.handling.ParsedResponseException;
 
 public class RoverMessageHandler implements MessageHandler<Void> {
 	private final int functionCode;
@@ -27,19 +26,15 @@ public class RoverMessageHandler implements MessageHandler<Void> {
 	}
 
 	@Override
-	public Void handleResponse(ModbusMessage modbusMessage) {
-		int functionCode = modbusMessage.getFunctionCode();
-		if(functionCode != this.functionCode){
-			throw new FunctionCodeException(this.functionCode, functionCode);
-		}
-		int[] data = modbusMessage.getData();
-		if(data.length != 4){ // 4 bytes
-			throw new ResponseLengthException(4, data.length);
-		}
-		if(data[0] != 0) throw new ResponseException("data[0] must be 0! It's: " + data[0]);
-		if(data[1] != 0) throw new ResponseException("data[1] must be 0! It's: " + data[1]);
-		if(data[2] != 0) throw new ResponseException("data[2] must be 0! It's: " + data[2]);
-		if(data[3] != 1) throw new ResponseException("data[3] must be 1! It's: " + data[3]);
+	public Void handleResponse(ModbusMessage response) {
+		HandleResponseHelper.checkResponse(response, this.functionCode, 4);
+
+		int[] data = response.getData();
+
+		if(data[0] != 0) throw new ParsedResponseException(response, "data[0] must be 0! It's: " + data[0]);
+		if(data[1] != 0) throw new ParsedResponseException(response, "data[1] must be 0! It's: " + data[1]);
+		if(data[2] != 0) throw new ParsedResponseException(response, "data[2] must be 0! It's: " + data[2]);
+		if(data[3] != 1) throw new ParsedResponseException(response, "data[3] must be 1! It's: " + data[3]);
 		return null;
 	}
 }

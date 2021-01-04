@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover;
 
 import me.retrodaredevil.solarthing.annotations.NotNull;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.solar.renogy.BatteryType;
@@ -57,9 +58,9 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 	private final Map<Sensing, Integer> powerWithPeopleSensedRawMap = new HashMap<>();
 	private final Map<Sensing, Integer> powerWithNoPeopleSensedRawMap = new HashMap<>();
 
-	private int sensingTimeDelayRaw;
-	private int ledLoadCurrentRaw;
-	private int specialPowerControlE02DRaw;
+	private @Nullable Integer sensingTimeDelayRaw;
+	private @Nullable Integer ledLoadCurrentRaw;
+	private @Nullable Integer specialPowerControlE02DRaw;
 
 	public DummyRoverReadWrite(RoverReadTable roverReadTable, OnChange onChange) {
 		this.roverReadTable = roverReadTable;
@@ -500,67 +501,67 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 	}
 
 	@Override
-	public int getWorkingHoursRaw(Sensing sensing) {
+	public @Nullable Integer getWorkingHoursRaw(Sensing sensing) {
 		return workingHoursRawMap.get(sensing);
 	}
 	@Override
 	public void setWorkingHoursRaw(Sensing sensing, int value) {
-		int old = getWorkingHoursRaw(sensing);
+		Integer old = getWorkingHoursRaw(sensing);
 		workingHoursRawMap.put(sensing, value);
 		onChange.onChange("workingHoursRaw", "" + old, "" + value);
 	}
 
 	@Override
-	public int getPowerWithPeopleSensedRaw(Sensing sensing) {
+	public @Nullable Integer getPowerWithPeopleSensedRaw(Sensing sensing) {
 		return powerWithPeopleSensedRawMap.get(sensing);
 	}
 	@Override
 	public void setPowerWithPeopleSensedRaw(Sensing sensing, int value) {
-		int old = getPowerWithPeopleSensedRaw(sensing);
+		Integer old = getPowerWithPeopleSensedRaw(sensing);
 		powerWithPeopleSensedRawMap.put(sensing, value);
 		onChange.onChange("powerWithPeopleSensedRaw", "" + old, "" + value);
 	}
 
 	@Override
-	public int getPowerWithNoPeopleSensedRaw(Sensing sensing) {
+	public @Nullable Integer getPowerWithNoPeopleSensedRaw(Sensing sensing) {
 		return powerWithNoPeopleSensedRawMap.get(sensing);
 	}
 	@Override
 	public void setPowerWithNoPeopleSensedRaw(Sensing sensing, int value) {
-		int old = getPowerWithNoPeopleSensedRaw(sensing);
+		Integer old = getPowerWithNoPeopleSensedRaw(sensing);
 		powerWithNoPeopleSensedRawMap.put(sensing, value);
 		onChange.onChange("powerWithNoPeopleSensedRaw", "" + old, "" + value);
 	}
 
 	@Override
-	public int getSensingTimeDelayRaw() {
+	public @Nullable Integer getSensingTimeDelayRaw() {
 		return sensingTimeDelayRaw;
 	}
 	@Override
 	public void setSensingTimeDelayRaw(int sensingTimeDelayRaw) {
-		int old = this.sensingTimeDelayRaw;
+		Integer old = this.sensingTimeDelayRaw;
 		this.sensingTimeDelayRaw = sensingTimeDelayRaw;
 		onChange.onChange("sensingTimeDelayRaw", "" + old, "" + sensingTimeDelayRaw);
 	}
 
 	@Override
-	public int getLEDLoadCurrentRaw() {
+	public @Nullable Integer getLEDLoadCurrentRaw() {
 		return ledLoadCurrentRaw;
 	}
 	@Override
 	public void setLEDLoadCurrentRaw(int value) {
-		int old = ledLoadCurrentRaw;
+		Integer old = ledLoadCurrentRaw;
 		ledLoadCurrentRaw = value;
 		onChange.onChange("ledLoadCurrentRaw", "" + old, "" + value);
 	}
 
 	@Override
-	public int getSpecialPowerControlE02DRaw() {
+	public @Nullable Integer getSpecialPowerControlE02DRaw() {
 		return specialPowerControlE02DRaw;
 	}
 	@Override
 	public void setSpecialPowerControlE02DRaw(int specialPowerControlE02DRaw) {
-		int old = this.specialPowerControlE02DRaw;
+		Integer old = this.specialPowerControlE02DRaw;
 		this.specialPowerControlE02DRaw = specialPowerControlE02DRaw;
 		onChange.onChange("specialPowerControlE02D", "" + old, "" + specialPowerControlE02DRaw);
 	}

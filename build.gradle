@@ -12,7 +12,8 @@ buildscript {
         // retrofit is why we need allow-opens. context: https://stackoverflow.com/questions/60915381/retrofit2-maven-project-illegal-reflective-access-warning // https://github.com/square/retrofit/issues/3341
         retrofitVersion = "2.9.0" // https://github.com/square/retrofit/releases
         shadowVersion = '6.1.0' // https://github.com/johnrengelman/shadow/releases
-        ioLibVersion = '2.1.0' // https://github.com/retrodaredevil/io-lib/releases
+//        ioLibVersion = '2.1.0' // https://github.com/retrodaredevil/io-lib/releases
+        ioLibVersion = 'c91ce03106'
         okhttpVersion = "4.9.0" // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
     }
 }
