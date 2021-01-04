@@ -4,6 +4,7 @@ import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.solar.renogy.BatteryType;
 import me.retrodaredevil.solarthing.solar.renogy.Voltage;
 import me.retrodaredevil.solarthing.solar.renogy.rover.*;
+import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerControl_E02D;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -248,7 +249,12 @@ public final class RoverSetupProgram {
 							System.out.println(read.getLEDLoadCurrentMilliAmps());
 							break;
 						case "specialpowercontrole02d":
-							System.out.println(read.getSpecialPowerControlE02D().getFormattedInfo());
+							SpecialPowerControl_E02D specialPowerControl2 = read.getSpecialPowerControlE02D();
+							if (specialPowerControl2 == null) {
+								System.out.println("null");
+							} else {
+								System.out.println(specialPowerControl2.getFormattedInfo());
+							}
 							break;
 						default:
 							System.err.println(request + " is not supported!");
