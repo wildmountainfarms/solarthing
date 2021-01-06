@@ -26,6 +26,10 @@ public class RaspberryPiCpuTemperatureListUpdater implements PacketListReceiver 
 			} else {
 				InputStream inputStream = process.getInputStream();
 				int len = inputStream.read(buffer);
+				if (len < 0) {
+					LOGGER.warn("Read length is " + len + "!");
+					return;
+				}
 				String result = new String(buffer, 0, len);
 				String[] split1 = result.split("=");
 				if(split1.length != 2){

@@ -31,6 +31,7 @@ import me.retrodaredevil.solarthing.packets.instance.InstanceFragmentIndicatorPa
 import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePackets;
 import me.retrodaredevil.solarthing.program.pvoutput.PVOutputUploadMain;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
+import org.apache.logging.log4j.LogManager;
 import org.ektorp.CouchDbInstance;
 import org.ektorp.http.HttpClient;
 import org.ektorp.impl.StdCouchDbConnector;
@@ -209,13 +210,19 @@ public final class SolarMain {
 			throw new AssertionError("Unknown program type... type=" + programType + " programOptions=" + options);
 		} catch (Throwable t) {
 			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)Got throwable", t);
+			LOGGER.debug("Going to shutdown LogManager.");
+			LogManager.shutdown(); // makes sure all buffered logs are flushed // this should be done automatically, but we'll do it anyway
+			System.err.println();
+			t.printStackTrace(System.err); // print to stderr just in case logging isn't going well
 			return 1;
 		}
 	}
 
 	public static int doMain(String[] args){
-		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "[LOG] Beginning main. Jar: " + JarUtil.getJarFileName() + " Java version: " + System.getProperty("java.version"));
-		System.out.println("[stdout] Beginning main");
+		String logMessage = "Beginning main. Jar: " + JarUtil.getJarFileName() + " Java version: " + System.getProperty("java.version");
+		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "[LOG] " + logMessage);
+		System.out.println("[stdout] " + logMessage);
+		System.err.println("[stderr] " + logMessage);
 		Cli<CommandOptions> cli = CliFactory.createCli(CommandOptions.class);
 		final CommandOptions commandOptions;
 		try {
