@@ -6,6 +6,7 @@ TimeoutStartSec=1
 ExecStart=/opt/solarthing/program/rover/run.sh
 User=solarthing
 Group=solarthing
+StandardOutput=null
 
 [Install]
 WantedBy=multi-user.target

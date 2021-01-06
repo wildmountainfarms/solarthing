@@ -19,7 +19,8 @@ Stores solar data in a database to view on Android, Grafana, or PVOutput
 ## Supported Products
 * **Outback MATEs** (FX Inverter, MX/FM Charge Controller)
 * **Renogy Rover** (And other Renogy products) over modbus serial.
-  * Compatible with all [SRNE Solar](https://www.srnesolar.com) Products (And rebranded products)
+  * Includes Rover, Rover Elite, Wanderer, and possibly others
+  * Compatible with all [SRNE Solar](https://www.srnesolar.com) Charge Controllers (And rebranded products)
   * Also compatible with **Zenith Grape** Solar Charge Controller, **PowMr** MPPT Charge Controller, **RICH** SOLAR MPPT, **WindyNations TrakMax** MPPT
 
 # Quickstart
@@ -46,6 +47,8 @@ Ready to install? Use the [Quickstart](other/docs/quickstart.md)!
   * Allows for viewing of data on [pvoutput.org](https://pvoutput.org)
   * Requires CouchDB to be set up
   * Enables usage of the [PVOutput Mycroft skill](https://github.com/wildmountainfarms/pvoutput-mycroft)
+* REST API
+  * With the "post" database, all packets can be posted to a URL endpoint, useful for REST APIs
 
 
 ### Examples
@@ -115,6 +118,15 @@ The [input and output](other/docs/input_and_outputs.md) README is documentation 
 This uses all JSON for configuring everything. The files you edit are all in one place unless you decide to move them.
 
 See [Quickstart](other/docs/quickstart.md) to see how to set them up
+
+### Renogy Rover Monitoring Alternatives
+Don't like something about SolarThing? Here are some alternatives to monitor your Renogy Rover.
+* https://github.com/corbinbs/solarshed
+* https://github.com/logreposit/renogy-rover-reader-service
+* https://github.com/menloparkinnovation/renogy-rover
+* https://github.com/floreno/renogy-rover-modbus
+* https://github.com/CyberRad/CoopSolar
+* https://github.com/amigadad/SolarDataCollection
 
 ### Suggestions?
 If you have suggestions on how to improve the documentation or have a feature request, I'd love to
