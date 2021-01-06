@@ -29,26 +29,10 @@ public class RoverAnalyticsHandler implements PacketHandler {
 		for (Packet packet : packetCollection.getPackets()) {
 			if (packet instanceof RoverStatusPacket) {
 				RoverStatusPacket rover = (RoverStatusPacket) packet;
-				String data = "";
-				String model = rover.getProductModel(); // this may be sensitive info, so don't send it directly.
-				if (ProductModelUtil.isRover(model)) {
-					data += "rover";
-				} else if (ProductModelUtil.isWanderer(model)) {
-					data += "wanderer";
-				} else if (ProductModelUtil.isComet(model)) {
-					data += "comet";
-				} else if (ProductModelUtil.isZenith(model)) {
-					data += "zenith";
-				} else if (model.toLowerCase().contains("chc")) {
-					data += "chc?";
-				} else if (model.toLowerCase().contains("mppt")) {
-					data += "MPPT?";
-				} else if (model.toLowerCase().contains("pwm")) {
-					data += "PWM?";
-				} else {
-					data += "unknown";
+				String data = rover.getProductModel() + "," + rover.getRatedChargingCurrentValue();
+				if (!rover.supportsMesLoad()) {
+					data += ",no MES Load";
 				}
-				data += "," + rover.getRatedChargingCurrentValue();
 				analyticsManager.sendRoverStatus(data, timer.getUptimeHours());
 				return;
 			}

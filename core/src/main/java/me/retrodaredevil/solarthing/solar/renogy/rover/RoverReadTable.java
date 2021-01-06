@@ -515,4 +515,8 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 		return raw == null ? null : new ImmutableSpecialPowerControl_E02D(raw);
 	}
 
+	default boolean supportsMesLoad() {
+		return getWorkingHoursRaw(Sensing.SENSING_1) != null;
+	}
+
 }

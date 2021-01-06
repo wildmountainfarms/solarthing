@@ -51,7 +51,7 @@ public class ModbusCacheSlave implements ModbusSlave {
 				int register = read.getStartingDataAddress() + i;
 				Integer value = cache.get(register);
 				if (value == null) {
-					LOGGER.debug("Register: " + register + " didn't have a cached value.");
+//					LOGGER.debug("Register: " + register + " didn't have a cached value.");
 					return modbusSlave.sendRequestMessage(message);
 				}
 				values[i] = value;

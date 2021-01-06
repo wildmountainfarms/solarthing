@@ -24,7 +24,7 @@ This data may include the following:
 * The language and region of the user
 * (Mate)The devices connected to the mate (FX, MX, FM)
 * (Mate)The operational mode of FX devices
-* (Rover)The model of the CC
+* (Rover)The model of the CC ex: "RNG-CTRL-RVRPG40" or "RCC20RVRE-G1", etc
 
 This data **cannot** be used to uniquely identify you or your system. The data is anonymous.
 

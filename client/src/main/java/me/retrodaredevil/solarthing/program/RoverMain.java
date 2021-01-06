@@ -76,10 +76,6 @@ public class RoverMain {
 			}
 			return RequestMain.startRequestProgram(options, analyticsManager, list, options.getPeriod(), options.getMinimumWait(), commandReceiver, options.getCommandInfoList(), new PacketHandlerMultiplexer(extraPacketHandlers));
 		}, options.isBulkRequest() ? modbusCacheSlave -> {
-//			modbusCacheSlave.cacheRangeInclusive(0x000A, 0x001A);
-//			modbusCacheSlave.cacheRangeInclusive(0x0100, 0x0122);
-//			modbusCacheSlave.cacheRangeInclusive(0xE002, 0xE02D);
-
 			modbusCacheSlave.cacheRangeInclusive(0x000A, 0x001A);
 
 			modbusCacheSlave.cacheRangeInclusive(0x0100, 0x0109); // skip 0x010A

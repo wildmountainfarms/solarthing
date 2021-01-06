@@ -6,6 +6,7 @@ import me.retrodaredevil.io.modbus.ModbusTimeoutException;
 import me.retrodaredevil.io.modbus.handling.ParsedResponseException;
 import me.retrodaredevil.io.modbus.handling.RawResponseException;
 import me.retrodaredevil.solarthing.InstantType;
+import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.misc.error.ImmutableExceptionErrorPacket;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
@@ -94,7 +95,7 @@ public class RoverPacketListUpdater implements PacketListReceiver {
 		}
 		hasBeenSuccessful = true;
 		SpecialPowerControl_E02D specialPower2 = packet.getSpecialPowerControlE02D();
-		LOGGER.debug("Debugging special power control values: (Will debug all packets later)\n" +
+		LOGGER.debug(SolarThingConstants.NO_CONSOLE, "Debugging special power control values: (Will debug all packets later)\n" +
 				packet.getSpecialPowerControlE021().getFormattedInfo().replaceAll("\n", "\n\t") +
 				(specialPower2 == null ? "" : "\n" + specialPower2.getFormattedInfo().replaceAll("\n", "\n\t"))
 		);

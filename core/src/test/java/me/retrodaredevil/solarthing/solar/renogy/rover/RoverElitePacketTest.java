@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class RoverElitePacketTest {
@@ -119,5 +120,6 @@ public class RoverElitePacketTest {
 		assertNull(roverStatusPacket.getSensingTimeDelayRaw());
 		assertNull(roverStatusPacket.getLEDLoadCurrentRaw());
 		assertNull(roverStatusPacket.getSpecialPowerControlE02DRaw());
+		assertFalse(roverStatusPacket.supportsMesLoad());
 	}
 }
