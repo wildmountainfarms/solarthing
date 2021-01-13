@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.message.event;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.message.MessageSender;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.solar.outback.OutbackUtil;
@@ -11,17 +12,14 @@ import me.retrodaredevil.solarthing.solar.outback.fx.MiscMode;
 
 import java.time.Duration;
 
+import static java.util.Objects.requireNonNull;
+
 @JsonTypeName("lowacinput")
-public class LowACInputEvent implements MessageEvent {
-	private final long gracePeriod;
-	private final long timeout;
+public class LowACInputEvent extends GracePeriodTimeoutEvent {
 	private final int lowThresholdVoltage;
 	private final boolean lowRaw;
 	private final int highThresholdVoltage;
 	private final boolean highRaw;
-
-	private Long startTime = null;
-	private Long lastSend = null;
 
 	@JsonCreator
 	public LowACInputEvent(
@@ -32,8 +30,7 @@ public class LowACInputEvent implements MessageEvent {
 			@JsonProperty(value = "high_threshold") Integer highThreshold,
 			@JsonProperty(value = "high_threshold_raw") Integer highThresholdRaw
 	) {
-		this.gracePeriod = Duration.parse(gracePeriodDurationString).toMillis();
-		this.timeout = Duration.parse(timeoutDurationString).toMillis();
+		super(gracePeriodDurationString, timeoutDurationString);
 		if (lowThreshold != null) {
 			lowThresholdVoltage = lowThreshold;
 			lowRaw = false;
@@ -58,7 +55,7 @@ public class LowACInputEvent implements MessageEvent {
 	}
 
 	@Override
-	public void run(MessageSender sender, FragmentedPacketGroup previous, FragmentedPacketGroup current) {
+	protected @Nullable Runnable createDesiredTrigger(MessageSender sender, FragmentedPacketGroup previous, FragmentedPacketGroup current) {
 		FXStatusPacket fx = OutbackUtil.getMasterFX(current);
 		if (fx != null) {
 			boolean is240 = fx.getMiscModes().contains(MiscMode.FX_230V_UNIT);
@@ -66,22 +63,9 @@ public class LowACInputEvent implements MessageEvent {
 			int highThreshold = is240 && highRaw ? 2 * highThresholdVoltage : highThresholdVoltage;
 			int inputVoltage = fx.getInputVoltage();
 			if (inputVoltage >= lowThreshold && inputVoltage <= highThreshold) {
-				final Long startTime = this.startTime;
-				long now = System.currentTimeMillis();
-				if (startTime == null) {
-					this.startTime = now;
-				} else if (startTime + gracePeriod < now) {
-					final Long lastSend = this.lastSend;
-					if (lastSend == null || lastSend + timeout < now) {
-						this.lastSend = now;
-						long timeMillis = now - startTime;
-						long seconds = Math.round(timeMillis / 1000.0);
-						sender.sendMessage("Low AC Input Voltage! " + inputVoltage + "V (" + seconds + " seconds)");
-					}
-				}
-			} else {
-				startTime = null;
+				return () -> sender.sendMessage("Low AC Input Voltage! " + inputVoltage + "V (" + getPrettyDurationString() + ")");
 			}
 		}
+		return null;
 	}
 }
