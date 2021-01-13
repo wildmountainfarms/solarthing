@@ -53,8 +53,11 @@ public class W1TemperatureListUpdater implements PacketListReceiver {
 			LOGGER.error("Could not read slave file for name=" + name, e);
 			return;
 		}
-		if (lines.size() != 2) {
-			LOGGER.warn("lines.size() is " + lines.size() + "! lines={}", lines);
+		if (lines.isEmpty()) {
+			LOGGER.debug("lines is empty! name=" + name); // debug since this is so common
+			return;
+		} else if (lines.size() != 2) {
+			LOGGER.warn("lines.size() is " + lines.size() + "! lines=" + lines + ". name=" + name);
 			return;
 		}
 		String line1 = lines.get(0);

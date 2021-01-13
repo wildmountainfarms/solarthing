@@ -17,9 +17,11 @@ Do not use this unless you have many devices all contributing to a single SolarT
             <PatternLayout pattern="${LOG_PATTERN}"/>
         </Console>
         <Syslog name="logAll" format="RFC5424" host="192.168.10.251" port="514"
-                protocol="UDP" appName="mate" includeMDC="true"
+                protocol="UDP" appName="unknownappname" includeMDC="true"
                 facility="local0" enterpriseNumber="18060" newLine="true"
-                messageId="Audit" id="solarthing"/>
+                messageId="Audit" id="solarthing">
+            <ExceptionPattern>%ex{full}</ExceptionPattern>
+        </Syslog>
 
         <RollingFile name="logSummary" fileName="${logPath}/log_summary.log" filePattern="${logPath}/log_summary_%d{yyyy.MM.dd}-%i.log.gz"
                      filePermissions="${filePermissions}">
