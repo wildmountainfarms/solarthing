@@ -57,7 +57,7 @@ public class LowBatteryVoltageEvent implements MessageEvent {
 				long currentlyBelowForMillis = now - belowStartTime;
 				String extra = "";
 				if (currentlyBelowForMillis > 0) { // this means that belowForMillis != 0
-					extra += " (" + Math.round(currentlyBelowForMillis / 1000.0) + " seconds)";
+					extra += " (" + TimeUtil.millisToPrettyString(currentlyBelowForMillis) + ")";
 				}
 				sender.sendMessage("Low Battery: " + FORMAT.format(currentBatteryVoltage) + "V (" + FORMAT.format(batteryVoltage) + "V warning)" + extra);
 			}

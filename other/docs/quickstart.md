@@ -1,7 +1,9 @@
 # Quickstart
 Ready to get started? Run these commands:
 
-If you're using Windows, check [this](windows_usage.md) out!
+If you're using Windows to run SolarThing, check [this](windows_usage.md) out!
+
+If you have a Raspberry Pi and don't know what you're doing, click [here](./raspberry_pi_setup.md).
 
 Run this to quickly get setup (Linux Only):
 ```shell script

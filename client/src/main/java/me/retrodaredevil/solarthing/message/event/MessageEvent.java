@@ -13,6 +13,8 @@ import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 		@JsonSubTypes.Type(MXFloatModeStuckEvent.class),
 		@JsonSubTypes.Type(LowACInputEvent.class),
 		@JsonSubTypes.Type(ACModeAlertEvent.class),
+		@JsonSubTypes.Type(GeneratorStateEvent.class),
+		@JsonSubTypes.Type(GeneratorUnusedAlertEvent.class),
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
 public interface MessageEvent {

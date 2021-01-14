@@ -33,16 +33,7 @@ public abstract class GracePeriodTimeoutEvent implements MessageEvent {
 	}
 	protected final String getPrettyDurationString() {
 		long millis = requireNonNull(getDurationMillis());
-		long seconds = Math.round(millis / 1000.0);
-		if (seconds < 120) {
-			return seconds + " seconds";
-		}
-		long minutes = seconds / 60;
-		if (minutes >= 10) {
-			return minutes + " minutes";
-		}
-		long remainderSeconds = seconds % 60;
-		return minutes + " minutes " + remainderSeconds + " seconds";
+		return TimeUtil.millisToPrettyString(millis);
 	}
 
 	@Override
