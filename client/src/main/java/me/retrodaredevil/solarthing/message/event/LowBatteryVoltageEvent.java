@@ -1,8 +1,10 @@
 package me.retrodaredevil.solarthing.message.event;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.message.MessageSender;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
@@ -12,29 +14,25 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.Duration;
 
+import static java.util.Objects.requireNonNull;
+
 @JsonTypeName("lowbatteryvoltage")
-public class LowBatteryVoltageEvent implements MessageEvent {
+public class LowBatteryVoltageEvent extends GracePeriodTimeoutEvent {
 	private static final NumberFormat FORMAT = new DecimalFormat("0.0");
 	private final float batteryVoltage;
-	private final long timeoutMillis;
-	private final long belowForMillis;
-
-	private Long belowStartTime = null;
-	private Long lastSend = null;
 
 	@JsonCreator
 	public LowBatteryVoltageEvent(
 			@JsonProperty(value = "voltage", required = true) float batteryVoltage,
-			@JsonProperty(value = "timeout", required = true) String timeoutDurationString,
-			@JsonProperty("time") String belowForDurationString // not required. // Uses duration because if seconds are used, automatically parsed into seconds
+			@JsonProperty("grace_period") @JsonAlias("time") String belowForDurationString,
+			@JsonProperty(value = "timeout", required = true) String timeoutDurationString
 	) {
+		super(belowForDurationString == null ? 0 : Duration.parse(belowForDurationString).toMillis(), Duration.parse(timeoutDurationString).toMillis());
 		this.batteryVoltage = batteryVoltage;
-		this.timeoutMillis = Duration.parse(timeoutDurationString).toMillis();
-		this.belowForMillis = belowForDurationString == null ? 0 : Duration.parse(timeoutDurationString).toMillis();
 	}
 
 	@Override
-	public void run(MessageSender sender, FragmentedPacketGroup previous, FragmentedPacketGroup current) {
+	protected @Nullable Runnable createDesiredTrigger(MessageSender sender, FragmentedPacketGroup previous, FragmentedPacketGroup current) {
 		Float currentBatteryVoltage = null;
 		for (Packet packet : current.getPackets()) {
 			if (packet instanceof BatteryVoltage) {
@@ -46,23 +44,17 @@ public class LowBatteryVoltageEvent implements MessageEvent {
 			}
 		}
 		if (currentBatteryVoltage != null) {
-			long now = System.currentTimeMillis();
-			if (belowStartTime == null) {
-				belowStartTime = now;
-			}
-			final long belowStartTime = this.belowStartTime;
-			final Long lastSend = this.lastSend;
-			if ((lastSend == null || lastSend + timeoutMillis <= now) && belowStartTime + belowForMillis <= now) {
-				this.lastSend = now;
-				long currentlyBelowForMillis = now - belowStartTime;
+			String batteryVoltageString = FORMAT.format(currentBatteryVoltage);
+			return () -> {
 				String extra = "";
-				if (currentlyBelowForMillis > 0) { // this means that belowForMillis != 0
-					extra += " (" + TimeUtil.millisToPrettyString(currentlyBelowForMillis) + ")";
+				long durationMillis = requireNonNull(getDurationMillis());
+				if (durationMillis > 200) {
+					extra += " (" + TimeUtil.millisToPrettyString(durationMillis) + ")";
 				}
-				sender.sendMessage("Low Battery: " + FORMAT.format(currentBatteryVoltage) + "V (" + FORMAT.format(batteryVoltage) + "V warning)" + extra);
-			}
-		} else {
-			belowStartTime = null;
+				String text = "Low Battery: " + batteryVoltageString + "V (" + FORMAT.format(batteryVoltage) + "V warning)" + extra;
+				sender.sendMessage(text);
+			};
 		}
+		return null;
 	}
 }
