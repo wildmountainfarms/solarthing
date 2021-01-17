@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.solar.outback;
 
+import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacket;
@@ -37,7 +38,7 @@ public final class OutbackUtil {
 	 * @return The {@link FXStatusPacket} from {@code packetCollection} or null if there were no FX packets in {@code packetCollection}
 	 */
 	@Contract(pure = true)
-	public static FXStatusPacket getMasterFX(PacketGroup packetGroup){
+	public static @Nullable FXStatusPacket getMasterFX(PacketGroup packetGroup){
 		return getMasterFX(packetGroup.getPackets());
 	}
 }

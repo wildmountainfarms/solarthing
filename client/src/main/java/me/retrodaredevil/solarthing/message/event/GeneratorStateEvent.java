@@ -14,6 +14,8 @@ public class GeneratorStateEvent implements MessageEvent {
 	@Override
 	public void run(MessageSender sender, FragmentedPacketGroup previous, FragmentedPacketGroup current) {
 		FXStatusPacket fx = OutbackUtil.getMasterFX(current);
+		if (fx == null) return;
+
 		ACMode mode = fx.getACMode();
 		final Boolean wasGeneratorOn = this.generatorOn;
 		if (mode == ACMode.NO_AC) {
