@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing.influxdb;
+package me.retrodaredevil.solarthing.influxdb.influxdb1;
 
 import me.retrodaredevil.solarthing.packets.Packet;
 import org.influxdb.dto.Point;

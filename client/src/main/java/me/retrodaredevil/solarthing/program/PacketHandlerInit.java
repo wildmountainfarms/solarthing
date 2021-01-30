@@ -9,10 +9,10 @@ import me.retrodaredevil.solarthing.config.databases.implementations.InfluxDbDat
 import me.retrodaredevil.solarthing.config.databases.implementations.LatestFileDatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.PostDatabaseSettings;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketSaver;
-import me.retrodaredevil.solarthing.influxdb.ConstantDatabaseNameGetter;
-import me.retrodaredevil.solarthing.influxdb.ConstantMeasurementPacketPointCreator;
-import me.retrodaredevil.solarthing.influxdb.DocumentedMeasurementPacketPointCreator;
-import me.retrodaredevil.solarthing.influxdb.InfluxDbPacketSaver;
+import me.retrodaredevil.solarthing.influxdb.ConstantNameGetter;
+import me.retrodaredevil.solarthing.influxdb.influxdb1.ConstantMeasurementPacketPointCreator;
+import me.retrodaredevil.solarthing.influxdb.influxdb1.DocumentedMeasurementPacketPointCreator;
+import me.retrodaredevil.solarthing.influxdb.influxdb1.InfluxDbPacketSaver;
 import me.retrodaredevil.solarthing.influxdb.retention.ConstantRetentionPolicyGetter;
 import me.retrodaredevil.solarthing.influxdb.retention.FrequentRetentionPolicyGetter;
 import me.retrodaredevil.solarthing.packets.handling.*;
@@ -66,7 +66,7 @@ public class PacketHandlerInit {
 						new InfluxDbPacketSaver(
 								settings.getInfluxProperties(),
 								settings.getOkHttpProperties(),
-								new ConstantDatabaseNameGetter(databaseName != null ? databaseName : uniqueStatusName),
+								new ConstantNameGetter(databaseName != null ? databaseName : uniqueStatusName),
 								measurementName != null
 										? new ConstantMeasurementPacketPointCreator(measurementName)
 										: (databaseName != null
@@ -81,7 +81,7 @@ public class PacketHandlerInit {
 				eventPacketHandlers.add(new RetryFailedPacketHandler(new InfluxDbPacketSaver(
 						settings.getInfluxProperties(),
 						settings.getOkHttpProperties(),
-						new ConstantDatabaseNameGetter(databaseName != null ? databaseName : uniqueEventName),
+						new ConstantNameGetter(databaseName != null ? databaseName : uniqueEventName),
 						measurementName != null
 								? new ConstantMeasurementPacketPointCreator(measurementName)
 								: (databaseName != null

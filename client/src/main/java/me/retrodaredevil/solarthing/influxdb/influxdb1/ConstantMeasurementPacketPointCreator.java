@@ -1,5 +1,6 @@
-package me.retrodaredevil.solarthing.influxdb;
+package me.retrodaredevil.solarthing.influxdb.influxdb1;
 
+import me.retrodaredevil.solarthing.influxdb.PointUtil;
 import me.retrodaredevil.solarthing.packets.DocumentedPacket;
 import me.retrodaredevil.solarthing.packets.DocumentedPacketType;
 import me.retrodaredevil.solarthing.packets.Packet;
@@ -7,6 +8,8 @@ import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifier;
 import org.influxdb.dto.Point;
+
+import java.util.Map;
 
 public class ConstantMeasurementPacketPointCreator implements PacketPointCreator {
 	private final String measurement;
@@ -18,18 +21,8 @@ public class ConstantMeasurementPacketPointCreator implements PacketPointCreator
 	@Override
 	public Point.Builder createBuilder(Packet packet) {
 		Point.Builder r = Point.measurement(measurement);
-		if(packet instanceof Identifiable){
-			Identifier identifier = ((Identifiable) packet).getIdentifier();
-			r.tag("identifier", identifier.getRepresentation());
-			if(identifier instanceof SupplementaryIdentifier){
-				SupplementaryIdentifier supplementaryIdentifier = (SupplementaryIdentifier) identifier;
-				r.tag("identifier_supplementaryTo", supplementaryIdentifier.getSupplementaryTo().getRepresentation());
-			}
-		}
-		if(packet instanceof DocumentedPacket){
-			DocumentedPacket documentedPacket = (DocumentedPacket) packet;
-			DocumentedPacketType type = documentedPacket.getPacketType();
-			r.tag("packetType", type.toString());
+		for (Map.Entry<String, String> entry : PointUtil.getTags(packet).entrySet()) {
+			r.tag(entry.getKey(), entry.getValue());
 		}
 		return r;
 	}

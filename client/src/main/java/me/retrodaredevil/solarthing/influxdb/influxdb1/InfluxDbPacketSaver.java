@@ -1,14 +1,15 @@
-package me.retrodaredevil.solarthing.influxdb;
+package me.retrodaredevil.solarthing.influxdb.influxdb1;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ValueNode;
-import me.retrodaredevil.influxdb.InfluxProperties;
+import me.retrodaredevil.influxdb.influxdb1.InfluxProperties;
 import me.retrodaredevil.okhttp3.OkHttpProperties;
 import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.TagKeys;
+import me.retrodaredevil.solarthing.influxdb.NameGetter;
 import me.retrodaredevil.solarthing.influxdb.retention.RetentionPolicy;
 import me.retrodaredevil.solarthing.influxdb.retention.RetentionPolicyGetter;
 import me.retrodaredevil.solarthing.influxdb.retention.RetentionPolicySetting;
@@ -49,14 +50,14 @@ public class InfluxDbPacketSaver implements PacketHandler {
 
 	private final InfluxProperties properties;
 	private final OkHttpProperties okHttpProperties;
-	private final DatabaseNameGetter databaseNameGetter;
+	private final NameGetter databaseNameGetter;
 	private final PacketPointCreator pointCreator;
 	private final RetentionPolicyGetter retentionPolicyGetter;
 
 	public InfluxDbPacketSaver(
 			InfluxProperties properties,
 			OkHttpProperties okHttpProperties,
-			DatabaseNameGetter databaseNameGetter,
+			NameGetter databaseNameGetter,
 			PacketPointCreator pointCreator,
 			RetentionPolicyGetter retentionPolicyGetter) {
 		this.properties = requireNonNull(properties);
@@ -104,7 +105,7 @@ public class InfluxDbPacketSaver implements PacketHandler {
 				if(retentionPolicyName != null){
 					final RetentionPolicy policy = retentionPolicySetting.getRetentionPolicy();
 					if(policy != null){
-						final String policyString = policy.toPolicyString(retentionPolicyName, database);
+						final String policyString = policy.toPolicyStringInfluxDb1(retentionPolicyName, database);
 						final boolean needsAlter;
 						if(retentionPolicySetting.isTryToCreate()){
 							final QueryResult result;

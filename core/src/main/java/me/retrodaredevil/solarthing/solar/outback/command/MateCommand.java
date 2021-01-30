@@ -14,7 +14,7 @@ import java.util.Map;
  * Represents a command you are able to send to the Mate.
  * <p>
  * Note: Aux on/off control may not work. Some have reported that setting the Aux output function to "Remote" and turning
- * Aux to "Auto" will allow you to control it. <a href="http://outbackpower.com/forum/viewtopic.php?f=14&t=7976">outbackpower.com forum thread</a>
+ * Aux control to "Auto" will allow you to control it. <a href="https://forum.outbackpower.com/viewtopic.php?f=14&t=7976&sid=710ecc3edc75cf26584532c3b93d5aef">outbackpower.com forum thread</a>
  * You also must make sure the Aux is not used for Generator control (AGS Control)
  */
 public enum MateCommand implements Command {

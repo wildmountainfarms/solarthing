@@ -1,9 +1,9 @@
-package me.retrodaredevil.solarthing.influxdb;
+package me.retrodaredevil.solarthing.influxdb.influxdb1;
 
 import me.retrodaredevil.solarthing.solar.outback.OutbackData;
 import org.junit.jupiter.api.Test;
 
-import static me.retrodaredevil.solarthing.influxdb.InfluxDbPacketSaver.getTagKeys;
+import static me.retrodaredevil.solarthing.influxdb.influxdb1.InfluxDbPacketSaver.getTagKeys;
 
 class InfluxDbPacketSaverTest {
 

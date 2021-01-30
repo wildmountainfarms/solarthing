@@ -38,7 +38,7 @@ public class SlackMessageSender implements MessageSender {
 		try {
 			slack.methods(authToken).chatPostMessage(req -> req.channel(channelId).text(message));
 		} catch (IOException | SlackApiException e) {
-			LOGGER.error("Could not connect to slack.", e);
+			LOGGER.error("Could not connect to slack.", e); // TODO This sometimes happens. Maybe retry sending message at a later time?
 		}
 	}
 }
