@@ -1,15 +1,15 @@
 package me.retrodaredevil.solarthing.influxdb.influxdb1;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ValueNode;
 import me.retrodaredevil.influxdb.influxdb1.InfluxProperties;
 import me.retrodaredevil.okhttp3.OkHttpProperties;
+import me.retrodaredevil.okhttp3.OkHttpUtil;
 import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.SolarThingConstants;
-import me.retrodaredevil.solarthing.annotations.TagKeys;
 import me.retrodaredevil.solarthing.influxdb.NameGetter;
+import me.retrodaredevil.solarthing.influxdb.PointUtil;
 import me.retrodaredevil.solarthing.influxdb.retention.RetentionPolicy;
 import me.retrodaredevil.solarthing.influxdb.retention.RetentionPolicyGetter;
 import me.retrodaredevil.solarthing.influxdb.retention.RetentionPolicySetting;
@@ -33,7 +33,9 @@ import org.influxdb.dto.QueryResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.Objects.requireNonNull;
@@ -65,20 +67,6 @@ public class InfluxDbPacketSaver implements PacketHandler {
 		this.databaseNameGetter = requireNonNull(databaseNameGetter);
 		this.pointCreator = requireNonNull(pointCreator);
 		this.retentionPolicyGetter = retentionPolicyGetter;
-	}
-	static Collection<String> getTagKeys(Class<?> clazz){
-		/*
-		Why we have to do this: https://stackoverflow.com/questions/26910620/class-getannotations-getdeclaredannotations-returns-empty-array-for-subcla#26911089
-		 */
-		Collection<String> tagKeys = new HashSet<>();
-		for(Class<?> interfaceClass : clazz.getInterfaces()){
-			tagKeys.addAll(getTagKeys(interfaceClass));
-		}
-		TagKeys[] tagKeysAnnotations = clazz.getAnnotationsByType(TagKeys.class); // since Java 8, but that's fine
-		for(TagKeys tagKeysAnnotation : tagKeysAnnotations){
-			tagKeys.addAll(Arrays.asList(tagKeysAnnotation.value()));
-		}
-		return tagKeys;
 	}
 
 	@Override
@@ -169,9 +157,9 @@ public class InfluxDbPacketSaver implements PacketHandler {
 			for (Packet packet : packetGroup.getPackets()) {
 				Point.Builder pointBuilder = pointCreator.createBuilder(packet).time(time, TimeUnit.MILLISECONDS);
 
-				Collection<String> tagKeys = getTagKeys(packet.getClass());
+				Collection<String> tagKeys = PointUtil.getTagKeys(packet.getClass());
 				ObjectNode json = OBJECT_MAPPER.valueToTree(packet);
-				for (Map.Entry<String, ValueNode> entry : flattenJsonObject(json)) {
+				for (Map.Entry<String, ValueNode> entry : PointUtil.flattenJsonObject(json)) {
 					String key = entry.getKey();
 					ValueNode prim = entry.getValue();
 					if(tagKeys.contains(key)){
@@ -214,33 +202,9 @@ public class InfluxDbPacketSaver implements PacketHandler {
 				properties.getUrl(),
 				properties.getUsername(),
 				properties.getPassword(),
-				new OkHttpClient.Builder()
-						.retryOnConnectionFailure(okHttpProperties.isRetryOnConnectionFailure())
-						.callTimeout(okHttpProperties.getCallTimeoutMillis(), TimeUnit.MILLISECONDS)
-						.connectTimeout(okHttpProperties.getConnectTimeoutMillis(), TimeUnit.MILLISECONDS)
-						.readTimeout(okHttpProperties.getReadTimeoutMillis(), TimeUnit.MILLISECONDS)
-						.writeTimeout(okHttpProperties.getWriteTimeoutMillis(), TimeUnit.MILLISECONDS)
-						.pingInterval(okHttpProperties.getPingIntervalMillis(), TimeUnit.MILLISECONDS)
+				OkHttpUtil.createBuilder(okHttpProperties)
 						.addInterceptor(new HttpLoggingInterceptor(INFLUX_LOGGER::info).setLevel(HttpLoggingInterceptor.Level.BASIC)),
 				InfluxDB.ResponseFormat.JSON
 		).setLogLevel(InfluxDB.LogLevel.NONE);
-	}
-	private Set<Map.Entry<String, ValueNode>> flattenJsonObject(ObjectNode object) {
-		Map<String, ValueNode> r = new LinkedHashMap<>();
-		for (Iterator<Map.Entry<String, JsonNode>> it = object.fields(); it.hasNext(); ) {
-			Map.Entry<String, JsonNode> entry = it.next();
-			String key = entry.getKey();
-			JsonNode element = entry.getValue();
-			if (element.isValueNode() && !element.isNull()) {
-				r.put(key, (ValueNode) element);
-			} else if(element.isObject()){
-				Set<Map.Entry<String, ValueNode>> flat = flattenJsonObject((ObjectNode) element);
-				for(Map.Entry<String, ValueNode> subEntry : flat){
-					r.put(key + "." + subEntry.getKey(), subEntry.getValue());
-				}
-			}
-			// ignore nulls and arrays
-		}
-		return r.entrySet();
 	}
 }

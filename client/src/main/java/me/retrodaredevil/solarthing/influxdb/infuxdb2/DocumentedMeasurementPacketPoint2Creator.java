@@ -1,19 +1,15 @@
-package me.retrodaredevil.solarthing.influxdb.influxdb1;
+package me.retrodaredevil.solarthing.influxdb.infuxdb2;
 
+import com.influxdb.client.write.Point;
 import me.retrodaredevil.solarthing.influxdb.PointUtil;
 import me.retrodaredevil.solarthing.packets.DocumentedPacket;
 import me.retrodaredevil.solarthing.packets.DocumentedPacketType;
 import me.retrodaredevil.solarthing.packets.Packet;
-import me.retrodaredevil.solarthing.packets.identification.Identifiable;
-import me.retrodaredevil.solarthing.packets.identification.Identifier;
-import org.influxdb.dto.Point;
 
-import java.util.Map;
-
-public enum DocumentedMeasurementPacketPointCreator implements PacketPointCreator {
+public enum DocumentedMeasurementPacketPoint2Creator implements PacketPoint2Creator {
 	INSTANCE;
 	@Override
-	public Point.Builder createBuilder(Packet packet) {
+	public Point createBuilder(Packet packet) {
 		if(packet instanceof DocumentedPacket){
 			DocumentedPacket documentedPacket = (DocumentedPacket) packet;
 			DocumentedPacketType type = documentedPacket.getPacketType();
@@ -21,10 +17,8 @@ public enum DocumentedMeasurementPacketPointCreator implements PacketPointCreato
 		}
 		return apply(Point.measurement(packet.getClass().getSimpleName()), packet);
 	}
-	private static Point.Builder apply(Point.Builder point, Packet packet) {
-		for (Map.Entry<String, String> entry : PointUtil.getTags(packet).entrySet()) {
-			point.tag(entry.getKey(), entry.getValue());
-		}
+	private static Point apply(Point point, Packet packet) {
+		point.addTags(PointUtil.getTags(packet));
 		return point;
 	}
 }
