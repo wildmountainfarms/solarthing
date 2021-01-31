@@ -8,10 +8,12 @@ import com.influxdb.LogLevel;
 import com.influxdb.client.InfluxDBClient;
 import com.influxdb.client.InfluxDBClientFactory;
 import com.influxdb.client.InfluxDBClientOptions;
-import com.influxdb.client.domain.BucketRetentionRules;
+import com.influxdb.client.domain.Bucket;
+import com.influxdb.client.domain.Organization;
 import com.influxdb.client.domain.WritePrecision;
 import com.influxdb.client.write.Point;
 import com.influxdb.exceptions.InfluxException;
+import com.influxdb.exceptions.UnprocessableEntityException;
 import me.retrodaredevil.influxdb.influxdb2.InfluxDb2Properties;
 import me.retrodaredevil.okhttp3.OkHttpProperties;
 import me.retrodaredevil.okhttp3.OkHttpUtil;
@@ -76,12 +78,47 @@ public class InfluxDb2PacketSaver implements PacketHandler {
 				.setLogLevel(LogLevel.NONE)
 				.enableGzip();
 	}
+	private Organization findOrCreateOrg(String name) throws PacketHandleException {
+		final List<Organization> organizations;
+		try {
+			organizations = client.getOrganizationsApi().findOrganizations();
+		} catch (InfluxException ex) {
+			throw new PacketHandleException("Couldn't find organizations", ex);
+		}
+		for (Organization organization : organizations) {
+			if (organization.getName().equals(properties.getOrg())) {
+				return organization;
+			}
+		}
+		try {
+			return client.getOrganizationsApi().createOrganization(properties.getOrg());
+		} catch (InfluxException ex) {
+			throw new PacketHandleException("Couldn't create organization", ex);
+		}
+	}
+	private Bucket findOrCreateBucket(String name, Organization organization) throws PacketHandleException {
+		final Bucket r;
+		try {
+			r = client.getBucketsApi().findBucketByName(name);
+		} catch (InfluxException ex) {
+			throw new PacketHandleException("Couldn't find bucket", ex);
+		}
+		if (r == null) {
+			try {
+				return client.getBucketsApi().createBucket(name, organization.getId());
+			} catch (InfluxException ex) {
+				throw new PacketHandleException("Couldn't create bucket", ex);
+			}
+		}
+		return r;
+	}
 
 	@Override
 	public void handle(PacketCollection packetCollection, InstantType instantType) throws PacketHandleException {
 		final InstancePacketGroup packetGroup = PacketGroups.parseToInstancePacketGroup(packetCollection, DefaultInstanceOptions.REQUIRE_NO_DEFAULTS);
 		DefaultInstanceOptions.requireNoDefaults(packetGroup);
-		final String bucket = bucketNameGetter.getDatabaseName(packetGroup);
+		Organization organization = findOrCreateOrg(properties.getOrg());
+		Bucket bucket = findOrCreateBucket(bucketNameGetter.getName(packetGroup), organization);
 
 		final long time = packetCollection.getDateMillis();
 		List<Point> points = new ArrayList<>();
@@ -115,7 +152,7 @@ public class InfluxDb2PacketSaver implements PacketHandler {
 			points.add(point);
 		}
 		try {
-			client.getWriteApiBlocking().writePoints(bucket, properties.getOrg(), points);
+			client.getWriteApiBlocking().writePoints(bucket.getName(), bucket.getOrgID(), points);
 		} catch (InfluxException exception) {
 			throw new PacketHandleException("Could not write points", exception);
 		}

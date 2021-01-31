@@ -21,7 +21,6 @@ import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
-import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.influxdb.InfluxDB;
 import org.influxdb.InfluxDBException;
@@ -74,7 +73,7 @@ public class InfluxDbPacketSaver implements PacketHandler {
 		try(InfluxDB db = createDatabase()) {
 			final InstancePacketGroup packetGroup = PacketGroups.parseToInstancePacketGroup(packetCollection, DefaultInstanceOptions.REQUIRE_NO_DEFAULTS);
 			DefaultInstanceOptions.requireNoDefaults(packetGroup);
-			final String database = databaseNameGetter.getDatabaseName(packetGroup);
+			final String database = databaseNameGetter.getName(packetGroup);
 			try {
 				QueryResult result = db.query(new Query("CREATE DATABASE " + database, null, true));
 				String error = getError(result);

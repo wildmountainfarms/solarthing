@@ -1,20 +1,10 @@
 {
-  "type": "influxdb",
+  "type": "influxdb2",
   "config": {
     "url": "http://localhost:8086",
-    "username": "root",
-    "password": "root",
+    "token": "token stuff",
+    "org": "my-org",
     "bucket": null,
-
-    "status_retention_policies": [
-      {
-        "frequency": 120,
-        "name": "autogen"
-      }
-    ],
-
-    "event_retention_policy": {
-      "name": "autogen"
-    }
+    "measurement": null
   }
 }

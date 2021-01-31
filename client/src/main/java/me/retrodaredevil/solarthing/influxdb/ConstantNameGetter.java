@@ -10,7 +10,7 @@ public class ConstantNameGetter implements NameGetter {
 	}
 
 	@Override
-	public String getDatabaseName(InstancePacketGroup instancePacketGroup) {
+	public String getName(InstancePacketGroup instancePacketGroup) {
 		return databaseName;
 	}
 }

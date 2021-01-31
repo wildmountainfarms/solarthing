@@ -4,15 +4,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.couchdb.CouchProperties;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.config.databases.IndividualSettings;
-import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
-import me.retrodaredevil.solarthing.config.databases.implementations.InfluxDbDatabaseSettings;
-import me.retrodaredevil.solarthing.config.databases.implementations.LatestFileDatabaseSettings;
-import me.retrodaredevil.solarthing.config.databases.implementations.PostDatabaseSettings;
+import me.retrodaredevil.solarthing.config.databases.implementations.*;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketSaver;
 import me.retrodaredevil.solarthing.influxdb.ConstantNameGetter;
 import me.retrodaredevil.solarthing.influxdb.influxdb1.ConstantMeasurementPacketPointCreator;
 import me.retrodaredevil.solarthing.influxdb.influxdb1.DocumentedMeasurementPacketPointCreator;
 import me.retrodaredevil.solarthing.influxdb.influxdb1.InfluxDbPacketSaver;
+import me.retrodaredevil.solarthing.influxdb.infuxdb2.ConstantMeasurementPacketPoint2Creator;
+import me.retrodaredevil.solarthing.influxdb.infuxdb2.DocumentedMeasurementPacketPoint2Creator;
+import me.retrodaredevil.solarthing.influxdb.infuxdb2.InfluxDb2PacketSaver;
 import me.retrodaredevil.solarthing.influxdb.retention.ConstantRetentionPolicyGetter;
 import me.retrodaredevil.solarthing.influxdb.retention.FrequentRetentionPolicyGetter;
 import me.retrodaredevil.solarthing.packets.handling.*;
@@ -89,6 +89,36 @@ public class PacketHandlerInit {
 										: DocumentedMeasurementPacketPointCreator.INSTANCE
 								),
 						new ConstantRetentionPolicyGetter(settings.getEventRetentionPolicy())
+				), 5));
+			} else if(InfluxDb2DatabaseSettings.TYPE.equals(config.getType())) {
+				InfluxDb2DatabaseSettings settings = (InfluxDb2DatabaseSettings) config.getSettings();
+				String bucketName = settings.getBucketName();
+				String measurementName = settings.getMeasurementName();
+				statusPacketHandlers.add(new ThrottleFactorPacketHandler(
+						new InfluxDb2PacketSaver(
+								settings.getInfluxDbProperties(),
+								settings.getOkHttpProperties(),
+								new ConstantNameGetter(bucketName != null ? bucketName : uniqueStatusName),
+								measurementName != null
+										? new ConstantMeasurementPacketPoint2Creator(measurementName)
+										: (bucketName != null
+												? new ConstantMeasurementPacketPoint2Creator(uniqueStatusName)
+												: DocumentedMeasurementPacketPoint2Creator.INSTANCE
+										)
+						),
+						statusFrequencySettings,
+						true
+				));
+				eventPacketHandlers.add(new RetryFailedPacketHandler(new InfluxDb2PacketSaver(
+						settings.getInfluxDbProperties(),
+						settings.getOkHttpProperties(),
+						new ConstantNameGetter(bucketName != null ? bucketName : uniqueEventName),
+						measurementName != null
+								? new ConstantMeasurementPacketPoint2Creator(measurementName)
+								: (bucketName != null
+										? new ConstantMeasurementPacketPoint2Creator(uniqueEventName)
+										: DocumentedMeasurementPacketPoint2Creator.INSTANCE
+								)
 				), 5));
 			} else if (LatestFileDatabaseSettings.TYPE.equals(config.getType())){
 				LatestFileDatabaseSettings settings = (LatestFileDatabaseSettings) config.getSettings();
