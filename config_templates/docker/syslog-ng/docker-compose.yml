@@ -10,4 +10,4 @@ services:
     volumes:
       - './syslog-ng.conf:/etc/syslog-ng/syslog-ng.conf:ro'
       - './default-syslog-ng:/etc/default/syslog-ng:ro'
-      - '/Volumes/TheBeast/logs/syslog/solarthing:/opt/solarthing/logs'
+      - './logs/syslog/solarthing:/opt/solarthing/logs'

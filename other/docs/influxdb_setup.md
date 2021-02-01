@@ -1,7 +1,11 @@
-# Setting up InfluxDB Database
-**Note: SolarThing only works on InfluxDB 1.X! It does not support InfluxDB 2.0!**
+# Setting up InfluxDB 1.X Database (deprecated)
+For new users, please do not use InfluxDB 1.X unless you have a reason (more familiar, etc).
+Go [here](./influxdb2_setup.md) for InfluxDB 2.0 setup.
+
+---
+
 ### Installing
-Click [here](https://docs.influxdata.com/influxdb/v1.7/introduction/installation/) to go to the install page.
+Click [here](https://docs.influxdata.com/influxdb/v1.7/introduction/installation/) to go to the installation page.
 Once installed, you don't need to do anything to the installation itself, it's ready to go!
 
 ### Configuring SolarThing
@@ -14,8 +18,7 @@ For both `database` and `measurement`, if you don't specify either, it is the sa
 to null.
 
 If you specify `database`, all packets will go into that specific database. If you do not specify
-`database`, the packets will go into a certain database determined by the program you are running. A `mate` or `rover` program's
-packets will go into the `solarthing` database. An `outhouse` program's packets will go into the `"outhouse"` database.
+`database`, status packets go into `solarthing` and event packets go into `solarthing_events`.
 
 If you specify a `measurement`, all packets will always be stored as that specific measurement. If you
 do not specify `measurement`, one of two things will happen. If the database was specified, `measurement` will be determined by
@@ -43,6 +46,3 @@ Now each packet type will be put in its own measurement, just like measurements 
 
 #### Not Recommended
 If you specify both `database` and `measurement`, the program will put event packets into the same database and measurement of other packets.
-
-If you have a reason that you want to specify `database` and `measurement` and want to also store
-"event" packets in InfluxDB in different measurements or databases, please submit an issue saying why you need this.

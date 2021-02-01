@@ -2,10 +2,10 @@ package me.retrodaredevil.solarthing.influxdb;
 
 import me.retrodaredevil.solarthing.packets.collection.InstancePacketGroup;
 
-public enum SourceIdDatabaseNameGetter implements DatabaseNameGetter {
+public enum SourceIdNameGetter implements NameGetter {
 	INSTANCE;
 	@Override
-	public String getDatabaseName(InstancePacketGroup instancePacketGroup) {
+	public String getName(InstancePacketGroup instancePacketGroup) {
 		return instancePacketGroup.getSourceId();
 	}
 }

@@ -13,10 +13,7 @@ import me.retrodaredevil.io.serial.SerialConfig;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.DatabaseType;
-import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
-import me.retrodaredevil.solarthing.config.databases.implementations.InfluxDbDatabaseSettings;
-import me.retrodaredevil.solarthing.config.databases.implementations.LatestFileDatabaseSettings;
-import me.retrodaredevil.solarthing.config.databases.implementations.PostDatabaseSettings;
+import me.retrodaredevil.solarthing.config.databases.implementations.*;
 import me.retrodaredevil.solarthing.config.io.IOConfig;
 import me.retrodaredevil.solarthing.config.io.SerialIOConfig;
 import me.retrodaredevil.solarthing.config.options.*;
@@ -64,6 +61,7 @@ public final class SolarMain {
 				DatabaseSettings.class,
 				CouchDbDatabaseSettings.class,
 				InfluxDbDatabaseSettings.class,
+				InfluxDb2DatabaseSettings.class,
 				LatestFileDatabaseSettings.class,
 				PostDatabaseSettings.class
 		);

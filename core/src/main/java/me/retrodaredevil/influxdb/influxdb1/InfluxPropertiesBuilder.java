@@ -1,4 +1,4 @@
-package me.retrodaredevil.influxdb;
+package me.retrodaredevil.influxdb.influxdb1;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;

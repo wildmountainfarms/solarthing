@@ -46,7 +46,7 @@ public class SerialIOConfig implements IOConfig {
 		return new JSerialIOBundle(
 				serialPort,
 				serialConfig,
-				new JSerialIOBundle.Config(50, 65536, 65536)
+				new JSerialIOBundle.Config(200, 65536, 65536)
 		);
 	}
 	@JsonExplicit

@@ -5,6 +5,8 @@ import me.retrodaredevil.solarthing.packets.CodeMode;
 /**
  * NOTE: Some of these values are only supported on FLEXmax80 and FLEXmax60. If it is a FLEXmax unit, you also have to
  * make sure that the value code you compare with this
+ * <p>
+ * Also, it's possible there are undocumented modes such as 27: https://forum.outbackpower.com/viewtopic.php?f=14&t=8268&sid=710ecc3edc75cf26584532c3b93d5aef
  */
 @SuppressWarnings("unused")
 public enum AuxMode implements CodeMode {

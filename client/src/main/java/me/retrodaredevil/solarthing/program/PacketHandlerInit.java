@@ -4,15 +4,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.couchdb.CouchProperties;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.config.databases.IndividualSettings;
-import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
-import me.retrodaredevil.solarthing.config.databases.implementations.InfluxDbDatabaseSettings;
-import me.retrodaredevil.solarthing.config.databases.implementations.LatestFileDatabaseSettings;
-import me.retrodaredevil.solarthing.config.databases.implementations.PostDatabaseSettings;
+import me.retrodaredevil.solarthing.config.databases.implementations.*;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketSaver;
-import me.retrodaredevil.solarthing.influxdb.ConstantDatabaseNameGetter;
-import me.retrodaredevil.solarthing.influxdb.ConstantMeasurementPacketPointCreator;
-import me.retrodaredevil.solarthing.influxdb.DocumentedMeasurementPacketPointCreator;
-import me.retrodaredevil.solarthing.influxdb.InfluxDbPacketSaver;
+import me.retrodaredevil.solarthing.influxdb.ConstantNameGetter;
+import me.retrodaredevil.solarthing.influxdb.influxdb1.ConstantMeasurementPacketPointCreator;
+import me.retrodaredevil.solarthing.influxdb.influxdb1.DocumentedMeasurementPacketPointCreator;
+import me.retrodaredevil.solarthing.influxdb.influxdb1.InfluxDbPacketSaver;
+import me.retrodaredevil.solarthing.influxdb.infuxdb2.ConstantMeasurementPacketPoint2Creator;
+import me.retrodaredevil.solarthing.influxdb.infuxdb2.DocumentedMeasurementPacketPoint2Creator;
+import me.retrodaredevil.solarthing.influxdb.infuxdb2.InfluxDb2PacketSaver;
 import me.retrodaredevil.solarthing.influxdb.retention.ConstantRetentionPolicyGetter;
 import me.retrodaredevil.solarthing.influxdb.retention.FrequentRetentionPolicyGetter;
 import me.retrodaredevil.solarthing.packets.handling.*;
@@ -59,6 +59,7 @@ public class PacketHandlerInit {
 				// miss adding a single event packet to a database
 				eventPacketHandlers.add(new RetryFailedPacketHandler(new CouchDbPacketSaver(couchProperties, uniqueEventName), 7));
 			} else if(InfluxDbDatabaseSettings.TYPE.equals(config.getType())) {
+				LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "You are using InfluxDB 1.X! It is recommended that you switch to 2.0, but is not required.");
 				InfluxDbDatabaseSettings settings = (InfluxDbDatabaseSettings) config.getSettings();
 				String databaseName = settings.getDatabaseName();
 				String measurementName = settings.getMeasurementName();
@@ -66,7 +67,7 @@ public class PacketHandlerInit {
 						new InfluxDbPacketSaver(
 								settings.getInfluxProperties(),
 								settings.getOkHttpProperties(),
-								new ConstantDatabaseNameGetter(databaseName != null ? databaseName : uniqueStatusName),
+								new ConstantNameGetter(databaseName != null ? databaseName : uniqueStatusName),
 								measurementName != null
 										? new ConstantMeasurementPacketPointCreator(measurementName)
 										: (databaseName != null
@@ -81,7 +82,7 @@ public class PacketHandlerInit {
 				eventPacketHandlers.add(new RetryFailedPacketHandler(new InfluxDbPacketSaver(
 						settings.getInfluxProperties(),
 						settings.getOkHttpProperties(),
-						new ConstantDatabaseNameGetter(databaseName != null ? databaseName : uniqueEventName),
+						new ConstantNameGetter(databaseName != null ? databaseName : uniqueEventName),
 						measurementName != null
 								? new ConstantMeasurementPacketPointCreator(measurementName)
 								: (databaseName != null
@@ -89,6 +90,24 @@ public class PacketHandlerInit {
 										: DocumentedMeasurementPacketPointCreator.INSTANCE
 								),
 						new ConstantRetentionPolicyGetter(settings.getEventRetentionPolicy())
+				), 5));
+			} else if(InfluxDb2DatabaseSettings.TYPE.equals(config.getType())) {
+				InfluxDb2DatabaseSettings settings = (InfluxDb2DatabaseSettings) config.getSettings();
+				statusPacketHandlers.add(new ThrottleFactorPacketHandler(
+						new InfluxDb2PacketSaver(
+								settings.getInfluxDbProperties(),
+								settings.getOkHttpProperties(),
+								new ConstantNameGetter(uniqueStatusName),
+								DocumentedMeasurementPacketPoint2Creator.INSTANCE
+						),
+						statusFrequencySettings,
+						true
+				));
+				eventPacketHandlers.add(new RetryFailedPacketHandler(new InfluxDb2PacketSaver(
+						settings.getInfluxDbProperties(),
+						settings.getOkHttpProperties(),
+						new ConstantNameGetter(uniqueEventName),
+						DocumentedMeasurementPacketPoint2Creator.INSTANCE
 				), 5));
 			} else if (LatestFileDatabaseSettings.TYPE.equals(config.getType())){
 				LatestFileDatabaseSettings settings = (LatestFileDatabaseSettings) config.getSettings();

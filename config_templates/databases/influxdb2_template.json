@@ -1,0 +1,8 @@
+{
+  "type": "influxdb2",
+  "config": {
+    "url": "http://localhost:8086",
+    "token": "token stuff",
+    "org": "solarthing-org"
+  }
+}

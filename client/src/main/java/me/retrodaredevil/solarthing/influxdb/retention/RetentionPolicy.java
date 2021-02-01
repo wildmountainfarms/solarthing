@@ -20,7 +20,7 @@ public final class RetentionPolicy {
 	public String getShardDuration(){ return shardDuration; }
 	public boolean isSetAsDefault(){ return setAsDefault; }
 
-	public String toPolicyString(String policyName, String databaseName){
+	public String toPolicyStringInfluxDb1(String policyName, String databaseName){
 		String r = "RETENTION POLICY \"" + requireNonNull(policyName) + "\" ON \"" + requireNonNull(databaseName) + "\""
 			+ (" DURATION " + duration)
 			+ (" REPLICATION " + replication);
