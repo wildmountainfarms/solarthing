@@ -4,7 +4,8 @@ Choosing a database may be difficult, but usually there's a good choice.
 Note that you can use multiple databases if you can't decide on a single one. (This is what we did
 for the longest time until moving to CouchDB + GraphQL).
 
-Note that SolarThing only supports InfluxDB 1.X.
+Note that SolarThing supports InfluxDB 1.X and 2.0, but you need different config files depending on which one you use,
+and they behave differently.
 
 #### Want to create simple queries and display data in Grafana?
 Pick **InfluxDB**.
@@ -18,15 +19,8 @@ Pick **CouchDB**.
 #### Want to have a Slack bot notify you if your battery voltage gets low?
 Pick **CouchDB**.
 
-#### Want a secure and simple setup?
-Pick **InfluxDB**. CouchDB requires some setup and extra design documents to make it secure.
-
 #### Want to use GraphQL + Grafana?
 Pick **CouchDB**. Note this option is more advanced.
-
-#### Want a Web interface to manage your database?
-Pick **CouchDB**. CouchDB's web interface is very simple and intuitive. Although CouchDB + SolarThing requires some set up,
-CouchDB's web interface makes it a good experience.
 
 ---
 ### Why multiple databases?
