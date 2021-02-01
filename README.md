@@ -103,7 +103,7 @@ The [input and output](other/docs/input_and_outputs.md) README is documentation 
 [CouchDB setup](other/docs/couchdb_setup.md)<br/>
 *Used for the android and web application*
 
-[InfluxDB setup](other/docs/influxdb_setup.md)<br/>
+[InfluxDB 2.0 setup](other/docs/influxdb2_setup.md)<br/>
 *Used for Grafana*
 
 #### [Developer Use](other/docs/developer_use.md)

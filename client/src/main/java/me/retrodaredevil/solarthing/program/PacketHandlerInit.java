@@ -59,6 +59,7 @@ public class PacketHandlerInit {
 				// miss adding a single event packet to a database
 				eventPacketHandlers.add(new RetryFailedPacketHandler(new CouchDbPacketSaver(couchProperties, uniqueEventName), 7));
 			} else if(InfluxDbDatabaseSettings.TYPE.equals(config.getType())) {
+				LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "You are using InfluxDB 1.X! It is recommended that you switch to 2.0, but is not required.");
 				InfluxDbDatabaseSettings settings = (InfluxDbDatabaseSettings) config.getSettings();
 				String databaseName = settings.getDatabaseName();
 				String measurementName = settings.getMeasurementName();
@@ -92,19 +93,12 @@ public class PacketHandlerInit {
 				), 5));
 			} else if(InfluxDb2DatabaseSettings.TYPE.equals(config.getType())) {
 				InfluxDb2DatabaseSettings settings = (InfluxDb2DatabaseSettings) config.getSettings();
-				String bucketName = settings.getBucketName();
-				String measurementName = settings.getMeasurementName();
 				statusPacketHandlers.add(new ThrottleFactorPacketHandler(
 						new InfluxDb2PacketSaver(
 								settings.getInfluxDbProperties(),
 								settings.getOkHttpProperties(),
-								new ConstantNameGetter(bucketName != null ? bucketName : uniqueStatusName),
-								measurementName != null
-										? new ConstantMeasurementPacketPoint2Creator(measurementName)
-										: (bucketName != null
-												? new ConstantMeasurementPacketPoint2Creator(uniqueStatusName)
-												: DocumentedMeasurementPacketPoint2Creator.INSTANCE
-										)
+								new ConstantNameGetter(uniqueStatusName),
+								DocumentedMeasurementPacketPoint2Creator.INSTANCE
 						),
 						statusFrequencySettings,
 						true
@@ -112,13 +106,8 @@ public class PacketHandlerInit {
 				eventPacketHandlers.add(new RetryFailedPacketHandler(new InfluxDb2PacketSaver(
 						settings.getInfluxDbProperties(),
 						settings.getOkHttpProperties(),
-						new ConstantNameGetter(bucketName != null ? bucketName : uniqueEventName),
-						measurementName != null
-								? new ConstantMeasurementPacketPoint2Creator(measurementName)
-								: (bucketName != null
-										? new ConstantMeasurementPacketPoint2Creator(uniqueEventName)
-										: DocumentedMeasurementPacketPoint2Creator.INSTANCE
-								)
+						new ConstantNameGetter(uniqueEventName),
+						DocumentedMeasurementPacketPoint2Creator.INSTANCE
 				), 5));
 			} else if (LatestFileDatabaseSettings.TYPE.equals(config.getType())){
 				LatestFileDatabaseSettings settings = (LatestFileDatabaseSettings) config.getSettings();

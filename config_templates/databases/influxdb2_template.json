@@ -3,8 +3,6 @@
   "config": {
     "url": "http://localhost:8086",
     "token": "token stuff",
-    "org": "my-org",
-    "bucket": null,
-    "measurement": null
+    "org": "solarthing-org"
   }
 }

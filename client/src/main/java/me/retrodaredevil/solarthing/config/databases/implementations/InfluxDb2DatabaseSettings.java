@@ -21,14 +21,10 @@ public class InfluxDb2DatabaseSettings implements DatabaseSettings {
 
 	private final InfluxDb2Properties influxDbProperties;
 	private final OkHttpProperties okHttpProperties;
-	private final String bucketName;
-	private final String measurementName;
 
-	public InfluxDb2DatabaseSettings(InfluxDb2Properties influxDbProperties, OkHttpProperties okHttpProperties, String bucketName, String measurementName) {
+	public InfluxDb2DatabaseSettings(InfluxDb2Properties influxDbProperties, OkHttpProperties okHttpProperties) {
 		requireNonNull(this.influxDbProperties = influxDbProperties);
 		requireNonNull(this.okHttpProperties = okHttpProperties);
-		this.bucketName = bucketName;
-		this.measurementName = measurementName;
 	}
 
 	@Override
@@ -43,23 +39,13 @@ public class InfluxDb2DatabaseSettings implements DatabaseSettings {
 		return okHttpProperties;
 	}
 
-	public @Nullable String getBucketName() {
-		return bucketName;
-	}
-
-	public @Nullable String getMeasurementName() {
-		return measurementName;
-	}
-
 	@JsonPOJOBuilder
 	public static class Builder {
 		private InfluxDb2Properties influxDbProperties;
 		private OkHttpProperties okHttpProperties;
-		private String bucketName;
-		private String measurementName;
 
 		public InfluxDb2DatabaseSettings build() {
-			return new InfluxDb2DatabaseSettings(influxDbProperties, okHttpProperties, bucketName, measurementName);
+			return new InfluxDb2DatabaseSettings(influxDbProperties, okHttpProperties);
 		}
 
 		@JsonUnwrapped
@@ -71,18 +57,6 @@ public class InfluxDb2DatabaseSettings implements DatabaseSettings {
 		@JsonUnwrapped
 		public Builder setOkHttpProperties(OkHttpProperties okHttpProperties) {
 			this.okHttpProperties = okHttpProperties;
-			return this;
-		}
-
-		@JsonProperty("bucket")
-		public Builder setBucketName(String bucketName) {
-			this.bucketName = bucketName;
-			return this;
-		}
-
-		@JsonProperty("measurement")
-		public Builder setMeasurementName(String measurementName) {
-			this.measurementName = measurementName;
 			return this;
 		}
 
