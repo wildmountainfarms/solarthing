@@ -12,12 +12,15 @@ public enum ChargingState implements CodeMode {
 	ACTIVATED("Activated", 1),
 	MPPT("MPPT charging", 2),
 	EQ("EQ", 3),
-	/** Involves a high current for a short period. This is usually called Absorb on other charge controllers*/
+	/** AKA lifting. Involves a high current for a short period. This is usually called Absorb on other charge controllers*/
 	BOOST("Boost", 4),
 	/** Charges at a reduced voltage, as it charges, the current is gradually reduced*/
 	FLOAT("Float", 5),
 	/** AKA overpower. Done with a constant current. This is only done to lithium batteries in place of the {@link #BOOST} state*/
-	CURRENT_LIMITING("Current limiting", 6)
+	CURRENT_LIMITING("Current limiting", 6),
+//	KEEP("Keep 7", 7),
+	/** AKA Generator. Direct charge mode is only used on newer Renogy products. */
+	DIRECT_CHARGE("Direct Charge", 8), // on DCC Charge Controller only
 	;
 
 	private final String name;

@@ -19,6 +19,7 @@ public enum BatteryType implements CodeMode {
 	 */
 	OPEN("open", 1),
 	SEALED("sealed", 2),
+	/** AKA colloidal */
 	GEL("gel", 3),
 	LITHIUM("lithium", 4),
 	/**

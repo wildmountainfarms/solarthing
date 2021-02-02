@@ -293,6 +293,9 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	@JsonProperty("cumulativeKWHConsumption")
 	float getCumulativeKWHConsumption();
 
+	/**
+	 * @return The raw street light value. On DCC Charge Controllers, this may be undefined as its register is "reserved"
+	 */
 	@JsonProperty("streetLightValue")
 	int getRawStreetLightValue();
 	default int getStreetLightStatusValue(){

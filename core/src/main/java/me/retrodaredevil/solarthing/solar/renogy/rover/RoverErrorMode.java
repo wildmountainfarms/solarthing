@@ -24,23 +24,24 @@ public enum RoverErrorMode implements BitmaskMode {
 	LOAD_SHORT_CIRCUIT("Load short circuit",  1 << 19), // E4
 	BATTERY_UNDER_VOLTAGE("Battery under-voltage", 1 << 18), // E3
 	BATTERY_OVER_VOLTAGE("Battery over-voltage", 1 << 17), // E2
-	BATTERY_OVER_DISCHARGE("Battery over-discharge", 1 << 16) // E1
+	BATTERY_OVER_DISCHARGE("Battery over-discharge", 1 << 16), // E1
+	// TODO For DCC Charge Controller, more of these values are used, but the document is confusing, so we won't implement them now.
 	// Bit 15 down to 0 are reserved.
 	;
-	
+
 	private final String name;
 	private final int value;
-	
+
 	RoverErrorMode(String name, int value) {
 		this.name = name;
 		this.value = value;
 	}
-	
+
 	@Override
 	public int getMaskValue() {
 		return value;
 	}
-	
+
 	@Override
 	public String getModeName() {
 		return name;
