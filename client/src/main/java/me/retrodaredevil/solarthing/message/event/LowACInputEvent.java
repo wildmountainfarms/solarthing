@@ -38,7 +38,7 @@ public class LowACInputEvent extends GracePeriodTimeoutEvent {
 			lowThresholdVoltage = lowThresholdRaw;
 			lowRaw = true;
 		} else {
-			lowThresholdVoltage = 4;
+			lowThresholdVoltage = 6;
 			lowRaw = true;
 		}
 

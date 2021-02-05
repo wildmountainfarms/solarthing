@@ -46,7 +46,6 @@ public class RequestMain {
 		List<DatabaseConfig> databaseConfigs = SolarMain.getDatabaseConfigs(options);
 		PacketHandlerBundle packetHandlerBundle = PacketHandlerInit.getPacketHandlerBundle(databaseConfigs, SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, SolarThingConstants.SOLAR_EVENT_UNIQUE_NAME);
 		List<PacketHandler> statusPacketHandlers = new ArrayList<>(packetHandlerBundle.getStatusPacketHandlers());
-		statusPacketHandlers.add(new RoverAnalyticsHandler(analyticsManager)); // this only does anything if there are rover status packets.
 		statusPacketHandlers.add(requireNonNull(extraPacketHandler));
 
 		if (commandPacketGroupReceiver != null) {

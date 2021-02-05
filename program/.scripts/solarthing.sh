@@ -15,11 +15,9 @@ if ls log4j2.xml 1>/dev/null 2>&1; then
   echo Using log4j2.xml file!
 fi
 
-# TODO add 'main' to each command
-
 if java --add-opens 2>&1 | grep 'requires modules' >/dev/null; then
-  java --add-opens=java.base/java.lang.invoke=ALL-UNNAMED -jar "$BASEDIR/../solarthing.jar" "$BASE_CONFIG"
+  java --add-opens=java.base/java.lang.invoke=ALL-UNNAMED -jar "$BASEDIR/../solarthing.jar" --base "$BASE_CONFIG"
 else
-  java -jar "$BASEDIR/../solarthing.jar" "$BASE_CONFIG"
+  java -jar "$BASEDIR/../solarthing.jar" --base "$BASE_CONFIG"
 fi
 

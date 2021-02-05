@@ -11,6 +11,7 @@ import me.retrodaredevil.solarthing.actions.ActionNode;
 import me.retrodaredevil.solarthing.actions.environment.InjectEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.RoverModbusEnvironment;
 import me.retrodaredevil.solarthing.analytics.AnalyticsManager;
+import me.retrodaredevil.solarthing.analytics.RoverAnalyticsHandler;
 import me.retrodaredevil.solarthing.config.options.*;
 import me.retrodaredevil.solarthing.config.request.DataRequester;
 import me.retrodaredevil.solarthing.config.request.RaspberryPiCpuTemperatureDataRequester;
@@ -73,6 +74,9 @@ public class RoverMain {
 				extraPacketHandlers.add((packetCollection, instantType) -> commandReceiver.getActionUpdater().update());
 			} else {
 				commandReceiver = null;
+			}
+			if (options.getDummyFile() == null) { // only send analytics if it's not a dummy
+				extraPacketHandlers.add(new RoverAnalyticsHandler(analyticsManager));
 			}
 			return RequestMain.startRequestProgram(options, analyticsManager, list, options.getPeriod(), options.getMinimumWait(), commandReceiver, options.getCommandInfoList(), new PacketHandlerMultiplexer(extraPacketHandlers));
 		}, options.isBulkRequest() ? modbusCacheSlave -> {
