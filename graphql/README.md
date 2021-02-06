@@ -17,7 +17,7 @@ For grafana: https://github.com/fifemon/graphql-datasource
 For testing your skills/syntax: https://graphql.org/swapi-graphql or https://nhzvc.csb.app/
 
 ### Compiling
-Use `./gradlew graphql:bootJar` or [./compile_and_move_graphql.sh](../compile_and_move_graphql.sh) in the root directory.
+Use `./gradlew graphql:bootJar` or [./graphql_compile_and_move.sh](../graphql_compile_and_move.sh) in the root directory.
 
 Or `./gradlew graphql:bootRun` to run this
 

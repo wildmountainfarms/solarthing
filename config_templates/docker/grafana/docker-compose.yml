@@ -1,0 +1,16 @@
+version: '3.7'
+services:
+  grafana:
+    image: grafana/grafana:7.4.0
+    ports:
+      - '3000:3000'
+    container_name: grafana
+    user: "2000"
+    restart: unless-stopped
+    volumes:
+      - ./data:/var/lib/grafana/
+      - ./provisioning:/etc/grafana/provisioning/
+      - ./grafana.ini:/etc/grafana/grafana.ini
+    environment:
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_AUTH_ANONYMOUS_ENABLED=true

@@ -1,6 +1,0 @@
-solarthing;$packetType == "FX_STATUS" && $address == 1;$batteryVoltage,$inverterCurrent * $outputVoltage;"ID" + $address;"FX " + $address
-database
-           condition
-                                                       value
-                                                                                                         grouped by
-                                                                                                                         display name

@@ -15,7 +15,7 @@ indent_size = 4 # Although I wish I could leave this undefined, I define it so c
 ij_continuation_indent_size = 8 # twice as much as indent_size
 trim_trailing_whitespace = true
 
-[*.json]
+[{*.json,*.md}]
 indent_style = space
 indent_size = 2
 
