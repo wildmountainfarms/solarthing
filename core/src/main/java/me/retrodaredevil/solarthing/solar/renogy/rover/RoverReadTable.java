@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
@@ -143,6 +144,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	 * @return The serial number
 	 */
 	@JsonProperty("productSerialNumber")
+	@JsonPropertyDescription("The product serial number. Note that is not always unique as devices' serial numbers can accidentally be reset.")
 	int getProductSerialNumber();
 
 	/**
@@ -150,12 +152,14 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	 * @return A number in range [1..247] representing the controller device address
 	 */
 	@JsonProperty("controllerDeviceAddress")
+	@JsonPropertyDescription("The modbus address of the device")
 	int getControllerDeviceAddress();
 
 	/**
 	 * @return A number in range [0..100] representing the current battery capacity value (The battery percentage)
 	 */
 	@JsonProperty("batteryCapacitySOC")
+	@JsonPropertyDescription("The state of charge of the battery. (A number from 0 to 100). Note this is not usually accurate.")
 	int getBatteryCapacitySOC();
 
 	@Override
@@ -309,6 +313,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 
 	@JsonProperty("chargingState")
 	int getChargingStateValue();
+	@GraphQLInclude("chargingMode")
 	@Override
 	default @NotNull ChargingState getChargingMode(){ return Modes.getActiveMode(ChargingState.class, getChargingStateValue()); }
 	@JsonProperty("chargingStateName") // convenient
@@ -332,6 +337,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	 * @return The nominal battery capacity in AmpHours (AH)
 	 */
 	@JsonProperty("nominalBatteryCapacity")
+	@JsonPropertyDescription("Nominal battery capacity in AH. Usually this is not accurate.")
 	int getNominalBatteryCapacity();
 
 	/** Should be serialized as "systemVoltageSetting" */
@@ -351,8 +357,10 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 
 	// 0xE004
 	/** Should be serialized as "batteryType" */
+	@GraphQLInclude("batteryTypeValue")
 	@JsonProperty("batteryType")
 	int getBatteryTypeValue();
+	@GraphQLInclude("batteryType")
 	default BatteryType getBatteryType(){ return Modes.getActiveMode(BatteryType.class, getBatteryTypeValue()); }
 	@JsonProperty("batteryTypeName") // convenient
 	default String getBatteryTypeName(){ return getBatteryType().getModeName(); }

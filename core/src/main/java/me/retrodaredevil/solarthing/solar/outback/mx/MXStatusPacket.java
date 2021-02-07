@@ -164,6 +164,7 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 	@JsonProperty("chargerMode")
 	int getChargerModeValue();
 
+	@GraphQLInclude("chargingMode")
 	@Override
 	default @NotNull ChargerMode getChargingMode(){
 		return Modes.getActiveMode(ChargerMode.class, getChargerModeValue());

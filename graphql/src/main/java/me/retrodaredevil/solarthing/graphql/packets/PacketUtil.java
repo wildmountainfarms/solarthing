@@ -9,6 +9,10 @@ import java.util.List;
 public final class PacketUtil {
 	private PacketUtil(){ throw new UnsupportedOperationException(); }
 
+	/**
+	 *
+	 * @return A mutable list of packets of a certain type
+	 */
 	@SuppressWarnings("unchecked")
 	public static <T> List<PacketNode<T>> convertPackets(List<? extends FragmentedPacketGroup> packetGroups, Class<T> acceptClass, PacketFilter filter){
 		List<PacketNode<T>> r = new ArrayList<>();

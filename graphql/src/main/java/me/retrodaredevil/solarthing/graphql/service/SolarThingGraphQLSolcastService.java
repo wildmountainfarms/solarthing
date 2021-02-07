@@ -23,6 +23,8 @@ import java.time.ZoneId;
 import java.util.*;
 
 import static java.util.Objects.requireNonNull;
+import static me.retrodaredevil.solarthing.graphql.service.SchemaConstants.DESCRIPTION_FROM;
+import static me.retrodaredevil.solarthing.graphql.service.SchemaConstants.DESCRIPTION_TO;
 
 public class SolarThingGraphQLSolcastService {
 	/*
@@ -56,7 +58,7 @@ public class SolarThingGraphQLSolcastService {
 
 	@GraphQLQuery
 	public @Nullable SolarThingSolcastQuery querySolcast(
-			@GraphQLArgument(name = "from") long from, @GraphQLArgument(name = "to") long to,
+			@GraphQLArgument(name = "from", description = DESCRIPTION_FROM) long from, @GraphQLArgument(name = "to", description = DESCRIPTION_TO) long to,
 			@GraphQLArgument(name = "sourceId") @NotNull String sourceId){
 		SolcastHandler handler = sourceHandlerMap.get(sourceId);
 		if (handler == null) {
@@ -66,7 +68,7 @@ public class SolarThingGraphQLSolcastService {
 	}
 	@GraphQLQuery
 	public @Nullable SolarThingSolcastDayQuery querySolcastDay(
-			@GraphQLArgument(name = "to") long to,
+			@GraphQLArgument(name = "to", description = "Used to determine what day to query. Should be set similar to other 'to' arguments.") long to,
 			@GraphQLArgument(name = "sourceId") @NotNull String sourceId){
 		SolcastHandler handler = sourceHandlerMap.get(sourceId);
 		if (handler == null) {

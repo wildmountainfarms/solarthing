@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover;
 
+import com.fasterxml.jackson.annotation.JsonClassDescription;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
@@ -19,6 +20,7 @@ import me.retrodaredevil.solarthing.solar.renogy.RenogyPacket;
 @JsonDeserialize(as = ImmutableRoverStatusPacket.class)
 @JsonTypeName("RENOGY_ROVER_STATUS")
 @JsonExplicit
+@JsonClassDescription("Status packet for Rover and Rover-like devices")
 public interface RoverStatusPacket extends RenogyPacket, RoverReadTable {
 	@NotNull
 	@Override

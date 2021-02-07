@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.graphql.packets;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 
 public interface SimplePacketNode {
@@ -11,9 +12,11 @@ public interface SimplePacketNode {
 	long getDateMillis();
 
 	@JsonProperty("sourceId")
+	@JsonPropertyDescription("The Source ID the packet was from")
 	@NotNull String getSourceId();
 
 	@JsonProperty("fragmentId")
+	@JsonPropertyDescription("The fragment the packet was from")
 	int getFragmentId();
 
 	/**

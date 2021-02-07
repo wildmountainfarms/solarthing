@@ -32,7 +32,7 @@ public class SolarThingGraphQLFXService {
 	public SolarThingGraphQLFXService(SimpleQueryHandler simpleQueryHandler) {
 		this.simpleQueryHandler = simpleQueryHandler;
 	}
-	@GraphQLQuery
+	@GraphQLQuery(description = "Gives the timer values for the master FX of a single fragment over a time range")
 	public List<DataNode<FXChargingPacket>> queryFXCharging(
 			@GraphQLArgument(name = "from") long from, @GraphQLArgument(name = "to") long to,
 			@GraphQLArgument(name = "fragmentId") int fragmentId){

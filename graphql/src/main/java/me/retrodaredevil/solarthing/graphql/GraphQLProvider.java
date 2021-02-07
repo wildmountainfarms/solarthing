@@ -9,6 +9,7 @@ import io.leangen.graphql.GraphQLSchemaGenerator;
 import io.leangen.graphql.generator.mapping.common.NonNullMapper;
 import io.leangen.graphql.metadata.strategy.query.AnnotatedResolverBuilder;
 import io.leangen.graphql.metadata.strategy.query.ResolverBuilder;
+import io.leangen.graphql.metadata.strategy.type.DefaultTypeInfoGenerator;
 import io.leangen.graphql.metadata.strategy.value.jackson.JacksonValueMapperFactory;
 import me.retrodaredevil.couchdb.CouchProperties;
 import me.retrodaredevil.solarthing.annotations.NotNull;
@@ -149,6 +150,7 @@ public class GraphQLProvider {
 				.withOperationsFromSingleton(new SolarThingGraphQLExtensions())
 				.withOperationsFromSingleton(new SolarThingGraphQLFXService(simpleQueryHandler))
 				.withOperationsFromSingleton(new SolarThingGraphQLSolcastService(solcastConfig, ZoneId.systemDefault()))
+				.withTypeInfoGenerator(new SolarThingTypeInfoGenerator())
 				.withValueMapperFactory(jacksonValueMapperFactory)
 				.withResolverBuilders(resolverBuilder)
 				.withNestedResolverBuilders(

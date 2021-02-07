@@ -28,6 +28,8 @@ import java.time.ZoneId;
 import java.util.*;
 import java.util.function.Function;
 
+import static me.retrodaredevil.solarthing.graphql.service.SchemaConstants.*;
+
 public class SolarThingGraphQLDailyService {
 	private final SimpleQueryHandler simpleQueryHandler;
 	private final ZoneId zoneId;
@@ -97,7 +99,7 @@ public class SolarThingGraphQLDailyService {
 			nodesOut.add(new DataNode<>(total, firstPacket, dayStartTimeMillis, sourceId, fragmentId));
 		}
 
-		@GraphQLQuery
+		@GraphQLQuery(description = "Gives a list of a list entries. Each entry can be grouped by their identifier as entries may represent different devices")
 		public @NotNull List<@NotNull DataNode<Float>> dailyKWH() {
 			return getPoints(
 					DailyChargeController.class,
@@ -105,7 +107,7 @@ public class SolarThingGraphQLDailyService {
 							addAllPoints(nodesOut, timestampedPackets, dailyPairs, sourceId, fragmentId, DailyChargeController::getDailyKWH)
 			);
 		}
-		@GraphQLQuery
+		@GraphQLQuery(description = "Gives a list of entries where each entry is a sum of the daily kWh at that instant in time for the day at that time.")
 		public @NotNull List<@NotNull SimpleNode<Float>> dailyKWHSum() {
 			Map<LocalDate, Map<IdentifierFragment, List<TimestampedPacket<DailyChargeController>>>> map = new HashMap<>();
 			for (FragmentedPacketGroup fragmentedPacketGroup : sortedPackets) {
@@ -147,7 +149,7 @@ public class SolarThingGraphQLDailyService {
 		 *
 		 * @return A list of {@link SimpleNode}s where each node is a different day
 		 */
-		@GraphQLQuery
+		@GraphQLQuery(description = "Gives entries where each entry is timestamped at the start of a certain day and its value represents the daily kWh of that device for that day. (Results can be grouped by their identifiers as there may be different devices)")
 		public @NotNull List<@NotNull DataNode<Float>> singleDailyKWH() {
 			return getPoints(
 					DailyChargeController.class,
@@ -165,8 +167,8 @@ public class SolarThingGraphQLDailyService {
 
 	@GraphQLQuery
 	public SolarThingFullDayStatusQuery queryFullDay(
-			@GraphQLArgument(name = "from") long from, @GraphQLArgument(name = "to") long to,
-			@GraphQLArgument(name = "sourceId") @Nullable String sourceId){
+			@GraphQLArgument(name = "from", description = DESCRIPTION_FROM) long from, @GraphQLArgument(name = "to", description = DESCRIPTION_TO) long to,
+			@GraphQLArgument(name = "sourceId", description = DESCRIPTION_OPTIONAL_SOURCE) @Nullable String sourceId){
 
 		LocalDate fromDate = Instant.ofEpochMilli(from).atZone(zoneId).toLocalDate();
 		LocalDate toDate = Instant.ofEpochMilli(to).atZone(zoneId).toLocalDate();

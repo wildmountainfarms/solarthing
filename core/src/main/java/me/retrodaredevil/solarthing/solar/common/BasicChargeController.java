@@ -1,10 +1,12 @@
 package me.retrodaredevil.solarthing.solar.common;
 
+import com.fasterxml.jackson.annotation.JsonClassDescription;
 import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
 import me.retrodaredevil.solarthing.packets.Mode;
 
 import me.retrodaredevil.solarthing.annotations.NotNull;
 
+@JsonClassDescription("Represents a charge controller that charges the battery and has input from PV")
 public interface BasicChargeController extends ChargeController, BatteryVoltage, PVCurrentAndVoltage {
 
 	@GraphQLInclude("chargingCurrent")
@@ -17,6 +19,7 @@ public interface BasicChargeController extends ChargeController, BatteryVoltage,
 	@GraphQLInclude("chargingPower")
 	@NotNull Number getChargingPower();
 
+	@GraphQLInclude("chargingMode")
 	@NotNull Mode getChargingMode();
 
 

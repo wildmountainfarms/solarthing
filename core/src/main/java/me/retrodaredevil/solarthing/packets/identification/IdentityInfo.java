@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.packets.identification;
 
+import com.fasterxml.jackson.annotation.JsonClassDescription;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 
@@ -11,6 +12,7 @@ import me.retrodaredevil.solarthing.annotations.JsonExplicit;
  * This isn't directly part of {@link Identifier} because {@link Identifier}s can be hashed and compared while this class is just used for display purposes.
  */
 @JsonExplicit
+@JsonClassDescription("Contains info used to show human readable identifiers")
 public interface IdentityInfo {
 
 	@JsonProperty("displayName")
