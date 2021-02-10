@@ -14,7 +14,7 @@ import java.util.Scanner;
 public final class RoverSetupProgram {
 	private RoverSetupProgram(){ throw new UnsupportedOperationException(); }
 
-	public static int startRoverSetup(RoverReadTable read, RoverWriteTable write, Runnable reloadCache){
+	public static int startRoverSetup(RoverReadTable read, RoverWriteTable write, Runnable reloadCache, Runnable reloadIO){
 		Scanner scanner = new Scanner(System.in);
 		loop: while (scanner.hasNextLine()) {
 			String command = scanner.nextLine();

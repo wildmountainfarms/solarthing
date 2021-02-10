@@ -88,6 +88,7 @@ public class SerialIOConfig implements IOConfig {
 					break;
 				case "mark":
 					setParity(Parity.MARK);
+					break;
 				case "space":
 					setParity(Parity.SPACE);
 					break;

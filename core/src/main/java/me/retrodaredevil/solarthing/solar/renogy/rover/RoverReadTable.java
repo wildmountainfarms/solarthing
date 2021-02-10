@@ -19,6 +19,7 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerContr
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerControl_E02D;
 
 import java.util.Collection;
+import java.util.Collections;
 
 import static java.util.Objects.requireNonNull;
 
@@ -48,6 +49,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 				getDailyMaxChargingPower() < previous.getDailyMaxChargingPower(); // The max charging power was reset to a smaller number
 	}
 
+	@GraphQLInclude("hasLoad")
 	default boolean hasLoad() {
 		return getRatedDischargingCurrentValue() > 0;
 	}
@@ -56,6 +58,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	 *
 	 * @return true if this charge controller supports input for a DC generator(alternator).
 	 */
+	@GraphQLInclude("isDcdc")
 	default boolean isDcdc() {
 		return !hasLoad() && getMaxVoltage() == Voltage.V12 && getProductModel().startsWith("RBC");
 	}
@@ -366,14 +369,19 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	 * @return The raw street light value. On DCC Charge Controllers, this may be undefined as its register is "reserved"
 	 */
 	@JsonProperty("streetLightValue")
+	@RoverOnly
 	int getRawStreetLightValue();
+	@RoverOnly
 	default int getStreetLightStatusValue(){
 		return ~StreetLight.IGNORED_BITS & getRawStreetLightValue();
 	}
+	@RoverOnly
 	default StreetLight getStreetLightStatus(){ return Modes.getActiveMode(StreetLight.class, getStreetLightStatusValue()); }
 	@JsonProperty("streetLightBrightness") // convenient
+	@RoverOnly
 	default int getStreetLightBrightnessPercent(){ return StreetLight.getBrightnessValue(getRawStreetLightValue()); }
 	@JsonProperty("streetLightOn") // convenient
+	@RoverOnly
 	default boolean isStreetLightOn(){ return getStreetLightStatus() == StreetLight.ON; }
 
 	@JsonProperty("chargingState")
@@ -412,6 +420,23 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	default Collection<RoverErrorMode> getRoverErrorModes() {
 		return Modes.getActiveModes(RoverErrorMode.class, getErrorModeValue());
 	}
+	@GraphQLInclude("dcdcErrorModesOrEmpty")
+	@JsonPropertyDescription("The DcdcErrorMode or an empty list if this is not a DCDC charge controller")
+	default Collection<DcdcErrorMode> getDcdcErrorModesOrEmtpy() {
+		if (isDcdc()) {
+			return getDcdcErrorModes();
+		}
+		return Collections.emptyList();
+	}
+	@GraphQLInclude("roverErrorModesOrEmpty")
+	@JsonPropertyDescription("The RoverErrorModes or an empty list if this is a DCDC charge controller")
+	default Collection<RoverErrorMode> getRoverErrorModesOrEmtpy() {
+		if (!isDcdc()) {
+			return getRoverErrorModes();
+		}
+		return Collections.emptyList();
+	}
+
 	// Start of E000s
 	// E001 // TODO implement this (only for DCDC CCs)
 
@@ -552,8 +577,10 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	default String getLoadWorkingModeName() { return getLoadWorkingMode().getModeName(); }
 
 	@JsonProperty("lightControlDelayMinutes")
+	@JsonPropertyDescription("Usually does not represent any meaningful value")
 	int getLightControlDelayMinutes();
 	@JsonProperty("lightControlVoltage")
+	@JsonPropertyDescription("Usually does not represent any meaningful value")
 	int getLightControlVoltage();
 
 	// 0xE020
@@ -563,20 +590,26 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	default int getLEDLoadCurrentSettingMilliAmps(){ return getLEDLoadCurrentSettingRaw() * 10; }
 
 	@JsonProperty("specialPowerControlE021Raw")
+	@RoverOnly
 	int getSpecialPowerControlE021Raw();
+	@RoverOnly
 	default SpecialPowerControl_E021 getSpecialPowerControlE021(){ return new ImmutableSpecialPowerControl_E021(getSpecialPowerControlE021Raw()); }
 
 	// For the Rover Elite, everything below here isn't gonna work because it doesn't have a load.
 
+	@RoverOnly
 	@Nullable Integer getWorkingHoursRaw(Sensing sensing);
 	@Deprecated default int getWorkingHours(Sensing sensing){ return requireNonNull(getWorkingHoursRaw(sensing)) + 1; }
 
+	@RoverOnly
 	@Nullable Integer getPowerWithPeopleSensedRaw(Sensing sensing);
 	@Deprecated default int getPowerWithPeopleSensedPercentage(Sensing sensing){ return requireNonNull(getPowerWithPeopleSensedRaw(sensing)) + 10; }
 
+	@RoverOnly
 	@Nullable Integer getPowerWithNoPeopleSensedRaw(Sensing sensing);
 	@Deprecated default int getPowerWithNoPeopleSensedPercentage(Sensing sensing){ return requireNonNull(getPowerWithNoPeopleSensedRaw(sensing)) + 10; }
 
+	@RoverOnly
 	default @Nullable SensingBundle getSensingBundle(Sensing sensing){
 		Integer workingHoursRaw = getWorkingHoursRaw(sensing);
 		Integer powerWithPeopleSensedRaw = getPowerWithPeopleSensedRaw(sensing);
@@ -610,6 +643,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	}
 
 	@JsonProperty("specialPowerControlE02DRaw")
+	@RoverOnly
 	@Nullable Integer getSpecialPowerControlE02DRaw();
 	default @Nullable SpecialPowerControl_E02D getSpecialPowerControlE02D(){
 		Integer raw = getSpecialPowerControlE02DRaw();

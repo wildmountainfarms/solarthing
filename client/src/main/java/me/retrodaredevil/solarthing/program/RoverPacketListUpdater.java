@@ -7,6 +7,7 @@ import me.retrodaredevil.io.modbus.handling.ParsedResponseException;
 import me.retrodaredevil.io.modbus.handling.RawResponseException;
 import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.SolarThingConstants;
+import me.retrodaredevil.solarthing.io.NotInitializedIOException;
 import me.retrodaredevil.solarthing.misc.error.ImmutableExceptionErrorPacket;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
@@ -24,19 +25,23 @@ public class RoverPacketListUpdater implements PacketListReceiver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RoverPacketListUpdater.class);
 	private static final String MODBUS_RUNTIME_EXCEPTION_CATCH_LOCATION_IDENTIFIER = "rover.read.modbus";
 	private static final String MODBUS_RUNTIME_INSTANCE_IDENTIFIER = "instance.1";
+	private static final int TIMEOUTS_NEEDED_TO_RELOAD = 5;
 
 	private final RoverReadTable read;
 	private final RoverWriteTable write;
 	private final Runnable reloadCache;
+	private final Runnable reloadIO;
 
 	private final boolean isSendErrorPackets;
 
 	private boolean hasBeenSuccessful = false;
+	private int timeoutsInARow = 0;
 
-	public RoverPacketListUpdater(RoverReadTable read, RoverWriteTable write, Runnable reloadCache, boolean isSendErrorPackets) {
+	public RoverPacketListUpdater(RoverReadTable read, RoverWriteTable write, Runnable reloadCache, Runnable reloadIO, boolean isSendErrorPackets) {
 		this.read = read;
 		this.write = write;
 		this.reloadCache = reloadCache;
+		this.reloadIO = reloadIO;
 		this.isSendErrorPackets = isSendErrorPackets;
 	}
 	private static String dataToSplitHex(byte[] data) {
@@ -72,14 +77,19 @@ public class RoverPacketListUpdater implements PacketListReceiver {
 						MODBUS_RUNTIME_INSTANCE_IDENTIFIER
 				));
 			}
+			boolean isTimeout = false;
+			if (e.getCause() instanceof NotInitializedIOException) {
+				isTimeout = true;
+			}
 			if (e instanceof ModbusTimeoutException) {
+				isTimeout = true;
 				// These messages will hopefully help people with problems fix it faster.
 				if (hasBeenSuccessful) {
 					LOGGER.info("\n\nHey! We noticed you got a ModbusTimeoutException after getting this to work.\n" +
 							"This is likely a fluke and hopefully this message isn't printed a bunch of times. If it is, you may want to check your cable.\n");
 				} else {
 					LOGGER.info("\n\nHey! We noticed you got a ModbusTimeoutException.\n" +
-							"This is likely a problem with your cable. SolarThing is communicating fine with your RS232 adapter, but it cannot reach the Rover.\n" +
+							"This is likely a problem with your cable. SolarThing is communicating fine with your serial adapter, but it cannot reach the Rover.\n" +
 							"Make sure the cable you have has the correct pinout, and feel free to open an issue at https://github.com/wildmountainfarms/solarthing/issues if you need help.\n");
 				}
 			} else if (e instanceof ParsedResponseException) {
@@ -90,6 +100,16 @@ public class RoverPacketListUpdater implements PacketListReceiver {
 			} else if (e instanceof RawResponseException) {
 				byte[] data = ((RawResponseException) e).getRawData();
 				LOGGER.info("Got part of a response back. (Maybe timed out halfway through?) data='" + dataToSplitHex(data) + "' Feel free to open an issue at https://github.com/wildmountainfarms/solarthing/issues/");
+			}
+			if (isTimeout) {
+				timeoutsInARow++;
+			} else {
+				timeoutsInARow = 0;
+			}
+			if (timeoutsInARow == TIMEOUTS_NEEDED_TO_RELOAD) {
+				LOGGER.debug("Going to try to recreate IO now. We failed a bunch of times in a row");
+				reloadIO.run();
+				timeoutsInARow = 0;
 			}
 			return;
 		}
