@@ -59,6 +59,26 @@ public class ReloadableIOBundle implements IOBundle {
 	}
 	private final InputStream inputStream = new InputStream() {
 		@Override
+		public int available() throws IOException {
+			return ioBundle.getInputStream().available();
+		}
+
+		@Override
+		public synchronized void mark(int readlimit) {
+			ioBundle.getInputStream().mark(readlimit);
+		}
+
+		@Override
+		public boolean markSupported() {
+			return ioBundle.getInputStream().markSupported();
+		}
+
+		@Override
+		public long skip(long n) throws IOException {
+			return ioBundle.getInputStream().skip(n);
+		}
+
+		@Override
 		public int read() throws IOException {
 			return ioBundle.getInputStream().read();
 		}
@@ -92,6 +112,11 @@ public class ReloadableIOBundle implements IOBundle {
 		@Override
 		public void write(byte[] b, int off, int len) throws IOException {
 			ioBundle.getOutputStream().write(b, off, len);
+		}
+
+		@Override
+		public void flush() throws IOException {
+			ioBundle.getOutputStream().flush();
 		}
 
 		@Override

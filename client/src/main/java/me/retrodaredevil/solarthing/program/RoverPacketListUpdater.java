@@ -113,6 +113,7 @@ public class RoverPacketListUpdater implements PacketListReceiver {
 			}
 			return;
 		}
+		timeoutsInARow = 0;
 		hasBeenSuccessful = true;
 		SpecialPowerControl_E02D specialPower2 = packet.getSpecialPowerControlE02D();
 		LOGGER.debug(SolarThingConstants.NO_CONSOLE, "Debugging special power control values: (Will debug all packets later)\n" +
