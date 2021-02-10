@@ -79,16 +79,16 @@ public final class RoverSetupProgram {
 							System.out.println(read.getBatteryTemperatureCelsius());
 							break;
 						case "loadvoltage":
-							System.out.println(read.getLoadVoltage());
+							System.out.println(read.getLoadVoltageRaw());
 							break;
 						case "loadcurrent":
-							System.out.println(read.getLoadCurrent());
+							System.out.println(read.getLoadCurrentRaw());
 							break;
 						case "loadpower":
-							System.out.println(read.getLoadPower());
+							System.out.println(read.getLoadPowerRaw());
 							break;
 						case "inputvoltage": case "pvvoltage": case "solarlvoltage":
-							System.out.println(read.getInputVoltage());
+							System.out.println(read.getPVVoltage());
 							break;
 						case "pvcurrent": case "solarcurrent":
 							System.out.println(read.getPVCurrent());

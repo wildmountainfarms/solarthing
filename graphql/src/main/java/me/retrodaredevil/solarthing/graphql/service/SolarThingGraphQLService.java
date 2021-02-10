@@ -18,8 +18,10 @@ import me.retrodaredevil.solarthing.solar.common.BasicChargeController;
 import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
 import me.retrodaredevil.solarthing.solar.common.DailyChargeController;
 import me.retrodaredevil.solarthing.solar.common.PVCurrentAndVoltage;
+import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
 import me.retrodaredevil.solarthing.solar.outback.command.packets.SuccessMateCommandPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
+import me.retrodaredevil.solarthing.solar.outback.fx.OperationalMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.event.FXACModeChangePacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.event.FXAuxStateChangePacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.event.FXOperationalModeChangePacket;
@@ -33,6 +35,7 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import static me.retrodaredevil.solarthing.graphql.service.SchemaConstants.*;
@@ -79,11 +82,12 @@ public class SolarThingGraphQLService {
 			@GraphQLArgument(name = "from", description = DESCRIPTION_FROM) long from, @GraphQLArgument(name = "to", description = DESCRIPTION_TO) long to,
 			@GraphQLArgument(name = "fragmentId", description = DESCRIPTION_FRAGMENT_ID) int fragmentId,
 			@GraphQLArgument(name = "identifier") @NotNull String identifierRepresentation,
-			@GraphQLArgument(name = "includeUnknownChangePackets", defaultValue = "false", description = DESCRIPTION_INCLUDE_UNKNOWN_CHANGE) boolean includeUnknownChangePackets
+			@GraphQLArgument(name = "includeUnknownChangePackets", defaultValue = "false", description = DESCRIPTION_INCLUDE_UNKNOWN_CHANGE) boolean includeUnknownChangePackets,
+			@GraphQLArgument(name = "acceptSupplementary", defaultValue = "true") boolean acceptSupplementary
 	) {
 		return new SolarThingEventQuery(new BasicPacketGetter(
 				simpleQueryHandler.queryEvent(from, to, null), // null source ID because each fragment ID is unique, even over multiple sources
-				new PacketFilterMultiplexer(Arrays.asList(new FragmentFilter(fragmentId), new IdentifierFilter(identifierRepresentation), new UnknownChangePacketsFilter(includeUnknownChangePackets)))
+				new PacketFilterMultiplexer(Arrays.asList(new FragmentFilter(fragmentId), new IdentifierFilter(identifierRepresentation, acceptSupplementary), new UnknownChangePacketsFilter(includeUnknownChangePackets)))
 		));
 	}
 	@GraphQLQuery(description = "Queries events in the specified time range while only including the specified fragment")
@@ -227,8 +231,17 @@ public class SolarThingGraphQLService {
 			return packetGetter.getPackets(FXACModeChangePacket.class);
 		}
 		@GraphQLQuery
-		public @NotNull List<@NotNull PacketNode<FXOperationalModeChangePacket>> fxOperationalModeChange() {
-			return packetGetter.getPackets(FXOperationalModeChangePacket.class);
+		public @NotNull List<@NotNull PacketNode<FXOperationalModeChangePacket>> fxOperationalModeChange(
+				@GraphQLArgument(name = "include") List<@NotNull OperationalMode> include,
+				@GraphQLArgument(name = "exclude") List<@NotNull OperationalMode> exclude
+		) {
+			List<@NotNull PacketNode<FXOperationalModeChangePacket>> r = packetGetter.getPackets(FXOperationalModeChangePacket.class);
+			if (include != null) {
+				r.removeIf(packetNode -> !include.contains(packetNode.getPacket().getOperationalMode()));
+			} else if (exclude != null) {
+				r.removeIf(packetNode -> exclude.contains(packetNode.getPacket().getOperationalMode()));
+			}
+			return r;
 		}
 		@GraphQLQuery
 		public @NotNull List<@NotNull PacketNode<FXAuxStateChangePacket>> fxAuxStateChange() {
@@ -247,8 +260,17 @@ public class SolarThingGraphQLService {
 			return packetGetter.getPackets(MXChargerModeChangePacket.class);
 		}
 		@GraphQLQuery
-		public @NotNull List<@NotNull PacketNode<SuccessMateCommandPacket>> mateCommand() {
-			return packetGetter.getPackets(SuccessMateCommandPacket.class);
+		public @NotNull List<@NotNull PacketNode<SuccessMateCommandPacket>> mateCommand(
+				@GraphQLArgument(name = "include") List<@NotNull MateCommand> include,
+				@GraphQLArgument(name = "exclude") List<@NotNull MateCommand> exclude
+		) {
+			List<@NotNull PacketNode<SuccessMateCommandPacket>> r = packetGetter.getPackets(SuccessMateCommandPacket.class);
+			if (include != null) {
+				r.removeIf(packetNode -> !include.contains(packetNode.getPacket().getCommand()));
+			} else if (exclude != null) {
+				r.removeIf(packetNode -> exclude.contains(packetNode.getPacket().getCommand()));
+			}
+			return r;
 		}
 	}
 

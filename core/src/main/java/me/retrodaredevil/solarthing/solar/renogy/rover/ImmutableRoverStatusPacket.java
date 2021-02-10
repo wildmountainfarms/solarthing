@@ -281,23 +281,23 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	}
 
 	@Override
-	public float getLoadVoltage() {
+	public float getLoadVoltageRaw() {
 		return loadVoltage;
 	}
 
 	@Override
-	public float getLoadCurrent() {
+	public float getLoadCurrentRaw() {
 		return loadCurrent;
 	}
 
 	@Override
-	public int getLoadPower() {
+	public int getLoadPowerRaw() {
 		return loadPower;
 	}
 
 	@NotNull
 	@Override
-	public Float getInputVoltage() {
+	public Float getPVVoltage() {
 		return inputVoltage;
 	}
 

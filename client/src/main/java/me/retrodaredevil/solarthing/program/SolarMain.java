@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.program;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lexicalscope.jewel.cli.ArgumentValidationException;
@@ -183,6 +184,9 @@ public final class SolarMain {
 			options = MAPPER.readValue(fileReader, ProgramOptions.class);
 		} catch (IOException e) {
 			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)Error while parsing ProgramOptions.", e);
+			if (e instanceof JsonParseException) {
+				LOGGER.error("Hey! Just wanted to let you know that the above error is just saying that your JSON is formatted incorrectly!");
+			}
 			return 1;
 		}
 		File dataDirectory = new File(".data");

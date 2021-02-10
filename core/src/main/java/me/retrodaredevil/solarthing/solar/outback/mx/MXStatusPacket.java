@@ -50,7 +50,7 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 	@GraphQLInclude("pvWattage")
 	@Override
 	default @NotNull Integer getPVWattage() {
-		return getPVCurrent() * getInputVoltage();
+		return getPVCurrent() * getPVVoltage();
 	}
 	// region Packet Values
 
@@ -116,7 +116,7 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 	@NotNull
 	@JsonProperty("inputVoltage")
 	@Override
-	Integer getInputVoltage();
+	Integer getPVVoltage();
 
 	/**
 	 * Should be serialized as "dailyKWH"

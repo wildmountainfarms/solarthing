@@ -19,7 +19,7 @@ public enum ChargingState implements CodeMode {
 	/** AKA overpower. Done with a constant current. This is only done to lithium batteries in place of the {@link #BOOST} state*/
 	CURRENT_LIMITING("Current limiting", 6),
 //	KEEP("Keep 7", 7),
-	/** AKA Generator. Direct charge mode is only used on newer Renogy products. */
+	/** AKA Generator. Direct charge mode is only used on Dual Input Renogy products. This means battery is being charged by alternator */
 	DIRECT_CHARGE("Direct Charge", 8), // on DCC Charge Controller only
 	;
 

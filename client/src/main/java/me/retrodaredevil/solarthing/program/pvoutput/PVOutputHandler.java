@@ -70,7 +70,7 @@ public class PVOutputHandler {
 				PVCurrentAndVoltage pvCurrentAndVoltage = (PVCurrentAndVoltage) packet;
 				IdentifierFragment identifierFragment = IdentifierFragment.create(fragmentId, pvCurrentAndVoltage.getIdentifier());
 				if (voltageIdentifierFragmentMatcher.matches(identifierFragment)) {
-					float voltage = pvCurrentAndVoltage.getInputVoltage().floatValue();
+					float voltage = pvCurrentAndVoltage.getPVVoltage().floatValue();
 					addStatusParametersBuilder.setVoltage(voltage);
 				}
 			} else if (packet instanceof TemperaturePacket) {

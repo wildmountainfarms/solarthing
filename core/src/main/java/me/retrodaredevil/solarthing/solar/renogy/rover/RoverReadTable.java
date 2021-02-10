@@ -49,6 +49,14 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 				getDailyMaxChargingPower() < previous.getDailyMaxChargingPower(); // The max charging power was reset to a smaller number
 	}
 
+	default boolean hasLoad() {
+		return getRatedDischargingCurrentValue() > 0;
+	}
+
+	default boolean isDualInput() {
+		return !hasLoad() && getMaxVoltage() == Voltage.V12;
+	}
+
 	/**
 	 * Should be serialized as "maxVoltage"
 	 * @return The int value of the max voltage
@@ -215,7 +223,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	 * @return The load/street light voltage in volts
 	 */
 	@JsonProperty("loadVoltage")
-	float getLoadVoltage();
+	float getLoadVoltageRaw();
 
 	/**
 	 * Should be serialized as "loadCurrent"
@@ -224,7 +232,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	 * @return The load/street light current in amps
 	 */
 	@JsonProperty("loadCurrent")
-	float getLoadCurrent();
+	float getLoadCurrentRaw();
 
 	/**
 	 * Should be serialized as "loadPower"
@@ -233,13 +241,55 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	 * @return The load/street light power in watts
 	 */
 	@JsonProperty("loadPower")
-	int getLoadPower();
+	int getLoadPowerRaw();
+
+	// region load/alternator getters
+	default float getLoadVoltage() {
+		if (supportsMesLoad()) {
+			return getLoadVoltageRaw();
+		}
+		return 0;
+	}
+	default float getLoadCurrent() {
+		if (supportsMesLoad()) {
+			return getLoadCurrentRaw();
+		}
+		return 0;
+	}
+	default int getLoadPower() {
+		if (supportsMesLoad()) {
+			return getLoadPowerRaw();
+		}
+		return 0;
+	}
+	@GraphQLInclude("alternatorVoltage")
+	default float getAlternatorVoltage() {
+		if (!supportsMesLoad()) {
+			return getLoadVoltageRaw();
+		}
+		return 0;
+	}
+	@GraphQLInclude("alternatorCurrent")
+	default float getAlternatorCurrent() {
+		if (!supportsMesLoad()) {
+			return getLoadCurrentRaw();
+		}
+		return 0;
+	}
+	@GraphQLInclude("alternatorPower")
+	default int getAlternatorPower() {
+		if (!supportsMesLoad()) {
+			return getLoadPowerRaw();
+		}
+		return 0;
+	}
+	// endregion
 
 	/** AKA PV/Solar Panel voltage*/
 	@NotNull
 	@JsonProperty("inputVoltage")
 	@Override
-	Float getInputVoltage();
+	Float getPVVoltage();
 	@NotNull
 	@JsonProperty("pvCurrent")
 	@Override
@@ -331,6 +381,17 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	default String getErrorsString(){
 		return Modes.toString(RoverErrorMode.class, getErrorModeValue());
 	}
+	default Collection<DualInputErrorMode> getDualInputErrorModes() {
+		return Modes.getActiveModes(DualInputErrorMode.class, getErrorModeValue());
+	}
+	// Start of E000s
+	// E001 // TODO implement this (only for Dual Input CCs)
+
+	/**
+	 * Only applies to Dual Input Charge Controllers
+	 * @return A value from 100 to 5000.
+	 */
+	default Integer getChargingCurrentSettingRaw() { return null; }
 
 	/**
 	 *
@@ -525,6 +586,18 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 		Integer raw = getSpecialPowerControlE02DRaw();
 		return raw == null ? null : new ImmutableSpecialPowerControl_E02D(raw);
 	}
+	// TODO make these methods non-default and implement them
+	// E02E and E02F
+	/**
+	 * Only applies to Dual Input Charge Controllers
+	 * @return And integer representing the percentage setting or null
+	 */
+	default Integer getControllerChargingPowerSetting() { return null; }
+	/**
+	 * Only applies to Dual Input Charge Controllers
+	 * @return And integer representing the percentage setting or null
+	 */
+	default Integer getGeneratorChargingPowerSetting() { return null; }
 
 	default boolean supportsMesLoad() {
 		return getWorkingHoursRaw(Sensing.SENSING_1) != null;

@@ -123,23 +123,23 @@ public class RoverModbusSlaveRead implements RoverReadTable {
 
 	private static final MessageHandler<int[]> LOAD_VOLTAGE = new ReadHoldingRegisters(0x0104, 1);
 	@Override
-	public float getLoadVoltage() {
+	public float getLoadVoltageRaw() {
 		return oneRegister(LOAD_VOLTAGE) / 10.0F;
 	}
 
 	private static final MessageHandler<int[]> LOAD_CURRENT = new ReadHoldingRegisters(0x0105, 1);
-	@Override public float getLoadCurrent() {
+	@Override public float getLoadCurrentRaw() {
 		return oneRegister(LOAD_CURRENT) / 100.0F;
 	}
 
 	private static final MessageHandler<int[]> LOAD_POWER = new ReadHoldingRegisters(0x0106, 1);
-	@Override public int getLoadPower() {
+	@Override public int getLoadPowerRaw() {
 		return oneRegister(LOAD_POWER);
 	}
 
 	private static final MessageHandler<int[]> PV_VOLTAGE = new ReadHoldingRegisters(0x0107, 1);
 	@NotNull
-	@Override public Float getInputVoltage() { // pv voltage/solar panel voltage
+	@Override public Float getPVVoltage() { // pv voltage/solar panel voltage
 		return oneRegister(PV_VOLTAGE) / 10.0F;
 	}
 	private static final MessageHandler<int[]> PV_CURRENT = new ReadHoldingRegisters(0x0108, 1);

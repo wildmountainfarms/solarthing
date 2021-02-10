@@ -32,7 +32,7 @@ public final class PowerUtil {
 					usingW = 0;
 				}
 				generatingW += ((RoverStatusPacket) packet).getPVWattage().intValue();
-				usingW += ((RoverStatusPacket) packet).getLoadPower();
+				usingW += ((RoverStatusPacket) packet).getLoadPowerRaw();
 			}
 		}
 		return new Data(generatingW, usingW);

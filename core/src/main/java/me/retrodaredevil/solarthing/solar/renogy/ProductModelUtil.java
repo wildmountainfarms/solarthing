@@ -2,6 +2,12 @@ package me.retrodaredevil.solarthing.solar.renogy;
 
 public final class ProductModelUtil {
 	private ProductModelUtil(){ throw new UnsupportedOperationException(); }
+	/*
+	Renogy models:
+	RBC30D1S-G1      - Dual Input DC-DC on board battery charger
+	RNG-CTRL-RVRPG40 - Renogy Rover 40A Positive Ground
+	RCC20RVRE-G1     - Rover Elite 20A
+	 */
 
 	public static boolean isRoverElite(String productModel){
 		return productModel.contains("RVRE");
@@ -16,8 +22,11 @@ public final class ProductModelUtil {
 		return productModel.contains("WND");
 	}
 
-	public static boolean isRenogy(String produceModel) {
-		return isRover(produceModel) || isWanderer(produceModel) || produceModel.contains("RCC");
+	public static boolean isRenogy(String productModel) {
+		return isRover(productModel) || isWanderer(productModel) || productModel.contains("RCC") || productModel.contains("RBC");
+	}
+	public boolean isDualInput(String productModel) {
+		return productModel.contains("RBC");
 	}
 
 	/**
