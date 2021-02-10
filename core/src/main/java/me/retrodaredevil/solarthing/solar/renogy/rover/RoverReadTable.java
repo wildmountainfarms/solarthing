@@ -3,10 +3,7 @@ package me.retrodaredevil.solarthing.solar.renogy.rover;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
-import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
+import me.retrodaredevil.solarthing.annotations.*;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 import me.retrodaredevil.solarthing.solar.common.*;
@@ -53,8 +50,12 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 		return getRatedDischargingCurrentValue() > 0;
 	}
 
+	/**
+	 *
+	 * @return true if this charge controller supports input for a DC generator(alternator).
+	 */
 	default boolean isDualInput() {
-		return !hasLoad() && getMaxVoltage() == Voltage.V12;
+		return !hasLoad() && getMaxVoltage() == Voltage.V12 && getProductModel().startsWith("RBC");
 	}
 
 	/**
@@ -223,6 +224,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	 * @return The load/street light voltage in volts
 	 */
 	@JsonProperty("loadVoltage")
+	@GraphQLExclude
 	float getLoadVoltageRaw();
 
 	/**
@@ -232,6 +234,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	 * @return The load/street light current in amps
 	 */
 	@JsonProperty("loadCurrent")
+	@GraphQLExclude
 	float getLoadCurrentRaw();
 
 	/**
@@ -241,44 +244,48 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	 * @return The load/street light power in watts
 	 */
 	@JsonProperty("loadPower")
+	@GraphQLExclude
 	int getLoadPowerRaw();
 
-	// region load/alternator getters
+	// region load/generator getters
+	@GraphQLInclude("loadVoltage")
 	default float getLoadVoltage() {
-		if (supportsMesLoad()) {
+		if (!isDualInput()) {
 			return getLoadVoltageRaw();
 		}
 		return 0;
 	}
+	@GraphQLInclude("loadCurrent")
 	default float getLoadCurrent() {
-		if (supportsMesLoad()) {
+		if (!isDualInput()) {
 			return getLoadCurrentRaw();
 		}
 		return 0;
 	}
+	@GraphQLInclude("loadPower")
 	default int getLoadPower() {
-		if (supportsMesLoad()) {
+		if (isDualInput()) {
 			return getLoadPowerRaw();
 		}
 		return 0;
 	}
-	@GraphQLInclude("alternatorVoltage")
-	default float getAlternatorVoltage() {
-		if (!supportsMesLoad()) {
+	@GraphQLInclude("generatorVoltage")
+	default float getGeneratorVoltage() {
+		if (isDualInput()) {
 			return getLoadVoltageRaw();
 		}
 		return 0;
 	}
-	@GraphQLInclude("alternatorCurrent")
-	default float getAlternatorCurrent() {
-		if (!supportsMesLoad()) {
+	@GraphQLInclude("generatorCurrent")
+	default float getGeneratorCurrent() {
+		if (isDualInput()) {
 			return getLoadCurrentRaw();
 		}
 		return 0;
 	}
-	@GraphQLInclude("alternatorPower")
-	default int getAlternatorPower() {
-		if (!supportsMesLoad()) {
+	@GraphQLInclude("generatorPower")
+	default int getGeneratorPower() {
+		if (isDualInput()) {
 			return getLoadPowerRaw();
 		}
 		return 0;

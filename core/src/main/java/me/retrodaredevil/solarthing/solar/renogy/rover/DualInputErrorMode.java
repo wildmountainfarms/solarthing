@@ -1,8 +1,6 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover;
 
-import me.retrodaredevil.solarthing.packets.BitmaskMode;
-
-public enum DualInputErrorMode implements BitmaskMode {
+public enum DualInputErrorMode implements SimpleRoverErrorMode {
 	BACKUP_BATTERY_OVER_PLACED("Backup battery over placed", 1),
 	BACKUP_BATTERY_OVER_PRESSURE("Backup battery over pressure", 1 << 1),
 	BACKUP_BATTERY_UNDER_PRESSURE("Backup battery under pressure", 1 << 2),

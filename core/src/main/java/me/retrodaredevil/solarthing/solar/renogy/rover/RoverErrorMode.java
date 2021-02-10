@@ -7,10 +7,10 @@ import me.retrodaredevil.solarthing.packets.BitmaskMode;
  * <p>
  * PDU address: 0x0121 and 0x0122, Bytes: 4, all 4 bytes
  */
-public enum RoverErrorMode implements BitmaskMode {
+public enum RoverErrorMode implements SimpleRoverErrorMode {
 //	RESERVED_31("reserved", 1 << 31),
 	CHARGE_SHORT_CIRCUIT("Charge MOS short circuit", 1 << 30),
-	ANTI_REVERSE_SHORT("Anti-reverse MOS short)", 1 << 29),
+	ANTI_REVERSE_SHORT("Anti-reverse MOS short", 1 << 29),
 	SOLAR_PANEL_REVERSELY_CONNECTED("PV reversely connected", 1 << 28),
 	SOLAR_PANEL_WORKING_POINT_OVER_VOLTAGE("PV working point over voltage", 1 << 27),
 	SOLAR_PANEL_COUNTER_CURRENT("PV counter current", 1 << 26),
@@ -25,7 +25,6 @@ public enum RoverErrorMode implements BitmaskMode {
 	BATTERY_UNDER_VOLTAGE("Battery under-voltage", 1 << 18), // E3
 	BATTERY_OVER_VOLTAGE("Battery over-voltage", 1 << 17), // E2
 	BATTERY_OVER_DISCHARGE("Battery over-discharge", 1 << 16), // E1
-	// TODO For DCC Charge Controller, more of these values are used, but the document is confusing, so we won't implement them now.
 	// Bit 15 down to 0 are reserved.
 	;
 
