@@ -11,6 +11,8 @@ import me.retrodaredevil.solarthing.solar.renogy.BatteryType;
 import me.retrodaredevil.solarthing.solar.renogy.ProductType;
 import me.retrodaredevil.solarthing.solar.renogy.Version;
 import me.retrodaredevil.solarthing.solar.renogy.Voltage;
+import me.retrodaredevil.solarthing.solar.renogy.rover.annotations.DcdcOnly;
+import me.retrodaredevil.solarthing.solar.renogy.rover.annotations.RoverOnly;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.ImmutableSpecialPowerControl_E021;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.ImmutableSpecialPowerControl_E02D;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerControl_E021;
@@ -54,7 +56,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	 *
 	 * @return true if this charge controller supports input for a DC generator(alternator).
 	 */
-	default boolean isDualInput() {
+	default boolean isDcdc() {
 		return !hasLoad() && getMaxVoltage() == Voltage.V12 && getProductModel().startsWith("RBC");
 	}
 
@@ -249,43 +251,49 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 
 	// region load/generator getters
 	@GraphQLInclude("loadVoltage")
+	@RoverOnly
 	default float getLoadVoltage() {
-		if (!isDualInput()) {
+		if (!isDcdc()) {
 			return getLoadVoltageRaw();
 		}
 		return 0;
 	}
 	@GraphQLInclude("loadCurrent")
+	@RoverOnly
 	default float getLoadCurrent() {
-		if (!isDualInput()) {
+		if (!isDcdc()) {
 			return getLoadCurrentRaw();
 		}
 		return 0;
 	}
 	@GraphQLInclude("loadPower")
+	@RoverOnly
 	default int getLoadPower() {
-		if (isDualInput()) {
+		if (isDcdc()) {
 			return getLoadPowerRaw();
 		}
 		return 0;
 	}
 	@GraphQLInclude("generatorVoltage")
+	@DcdcOnly
 	default float getGeneratorVoltage() {
-		if (isDualInput()) {
+		if (isDcdc()) {
 			return getLoadVoltageRaw();
 		}
 		return 0;
 	}
 	@GraphQLInclude("generatorCurrent")
+	@DcdcOnly
 	default float getGeneratorCurrent() {
-		if (isDualInput()) {
+		if (isDcdc()) {
 			return getLoadCurrentRaw();
 		}
 		return 0;
 	}
 	@GraphQLInclude("generatorPower")
+	@DcdcOnly
 	default int getGeneratorPower() {
-		if (isDualInput()) {
+		if (isDcdc()) {
 			return getLoadPowerRaw();
 		}
 		return 0;
@@ -381,23 +389,37 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	int getErrorModeValue();
 	@GraphQLInclude("errorModes")
 	@Override
-	default Collection<RoverErrorMode> getErrorModes(){
-		return Modes.getActiveModes(RoverErrorMode.class, getErrorModeValue());
+	default Collection<? extends SimpleRoverErrorMode> getErrorModes(){
+		if (isDcdc()) {
+			return getDcdcErrorModes();
+		}
+		return getRoverErrorModes();
 	}
 	@JsonProperty("errors")
 	default String getErrorsString(){
+		if (isDcdc()) {
+			return Modes.toString(DcdcErrorMode.class, getErrorModeValue());
+		}
 		return Modes.toString(RoverErrorMode.class, getErrorModeValue());
 	}
-	default Collection<DualInputErrorMode> getDualInputErrorModes() {
-		return Modes.getActiveModes(DualInputErrorMode.class, getErrorModeValue());
+	@GraphQLInclude("dcdcErrorModes")
+	@DcdcOnly
+	default Collection<DcdcErrorMode> getDcdcErrorModes() {
+		return Modes.getActiveModes(DcdcErrorMode.class, getErrorModeValue());
+	}
+	@GraphQLInclude("roverErrorModes")
+	@RoverOnly
+	default Collection<RoverErrorMode> getRoverErrorModes() {
+		return Modes.getActiveModes(RoverErrorMode.class, getErrorModeValue());
 	}
 	// Start of E000s
-	// E001 // TODO implement this (only for Dual Input CCs)
+	// E001 // TODO implement this (only for DCDC CCs)
 
 	/**
 	 * Only applies to Dual Input Charge Controllers
 	 * @return A value from 100 to 5000.
 	 */
+	@DcdcOnly
 	default Integer getChargingCurrentSettingRaw() { return null; }
 
 	/**
@@ -599,11 +621,13 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	 * Only applies to Dual Input Charge Controllers
 	 * @return And integer representing the percentage setting or null
 	 */
+	@DcdcOnly
 	default Integer getControllerChargingPowerSetting() { return null; }
 	/**
 	 * Only applies to Dual Input Charge Controllers
 	 * @return And integer representing the percentage setting or null
 	 */
+	@DcdcOnly
 	default Integer getGeneratorChargingPowerSetting() { return null; }
 
 	default boolean supportsMesLoad() {

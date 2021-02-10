@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover;
 
 import me.retrodaredevil.solarthing.packets.CodeMode;
+import me.retrodaredevil.solarthing.solar.renogy.rover.annotations.RoverOnly;
 
 
 /**
@@ -12,6 +13,7 @@ import me.retrodaredevil.solarthing.packets.CodeMode;
  * <p><p>
  * For write (brightness): PDU address: 0xE001
  */
+@RoverOnly
 public enum StreetLight implements CodeMode {
 	OFF("Off", 0),
 	ON("On", 1 << 7)
@@ -19,7 +21,7 @@ public enum StreetLight implements CodeMode {
 	public static final int IGNORED_BITS = 0b01111111;
 	private final String name;
 	private final int code;
-	
+
 	StreetLight(String name, int code) {
 		this.name = name;
 		this.code = code;
@@ -29,12 +31,12 @@ public enum StreetLight implements CodeMode {
 	public int getValueCode() {
 		return code;
 	}
-	
+
 	@Override
 	public String getModeName() {
 		return name;
 	}
-	
+
 	/**
 	 * @param rawValue The raw value read from the register
 	 * @return An int in range [0..100] representing the brightness level

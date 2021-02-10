@@ -25,7 +25,7 @@ public final class ProductModelUtil {
 	public static boolean isRenogy(String productModel) {
 		return isRover(productModel) || isWanderer(productModel) || productModel.contains("RCC") || productModel.contains("RBC");
 	}
-	public boolean isDualInput(String productModel) {
+	public boolean isDcdc(String productModel) {
 		return productModel.contains("RBC");
 	}
 
