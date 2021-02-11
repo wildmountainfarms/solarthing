@@ -69,6 +69,11 @@ public class ReloadableIOBundle implements IOBundle {
 		}
 
 		@Override
+		public synchronized void reset() throws IOException {
+			ioBundle.getInputStream().reset();
+		}
+
+		@Override
 		public boolean markSupported() {
 			return ioBundle.getInputStream().markSupported();
 		}
@@ -124,6 +129,7 @@ public class ReloadableIOBundle implements IOBundle {
 			ioBundle.getOutputStream().close();
 		}
 	};
+	@FunctionalInterface
 	public interface IOBundleCreator {
 		IOBundle create();
 	}

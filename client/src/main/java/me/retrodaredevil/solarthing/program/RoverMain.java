@@ -77,6 +77,8 @@ public class RoverMain {
 			}
 			if (options.getDummyFile() == null) { // only send analytics if it's not a dummy
 				extraPacketHandlers.add(new RoverAnalyticsHandler(analyticsManager));
+			} else {
+				LOGGER.debug("We will not attempt to send rover analytic data because dummy file is active.");
 			}
 			return RequestMain.startRequestProgram(options, analyticsManager, list, options.getPeriod(), options.getMinimumWait(), commandReceiver, options.getCommandInfoList(), new PacketHandlerMultiplexer(extraPacketHandlers));
 		}, options.isBulkRequest() ? modbusCacheSlave -> {
@@ -96,13 +98,8 @@ public class RoverMain {
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Beginning rover program");
 		AnalyticsManager analyticsManager = new AnalyticsManager(options.isAnalyticsEnabled(), dataDirectory);
 		analyticsManager.sendStartUp(ProgramType.ROVER);
-		boolean rpiCpuTemperature = options.getExtraOptionFlags().contains(ExtraOptionFlag.RPI_LOG_CPU_TEMPERATURE);
 
-		List<DataRequester> dataRequesterList = new ArrayList<>();
-		if(rpiCpuTemperature){
-			dataRequesterList.add(new RaspberryPiCpuTemperatureDataRequester());
-		}
-		dataRequesterList.addAll(options.getDataRequesterList());
+		List<DataRequester> dataRequesterList = new ArrayList<>(options.getDataRequesterList());
 		return doRover(options, analyticsManager, dataRequesterList);
 	}
 	public static int connectRoverSetup(RoverSetupProgramOptions options) {

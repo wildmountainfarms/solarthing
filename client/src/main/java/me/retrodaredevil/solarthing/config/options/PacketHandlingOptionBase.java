@@ -5,8 +5,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.config.request.DataRequester;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.Collections;
@@ -14,7 +12,7 @@ import java.util.List;
 
 @SuppressWarnings("FieldCanBeLocal")
 abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements PacketHandlingOption {
-	private static final Logger LOGGER = LoggerFactory.getLogger(PacketHandlingOptionBase.class);
+//	private static final Logger LOGGER = LoggerFactory.getLogger(PacketHandlingOptionBase.class);
 
 	@JsonProperty
 	@JsonPropertyDescription("An array of strings that each represent a database configuration file relative to the program directory.")
@@ -26,9 +24,6 @@ abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements Pa
 	@JsonProperty
 	private Integer unique = null;
 
-	@JsonProperty("extra_option_flags")
-	private @Nullable List<ExtraOptionFlag> extraOptionFlags;
-	@JsonProperty("request")
 	private @Nullable List<DataRequester> dataRequesterList;
 
 	@Override
@@ -55,15 +50,6 @@ abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements Pa
 		return unique;
 	}
 
-	@Override
-	public @NotNull List<ExtraOptionFlag> getExtraOptionFlags() {
-		List<ExtraOptionFlag> r = extraOptionFlags;
-		if(r == null){
-			return Collections.emptyList();
-		}
-		LOGGER.warn("Using extra_option_flags is deprecated! Please use request instead.");
-		return r;
-	}
 	@Override
 	public @NotNull List<DataRequester> getDataRequesterList() {
 		List<DataRequester> r = dataRequesterList;

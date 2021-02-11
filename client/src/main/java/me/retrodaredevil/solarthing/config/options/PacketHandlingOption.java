@@ -16,6 +16,5 @@ public interface PacketHandlingOption extends TimeZoneOption {
 
 	Integer getUniqueIdsInOneHour();
 
-	@NotNull List<ExtraOptionFlag> getExtraOptionFlags();
 	@NotNull List<DataRequester> getDataRequesterList();
 }

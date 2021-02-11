@@ -77,7 +77,6 @@ public class OutbackMateMain {
 		try(IOBundle io = createIOBundle(options)) {
 			List<DatabaseConfig> databaseConfigs = SolarMain.getDatabaseConfigs(options);
 			PacketHandlerBundle packetHandlerBundle = PacketHandlerInit.getPacketHandlerBundle(databaseConfigs, SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, SolarThingConstants.SOLAR_EVENT_UNIQUE_NAME);
-			boolean rpiCpuTemperature = options.getExtraOptionFlags().contains(ExtraOptionFlag.RPI_LOG_CPU_TEMPERATURE);
 
 			PacketHandler eventPacketHandler = new PacketHandlerMultiplexer(packetHandlerBundle.getEventPacketHandlers());
 			PacketListReceiver sourceAndFragmentUpdater = SolarMain.getSourceAndFragmentUpdater(options);
@@ -183,9 +182,6 @@ public class OutbackMateMain {
 			));
 			if (options.hasCommands()) {
 				packetListReceiverList.add(new AvailableCommandsListUpdater(options.getCommandInfoList()));
-			}
-			if(rpiCpuTemperature){
-				packetListReceiverList.add(new RaspberryPiCpuTemperatureListUpdater());
 			}
 			for (DataRequester dataRequester : options.getDataRequesterList()) {
 				packetListReceiverList.add(dataRequester.createPacketListReceiver(eventPacketListReceiverHandler.getPacketListReceiverAccepter()));

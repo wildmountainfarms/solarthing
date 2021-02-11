@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
 
 import java.io.IOException;
 
@@ -45,6 +46,7 @@ public final class Version {
 		}
 	}
 
+	@GraphQLInclude("representation")
 	@Override
 	public String toString() {
 		return "V" + twoPlaces(high) + "." + twoPlaces(middle) + "." +twoPlaces(low);

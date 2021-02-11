@@ -12,6 +12,8 @@ import me.retrodaredevil.solarthing.solar.renogy.ProductType;
 import me.retrodaredevil.solarthing.solar.renogy.Version;
 import me.retrodaredevil.solarthing.solar.renogy.Voltage;
 import me.retrodaredevil.solarthing.solar.renogy.rover.annotations.DcdcOnly;
+import me.retrodaredevil.solarthing.solar.renogy.rover.annotations.ResetEvening;
+import me.retrodaredevil.solarthing.solar.renogy.rover.annotations.ResetMorning;
 import me.retrodaredevil.solarthing.solar.renogy.rover.annotations.RoverOnly;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.ImmutableSpecialPowerControl_E021;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.ImmutableSpecialPowerControl_E02D;
@@ -129,29 +131,33 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	 * Should be serialized as "softwareVersion"
 	 * @return The int value representing the software version
 	 */
+	@GraphQLInclude("softwareVersionValue")
 	@JsonProperty("softwareVersion")
 	int getSoftwareVersionValue();
 	/**
 	 * If serialized, should be serialized as "softwareVersionString" using {@link Version#toString()}
 	 * @return The {@link Version} object representing the software version
 	 */
-	@JsonSerialize(using = Version.StringOnlySerializer.class)
-	@JsonProperty("softwareVersionString")
+	@GraphQLInclude("softwareVersion")
 	default Version getSoftwareVersion(){ return new Version(getSoftwareVersionValue()); }
+	@JsonProperty("softwareVersionString")
+	default String getSoftwareVersionString() { return getSoftwareVersion().toString(); }
 
 	/**
 	 * Should be serialized as "hardwareVersion"
 	 * @return The int value representing the hardware version
 	 */
+	@GraphQLInclude("hardwareVersionValue")
 	@JsonProperty("hardwareVersion")
 	int getHardwareVersionValue();
 	/**
 	 * If serialized, should be serialized as "hardwareVersionString" using {@link Version#toString()}
 	 * @return The {@link Version} object representing the hardware version
 	 */
-	@JsonSerialize(using = Version.StringOnlySerializer.class)
-	@JsonProperty("hardwareVersionString")
+	@GraphQLInclude("hardwareVersion")
 	default Version getHardwareVersion() { return new Version(getHardwareVersionValue()); }
+	@JsonProperty("hardwareVersionString")
+	default String getHardwareVersionString() { return getHardwareVersion().toString(); }
 
 	/**
 	 * Should be serialized as "productSerialNumber"
@@ -185,8 +191,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	 */
 	@JsonProperty("chargingCurrent")
 	@Override
-	@NotNull
-	Float getChargingCurrent();
+	@NotNull Float getChargingCurrent();
 
 	/**
 	 * Should be serialized as "controllerTemperatureRaw"
@@ -304,40 +309,48 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	// endregion
 
 	/** AKA PV/Solar Panel voltage*/
-	@NotNull
-	@JsonProperty("inputVoltage")
 	@Override
-	Float getPVVoltage();
-	@NotNull
+	@NotNull Float getPVVoltage();
+
 	@JsonProperty("pvCurrent")
 	@Override
-	Float getPVCurrent();
+	@NotNull Float getPVCurrent();
+
 	@JsonProperty("chargingPower")
 	@Override
-	@NotNull
-	Integer getChargingPower();
+	@NotNull Integer getChargingPower();
 
+	@ResetEvening
 	@Override
 	float getDailyMinBatteryVoltage();
+
+	@ResetMorning
 	@Override
 	float getDailyMaxBatteryVoltage();
 
 	/**
 	 * @return The daily record for the maximum charger current
 	 */
+	@ResetMorning
 	@JsonProperty("dailyMaxChargingCurrent")
 	float getDailyMaxChargingCurrent();
 
 	/**
 	 * @return The daily record for the maximum discharging current
 	 */
+	@ResetMorning
 	@JsonProperty("dailyMaxDischargingCurrent")
 	float getDailyMaxDischargingCurrent();
+
+	@ResetMorning
 	@JsonProperty("dailyMaxChargingPower")
 	int getDailyMaxChargingPower();
+
+	@ResetMorning
 	@JsonProperty("dailyMaxDischargingPower")
 	int getDailyMaxDischargingPower();
 
+	@ResetMorning
 	@JsonProperty("dailyAH")
 	@Override
 	int getDailyAH();
@@ -345,11 +358,13 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	int getDailyAHDischarging();
 
 	// 0x0113
+	@ResetMorning
 	@Override
 	float getDailyKWH();
 	@JsonProperty("dailyKWHConsumption")
 	float getDailyKWHConsumption();
 
+	@ResetEvening
 	@JsonProperty("operatingDaysCount")
 	int getOperatingDaysCount();
 	@JsonProperty("batteryOverDischargesCount")
