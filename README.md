@@ -19,9 +19,10 @@ Stores solar data in a database to view on Android, Grafana, or PVOutput
 ## Supported Products
 * **Outback MATEs** (FX Inverter, MX/FM Charge Controller)
 * **Renogy Rover** (And other Renogy products) over modbus serial.
-  * Includes Rover, Rover Elite, Wanderer, and possibly others
+  * Includes Rover, Rover Elite, Wanderer, Adventurer, Dual Input DCDC Charger, and possibly others
+    * Should include Rover Boost once released
   * Compatible with all [SRNE Solar](https://www.srnesolar.com) Charge Controllers (And rebranded products)
-  * Also compatible with **Zenith Grape** Solar Charge Controller, **PowMr** MPPT Charge Controller, **RICH** SOLAR MPPT, **WindyNations TrakMax** MPPT
+  * Compatible with **Zenith Grape** Solar Charge Controller, **PowMr** MPPT Charge Controller, **RICH** SOLAR MPPT, **WindyNations TrakMax** MPPT
 
 # Quickstart
 Ready to install? Use the [Quickstart](other/docs/quickstart.md)!
@@ -52,7 +53,8 @@ Ready to install? Use the [Quickstart](other/docs/quickstart.md)!
 
 
 ### Examples
-PVOutput Wild Mountain Farms: https://pvoutput.org/intraday.jsp?sid=72206
+PVOutput Wild Mountain Farms: [PVOutput System](https://pvoutput.org/intraday.jsp?sid=72206) and 
+[PVOutput SolarThing Teams](https://pvoutput.org/listteam.jsp?tid=1528)
 
 ---
 
@@ -64,16 +66,16 @@ SolarThing Android displays data in a persistent notification that updates at a 
 ![alt text](other/docs/solarthing-android-notification-screenshot-1.jpg "SolarThing Android Notification")
 <hr/>
 
-If you decide to use InfluxDB, you can easily create your own Dashboard with [Grafana](https://github.com/grafana/grafana).
+You can get data in [Grafana](https://github.com/grafana/grafana) via InfluxDB or via CouchDB+SolarThing GraphQL.
 
 Grafana is very customizable. Rearrange graphs and make it how you want!
 ![alt text](other/docs/grafana-screenshot-1.png "SolarThing with Grafana")
 
 ---
 
-[SolarThing Web](https://github.com/wildmountainfarms/solarthing-web)
+[SolarThing Web](https://github.com/wildmountainfarms/solarthing-web) (Mostly abandon at this point)
 
-While it takes some configuring, SolarThing web is a simple way to display solar data.
+SolarThing web uses CouchDB as its database.
 ![alt text](other/docs/solarthing-web-screenshot-1.png "SolarThing Web")
 
 ---
@@ -82,9 +84,7 @@ While it takes some configuring, SolarThing web is a simple way to display solar
 Of course! This runs on Java 8+ and has been tested to work with Java 8 and Java 11. This runs on Linux, Windows and Mac,
 but is easiest to set up on Linux systems running Debian with systemd (such as the default Raspberry Pi OS or Ubuntu).
 
-You can get the latest jar file on [our releases page](https://github.com/wildmountainfarms/solarthing/releases), but it
-is recommended that you use the script to automatically download it. The [quickstart](other/docs/quickstart.md) can help
-you get SolarThing up and running.
+The [quickstart](other/docs/quickstart.md) can help you get SolarThing up and running.
 
 ## Usage at Wild Mountain Farms
 We monitor an Outback MATE2 with a Raspberry Pi 1 and a Renogy Rover charge controller with a Raspberry Pi Zero W.
@@ -97,14 +97,13 @@ SolarThing GraphQL for that.
 ## Using the program
 You can see the [Outback/Renogy Rover](other/solar/README.md) README for using the program with outback or renogy products.
 
-The [input and output](other/docs/input_and_outputs.md) README is documentation for the `io` JSON property option used in all of the sub programs.
+The [input and output](other/docs/input_and_outputs.md) README is documentation for the `io` JSON property option used in the rover and mate programs.
 
 ### Database Setup
-[CouchDB setup](other/docs/couchdb_setup.md)<br/>
-*Used for the android and web application*
-
-[InfluxDB 2.0 setup](other/docs/influxdb2_setup.md)<br/>
-*Used for Grafana*
+* [CouchDB setup](other/docs/couchdb_setup.md)<br/>
+  * Used for SolarThing Android, SolarThing Web, and SolarThing GraphQL (which gets data to Grafana)
+* [InfluxDB 2.0 setup](other/docs/influxdb2_setup.md)<br/>
+  * Used for direct Grafana queries
 
 #### [Developer Use](other/docs/developer_use.md)
 #### [Contributing](CONTRIBUTING.md)
@@ -140,5 +139,5 @@ always a work in progress. If you find something confusing, please report it, so
 [![](https://img.shields.io/badge/author-Joshua%20Shannon-brightgreen.svg)](https://github.com/retrodaredevil)
 [![](https://img.shields.io/github/repo-size/wildmountainfarms/solarthing.svg)](#)
 [![](https://img.shields.io/github/languages/code-size/wildmountainfarms/solarthing.svg)](#)
-[![](https://img.shields.io/librariesio/github/wildmountainfarms/solarthing.svg)](build.gradle)
+[![](https://img.shields.io/librariesio/github/wildmountainfarms/solarthing.svg)](https://libraries.io/github/wildmountainfarms/solarthing)
 [![](https://img.shields.io/github/commit-activity/m/wildmountainfarms/solarthing.svg)](#)

@@ -15,6 +15,13 @@ import static me.retrodaredevil.solarthing.solar.renogy.rover.special.UpperLower
 import static me.retrodaredevil.util.NumberUtil.checkRange;
 
 public class RoverModbusSlaveWrite implements RoverWriteTable {
+	private static final int WRITE_EXCEPTION_UNSUPPORTED_FUNCTION_CODE = 1;
+	private static final int WRITE_EXCEPTION_UNSUPPORTED_REGISTER = 2;
+	private static final int WRITE_SINGLE_EXCEPTION_OUTSIDE_RANGE = 3;
+	private static final int WRITE_MULTI_EXCEPTION_TOO_MANY_REGISTERS_TO_WRITE = 3;
+	private static final int WRITE_SINGLE_EXCEPTION_MULTIPLE_EXPECTED = 4;
+	private static final int WRITE_MULTI_EXCEPTION_SINGLE_EXPECTED = 4;
+
 	private final ModbusSlave modbus;
 
 	public RoverModbusSlaveWrite(ModbusSlave modbus) {

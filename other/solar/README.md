@@ -23,24 +23,27 @@ You can look at how we parse packets for
 Connecting a Raspberry Pi or any device to an Outback MATE's serial port is pretty simple. For the easiest solution,
 you should get a serial to USB cable (RS232 to USB).
 
+---
+
 ### Connecting to Renogy Rover
+Some Renogy products use the RS232 protocol and some use the RS485 protocol.
+#### RS232
 If you have the USB to RS232 cable that comes with the Rover, all you have to do is connect it to your computer of
 choice and it will act like a serial port!
 
 If you don't have that cable, you can jump through some hoops to do conversion to allow the Pi UART to read it, or you can order a nice RS232 to DB9 cable and a break out board.
 
-Please see [this](http://renogy.boards.net/thread/535/using-rj11-cable-connect-raspberry) thread to see my my experience on creating a DIY cable.
+Please see [this](http://renogy.boards.net/thread/535/using-rj11-cable-connect-raspberry) thread to see my experience on creating a DIY cable.
 
 You can also view [Renogy Rover RS232 Pinout](resources/renogy_rover_rs232_pinout.png). Note that this is partially incorrect;
 you need to connect the Rover's TX to your RX and the Rover's RX to your TX. Make sure you measure voltage
 with a multimeter so you don't send 15V through a Raspberry Pi's GPIO like I did!
 
-NOTE: Rover Elites use RS-485 serial communication and must use a different cable than regular Renogy Rovers. It is
-unknown if they use the same protocol, but I assume it is the same.
+#### RS485
+Newer Renogy products use the RS485 protocol. This isn't necessarily better or worse, but Renogy actually sells
+a pre-made cable for RS485 to USB. I recommend you buy that cable.
 
-### In the future
-In the future, it might be beneficial to allow the Rover program to request data from multiple Rover Elites at once
-because RS-485 supports multiple devices on the same serial wire.
+---
 
 ### Outback References
 http://outbackpower.com/resources/documents/product-documentation

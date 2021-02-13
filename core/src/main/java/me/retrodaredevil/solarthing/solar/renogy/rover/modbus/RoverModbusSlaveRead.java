@@ -13,6 +13,10 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.RoverReadTable;
 
 public class RoverModbusSlaveRead implements RoverReadTable {
 	private static final float KWH_DIVIDER = 1_000; // units are returned in Watt Hours
+	private static final int READ_EXCEPTION_UNSUPPORTED_FUNCTION_CODE = 1;
+	private static final int READ_EXCEPTION_UNSUPPORTED_REGISTER = 2;
+	private static final int READ_EXCEPTION_TOO_MANY_REGISTERS_TO_READ = 3;
+	private static final int READ_EXCEPTION_CANNOT_READ_MULTIPLE_REGISTERS = 4;
 
 	private final ModbusSlave modbus;
 

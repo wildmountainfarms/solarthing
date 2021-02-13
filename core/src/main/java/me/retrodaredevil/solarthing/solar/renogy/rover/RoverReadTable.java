@@ -175,6 +175,13 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	@JsonPropertyDescription("The modbus address of the device")
 	int getControllerDeviceAddress();
 
+	@Deprecated // TODO implement this
+	default @Nullable Integer getProtocolVersionValue() { return null; }
+	@Deprecated // TODO implement this
+	default @Nullable Long getUniqueIdentificationCode() { return null; }
+
+	// ===============================
+
 	/**
 	 * @return A number in range [0..100] representing the current battery capacity value (The battery percentage)
 	 */

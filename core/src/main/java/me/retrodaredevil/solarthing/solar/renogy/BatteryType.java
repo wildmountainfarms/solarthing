@@ -18,6 +18,7 @@ public enum BatteryType implements CodeMode {
 	 * AKA Flooded
 	 */
 	OPEN("open", 1),
+	/** AKA AGM */
 	SEALED("sealed", 2),
 	/** AKA colloidal */
 	GEL("gel", 3),
@@ -27,7 +28,10 @@ public enum BatteryType implements CodeMode {
 	 * <p>
 	 * AKA self customized
 	 */
-	USER_LOCKED("user-locked", 5)
+	USER_LOCKED("user-locked", 5),
+//	LITHIUM_36V("lithium-36", 5), // this is used on Rover Boost models and conflicts with the user-locked battery type, so we'll leave this commented until we find a better solution
+	/** Used on Rover Boost models*/
+	LITHIUM_48V("lithium-48", 6),
 	;
 	// manual here has battery types: https://www.renogy.com/content/RNG-CTRL-RVR60/RVR60-Manual.pdf
 

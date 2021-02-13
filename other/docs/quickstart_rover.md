@@ -1,9 +1,9 @@
-# Quick Start With Renogy Rover or other SRNE (re)branded charge controllers
+# Quick Start Renogy Charge Controller or other SRNE (re)branded charge controllers
 If you haven't already, [click here](quickstart.md) to view how to clone this repo and install the service.
 
 If you don't have a cable to connect to your device, [click here](../solar/README.md#connecting-to-renogy-rover)
 
-Once everything is installed, you're ready to edit the configs. You will cd to the `program` directory.
+Once everything is installed, you're ready to edit the configs. You will `cd` to the `program` directory.
 ```
 cd /opt/solarthing/program/rover
 ```
