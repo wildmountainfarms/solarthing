@@ -29,7 +29,6 @@ import static java.util.Objects.requireNonNull;
 public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeController, DailyChargeController, RecordBatteryVoltage, Identifiable {
 
 	@Override
-	@GraphQLInclude("identifier")
 	@NotNull RoverIdentifier getIdentifier();
 
 	@Override

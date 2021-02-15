@@ -35,7 +35,6 @@ public interface ExceptionErrorPacket extends ErrorPacket, Identifiable {
 	@JsonProperty("exceptionInstanceIdentifier")
 	String getExceptionInstanceIdentifier();
 
-	@GraphQLInclude("identifier")
 	@Override
 	@NotNull ExceptionErrorIdentifier getIdentifier();
 }

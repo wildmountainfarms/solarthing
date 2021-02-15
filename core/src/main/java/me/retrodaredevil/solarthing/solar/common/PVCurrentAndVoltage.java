@@ -16,6 +16,7 @@ public interface PVCurrentAndVoltage extends Identifiable {
 	 * Historically, this was called "inputVoltage". It will remain that way in JSON representations
 	 * @return The voltage seen at the PV input terminals, usually on a charge controller
 	 */
+	@GraphQLInclude("pvVoltage")
 	@JsonProperty("inputVoltage")
 	@NotNull Number getPVVoltage();
 

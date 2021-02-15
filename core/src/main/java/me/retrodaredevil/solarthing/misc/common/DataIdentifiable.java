@@ -6,7 +6,6 @@ import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 
 public interface DataIdentifiable extends Identifiable {
-	@GraphQLInclude("identifier")
 	@Override
 	@NotNull DataIdentifier getIdentifier();
 

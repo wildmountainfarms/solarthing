@@ -96,11 +96,14 @@ public class JacksonResolverBuilder implements ResolverBuilder {
 		List<Resolver> r = new ArrayList<>();
 		for(BeanPropertyDefinition property : properties){
 			AnnotatedMember accessor = property.getAccessor();
-			if(accessor.hasAnnotation(GraphQLIgnore.class) || accessor.hasAnnotation(GraphQLInclude.class) || accessor.hasAnnotation(GraphQLExclude.class)) {
+
+			if(AnnotationUtil.hasAnnotation(GraphQLIgnore.class, accessor)
+					|| AnnotationUtil.hasAnnotation(GraphQLInclude.class, accessor)
+					|| AnnotationUtil.hasAnnotation(GraphQLExclude.class, accessor)) {
 				continue;
 			}
 			String propertyName = property.getName();
-			JsonPropertyDescription descriptionAnnotation = accessor.getAnnotation(JsonPropertyDescription.class);
+			JsonPropertyDescription descriptionAnnotation = AnnotationUtil.getAnnotation(JsonPropertyDescription.class, accessor);
 			String description = descriptionAnnotation == null ? null : descriptionAnnotation.value();
 			if(property.hasGetter()){
 				Method method = property.getGetter().getMember();

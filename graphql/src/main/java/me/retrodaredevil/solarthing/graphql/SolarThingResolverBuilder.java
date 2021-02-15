@@ -8,8 +8,10 @@ import io.leangen.graphql.metadata.strategy.query.ResolverBuilderParams;
 import io.leangen.graphql.metadata.strategy.value.Property;
 import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
 
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.List;
 
 public class SolarThingResolverBuilder extends PublicResolverBuilder {
 
@@ -17,7 +19,7 @@ public class SolarThingResolverBuilder extends PublicResolverBuilder {
 		withOperationInfoGenerator(new PropertyOperationInfoGenerator() {
 			@Override
 			public String name(OperationInfoGeneratorParams params) {
-				GraphQLInclude graphQLInclude = params.getElement().getAnnotation(GraphQLInclude.class);
+				GraphQLInclude graphQLInclude = AnnotationUtil.getAnnotation(GraphQLInclude.class, params.getElement());
 				if(graphQLInclude == null){
 					throw new NullPointerException("graphQLInclude is null! params: " + params.getElement().getElement());
 				}
@@ -26,7 +28,7 @@ public class SolarThingResolverBuilder extends PublicResolverBuilder {
 
 			@Override
 			public String description(OperationInfoGeneratorParams params) {
-				JsonPropertyDescription jsonPropertyDescription = params.getElement().getAnnotation(JsonPropertyDescription.class);
+				JsonPropertyDescription jsonPropertyDescription = AnnotationUtil.getAnnotation(JsonPropertyDescription.class, params.getElement());
 				if(jsonPropertyDescription != null){
 					return jsonPropertyDescription.value();
 				}
@@ -37,12 +39,12 @@ public class SolarThingResolverBuilder extends PublicResolverBuilder {
 
 	@Override
 	protected boolean isQuery(Method method, ResolverBuilderParams params) {
-		return method.isAnnotationPresent(GraphQLInclude.class);
+		return AnnotationUtil.hasAnnotation(GraphQLInclude.class, method);
 	}
 
 	@Override
 	protected boolean isQuery(Field field, ResolverBuilderParams params) {
-		return field.isAnnotationPresent(GraphQLInclude.class);
+		return AnnotationUtil.hasAnnotation(GraphQLInclude.class, field);
 	}
 
 	@Override

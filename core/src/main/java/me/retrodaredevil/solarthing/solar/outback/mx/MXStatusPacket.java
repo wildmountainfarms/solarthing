@@ -47,7 +47,6 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 	@Nullable
 	default Long getStartDateMillis() { return null; }
 
-	@GraphQLInclude("pvWattage")
 	@Override
 	default @NotNull Integer getPVWattage() {
 		return getPVCurrent() * getPVVoltage();
