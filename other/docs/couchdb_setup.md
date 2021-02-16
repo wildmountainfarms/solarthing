@@ -20,6 +20,8 @@ created a couchdb.json file.
 You will now run this command:
 ```shell
 java -jar solarthing.jar --couchdb-setup config/couchdb.json
+# Or use this if you are in one of program's subdirectories
+java -jar ../solarthing.jar --couchdb-setup config/couchdb.json
 ```
 That command will take you through some setup. Read what it says, you'll have to press enter a few times and
 you will have to give it input. It is recommended that the user you create is called `uploader`. Choose a password for

@@ -31,7 +31,7 @@ public class DataMetaPacket implements TargetedMetaPacket, DataIdentifiable {
 		this.description = description;
 		this.location = location;
 		dataIdentifier = new DataIdentifier(dataId);
-		identityInfo = new DataMetaIdentityInfo(name);
+		identityInfo = new DataMetaIdentityInfo(name, dataId);
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.packets.identification;
 
 import com.fasterxml.jackson.annotation.JsonClassDescription;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 
 /**
@@ -16,21 +17,23 @@ import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 public interface IdentityInfo {
 
 	@JsonProperty("displayName")
-	String getDisplayName(); // FX 1, MX 2, Rover 100
+	default String getDisplayName() { // FX 1, MX 2, Rover 40A
+		return getName() + " " + getSuffix();
+	}
+	default boolean isSuffixMeaningful() {
+		return true;
+	}
 
-	/*
-	String get2CharTypeName(); // FX, MX, RV, TR
-	String get3CharTypeName(); // FX, MX, RVR, TCR
-	String get4CharTypeName(); // FX, MX, ROVR, TRCR
-	String getPreferredShortTypeName();
-	String getShortTypeName();
-	String getTypeName();
+	@JsonProperty("name")
+	String getName(); // FX
+	@JsonProperty("suffix")
+	String getSuffix(); // 1
 
+	@JsonProperty("shortName")
+	String getShortName(); // FX, RV, WND, DCC
 
-	String getLongPrefix();
-	String getLongSuffix();
-
-	String getDisplayName(); // Rover // FX 1
-	String getShortDisplayName(); // RV 100 // FX 1
-	 */
+	@GraphQLInclude("stripExtra")
+	default IdentityInfo stripExtra() {
+		return this;
+	}
 }

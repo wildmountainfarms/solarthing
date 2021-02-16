@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ValueNode;
 import me.retrodaredevil.solarthing.annotations.TagKeys;
+import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.packets.DocumentedPacket;
 import me.retrodaredevil.solarthing.packets.DocumentedPacketType;
 import me.retrodaredevil.solarthing.packets.Packet;
@@ -13,6 +14,7 @@ import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifi
 
 import java.util.*;
 
+@UtilityClass
 public final class PointUtil {
 	private PointUtil() { throw new UnsupportedOperationException(); }
 

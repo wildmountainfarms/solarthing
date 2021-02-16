@@ -10,7 +10,17 @@ public class MXIdentityInfo implements IdentityInfo {
 	}
 
 	@Override
-	public String getDisplayName() {
-		return "MX " + address;
+	public String getName() {
+		return "MX";
+	}
+
+	@Override
+	public String getShortName() {
+		return "MX";
+	}
+
+	@Override
+	public String getSuffix() {
+		return "" + address;
 	}
 }

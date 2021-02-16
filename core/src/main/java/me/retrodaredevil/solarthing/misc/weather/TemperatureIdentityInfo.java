@@ -10,7 +10,17 @@ public class TemperatureIdentityInfo implements IdentityInfo {
 	}
 
 	@Override
-	public String getDisplayName() {
-		return "Temperature Sensor " + dataId;
+	public String getName() {
+		return "Temperature Sensor";
+	}
+
+	@Override
+	public String getShortName() {
+		return "TMP";
+	}
+
+	@Override
+	public String getSuffix() {
+		return "" + dataId;
 	}
 }

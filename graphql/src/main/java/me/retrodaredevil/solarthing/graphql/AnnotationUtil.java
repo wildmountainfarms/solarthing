@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.graphql;
 
 import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
 import io.leangen.graphql.metadata.TypedElement;
+import me.retrodaredevil.solarthing.annotations.UtilityClass;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -13,6 +14,7 @@ import java.lang.reflect.Method;
  * A utility to get annotations from methods and fields. This puts a layer of abstraction around the retrieval
  * of method annotations which is useful to get annotations from inherited interfaces.
  */
+@UtilityClass
 public final class AnnotationUtil {
 	private AnnotationUtil() { throw new UnsupportedOperationException(); }
 

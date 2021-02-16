@@ -197,7 +197,7 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 		// endregion
 
 		identifier = RoverIdentifier.getDefaultIdentifier();
-		identityInfo = new RoverIdentityInfo(productSerialNumber);
+		identityInfo = new RoverIdentityInfo(ratedChargingCurrent, RoverVariant.getVariant(getProductModel()));
 	}
 
 	@Override

@@ -1,8 +1,10 @@
 # Updating
 To update, run these commands:
 ```shell script
+cd /opt/solarthing
 git pull
 program/download_solarthing.sh # if there's an update, this will download it
+program/graphql_download_solarthing.sh # if you use the GraphQL program, this will update that
 ```
 If you are running the systemd service, do this to restart:
 ```shell script

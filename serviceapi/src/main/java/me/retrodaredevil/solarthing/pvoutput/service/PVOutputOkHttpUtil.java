@@ -1,8 +1,10 @@
 package me.retrodaredevil.solarthing.pvoutput.service;
 
+import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.serviceutil.HeaderRequestInterceptor;
 import okhttp3.OkHttpClient;
 
+@UtilityClass
 public final class PVOutputOkHttpUtil {
 	private PVOutputOkHttpUtil(){ throw new UnsupportedOperationException(); }
 

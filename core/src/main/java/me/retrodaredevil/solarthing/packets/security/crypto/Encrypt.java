@@ -1,5 +1,7 @@
 package me.retrodaredevil.solarthing.packets.security.crypto;
 
+import me.retrodaredevil.solarthing.annotations.UtilityClass;
+
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -9,9 +11,10 @@ import java.util.Base64;
 
 import static java.util.Objects.requireNonNull;
 
+@UtilityClass
 public final class Encrypt {
 	private Encrypt(){ throw new UnsupportedOperationException(); }
-	
+
 	public static String encrypt(Cipher cipher, PrivateKey key, String dataToEncrypt) throws InvalidKeyException, EncryptException {
 		requireNonNull(cipher);
 		requireNonNull(key);

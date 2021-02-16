@@ -12,6 +12,7 @@ import me.retrodaredevil.couchdb.EktorpUtil;
 import me.retrodaredevil.io.IOBundle;
 import me.retrodaredevil.io.serial.SerialConfig;
 import me.retrodaredevil.solarthing.SolarThingConstants;
+import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.DatabaseType;
 import me.retrodaredevil.solarthing.config.databases.implementations.*;
@@ -44,6 +45,7 @@ import java.util.Random;
 
 import static java.util.Objects.requireNonNull;
 
+@UtilityClass
 public final class SolarMain {
 	private SolarMain(){ throw new UnsupportedOperationException(); }
 

@@ -3,18 +3,18 @@ description = """SolarThing"""
 
 buildscript {
     ext {
-        junit5Version = '5.7.0' // https://junit.org/junit5/
-        junit5PlatformVersion = '1.7.0'
+        junit5Version = '5.7.1' // https://junit.org/junit5/
+        junit5PlatformVersion = '1.7.1'
 
         slf4jVersion = '1.7.30' // http://www.slf4j.org/download.html
         log4jVersion = '2.14.0' // https://logging.apache.org/log4j/2.x/javadoc.html
-        jacksonVersion = '2.12.0' // https://github.com/FasterXML/jackson-databind/releases
+        jacksonVersion = '2.12.1' // https://github.com/FasterXML/jackson-databind/releases
         // retrofit is why we need allow-opens. context: https://stackoverflow.com/questions/60915381/retrofit2-maven-project-illegal-reflective-access-warning // https://github.com/square/retrofit/issues/3341
         retrofitVersion = "2.9.0" // https://github.com/square/retrofit/releases
         shadowVersion = '6.1.0' // https://github.com/johnrengelman/shadow/releases
 //        ioLibVersion = '2.1.0' // https://github.com/retrodaredevil/io-lib/releases
         ioLibVersion = 'c91ce03106'
-        okhttpVersion = "4.9.0" // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
+        okhttpVersion = "4.9.1" // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
     }
 }
 allprojects {
@@ -55,10 +55,17 @@ subprojects {
         }
     }
 }
+project(":core"){
+    apply plugin: 'java'
+    dependencies {
+        annotationProcessor project(":process-annotations")
+    }
+}
 project(":common"){
     apply plugin: 'java'
     dependencies {
         api project(":core")
+        annotationProcessor project(":process-annotations")
     }
 }
 project(":client"){
@@ -67,12 +74,14 @@ project(":client"){
         api project(":core")
         api project(":common")
         api project(":serviceapi")
+        annotationProcessor project(":process-annotations")
     }
 }
 project(":serviceapi"){
     apply plugin: 'java'
     dependencies {
         api project(":core")
+        annotationProcessor project(":process-annotations")
     }
 }
 project(":graphql"){
@@ -81,6 +90,7 @@ project(":graphql"){
         api project(":core")
         api project(":common")
         api project(":serviceapi")
+        annotationProcessor project(":process-annotations")
     }
 }
 

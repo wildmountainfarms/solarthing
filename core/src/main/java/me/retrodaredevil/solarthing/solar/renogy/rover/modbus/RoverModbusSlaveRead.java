@@ -10,6 +10,7 @@ import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverIdentifier;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverIdentityInfo;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverReadTable;
+import me.retrodaredevil.solarthing.solar.renogy.rover.RoverVariant;
 
 public class RoverModbusSlaveRead implements RoverReadTable {
 	private static final float KWH_DIVIDER = 1_000; // units are returned in Watt Hours
@@ -30,7 +31,7 @@ public class RoverModbusSlaveRead implements RoverReadTable {
 
 	@Override
 	public @NotNull IdentityInfo getIdentityInfo() {
-		return new RoverIdentityInfo(getProductSerialNumber());
+		return new RoverIdentityInfo(getRatedChargingCurrentValue(), RoverVariant.getVariant(getProductModel()));
 	}
 
 	private static int upper(int number16Bit){

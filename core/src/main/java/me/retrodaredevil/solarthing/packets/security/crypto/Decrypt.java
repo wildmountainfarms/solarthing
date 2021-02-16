@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.packets.security.crypto;
 
 import com.fasterxml.jackson.core.Base64Variants;
+import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.packets.security.IntegrityPacket;
 
 import javax.crypto.BadPaddingException;
@@ -10,6 +11,7 @@ import java.security.PublicKey;
 
 import static java.util.Objects.requireNonNull;
 
+@UtilityClass
 public final class Decrypt {
 	private Decrypt(){ throw new UnsupportedOperationException(); }
 

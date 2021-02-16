@@ -10,7 +10,17 @@ public class ExceptionErrorIdentityInfo implements IdentityInfo {
 	}
 
 	@Override
-	public String getDisplayName() {
-		return exceptionErrorIdentifier.getExceptionCatchLocationIdentifier() + " " + exceptionErrorIdentifier.getExceptionInstanceIdentifier();
+	public String getName() {
+		return exceptionErrorIdentifier.getExceptionCatchLocationIdentifier();
+	}
+
+	@Override
+	public String getSuffix() {
+		return exceptionErrorIdentifier.getExceptionInstanceIdentifier();
+	}
+
+	@Override
+	public String getShortName() {
+		return "EX";
 	}
 }

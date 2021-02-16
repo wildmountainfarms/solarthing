@@ -1,11 +1,13 @@
 package me.retrodaredevil.solarthing.packets.security.crypto;
 
 import com.fasterxml.jackson.core.Base64Variants;
+import me.retrodaredevil.solarthing.annotations.UtilityClass;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+@UtilityClass
 public final class HashUtil {
 	private HashUtil() { throw new UnsupportedOperationException(); }
 

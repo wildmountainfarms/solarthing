@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.packets.collection;
 
+import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.packets.Packet;
 
 import java.util.Calendar;
@@ -7,6 +8,7 @@ import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
+@UtilityClass
 public final class PacketCollections {
 	private PacketCollections(){ throw new UnsupportedOperationException(); }
 

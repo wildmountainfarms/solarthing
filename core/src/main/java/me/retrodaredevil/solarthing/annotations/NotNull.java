@@ -1,21 +1,14 @@
 package me.retrodaredevil.solarthing.annotations;
 
 import javax.annotation.Nonnull;
-import javax.annotation.meta.TypeQualifier;
 import javax.annotation.meta.TypeQualifierNickname;
-import javax.annotation.meta.When;
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
-import static java.lang.annotation.ElementType.*;
-
-@Target({ TYPE, ANNOTATION_TYPE, PARAMETER, TYPE_USE })
+//@Target({ TYPE, ANNOTATION_TYPE, PARAMETER, TYPE_USE })
+@Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER, ElementType.LOCAL_VARIABLE, ElementType.TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @TypeQualifierNickname
-@TypeQualifier
-@Nonnull(when = When.ALWAYS)
-public @interface NotNull {
+@Nonnull
+public @interface NotNull { // our goal with this is to be compatible with keep-79: https://github.com/Kotlin/KEEP/issues/79 // https://kotlinlang.org/docs/java-interop.html#jsr-305-support
 }

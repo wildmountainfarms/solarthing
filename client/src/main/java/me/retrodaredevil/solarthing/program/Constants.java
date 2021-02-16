@@ -1,5 +1,8 @@
 package me.retrodaredevil.solarthing.program;
 
+import me.retrodaredevil.solarthing.annotations.UtilityClass;
+
+@UtilityClass
 public final class Constants {
 	private Constants(){ throw new UnsupportedOperationException(); }
 

@@ -10,7 +10,17 @@ public class BatteryVoltageOnlyIdentityInfo implements IdentityInfo {
 	}
 
 	@Override
-	public String getDisplayName() {
-		return "Battery Voltage " + dataId;
+	public String getName() {
+		return "Battery Voltage";
+	}
+
+	@Override
+	public String getSuffix() {
+		return "" + dataId;
+	}
+
+	@Override
+	public String getShortName() {
+		return "BAT";
 	}
 }

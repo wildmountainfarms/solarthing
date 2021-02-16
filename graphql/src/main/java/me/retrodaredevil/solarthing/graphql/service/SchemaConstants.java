@@ -1,5 +1,8 @@
 package me.retrodaredevil.solarthing.graphql.service;
 
+import me.retrodaredevil.solarthing.annotations.UtilityClass;
+
+@UtilityClass
 public final class SchemaConstants {
 	private SchemaConstants() { throw new UnsupportedOperationException(); }
 

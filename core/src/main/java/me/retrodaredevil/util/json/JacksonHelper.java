@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
+import me.retrodaredevil.solarthing.annotations.UtilityClass;
 
+@UtilityClass
 public final class JacksonHelper {
 	private JacksonHelper(){ throw new UnsupportedOperationException(); }
 

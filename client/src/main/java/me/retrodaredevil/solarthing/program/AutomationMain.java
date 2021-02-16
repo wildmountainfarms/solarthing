@@ -8,6 +8,7 @@ import me.retrodaredevil.couchdb.CouchProperties;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.actions.ActionNode;
 import me.retrodaredevil.solarthing.actions.environment.*;
+import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.config.options.AutomationProgramOptions;
 import me.retrodaredevil.solarthing.config.options.DatabaseTimeZoneOptionBase;
 import me.retrodaredevil.solarthing.couchdb.CouchDbQueryHandler;
@@ -34,6 +35,7 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
+@UtilityClass
 public final class AutomationMain {
 	private AutomationMain() { throw new UnsupportedOperationException(); }
 

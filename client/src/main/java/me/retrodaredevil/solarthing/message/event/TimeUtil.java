@@ -1,5 +1,8 @@
 package me.retrodaredevil.solarthing.message.event;
 
+import me.retrodaredevil.solarthing.annotations.UtilityClass;
+
+@UtilityClass
 public final class TimeUtil {
 	private TimeUtil() { throw new UnsupportedOperationException(); }
 	public static String millisToPrettyString(long millis) {

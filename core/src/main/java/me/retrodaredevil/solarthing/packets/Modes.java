@@ -2,9 +2,11 @@ package me.retrodaredevil.solarthing.packets;
 
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
+import me.retrodaredevil.solarthing.annotations.UtilityClass;
 
 import java.util.*;
 
+@UtilityClass
 public final class Modes {
 	private Modes(){ throw new UnsupportedOperationException(); }
 

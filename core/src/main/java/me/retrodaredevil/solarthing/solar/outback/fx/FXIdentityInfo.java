@@ -10,7 +10,17 @@ public class FXIdentityInfo implements IdentityInfo {
 	}
 
 	@Override
-	public String getDisplayName() {
-		return "FX " + address;
+	public String getName() {
+		return "FX";
+	}
+
+	@Override
+	public String getShortName() {
+		return "FX";
+	}
+
+	@Override
+	public String getSuffix() {
+		return "" + address;
 	}
 }

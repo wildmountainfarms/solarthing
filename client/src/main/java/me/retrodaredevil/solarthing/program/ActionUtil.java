@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.program;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.solarthing.actions.ActionNode;
+import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.config.options.CommandOption;
 
 import java.io.File;
@@ -9,6 +10,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+@UtilityClass
 public final class ActionUtil {
 	private ActionUtil() { throw new UnsupportedOperationException(); }
 	public static Map<String, ActionNode> getActionNodeMap(ObjectMapper objectMapper, CommandOption options) throws IOException {

@@ -1,8 +1,10 @@
 package me.retrodaredevil.solarthing;
 
+import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
+@UtilityClass
 public final class SolarThingConstants {
 	private SolarThingConstants(){ throw new UnsupportedOperationException(); }
 

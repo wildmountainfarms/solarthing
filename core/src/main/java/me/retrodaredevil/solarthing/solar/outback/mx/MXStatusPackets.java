@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.solar.outback.mx;
 
+import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.packets.support.Support;
 import me.retrodaredevil.solarthing.util.CheckSumException;
 import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
@@ -9,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import static me.retrodaredevil.solarthing.util.ParseUtil.toInt;
 
+@UtilityClass
 public final class MXStatusPackets {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MXStatusPackets.class);
 	private MXStatusPackets(){ throw new UnsupportedOperationException(); }

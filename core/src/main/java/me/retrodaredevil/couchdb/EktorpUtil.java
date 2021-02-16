@@ -1,10 +1,12 @@
 package me.retrodaredevil.couchdb;
 
+import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import org.ektorp.http.HttpClient;
 import org.ektorp.http.StdHttpClient;
 
 import java.net.MalformedURLException;
 
+@UtilityClass
 public final class EktorpUtil {
 	private EktorpUtil(){ throw new UnsupportedOperationException(); }
 	public static HttpClient createHttpClient(CouchProperties properties){

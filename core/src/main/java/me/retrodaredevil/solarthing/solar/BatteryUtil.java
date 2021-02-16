@@ -1,5 +1,8 @@
 package me.retrodaredevil.solarthing.solar;
 
+import me.retrodaredevil.solarthing.annotations.UtilityClass;
+
+@UtilityClass
 public final class BatteryUtil {
 	private BatteryUtil() { throw new UnsupportedOperationException(); }
 	public static int getNumberOfCells(float batteryVoltage) {

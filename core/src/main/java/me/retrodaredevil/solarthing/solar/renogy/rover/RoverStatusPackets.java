@@ -1,5 +1,8 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover;
 
+import me.retrodaredevil.solarthing.annotations.UtilityClass;
+
+@UtilityClass
 public final class RoverStatusPackets {
 	private RoverStatusPackets(){ throw new UnsupportedOperationException(); }
 

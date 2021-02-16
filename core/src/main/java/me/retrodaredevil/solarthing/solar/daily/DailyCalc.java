@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.solar.daily;
 
+import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.packets.TimestampedPacket;
 import me.retrodaredevil.solarthing.solar.common.DailyData;
 import org.jetbrains.annotations.Contract;
@@ -8,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@UtilityClass
 public final class DailyCalc {
 	private DailyCalc() { throw new UnsupportedOperationException(); }
 

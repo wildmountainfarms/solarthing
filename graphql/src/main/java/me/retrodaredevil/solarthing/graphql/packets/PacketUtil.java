@@ -1,11 +1,13 @@
 package me.retrodaredevil.solarthing.graphql.packets;
 
+import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@UtilityClass
 public final class PacketUtil {
 	private PacketUtil(){ throw new UnsupportedOperationException(); }
 

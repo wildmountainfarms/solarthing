@@ -1,8 +1,11 @@
 package me.retrodaredevil.util;
 
+import me.retrodaredevil.solarthing.annotations.UtilityClass;
+
+@UtilityClass
 public final class NumberUtil {
 	private NumberUtil(){ throw new UnsupportedOperationException(); }
-	
+
 	/**
 	 *
 	 * @param raw16BitNumber The raw 16 bit number
@@ -20,7 +23,7 @@ public final class NumberUtil {
 	public static byte getLowerByte(int raw16BitNumber){
 		return (byte) (raw16BitNumber & 0xFF);
 	}
-	
+
 	public static void checkRange(int min, int max, int check){
 		if(check < min || check > max){
 			throw new IllegalArgumentException(check + " is not in range [" + min + ".." + max + "]");

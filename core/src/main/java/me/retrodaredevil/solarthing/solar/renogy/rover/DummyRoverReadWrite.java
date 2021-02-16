@@ -129,7 +129,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 
 	@Override
 	public @NotNull IdentityInfo getIdentityInfo() {
-		return new RoverIdentityInfo(getProductSerialNumber());
+		return new RoverIdentityInfo(getRatedChargingCurrentValue(), RoverVariant.getVariant(getProductModel()));
 	}
 
 	@Override public int getMaxVoltageValue() { return roverReadTable.getMaxVoltageValue(); }

@@ -1,7 +1,10 @@
 package me.retrodaredevil.solarthing.program;
 
+import me.retrodaredevil.solarthing.annotations.UtilityClass;
+
 import java.net.URISyntaxException;
 
+@UtilityClass
 public final class JarUtil {
 	private JarUtil() { throw new UnsupportedOperationException(); }
 

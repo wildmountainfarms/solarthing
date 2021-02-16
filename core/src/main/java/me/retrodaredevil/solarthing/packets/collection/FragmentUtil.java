@@ -1,7 +1,10 @@
 package me.retrodaredevil.solarthing.packets.collection;
 
+import me.retrodaredevil.solarthing.annotations.UtilityClass;
+
 import java.util.Comparator;
 
+@UtilityClass
 public final class FragmentUtil {
 	private FragmentUtil() { throw new UnsupportedOperationException(); }
 

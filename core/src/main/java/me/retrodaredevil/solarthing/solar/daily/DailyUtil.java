@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.solar.daily;
 
+import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.TimestampedPacket;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("Java8MapApi") // needs to compatible with Android SDK 19
+@UtilityClass
 public final class DailyUtil {
 	private DailyUtil(){ throw new UnsupportedOperationException(); }
 	@Contract(pure = true)

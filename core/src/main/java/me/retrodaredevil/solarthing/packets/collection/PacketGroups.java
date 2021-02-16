@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.packets.collection;
 
+import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.instance.InstanceFragmentIndicatorPacket;
 import me.retrodaredevil.solarthing.packets.instance.InstancePacket;
@@ -12,6 +13,7 @@ import java.util.*;
 import static java.util.Objects.requireNonNull;
 
 @SuppressWarnings({"Java8MapApi", "ComparatorCombinators"}) // must remain compatible with Android SDK 19 (without core library desugaring)
+@UtilityClass
 public final class PacketGroups {
 	private PacketGroups(){ throw new UnsupportedOperationException(); }
 

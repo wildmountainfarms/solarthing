@@ -3,7 +3,9 @@ package me.retrodaredevil.solarthing.util;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import me.retrodaredevil.solarthing.annotations.UtilityClass;
 
+@UtilityClass
 public final class JacksonUtil {
 	private JacksonUtil(){ throw new UnsupportedOperationException(); }
 

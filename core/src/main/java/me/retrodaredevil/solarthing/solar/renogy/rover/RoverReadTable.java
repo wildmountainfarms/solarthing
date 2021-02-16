@@ -2,7 +2,6 @@ package me.retrodaredevil.solarthing.solar.renogy.rover;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import me.retrodaredevil.solarthing.annotations.*;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;

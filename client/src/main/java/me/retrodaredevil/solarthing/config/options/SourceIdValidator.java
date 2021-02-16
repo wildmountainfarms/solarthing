@@ -1,9 +1,11 @@
 package me.retrodaredevil.solarthing.config.options;
 
 import me.retrodaredevil.solarthing.annotations.NotNull;
+import me.retrodaredevil.solarthing.annotations.UtilityClass;
 
 import static java.util.Objects.requireNonNull;
 
+@UtilityClass
 public final class SourceIdValidator {
 	private SourceIdValidator() { throw new UnsupportedOperationException(); }
 

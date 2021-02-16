@@ -1,7 +1,9 @@
 package me.retrodaredevil.solarthing.couchdb;
 
+import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import org.ektorp.ViewQuery;
 
+@UtilityClass
 public class SolarThingCouchDb {
 	private SolarThingCouchDb() { throw new UnsupportedOperationException(); }
 

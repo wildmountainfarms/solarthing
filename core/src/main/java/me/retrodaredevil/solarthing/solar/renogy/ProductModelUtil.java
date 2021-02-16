@@ -1,5 +1,8 @@
 package me.retrodaredevil.solarthing.solar.renogy;
 
+import me.retrodaredevil.solarthing.annotations.UtilityClass;
+
+@UtilityClass
 public final class ProductModelUtil {
 	private ProductModelUtil(){ throw new UnsupportedOperationException(); }
 	/*
@@ -21,12 +24,12 @@ public final class ProductModelUtil {
 	public static boolean isWanderer(String productModel){
 		return productModel.contains("WND");
 	}
-
-	public static boolean isRenogy(String productModel) {
-		return isRover(productModel) || isWanderer(productModel) || productModel.contains("RCC") || productModel.contains("RBC");
-	}
-	public boolean isDcdc(String productModel) {
+	public static boolean isDcdc(String productModel) {
 		return productModel.contains("RBC");
+	}
+	public static boolean isRenogy(String productModel) {
+		return isRover(productModel) || isWanderer(productModel) || isDcdc(productModel) || isRoverElite(productModel)
+				|| productModel.contains("RNG") || productModel.contains("RCC");
 	}
 
 	/**
@@ -46,6 +49,10 @@ public final class ProductModelUtil {
 		// GS-PWM-COMET-40
 		return productModel.contains("COMET");
 	}
+	public static boolean isTrakmax(String productModel) {
+		return productModel.contains("TRAKMAX");
+	}
+
 	// CHC-MPPT-40BT
 	// CHC-MPPT-40BT-CHC-TMBT-01
 }

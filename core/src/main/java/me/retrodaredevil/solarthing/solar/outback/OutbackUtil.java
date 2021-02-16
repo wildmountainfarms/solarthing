@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.solar.outback;
 
 import me.retrodaredevil.solarthing.annotations.Nullable;
+import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacket;
@@ -10,6 +11,7 @@ import org.jetbrains.annotations.Contract;
 
 import java.util.Collection;
 
+@UtilityClass
 public final class OutbackUtil {
 	private OutbackUtil() { throw new UnsupportedOperationException(); }
 	/**

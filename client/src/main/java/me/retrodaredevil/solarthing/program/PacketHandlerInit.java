@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.program;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.couchdb.CouchProperties;
 import me.retrodaredevil.solarthing.SolarThingConstants;
+import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.config.databases.IndividualSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.*;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketSaver;
@@ -28,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
+@UtilityClass
 public class PacketHandlerInit {
 	private PacketHandlerInit(){ throw new UnsupportedOperationException(); }
 

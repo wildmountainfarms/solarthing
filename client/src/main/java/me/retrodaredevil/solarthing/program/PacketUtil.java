@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.program;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.packets.collection.DefaultInstanceOptions;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
@@ -11,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+@UtilityClass
 public class PacketUtil {
 	private PacketUtil() { throw new UnsupportedOperationException(); }
 
