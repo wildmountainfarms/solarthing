@@ -1,11 +1,11 @@
 package me.retrodaredevil.solarthing.annotations;
 
 import com.google.auto.service.AutoService;
-import com.sun.tools.javac.code.Symbol;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
@@ -18,16 +18,14 @@ public class SolarThingAnnotationProcessor extends AbstractProcessor {
 	@Override
 	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnvironment) {
 		for (TypeElement annotation : annotations) {
-			for (Element element : roundEnvironment.getElementsAnnotatedWith(annotation)) {
-				Symbol.ClassSymbol classSymbol = (Symbol.ClassSymbol) element;
-				for (Symbol symbol : classSymbol.getEnclosedElements()) {
-					if (symbol instanceof Symbol.MethodSymbol) {
-						Symbol.MethodSymbol methodSymbol = (Symbol.MethodSymbol) symbol;
-						Set<Modifier> modifiers = methodSymbol.getModifiers();
+			for (Element classElement : roundEnvironment.getElementsAnnotatedWith(annotation)) {
+				for (Element subElement : classElement.getEnclosedElements()) {
+					if (subElement.getKind() == ElementKind.METHOD) {
+						Set<Modifier> modifiers = subElement.getModifiers();
 						boolean isStatic = modifiers.contains(Modifier.STATIC);
-						boolean isConstructor = methodSymbol.getSimpleName().contentEquals("<init>");
+						boolean isConstructor = subElement.getSimpleName().contentEquals("<init>");
 						if (!isStatic && !isConstructor) {
-							processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Non-static method declared! " + methodSymbol.getQualifiedName() + " in: " + classSymbol);
+							processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Non-static method declared! " + subElement.getSimpleName() + " in: " + classElement);
 						}
 					}
 				}
