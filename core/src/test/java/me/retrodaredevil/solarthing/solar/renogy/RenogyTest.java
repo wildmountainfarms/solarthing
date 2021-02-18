@@ -117,20 +117,20 @@ final class RenogyTest {
 		Rover.OperatingSettingBundle operating = new Rover.OperatingSettingBundle(0, 0);
 		Rover.SensingBundle sensing = new Rover.SensingBundle(0, 0, 0);
 		RoverStatusPacket packet = new ImmutableRoverStatusPacket(
-			12,30,0,0,
-			"     HI         ".getBytes(StandardCharsets.UTF_8),
-			0,0,
-			0,0,0,26.2f,0,
-			0,0,0,0,0,0,0,
-			0,0,0,0,0,0,
-			0,0,0,0,0,
-			0,0,0,0,0,0,
-			0,0,0,0,0,0,0,
-			BatteryType.OPEN.getValueCode(),0,0,0,0,0,
-			0,0,0,0,0,
-			0,0,0,0,0,0,
-			0, operating, operating, operating, operating, 0,0,0,0,
-			0, sensing, sensing, sensing, 0,0,0
+				null, 12,30,0,0,
+				"     HI         ".getBytes(StandardCharsets.UTF_8),
+				0,0,
+				0,0,0,26.2f,0,
+				0,0,0,0,0,0,0,
+				0,0,0,0,0,0,
+				0,0,0,0,0,
+				0,0,0,0,0,0,
+				0,0,0,0,0,0,0,
+				BatteryType.OPEN.getValueCode(),0,0,0,0,0,
+				0,0,0,0,0,
+				0,0,0,0,0,0,
+				0, operating, operating, operating, operating, 0,0,0,0,
+				0, sensing, sensing, sensing, 0,0,0
 		);
 		ObjectMapper mapper = JacksonUtil.defaultMapper();
 		String json = mapper.writeValueAsString(packet);

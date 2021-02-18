@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.annotations.NotNull;
+import me.retrodaredevil.solarthing.packets.VersionedPacket;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import me.retrodaredevil.solarthing.solar.renogy.RenogyPacket;
 
@@ -21,7 +22,11 @@ import me.retrodaredevil.solarthing.solar.renogy.RenogyPacket;
 @JsonTypeName("RENOGY_ROVER_STATUS")
 @JsonExplicit
 @JsonClassDescription("Status packet for Rover and Rover-like devices")
-public interface RoverStatusPacket extends RenogyPacket, RoverReadTable {
+public interface RoverStatusPacket extends RenogyPacket, RoverReadTable, VersionedPacket {
+
+	/** The version of rover status packets that have correct values for two register values. (Bug fixed 2021.02.18)*/
+	int VERSION_CORRECT_TWO_REGISTER = 2;
+
 	@NotNull
 	@Override
 	default SolarStatusPacketType getPacketType(){

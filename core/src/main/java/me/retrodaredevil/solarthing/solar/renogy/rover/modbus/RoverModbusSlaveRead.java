@@ -41,7 +41,7 @@ public class RoverModbusSlaveRead implements RoverReadTable {
 		return number16Bit & 0xFF;
 	}
 	private static int convertTo32Bit(int[] arrayWithLengthOf2){
-		return ((arrayWithLengthOf2[0] & 0xFFFF0000) << 16) | arrayWithLengthOf2[1];
+		return (arrayWithLengthOf2[0] << 16) | arrayWithLengthOf2[1];
 	}
 	private int[] get(MessageHandler<int[]> readHandler){
 		return modbus.sendRequestMessage(readHandler);

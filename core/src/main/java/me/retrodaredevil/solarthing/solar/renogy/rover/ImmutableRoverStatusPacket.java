@@ -9,6 +9,7 @@ import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 
 @JsonIgnoreProperties(value = {"productModelString", "hardwareVersionString", "softwareVersionString", "streetLightBrightness", "streetLightOn", "chargingStateName", "errors", "batteryTypeName", "loadWorkingModeName"}, allowGetters = true)
 public class ImmutableRoverStatusPacket implements RoverStatusPacket {
+	private final @Nullable Integer packetVersion;
 	private final RoverIdentifier identifier;
 	private final IdentityInfo identityInfo;
 	private final int maxVoltage;
@@ -92,6 +93,7 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 
 	@JsonCreator
 	public ImmutableRoverStatusPacket(
+			@JsonProperty("packetVersion") Integer packetVersion,
 			@JsonProperty(value = "maxVoltage", required = true) int maxVoltage, @JsonProperty(value = "ratedChargingCurrent", required = true) int ratedChargingCurrent, @JsonProperty(value = "ratedDischargingCurrent", required = true) int ratedDischargingCurrent, @JsonProperty(value = "productType", required = true) int productType, @JsonProperty(value = "productModelEncoded", required = true) byte[] productModel,
 			@JsonProperty(value = "softwareVersion", required = true) int softwareVersion, @JsonProperty(value = "hardwareVersion", required = true) int hardwareVersion, @JsonProperty(value = "productSerialNumber", required = true) int productSerialNumber,
 			@JsonProperty(value = "controllerDeviceAddress", required = true) int controllerDeviceAddress,
@@ -117,6 +119,7 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 			@JsonProperty(value = "specialPowerControlE021Raw", required = true) int specialPowerControlE021Raw,
 			@JsonProperty(value = "sensed1", required = true) @Nullable SensingBundle sensed1, @JsonProperty(value = "sensed2", required = true) @Nullable SensingBundle sensed2, @JsonProperty(value = "sensed3", required = true) @Nullable SensingBundle sensed3, @JsonProperty(value = "sensingTimeDelayRaw", required = true) @Nullable Integer sensingTimeDelayRaw, @JsonProperty(value = "ledLoadCurrentRaw", required = true) @Nullable Integer ledLoadCurrentRaw, @JsonProperty(value = "specialPowerControlE02DRaw", required = true) @Nullable Integer specialPowerControlE02DRaw
 	) {
+		this.packetVersion = packetVersion;
 		// region initialization
 		this.maxVoltage = maxVoltage;
 		this.ratedChargingCurrent = ratedChargingCurrent;
@@ -198,6 +201,11 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 
 		identifier = RoverIdentifier.getDefaultIdentifier();
 		identityInfo = new RoverIdentityInfo(ratedChargingCurrent, RoverVariant.getVariant(getProductModel()));
+	}
+
+	@Override
+	public @Nullable Integer getPacketVersion() {
+		return packetVersion;
 	}
 
 	@Override

@@ -464,8 +464,9 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	 * Only applies to Dual Input Charge Controllers
 	 * @return A value from 100 to 5000.
 	 */
+	@Deprecated
 	@DcdcOnly
-	default Integer getChargingCurrentSettingRaw() { return null; }
+	default @Nullable Integer getChargingCurrentSettingRaw() { return null; }
 
 	/**
 	 *

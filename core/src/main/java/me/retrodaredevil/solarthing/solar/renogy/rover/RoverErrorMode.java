@@ -1,7 +1,5 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover;
 
-import me.retrodaredevil.solarthing.packets.BitmaskMode;
-
 /**
  * Represents different error modes supported by the Renogy Rover
  * <p>
