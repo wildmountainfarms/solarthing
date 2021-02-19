@@ -1,0 +1,11 @@
+[Unit]
+Description=Keeps an ssh tunnel open to the desired SSH server
+
+[Service]
+TimeoutStartSec=1
+ExecStart=/opt/ssh-forward/ssh-forward.sh
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

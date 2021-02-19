@@ -3,20 +3,23 @@ package me.retrodaredevil.solarthing.solar.pzem;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.NotNull;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.misc.common.DataIdentifier;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 
 public class ImmutablePzemShuntStatusPacket implements PzemShuntStatusPacket {
 	private final DataIdentifier identifier;
 	private final IdentityInfo identityInfo;
-	private final int voltageValueRaw, currentValueRaw, powerValueRaw, energyValueRaw;
+	private final int voltageValueRaw, currentValueRaw, powerValueRaw;
+	private final @Nullable Integer energyValueRaw;
 	private final int highVoltageAlarmStatus, lowVoltageAlarmStatus;
 	private final int modbusAddress;
 	@JsonCreator
 	public ImmutablePzemShuntStatusPacket(
 			@JsonProperty(value = "dataId", required = true) int dataId,
 			@JsonProperty(value = "voltageValueRaw", required = true) int voltageValueRaw, @JsonProperty(value = "currentValueRaw", required = true) int currentValueRaw,
-			@JsonProperty(value = "powerValueRaw", required = true) int powerValueRaw, @JsonProperty(value = "energyValueRaw", required = true) int energyValueRaw,
+			@JsonProperty(value = "powerValueRaw", required = true) int powerValueRaw,
+			@JsonProperty(value = "energyValueRaw", required = true) @Nullable Integer energyValueRaw,
 			@JsonProperty(value = "highVoltageAlarmStatus", required = true) int highVoltageAlarmStatus, @JsonProperty(value = "lowVoltageAlarmStatus", required = true) int lowVoltageAlarmStatus,
 			@JsonProperty(value = "modbusAddress", required = true) int modbusAddress) {
 		this.identifier = new DataIdentifier(dataId);
@@ -69,7 +72,7 @@ public class ImmutablePzemShuntStatusPacket implements PzemShuntStatusPacket {
 	}
 
 	@Override
-	public int getEnergyValueRaw() {
+	public @Nullable Integer getEnergyValueRaw() {
 		return energyValueRaw;
 	}
 

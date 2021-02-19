@@ -5,8 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class PzemTest {
 	@Test
@@ -19,7 +18,7 @@ public class PzemTest {
 				"  \"voltageValueRaw\" : 25,\n" +
 				"  \"currentValueRaw\" : 4,\n" +
 				"  \"powerValueRaw\" : 100,\n" +
-				"  \"energyValueRaw\" : 2210,\n" +
+				"  \"energyValueRaw\" : null,\n" +
 				"  \"highVoltageAlarmStatus\" : 0,\n" +
 				"  \"lowVoltageAlarmStatus\" : 0,\n" +
 				"  \"modbusAddress\" : 1\n" +
@@ -33,7 +32,7 @@ public class PzemTest {
 			assertEquals(25, packet.getVoltageValueRaw());
 			assertEquals(4, packet.getCurrentValueRaw());
 			assertEquals(100, packet.getPowerValueRaw());
-			assertEquals(2210, packet.getEnergyValueRaw());
+			assertNull(packet.getEnergyValueRaw());
 			assertEquals(0, packet.getHighVoltageAlarmStatus());
 			assertEquals(0, packet.getLowVoltageAlarmStatus());
 			assertFalse(packet.isHighVoltageAlarm());
