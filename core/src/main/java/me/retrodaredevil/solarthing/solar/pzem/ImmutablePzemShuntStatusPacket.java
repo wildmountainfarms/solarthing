@@ -14,11 +14,11 @@ public class ImmutablePzemShuntStatusPacket implements PzemShuntStatusPacket {
 	private final int modbusAddress;
 	@JsonCreator
 	public ImmutablePzemShuntStatusPacket(
-			@JsonProperty("dataId") int dataId,
-			@JsonProperty("voltageValueRaw") int voltageValueRaw, @JsonProperty("currentValueRaw") int currentValueRaw,
-			@JsonProperty("powerValueRaw") int powerValueRaw, @JsonProperty("energyValueRaw") int energyValueRaw,
-			@JsonProperty("highVoltageAlarmStatus") int highVoltageAlarmStatus, @JsonProperty("lowVoltageAlarmStatus") int lowVoltageAlarmStatus,
-			@JsonProperty("modbusAddress") int modbusAddress) {
+			@JsonProperty(value = "dataId", required = true) int dataId,
+			@JsonProperty(value = "voltageValueRaw", required = true) int voltageValueRaw, @JsonProperty(value = "currentValueRaw", required = true) int currentValueRaw,
+			@JsonProperty(value = "powerValueRaw", required = true) int powerValueRaw, @JsonProperty(value = "energyValueRaw", required = true) int energyValueRaw,
+			@JsonProperty(value = "highVoltageAlarmStatus", required = true) int highVoltageAlarmStatus, @JsonProperty(value = "lowVoltageAlarmStatus", required = true) int lowVoltageAlarmStatus,
+			@JsonProperty(value = "modbusAddress", required = true) int modbusAddress) {
 		this.identifier = new DataIdentifier(dataId);
 		this.identityInfo = new PzemShuntIdentityInfo(dataId);
 

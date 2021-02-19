@@ -120,6 +120,7 @@ public class RoverElitePacketTest {
 		assertNull(roverStatusPacket.getSensingTimeDelayRaw());
 		assertNull(roverStatusPacket.getLEDLoadCurrentRaw());
 		assertNull(roverStatusPacket.getSpecialPowerControlE02DRaw());
+		assertNull(roverStatusPacket.getPacketVersion());
 		assertFalse(roverStatusPacket.supportsMesLoad());
 	}
 }

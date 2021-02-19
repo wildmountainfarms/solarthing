@@ -24,6 +24,7 @@ abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements Pa
 	@JsonProperty
 	private Integer unique = null;
 
+	@JsonProperty("request")
 	private @Nullable List<DataRequester> dataRequesterList;
 
 	@Override

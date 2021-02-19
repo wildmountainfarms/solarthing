@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.config.options;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 
 @JsonSubTypes({
 		@JsonSubTypes.Type(MateProgramOptions.class),
@@ -12,6 +13,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 		@JsonSubTypes.Type(AutomationProgramOptions.class),
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
+@JsonExplicit
 public interface ProgramOptions {
 	ProgramType getProgramType();
 }
