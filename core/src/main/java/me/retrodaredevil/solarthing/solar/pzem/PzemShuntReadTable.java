@@ -46,7 +46,7 @@ public interface PzemShuntReadTable {
 		return value == null ? null : value != 0;
 	}
 	default @Nullable Boolean isLowVoltageAlarm() {
-		Integer value = getLowVoltageAlarmStatus()
+		Integer value = getLowVoltageAlarmStatus();
 		return value == null ? null : value != 0;
 	}
 
