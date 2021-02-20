@@ -18,7 +18,7 @@ public class PzemTest {
 				"  \"voltageValueRaw\" : 25,\n" +
 				"  \"currentValueRaw\" : 4,\n" +
 				"  \"powerValueRaw\" : 100,\n" +
-				"  \"energyValueRaw\" : null,\n" +
+				"  \"energyValueRaw\" : 123,\n" +
 				"  \"highVoltageAlarmStatus\" : 0,\n" +
 				"  \"lowVoltageAlarmStatus\" : 0,\n" +
 				"  \"modbusAddress\" : 1\n" +
@@ -32,7 +32,7 @@ public class PzemTest {
 			assertEquals(25, packet.getVoltageValueRaw());
 			assertEquals(4, packet.getCurrentValueRaw());
 			assertEquals(100, packet.getPowerValueRaw());
-			assertNull(packet.getEnergyValueRaw());
+			assertEquals(123, packet.getEnergyValueRaw());
 			assertEquals(0, packet.getHighVoltageAlarmStatus());
 			assertEquals(0, packet.getLowVoltageAlarmStatus());
 			assertFalse(packet.isHighVoltageAlarm());

@@ -13,7 +13,7 @@ buildscript {
         retrofitVersion = "2.9.0" // https://github.com/square/retrofit/releases
         shadowVersion = '6.1.0' // https://github.com/johnrengelman/shadow/releases
 //        ioLibVersion = '2.1.0' // https://github.com/retrodaredevil/io-lib/releases
-        ioLibVersion = 'c91ce03106'
+        ioLibVersion = '899d6a4f5a'
         okhttpVersion = "4.9.1" // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
     }
 }

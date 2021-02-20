@@ -93,7 +93,7 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 
 	@JsonCreator
 	public ImmutableRoverStatusPacket(
-			@JsonProperty("packetVersion") Integer packetVersion,
+			@JsonProperty("packetVersion") @Nullable Integer packetVersion,
 			@JsonProperty(value = "maxVoltage", required = true) int maxVoltage, @JsonProperty(value = "ratedChargingCurrent", required = true) int ratedChargingCurrent, @JsonProperty(value = "ratedDischargingCurrent", required = true) int ratedDischargingCurrent, @JsonProperty(value = "productType", required = true) int productType, @JsonProperty(value = "productModelEncoded", required = true) byte[] productModel,
 			@JsonProperty(value = "softwareVersion", required = true) int softwareVersion, @JsonProperty(value = "hardwareVersion", required = true) int hardwareVersion, @JsonProperty(value = "productSerialNumber", required = true) int productSerialNumber,
 			@JsonProperty(value = "controllerDeviceAddress", required = true) int controllerDeviceAddress,

@@ -11,7 +11,7 @@ public class ImmutablePzemShuntStatusPacket implements PzemShuntStatusPacket {
 	private final DataIdentifier identifier;
 	private final IdentityInfo identityInfo;
 	private final int voltageValueRaw, currentValueRaw, powerValueRaw;
-	private final @Nullable Integer energyValueRaw;
+	private final int energyValueRaw;
 	private final int highVoltageAlarmStatus, lowVoltageAlarmStatus;
 	private final int modbusAddress;
 	@JsonCreator
@@ -19,7 +19,7 @@ public class ImmutablePzemShuntStatusPacket implements PzemShuntStatusPacket {
 			@JsonProperty(value = "dataId", required = true) int dataId,
 			@JsonProperty(value = "voltageValueRaw", required = true) int voltageValueRaw, @JsonProperty(value = "currentValueRaw", required = true) int currentValueRaw,
 			@JsonProperty(value = "powerValueRaw", required = true) int powerValueRaw,
-			@JsonProperty(value = "energyValueRaw", required = true) @Nullable Integer energyValueRaw,
+			@JsonProperty(value = "energyValueRaw", required = true) int energyValueRaw,
 			@JsonProperty(value = "highVoltageAlarmStatus", required = true) int highVoltageAlarmStatus, @JsonProperty(value = "lowVoltageAlarmStatus", required = true) int lowVoltageAlarmStatus,
 			@JsonProperty(value = "modbusAddress", required = true) int modbusAddress) {
 		this.identifier = new DataIdentifier(dataId);
@@ -72,7 +72,7 @@ public class ImmutablePzemShuntStatusPacket implements PzemShuntStatusPacket {
 	}
 
 	@Override
-	public @Nullable Integer getEnergyValueRaw() {
+	public int getEnergyValueRaw() {
 		return energyValueRaw;
 	}
 

@@ -27,13 +27,12 @@ public interface PzemShuntReadTable {
 	}
 
 	@JsonProperty("energyValueRaw")
-	@Nullable Integer getEnergyValueRaw();
-	default @Nullable Integer getEnergyWattHours() {
+	int getEnergyValueRaw();
+	default int getEnergyWattHours() {
 		return getEnergyValueRaw();
 	}
-	default @Nullable Float getEnergyKWH() {
-		Integer raw = getEnergyValueRaw();
-		return raw == null ? null : raw / 1000.0f;
+	default float getEnergyKWH() {
+		return getEnergyWattHours() / 1000.0f;
 	}
 
 	@JsonProperty("highVoltageAlarmStatus")
