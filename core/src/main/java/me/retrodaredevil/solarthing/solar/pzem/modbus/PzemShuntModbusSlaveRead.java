@@ -1,9 +1,12 @@
 package me.retrodaredevil.solarthing.solar.pzem.modbus;
 
 import me.retrodaredevil.io.modbus.ModbusSlave;
+import me.retrodaredevil.io.modbus.handling.ErrorCodeException;
 import me.retrodaredevil.io.modbus.handling.MessageHandler;
 import me.retrodaredevil.io.modbus.handling.ReadInputRegisters;
 import me.retrodaredevil.solarthing.solar.pzem.PzemShuntReadTable;
+
+import javax.annotation.Nullable;
 
 public class PzemShuntModbusSlaveRead implements PzemShuntReadTable {
 	private final ModbusSlave modbus;
@@ -42,17 +45,38 @@ public class PzemShuntModbusSlaveRead implements PzemShuntReadTable {
 	}
 
 	@Override
-	public int getEnergyValueRaw() {
-		return convertTo32Bit(modbus.sendRequestMessage(ENERGY));
+	public @Nullable Integer getEnergyValueRaw() {
+		try {
+			return convertTo32Bit(modbus.sendRequestMessage(ENERGY));
+		} catch (ErrorCodeException ex) {
+			if (ex.getExceptionCode() == EXCEPTION_ILLEGAL_ADDRESS) {
+				return null;
+			}
+			throw ex;
+		}
 	}
 
 	@Override
-	public int getHighVoltageAlarmStatus() {
-		return modbus.sendRequestMessage(HIGH_ALARM)[0];
+	public @Nullable Integer getHighVoltageAlarmStatus() {
+		try {
+			return modbus.sendRequestMessage(HIGH_ALARM)[0];
+		} catch (ErrorCodeException ex) {
+			if (ex.getExceptionCode() == EXCEPTION_ILLEGAL_ADDRESS) {
+				return null;
+			}
+			throw ex;
+		}
 	}
 
 	@Override
-	public int getLowVoltageAlarmStatus() {
-		return modbus.sendRequestMessage(LOW_ALARM)[0];
+	public @Nullable Integer getLowVoltageAlarmStatus() {
+		try {
+			return modbus.sendRequestMessage(LOW_ALARM)[0];
+		} catch (ErrorCodeException ex) {
+			if (ex.getExceptionCode() == EXCEPTION_ILLEGAL_ADDRESS) {
+				return null;
+			}
+			throw ex;
+		}
 	}
 }

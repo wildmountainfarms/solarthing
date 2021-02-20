@@ -27,20 +27,27 @@ public interface PzemShuntReadTable {
 	}
 
 	@JsonProperty("energyValueRaw")
-	int getEnergyValueRaw();
-	default int getEnergyWattHours() {
+	@Nullable Integer getEnergyValueRaw();
+	default @Nullable Integer getEnergyWattHours() {
 		return getEnergyValueRaw();
 	}
-	default float getEnergyKWH() {
-		return getEnergyWattHours() / 1000.0f;
+	default @Nullable Float getEnergyKWH() {
+		Integer wattHours = getEnergyWattHours();
+		return wattHours == null ? null : wattHours / 1000.0f;
 	}
 
 	@JsonProperty("highVoltageAlarmStatus")
-	int getHighVoltageAlarmStatus();
+	@Nullable Integer getHighVoltageAlarmStatus();
 	@JsonProperty("lowVoltageAlarmStatus")
-	int getLowVoltageAlarmStatus();
+	@Nullable Integer getLowVoltageAlarmStatus();
 
-	default boolean isHighVoltageAlarm() { return getHighVoltageAlarmStatus() != 0; }
-	default boolean isLowVoltageAlarm() { return getLowVoltageAlarmStatus() != 0; }
+	default @Nullable Boolean isHighVoltageAlarm() {
+		Integer raw = getHighVoltageAlarmStatus();
+		return raw == null ? null : raw != 0;
+	}
+	default @Nullable Boolean isLowVoltageAlarm() {
+		Integer raw = getLowVoltageAlarmStatus();
+		return raw == null ? null : raw != 0;
+	}
 
 }
