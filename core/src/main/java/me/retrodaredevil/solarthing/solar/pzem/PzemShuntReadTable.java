@@ -37,11 +37,17 @@ public interface PzemShuntReadTable {
 	}
 
 	@JsonProperty("highVoltageAlarmStatus")
-	int getHighVoltageAlarmStatus();
+	@Nullable Integer getHighVoltageAlarmStatus();
 	@JsonProperty("lowVoltageAlarmStatus")
-	int getLowVoltageAlarmStatus();
+	@Nullable Integer getLowVoltageAlarmStatus();
 
-	default boolean isHighVoltageAlarm() { return getHighVoltageAlarmStatus() != 0; }
-	default boolean isLowVoltageAlarm() { return getLowVoltageAlarmStatus() != 0; }
+	default @Nullable Boolean isHighVoltageAlarm() {
+		Integer value = getHighVoltageAlarmStatus();
+		return value == null ? null : value != 0;
+	}
+	default @Nullable Boolean isLowVoltageAlarm() {
+		Integer value = getLowVoltageAlarmStatus()
+		return value == null ? null : value != 0;
+	}
 
 }
