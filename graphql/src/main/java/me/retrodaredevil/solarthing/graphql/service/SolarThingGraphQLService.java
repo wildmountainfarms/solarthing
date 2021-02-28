@@ -31,6 +31,7 @@ import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.event.MXAuxModeChangePacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.event.MXChargerModeChangePacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.event.MXRawDayEndPacket;
+import me.retrodaredevil.solarthing.solar.pzem.PzemShuntStatusPacket;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
 
 import java.util.ArrayList;
@@ -151,6 +152,10 @@ public class SolarThingGraphQLService {
 		@GraphQLQuery
 		public @NotNull List<@NotNull PacketNode<TemperaturePacket>> temperature() {
 			return packetGetter.getPackets(TemperaturePacket.class);
+		}
+		@GraphQLQuery
+		public @NotNull List<@NotNull PacketNode<PzemShuntStatusPacket>> pzemShuntStatus() {
+			return packetGetter.getPackets(PzemShuntStatusPacket.class);
 		}
 
 

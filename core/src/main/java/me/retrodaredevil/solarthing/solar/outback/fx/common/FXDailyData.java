@@ -74,7 +74,7 @@ public interface FXDailyData extends OutbackData, DailyBatteryVoltage, ErrorRepo
 	int getErrorModeValue();
 	@Deprecated
 	@Override
-	default Set<FXErrorMode> getErrorModes(){ return Modes.getActiveModes(FXErrorMode.class, getErrorModeValue()); }
+	default Set<@NotNull FXErrorMode> getErrorModes(){ return Modes.getActiveModes(FXErrorMode.class, getErrorModeValue()); }
 
 	@JsonProperty("warningModeValue")
 	@Override

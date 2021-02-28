@@ -8,11 +8,20 @@ import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPacket;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
 
+import static java.util.Objects.requireNonNull;
+
 @UtilityClass
 public final class PowerUtil {
 	private PowerUtil() { throw new UnsupportedOperationException(); }
-
+	@Deprecated
 	public static Data getPowerData(PacketGroup packetGroup){
+		return getPowerData(packetGroup, GeneratingType.PV_ONLY);
+	}
+
+	public static Data getPowerData(PacketGroup packetGroup, GeneratingType generatingType){
+		requireNonNull(packetGroup);
+		requireNonNull(generatingType);
+
 		Integer generatingW = null;
 		Integer usingW = null;
 		for(Packet packet : packetGroup.getPackets()){
@@ -20,7 +29,11 @@ public final class PowerUtil {
 				if (generatingW == null) {
 					generatingW = 0;
 				}
-				generatingW += ((MXStatusPacket) packet).getPVWattage();
+				if (generatingType == GeneratingType.PV_ONLY) {
+					generatingW += ((MXStatusPacket) packet).getPVWattage();
+				} else if (generatingType == GeneratingType.TOTAL_CHARGING) {
+					generatingW += ((MXStatusPacket) packet).getChargingPower().intValue();
+				} else throw new AssertionError("Unknown generatingType: " + generatingType);
 			} else if(packet instanceof FXStatusPacket){
 				if (usingW == null) {
 					usingW = 0;
@@ -33,8 +46,12 @@ public final class PowerUtil {
 				if (usingW == null) {
 					usingW = 0;
 				}
-				generatingW += ((RoverStatusPacket) packet).getPVWattage().intValue();
-				usingW += ((RoverStatusPacket) packet).getLoadPowerRaw();
+				if (generatingType == GeneratingType.PV_ONLY) {
+					generatingW += ((RoverStatusPacket) packet).getPVWattage().intValue();
+				} else if (generatingType == GeneratingType.TOTAL_CHARGING) {
+					generatingW += ((RoverStatusPacket) packet).getChargingPower();
+				} else throw new AssertionError("Unknown generatingType: " + generatingType);
+				usingW += ((RoverStatusPacket) packet).getLoadPower();
 			}
 		}
 		return new Data(generatingW, usingW);
@@ -56,5 +73,9 @@ public final class PowerUtil {
 		public @Nullable Integer getConsumingWatts() {
 			return consumingWatts;
 		}
+	}
+	public enum GeneratingType {
+		PV_ONLY,
+		TOTAL_CHARGING
 	}
 }

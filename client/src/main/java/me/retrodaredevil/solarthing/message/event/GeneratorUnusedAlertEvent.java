@@ -40,8 +40,8 @@ public class GeneratorUnusedAlertEvent extends GracePeriodTimeoutEvent {
 	protected @Nullable Runnable createDesiredTrigger(MessageSender sender, FragmentedPacketGroup previous, FragmentedPacketGroup current) {
 		FXStatusPacket fx = OutbackUtil.getMasterFX(current);
 		if (fx != null) {
-			boolean is240 = fx.getMiscModes().contains(MiscMode.FX_230V_UNIT);
-			int lowThreshold = is240 && lowRaw ? 2 * lowThresholdVoltage : lowThresholdVoltage;
+			boolean is230 = fx.is230V();
+			int lowThreshold = is230 && lowRaw ? 2 * lowThresholdVoltage : lowThresholdVoltage;
 			int inputVoltage = fx.getInputVoltage();
 			if (fx.getACMode() == ACMode.AC_DROP) {
 				return () -> sender.sendMessage("Generator dropping power! (on and not using for " + getPrettyDurationString() + ")");

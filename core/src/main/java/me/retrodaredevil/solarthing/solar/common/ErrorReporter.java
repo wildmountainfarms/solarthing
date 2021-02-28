@@ -12,6 +12,7 @@ public interface ErrorReporter extends Identifiable {
 	 * @return The value of the error mode.
 	 */
 	int getErrorModeValue();
+	@GraphQLInclude("errorModes")
 	Collection<? extends BitmaskMode> getErrorModes();
 	@GraphQLInclude("hasError")
 	default boolean hasError() {

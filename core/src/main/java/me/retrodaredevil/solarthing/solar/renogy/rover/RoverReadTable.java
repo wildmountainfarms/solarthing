@@ -415,7 +415,6 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	@JsonProperty("errorMode")
 	@Override
 	int getErrorModeValue();
-	@GraphQLInclude("errorModes")
 	@Override
 	default Collection<? extends SimpleRoverErrorMode> getErrorModes(){
 		if (isDcdc()) {

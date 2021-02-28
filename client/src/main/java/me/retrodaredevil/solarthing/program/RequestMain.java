@@ -21,6 +21,7 @@ import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandlerMultiplexer;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiverMultiplexer;
+import me.retrodaredevil.solarthing.solar.DaySummaryLogListReceiver;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,6 +98,7 @@ public class RequestMain {
 			packetListReceiverList.add(new AvailableCommandsListUpdater(requireNonNull(commandInfoList)));
 		}
 		packetListReceiverList.add(new DataIdentifiablePacketListChecker());
+		packetListReceiverList.add(new DaySummaryLogListReceiver());
 		packetListReceiverList.addAll(Arrays.asList(
 				statusPacketListReceiverHandler.getPacketListReceiverAccepter(),
 				statusPacketListReceiverHandler.getPacketListReceiverPacker(),

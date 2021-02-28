@@ -26,6 +26,7 @@ import me.retrodaredevil.solarthing.misc.device.RaspberryPiCpuTemperatureListUpd
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.handling.*;
 import me.retrodaredevil.solarthing.packets.handling.implementations.TimedPacketReceiver;
+import me.retrodaredevil.solarthing.solar.DaySummaryLogListReceiver;
 import me.retrodaredevil.solarthing.solar.outback.FXStatusListUpdater;
 import me.retrodaredevil.solarthing.solar.outback.MatePacketCreator49;
 import me.retrodaredevil.solarthing.solar.outback.OutbackDuplicatePacketRemover;
@@ -178,7 +179,8 @@ public class OutbackMateMain {
 					OutbackDuplicatePacketRemover.INSTANCE,
 					new FXEventUpdaterListReceiver(eventPacketListReceiverHandler.getPacketListReceiverAccepter(), options.getFXWarningIgnoreMap()),
 					new MXEventUpdaterListReceiver(eventPacketListReceiverHandler.getPacketListReceiverAccepter()),
-					new FXStatusListUpdater(new DailyIdentifier(options.getTimeZone()))
+					new FXStatusListUpdater(new DailyIdentifier(options.getTimeZone())),
+					new DaySummaryLogListReceiver()
 			));
 			if (options.hasCommands()) {
 				packetListReceiverList.add(new AvailableCommandsListUpdater(options.getCommandInfoList()));

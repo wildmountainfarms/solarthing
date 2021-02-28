@@ -50,13 +50,13 @@ public class FXEventUpdaterListReceiver implements PacketListReceiver {
 			previousWarningModeValue = null;
 		} else {
 			lastACMode = previous.getACModeValue();
-			wasAuxActive = previous.getMiscModes().contains(MiscMode.AUX_OUTPUT_ON);
+			wasAuxActive = previous.isAuxOn();
 			previousOperationalModeValue = previous.getOperationalModeValue();
 			previousErrorModeValue = previous.getErrorModeValue();
 			previousWarningModeValue = previous.getWarningModeValue();
 		}
 		int currentACMode = fx.getACModeValue();
-		boolean isAuxActive = fx.getMiscModes().contains(MiscMode.AUX_OUTPUT_ON);
+		boolean isAuxActive = fx.isAuxOn();
 		int operationalModeValue = fx.getOperationalModeValue();
 		int errorModeValue = fx.getErrorModeValue();
 		int warningModeValue = fx.getWarningModeValue();

@@ -58,9 +58,9 @@ public class LowACInputEvent extends GracePeriodTimeoutEvent {
 	protected @Nullable Runnable createDesiredTrigger(MessageSender sender, FragmentedPacketGroup previous, FragmentedPacketGroup current) {
 		FXStatusPacket fx = OutbackUtil.getMasterFX(current);
 		if (fx != null) {
-			boolean is240 = fx.getMiscModes().contains(MiscMode.FX_230V_UNIT);
-			int lowThreshold = is240 && lowRaw ? 2 * lowThresholdVoltage : lowThresholdVoltage;
-			int highThreshold = is240 && highRaw ? 2 * highThresholdVoltage : highThresholdVoltage;
+			boolean is230 = fx.is230V();
+			int lowThreshold = is230 && lowRaw ? 2 * lowThresholdVoltage : lowThresholdVoltage;
+			int highThreshold = is230 && highRaw ? 2 * highThresholdVoltage : highThresholdVoltage;
 			int inputVoltage = fx.getInputVoltage();
 			if (inputVoltage >= lowThreshold && inputVoltage <= highThreshold) {
 				return () -> sender.sendMessage("Low AC Input Voltage! " + inputVoltage + "V (" + getPrettyDurationString() + ")");

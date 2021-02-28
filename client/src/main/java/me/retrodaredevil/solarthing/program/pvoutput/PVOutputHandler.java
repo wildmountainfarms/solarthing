@@ -93,7 +93,7 @@ public class PVOutputHandler {
 		return new AddStatusParametersBuilder(date, time);
 	}
 	private static AddStatusParametersBuilder setStatusPowerValues(AddStatusParametersBuilder builder, PacketGroup latestPacketGroup){
-		PowerUtil.Data data = PowerUtil.getPowerData(latestPacketGroup);
+		PowerUtil.Data data = PowerUtil.getPowerData(latestPacketGroup, PowerUtil.GeneratingType.PV_ONLY);
 		return builder.setPowerGeneration(data.getGeneratingWatts())
 				.setPowerConsumption(data.getConsumingWatts());
 	}

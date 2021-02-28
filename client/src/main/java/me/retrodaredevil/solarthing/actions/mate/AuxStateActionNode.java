@@ -40,7 +40,7 @@ public class AuxStateActionNode implements ActionNode {
 				if (fxStatusPacket == null) {
 					LOGGER.warn("No master FX Status Packet!");
 				} else {
-					setDone(fxStatusPacket.getMiscModes().contains(MiscMode.AUX_OUTPUT_ON) == on);
+					setDone(fxStatusPacket.isAuxOn() == on);
 				}
 			}
 		};

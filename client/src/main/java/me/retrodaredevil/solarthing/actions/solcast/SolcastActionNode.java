@@ -50,7 +50,7 @@ public class SolcastActionNode implements ActionNode {
 
 		return Actions.createRunOnce(() -> {
 			FragmentedPacketGroup packetGroup = (FragmentedPacketGroup) latestPacketGroupEnvironment.getPacketGroupProvider().getPacketGroup();
-			PowerUtil.Data data = PowerUtil.getPowerData(packetGroup);
+			PowerUtil.Data data = PowerUtil.getPowerData(packetGroup, PowerUtil.GeneratingType.PV_ONLY);
 			Integer watts = data.getGeneratingWatts();
 			if (watts != null) {
 				LOGGER.info("Total " + watts + " watts will be uploaded to Solcast");

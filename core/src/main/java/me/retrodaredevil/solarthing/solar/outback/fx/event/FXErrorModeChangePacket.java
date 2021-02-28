@@ -34,7 +34,7 @@ public interface FXErrorModeChangePacket extends SupplementarySolarEventPacket, 
 	@Nullable Integer getPreviousErrorModeValue();
 
 	@Override
-	default Set<FXErrorMode> getErrorModes(){
+	default Set<@NotNull FXErrorMode> getErrorModes(){
 		return Modes.getActiveModes(FXErrorMode.class, getErrorModeValue());
 	}
 	default @Nullable Set<FXErrorMode> getPreviousErrorModes(){

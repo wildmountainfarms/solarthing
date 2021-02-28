@@ -11,4 +11,14 @@ public interface FXMiscReporter {
 	int getMiscValue();
 	@GraphQLInclude("miscModes")
 	default @NotNull Set<@NotNull MiscMode> getMiscModes(){ return Modes.getActiveModes(MiscMode.class, getMiscValue()); }
+
+	@GraphQLInclude("is230V")
+	default boolean is230V() {
+		return MiscMode.FX_230V_UNIT.isActive(getMiscValue());
+	}
+	@GraphQLInclude("isAuxOn")
+	default boolean isAuxOn() {
+		return MiscMode.AUX_OUTPUT_ON.isActive(getMiscValue());
+	}
+
 }

@@ -134,10 +134,13 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 	 * @return [0..99] representing the {@link AuxMode}
 	 */
 	@JsonProperty("auxMode")
+	@GraphQLInclude("auxModeValueRaw")
 	int getRawAuxModeValue();
+	@GraphQLInclude("auxModeValue")
 	default int getAuxModeValue() {
 		return AuxMode.getActualValueCode(getRawAuxModeValue());
 	}
+	@GraphQLInclude("auxMode")
 	default @NotNull AuxMode getAuxMode(){ return Modes.getActiveMode(AuxMode.class, getAuxModeValue());}
 	@GraphQLInclude("auxBitActive")
 	default boolean isAuxBitActive(){ return AuxMode.isAuxModeActive(getRawAuxModeValue()); }
@@ -150,7 +153,7 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 	@Override
 	int getErrorModeValue();
 	@Override
-	default Set<MXErrorMode> getErrorModes(){
+	default Set<@NotNull MXErrorMode> getErrorModes(){
 		return Modes.getActiveModes(MXErrorMode.class, getErrorModeValue());
 	}
 

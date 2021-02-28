@@ -84,7 +84,8 @@ public interface FXStatusPacket extends OutbackStatusPacket, BatteryVoltage, FXW
 	 */
 	@JsonProperty("operatingMode")
 	int getOperationalModeValue();
-	default OperationalMode getOperationalMode(){ return Modes.getActiveMode(OperationalMode.class, getOperationalModeValue()); }
+	@GraphQLInclude("operationalMode")
+	default @NotNull OperationalMode getOperationalMode(){ return Modes.getActiveMode(OperationalMode.class, getOperationalModeValue()); }
 
 	/**
 	 * Should be serialized as "errorMode"
@@ -179,7 +180,7 @@ public interface FXStatusPacket extends OutbackStatusPacket, BatteryVoltage, FXW
 	 * @return The name of the operating mode
 	 */
 	@JsonProperty("operatingModeName")
-	default String getOperatingModeName(){
+	default @NotNull String getOperatingModeName(){
 		return getOperationalMode().getModeName();
 	}
 

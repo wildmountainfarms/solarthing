@@ -25,6 +25,13 @@ public class PacketListReceiverHandler {
 	private final List<Packet> packetList = new ArrayList<>();
 	private final List<PacketCollection> packetCollectionList = new ArrayList<>();
 
+	/**
+	 *
+	 * @param packetListReceiver The {@link PacketListReceiver} that is only used if the list of packets to pack is not empty
+	 * @param packetHandler Handles packed packets
+	 * @param idGenerator ID Generator for the packet collection
+	 * @param timeZone The timezone used when generating packet collection IDs
+	 */
 	public PacketListReceiverHandler(PacketListReceiver packetListReceiver, PacketHandler packetHandler, PacketCollectionIdGenerator idGenerator, TimeZone timeZone) {
 		this.packetListReceiver = packetListReceiver;
 		this.packetHandler = packetHandler;
