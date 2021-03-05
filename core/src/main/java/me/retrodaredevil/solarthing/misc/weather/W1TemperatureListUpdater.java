@@ -78,7 +78,14 @@ public class W1TemperatureListUpdater implements PacketListReceiver {
 			LOGGER.warn("Unable to parse. line2=" + line2 + " name=" + name, ex);
 			return;
 		}
-		if (temperatureRaw == 0 && line1.contains("crc=00")) { // when it's a bad reading, the crc is 0
+		// Why 25C? Sometimes this just happens, so I'm debugging it to see how common it is.
+		if (temperatureRaw == 25000) {
+			LOGGER.debug("Temperature is exactly 25C. line1: " + line1);
+		}
+		if (line1.contains("crc=00")) {
+			LOGGER.debug("CRC start with 0! Maybe bad? line1: " + line1 + " raw temp: " + temperatureRaw);
+		}
+		if ((temperatureRaw == 0 || temperatureRaw == 25000) && line1.contains("crc=00")) { // when it's a bad reading, the crc is 0
 			LOGGER.debug("crc=00! name=" + name + " line1: " + line1 + " line2: " + line2); // debug since this is so common
 			return;
 		}

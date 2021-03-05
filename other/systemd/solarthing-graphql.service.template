@@ -3,7 +3,7 @@ Description=The service for SolarThing GraphQL
 
 [Service]
 TimeoutStartSec=1
-ExecStart=/opt/solarthing/program/graphql/run.sh
+ExecStart=##solarthing_root##/program/graphql/run.sh
 User=solarthing
 Group=solarthing
 

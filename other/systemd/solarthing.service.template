@@ -1,9 +1,9 @@
 [Unit]
-Description=The service for SolarThing PVOutput
+Description=The service for SolarThing ##name##
 
 [Service]
 TimeoutStartSec=1
-ExecStart=/opt/solarthing/program/pvoutput/run.sh
+ExecStart=##solarthing_root##/program/##name##/run.sh
 User=solarthing
 Group=solarthing
 StandardOutput=null
