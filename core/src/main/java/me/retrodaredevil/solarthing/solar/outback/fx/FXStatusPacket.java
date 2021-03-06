@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonClassDescription;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.Modes;
@@ -26,9 +27,9 @@ import java.util.Set;
 @JsonExplicit
 @JsonClassDescription("Status packet for FX devices")
 public interface FXStatusPacket extends OutbackStatusPacket, BatteryVoltage, FXWarningReporter, FXMiscReporter {
-	@NotNull
+	@DefaultFinal
 	@Override
-	default SolarStatusPacketType getPacketType(){
+	default @NotNull SolarStatusPacketType getPacketType(){
 		return SolarStatusPacketType.FX_STATUS;
 	}
 

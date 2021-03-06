@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.solar.outback.mx.event;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.ChangePacket;
 import me.retrodaredevil.solarthing.packets.Modes;
@@ -18,9 +19,9 @@ import me.retrodaredevil.solarthing.annotations.Nullable;
 @JsonTypeName("MXFM_AUX_MODE_CHANGE")
 @JsonExplicit
 public interface MXAuxModeChangePacket extends SupplementarySolarEventPacket, SupplementaryOutbackPacket, OutbackData, ChangePacket {
-	@NotNull
+	@DefaultFinal
 	@Override
-	default SolarEventPacketType getPacketType(){
+	default @NotNull SolarEventPacketType getPacketType(){
 		return SolarEventPacketType.MXFM_AUX_MODE_CHANGE;
 	}
 

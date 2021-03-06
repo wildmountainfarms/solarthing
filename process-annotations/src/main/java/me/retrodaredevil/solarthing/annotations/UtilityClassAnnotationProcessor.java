@@ -14,7 +14,7 @@ import java.util.Set;
 @SupportedAnnotationTypes({"me.retrodaredevil.solarthing.annotations.UtilityClass"})
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 @AutoService(Processor.class)
-public class SolarThingAnnotationProcessor extends AbstractProcessor {
+public class UtilityClassAnnotationProcessor extends AbstractProcessor {
 	@Override
 	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnvironment) {
 		for (TypeElement annotation : annotations) {

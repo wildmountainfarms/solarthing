@@ -2,12 +2,13 @@ package me.retrodaredevil.solarthing.solar.outback.command.packets;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
 
 import static java.util.Objects.requireNonNull;
 
 public class ImmutableSuccessMateCommandPacket implements SuccessMateCommandPacket {
-	
+
 	private final MateCommand command;
 	private final String source;
 
@@ -19,15 +20,15 @@ public class ImmutableSuccessMateCommandPacket implements SuccessMateCommandPack
 		this.command = requireNonNull(command);
 		this.source = requireNonNull(source);
 	}
-	
+
 	@Override
-	public MateCommand getCommand() {
+	public @NotNull MateCommand getCommand() {
 		return command;
 	}
-	
+
 	@Override
-	public String getSource() {
+	public @NotNull String getSource() {
 		return source;
 	}
-	
+
 }

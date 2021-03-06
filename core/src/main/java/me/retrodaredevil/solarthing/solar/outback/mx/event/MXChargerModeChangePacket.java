@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.solar.outback.mx.event;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
@@ -17,9 +18,9 @@ import me.retrodaredevil.solarthing.solar.outback.mx.ChargerMode;
 @JsonTypeName("MXFM_CHARGER_MODE_CHANGE")
 @JsonExplicit
 public interface MXChargerModeChangePacket extends SupplementarySolarEventPacket, SupplementaryOutbackPacket, ChangePacket {
-	@NotNull
+	@DefaultFinal
 	@Override
-	default SolarEventPacketType getPacketType(){
+	default @NotNull SolarEventPacketType getPacketType(){
 		return SolarEventPacketType.MXFM_CHARGER_MODE_CHANGE;
 	}
 

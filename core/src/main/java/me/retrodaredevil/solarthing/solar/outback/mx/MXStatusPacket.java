@@ -3,8 +3,7 @@ package me.retrodaredevil.solarthing.solar.outback.mx;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
-import me.retrodaredevil.solarthing.annotations.JsonExplicit;
+import me.retrodaredevil.solarthing.annotations.*;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.packets.support.Support;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
@@ -13,9 +12,6 @@ import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
 import me.retrodaredevil.solarthing.solar.common.DailyChargeController;
 import me.retrodaredevil.solarthing.solar.common.DailyData;
 import me.retrodaredevil.solarthing.solar.outback.OutbackStatusPacket;
-import me.retrodaredevil.solarthing.annotations.Nullable;
-
-import me.retrodaredevil.solarthing.annotations.NotNull;
 
 import java.util.Set;
 
@@ -28,9 +24,9 @@ import java.util.Set;
 @JsonTypeName("MXFM_STATUS")
 @JsonExplicit
 public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeController, DailyChargeController, BatteryVoltage {
-	@NotNull
+	@DefaultFinal
 	@Override
-	default SolarStatusPacketType getPacketType(){
+	default @NotNull SolarStatusPacketType getPacketType(){
 		return SolarStatusPacketType.MXFM_STATUS;
 	}
 

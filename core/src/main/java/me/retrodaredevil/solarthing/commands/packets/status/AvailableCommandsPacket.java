@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.commands.packets.status;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.commands.CommandInfo;
@@ -13,6 +14,7 @@ import java.util.List;
 @JsonTypeName("AVAILABLE_COMMANDS")
 @JsonExplicit
 public interface AvailableCommandsPacket extends CommandStatusPacket {
+	@DefaultFinal
 	@Override
 	default @NotNull CommandStatusPacketType getPacketType() {
 		return CommandStatusPacketType.AVAILABLE_COMMANDS;

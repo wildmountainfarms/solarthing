@@ -8,7 +8,7 @@ import me.retrodaredevil.solarthing.annotations.NotNull;
 
 @JsonTypeName("DEVICE_INFO")
 @JsonExplicit
-public class DeviceInfoPacket implements TargetedMetaPacket {
+public final class DeviceInfoPacket implements TargetedMetaPacket {
 	private final String deviceName;
 	private final String deviceDescription;
 	private final String deviceLocation;

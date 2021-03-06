@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.solar.outback.fx.event;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
@@ -22,9 +23,9 @@ import java.util.Set;
 public interface FXWarningModeChangePacket extends SupplementarySolarEventPacket, SupplementaryOutbackPacket, FXWarningReporter, ChangePacket {
 	int DEFAULT_IGNORED_WARNING_MODE_VALUE_CONSTANT = 32;
 
-	@NotNull
+	@DefaultFinal
 	@Override
-	default SolarEventPacketType getPacketType(){
+	default @NotNull SolarEventPacketType getPacketType(){
 		return SolarEventPacketType.FX_WARNING_MODE_CHANGE;
 	}
 

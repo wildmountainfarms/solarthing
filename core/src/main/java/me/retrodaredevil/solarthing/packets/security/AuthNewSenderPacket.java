@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.packets.security;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 
 import me.retrodaredevil.solarthing.annotations.NotNull;
@@ -12,9 +13,9 @@ import java.security.PublicKey;
 @JsonTypeName("AUTH_NEW_SENDER")
 @JsonExplicit
 public interface AuthNewSenderPacket extends SecurityPacket, SenderPacket {
-	@NotNull
+	@DefaultFinal
 	@Override
-	default SecurityPacketType getPacketType() {
+	default @NotNull SecurityPacketType getPacketType() {
 		return SecurityPacketType.AUTH_NEW_SENDER;
 	}
 

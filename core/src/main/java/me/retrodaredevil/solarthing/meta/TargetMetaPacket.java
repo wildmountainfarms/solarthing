@@ -11,7 +11,7 @@ import java.util.List;
 
 @JsonTypeName("FRAGMENT_TARGET")
 @JsonExplicit
-public class TargetMetaPacket implements BasicMetaPacket {
+public final class TargetMetaPacket implements BasicMetaPacket {
 	private final List<Integer> fragmentIds;
 	private final List<TargetedMetaPacket> packets;
 
@@ -30,8 +30,7 @@ public class TargetMetaPacket implements BasicMetaPacket {
 	}
 
 	@Override
-	@NotNull
-	public BasicMetaPacketType getPacketType() {
+	public @NotNull BasicMetaPacketType getPacketType() {
 		return BasicMetaPacketType.FRAGMENT_TARGET;
 	}
 

@@ -11,7 +11,7 @@ import me.retrodaredevil.solarthing.misc.common.DataIdentifier;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 
 @JsonTypeName("DATA_INFO")
-public class DataMetaPacket implements TargetedMetaPacket, DataIdentifiable {
+public final class DataMetaPacket implements TargetedMetaPacket, DataIdentifiable {
 	private final int dataId;
 	private final String name;
 	private final String description;

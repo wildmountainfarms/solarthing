@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.solar.outback.fx.event;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
@@ -15,9 +16,9 @@ import me.retrodaredevil.solarthing.solar.outback.SupplementaryOutbackPacket;
 @JsonTypeName("FX_AUX_STATE_CHANGE")
 @JsonExplicit
 public interface FXAuxStateChangePacket extends SupplementarySolarEventPacket, SupplementaryOutbackPacket, ChangePacket {
-	@NotNull
+	@DefaultFinal
 	@Override
-	default SolarEventPacketType getPacketType(){
+	default @NotNull SolarEventPacketType getPacketType(){
 		return SolarEventPacketType.FX_AUX_STATE_CHANGE;
 	}
 
