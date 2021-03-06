@@ -23,6 +23,7 @@ Stores solar data in a database to view on Android, Grafana, or PVOutput
     * Should include Rover Boost once released
   * Compatible with all [SRNE Solar](https://www.srnesolar.com) Charge Controllers (And rebranded products)
   * Compatible with **Zenith Grape** Solar Charge Controller, **PowMr** MPPT Charge Controller, **RICH** SOLAR MPPT, **WindyNations TrakMax** MPPT
+* DS18B20 Temperature Sensors and PZEM-003 and PZEM-017 Shunts
 
 # Quickstart
 Ready to install? Use the [Quickstart](other/docs/quickstart.md)!
@@ -67,6 +68,8 @@ SolarThing Android displays data in a persistent notification that updates at a 
 <hr/>
 
 You can get data in [Grafana](https://github.com/grafana/grafana) via InfluxDB or via CouchDB+SolarThing GraphQL.
+
+[Snapshot of Wild Mountain Farms Dashboard](https://snapshot.raintank.io/dashboard/snapshot/iPsTvb6a0eOxEtvvu58dvRuJsJ38Onnp?orgId=2)
 
 Grafana is very customizable. Rearrange graphs and make it how you want!
 ![alt text](other/docs/grafana-screenshot-1.png "SolarThing with Grafana")
