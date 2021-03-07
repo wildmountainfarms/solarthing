@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.couchdb.CouchProperties;
+import me.retrodaredevil.solarthing.jackson.UnwrappedDeserializer;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.DatabaseType;
@@ -13,7 +14,7 @@ import me.retrodaredevil.solarthing.config.databases.SimpleDatabaseType;
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("couchdb")
-@JsonDeserialize(builder = CouchDbDatabaseSettings.Builder.class)
+@JsonDeserialize(using = CouchDbDatabaseSettings.Deserializer.class)
 @JsonExplicit
 public final class CouchDbDatabaseSettings implements DatabaseSettings {
 	public static final DatabaseType TYPE = new SimpleDatabaseType("couchdb");
@@ -32,6 +33,12 @@ public final class CouchDbDatabaseSettings implements DatabaseSettings {
 	@Override
 	public DatabaseType getDatabaseType() {
 		return TYPE;
+	}
+
+	static class Deserializer extends UnwrappedDeserializer<CouchDbDatabaseSettings, Builder> {
+		Deserializer() {
+			super(Builder.class, Builder::build);
+		}
 	}
 
 	static class Builder {

@@ -3,7 +3,7 @@ package me.retrodaredevil.solarthing.solar.outback.fx.extra;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import me.retrodaredevil.solarthing.jackson.UnwrappedDeserializer;
 import me.retrodaredevil.solarthing.solar.extra.SolarExtraPacketType;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.BaseFXDailyData;
@@ -12,7 +12,7 @@ import me.retrodaredevil.solarthing.solar.outback.fx.common.ImmutableFXDailyData
 
 import static java.util.Objects.requireNonNull;
 
-@JsonDeserialize(builder = ImmutableDailyFXPacket.Builder.class)
+@JsonDeserialize(using = ImmutableDailyFXPacket.Deserializer.class)
 public class ImmutableDailyFXPacket extends BaseFXDailyData implements DailyFXPacket {
 
 	public ImmutableDailyFXPacket(FXDailyData fxDailyData, OutbackIdentifier outbackIdentifier) {
@@ -22,7 +22,12 @@ public class ImmutableDailyFXPacket extends BaseFXDailyData implements DailyFXPa
 		this(fxDailyData, new OutbackIdentifier(fxDailyData.getAddress()));
 	}
 
-	@JsonPOJOBuilder
+	public static class Deserializer extends UnwrappedDeserializer<ImmutableDailyFXPacket, Builder> {
+		Deserializer() {
+			super(Builder.class, Builder::build);
+		}
+	}
+
 	static class Builder {
 
 		@JsonUnwrapped

@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import me.retrodaredevil.influxdb.influxdb1.InfluxProperties;
+import me.retrodaredevil.solarthing.jackson.UnwrappedDeserializer;
 import me.retrodaredevil.okhttp3.OkHttpProperties;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.DatabaseType;
@@ -13,15 +13,13 @@ import me.retrodaredevil.solarthing.config.databases.SimpleDatabaseType;
 import me.retrodaredevil.solarthing.influxdb.retention.RetentionPolicySetting;
 import me.retrodaredevil.solarthing.util.frequency.FrequentObject;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("influxdb")
-@JsonDeserialize(builder = InfluxDbDatabaseSettings.Builder.class)
+//@JsonDeserialize(builder = InfluxDbDatabaseSettings.Builder.class)
+@JsonDeserialize(using = InfluxDbDatabaseSettings.Deserializer.class)
 public final class InfluxDbDatabaseSettings implements DatabaseSettings {
 	public static final DatabaseType TYPE = new SimpleDatabaseType("influxdb");
 
@@ -65,52 +63,24 @@ public final class InfluxDbDatabaseSettings implements DatabaseSettings {
 	public RetentionPolicySetting getEventRetentionPolicy(){
 		return eventRetentionPolicySetting;
 	}
-	@JsonPOJOBuilder
+	static class Deserializer extends UnwrappedDeserializer<InfluxDbDatabaseSettings, Builder> {
+		Deserializer() {
+			super(Builder.class, Builder::build);
+		}
+	}
 	public static class Builder {
+		@JsonUnwrapped
 		private InfluxProperties influxProperties;
+		@JsonUnwrapped
 		private OkHttpProperties okHttpProperties;
-		private String databaseName;
-		private String measurementName;
-		private Collection<FrequentObject<RetentionPolicySetting>> frequentStatusRetentionPolicies;
-		private RetentionPolicySetting eventRetentionPolicySetting;
-
-		// TODO fix this https://github.com/FasterXML/jackson-databind/issues/1061
-		@JsonUnwrapped
-		public Builder setInfluxProperties(InfluxProperties influxProperties) {
-			this.influxProperties = influxProperties;
-			return this;
-		}
-
-		@JsonUnwrapped
-		public Builder setOkHttpProperties(OkHttpProperties okHttpProperties) {
-			this.okHttpProperties = okHttpProperties;
-			return this;
-		}
-
 		@JsonProperty("database")
-		public Builder setDatabaseName(String databaseName) {
-			this.databaseName = databaseName;
-			return this;
-		}
-
+		private String databaseName;
 		@JsonProperty("measurement")
-		public Builder setMeasurementName(String measurementName) {
-			this.measurementName = measurementName;
-			return this;
-		}
-
+		private String measurementName;
 		@JsonProperty("status_retention_policies")
-		@JsonDeserialize(as = ArrayList.class)
-		public Builder setFrequentStatusRetentionPolicies(Collection<FrequentObject<RetentionPolicySetting>> frequentStatusRetentionPolicies) {
-			this.frequentStatusRetentionPolicies = frequentStatusRetentionPolicies;
-			return this;
-		}
-
+		private List<FrequentObject<RetentionPolicySetting>> frequentStatusRetentionPolicies;
 		@JsonProperty("event_retention_policy")
-		public Builder setEventRetentionPolicySetting(RetentionPolicySetting eventRetentionPolicySetting) {
-			this.eventRetentionPolicySetting = eventRetentionPolicySetting;
-			return this;
-		}
+		private RetentionPolicySetting eventRetentionPolicySetting;
 
 		public InfluxDbDatabaseSettings build() {
 			return new InfluxDbDatabaseSettings(influxProperties, okHttpProperties, databaseName, measurementName, frequentStatusRetentionPolicies, eventRetentionPolicySetting);
