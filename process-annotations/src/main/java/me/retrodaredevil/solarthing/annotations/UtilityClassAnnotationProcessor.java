@@ -23,9 +23,23 @@ public class UtilityClassAnnotationProcessor extends AbstractProcessor {
 					if (subElement.getKind() == ElementKind.METHOD) {
 						Set<Modifier> modifiers = subElement.getModifiers();
 						boolean isStatic = modifiers.contains(Modifier.STATIC);
-						boolean isConstructor = subElement.getSimpleName().contentEquals("<init>");
-						if (!isStatic && !isConstructor) {
+						if (!isStatic) {
 							processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Non-static method declared! " + subElement.getSimpleName() + " in: " + classElement);
+						}
+					} else if (subElement.getKind() == ElementKind.CONSTRUCTOR) {
+						boolean isPrivate = subElement.getModifiers().contains(Modifier.PRIVATE);
+						if (!isPrivate) {
+							processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Non-private constructor declared! " + subElement.getSimpleName() + " in: " + classElement);
+						}
+					} else if (subElement.getKind() == ElementKind.FIELD) {
+						Set<Modifier> modifiers = subElement.getModifiers();
+						boolean isStatic = modifiers.contains(Modifier.STATIC);
+						boolean isFinal = modifiers.contains(Modifier.FINAL);
+						if (!isStatic) {
+							processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Non-static field declared! " + subElement.getSimpleName() + " in: " + classElement);
+						}
+						if (!isFinal) {
+							processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Non-final field declared! " + subElement.getSimpleName() + " in: " + classElement);
 						}
 					}
 				}

@@ -142,14 +142,16 @@ public class GraphQLProvider {
 				.build();
 		ResolverBuilder resolverBuilder = new AnnotatedResolverBuilder();
 		SimpleQueryHandler simpleQueryHandler = new SimpleQueryHandler(defaultInstanceOptions, objectMapper, couchProperties);
+		ZoneId zoneId = ZoneId.systemDefault(); // In the future, we could make this customizable, but like, bro just make sure your system time is correct
+		System.out.println("Using timezone: " + zoneId);
 		return new GraphQLSchemaGenerator()
 				.withBasePackages("me.retrodaredevil.solarthing")
 				.withOperationsFromSingleton(new SolarThingGraphQLService(simpleQueryHandler))
-				.withOperationsFromSingleton(new SolarThingGraphQLDailyService(simpleQueryHandler, ZoneId.systemDefault())) // TODO do we really want a default time zone?
+				.withOperationsFromSingleton(new SolarThingGraphQLDailyService(simpleQueryHandler, zoneId))
 				.withOperationsFromSingleton(new SolarThingGraphQLMetaService(simpleQueryHandler))
 				.withOperationsFromSingleton(new SolarThingGraphQLExtensions())
 				.withOperationsFromSingleton(new SolarThingGraphQLFXService(simpleQueryHandler))
-				.withOperationsFromSingleton(new SolarThingGraphQLSolcastService(solcastConfig, ZoneId.systemDefault()))
+				.withOperationsFromSingleton(new SolarThingGraphQLSolcastService(solcastConfig, zoneId))
 				.withTypeInfoGenerator(new SolarThingTypeInfoGenerator())
 				.withValueMapperFactory(jacksonValueMapperFactory)
 				.withResolverBuilders(resolverBuilder)

@@ -13,8 +13,7 @@ public final class DefaultInstanceOptions {
 	private final String defaultSourceId;
 	private final int defaultFragmentId;
 
-	@Deprecated
-	public DefaultInstanceOptions(@NotNull String defaultSourceId, int defaultFragmentId) {
+	private DefaultInstanceOptions(@NotNull String defaultSourceId, int defaultFragmentId) {
 		requireNonNull(this.defaultSourceId = defaultSourceId);
 		this.defaultFragmentId = defaultFragmentId;
 	}

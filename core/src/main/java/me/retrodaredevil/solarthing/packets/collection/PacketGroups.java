@@ -17,9 +17,6 @@ import static java.util.Objects.requireNonNull;
 public final class PacketGroups {
 	private PacketGroups(){ throw new UnsupportedOperationException(); }
 
-	@Deprecated
-	public static final Comparator<Integer> DEFAULT_FRAGMENT_ID_COMPARATOR = FragmentUtil.DEFAULT_FRAGMENT_ID_COMPARATOR;
-
 	public static PacketGroup createPacketGroup(Collection<? extends Packet> groups, long dateMillis){
 		return createPacketGroup(groups, dateMillis, Collections.emptyMap());
 	}
