@@ -8,6 +8,8 @@ import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.couchdb.CouchDbQueryHandler;
 import me.retrodaredevil.solarthing.couchdb.SolarThingCouchDb;
 import me.retrodaredevil.solarthing.meta.*;
+import me.retrodaredevil.solarthing.meta.query.MetaException;
+import me.retrodaredevil.solarthing.meta.query.MetaQueryHandler;
 import me.retrodaredevil.solarthing.misc.common.meta.DataMetaPacket;
 import me.retrodaredevil.solarthing.misc.device.DevicePacket;
 import me.retrodaredevil.solarthing.misc.weather.WeatherPacket;
@@ -120,7 +122,7 @@ public class SimpleQueryHandler {
 	public MetaDatabase queryMeta() {
 		try {
 			return new DefaultMetaDatabase(metaQueryHandler.query());
-		} catch(Exception e) {
+		} catch(MetaException e) {
 			return EmptyMetaDatabase.getInstance();
 		}
 	}

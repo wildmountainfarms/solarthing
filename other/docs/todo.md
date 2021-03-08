@@ -7,6 +7,7 @@
 * Make CouchDB and InfluxDB database configuration warn when setting unused values
 * Send packet when mate serial port hasn't output data for 30 seconds
 * Create Dockerfile and example docker-compose file
+* Add event packets for rover devices (like we did for MXs and FXs)
   
 ### Completed TODO:
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)

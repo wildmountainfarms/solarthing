@@ -10,5 +10,4 @@ import me.retrodaredevil.solarthing.packets.TypedDocumentedPacket;
 		@JsonSubTypes.Type(CpuTemperaturePacket.class)
 })
 public interface DevicePacket extends TypedDocumentedPacket<DevicePacketType> {
-	// TODO think about making this Identifiable. We could then have multiple implementations of packets. One implementation could internally store a fragmentId, another could use something else if necessary
 }

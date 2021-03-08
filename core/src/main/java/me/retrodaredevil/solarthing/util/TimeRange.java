@@ -39,7 +39,6 @@ public final class TimeRange {
 		return (startTime == null || timeMillis >= startTime) && (endTime == null || timeMillis < endTime);
 	}
 
-	// TODO add unit tests for this
 	public boolean fullyContains(TimeRange timeRange) {
 		if (startTime == null && endTime == null) {
 			return true;
