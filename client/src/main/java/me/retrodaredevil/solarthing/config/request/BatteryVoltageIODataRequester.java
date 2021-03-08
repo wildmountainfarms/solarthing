@@ -27,13 +27,13 @@ public class BatteryVoltageIODataRequester implements DataRequester {
 			@JsonProperty(value = "data_id", required = true) int dataId,
 			@JsonProperty("multiplier") Double multiplier,
 			@JsonProperty("divisor") Double divisor,
-			@JsonProperty(value = "invalid_when_below", defaultValue = "0") double invalidWhenBelow,
+			@JsonProperty(value = "invalid_when_below") Double invalidWhenBelow,
 			@JsonProperty(value = "invalid_when_above") Double invalidWhenAbove
 	) {
 		this.ioBundleFile = ioBundleFile;
 		this.dataId = dataId;
 		this.multiplier = (multiplier == null ? 1 : multiplier) / (divisor == null ? 1 : divisor);
-		this.invalidWhenBelow = invalidWhenBelow;
+		this.invalidWhenBelow = invalidWhenBelow == null ? 0 : invalidWhenBelow;
 		this.invalidWhenAbove = invalidWhenAbove == null ? Double.MAX_VALUE : invalidWhenAbove;
 	}
 

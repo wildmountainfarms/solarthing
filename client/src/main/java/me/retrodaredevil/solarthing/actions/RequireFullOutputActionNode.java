@@ -28,9 +28,11 @@ public class RequireFullOutputActionNode implements ActionNode {
 	private final boolean log;
 
 	@JsonCreator
-	public RequireFullOutputActionNode(@JsonProperty(value = "required", required = true) Map<Integer, List<String>> requiredIdentifierMap, @JsonProperty(value = "log", defaultValue = "true") boolean log) {
+	public RequireFullOutputActionNode(
+			@JsonProperty(value = "required", required = true) Map<Integer, List<String>> requiredIdentifierMap,
+			@JsonProperty(value = "log") Boolean log) {
 		this.requiredIdentifierMap = requiredIdentifierMap;
-		this.log = log;
+		this.log = log == null || log;
 	}
 
 	private boolean isFullOutput(FragmentedPacketGroup latestPacketGroup) {

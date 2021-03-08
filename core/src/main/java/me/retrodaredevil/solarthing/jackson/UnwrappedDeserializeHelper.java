@@ -2,6 +2,8 @@ package me.retrodaredevil.solarthing.jackson;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -19,19 +21,21 @@ import java.util.List;
  * NOTE: This only works under the assumption that the values you read can be serialized and deserialized the same way.
  */
 public class UnwrappedDeserializeHelper {
-	private static final ObjectMapper MAPPER = JacksonUtil.lenientMapper(JacksonUtil.defaultMapper());
+	private final ObjectMapper mapper;
 	private final JsonParser parser;
 	private final Class<?> clazz;
 	private final ObjectNode objectNode;
 
-	public UnwrappedDeserializeHelper(JsonParser parser, Class<?> clazz) throws IOException {
+	public UnwrappedDeserializeHelper(JsonParser parser, DeserializationContext context, Class<?> clazz) throws IOException {
 		this.parser = parser;
 		this.clazz = clazz;
 		this.objectNode = parser.readValueAsTree();
+		mapper = JacksonUtil.defaultMapper();
+		mapper.setConfig(context.getConfig().without(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES));
 	}
 	public <T> T readValue(Class<T> clazz) throws JsonProcessingException {
-		T r = MAPPER.treeToValue(objectNode, clazz);
-		for (Iterator<String> it = MAPPER.valueToTree(r).fieldNames(); it.hasNext(); ){
+		T r = mapper.treeToValue(objectNode, clazz);
+		for (Iterator<String> it = mapper.valueToTree(r).fieldNames(); it.hasNext(); ){
 			objectNode.remove(it.next());
 		}
 		return r;

@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.actions.message;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
@@ -9,6 +10,7 @@ import me.retrodaredevil.action.Actions;
 import me.retrodaredevil.solarthing.actions.ActionNode;
 import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnvironment;
+import me.retrodaredevil.solarthing.config.FileMapper;
 import me.retrodaredevil.solarthing.config.message.MessageEventNode;
 import me.retrodaredevil.solarthing.message.MessageSender;
 import me.retrodaredevil.solarthing.message.MessageSenderMultiplexer;
@@ -21,6 +23,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("message-sender")
 public class MessageSenderActionNode implements ActionNode {
@@ -39,16 +43,23 @@ public class MessageSenderActionNode implements ActionNode {
 
 	@JsonCreator
 	public static MessageSenderActionNode create(
-			@JsonProperty("senders") Map<String, File> messageSenderFileMap,
-			@JsonProperty("events") List<MessageEventNode> messageEventNodes) throws IOException {
-		final Map<String, MessageSender> messageSenderMap = getMessageSenderMap(messageSenderFileMap);
+			@JsonProperty("senders") Map<String, String> messageSenderFileMap,
+			@JsonProperty("events") List<MessageEventNode> messageEventNodes,
+			@JacksonInject(FileMapper.JACKSON_INJECT_IDENTIFIER) FileMapper fileMapper
+	) throws IOException {
+		final Map<String, MessageSender> messageSenderMap = getMessageSenderMap(
+				messageSenderFileMap,
+				fileMapper == null ? FileMapper.ONE_TO_ONE : fileMapper
+		);
 		return new MessageSenderActionNode(messageSenderMap, messageEventNodes);
 	}
-	private static Map<String, MessageSender> getMessageSenderMap(Map<String, File> messageSenderFileMap) throws IOException {
+	private static Map<String, MessageSender> getMessageSenderMap(Map<String, String> messageSenderFileMap, FileMapper fileMapper) throws IOException {
+		requireNonNull(messageSenderFileMap);
+		requireNonNull(fileMapper);
 		Map<String, MessageSender> senderMap = new HashMap<>();
-		for (Map.Entry<String, File> entry : messageSenderFileMap.entrySet()) {
+		for (Map.Entry<String, String> entry : messageSenderFileMap.entrySet()) {
 			String key = entry.getKey();
-			File file = entry.getValue();
+			File file = fileMapper.map(entry.getValue());
 			MessageSender sender = CONFIG_MAPPER.readValue(file, MessageSender.class);
 			senderMap.put(key, sender);
 		}

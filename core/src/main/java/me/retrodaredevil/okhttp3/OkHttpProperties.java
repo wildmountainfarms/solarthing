@@ -27,7 +27,7 @@ public interface OkHttpProperties {
 
 	@JsonProperty("call_timeout")
 	default float getCallTimeoutSeconds(){ return getCallTimeoutMillis() / 1000f; }
-	@JsonProperty("connect_timeout")
+	@JsonProperty("connection_timeout")
 	default float getConnectTimeoutSeconds() { return getConnectTimeoutMillis() / 1000f; }
 	@JsonProperty("read_timeout")
 	default float getReadTimeoutSeconds() { return getReadTimeoutMillis() / 1000f; }

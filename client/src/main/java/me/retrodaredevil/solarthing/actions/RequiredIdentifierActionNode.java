@@ -22,9 +22,11 @@ public class RequiredIdentifierActionNode implements ActionNode {
 	private final boolean log;
 
 	@JsonCreator
-	public RequiredIdentifierActionNode(@JsonProperty(value = "required", required = true) Map<Integer, List<String>> requiredIdentifierMap, @JsonProperty(value = "log", defaultValue = "true") boolean log) {
+	public RequiredIdentifierActionNode(
+			@JsonProperty(value = "required", required = true) Map<Integer, List<String>> requiredIdentifierMap,
+			@JsonProperty(value = "log") Boolean log) {
 		this.requiredIdentifierMap = requiredIdentifierMap;
-		this.log = log;
+		this.log = log == null || log;
 	}
 
 	@Override

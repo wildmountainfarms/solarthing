@@ -14,6 +14,7 @@ import me.retrodaredevil.io.serial.SerialConfig;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
+import me.retrodaredevil.solarthing.config.databases.DatabaseSettingsUtil;
 import me.retrodaredevil.solarthing.config.databases.DatabaseType;
 import me.retrodaredevil.solarthing.config.databases.implementations.*;
 import me.retrodaredevil.solarthing.config.io.IOConfig;
@@ -58,17 +59,7 @@ public final class SolarMain {
 	 */
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SolarMain.class);
-	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
-	static {
-		MAPPER.getSubtypeResolver().registerSubtypes(
-				DatabaseSettings.class,
-				CouchDbDatabaseSettings.class,
-				InfluxDbDatabaseSettings.class,
-				InfluxDb2DatabaseSettings.class,
-				LatestFileDatabaseSettings.class,
-				PostDatabaseSettings.class
-		);
-	}
+	private static final ObjectMapper MAPPER = DatabaseSettingsUtil.registerDatabaseSettings(JacksonUtil.defaultMapper());
 
 	public static void initReader(InputStream in, TextPacketCreator packetCreator, RawPacketReceiver rawPacketReceiver) {
 		SolarReader run = new SolarReader(in, packetCreator, rawPacketReceiver);

@@ -29,10 +29,10 @@ public class RoverBoostVoltageActionNode implements ActionNode {
 	@JsonCreator
 	public RoverBoostVoltageActionNode(
 			@JsonProperty(value = "voltageraw", required = true) int boostVoltageRaw,
-			@JsonProperty("not") boolean not,
+			@JsonProperty("not") Boolean not,
 			@JsonProperty("fragment") Integer fragmentId) {
 		this.boostVoltageRaw = boostVoltageRaw;
-		this.not = not;
+		this.not = Boolean.TRUE.equals(not);
 		this.fragmentId = fragmentId;
 	}
 	@Override

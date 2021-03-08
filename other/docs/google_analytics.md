@@ -6,7 +6,6 @@ at a single point in time. I understand if you'd like to opt out.
 
 ## Opt Out
 To opt out, add `"analytics_enabled": false` to your `config/base.json` (with a comma afterwards if necessary). Once you opt out, no data will be sent to Google.
-Make sure you spell it correctly. SolarThing will ignore incorrectly spelled config options. (This needs to be fixed in the future).
 
 To opt out, you can also set the `ANALYTICS_DISABLED` environment variable. (Run `export ANALYTICS_DISABLED=`). 
 NOTE: **This is temporary** unless you make sure this environment variable gets set before running SolarThing. (Only works in versions >= 2020.3.1)
