@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.actions.message;
 
-import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
@@ -44,12 +43,13 @@ public class MessageSenderActionNode implements ActionNode {
 	@JsonCreator
 	public static MessageSenderActionNode create(
 			@JsonProperty("senders") Map<String, String> messageSenderFileMap,
-			@JsonProperty("events") List<MessageEventNode> messageEventNodes,
-			@JacksonInject(FileMapper.JACKSON_INJECT_IDENTIFIER) FileMapper fileMapper
+			@JsonProperty("events") List<MessageEventNode> messageEventNodes
+//			@JacksonInject(FileMapper.JACKSON_INJECT_IDENTIFIER) FileMapper fileMapper // TODO in future, add this back hoping that https://github.com/FasterXML/jackson-databind/issues/3072 gets implemented
 	) throws IOException {
 		final Map<String, MessageSender> messageSenderMap = getMessageSenderMap(
 				messageSenderFileMap,
-				fileMapper == null ? FileMapper.ONE_TO_ONE : fileMapper
+//				fileMapper == null ? FileMapper.ONE_TO_ONE : fileMapper
+				FileMapper.ONE_TO_ONE
 		);
 		return new MessageSenderActionNode(messageSenderMap, messageEventNodes);
 	}
