@@ -28,6 +28,16 @@ Stores solar data in a database to view on Android, Grafana, or PVOutput
 # Quickstart
 Ready to install? Use the [Quickstart](other/docs/quickstart.md)!
 
+## Post installation optinos
+Do any or all of these after following the quickstart.
+* [GraphQL Quickstart](other/docs/quickstart_graphql.md) - Expose CouchDB as a GraphQL API (used for Grafana)
+  * This is the option I recommend most. Most people install SolarThing so they can get Grafana working
+* [PVOutput Quickstart](other/docs/quickstart_pvoutput.md) - uploads to PVOutput
+  * If you are interested in a nice way to view your daily kWh historical data, this is good
+* [Message Quickstart (Automation program)](other/docs/quickstart_message.md) - Slack or Mattermost bot for notifications
+  * Paranoid your system is gonna explode? This is a great way to monitor your system and get push notifications
+
+
 # Features
 * Supports **multiple types of solar products**.
 * Runs reliably **24-7**. Recovers from connection errors and has verbose logging features.

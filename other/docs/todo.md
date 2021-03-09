@@ -4,12 +4,12 @@
   * If we do something with a calendar, we could use Google calendar https://developers.google.com/calendar/create-events/
 * Create button/widget on Grafana that sends an encrypted command to shut off the generator
 * Packet for disk usage
-* Make CouchDB and InfluxDB database configuration warn when setting unused values
 * Send packet when mate serial port hasn't output data for 30 seconds
 * Create Dockerfile and example docker-compose file
 * Add event packets for rover devices (like we did for MXs and FXs)
+* Add way to scan for rover modbus slave addresses
   
-### Completed TODO:
+### Completed
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
     * Done by using fragmented packets. Will be stored in the same database but uses InstancePackets to indicate source and fragment ids
 * Add field to MX Status Packet to indicate whether it supports dailyAH and field to indicate the version of the MX or if it is a FM
@@ -34,7 +34,7 @@
 * DS18B20 temperature sensor
 * Make command requests use JSON
 * Store metadata
-  * Put this in a document named `meta` in `solarthing_closed
+  * Put this in a document named `meta` in `solarthing_closed`
 * Add temperature event to message program
 * Create GraphQL query that allows someone to get dailyKWH from a large time period (many days) for
 easy displaying in Grafana
@@ -44,8 +44,9 @@ easy displaying in Grafana
 * Support InfluxDB 2.0
 * Don't report analytics for dummy rover programs
 * Silence warning for GraphQL
+* Make CouchDB and InfluxDB database configuration warn when setting unused values
 
-### TODO Look into
+### Look into
 * Look into supporting Elasticsearch, MongoDB, Graphite
 * Support https://dweet.io
   * Will make using freeboard easy
@@ -58,7 +59,7 @@ easy displaying in Grafana
 * [Metrictank](https://grafana.com/oss/metrictank/)
 * IntelliJ is complaining about "busy waiting". We do a lot of this. Should we change how we're doing this?
 
-#### TODO - Additions I'm not going to work on
+#### Additions I'm not going to work on
 These might be useful to some people. I will not implement these in the future, but pull requests are welcome!
 * Implement Outback FlexNet DC Packets
   * I do not have a FlexNet DC unit and I do not plan to get one anytime soon

@@ -5,7 +5,7 @@ Note that you can use multiple databases if you can't decide on a single one. (T
 for the longest time until moving to CouchDB + GraphQL).
 
 Note that SolarThing supports InfluxDB 1.X and 2.0, but you need different config files depending on which one you use,
-and they behave differently.
+and they behave differently. (Also please just use InfluxDB 2.0 if you need to use InfluxDB instead of CouchDB)
 
 #### Want to create simple queries and display data in Grafana?
 Pick **InfluxDB**.

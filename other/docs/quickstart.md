@@ -32,43 +32,29 @@ For instance if you are running the `rover` program, paths will be relative to [
 ### Program Specific Configuration
 You will have to adjust the configuration to your needs and based on the type of program you want to run.
 
-[**Mate Quickstart**](quickstart_mate.md) - Monitors Outback Mate1/2 devices
-
-[**Rover Quickstart**](quickstart_rover.md) - Monitors Renogy Rover and other supported products
-
-[PVOutput Quickstart](quickstart_pvoutput.md) - uploads to PVOutput (requires CouchDB and Mate or Rover program)
-
-[Message Quickstart (Automation program)](quickstart_message.md) - Slack or Mattermost bot for notifications (requires CouchDB and Mate or Rover program)
-
-[Request Quickstart](quickstart_request.md) - Upload temperature sensor data
-
-[GraphQL Quickstart](quickstart_graphql.md) - Expose CouchDB as a GraphQL API (used for Grafana)
+* [**Rover Quickstart**](quickstart_rover.md) - Monitors Renogy Rover and other supported products
+  * ^^ This is probably the option you want!!
+* [**Mate Quickstart**](quickstart_mate.md) - Monitors Outback Mate1/2 devices
+* [Request Quickstart](quickstart_request.md) - Upload temperature sensor data
 
 ## Configuration Continued
 Also learn about [analytics data we collect](./google_analytics.md).
 Now you have started to configure your `base.json` file, decide what databases you want to use below. 
 Also, note that you can choose to use none of them if you just want to get data before going further.
 
-Need help [choosing a database](database_choice.md)?
+This quickstart will walk you through setting up CouchDB, but also note that InfluxDB is an option.
+See also [database choice](database_choice.md).
 
-### CouchDB "Database"
+### CouchDB Setup
 ```shell script
 cp ../../config_templates/databases/couchdb_template.json config/couchdb.json
 # Edit it with your editor of choice
 ```
+Learn how to install and setup CouchDB [here](couchdb_setup.md). That will walk you though editing couchdb.json
+and setting up CouchDB.
 
-### InfluxDB "Database"
-```shell script
-cp ../../config_templates/databases/influxdb_template.json config/influxdb.json
-# Edit it with your editor of choice
-```
-### Latest "Database"
-NOTE: This is not recommended on Raspberry Pi devices because there will be many writes to the disk. Also, this data isn't very
-useful by itself since there's nothing that uses it. This can be a good way to debug.
-```shell script
-cp ../../config_templates/databases/latest_save_json_template.json config/latest.json
-# Edit it with your editor of choice
-```
+Note that there are other databases to choose from, but unless you know what you're doing, go ahead and use CouchDB.
+
 
 ### Add databases to base configuration
 Edit `config/base.json` with your editor of choice
@@ -76,15 +62,13 @@ Edit `config/base.json` with your editor of choice
 {
   //...
   "databases": [
-    "config/couchdb.json",
-    "config/influxdb.json"
+    "config/couchdb.json"
   ]
 }
 ```
-You can use 0 or all of the available databases. 
-If you are just testing and don't want to setup a database, you don't have to!
+Note you can also have multiple databases, and, if you're just testing, you don't need any databases!
 
-Note that if you decided to put them in the [program/config](../../program/config), your databases will look like this:
+Note that if you decided to put them in the [program/config](../../program/config), your databases will look something like this:
 ```json5
 {
   //...
@@ -115,6 +99,15 @@ If your Linux distro uses systemd, you can go [here](../systemd/README.md) to le
 sudo systemctl enable solarthing-<program type> # Run on boot
 sudo systemctl start solarthing-<program type> # Start the service now
 ```
+**NOTE: Once you start the `solarthing-<program type>` service, you should NOT run `./run.sh` until you stop the service**.
+You can stop the service like this: `sudo systemctl stop solarthing-<program type>`
+
+
+Now SolarThing should be set up and running!
+
+---
+
+---
 
 ### Run Without systemd service
 There are many platforms that don't have systemd: Mac, Windows, and plenty of different Linux Distros.

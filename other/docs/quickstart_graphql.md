@@ -20,8 +20,15 @@ solarthing.config.database=../config/couchdb/couchdb.json
 ```
 Make sure the path to your `couchdb.json` is correct.
 
+NOTE: Sometimes you may have put your `couchdb.json` in `program/rover/config`. If you did this,
+that's perfectly fine, you just need to change the path slightly:
+```
+solarthing.config.database=../rover/config/couchdb/couchdb.json
+```
+
+
 ### Run for the first time
 Run `./run.sh`.
 
-### [Set up with Grafana](../../graphql/grafana_datasource_setup.md)
+### [Set up with Grafana](../grafana/grafana_datasource_setup.md)
 

@@ -1,11 +1,12 @@
 ## Grafana GraphQL Queries
 
 Note in the below queries random `from` and `to` values may be used. In Grafana, replace these with `$__from` and `$__to`.
+The first example does not require this change.
 
 #### Battery Voltage
 ```graphql
 query {
-  data: queryStatus(sourceId: "default", from: "1612418400000", to: "1612504800000") {
+  data: queryStatus(sourceId: "default", from: "$__from", to: "$__to") {
     data: batteryVoltage {
       Time: dateMillis
       packet {
@@ -39,7 +40,7 @@ query {
 }
 ```
 * Data path: `data.data`
-* Group by: ``
+* Group by: `` (blank)
 * Alias by: `Daily kWh`
 
 In the above example, group by and alias by are not important. Group by is left blank because each entry is grouped into
@@ -62,6 +63,9 @@ query {
   }
 }
 ```
+
+---
+---
 
 # Annotations (events)
 

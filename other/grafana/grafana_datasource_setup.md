@@ -1,5 +1,22 @@
+Note: This assumes you have Grafana installed, and that you have set up SolarThing GraphQL
 ## Setting up datasource on Grafana
-You can install https://github.com/fifemon/graphql-datasource by cloning it in `/var/lib/grafana/plugins`
+Follow the installation instructions here: https://grafana.com/grafana/plugins/fifemon-graphql-datasource/installation
+
+In the GraphQL Datasource configuration,
+1. Make sure the URL in Grafana is set to `http://localhost:8080/graphql` or similar.
+2. Test the connection, and if it succeeds, you're good to go!
+3. Start creating your own queries! [Here](graphql_queries.md) are some examples.
+
+
+---
+
+#### [Docs for grafana-cli](https://grafana.com/docs/grafana/latest/administration/cli/#plugins-commands)
+
+---
+---
+
+## Not recommended installation instructions:
+clone https://github.com/fifemon/graphql-datasource in `/var/lib/grafana/plugins`
 
 You will need to be a member of the `grafana` group to access that directory.
 
@@ -11,6 +28,3 @@ exec su -l $USER # if you're too lazy to log out and back in
 cd /var/lib/grafana/plugins
 git clone https://github.com/fifemon/graphql-datasource
 ```
-Then make sure the URL in Grafana is set to `http://localhost:8080/graphql` or similar.
-
-Might be useful: https://grafana.com/docs/grafana/latest/administration/cli/#plugins-commands
