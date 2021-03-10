@@ -1,6 +1,7 @@
 buildscript {
     ext {
-        springBootVersion = '2.3.1.RELEASE'
+        // https://github.com/spring-projects/spring-boot/wiki#release-notes
+        springBootVersion = '2.4.0'
     }
     repositories {
         mavenCentral()
@@ -14,20 +15,20 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
 version = '0.0.1-SNAPSHOT'
-project.ext.mainClassName = "me.retrodaredevil.solarthing.graphql.SolarThingApplication"
+project.ext.mainClass = "me.retrodaredevil.solarthing.graphql.SolarThingApplication"
 
 compileJava {
     options.compilerArgs << '-parameters' // we don't want to use have to put @GraphQLArgument everywhere
 }
 
 dependencies {
-    implementation "com.fasterxml.jackson.module:jackson-module-jsonSchema:$jacksonVersion"
-//    implementation 'com.google.guava:guava:26.0-jre'
+//    implementation "com.fasterxml.jackson.module:jackson-module-jsonSchema:$jacksonVersion" // I don't remember why we needed this
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'com.graphql-java:graphql-java-spring-boot-starter-webmvc:1.0'
+    // https://mvnrepository.com/artifact/com.graphql-java/graphql-java-spring-boot-starter-webmvc
+    implementation 'com.graphql-java:graphql-java-spring-boot-starter-webmvc:2.0'
 
 //    implementation 'com.graphql-java:graphql-java:14.0' graphql-spqr adds this dependency
-    implementation 'io.leangen.graphql:spqr:0.10.1'
+    implementation 'io.leangen.graphql:spqr:0.11.1'
 }
 jar {
     enabled = true

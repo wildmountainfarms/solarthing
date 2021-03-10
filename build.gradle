@@ -8,7 +8,8 @@ buildscript {
 
         slf4jVersion = '1.7.30' // http://www.slf4j.org/download.html
         log4jVersion = '2.14.0' // https://logging.apache.org/log4j/2.x/javadoc.html
-        jacksonVersion = '2.12.1' // https://github.com/FasterXML/jackson-databind/releases
+        // https://github.com/FasterXML/jackson/wiki/Jackson-Releases
+        jacksonVersion = '2.12.2' // https://github.com/FasterXML/jackson-databind/releases
         // retrofit is why we need allow-opens. context: https://stackoverflow.com/questions/60915381/retrofit2-maven-project-illegal-reflective-access-warning // https://github.com/square/retrofit/issues/3341
         retrofitVersion = "2.9.0" // https://github.com/square/retrofit/releases
         shadowVersion = '6.1.0' // https://github.com/johnrengelman/shadow/releases
