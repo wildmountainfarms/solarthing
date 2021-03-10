@@ -27,21 +27,43 @@ you should get a serial to USB cable (RS232 to USB).
 
 ### Connecting to Renogy Rover
 Some Renogy products use the RS232 protocol and some use the RS485 protocol.
-#### RS232
-If you have the USB to RS232 cable that comes with the Rover, all you have to do is connect it to your computer of
-choice and it will act like a serial port!
 
-If you don't have that cable, you can jump through some hoops to do conversion to allow the Pi UART to read it, or you can order a nice RS232 to DB9 cable and a break out board.
 
+---
+
+### RS232 Cable to buy
+I've been told that the [Rich Solar RS232 Cable](https://richsolar.com/products/rs232-cable) also works for the Rover.
+This cable is the only cable I know of that you can buy that will work with the Rover.
+
+**Just because a cable says USB to RJ12 does not mean that it will work**. This is why most of the time, you will
+make a DIY cable.
+
+### RS485 Cable to buy
+Newer Renogy products use the RS485 protocol. This isn't necessarily better or worse, but Renogy actually sells
+a pre-made cable for RS485 to USB. I recommend you buy that cable [here](https://www.renogy.com/rs485-to-usb-serial-cable/).
+
+---
+
+## IMPORTANT if you are making a DIY cable
+Some of these instructions below require you to figure some stuff out on your own. There's no tutorial video
+for making DIY cables, so when making one, when you connect to your Rover, make sure you use a multimeter to check
+voltages across different pins. Rovers with an RS232 port supply 15V of power, which you do not want to connect to anything.
+Rovers with RS485 ports supply 5V of power, which again, you don't want to connect to anything.
+
+### DIY RS232
 Please see [this](http://renogy.boards.net/thread/535/using-rj11-cable-connect-raspberry) thread to see my experience on creating a DIY cable.
 
 You can also view [Renogy Rover RS232 Pinout](resources/renogy_rover_rs232_pinout.png). Note that this is partially incorrect;
 you need to connect the Rover's TX to your RX and the Rover's RX to your TX. Make sure you measure voltage
 with a multimeter so you don't send 15V through a Raspberry Pi's GPIO like I did!
 
-#### RS485
-Newer Renogy products use the RS485 protocol. This isn't necessarily better or worse, but Renogy actually sells
-a pre-made cable for RS485 to USB. I recommend you buy that cable.
+I recommend getting a USB to RS232 DB9 adapter and a DB9 breakout board. The DB9 breakout board can then
+be used to easily wire to an RJ12 port.
+
+
+### DIY RS485
+You can look at [this](../solar/resources/DCC%20Charger%20Modbus%20RS485%20V1.7.pdf) to see the pin out.
+You will have to buy a USB to RS485 adapter, then wire it to an RJ45 connector with the correct pinouts.
 
 ---
 

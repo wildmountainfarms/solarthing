@@ -11,6 +11,7 @@ import me.retrodaredevil.solarthing.actions.environment.InjectEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.RoverModbusEnvironment;
 import me.retrodaredevil.solarthing.analytics.AnalyticsManager;
 import me.retrodaredevil.solarthing.analytics.RoverAnalyticsHandler;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.config.options.*;
 import me.retrodaredevil.solarthing.config.request.DataRequester;
 import me.retrodaredevil.solarthing.config.request.RaspberryPiCpuTemperatureDataRequester;
@@ -106,7 +107,7 @@ public class RoverMain {
 	public static int connectRoverSetup(RoverSetupProgramOptions options) {
 		return doRoverProgram(options, RoverSetupProgram::startRoverSetup, null);
 	}
-	private static int doRoverProgram(RoverOption options, RoverProgramRunner runner, RegisterCacheHandler registerCacheHandler) {
+	private static int doRoverProgram(RoverOption options, RoverProgramRunner runner, @Nullable RegisterCacheHandler registerCacheHandler) {
 		File dummyFile = options.getDummyFile();
 		if(dummyFile != null){
 			final FileInputStream fileInputStream;
