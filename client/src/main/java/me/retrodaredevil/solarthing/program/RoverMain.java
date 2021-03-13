@@ -20,6 +20,7 @@ import me.retrodaredevil.solarthing.packets.handling.LatestPacketHandler;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandlerMultiplexer;
 import me.retrodaredevil.solarthing.program.modbus.ModbusCacheSlave;
+import me.retrodaredevil.solarthing.program.modbus.MutableAddressModbusSlave;
 import me.retrodaredevil.solarthing.solar.DaySummaryLogListReceiver;
 import me.retrodaredevil.solarthing.solar.renogy.rover.DummyRoverReadWrite;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverReadTable;
@@ -50,7 +51,7 @@ public class RoverMain {
 			.build();
 
 	private static int doRover(RoverProgramOptions options, AnalyticsManager analyticsManager, List<DataRequester> dataRequesterList){
-		return doRoverProgram(options, (read, write, reloadCache, reloadIO) -> {
+		return doRoverProgram(options, (slave, read, write, reloadCache, reloadIO) -> {
 			List<DataRequester> list = new ArrayList<>(dataRequesterList);
 			list.add((o) -> new RoverPacketListUpdater(read, write, reloadCache, reloadIO, options.isSendErrorPackets()));
 
@@ -126,12 +127,12 @@ public class RoverMain {
 					roverStatusPacket,
 					(fieldName, previousValue, newValue) -> System.out.println(fieldName + " changed from " + previousValue + " to " + newValue)
 			);
-			runner.doProgram(readWrite, readWrite, () -> {}, () -> {});
+			runner.doProgram(null, readWrite, readWrite, () -> {}, () -> {});
 			return 0;
 		} else {
 			try(ReloadableIOBundle ioBundle = new ReloadableIOBundle(() -> SolarMain.createIOBundle(options.getIOBundleFile(), ROVER_CONFIG))) {
 				ModbusSlaveBus modbus = new IOModbusSlaveBus(ioBundle, new RtuDataEncoder(2000, 20, 4));
-				ModbusSlave slave = new ImmutableAddressModbusSlave(options.getModbusAddress(), modbus);
+				MutableAddressModbusSlave slave = new MutableAddressModbusSlave(options.getModbusAddress(), modbus);
 				final RoverReadTable read;
 				final Runnable reloadCache;
 				if (registerCacheHandler != null) {
@@ -143,7 +144,7 @@ public class RoverMain {
 					reloadCache = () -> {};
 				}
 				RoverWriteTable write = new RoverModbusSlaveWrite(slave);
-				return runner.doProgram(read, write, reloadCache, ioBundle::reload);
+				return runner.doProgram(slave, read, write, reloadCache, ioBundle::reload);
 			} catch (Exception e) {
 				LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)Got exception!", e);
 				return 1;
@@ -152,7 +153,7 @@ public class RoverMain {
 	}
 	@FunctionalInterface
 	private interface RoverProgramRunner {
-		int doProgram(RoverReadTable read, RoverWriteTable write, Runnable reloadCache, Runnable reloadIO);
+		int doProgram(@Nullable MutableAddressModbusSlave modbusSlave, RoverReadTable read, RoverWriteTable write, Runnable reloadCache, Runnable reloadIO);
 	}
 	@FunctionalInterface
 	private interface RegisterCacheHandler {
