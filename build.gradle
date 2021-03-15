@@ -18,6 +18,8 @@ buildscript {
         okhttpVersion = "4.9.1" // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
     }
 }
+
+
 allprojects {
     repositories {
         mavenLocal()
@@ -49,6 +51,11 @@ subprojects {
     }
     test {
         useJUnitPlatform()
+        if(JavaVersion.current() >= JavaVersion.VERSION_1_9) {
+            // If we don't have this, we get warnings for something about retrofit2.Platform
+            //   - likely solcast action node
+            jvmArgs "--add-opens=java.base/java.lang.invoke=ALL-UNNAMED"
+        }
     }
     gradle.projectsEvaluated {
         tasks.withType(JavaCompile){

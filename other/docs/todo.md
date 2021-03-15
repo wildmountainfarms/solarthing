@@ -7,7 +7,6 @@
 * Send packet when mate serial port hasn't output data for 30 seconds
 * Create Dockerfile and example docker-compose file
 * Add event packets for rover devices (like we did for MXs and FXs)
-* Add way to scan for rover modbus slave addresses
   
 ### Completed
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
@@ -45,6 +44,7 @@ easy displaying in Grafana
 * Don't report analytics for dummy rover programs
 * Silence warning for GraphQL
 * Make CouchDB and InfluxDB database configuration warn when setting unused values
+* Add way to scan for rover modbus slave addresses
 
 ### Look into
 * Look into supporting Elasticsearch, MongoDB, Graphite
