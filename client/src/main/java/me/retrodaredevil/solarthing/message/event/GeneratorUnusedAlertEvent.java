@@ -31,7 +31,7 @@ public class GeneratorUnusedAlertEvent extends GracePeriodTimeoutEvent {
 			lowThresholdVoltage = lowThresholdRaw;
 			lowRaw = true;
 		} else {
-			lowThresholdVoltage = 4;
+			lowThresholdVoltage = 16;
 			lowRaw = true;
 		}
 	}

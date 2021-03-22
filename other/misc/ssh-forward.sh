@@ -8,4 +8,5 @@ echo Starting
 # -4 Force iPv4 https://www.linuxquestions.org/questions/linux-networking-3/problem-with-ssh-local-port-forwarding-timeout-transmission-daemon-4175681713/
 ssh -4 -N -i /opt/ssh-forward/id_rsa -p 9022 -R 9023:localhost:22 joshua@your_url
 # Note, you may want to change localhost to 192.168.X.X if it's not working
+# Note, in your sshd_config, you may want to add "UseDNS no" - https://serverfault.com/a/1028903
 echo Failed
