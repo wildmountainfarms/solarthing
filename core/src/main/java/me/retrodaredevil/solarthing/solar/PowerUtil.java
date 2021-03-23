@@ -13,10 +13,6 @@ import static java.util.Objects.requireNonNull;
 @UtilityClass
 public final class PowerUtil {
 	private PowerUtil() { throw new UnsupportedOperationException(); }
-	@Deprecated
-	public static Data getPowerData(PacketGroup packetGroup){
-		return getPowerData(packetGroup, GeneratingType.PV_ONLY);
-	}
 
 	public static Data getPowerData(PacketGroup packetGroup, GeneratingType generatingType){
 		requireNonNull(packetGroup);

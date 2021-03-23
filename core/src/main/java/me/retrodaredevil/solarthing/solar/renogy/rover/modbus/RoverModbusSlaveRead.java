@@ -52,6 +52,9 @@ public class RoverModbusSlaveRead implements RoverReadTable {
 	private int twoRegistersAsInt(MessageHandler<int[]> readHandler){
 		return convertTo32Bit(get(readHandler));
 	}
+
+
+	// region 0x000s
 	private static final MessageHandler<int[]> MAX_VOLTAGE_AND_CHARGING = new ReadHoldingRegisters(0x000A, 1);
 	@Override
 	public int getMaxVoltageValue() {
@@ -99,6 +102,21 @@ public class RoverModbusSlaveRead implements RoverReadTable {
 		return oneRegister(ADDRESS);
 	}
 
+	private static final MessageHandler<int[]> PROTOCOL_VERSION = new ReadHoldingRegisters(0x001B, 2);
+	@Override
+	public @Nullable Integer getProtocolVersionValue() { // TODO test this on Rover 40A
+		return twoRegistersAsInt(PROTOCOL_VERSION);
+	}
+
+	private static final MessageHandler<int[]> ID_CODE = new ReadHoldingRegisters(0x001D, 2);
+	@Override
+	public @Nullable Integer getUniqueIdentificationCode() {
+		return twoRegistersAsInt(ID_CODE);
+	}
+
+	// endregion
+
+	// region 0x0100s
 	private static final MessageHandler<int[]> SOC = new ReadHoldingRegisters(0x0100, 1);
 	@Override
 	public int getBatteryCapacitySOC() {
@@ -246,6 +264,16 @@ public class RoverModbusSlaveRead implements RoverReadTable {
 	private static final MessageHandler<int[]> ERROR_MODE = new ReadHoldingRegisters(0x0121, 2);
 	@Override public int getErrorModeValue() {
 		return twoRegistersAsInt(ERROR_MODE);
+	}
+
+	// endregion
+
+	// region 0xE000s
+	private static final MessageHandler<int[]> CHARGING_CURRENT_SETTING = new ReadHoldingRegisters(0xE001, 1);
+
+	@Override
+	public @Nullable Integer getChargingCurrentSettingRaw() {
+		return oneRegister(CHARGING_CURRENT_SETTING);
 	}
 
 	private static final MessageHandler<int[]> NOMINAL_BATTERY_CAPACITY = new ReadHoldingRegisters(0xE002, 1);
@@ -426,4 +454,17 @@ public class RoverModbusSlaveRead implements RoverReadTable {
 			return null;
 		}
 	}
+
+	private static final MessageHandler<int[]> CONTROLLER_CHARGING_POWER_SETTING = new ReadHoldingRegisters(0xE02E, 1);
+	@Override
+	public Integer getControllerChargingPowerSetting() {
+		return oneRegister(CONTROLLER_CHARGING_POWER_SETTING);
+	}
+
+	private static final MessageHandler<int[]> GENERATOR_CHARGING_POWER_SETTING = new ReadHoldingRegisters(0xE02F, 1);
+	@Override
+	public Integer getGeneratorChargingPowerSetting() {
+		return oneRegister(GENERATOR_CHARGING_POWER_SETTING);
+	}
+	// endregion
 }

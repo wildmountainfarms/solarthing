@@ -74,6 +74,12 @@ public final class RoverSetupProgram {
 					case "controllerdeviceaddress": case "deviceaddress": case "address":
 						System.out.println(read.getControllerDeviceAddress());
 						break;
+					case "protocolversion": case "protocolversionvalue":
+						System.out.println(read.getProtocolVersionValue());
+						break;
+					case "id": case "uniqueid": case "idcode": case "uniqueidcode": case "uniqueidentificationcode":
+						System.out.println(read.getUniqueIdentificationCode());
+						break;
 					case "batterycapacitysoc": case "soc": case "percent":
 						System.out.println(read.getBatteryCapacitySOC());
 						break;
@@ -173,6 +179,12 @@ public final class RoverSetupProgram {
 					case "errormode": case "errors":
 						System.out.println(read.getErrorsString());
 						break;
+					case "chargingcurrentsettingraw":
+						System.out.println(read.getChargingCurrentSettingRaw());
+						break;
+					case "chargingcurrentsetting":
+						System.out.println(read.getChargingCurrentSetting());
+						break;
 					case "nominalbatterycapacity": case "batterycapacity": case "batteryah":
 						System.out.println(read.getNominalBatteryCapacity());
 						break;
@@ -266,6 +278,12 @@ public final class RoverSetupProgram {
 						} else {
 							System.out.println(specialPowerControl2.getFormattedInfo());
 						}
+						break;
+					case "controllerchargingpowersetting":
+						System.out.println(read.getControllerChargingPowerSetting());
+						break;
+					case "generatorchargingpowersetting":
+						System.out.println(read.getGeneratorChargingPowerSetting());
 						break;
 					default:
 						System.err.println(request + " is not supported!");

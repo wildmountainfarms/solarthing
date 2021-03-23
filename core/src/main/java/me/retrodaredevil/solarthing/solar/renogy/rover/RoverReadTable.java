@@ -27,6 +27,10 @@ import static java.util.Objects.requireNonNull;
 
 @JsonExplicit
 public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeController, DailyChargeController, RecordBatteryVoltage, Identifiable {
+	/*
+	Note, some methods in this class are annotated with @WillBeUsedEventually, which means that they do not appear in the status
+	packet because of lack of testing.
+	 */
 
 	@Override
 	@NotNull RoverIdentifier getIdentifier();
@@ -179,10 +183,25 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	@JsonPropertyDescription("The modbus address of the device")
 	int getControllerDeviceAddress();
 
-	@Deprecated // TODO implement this
+	/**
+	 * On my rover 40A, got value of 309639, then 96644, then 15874497
+	 * @return An int or null representing the protocol version
+	 */
+	@DcdcOnly
+	@WillBeUsedEventually
 	default @Nullable Integer getProtocolVersionValue() { return null; }
-	@Deprecated // TODO implement this
-	default @Nullable Long getUniqueIdentificationCode() { return null; }
+
+	/**
+	 * NOTE: The default identification code is -1, or unsigned it is 0xFFFFFFFF. It is likely
+	 * that if this is not -1, you should express its value as an unsigned integer.
+	 *
+	 * On my rover 40A, got value of 309639
+	 *
+	 * @return An int or null representing the unique identification code.
+	 */
+	@DcdcOnly
+	@WillBeUsedEventually
+	default @Nullable Integer getUniqueIdentificationCode() { return null; }
 
 	// ===============================
 
@@ -474,15 +493,27 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	}
 
 	// Start of E000s
-	// E001 // TODO implement this (only for DCDC CCs)
 
 	/**
 	 * Only applies to Dual Input Charge Controllers
-	 * @return A value from 100 to 5000.
+	 *
+	 * Note: On my Rover 40A I got a value of 100 (1A).
+	 * @return A value from 100 to 5000 or null
 	 */
-	@Deprecated
 	@DcdcOnly
+	@WillBeUsedEventually
 	default @Nullable Integer getChargingCurrentSettingRaw() { return null; }
+
+	/**
+	 *
+	 * @return A value from 1A to 50A or null
+	 */
+	@DcdcOnly
+	@WillBeUsedEventually
+	default @Nullable Float getChargingCurrentSetting() {
+		Integer raw = getChargingCurrentSettingRaw();
+		return raw == null ? null : raw / 100.0f;
+	}
 
 	/**
 	 *
@@ -634,6 +665,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 
 	// For the Rover Elite, everything below here isn't gonna work because it doesn't have a load.
 
+	// region MES Load
 	@RoverOnly
 	@Nullable Integer getWorkingHoursRaw(Sensing sensing);
 	@Deprecated default int getWorkingHours(Sensing sensing){ return requireNonNull(getWorkingHoursRaw(sensing)) + 1; }
@@ -686,21 +718,32 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 		Integer raw = getSpecialPowerControlE02DRaw();
 		return raw == null ? null : new ImmutableSpecialPowerControl_E02D(raw);
 	}
-	// TODO make these methods non-default and implement them
-	// E02E and E02F
+	// endregion
+
 	/**
 	 * Only applies to Dual Input Charge Controllers
+	 *
+	 * On my rover 40A, got value of 4
+	 *
+	 * The default is 100
 	 * @return And integer representing the percentage setting or null
 	 */
 	@DcdcOnly
+	@WillBeUsedEventually
 	default Integer getControllerChargingPowerSetting() { return null; }
 	/**
 	 * Only applies to Dual Input Charge Controllers
+	 *
+	 * On my rover 40A, got value of 4, then 243
+	 *
+	 * The default is 100
 	 * @return And integer representing the percentage setting or null
 	 */
 	@DcdcOnly
+	@WillBeUsedEventually
 	default Integer getGeneratorChargingPowerSetting() { return null; }
 
+	@DefaultFinal
 	default boolean supportsMesLoad() {
 		return getWorkingHoursRaw(Sensing.SENSING_1) != null;
 	}
