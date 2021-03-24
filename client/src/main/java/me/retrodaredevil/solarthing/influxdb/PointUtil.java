@@ -50,6 +50,9 @@ public final class PointUtil {
 		return tagKeys;
 	}
 	public static Set<Map.Entry<String, ValueNode>> flattenJsonObject(ObjectNode object) {
+		return flattenJsonObject(object, ".");
+	}
+	public static Set<Map.Entry<String, ValueNode>> flattenJsonObject(ObjectNode object, String separator) {
 		Map<String, ValueNode> r = new LinkedHashMap<>();
 		for (Iterator<Map.Entry<String, JsonNode>> it = object.fields(); it.hasNext(); ) {
 			Map.Entry<String, JsonNode> entry = it.next();
@@ -60,7 +63,7 @@ public final class PointUtil {
 			} else if(element.isObject()){
 				Set<Map.Entry<String, ValueNode>> flat = flattenJsonObject((ObjectNode) element);
 				for(Map.Entry<String, ValueNode> subEntry : flat){
-					r.put(key + "." + subEntry.getKey(), subEntry.getValue());
+					r.put(key + separator + subEntry.getKey(), subEntry.getValue());
 				}
 			}
 			// ignore nulls and arrays

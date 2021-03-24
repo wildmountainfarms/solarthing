@@ -14,12 +14,16 @@ public final class SourceIdValidator {
 		if (sourceId.isEmpty()) {
 			throw new IllegalArgumentException("The source ID cannot be empty!");
 		}
-		for (char c : sourceId.toCharArray()) {
+		char[] chars = sourceId.toCharArray();
+		for (char c : chars) {
 			if (c < 32 || c > 126) {
 				throw new IllegalArgumentException("Character: " + c + " is not allowed! (ascii " + ((int) c) + ")");
 			}
+			if (c == '/') {
+				throw new IllegalArgumentException("The / character is not allowed!");
+			}
 		}
-		if (!isValidCharacter(sourceId.toCharArray()[0])) {
+		if (!isValidCharacter(chars[0])) {
 			throw new IllegalArgumentException("Your source ID must start with a 0-9, A-Z, or a-z character");
 		}
 		return sourceId;

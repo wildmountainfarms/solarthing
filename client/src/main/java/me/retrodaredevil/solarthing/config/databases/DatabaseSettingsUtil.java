@@ -20,7 +20,8 @@ public class DatabaseSettingsUtil {
 				InfluxDbDatabaseSettings.class,
 				InfluxDb2DatabaseSettings.class,
 				LatestFileDatabaseSettings.class,
-				PostDatabaseSettings.class
+				PostDatabaseSettings.class,
+				MqttDatabaseSettings.class
 		);
 	}
 }

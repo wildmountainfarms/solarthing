@@ -16,6 +16,7 @@ import me.retrodaredevil.solarthing.influxdb.infuxdb2.DocumentedMeasurementPacke
 import me.retrodaredevil.solarthing.influxdb.infuxdb2.InfluxDb2PacketSaver;
 import me.retrodaredevil.solarthing.influxdb.retention.ConstantRetentionPolicyGetter;
 import me.retrodaredevil.solarthing.influxdb.retention.FrequentRetentionPolicyGetter;
+import me.retrodaredevil.solarthing.mqtt.MqttPacketSaver;
 import me.retrodaredevil.solarthing.packets.handling.*;
 import me.retrodaredevil.solarthing.packets.handling.implementations.FileWritePacketHandler;
 import me.retrodaredevil.solarthing.packets.handling.implementations.JacksonStringPacketHandler;
@@ -36,7 +37,7 @@ public class PacketHandlerInit {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PacketHandlerInit.class);
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
 
-	public static PacketHandlerBundle getPacketHandlerBundle(List<DatabaseConfig> configs, String uniqueStatusName, String uniqueEventName){
+	public static PacketHandlerBundle getPacketHandlerBundle(List<DatabaseConfig> configs, String uniqueStatusName, String uniqueEventName, String sourceId, int fragmentId){
 		List<PacketHandler> statusPacketHandlers = new ArrayList<>();
 		List<PacketHandler> eventPacketHandlers = new ArrayList<>();
 		for(DatabaseConfig config : configs) {
@@ -126,6 +127,19 @@ public class PacketHandlerInit {
 						new PostPacketHandler(settings.getUrl(), new JacksonStringPacketHandler(MAPPER), MediaType.get("application/json")),
 						statusFrequencySettings,
 						false
+				));
+			} else if (MqttDatabaseSettings.TYPE.equals(config.getType())) {
+				MqttDatabaseSettings settings = (MqttDatabaseSettings) config.getSettings();
+
+				String client = settings.getClientId();
+				if (client == null) {
+					client = "solarthing-" + sourceId + "-" + fragmentId;
+				}
+
+				statusPacketHandlers.add(new ThrottleFactorPacketHandler(
+						new MqttPacketSaver(settings.getBroker(), client, settings.getUsername(), settings.getPassword(), settings.getTopicFormat(), settings.isRetain()),
+						statusFrequencySettings,
+						true
 				));
 			}
 		}

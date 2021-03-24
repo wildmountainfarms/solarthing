@@ -45,7 +45,7 @@ public class RequestMain {
 
 	public static int startRequestProgram(PacketHandlingOption options, AnalyticsManager analyticsManager, List<DataRequester> dataRequesterList, long period, long minimumWait, @Nullable PacketGroupReceiver commandPacketGroupReceiver, @Nullable List<CommandInfo> commandInfoList, PacketHandler extraPacketHandler) {
 		List<DatabaseConfig> databaseConfigs = SolarMain.getDatabaseConfigs(options);
-		PacketHandlerBundle packetHandlerBundle = PacketHandlerInit.getPacketHandlerBundle(databaseConfigs, SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, SolarThingConstants.SOLAR_EVENT_UNIQUE_NAME);
+		PacketHandlerBundle packetHandlerBundle = PacketHandlerInit.getPacketHandlerBundle(databaseConfigs, SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, SolarThingConstants.SOLAR_EVENT_UNIQUE_NAME, options.getSourceId(), options.getFragmentId());
 		List<PacketHandler> statusPacketHandlers = new ArrayList<>(packetHandlerBundle.getStatusPacketHandlers());
 		statusPacketHandlers.add(requireNonNull(extraPacketHandler));
 

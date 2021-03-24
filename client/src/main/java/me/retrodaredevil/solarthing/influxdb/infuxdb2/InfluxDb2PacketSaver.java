@@ -13,14 +13,12 @@ import com.influxdb.client.domain.Organization;
 import com.influxdb.client.domain.WritePrecision;
 import com.influxdb.client.write.Point;
 import com.influxdb.exceptions.InfluxException;
-import com.influxdb.exceptions.UnprocessableEntityException;
 import me.retrodaredevil.influxdb.influxdb2.InfluxDb2Properties;
 import me.retrodaredevil.okhttp3.OkHttpProperties;
 import me.retrodaredevil.okhttp3.OkHttpUtil;
 import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.influxdb.NameGetter;
 import me.retrodaredevil.solarthing.influxdb.PointUtil;
-import me.retrodaredevil.solarthing.influxdb.influxdb1.InfluxDbPacketSaver;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.DefaultInstanceOptions;
 import me.retrodaredevil.solarthing.packets.collection.InstancePacketGroup;
@@ -41,8 +39,7 @@ import java.util.Map;
 import static java.util.Objects.requireNonNull;
 
 public class InfluxDb2PacketSaver implements PacketHandler {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(InfluxDbPacketSaver.class);
+//	private static final Logger LOGGER = LoggerFactory.getLogger(InfluxDbPacketSaver.class);
 	private static final Logger INFLUX_LOGGER = LoggerFactory.getLogger("org.influxdb");
 	private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.defaultMapper();
 
@@ -78,7 +75,7 @@ public class InfluxDb2PacketSaver implements PacketHandler {
 				.setLogLevel(LogLevel.NONE)
 				.enableGzip();
 	}
-	private Organization findOrCreateOrg(String name) throws PacketHandleException {
+	private Organization findOrCreateOrg() throws PacketHandleException {
 		final List<Organization> organizations;
 		try {
 			organizations = client.getOrganizationsApi().findOrganizations();
@@ -117,7 +114,7 @@ public class InfluxDb2PacketSaver implements PacketHandler {
 	public void handle(PacketCollection packetCollection, InstantType instantType) throws PacketHandleException {
 		final InstancePacketGroup packetGroup = PacketGroups.parseToInstancePacketGroup(packetCollection, DefaultInstanceOptions.REQUIRE_NO_DEFAULTS);
 		DefaultInstanceOptions.requireNoDefaults(packetGroup);
-		Organization organization = findOrCreateOrg(properties.getOrg());
+		Organization organization = findOrCreateOrg();
 		Bucket bucket = findOrCreateBucket(bucketNameGetter.getName(packetGroup), organization);
 
 		final long time = packetCollection.getDateMillis();
