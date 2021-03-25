@@ -1,0 +1,11 @@
+{
+  "type": "mqtt",
+  "config": {
+    "broker": "tcp://localhost:1883",
+    "client_id": "solarthing-client",
+    "username": "solarthing_user",
+    "password": "my_cool_password",
+    "topic": "solarthing/%source/%fragment/%identifier",
+    "retain": true
+  }
+}

@@ -2,7 +2,7 @@
   "type": "mqtt",
   "config": {
     "broker": "tcp://localhost:1883",
-    "username": "solarthing_user",
-    "password": "my_cool_password"
+    "username": "admin",
+    "password": "hivemq"
   }
 }
