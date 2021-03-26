@@ -13,6 +13,9 @@ import me.retrodaredevil.solarthing.annotations.NotNull;
  * To solve this, you can use {@link IdentifierFragment}
  * <p>
  * {@link Identifier}s also inherit {@link Comparable<Identifier>} so they can be sorted using the default SolarThing order. (Their natural order).
+ * <p>
+ * The string representation should not contain slashes (/) and should generally avoid special Non alpha-numeric characters.
+ * The exception to this are '(', ')', '='.
  */
 @JsonClassDescription("Contains a representation that is unique across all packets in a particular fragment")
 public interface Identifier {

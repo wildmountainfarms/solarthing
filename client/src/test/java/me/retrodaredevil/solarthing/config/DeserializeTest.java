@@ -3,10 +3,12 @@ package me.retrodaredevil.solarthing.config;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import me.retrodaredevil.io.serial.SerialConfigBuilder;
 import me.retrodaredevil.solarthing.actions.ActionNode;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettingsUtil;
 import me.retrodaredevil.solarthing.config.databases.implementations.InfluxDbDatabaseSettings;
+import me.retrodaredevil.solarthing.config.io.IOConfig;
 import me.retrodaredevil.solarthing.config.io.SerialIOConfig;
 import me.retrodaredevil.solarthing.config.options.ProgramOptions;
 import me.retrodaredevil.solarthing.program.DatabaseConfig;
@@ -17,8 +19,6 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -28,6 +28,7 @@ public class DeserializeTest {
 	private static final File BASE_CONFIG_DIRECTORY = new File(SOLARTHING_ROOT, "config_templates/base");
 	private static final File ACTION_CONFIG_DIRECTORY = new File(SOLARTHING_ROOT, "config_templates/actions");
 	private static final File DATABASE_CONFIG_DIRECTORY = new File(SOLARTHING_ROOT, "config_templates/databases");
+	private static final File IO_CONFIG_DIRECTORY = new File(SOLARTHING_ROOT, "config_templates/io");
 
 	private static final FileFilter JSON_FILTER = new SuffixFileFilter(".json");
 
@@ -65,7 +66,7 @@ public class DeserializeTest {
 	private File[] getJsonFiles(File directory) {
 		assertTrue(directory.isDirectory(), "Not directory! " + directory + " absolute: " + directory.getAbsolutePath());
 		File[] files = directory.listFiles(JSON_FILTER);
-		assertTrue(files.length > 5);
+		assertTrue(files.length >= 3);
 		return files;
 	}
 
@@ -111,6 +112,31 @@ public class DeserializeTest {
 				MAPPER.readValue(configFile, ActionNode.class);
 			} catch (IOException ex) {
 				fail("Failed parsing config: " + configFile, ex);
+			}
+		}
+	}
+	@Test
+	void testAllIO() {
+		ObjectMapper mapper = MAPPER.copy();
+		InjectableValues.Std iv = new InjectableValues.Std();
+		iv.addValue(SerialIOConfig.DEFAULT_SERIAL_CONFIG_KEY, new SerialConfigBuilder(9600));
+		mapper.setInjectableValues(iv);
+
+		for (File configFile : getJsonFiles(IO_CONFIG_DIRECTORY)) {
+			try {
+				mapper.readValue(configFile, IOConfig.class);
+			} catch (IOException ex) {
+				fail("Failed parsing config: " + configFile, ex);
+			}
+		}
+		{
+			// many users of SolarThing have come to rely on config_templates/io/default_linux_serial.json. Let's make sure it's always there for them
+			File file = new File(IO_CONFIG_DIRECTORY, "default_linux_serial.json");
+			assertTrue(file.exists(), "default_linux_serial.json doesn't exist!");
+			try {
+				mapper.readValue(file, IOConfig.class);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
 			}
 		}
 	}

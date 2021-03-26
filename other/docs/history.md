@@ -40,6 +40,12 @@ have the ability to have multiple instances uploading packets to a single databa
 for the message-sender program and other general 'actions'
 * Added home assistant upload action  
 * Added ability to send data to Solcast along with GraphQL queries for Solcast  
+* message-sender program usable through automation program (removed message-sender program)
+#### 2021
+* InfluxDB 2.0 Support
+* DCDC Controller monitoring bug fixed
+* Pzem Shunt Support Added
+* MQTT Support added
 
 
 ### Moving from Gson to Jackson
