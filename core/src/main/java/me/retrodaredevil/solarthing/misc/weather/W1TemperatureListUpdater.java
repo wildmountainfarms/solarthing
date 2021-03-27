@@ -17,6 +17,10 @@ import java.util.List;
 
 public class W1TemperatureListUpdater implements PacketListReceiver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(W1TemperatureListUpdater.class);
+	private static final float RATED_MIN_TEMP_CELSIUS = -55.0f; // DS18B20 min temp
+	private static final float RATED_MAX_TEMP_CELSIUS = 125.0f; // DS18B20 max temp
+	/** Allow this many degrees celsius to be read below and above the min and max temperature respectively */
+	private static final float LENIENT_TEMP_CELSIUS = 20.0f;
 
 	private final File slaveFile;
 	private final File nameFile;
@@ -91,6 +95,14 @@ public class W1TemperatureListUpdater implements PacketListReceiver {
 		}
 		long timeTaken = System.currentTimeMillis() - startTime;
 		float temperatureCelsius = temperatureRaw / 1000.0f;
+		if (temperatureCelsius < RATED_MIN_TEMP_CELSIUS - LENIENT_TEMP_CELSIUS) {
+			LOGGER.warn("Extremely low temp! Probably not accurate! temperatureCelsius: " + temperatureCelsius);
+			return;
+		}
+		if (temperatureCelsius > RATED_MAX_TEMP_CELSIUS + LENIENT_TEMP_CELSIUS) {
+			LOGGER.warn("Extremely high temp! Probably not accurate! temperatureCelsius: " + temperatureCelsius);
+			return;
+		}
 		packets.add(new CelsiusTemperaturePacket(dataId, new W1Source(name), temperatureCelsius));
 		LOGGER.debug("Read temperature " + temperatureCelsius + "C from " + name + " in " + timeTaken + "ms");
 	}
