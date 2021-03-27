@@ -36,9 +36,10 @@ public class MqttPacketSaver implements PacketHandler {
 	private final MqttConnectOptions options;
 	/** The topic format similar to "solarthing/%source/%fragment/%identifier" (NO slash at end) */
 	private final String topicFormat;
+	private final String statusTopic;
 	private final boolean retain;
 
-	public MqttPacketSaver(String broker, String clientId, String username, char[] password, String topicFormat, boolean retain) {
+	public MqttPacketSaver(String broker, String clientId, String username, char[] password, String topicFormat, boolean retain, String sourceId, int fragmentId) {
 		this.topicFormat = topicFormat;
 		this.retain = retain;
 
@@ -53,6 +54,15 @@ public class MqttPacketSaver implements PacketHandler {
 		options = new MqttConnectOptions();
 		options.setUserName(username);
 		options.setPassword(password);
+		statusTopic = topicFormat.replace("%source", sourceId)
+				.replace("%fragment", "" + fragmentId)
+				.replace("%identifier", "status");
+		options.setWill(
+				statusTopic,
+				"offline".getBytes(CHARSET),
+				1,
+				retain
+		);
 	}
 
 	@Override
@@ -94,6 +104,8 @@ public class MqttPacketSaver implements PacketHandler {
 					retain
 			);
 		}
+		client.publish(statusTopic, "online".getBytes(CHARSET), 1, retain);
+
 		for (Packet packet : instancePacketGroup.getPackets()) {
 			if (packet instanceof Identifiable) {
 				Identifiable identifiable = (Identifiable) packet;

@@ -137,7 +137,7 @@ public class PacketHandlerInit {
 				}
 
 				statusPacketHandlers.add(new ThrottleFactorPacketHandler(
-						new MqttPacketSaver(settings.getBroker(), client, settings.getUsername(), settings.getPassword(), settings.getTopicFormat(), settings.isRetain()),
+						new MqttPacketSaver(settings.getBroker(), client, settings.getUsername(), settings.getPassword(), settings.getTopicFormat(), settings.isRetain(), sourceId, fragmentId),
 						statusFrequencySettings,
 						true
 				));
