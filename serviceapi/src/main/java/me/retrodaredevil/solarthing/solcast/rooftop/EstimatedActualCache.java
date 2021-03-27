@@ -29,57 +29,64 @@ public class EstimatedActualCache {
 	 *
 	 * @param startPointMillis Helps determine whether data needs to be requested
 	 * @param endPointMillis Helps determine whether data needs to be requested
+	 * @param clamp If true, returned data will only be between {@code startPointMillis} and {@code endPointMillis}. If false, all data will be returned
 	 * @return A list of {@link SimpleEstimatedActual}s. Ordered from oldest to newest
 	 * @throws IOException thrown if there's an error while making a request
 	 */
 	public List<SimpleEstimatedActual> getEstimatedActuals(long startPointMillis, long endPointMillis, boolean clamp) throws IOException {
 		long now = System.currentTimeMillis();
-		if (now - DURATION_7_DAYS.toMillis() > endPointMillis) {
+		if (now - DURATION_7_DAYS.toMillis() > endPointMillis) { // we can't get data more than 7 days in the past
 			return Collections.emptyList();
 		}
-		if (now + DURATION_7_DAYS.toMillis() < startPointMillis) {
+		if (now + DURATION_7_DAYS.toMillis() < startPointMillis) { // we can't get data more than 7 days in the future
 			return Collections.emptyList();
 		}
 
-		if (isTimestampOld(now, lastRequest)) {
-			lastRequest = now;
-			freeToRequestPast = false;
-			updateEstimatedActuals();
-			updateForecasts();
-		} else if (freeToRequestPast) {
-			freeToRequestPast = false;
-			updateEstimatedActuals();
+		synchronized (this) {
+			if (isTimestampOld(now, lastRequest)) {
+				updatePastEstimatedActuals();
+				updateFutureForecastsAndEstimatedActuals();
+				lastRequest = now;
+				freeToRequestPast = false;
+			} else if (freeToRequestPast) {
+				freeToRequestPast = false;
+				updatePastEstimatedActuals();
+			}
+			List<SimpleEstimatedActual> r = new ArrayList<>();
+			for (Node node : clamp ? simpleEstimatedActualSet.tailSet(new Node(startPointMillis), true).headSet(new Node(endPointMillis), true) : simpleEstimatedActualSet) {
+				r.add((SimpleEstimatedActual) node.data);
+			}
+			return r;
 		}
-
-		List<SimpleEstimatedActual> r = new ArrayList<>();
-		for (Node node : clamp ? simpleEstimatedActualSet.tailSet(new Node(startPointMillis), true).headSet(new Node(endPointMillis), true) : simpleEstimatedActualSet) {
-			r.add((SimpleEstimatedActual) node.data);
-		}
-		return r;
 	}
 
 	public List<Forecast> getForecasts(long startPointMillis, long endPointMillis, boolean clamp) throws IOException {
 		long now = System.currentTimeMillis();
-		if (now + DURATION_7_DAYS.toMillis() < startPointMillis) {
+		if (now + DURATION_7_DAYS.toMillis() < startPointMillis) { // we can't get data more than 7 days in the future
+			return Collections.emptyList();
+		}
+		if (now > endPointMillis) { // we can't get past forecast data
 			return Collections.emptyList();
 		}
 
-		if (isTimestampOld(now, lastRequest)) {
-			lastRequest = now;
-			freeToRequestPast = true;
-			updateForecasts();
-		}
+		synchronized (this) {
+			if (isTimestampOld(now, lastRequest)) {
+				updateFutureForecastsAndEstimatedActuals();
+				lastRequest = now;
+				freeToRequestPast = true;
+			}
 
-		List<Forecast> r = new ArrayList<>();
-		for (Node node : clamp ? forecastSet.tailSet(new Node(startPointMillis), true).headSet(new Node(endPointMillis), true) : forecastSet) {
-			r.add((Forecast) node.data);
+			List<Forecast> r = new ArrayList<>();
+			for (Node node : clamp ? forecastSet.tailSet(new Node(startPointMillis), true).headSet(new Node(endPointMillis), true) : forecastSet) {
+				r.add((Forecast) node.data);
+			}
+			return r;
 		}
-		return r;
 	}
 	private static boolean isTimestampOld(long now, Long timestamp) {
 		return timestamp == null || timestamp + 1000 * 60 * 60 * 12 < now;
 	}
-	private void updateForecasts() throws IOException {
+	private void updateFutureForecastsAndEstimatedActuals() throws IOException {
 		System.out.println("Going to retrieve forecasts from solcast!");
 		ForecastResult result = retriever.retrieveForecast();
 		List<Forecast> forecasts = result.getForecasts();
@@ -93,7 +100,7 @@ public class EstimatedActualCache {
 		simpleEstimatedActualSet.tailSet(nodes.get(0), true).clear();
 		simpleEstimatedActualSet.addAll(nodes);
 	}
-	private void updateEstimatedActuals() throws IOException {
+	private void updatePastEstimatedActuals() throws IOException {
 		System.out.println("Going to retrieve estimated actuals from solcast!");
 		EstimatedActualResult result = retriever.retrievePast();
 		List<EstimatedActual> estimatedActuals = result.getEstimatedActuals();

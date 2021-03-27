@@ -151,12 +151,15 @@ public class SolarThingGraphQLSolcastService {
 			this.to = to;
 			requireNonNull(this.zoneId = zoneId);
 		}
-		@GraphQLQuery
+		@GraphQLQuery(description = "Queries the kWh generation estimate for a certain day. offset of 0 is today, 1 is tomorrow, -1 is yesterday")
 		public @NotNull DailyEnergy queryEnergyEstimate(@GraphQLArgument(name = "offset", defaultValue = "0") int offsetDays) throws IOException {
 			LocalDate date = Instant.ofEpochMilli(to).atZone(zoneId).toLocalDate().plusDays(offsetDays);
 			long start = date.atStartOfDay(zoneId).toInstant().toEpochMilli();
 			long end = date.plusDays(1).atStartOfDay(zoneId).toInstant().toEpochMilli() - 1;
 			List<SimpleEstimatedActual> estimatedActuals = handler.cache.getEstimatedActuals(start, end, true);
+			if (estimatedActuals.isEmpty()) {
+				throw new RuntimeException("Empty result for offset=" + offsetDays + "! This shouldn't happen!");
+			}
 			float dailyKWH = 0;
 			for (SimpleEstimatedActual simpleEstimatedActual : estimatedActuals) {
 				dailyKWH += simpleEstimatedActual.getEnergyGenerationEstimate();
