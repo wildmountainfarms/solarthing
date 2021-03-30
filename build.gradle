@@ -44,6 +44,7 @@ subprojects {
         testImplementation "org.junit.jupiter:junit-jupiter-params:$junit5Version"
         testImplementation "org.junit.platform:junit-platform-commons:$junit5PlatformVersion"
         testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: junit5Version
+        testImplementation 'com.tngtech.archunit:archunit:0.17.0'
 
         // https://mvnrepository.com/artifact/com.google.code.findbugs/jsr305
         implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'

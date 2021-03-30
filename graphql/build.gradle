@@ -15,7 +15,7 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
 version = '0.0.1-SNAPSHOT'
-project.ext.mainClass = "me.retrodaredevil.solarthing.graphql.SolarThingApplication"
+//project.ext.mainClass = "me.retrodaredevil.solarthing.graphql.SolarThingApplication" // This isn't doing anything?
 
 compileJava {
     options.compilerArgs << '-parameters' // we don't want to use have to put @GraphQLArgument everywhere
@@ -28,7 +28,7 @@ dependencies {
     implementation 'com.graphql-java:graphql-java-spring-boot-starter-webmvc:2.0'
 
 //    implementation 'com.graphql-java:graphql-java:14.0' graphql-spqr adds this dependency
-    implementation 'io.leangen.graphql:spqr:0.11.1'
+    implementation 'io.leangen.graphql:spqr:0.11.2' // https://github.com/leangen/graphql-spqr/releases
 }
 jar {
     enabled = true

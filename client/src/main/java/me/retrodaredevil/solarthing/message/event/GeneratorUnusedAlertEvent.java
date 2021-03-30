@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.message.MessageSender;
+import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.solar.outback.OutbackUtil;
 import me.retrodaredevil.solarthing.solar.outback.fx.ACMode;
@@ -38,16 +39,20 @@ public class GeneratorUnusedAlertEvent extends GracePeriodTimeoutEvent {
 
 	@Override
 	protected @Nullable Runnable createDesiredTrigger(MessageSender sender, FragmentedPacketGroup previous, FragmentedPacketGroup current) {
-		FXStatusPacket fx = OutbackUtil.getMasterFX(current);
-		if (fx != null) {
-			boolean is230 = fx.is230V();
-			int lowThreshold = is230 && lowRaw ? 2 * lowThresholdVoltage : lowThresholdVoltage;
-			int inputVoltage = fx.getInputVoltage();
-			if (fx.getACMode() == ACMode.AC_DROP) {
-				return () -> sender.sendMessage("Generator dropping power! (on and not using for " + getPrettyDurationString() + ")");
-			}
-			if (inputVoltage >= lowThreshold && fx.getACMode() != ACMode.AC_USE) {
-				return () -> sender.sendMessage("Low Generator Voltage! " + inputVoltage + "V (on and not using for " + getPrettyDurationString() + ")");
+		// We use a for loop here instead of just the "master" FX packet because it's possible for the voltage
+		//    on one FX to be greater than another, so we want to check to see if this applied to *any* FXs
+		for (Packet packet : current.getPackets()) {
+			if (packet instanceof FXStatusPacket) {
+				FXStatusPacket fx = (FXStatusPacket) packet;
+				boolean is230 = fx.is230V();
+				int lowThreshold = is230 && lowRaw ? 2 * lowThresholdVoltage : lowThresholdVoltage;
+				int inputVoltage = fx.getInputVoltage();
+				if (fx.getACMode() == ACMode.AC_DROP) {
+					return () -> sender.sendMessage("Generator dropping power! (on and not using for " + getPrettyDurationString() + ")");
+				}
+				if (inputVoltage >= lowThreshold && fx.getACMode() != ACMode.AC_USE) {
+					return () -> sender.sendMessage("Low Generator Voltage! " + inputVoltage + "V (on and not using for " + getPrettyDurationString() + ")");
+				}
 			}
 		}
 		return null;
