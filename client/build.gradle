@@ -10,7 +10,7 @@ project.ext.mainClassName = "me.retrodaredevil.solarthing.program.SolarMain"
 dependencies {
     implementation "com.github.retrodaredevil.io-lib:jSerialComm:$ioLibVersion"
     implementation group: 'org.influxdb', name: 'influxdb-java', version: '2.19' // for InfluxDB 1.X
-    implementation "com.influxdb:influxdb-client-java:2.0.0" // for InfluxDB 2.0 // https://github.com/influxdata/influxdb-client-java/releases
+    implementation "com.influxdb:influxdb-client-java:2.1.0" // for InfluxDB 2.0 // https://github.com/influxdata/influxdb-client-java/releases
 
     implementation "org.apache.logging.log4j:log4j-jcl:$log4jVersion" // commons logging bridge.
     implementation "org.apache.logging.log4j:log4j-slf4j-impl:$log4jVersion"
@@ -19,12 +19,12 @@ dependencies {
 
     implementation 'net.bis5.mattermost4j:mattermost4j-core:0.22.1'
 
-    implementation 'com.slack.api:slack-api-client:1.6.2'
+    implementation 'com.slack.api:slack-api-client:1.7.1'
 
     // https://mvnrepository.com/artifact/com.lexicalscope.jewelcli/jewelcli
     implementation group: 'com.lexicalscope.jewelcli', name: 'jewelcli', version: '0.8.9'
 
-    implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.2'
+    implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
     // https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-jul
     implementation group: 'org.apache.logging.log4j', name: 'log4j-jul', version: '2.14.1' // JUL Logging Bridge for mqtt library
 }

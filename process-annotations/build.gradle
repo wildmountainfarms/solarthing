@@ -5,6 +5,6 @@ plugins {
 version '0.0.1-SNAPSHOT'
 
 dependencies {
-    annotationProcessor 'com.google.auto.service:auto-service:1.0-rc5'
-    implementation 'com.google.auto.service:auto-service:1.0-rc5'
+    annotationProcessor 'com.google.auto.service:auto-service:1.0'
+    implementation 'com.google.auto.service:auto-service:1.0'
 }
