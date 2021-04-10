@@ -106,10 +106,13 @@ public class PVOutputHandler {
 					DailyCalc.getSumTotal(roverMap.values(), RoverStatusPacket::getDailyKWH);
 			builder.setEnergyGeneration(Math.round(generationKWH * 1000.0f));
 		}
-		if (!dailyFXMap.isEmpty()) { // energy consumed // right now, only do this if there are fx dailies
+		if (!dailyFXMap.isEmpty() || !roverMap.isEmpty()) { // energy consumed
 			float consumptionKWH = DailyCalc.getSumTotal(roverMap.values(), RoverStatusPacket::getDailyKWHConsumption) +
 					DailyCalc.getSumTotal(dailyFXMap.values(), dailyFXPacket -> dailyFXPacket.getInverterKWH() + dailyFXPacket.getBuyKWH() - dailyFXPacket.getChargerKWH());
-			builder.setEnergyConsumption(Math.round(consumptionKWH * 1000.0f));
+
+			if (consumptionKWH >= 0) {// This if statement should almost always be executed, however, there are rare cases where (buy - charger) is negative for FX packets only
+				builder.setEnergyConsumption(Math.round(consumptionKWH * 1000.0f));
+			}
 		}
 		return builder;
 	}
