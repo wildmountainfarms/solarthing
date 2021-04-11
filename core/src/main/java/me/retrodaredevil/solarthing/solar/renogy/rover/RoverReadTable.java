@@ -307,7 +307,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	@GraphQLInclude("loadPower")
 	@RoverOnly
 	default int getLoadPower() {
-		if (isDcdc()) {
+		if (!isDcdc()) {
 			return getLoadPowerRaw();
 		}
 		return 0;
