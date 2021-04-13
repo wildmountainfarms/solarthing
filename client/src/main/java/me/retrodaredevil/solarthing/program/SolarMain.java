@@ -121,7 +121,7 @@ public final class SolarMain {
 		}
 	}
 
-	public static IOBundle createIOBundle(File configFile, SerialConfig defaultSerialConfig) {
+	public static IOConfig parseIOConfig(File configFile, SerialConfig defaultSerialConfig) {
 		final FileInputStream inputStream;
 		try {
 			inputStream = new FileInputStream(configFile);
@@ -139,6 +139,10 @@ public final class SolarMain {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+		return config;
+	}
+	public static IOBundle createIOBundle(File configFile, SerialConfig defaultSerialConfig) {
+		IOConfig config = parseIOConfig(configFile, defaultSerialConfig);
 		try {
 			return config.createIOBundle();
 		} catch (Exception e) {

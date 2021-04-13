@@ -5,11 +5,12 @@ import me.retrodaredevil.solarthing.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class ReloadableIOBundle implements IOBundle {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ReloadableIOBundle.class);
-//	private static final IOBundle BLANK_IO_BUNDLE = IOBundle.of(new ByteArrayInputStream(new byte[]{}), new ByteArrayOutputStream());
 	private static final IOBundle BLANK_IO_BUNDLE = IOBundle.of(new InputStream() {
 		@Override
 		public int read() throws IOException {
@@ -131,6 +132,6 @@ public class ReloadableIOBundle implements IOBundle {
 	};
 	@FunctionalInterface
 	public interface IOBundleCreator {
-		IOBundle create();
+		IOBundle create() throws Exception;
 	}
 }

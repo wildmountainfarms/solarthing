@@ -12,6 +12,7 @@ import me.retrodaredevil.solarthing.actions.environment.RoverModbusEnvironment;
 import me.retrodaredevil.solarthing.analytics.AnalyticsManager;
 import me.retrodaredevil.solarthing.analytics.RoverAnalyticsHandler;
 import me.retrodaredevil.solarthing.annotations.Nullable;
+import me.retrodaredevil.solarthing.config.io.IOConfig;
 import me.retrodaredevil.solarthing.config.options.*;
 import me.retrodaredevil.solarthing.config.request.DataRequester;
 import me.retrodaredevil.solarthing.config.request.RaspberryPiCpuTemperatureDataRequester;
@@ -130,7 +131,8 @@ public class RoverMain {
 			runner.doProgram(null, readWrite, readWrite, () -> {}, () -> {});
 			return 0;
 		} else {
-			try(ReloadableIOBundle ioBundle = new ReloadableIOBundle(() -> SolarMain.createIOBundle(options.getIOBundleFile(), ROVER_CONFIG))) {
+			IOConfig ioConfig = SolarMain.parseIOConfig(options.getIOBundleFile(), ROVER_CONFIG);
+			try(ReloadableIOBundle ioBundle = new ReloadableIOBundle(ioConfig::createIOBundle)) {
 				ModbusSlaveBus modbus = new IOModbusSlaveBus(ioBundle, new RtuDataEncoder(2000, 20, 4));
 				MutableAddressModbusSlave slave = new MutableAddressModbusSlave(options.getModbusAddress(), modbus);
 				final RoverReadTable read;
