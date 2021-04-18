@@ -16,10 +16,7 @@ import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
-import me.retrodaredevil.solarthing.graphql.service.SolarThingGraphQLDailyService;
-import me.retrodaredevil.solarthing.graphql.service.SolarThingGraphQLFXService;
-import me.retrodaredevil.solarthing.graphql.service.SolarThingGraphQLService;
-import me.retrodaredevil.solarthing.graphql.service.SolarThingGraphQLSolcastService;
+import me.retrodaredevil.solarthing.graphql.service.*;
 import me.retrodaredevil.solarthing.graphql.solcast.SolcastConfig;
 import me.retrodaredevil.solarthing.packets.collection.DefaultInstanceOptions;
 import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePacket;
@@ -148,6 +145,7 @@ public class GraphQLProvider {
 				.withBasePackages("me.retrodaredevil.solarthing")
 				.withOperationsFromSingleton(new SolarThingGraphQLService(simpleQueryHandler))
 				.withOperationsFromSingleton(new SolarThingGraphQLDailyService(simpleQueryHandler, zoneId))
+				.withOperationsFromSingleton(new SolarThingGraphQLLongTermService(simpleQueryHandler, zoneId))
 				.withOperationsFromSingleton(new SolarThingGraphQLMetaService(simpleQueryHandler))
 				.withOperationsFromSingleton(new SolarThingGraphQLExtensions())
 				.withOperationsFromSingleton(new SolarThingGraphQLFXService(simpleQueryHandler))

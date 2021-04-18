@@ -14,6 +14,10 @@ import me.retrodaredevil.solarthing.solar.daily.DailyConfig;
 import me.retrodaredevil.solarthing.solar.daily.DailyPair;
 import me.retrodaredevil.solarthing.solar.daily.DailyUtil;
 
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.YearMonth;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,9 +27,11 @@ import static me.retrodaredevil.solarthing.graphql.service.SchemaConstants.*;
 public class SolarThingGraphQLLongTermService {
 
 	private final SimpleQueryHandler simpleQueryHandler;
+	private final ZoneId zoneId;
 
-	public SolarThingGraphQLLongTermService(SimpleQueryHandler simpleQueryHandler) {
+	public SolarThingGraphQLLongTermService(SimpleQueryHandler simpleQueryHandler, ZoneId zoneId) {
 		this.simpleQueryHandler = simpleQueryHandler;
+		this.zoneId = zoneId;
 	}
 
 	@GraphQLQuery
@@ -41,6 +47,20 @@ public class SolarThingGraphQLLongTermService {
 		//   And, since we don't actually need the merged packets, there's no point in merging them.
 		//   Also (2021.04.17), now that I think about it, we should probably have a better way to merge packets without sometimes losing ones with lower priority fragments. (TODO)
 		return new SolarThingLongTermQuery(packets, dailyConfig);
+	}
+	@GraphQLQuery
+	public SolarThingLongTermQuery queryLongTermMonth(
+			@GraphQLArgument(name = "year") int year,
+			@GraphQLArgument(name = "month") Month month,
+			@GraphQLArgument(name = "sourceId", description = DESCRIPTION_OPTIONAL_SOURCE) @Nullable String sourceId){
+		YearMonth yearMonth = YearMonth.of(year, month);
+		LocalDate start = LocalDate.of(year, month, 1);
+		LocalDate end = yearMonth.atEndOfMonth();
+		return queryLongTermMillis(
+				start.atStartOfDay(zoneId).toInstant().toEpochMilli(),
+				end.plusDays(1).atStartOfDay(zoneId).toInstant().toEpochMilli() - 1,
+				sourceId
+		);
 	}
 	public static class SolarThingLongTermQuery {
 		private final List<? extends FragmentedPacketGroup> packetGroups;
