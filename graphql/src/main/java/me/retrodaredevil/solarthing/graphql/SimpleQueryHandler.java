@@ -61,6 +61,10 @@ public class SimpleQueryHandler {
 		metaObjectMapper.getSubtypeResolver().registerSubtypes(TargetMetaPacket.class, DeviceInfoPacket.class, DataMetaPacket.class, FXChargingSettingsPacket.class, FXChargingTemperatureAdjustPacket.class);
 		metaQueryHandler = new MetaQueryHandler(new StdCouchDbConnector(SolarThingConstants.CLOSED_UNIQUE_NAME, instance), metaObjectMapper);
 	}
+
+	/**
+	 * Converts a list of {@link InstancePacketGroup}s to merged {@link FragmentedPacketGroup}s.
+	 */
 	public List<? extends FragmentedPacketGroup> sortPackets(List<? extends InstancePacketGroup> packets, String sourceId) {
 		if (packets.isEmpty()) {
 			return Collections.emptyList();

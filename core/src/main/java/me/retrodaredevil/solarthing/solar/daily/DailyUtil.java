@@ -18,6 +18,12 @@ import java.util.Map;
 @UtilityClass
 public final class DailyUtil {
 	private DailyUtil(){ throw new UnsupportedOperationException(); }
+
+	/**
+	 *
+	 * @param isFirst Should be true when the first and end packets are part of the first chunk of data from a certain day.
+	 *                Helps determine if the first packet needs to be interpreted as data from today or from yesterday.
+	 */
 	@Contract(pure = true)
 	private static <T extends DailyData> DailyPair<T> createDailyPair(boolean isFirst, TimestampedPacket<T> firstPacket, TimestampedPacket<T> endPacket, DailyConfig dailyConfig) {
 		final DailyPair.StartPacketType startPacketType;
@@ -66,7 +72,7 @@ public final class DailyUtil {
 	}
 	@SuppressWarnings("unchecked")
 	@Contract(pure = true)
-	public static <T extends Identifiable> Map<IdentifierFragment, List<TimestampedPacket<T>>> mapPackets(Class<T> clazz, List<FragmentedPacketGroup> packetGroups) {
+	public static <T extends Identifiable> Map<IdentifierFragment, List<TimestampedPacket<T>>> mapPackets(Class<T> clazz, List<? extends FragmentedPacketGroup> packetGroups) {
 		Map<IdentifierFragment, List<TimestampedPacket<T>>> packetMap = new HashMap<>();
 		for (FragmentedPacketGroup packetGroup : packetGroups) {
 			for (Packet packet : packetGroup.getPackets()) {
