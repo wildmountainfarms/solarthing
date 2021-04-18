@@ -3,7 +3,7 @@ package me.retrodaredevil.solarthing.graphql.service;
 import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLQuery;
 import me.retrodaredevil.solarthing.graphql.SimpleQueryHandler;
-import me.retrodaredevil.solarthing.graphql.packets.DataNode;
+import me.retrodaredevil.solarthing.graphql.packets.nodes.DataNode;
 import me.retrodaredevil.solarthing.meta.MetaDatabase;
 import me.retrodaredevil.solarthing.meta.TargetedMetaPacket;
 import me.retrodaredevil.solarthing.meta.TargetedMetaPacketType;

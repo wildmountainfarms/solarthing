@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing.graphql.packets;
+package me.retrodaredevil.solarthing.graphql.packets.nodes;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;

@@ -1,5 +1,7 @@
 package me.retrodaredevil.solarthing.graphql.packets;
 
+import me.retrodaredevil.solarthing.graphql.packets.nodes.PacketNode;
+
 public class FragmentFilter implements PacketFilter {
 	private final int fragmentId;
 

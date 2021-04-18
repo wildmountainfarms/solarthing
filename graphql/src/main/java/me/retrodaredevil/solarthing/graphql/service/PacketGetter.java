@@ -1,7 +1,7 @@
 package me.retrodaredevil.solarthing.graphql.service;
 
 import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.graphql.packets.PacketNode;
+import me.retrodaredevil.solarthing.graphql.packets.nodes.PacketNode;
 
 import java.util.List;
 

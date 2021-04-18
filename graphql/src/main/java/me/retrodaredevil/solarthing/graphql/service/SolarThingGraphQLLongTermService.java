@@ -2,8 +2,10 @@ package me.retrodaredevil.solarthing.graphql.service;
 
 import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLQuery;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.graphql.SimpleQueryHandler;
+import me.retrodaredevil.solarthing.graphql.packets.nodes.DataPoint;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.InstancePacketGroup;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
@@ -18,9 +20,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.time.YearMonth;
 import java.time.ZoneId;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static me.retrodaredevil.solarthing.graphql.service.SchemaConstants.*;
 
@@ -46,7 +46,7 @@ public class SolarThingGraphQLLongTermService {
 		//   This is because sortPackets sometimes will disregard packets with a lower priority fragment ID.
 		//   And, since we don't actually need the merged packets, there's no point in merging them.
 		//   Also (2021.04.17), now that I think about it, we should probably have a better way to merge packets without sometimes losing ones with lower priority fragments. (TODO)
-		return new SolarThingLongTermQuery(packets, dailyConfig);
+		return new SolarThingLongTermQuery(packets, dailyConfig, sourceId);
 	}
 	@GraphQLQuery
 	public SolarThingLongTermQuery queryLongTermMonth(
@@ -65,43 +65,41 @@ public class SolarThingGraphQLLongTermService {
 	public static class SolarThingLongTermQuery {
 		private final List<? extends FragmentedPacketGroup> packetGroups;
 		private final DailyConfig dailyConfig;
+		private final String sourceId;
 
-		public SolarThingLongTermQuery(List<? extends FragmentedPacketGroup> packetGroups, DailyConfig dailyConfig) {
+		public SolarThingLongTermQuery(List<? extends FragmentedPacketGroup> packetGroups, DailyConfig dailyConfig, String sourceId) {
 			this.packetGroups = packetGroups;
 			this.dailyConfig = dailyConfig;
+			this.sourceId = sourceId;
 		}
 
 		@GraphQLQuery
-		public Map<Integer, Map<Identifier, Float>> solarKWHIndividual() {
-			Map<Integer, Map<Identifier, Float>> r = new HashMap<>();
+		public @NotNull List<@NotNull DataPoint<Float>> solarKWHIndividual() {
+			List<DataPoint<Float>> r = new ArrayList<>();
 			Map<IdentifierFragment, List<DailyPair<AccumulatedChargeController>>> chargeControllerMap = DailyUtil.getDailyPairs(DailyUtil.mapPackets(AccumulatedChargeController.class, packetGroups), dailyConfig);
 
 			for (Map.Entry<IdentifierFragment, List<DailyPair<AccumulatedChargeController>>> entry : chargeControllerMap.entrySet()) {
-				Map<Identifier, Float> identifierMap = r.computeIfAbsent(entry.getKey().getFragmentId(), (_key) -> new HashMap<>());
-				identifierMap.put(entry.getKey().getIdentifier(), DailyCalc.getTotal(entry.getValue(), AccumulatedChargeController::getDailyKWH));
+				float total = DailyCalc.getTotal(entry.getValue(), AccumulatedChargeController::getDailyKWH);
+				r.add(new DataPoint<>(total, entry.getValue().get(0).getStartPacket().getPacket(), sourceId, entry.getKey().getFragmentId()));
 			}
 
 			return r;
 		}
 		@GraphQLQuery
-		public Map<Integer, Map<Identifier, Float>> solarKWHIndividualPercent() {
-			Map<Integer, Map<Identifier, Float>> r = new HashMap<>();
-			Map<Integer, Map<Identifier, Float>> individualKWH = solarKWHIndividual();
+		public @NotNull List<@NotNull DataPoint<Float>> solarKWHIndividualPercent() {
+			List<DataPoint<Float>> individualKWH = solarKWHIndividual();
 			float total = solarKWHTotal(individualKWH);
-			// individualKWH is a mutable map, so we can just change its values really easily to turn it into an individualKWHPercent map
-			for (Map<Identifier, Float> map : solarKWHIndividual().values()) {
-				for (Map.Entry<Identifier, Float> entry : map.entrySet()) {
-					entry.setValue(entry.getValue() / total);
-				}
+			// individualKWH is a mutable list, so we can just change its values really easily to turn it into an individualKWHPercent list
+			for (ListIterator<DataPoint<Float>> iterator = individualKWH.listIterator(); iterator.hasNext(); ) {
+				DataPoint<Float> dataPoint = iterator.next();
+				iterator.set(new DataPoint<>(dataPoint.getData() / total, dataPoint.getIdentifiable(), dataPoint.getSourceId(), dataPoint.getFragmentId()));
 			}
 			return individualKWH;
 		}
-		private float solarKWHTotal(Map<Integer, Map<Identifier, Float>> individualKWH) {
+		private float solarKWHTotal(@NotNull List<@NotNull DataPoint<Float>> individualKWH) {
 			float r = 0.0f;
-			for (Map<Identifier, Float> map : individualKWH.values()) {
-				for (float value : map.values()) {
-					r += value;
-				}
+			for (DataPoint<Float> dataPoint : individualKWH) {
+				r += dataPoint.getData();
 			}
 			return r;
 		}

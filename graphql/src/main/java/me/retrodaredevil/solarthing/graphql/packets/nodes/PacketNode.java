@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing.graphql.packets;
+package me.retrodaredevil.solarthing.graphql.packets.nodes;
 
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.annotations.NotNull;

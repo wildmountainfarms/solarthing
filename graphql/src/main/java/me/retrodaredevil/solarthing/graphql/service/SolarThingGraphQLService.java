@@ -6,6 +6,9 @@ import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.graphql.SimpleQueryHandler;
 import me.retrodaredevil.solarthing.graphql.packets.*;
+import me.retrodaredevil.solarthing.graphql.packets.nodes.DataNode;
+import me.retrodaredevil.solarthing.graphql.packets.nodes.PacketNode;
+import me.retrodaredevil.solarthing.graphql.packets.nodes.SimpleNode;
 import me.retrodaredevil.solarthing.meta.*;
 import me.retrodaredevil.solarthing.misc.device.CpuTemperaturePacket;
 import me.retrodaredevil.solarthing.misc.weather.TemperaturePacket;
@@ -36,7 +39,6 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import static me.retrodaredevil.solarthing.graphql.service.SchemaConstants.*;

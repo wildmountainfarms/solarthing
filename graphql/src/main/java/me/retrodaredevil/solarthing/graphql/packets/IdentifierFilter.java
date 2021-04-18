@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.graphql.packets;
 
+import me.retrodaredevil.solarthing.graphql.packets.nodes.PacketNode;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifiable;
 
