@@ -79,7 +79,11 @@ public class PVOutputHandler {
 				IdentifierFragment identifierFragment = IdentifierFragment.create(fragmentId, temperaturePacket.getIdentifier());
 				if (temperatureIdentifierFragmentMatcher.matches(identifierFragment)) {
 					float temperatureCelsius = temperaturePacket.getTemperatureCelsius();
-					addStatusParametersBuilder.setTemperatureCelsius(temperatureCelsius);
+					if (!TemperaturePacket.POSSIBLE_BAD_VALUES.contains(temperatureCelsius)) {
+						addStatusParametersBuilder.setTemperatureCelsius(temperatureCelsius);
+					} else {
+						System.out.println("Not setting temperature: " + temperatureCelsius + " because it could be a bad reading");
+					}
 				}
 			}
 		}

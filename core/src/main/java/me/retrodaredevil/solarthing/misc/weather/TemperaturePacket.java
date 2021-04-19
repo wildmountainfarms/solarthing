@@ -8,10 +8,20 @@ import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.misc.common.SourcedData;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 @JsonDeserialize(as = CelsiusTemperaturePacket.class)
 @JsonExplicit
 @JsonTypeName("TEMPERATURE")
 public interface TemperaturePacket extends WeatherPacket, SourcedData {
+	/**
+	 * Represents temperature celsius values that might indicate a bad reading
+	 */
+	Set<Float> POSSIBLE_BAD_VALUES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(0.0f, 25.0f)));
+
 	@DefaultFinal
 	@Override
 	default @NotNull WeatherPacketType getPacketType() {
