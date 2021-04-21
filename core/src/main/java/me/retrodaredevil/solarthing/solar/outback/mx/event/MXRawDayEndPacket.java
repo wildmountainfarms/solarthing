@@ -27,9 +27,4 @@ public interface MXRawDayEndPacket extends SupplementarySolarEventPacket, Accumu
 	@Override
 	@NotNull Support getDailyAHSupport();
 
-	@Override
-	default boolean isNewDay(DailyData previousDailyData) {
-		// We have to override this since we inherit from DailyData
-		return true; // Since this is an event packet, each one is always a new day
-	}
 }

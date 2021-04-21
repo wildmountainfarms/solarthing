@@ -26,7 +26,7 @@ import java.util.Collections;
 import static java.util.Objects.requireNonNull;
 
 @JsonExplicit
-public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeController, DailyChargeController, RecordBatteryVoltage, Identifiable {
+public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeController, DailyChargeController, AdvancedAccumulatedChargeController, RecordBatteryVoltage, Identifiable {
 	/*
 	Note, some methods in this class are annotated with @WillBeUsedEventually, which means that they do not appear in the status
 	packet because of lack of testing.
@@ -391,7 +391,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	@ResetMorning
 	@Override
 	float getDailyKWH();
-	@JsonProperty("dailyKWHConsumption")
+	@Override
 	float getDailyKWHConsumption();
 
 	@ResetEvening
@@ -408,10 +408,10 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	@JsonProperty("dischargingAmpHoursOfBatteryCount")
 	int getDischargingAmpHoursOfBatteryCount();
 	@ValidSinceVersion(version = RoverStatusPacket.VERSION_CORRECT_TWO_REGISTER)
-	@JsonProperty("cumulativeKWH")
+	@Override
 	float getCumulativeKWH();
 	@ValidSinceVersion(version = RoverStatusPacket.VERSION_CORRECT_TWO_REGISTER, probablyValidAnyway = true)
-	@JsonProperty("cumulativeKWHConsumption")
+	@Override
 	float getCumulativeKWHConsumption();
 
 	/**

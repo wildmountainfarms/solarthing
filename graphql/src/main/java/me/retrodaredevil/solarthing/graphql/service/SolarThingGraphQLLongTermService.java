@@ -11,6 +11,7 @@ import me.retrodaredevil.solarthing.packets.collection.InstancePacketGroup;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.packets.identification.IdentifierFragment;
 import me.retrodaredevil.solarthing.solar.common.AccumulatedChargeController;
+import me.retrodaredevil.solarthing.solar.common.DailyChargeController;
 import me.retrodaredevil.solarthing.solar.daily.DailyCalc;
 import me.retrodaredevil.solarthing.solar.daily.DailyConfig;
 import me.retrodaredevil.solarthing.solar.daily.DailyPair;
@@ -76,9 +77,9 @@ public class SolarThingGraphQLLongTermService {
 		@GraphQLQuery
 		public @NotNull List<@NotNull DataPoint<Float>> solarKWHIndividual() {
 			List<DataPoint<Float>> r = new ArrayList<>();
-			Map<IdentifierFragment, List<DailyPair<AccumulatedChargeController>>> chargeControllerMap = DailyUtil.getDailyPairs(DailyUtil.mapPackets(AccumulatedChargeController.class, packetGroups), dailyConfig);
+			Map<IdentifierFragment, List<DailyPair<DailyChargeController>>> chargeControllerMap = DailyUtil.getDailyPairs(DailyUtil.mapPackets(DailyChargeController.class, packetGroups), dailyConfig);
 
-			for (Map.Entry<IdentifierFragment, List<DailyPair<AccumulatedChargeController>>> entry : chargeControllerMap.entrySet()) {
+			for (Map.Entry<IdentifierFragment, List<DailyPair<DailyChargeController>>> entry : chargeControllerMap.entrySet()) {
 				float total = DailyCalc.getTotal(entry.getValue(), AccumulatedChargeController::getDailyKWH);
 				r.add(new DataPoint<>(total, entry.getValue().get(0).getStartPacket().getPacket(), sourceId, entry.getKey().getFragmentId()));
 			}

@@ -5,7 +5,7 @@ import me.retrodaredevil.solarthing.packets.support.Support;
 
 import me.retrodaredevil.solarthing.annotations.NotNull;
 
-public interface AccumulatedChargeController extends ChargeController, DailyData {
+public interface AccumulatedChargeController extends ChargeController {
 	@JsonProperty("dailyKWH")
 	float getDailyKWH();
 	@JsonProperty("dailyAH")
