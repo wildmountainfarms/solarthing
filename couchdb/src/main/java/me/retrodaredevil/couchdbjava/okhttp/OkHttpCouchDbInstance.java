@@ -1,37 +1,38 @@
 package me.retrodaredevil.couchdbjava.okhttp;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import me.retrodaredevil.couchdbjava.CouchDbAuth;
 import me.retrodaredevil.couchdbjava.CouchDbDatabase;
 import me.retrodaredevil.couchdbjava.CouchDbInstance;
 import me.retrodaredevil.couchdbjava.exception.CouchDbException;
+import me.retrodaredevil.couchdbjava.okhttp.auth.OkHttpAuthHandler;
 import me.retrodaredevil.couchdbjava.okhttp.util.HeaderRequestInterceptor;
 import me.retrodaredevil.couchdbjava.okhttp.util.OkHttpUtil;
+import me.retrodaredevil.couchdbjava.response.CouchDbGetResponse;
+import me.retrodaredevil.couchdbjava.response.SessionGetResponse;
 import okhttp3.*;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
 public class OkHttpCouchDbInstance implements CouchDbInstance {
-	private static final ObjectMapper MAPPER = new ObjectMapper();
 
 	final OkHttpClient client;
 	final HttpUrl url;
-	final CouchDbAuth couchDbAuth;
+	final OkHttpAuthHandler authHandler;
 
-	public OkHttpCouchDbInstance(OkHttpClient client, HttpUrl url, CouchDbAuth couchDbAuth) {
-		this.client = client.newBuilder()
+	public OkHttpCouchDbInstance(OkHttpClient client, HttpUrl url, OkHttpAuthHandler authHandler) {
+		OkHttpClient.Builder builder = client.newBuilder();
+		CookieJar cookieJar = authHandler.getCookieJar();
+		if (cookieJar != null) {
+			builder.cookieJar(cookieJar);
+		}
+		this.client = builder
 				.addInterceptor(new HeaderRequestInterceptor("Accept", "application/json"))
 				.build();
 		this.url = url;
-		this.couchDbAuth = couchDbAuth;
+		this.authHandler = authHandler;
 	}
-	HttpUrl.Builder createUrlBuilder() {
+	public HttpUrl.Builder createUrlBuilder() {
 		return new HttpUrl.Builder()
 				.scheme(url.scheme())
 				.host(url.host())
@@ -39,7 +40,14 @@ public class OkHttpCouchDbInstance implements CouchDbInstance {
 				.query(url.query())
 				;
 	}
-	Response executeCall(Call call) throws CouchDbException {
+	public OkHttpClient getClient() {
+		return client;
+	}
+
+	/**
+	 * Simple helper method for executing a call to avoid try-cache boilerplate
+	 */
+	public Response executeCall(Call call) throws CouchDbException {
 		try {
 			return call.execute();
 		} catch (IOException e) {
@@ -63,38 +71,38 @@ public class OkHttpCouchDbInstance implements CouchDbInstance {
 	}
 
 	@Override
-	public String authSession(String username, String password) throws CouchDbException {
-		requireNonNull(username);
-		requireNonNull(password);
+	public SessionGetResponse getSessionInfo() throws CouchDbException {
+		preAuthorize();
 		HttpUrl url = createUrlBuilder().addPathSegment("_session").build();
-		Map<String, String> map = new HashMap<>();
-		map.put("name", username);
-		map.put("password", password);
-		String jsonData;
-		try {
-			jsonData = MAPPER.writeValueAsString(map);
-		} catch (JsonProcessingException e) {
-			throw new RuntimeException(e);
-		}
 		Request request = new Request.Builder()
 				.url(url)
-				.post(OkHttpUtil.createJsonRequestBody(jsonData))
+				.get()
 				.build();
 		Call call = client.newCall(request);
 		Response response = executeCall(call);
 		if (response.isSuccessful()) {
-			List<Cookie> cookies = Cookie.parseAll(url, response.headers());
-			String authSession = null;
-			for (Cookie c : cookies) {
-				if ("AuthSession".equals(c.name())) {
-					authSession = c.value();
-					break;
-				}
-			}
-			if (authSession == null) {
-				throw new CouchDbException("No AuthSession cookie was set!");
-			}
-			return authSession;
+			return OkHttpUtil.parseResponseBodyJson(response, SessionGetResponse.class);
 		}
+		throw new CouchDbException("Bad response! code: " + response.code());
+	}
+
+	@Override
+	public CouchDbGetResponse getInfo() throws CouchDbException {
+		preAuthorize();
+		HttpUrl url = createUrlBuilder().build();
+		Request request = new Request.Builder()
+				.url(url)
+				.get()
+				.build();
+		Call call = client.newCall(request);
+		Response response = executeCall(call);
+		if (response.isSuccessful()) {
+			return OkHttpUtil.parseResponseBodyJson(response, CouchDbGetResponse.class);
+		}
+		throw new CouchDbException("Bad response! code: " + response.code());
+	}
+
+	void preAuthorize() throws CouchDbException {
+		authHandler.preAuthorize(this);
 	}
 }

@@ -21,6 +21,7 @@ public class OkHttpCouchDbDatabase implements CouchDbDatabase {
 
 	@Override
 	public boolean exists() throws CouchDbException {
+		instance.preAuthorize();
 		Call call = instance.client.newCall(
 				new Request.Builder()
 						.head()
@@ -31,7 +32,7 @@ public class OkHttpCouchDbDatabase implements CouchDbDatabase {
 		if (response.isSuccessful()) {
 			return true;
 		}
-		if (response.code() == 404) {
+		if (response.code() == CouchDbStatusCode.NOT_FOUND) {
 			return false;
 		}
 		throw new CouchDbException("Unknown response code: " + response.code());
@@ -39,6 +40,7 @@ public class OkHttpCouchDbDatabase implements CouchDbDatabase {
 
 	@Override
 	public boolean createIfNotExists() throws CouchDbException {
+		instance.preAuthorize();
 		Call call = instance.client.newCall(
 				new Request.Builder()
 						.put(FormBody.create(new byte[0]))
