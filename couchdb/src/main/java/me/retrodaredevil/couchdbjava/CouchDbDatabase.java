@@ -1,42 +1,36 @@
 package me.retrodaredevil.couchdbjava;
 
 import me.retrodaredevil.couchdbjava.exception.CouchDbException;
+import me.retrodaredevil.couchdbjava.response.DatabaseInfo;
+import me.retrodaredevil.couchdbjava.response.DocumentResponse;
 
 public interface CouchDbDatabase {
 	boolean exists() throws CouchDbException;
 	boolean createIfNotExists() throws CouchDbException;
+	void create() throws CouchDbException;
 	void delete() throws CouchDbException;
 	String getName();
 
 	DatabaseInfo getDatabaseInfo() throws CouchDbException;
 
-	String createWithoutIdRaw(String json) throws CouchDbException;
-
-	String putRaw(String id, String json) throws CouchDbException;
+	DocumentResponse postNewDocument(String json) throws CouchDbException;
 
 	/**
-	 * @param id
-	 * @param json
-	 * @return
+	 * Puts a document with the given id in the database. This will either create a new document,
+	 * or may update an existing one. If updating an existing one, the json must have a `_rev` field
+	 * with the value of the current revision of the desired document to update.
 	 */
-	default String createRaw(String id, String json) throws CouchDbException{
-		return putRaw(id, json);
-	}
-
-	default String updateRaw(String id, String json) throws CouchDbException {
-		return putRaw(id, json);
-	}
+	DocumentResponse putDocument(String id, String json) throws CouchDbException;
 
 	/**
+	 * Similar to {@link #putDocument(String, String)}, except this is only for updating existing
+	 * documents
+	 *
 	 * Uses the "If-Match" header to update this document
-	 * @param id
-	 * @param revision
-	 * @param json
-	 * @return
 	 */
-	String updateWithRevision(String id, String revision, String json) throws CouchDbException;
+	DocumentResponse updateDocument(String id, String revision, String json) throws CouchDbException;
 
-	void delete(String id, String revision) throws CouchDbException;
+	DocumentResponse deleteDocument(String id, String revision) throws CouchDbException;
 
 	String findRaw(String id) throws CouchDbException;
 	String getCurrentRevision(String id) throws CouchDbException;

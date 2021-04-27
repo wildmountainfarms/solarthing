@@ -2,18 +2,40 @@ package me.retrodaredevil.couchdbjava.okhttp;
 
 import me.retrodaredevil.couchdbjava.CouchDbDatabase;
 import me.retrodaredevil.couchdbjava.CouchDbStatusCode;
-import me.retrodaredevil.couchdbjava.DatabaseInfo;
+import me.retrodaredevil.couchdbjava.exception.CouchDbCodeException;
+import me.retrodaredevil.couchdbjava.okhttp.util.OkHttpUtil;
+import me.retrodaredevil.couchdbjava.response.DatabaseInfo;
 import me.retrodaredevil.couchdbjava.exception.CouchDbException;
 import me.retrodaredevil.couchdbjava.exception.CouchDbUnauthorizedException;
+import me.retrodaredevil.couchdbjava.response.ErrorResponse;
 import okhttp3.*;
+import retrofit2.Retrofit;
+import retrofit2.converter.jackson.JacksonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
+
+import java.io.IOException;
 
 public class OkHttpCouchDbDatabase implements CouchDbDatabase {
+	private static final String DATABASE_REGEX = "^[a-z][a-z0-9_$()+/-]*$";
 	private final String name;
 	private final OkHttpCouchDbInstance instance;
+	private final CouchDbDatabaseService service;
 
 	public OkHttpCouchDbDatabase(String name, OkHttpCouchDbInstance instance) {
+		if (name.startsWith("_") ? !name.substring(1).matches(DATABASE_REGEX) : !name.matches(DATABASE_REGEX)) {
+			throw new IllegalArgumentException("Invalid database name! name: " + name);
+		}
 		this.name = name;
 		this.instance = instance;
+
+		Retrofit retrofit = new Retrofit.Builder()
+				.client(instance.getClient())
+				.baseUrl(instance.createUrlBuilderNoQuery().addPathSegment(name).addEncodedPathSegments("/").build())
+				.addConverterFactory(JacksonConverterFactory.create())
+				.addConverterFactory(ScalarsConverterFactory.create())
+				.build()
+				;
+		service = retrofit.create(CouchDbDatabaseService.class);
 	}
 	private HttpUrl.Builder createUrlBuilder() {
 		return instance.createUrlBuilder().addPathSegment(name);
@@ -22,59 +44,50 @@ public class OkHttpCouchDbDatabase implements CouchDbDatabase {
 	@Override
 	public boolean exists() throws CouchDbException {
 		instance.preAuthorize();
-		Call call = instance.client.newCall(
-				new Request.Builder()
-						.head()
-						.url(createUrlBuilder().build())
-						.build()
-		);
-		Response response = instance.executeCall(call);
+		retrofit2.Response<Void> response = instance.executeCall(service.checkExists());
 		if (response.isSuccessful()) {
 			return true;
 		}
 		if (response.code() == CouchDbStatusCode.NOT_FOUND) {
 			return false;
 		}
-		throw new CouchDbException("Unknown response code: " + response.code());
+		throw OkHttpUtil.createExceptionFromResponse(response.raw());
 	}
 
 	@Override
 	public boolean createIfNotExists() throws CouchDbException {
-		instance.preAuthorize();
-		Call call = instance.client.newCall(
-				new Request.Builder()
-						.put(FormBody.create(new byte[0]))
-						.url(createUrlBuilder().build())
-						.build()
-		);
-		Response response = instance.executeCall(call);
-		if (response.isSuccessful()) {
+		try {
+			create();
 			return true;
-		}
-		switch (response.code()) {
-			case CouchDbStatusCode.PRECONDITION_FAILED:
+		} catch (CouchDbCodeException exception) {
+			if (exception.getCode() == CouchDbStatusCode.PRECONDITION_FAILED) {
 				return false;
-			case CouchDbStatusCode.UNAUTHORIZED:
-				throw new CouchDbUnauthorizedException("You are unauthorized!");
-			case CouchDbStatusCode.BAD_REQUEST:
-				throw new CouchDbException("Bad request! (Bad database name?) database name: " + name);
+			}
+			throw exception;
 		}
-		throw new CouchDbException("Unexpected response code while attempting to create database! code: " + response.code());
 	}
 
 	@Override
-	public void delete() {
+	public void create() throws CouchDbException {
+		instance.preAuthorize();
+		instance.executeAndHandle(service.createDatabase());
+	}
 
+	@Override
+	public void delete() throws CouchDbException {
+		instance.preAuthorize();
+		instance.executeAndHandle(service.deleteDatabase());
 	}
 
 	@Override
 	public String getName() {
-		return null;
+		return name;
 	}
 
 	@Override
-	public DatabaseInfo getDatabaseInfo() {
-		return null;
+	public DatabaseInfo getDatabaseInfo() throws CouchDbException {
+		instance.preAuthorize();
+		return instance.executeAndHandle(service.getInfo());
 	}
 
 	@Override

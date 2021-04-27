@@ -37,5 +37,7 @@ public class CouchDbTestMain {
 
 		CouchDbGetResponse statusResponse = instance.getInfo();
 		System.out.println(MAPPER.writeValueAsString(statusResponse));
+
+		System.out.println(MAPPER.writeValueAsString(instance.getAllDatabaseNames()));
 	}
 }

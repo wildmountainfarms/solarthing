@@ -1,4 +1,4 @@
-package me.retrodaredevil.couchdbjava;
+package me.retrodaredevil.couchdbjava.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;

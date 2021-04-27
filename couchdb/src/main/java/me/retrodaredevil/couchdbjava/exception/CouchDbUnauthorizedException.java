@@ -1,22 +1,27 @@
 package me.retrodaredevil.couchdbjava.exception;
 
-public class CouchDbUnauthorizedException extends CouchDbException {
-	public CouchDbUnauthorizedException() {
+import me.retrodaredevil.couchdbjava.CouchDbStatusCode;
+import me.retrodaredevil.couchdbjava.response.ErrorResponse;
+import org.jetbrains.annotations.Nullable;
+
+public class CouchDbUnauthorizedException extends CouchDbCodeException {
+	public CouchDbUnauthorizedException(@Nullable ErrorResponse errorResponse) {
+		super(CouchDbStatusCode.UNAUTHORIZED, errorResponse);
 	}
 
-	public CouchDbUnauthorizedException(String message) {
-		super(message);
+	public CouchDbUnauthorizedException(String message, @Nullable ErrorResponse errorResponse) {
+		super(message, CouchDbStatusCode.UNAUTHORIZED, errorResponse);
 	}
 
-	public CouchDbUnauthorizedException(String message, Throwable cause) {
-		super(message, cause);
+	public CouchDbUnauthorizedException(String message, Throwable cause, @Nullable ErrorResponse errorResponse) {
+		super(message, cause, CouchDbStatusCode.UNAUTHORIZED, errorResponse);
 	}
 
-	public CouchDbUnauthorizedException(Throwable cause) {
-		super(cause);
+	public CouchDbUnauthorizedException(Throwable cause, @Nullable ErrorResponse errorResponse) {
+		super(cause, CouchDbStatusCode.UNAUTHORIZED, errorResponse);
 	}
 
-	public CouchDbUnauthorizedException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-		super(message, cause, enableSuppression, writableStackTrace);
+	public CouchDbUnauthorizedException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace, @Nullable ErrorResponse errorResponse) {
+		super(message, cause, enableSuppression, writableStackTrace, CouchDbStatusCode.UNAUTHORIZED, errorResponse);
 	}
 }
