@@ -12,16 +12,16 @@ import java.util.List;
 import java.util.Map;
 
 public interface CouchDbService {
-	@GET("/")
+	@GET("./")
 	Call<CouchDbGetResponse> getInfo();
 
-	@GET("/_all_dbs")
+	@GET("_all_dbs/")
 	Call<List<String>> getAllDatabaseNames();
 
-	@POST("/_dbs_info")
+	@POST("_dbs_info/")
 	Call<List<DatabaseInfo>> getDatabaseInfos(@Body Map<String, List<String>> keysObjectMap);
 
-	@GET("/_session")
+	@GET("_session/")
 	Call<SessionGetResponse> getSessionInfo();
 
 }

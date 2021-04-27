@@ -3,7 +3,9 @@ package me.retrodaredevil.couchdbjava.okhttp.util;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import me.retrodaredevil.couchdbjava.CouchDbDatabase;
 import me.retrodaredevil.couchdbjava.CouchDbStatusCode;
+import me.retrodaredevil.couchdbjava.exception.CouchDbCodeException;
 import me.retrodaredevil.couchdbjava.exception.CouchDbException;
 import me.retrodaredevil.couchdbjava.exception.CouchDbUnauthorizedException;
 import me.retrodaredevil.couchdbjava.response.ErrorResponse;
@@ -11,6 +13,7 @@ import me.retrodaredevil.couchdbjava.response.SessionGetResponse;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -27,18 +30,25 @@ public final class OkHttpUtil {
 		return RequestBody.create(json, MediaType.parse("application/json; charset=utf-8"));
 	}
 
-	public static <T> T parseResponseBodyJson(Response response, Class<T> clazz) throws CouchDbException {
+	public static <T> T parseResponseBodyJson(ResponseBody body, Class<T> clazz) throws CouchDbException {
 		try {
-			return MAPPER.readValue(requireNonNull(response.body()).byteStream(), clazz);
+			return MAPPER.readValue(body.byteStream(), clazz);
 		} catch (JsonMappingException | JsonParseException e) {
 			throw new CouchDbException("Received bad json data!", e);
 		} catch (IOException e) {
 			throw new CouchDbException("Problem reading json data!", e);
 		}
 	}
+	public static @Nullable ErrorResponse parseErrorResponse(retrofit2.Response<?> response) {
+		try {
+			return parseResponseBodyJson(requireNonNull(response.errorBody()), ErrorResponse.class);
+		} catch (CouchDbException e) {
+		}
+		return null;
+	}
 	public static @Nullable ErrorResponse parseErrorResponse(Response response) {
 		try {
-			return parseResponseBodyJson(response, ErrorResponse.class);
+			return parseResponseBodyJson(requireNonNull(response.body()), ErrorResponse.class);
 		} catch (CouchDbException e) {
 		}
 		return null;
@@ -48,13 +58,23 @@ public final class OkHttpUtil {
 			throw new IllegalArgumentException("This response is successful!");
 		}
 		ErrorResponse error = parseErrorResponse(response);
+		return createException(error, response.code());
+	}
+	public static CouchDbException createExceptionFromResponse(retrofit2.Response<?> response) {
+		if (response.isSuccessful()) {
+			throw new IllegalArgumentException("This response is successful!");
+		}
+		ErrorResponse error = parseErrorResponse(response);
 
-		switch(response.code()) {
+		return createException(error, response.code());
+	}
+	private static CouchDbException createException(ErrorResponse error, int code) {
+		switch(code) {
 			case CouchDbStatusCode.UNAUTHORIZED:
 				return new CouchDbUnauthorizedException("You are unauthorized!", error);
 			case CouchDbStatusCode.NOT_FOUND:
 				return new CouchDbException("Got 'not found'!");
 		}
-		return new CouchDbException("Unknown status code! code: " + response.code());
+		return new CouchDbCodeException("Unknown status code! code: " + code, code, error);
 	}
 }

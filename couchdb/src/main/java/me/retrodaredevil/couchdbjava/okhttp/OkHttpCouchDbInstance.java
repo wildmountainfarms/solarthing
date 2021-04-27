@@ -9,6 +9,7 @@ import me.retrodaredevil.couchdbjava.response.CouchDbGetResponse;
 import me.retrodaredevil.couchdbjava.response.DatabaseInfo;
 import me.retrodaredevil.couchdbjava.response.SessionGetResponse;
 import okhttp3.*;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
@@ -92,7 +93,7 @@ public class OkHttpCouchDbInstance implements CouchDbInstance {
 			return response.body();
 		}
 
-		throw OkHttpUtil.createExceptionFromResponse(response.raw());
+		throw OkHttpUtil.createExceptionFromResponse(response);
 	}
 	public <T> retrofit2.Response<T> executeCall(retrofit2.Call<T> call) throws CouchDbException {
 		try {

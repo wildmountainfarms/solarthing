@@ -11,19 +11,19 @@ import java.util.Map;
 
 public interface CouchDbDatabaseService {
 
-	@HEAD("/")
+	@HEAD("./")
 	Call<Void> checkExists();
 
 	/**
 	 * https://docs.couchdb.org/en/stable/api/database/common.html#put--db
 	 */
-	@PUT("/")
+	@PUT("./")
 	Call<SimpleStatus> createDatabase(@QueryMap Map<String, Object> queryMap);
 
-	@GET("/")
+	@GET("./")
 	Call<DatabaseInfo> getInfo();
 
-	@DELETE("/")
+	@DELETE("./")
 	Call<SimpleStatus> deleteDatabase();
 
 	/**
@@ -32,23 +32,23 @@ public interface CouchDbDatabaseService {
 	 *
 	 * This does not support updating an existing document
 	 */
-	@POST("/")
+	@POST("./")
 	Call<DocumentResponse> postDocument(@Body RequestBody jsonRequestBody);
 
 	/**
 	 * Puts the document into the database with the given id.
 	 * @param revision The revision of the existing document or null if this is a new document. This could also be null if you put the revision in the body.
 	 */
-	@PUT("/{docid}")
+	@PUT("./{docid}")
 	Call<DocumentResponse> putDocument(@Path("docid") String docid, @Header("Match-If") String revision, @Body RequestBody jsonRequestBody);
 
-	@DELETE("/{docid}")
+	@DELETE("./{docid}")
 	Call<DocumentResponse> deleteDocument(@Path("docid") String docid, @Header("Match-If") String revision);
 
 
-	@HTTP(method = "COPY", path = "/{docid}")
+	@HTTP(method = "COPY", path = "./{docid}")
 	Call<DocumentResponse> copyToDocument(@Path("docid") String docid, @Header("Destination") String newDocumentId);
 
-	@HTTP(method = "COPY", path = "/{docid}")
+	@HTTP(method = "COPY", path = "./{docid}")
 	Call<DocumentResponse> copyFromRevisionToDocument(@Path("docid") String docid, @Query("rev") String revision, @Header("Destination") String newDocumentId);
 }

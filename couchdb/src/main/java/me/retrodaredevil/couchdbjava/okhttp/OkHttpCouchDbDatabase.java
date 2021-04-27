@@ -37,11 +37,12 @@ public class OkHttpCouchDbDatabase implements CouchDbDatabase {
 
 		Retrofit retrofit = new Retrofit.Builder()
 				.client(instance.getClient())
-				.baseUrl(instance.createUrlBuilderNoQuery().addPathSegment(name).addEncodedPathSegments("/").build())
+				.baseUrl(instance.createUrlBuilderNoQuery().addPathSegment(name).addEncodedPathSegments("").build())
 				.addConverterFactory(JacksonConverterFactory.create())
 				.addConverterFactory(ScalarsConverterFactory.create())
 				.build()
 				;
+		System.out.println(retrofit.baseUrl());
 		service = retrofit.create(CouchDbDatabaseService.class);
 	}
 	private HttpUrl.Builder createUrlBuilder() {
@@ -63,7 +64,7 @@ public class OkHttpCouchDbDatabase implements CouchDbDatabase {
 		if (response.code() == CouchDbStatusCode.NOT_FOUND) {
 			return false;
 		}
-		throw OkHttpUtil.createExceptionFromResponse(response.raw());
+		throw OkHttpUtil.createExceptionFromResponse(response);
 	}
 
 	@Override
