@@ -1,15 +1,20 @@
 package me.retrodaredevil.couchdbjava;
 
 import me.retrodaredevil.couchdbjava.exception.CouchDbException;
+import me.retrodaredevil.couchdbjava.option.DatabaseCreationOption;
 import me.retrodaredevil.couchdbjava.response.DatabaseInfo;
+import me.retrodaredevil.couchdbjava.response.DocumentData;
 import me.retrodaredevil.couchdbjava.response.DocumentResponse;
 
 public interface CouchDbDatabase {
-	boolean exists() throws CouchDbException;
-	boolean createIfNotExists() throws CouchDbException;
-	void create() throws CouchDbException;
-	void delete() throws CouchDbException;
 	String getName();
+
+	boolean exists() throws CouchDbException;
+	void create(DatabaseCreationOption databaseCreationOption) throws CouchDbException;
+	default void create() throws CouchDbException { create(DatabaseCreationOption.createDefault()); }
+	boolean createIfNotExists(DatabaseCreationOption databaseCreationOption) throws CouchDbException;
+	default boolean createIfNotExists() throws CouchDbException { return createIfNotExists(DatabaseCreationOption.createDefault()); }
+	void deleteDatabase() throws CouchDbException;
 
 	DatabaseInfo getDatabaseInfo() throws CouchDbException;
 
@@ -32,11 +37,11 @@ public interface CouchDbDatabase {
 
 	DocumentResponse deleteDocument(String id, String revision) throws CouchDbException;
 
-	String findRaw(String id) throws CouchDbException;
+	DocumentData getDocument(String id) throws CouchDbException;
 	String getCurrentRevision(String id) throws CouchDbException;
 
-	String copy(String sourceId, String targetId, String targetRevision) throws CouchDbException;
-	default String copy(String sourceId, String targetId) throws CouchDbException {
-		return copy(sourceId, targetId, null);
-	}
+	DocumentResponse copyToNewDocument(String id, String newDocumentId) throws CouchDbException;
+	DocumentResponse copyFromRevisionToNewDocument(String id, String revision, String newDocumentId) throws CouchDbException;
+	DocumentResponse copyToExistingDocument(String id, String targetDocumentId, String targetDocumentRevision) throws CouchDbException;
+	DocumentResponse copyFromRevisionToExistingDocument(String id, String revision, String targetDocumentId, String targetDocumentRevision) throws CouchDbException;
 }

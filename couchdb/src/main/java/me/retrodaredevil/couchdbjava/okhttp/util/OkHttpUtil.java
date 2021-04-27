@@ -23,6 +23,7 @@ public final class OkHttpUtil {
 	private static final ObjectMapper MAPPER = new ObjectMapper();
 
 	public static RequestBody createJsonRequestBody(String json) {
+		requireNonNull(json);
 		return RequestBody.create(json, MediaType.parse("application/json; charset=utf-8"));
 	}
 
