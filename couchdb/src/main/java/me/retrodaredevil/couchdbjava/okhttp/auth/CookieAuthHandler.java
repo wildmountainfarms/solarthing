@@ -55,7 +55,6 @@ public class CookieAuthHandler implements OkHttpAuthHandler {
 		return cookie.expiresAt();
 	}
 	public SessionPostResponse authSession(OkHttpCouchDbInstance instance) throws CouchDbException {
-		System.out.println("authing");
 		requireNonNull(username);
 		requireNonNull(password);
 		HttpUrl url = instance.createUrlBuilder().addPathSegment("_session").build();

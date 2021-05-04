@@ -51,4 +51,10 @@ public interface CouchDbDatabaseService {
 
 	@HTTP(method = "COPY", path = "./{docid}")
 	Call<DocumentResponse> copyFromRevisionToDocument(@Path("docid") String docid, @Query("rev") String revision, @Header("Destination") String newDocumentId);
+
+
+
+
+	@GET("./_design/{ddoc}/_view/{view}")
+	Call<Object> queryView(@Path("ddoc") String designDoc, @Path("view") String viewName, @QueryMap Map<String, String> queryMap);
 }
