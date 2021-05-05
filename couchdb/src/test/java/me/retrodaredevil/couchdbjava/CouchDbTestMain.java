@@ -59,12 +59,5 @@ public class CouchDbTestMain {
 		System.out.println(database.getCurrentRevision(documentResponse.getId()));
 		System.out.println(database.getDocument(documentResponse.getId()).getJsonData().getJson());
 
-		System.out.println(database.queryView(
-				"packets",
-				"millis",
-				new ViewQueryBuilder()
-						.startKey(System.currentTimeMillis() - 5 * 60 * 1000)
-						.build()
-		));
 	}
 }

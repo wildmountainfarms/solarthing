@@ -2,7 +2,6 @@ package me.retrodaredevil.couchdbjava;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRawValue;
 import me.retrodaredevil.couchdbjava.json.JsonData;
 
 import java.util.List;
@@ -13,7 +12,6 @@ public class ViewQuery {
 	private final Boolean conflicts;
 	@JsonProperty("descending")
 	private final Boolean descending;
-	@JsonRawValue
 	@JsonProperty("endkey")
 	private final JsonData endKeyJson;
 	@JsonProperty("endkey_docid")
@@ -30,7 +28,6 @@ public class ViewQuery {
 	private final Boolean includeEncodingInfo;
 	@JsonProperty("inclusive_end")
 	private final Boolean inclusiveEnd;
-	@JsonRawValue
 	@JsonProperty("key")
 	private final JsonData keyJson;
 	@JsonProperty("keys")
@@ -46,7 +43,6 @@ public class ViewQuery {
 	@JsonProperty("stable")
 	private final Boolean stable;
 	// "stale" is deprecated
-	@JsonRawValue
 	@JsonProperty("startkey")
 	private final JsonData startKeyJson;
 	@JsonProperty("startkey_docid")

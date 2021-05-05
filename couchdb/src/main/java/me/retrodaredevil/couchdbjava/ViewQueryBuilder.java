@@ -51,6 +51,7 @@ public class ViewQueryBuilder {
 		return this;
 	}
 	public ViewQueryBuilder descending(Boolean descending) { this.descending = descending; return this; }
+	public ViewQueryBuilder descending() { return descending(true); }
 	// endKey defined below
 	public ViewQueryBuilder endKeyDocId(String endKeyDocId) { this.endKeyDocId = endKeyDocId; return this; }
 	public ViewQueryBuilder group(Boolean group) { this.group = group; return this; }
@@ -78,7 +79,7 @@ public class ViewQueryBuilder {
 	}
 	public ViewQueryBuilder inclusiveEnd(Boolean inclusiveEnd) { this.inclusiveEnd = inclusiveEnd; return this; }
 	// key defined below
-	// TODO keys
+	// keys defined below
 	public ViewQueryBuilder limit(Integer limit) { this.limit = limit; return this; }
 	public ViewQueryBuilder reduce(Boolean reduce) { this.reduce = reduce; return this; }
 	public ViewQueryBuilder skip(Integer skip) { this.skip = skip; return this; }
