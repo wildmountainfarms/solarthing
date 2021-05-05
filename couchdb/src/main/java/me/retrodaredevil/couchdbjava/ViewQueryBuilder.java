@@ -1,67 +1,47 @@
 package me.retrodaredevil.couchdbjava;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRawValue;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import me.retrodaredevil.couchdbjava.json.JsonData;
+import me.retrodaredevil.couchdbjava.json.StringJsonData;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
+import static java.util.Objects.requireNonNull;
+
 public class ViewQueryBuilder {
 	private static final ObjectMapper MAPPER = new ObjectMapper();
 
-	@JsonProperty("conflicts")
 	private Boolean conflicts = null;
-	@JsonProperty("descending")
 	private Boolean descending = null;
-	@JsonRawValue
-	@JsonProperty("endkey")
-	private String endKey = null;
-	@JsonProperty("endkey_docid")
+	private JsonData endKeyJson = null;
 	private String endKeyDocId = null;
-	@JsonProperty("group")
 	private Boolean group = null;
-	@JsonProperty("group_level")
 	private Integer groupLevel = null;
-	@JsonProperty("include_docs")
 	private Boolean includeDocs = null;
-	@JsonProperty("attachments")
 	private Boolean attachments = null;
-	@JsonProperty("att_encoding_info")
 	private Boolean includeEncodingInfo = null;
-	@JsonProperty("inclusive_end")
 	private Boolean inclusiveEnd = null;
-	@JsonRawValue
-	@JsonProperty("key")
-	private String key = null;
-//	@JsonProperty("keys")
-//	private List<String> keys;
-	@JsonProperty("limit")
+	private JsonData keyJson = null;
+	private List<JsonData> keysJsonList = null;
 	private Integer limit = null;
-	@JsonProperty("reduce")
 	private Boolean reduce = null;
-	@JsonProperty("skip")
 	private Integer skip = null;
-	@JsonProperty("sorted")
 	private Boolean sorted = null;
-	@JsonProperty("stable")
 	private Boolean stable = null;
-	@JsonProperty("stale")
-	private Boolean stale = null;
-	@JsonRawValue
-	@JsonProperty("startkey")
-	private String startKey;
-	@JsonProperty("startkey_docid")
+	// "stale" is deprecated
+	private JsonData startKeyJson;
 	private String startKeyDocId;
-	@JsonProperty("update")
 	private Update update = null;
-	@JsonProperty("update_seq")
 	private Boolean updateSequence = null;
+
+	public ViewQuery build() {
+		return new ViewQuery(conflicts, descending, endKeyJson, endKeyDocId, group, groupLevel, includeDocs, attachments, includeEncodingInfo,
+				inclusiveEnd, keyJson, keysJsonList, limit, reduce, skip, sorted, stable, startKeyJson, startKeyDocId, update, updateSequence);
+	}
 
 	public ViewQueryBuilder conflicts(Boolean conflicts) {
 		this.conflicts = conflicts;
@@ -104,53 +84,152 @@ public class ViewQueryBuilder {
 	public ViewQueryBuilder skip(Integer skip) { this.skip = skip; return this; }
 	public ViewQueryBuilder sorted(Boolean sorted) { this.sorted = sorted; return this; }
 	public ViewQueryBuilder stable(Boolean stable) { this.stable = stable; return this; }
-	public ViewQueryBuilder stale(Boolean stale) { this.stale = stale; return this; }
+	// startKey defined below
 	public ViewQueryBuilder startKeyDocId(String startKeyDocId) { this.startKeyDocId = startKeyDocId; return this; }
 	public ViewQueryBuilder update(Update update) { this.update = update; return this; }
 	public ViewQueryBuilder updateSequence(Boolean updateSequence) { this.updateSequence = updateSequence; return this; }
 
-	public ViewQueryBuilder endKeyRaw(String endKey) {
-		this.endKey = endKey;
+	// region endKey
+	public ViewQueryBuilder endKey(long endKey) {
+		return endKeyJson(numberToJson(endKey));
+	}
+	public ViewQueryBuilder endKey(int endKey) {
+		return endKeyJson(numberToJson(endKey));
+	}
+	public ViewQueryBuilder endKey(float endKey) {
+		return endKeyJson(numberToJson(endKey));
+	}
+	public ViewQueryBuilder endKey(double endKey) {
+		return endKeyJson(numberToJson(endKey));
+	}
+	public ViewQueryBuilder endKey(boolean endKey) {
+		return endKeyJson(booleanToJson(endKey));
+	}
+	public ViewQueryBuilder endKey(String endKey) {
+		return endKeyJson(stringToJson(endKey));
+	}
+	public ViewQueryBuilder endKeyJson(JsonData endKeyJson) {
+		this.endKeyJson = endKeyJson;
 		return this;
 	}
+	// endregion
+	// region key
+	public ViewQueryBuilder key(long key) {
+		return keyJson(numberToJson(key));
+	}
+	public ViewQueryBuilder key(int key) {
+		return keyJson(numberToJson(key));
+	}
+	public ViewQueryBuilder key(float key) {
+		return keyJson(numberToJson(key));
+	}
+	public ViewQueryBuilder key(double key) {
+		return keyJson(numberToJson(key));
+	}
+	public ViewQueryBuilder key(boolean key) {
+		return keyJson(booleanToJson(key));
+	}
+	public ViewQueryBuilder key(String key) {
+		return keyJson(stringToJson(key));
+	}
+	public ViewQueryBuilder keyJson(JsonData keyJson) {
+		this.keyJson = keyJson;
+		return this;
+	}
+	// endregion
+	// region keys
+	// Note: This reason is different from the other similar regions since this deals with a list/arrays
+	public ViewQueryBuilder keys(long... keys) {
+		List<JsonData> keysJsonList = new ArrayList<>();
+		for (long key : keys) {
+			keysJsonList.add(numberToJson(key));
+		}
+		this.keysJsonList = keysJsonList;
+		return this;
+	}
+	public ViewQueryBuilder keys(int... keys) {
+		List<JsonData> keysJsonList = new ArrayList<>();
+		for (int key : keys) {
+			keysJsonList.add(numberToJson(key));
+		}
+		this.keysJsonList = keysJsonList;
+		return this;
+	}
+	public ViewQueryBuilder keys(double... keys) {
+		List<JsonData> keysJsonList = new ArrayList<>();
+		for (double key : keys) {
+			keysJsonList.add(numberToJson(key));
+		}
+		this.keysJsonList = keysJsonList;
+		return this;
+	}
+	public ViewQueryBuilder keys(float... keys) {
+		List<JsonData> keysJsonList = new ArrayList<>();
+		for (float key : keys) {
+			keysJsonList.add(numberToJson(key));
+		}
+		this.keysJsonList = keysJsonList;
+		return this;
+	}
+	public ViewQueryBuilder keys(boolean... keys) {
+		List<JsonData> keysJsonList = new ArrayList<>();
+		for (boolean key : keys) {
+			keysJsonList.add(booleanToJson(key));
+		}
+		this.keysJsonList = keysJsonList;
+		return this;
+	}
+	public ViewQueryBuilder keysJson(JsonData... keysJsonList) { return keysJson(Arrays.asList(keysJsonList)); }
+	public ViewQueryBuilder keysJson(List<JsonData> keysJsonList) { this.keysJsonList = keysJsonList; return this; }
+	// endregion
+	// region startKey
 	public ViewQueryBuilder startKey(long startKey) {
-		return startKeyRaw("" + startKey);
+		return startKeyJson(numberToJson(startKey));
+	}
+	public ViewQueryBuilder startKey(int startKey) {
+		return startKeyJson(numberToJson(startKey));
+	}
+	public ViewQueryBuilder startKey(float startKey) {
+		return startKeyJson(numberToJson(startKey));
+	}
+	public ViewQueryBuilder startKey(double startKey) {
+		return startKeyJson(numberToJson(startKey));
+	}
+	public ViewQueryBuilder startKey(boolean startKey) {
+		return startKeyJson(booleanToJson(startKey));
 	}
 	public ViewQueryBuilder startKey(String startKey) {
+		return startKeyJson(stringToJson(startKey));
+	}
+	public ViewQueryBuilder startKeyJson(JsonData startKeyJson) {
+		this.startKeyJson = startKeyJson;
+		return this;
+	}
+	// endregion
+
+	private static JsonData stringToJson(String string) {
 		try {
-			return startKeyRaw(MAPPER.writeValueAsString(startKey));
+			return new StringJsonData(MAPPER.writeValueAsString(string));
 		} catch (JsonProcessingException e) {
 			throw new RuntimeException(e);
 		}
 	}
-	public ViewQueryBuilder startKeyRaw(String startKeyRaw) {
-		this.startKey = startKeyRaw;
-		return this;
+	private static JsonData numberToJson(Number number) {
+		requireNonNull(number);
+		try {
+			return new StringJsonData(MAPPER.writeValueAsString(number));
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException(e);
+		}
 	}
-
-
-	private static void add(Map<String, String> map, String key, Object object) {
-		if (object != null) {
-			map.put(key, object.toString());
+	private static JsonData booleanToJson(boolean b) {
+		try {
+			return new StringJsonData(MAPPER.writeValueAsString(b));
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException(e);
 		}
 	}
 
-	public Map<String, String> buildMap() {
-		Map<String, String> r = new HashMap<>();
-		add(r, "conflicts", conflicts);
-		add(r, "descending", descending);
-		add(r, "endkey", endKey);
-		add(r, "endkey_docid", endKeyDocId);
-		add(r, "group", group);
-		add(r, "group_level", groupLevel);
-		add(r, "include_docs", includeDocs);
-		add(r, "attachments", attachments);
-		add(r, "att_encoding_info", includeEncodingInfo);
-
-
-
-		return Collections.unmodifiableMap(r);
-	}
 	public enum Update {
 		TRUE("true"), FALSE("false"), LAZY("lazy");
 		@JsonValue

@@ -2,15 +2,14 @@ package me.retrodaredevil.couchdbjava.okhttp;
 
 import me.retrodaredevil.couchdbjava.CouchDbDatabase;
 import me.retrodaredevil.couchdbjava.CouchDbStatusCode;
+import me.retrodaredevil.couchdbjava.ViewQuery;
 import me.retrodaredevil.couchdbjava.exception.CouchDbCodeException;
+import me.retrodaredevil.couchdbjava.json.StringJsonData;
 import me.retrodaredevil.couchdbjava.okhttp.util.OkHttpUtil;
 import me.retrodaredevil.couchdbjava.option.DatabaseCreationOption;
-import me.retrodaredevil.couchdbjava.response.DatabaseInfo;
+import me.retrodaredevil.couchdbjava.response.*;
 import me.retrodaredevil.couchdbjava.exception.CouchDbException;
 import me.retrodaredevil.couchdbjava.exception.CouchDbUnauthorizedException;
-import me.retrodaredevil.couchdbjava.response.DocumentData;
-import me.retrodaredevil.couchdbjava.response.DocumentResponse;
-import me.retrodaredevil.couchdbjava.response.ErrorResponse;
 import okhttp3.*;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
@@ -149,7 +148,7 @@ public class OkHttpCouchDbDatabase implements CouchDbDatabase {
 			} catch (IOException e) {
 				throw new CouchDbException("Couldn't read response!", e);
 			}
-			return new DocumentData(getRevision(response), json);
+			return new DocumentData(getRevision(response), new StringJsonData(json));
 		}
 		throw OkHttpUtil.createExceptionFromResponse(response);
 	}
@@ -202,4 +201,12 @@ public class OkHttpCouchDbDatabase implements CouchDbDatabase {
 		instance.preAuthorize();
 		return instance.executeAndHandle(service.copyFromRevisionToDocument(id, revision, targetDocumentId + "?rev=" + targetDocumentRevision));
 	}
+
+	@Override
+	public ViewResponse queryView(String designDoc, String viewName, ViewQuery viewQuery) throws CouchDbException {
+		instance.preAuthorize();
+		return instance.executeAndHandle(service.queryView(designDoc, viewName, viewQuery));
+	}
+
+
 }

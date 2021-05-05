@@ -73,7 +73,7 @@ public final class OkHttpUtil {
 			case CouchDbStatusCode.UNAUTHORIZED:
 				return new CouchDbUnauthorizedException("You are unauthorized!", error);
 			case CouchDbStatusCode.NOT_FOUND:
-				return new CouchDbException("Got 'not found'!");
+				return new CouchDbCodeException("Got 'not found'!", code, error);
 		}
 		return new CouchDbCodeException("Unknown status code! code: " + code, code, error);
 	}

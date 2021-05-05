@@ -13,6 +13,7 @@ import me.retrodaredevil.couchdbjava.response.SessionGetResponse;
 import me.retrodaredevil.couchdbjava.response.SessionPostResponse;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 
 public class CouchDbTestMain {
 	private static final ObjectMapper MAPPER = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
@@ -31,6 +32,7 @@ public class CouchDbTestMain {
 
 		OkHttpCouchDbInstance instance = new OkHttpCouchDbInstance(
 				new OkHttpClient.Builder()
+						.addInterceptor(new HttpLoggingInterceptor(System.out::println).setLevel(HttpLoggingInterceptor.Level.BODY))
 						.build(),
 				new HttpUrl.Builder()
 						.scheme("http")
@@ -55,6 +57,14 @@ public class CouchDbTestMain {
 		DocumentResponse documentResponse = database.postNewDocument("{\"hi\": 3}");
 		System.out.println(MAPPER.writeValueAsString(documentResponse));
 		System.out.println(database.getCurrentRevision(documentResponse.getId()));
-		System.out.println(database.getDocument(documentResponse.getId()).getJson());
+		System.out.println(database.getDocument(documentResponse.getId()).getJsonData().getJson());
+
+		System.out.println(database.queryView(
+				"packets",
+				"millis",
+				new ViewQueryBuilder()
+						.startKey(System.currentTimeMillis() - 5 * 60 * 1000)
+						.build()
+		));
 	}
 }

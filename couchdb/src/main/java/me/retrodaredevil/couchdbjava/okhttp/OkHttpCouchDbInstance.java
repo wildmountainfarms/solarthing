@@ -42,8 +42,6 @@ public class OkHttpCouchDbInstance implements CouchDbInstance {
 			builder.cookieJar(cookieJar);
 		}
 		this.client = builder
-//				.addInterceptor(new HeaderRequestInterceptor("Accept", "application/json"))
-//				.addInterceptor(new HttpLoggingInterceptor(System.out::println).setLevel(HttpLoggingInterceptor.Level.BODY))
 				.build();
 
 		Retrofit retrofit = new Retrofit.Builder()

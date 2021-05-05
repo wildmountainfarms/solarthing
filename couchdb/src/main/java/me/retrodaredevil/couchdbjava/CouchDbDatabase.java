@@ -5,6 +5,7 @@ import me.retrodaredevil.couchdbjava.option.DatabaseCreationOption;
 import me.retrodaredevil.couchdbjava.response.DatabaseInfo;
 import me.retrodaredevil.couchdbjava.response.DocumentData;
 import me.retrodaredevil.couchdbjava.response.DocumentResponse;
+import me.retrodaredevil.couchdbjava.response.ViewResponse;
 
 public interface CouchDbDatabase {
 	String getName();
@@ -44,4 +45,8 @@ public interface CouchDbDatabase {
 	DocumentResponse copyFromRevisionToNewDocument(String id, String revision, String newDocumentId) throws CouchDbException;
 	DocumentResponse copyToExistingDocument(String id, String targetDocumentId, String targetDocumentRevision) throws CouchDbException;
 	DocumentResponse copyFromRevisionToExistingDocument(String id, String revision, String targetDocumentId, String targetDocumentRevision) throws CouchDbException;
+
+
+	ViewResponse queryView(String designDoc, String viewName, ViewQuery viewQuery) throws CouchDbException;
+
 }

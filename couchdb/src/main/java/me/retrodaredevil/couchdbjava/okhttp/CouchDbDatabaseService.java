@@ -1,8 +1,10 @@
 package me.retrodaredevil.couchdbjava.okhttp;
 
+import me.retrodaredevil.couchdbjava.ViewQuery;
 import me.retrodaredevil.couchdbjava.response.DatabaseInfo;
 import me.retrodaredevil.couchdbjava.response.DocumentResponse;
 import me.retrodaredevil.couchdbjava.response.SimpleStatus;
+import me.retrodaredevil.couchdbjava.response.ViewResponse;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.*;
@@ -55,6 +57,6 @@ public interface CouchDbDatabaseService {
 
 
 
-	@GET("./_design/{ddoc}/_view/{view}")
-	Call<Object> queryView(@Path("ddoc") String designDoc, @Path("view") String viewName, @QueryMap Map<String, String> queryMap);
+	@POST("_design/{ddoc}/_view/{view}")
+	Call<ViewResponse> queryView(@Path("ddoc") String designDoc, @Path("view") String viewName, @Body ViewQuery viewQuery);
 }

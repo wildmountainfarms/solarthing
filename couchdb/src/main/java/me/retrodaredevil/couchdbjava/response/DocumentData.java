@@ -1,5 +1,7 @@
 package me.retrodaredevil.couchdbjava.response;
 
+import me.retrodaredevil.couchdbjava.json.JsonData;
+
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -7,9 +9,9 @@ import static java.util.Objects.requireNonNull;
  */
 public class DocumentData {
 	private final String revision;
-	private final String json;
+	private final JsonData json;
 
-	public DocumentData(String revision, String json) {
+	public DocumentData(String revision, JsonData json) {
 		requireNonNull(this.revision = revision);
 		requireNonNull(this.json = json);
 	}
@@ -18,7 +20,7 @@ public class DocumentData {
 		return revision;
 	}
 
-	public String getJson() {
+	public JsonData getJsonData() {
 		return json;
 	}
 }
