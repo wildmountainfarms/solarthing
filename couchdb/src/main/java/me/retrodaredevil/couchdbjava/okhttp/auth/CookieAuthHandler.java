@@ -18,20 +18,26 @@ import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * An auth handler that sends a _session request, then uses the received cookie until it expires. This is designed
+ * to only be used with one {@link OkHttpCouchDbInstance} at a time.
+ */
 public class CookieAuthHandler implements OkHttpAuthHandler {
 	private static final ObjectMapper MAPPER = new ObjectMapper();
+
+	private final Object parallelLock = new Object();
 
 	private Cookie authCookie;
 
 	private String username;
 	private String password;
 
-	private boolean autoAuth = true;
+	private volatile boolean autoAuth = true;
 
 	public CookieAuthHandler(String username, String password) {
 		updateCredentials(username, password);
 	}
-	public void updateCredentials(String username, String password) {
+	public synchronized void updateCredentials(String username, String password) {
 		requireNonNull(this.username = username);
 		requireNonNull(this.password = password);
 	}
@@ -39,7 +45,10 @@ public class CookieAuthHandler implements OkHttpAuthHandler {
 		this.autoAuth = autoAuth;
 	}
 	private Cookie getAuthCookie() {
-		Cookie r = authCookie;
+		Cookie r;
+		synchronized (this) {
+			r = authCookie;
+		}
 		if (r != null) {
 			if (r.persistent() || authCookie.expiresAt() > System.currentTimeMillis()) {
 				return r;
@@ -54,7 +63,21 @@ public class CookieAuthHandler implements OkHttpAuthHandler {
 		}
 		return cookie.expiresAt();
 	}
+
+	/**
+	 * Manually authorizes the session. Note that internally, this handles being thread safe and prevents parallel calls to _session,
+	 * but if you call this manually, you may call this in parallel if you don't manually handle that case. This is why it's best to
+	 * let this automatically authenticate.
+	 * @param instance The CouchDB instance object
+	 * @return The response from the database
+	 * @throws CouchDbException Thrown on connection errors, permission errors, etc
+	 */
 	public SessionPostResponse authSession(OkHttpCouchDbInstance instance) throws CouchDbException {
+		final String username, password;
+		synchronized (this) {
+			username = this.username;
+			password = this.password;
+		}
 		requireNonNull(username);
 		requireNonNull(password);
 		HttpUrl url = instance.createUrlBuilder().addPathSegment("_session").build();
@@ -85,7 +108,9 @@ public class CookieAuthHandler implements OkHttpAuthHandler {
 			if (authSessionCookie == null) {
 				throw new CouchDbException("No AuthSession cookie was set!");
 			}
-			this.authCookie = authSessionCookie;
+			synchronized (this) {
+				this.authCookie = authSessionCookie;
+			}
 			SessionPostResponse sessionPostResponse;
 			try {
 				sessionPostResponse = MAPPER.readValue(requireNonNull(response.body()).byteStream(), SessionPostResponse.class);
@@ -105,8 +130,10 @@ public class CookieAuthHandler implements OkHttpAuthHandler {
 	@Override
 	public void preAuthorize(OkHttpCouchDbInstance instance) throws CouchDbException {
 		if (autoAuth) {
-			if (getAuthCookie() == null) {
-				authSession(instance);
+			synchronized (parallelLock) {
+				if (getAuthCookie() == null) {
+					authSession(instance);
+				}
 			}
 		}
 	}

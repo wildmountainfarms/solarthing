@@ -41,6 +41,15 @@ public interface CouchDbDatabase {
 	DocumentResponse deleteDocument(String id, String revision) throws CouchDbException;
 
 	DocumentData getDocument(String id) throws CouchDbException;
+
+	/**
+	 *
+	 * @param id The id of the document
+	 * @param revision The revision of the document. If this is the latest revision, {@link me.retrodaredevil.couchdbjava.exception.CouchDbNotModifiedException} is thrown.
+	 * @return DocumentData containing the data and revision of the retreived document
+	 * @throws me.retrodaredevil.couchdbjava.exception.CouchDbNotModifiedException Thrown if the specified document is still at the given revision
+	 * @throws CouchDbException May represent a connection error or that a document wasn't found, permission error, etc.
+	 */
 	DocumentData getDocumentIfUpdated(String id, String revision) throws CouchDbException;
 	String getCurrentRevision(String id) throws CouchDbException;
 

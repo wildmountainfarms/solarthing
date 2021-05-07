@@ -9,7 +9,6 @@ import me.retrodaredevil.couchdbjava.exception.CouchDbException;
 import me.retrodaredevil.couchdbjava.exception.CouchDbNotFoundException;
 import me.retrodaredevil.couchdbjava.json.JsonData;
 import me.retrodaredevil.couchdbjava.json.jackson.CouchDbJacksonUtil;
-import me.retrodaredevil.couchdbjava.json.jackson.JacksonJsonData;
 import me.retrodaredevil.couchdbjava.response.ViewResponse;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 

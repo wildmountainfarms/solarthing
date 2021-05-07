@@ -12,6 +12,7 @@ import me.retrodaredevil.solarthing.actions.ActionNode;
 import me.retrodaredevil.solarthing.actions.environment.InjectEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.MateCommandEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.TimeZoneEnvironment;
 import me.retrodaredevil.solarthing.analytics.AnalyticsManager;
 import me.retrodaredevil.solarthing.analytics.MateAnalyticsHandler;
 import me.retrodaredevil.solarthing.commands.CommandProvider;
@@ -123,6 +124,7 @@ public class OutbackMateMain {
 					@Override
 					protected void updateInjectEnvironment(DataSource dataSource, InjectEnvironment.Builder injectEnvironmentBuilder) {
 						injectEnvironmentBuilder
+								.add(new TimeZoneEnvironment(options.getTimeZone()))
 								.add(new MateCommandEnvironment(dataSource.toString(), queue))
 								.add(new LatestPacketGroupEnvironment(latestPacketHandler::getLatestPacketCollection));
 					}

@@ -1,7 +1,6 @@
 package me.retrodaredevil.solarthing.program;
 
 import me.retrodaredevil.couchdb.CouchDbUtil;
-import me.retrodaredevil.couchdb.CouchProperties;
 import me.retrodaredevil.couchdbjava.CouchDbInstance;
 import me.retrodaredevil.couchdbjava.ViewQueryParamsBuilder;
 import me.retrodaredevil.solarthing.PacketGroupReceiver;

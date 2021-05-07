@@ -9,7 +9,6 @@ import me.retrodaredevil.couchdbjava.response.CouchDbGetResponse;
 import me.retrodaredevil.couchdbjava.response.DatabaseInfo;
 import me.retrodaredevil.couchdbjava.response.SessionGetResponse;
 import okhttp3.*;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
@@ -42,6 +41,11 @@ public class OkHttpCouchDbInstance implements CouchDbInstance {
 			builder.cookieJar(cookieJar);
 		}
 		this.client = builder
+				.addInterceptor(chain -> {
+					Request.Builder requestBuilder = chain.request().newBuilder();
+					authHandler.setAuthHeaders(OkHttpCouchDbInstance.this, requestBuilder);
+					return chain.proceed(requestBuilder.build());
+				})
 				.build();
 
 		Retrofit retrofit = new Retrofit.Builder()

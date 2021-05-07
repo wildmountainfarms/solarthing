@@ -69,6 +69,7 @@ public final class AutomationMain {
 		InjectEnvironment injectEnvironment = new InjectEnvironment.Builder()
 				.add(new SourceIdEnvironment(options.getSourceId()))
 				.add(new CouchDbEnvironment(couchSettings))
+				.add(new TimeZoneEnvironment(options.getTimeZone()))
 				.add(new LatestPacketGroupEnvironment(() -> requireNonNull(latestPacketGroupReference[0])))
 				.build();
 

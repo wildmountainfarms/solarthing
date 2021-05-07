@@ -22,6 +22,7 @@ import java.security.PublicKey;
 public class CouchDbDocumentKeyMap implements PublicKeyLookUp {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CouchDbDocumentKeyMap.class);
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
+	private static final long UPDATE_PERIOD_MILLIS = 30 * 1000; // 30 seconds
 
 	private final CouchDbDatabase database;
 	private final String documentName;
@@ -68,7 +69,7 @@ public class CouchDbDocumentKeyMap implements PublicKeyLookUp {
 	@Override
 	public PublicKey getKey(String sender) {
 		Long lastUpdate = this.lastUpdate;
-		if ((authorizationPacket == null && !notFound) || lastUpdate == null || lastUpdate + 30 * 1000 < System.currentTimeMillis()) { // update every 30 seconds if necessary
+		if ((authorizationPacket == null && !notFound) || lastUpdate == null || lastUpdate + UPDATE_PERIOD_MILLIS < System.currentTimeMillis()) {
 			updatePacket();
 		}
 		AuthorizationPacket authorizationPacket = this.authorizationPacket;
