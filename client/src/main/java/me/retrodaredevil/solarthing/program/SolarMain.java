@@ -5,6 +5,7 @@ import com.lexicalscope.jewel.cli.ArgumentValidationException;
 import com.lexicalscope.jewel.cli.Cli;
 import com.lexicalscope.jewel.cli.CliFactory;
 import com.lexicalscope.jewel.cli.HelpRequestedException;
+import me.retrodaredevil.couchdbjava.exception.CouchDbException;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
@@ -167,7 +168,11 @@ public final class SolarMain {
 				System.err.println("Must be CouchDB database settings!");
 				return 1;
 			}
-			return CouchDbSetupMain.doCouchDbSetupMain((CouchDbDatabaseSettings) settings);
+			try {
+				return CouchDbSetupMain.doCouchDbSetupMain((CouchDbDatabaseSettings) settings);
+			} catch (CouchDbException e) {
+				throw new RuntimeException(e);
+			}
 		}
 		List<String> legacyArguments = commandOptions.getLegacyOptions();
 		if (legacyArguments.isEmpty()) {

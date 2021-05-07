@@ -5,6 +5,7 @@ import me.retrodaredevil.couchdbjava.response.DatabaseInfo;
 import me.retrodaredevil.couchdbjava.response.DocumentResponse;
 import me.retrodaredevil.couchdbjava.response.SimpleStatus;
 import me.retrodaredevil.couchdbjava.response.ViewResponse;
+import me.retrodaredevil.couchdbjava.security.DatabaseSecurity;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.*;
@@ -59,4 +60,11 @@ public interface CouchDbDatabaseService {
 
 	@POST("_design/{ddoc}/_view/{view}")
 	Call<ViewResponse> queryView(@Path("ddoc") String designDoc, @Path("view") String viewName, @Body ViewQueryParams viewQueryParams);
+
+
+	@GET("./security")
+	Call<DatabaseSecurity> getSecurity();
+
+	@PUT("./security")
+	Call<SimpleStatus> putSecurity(@Body DatabaseSecurity databaseSecurity);
 }

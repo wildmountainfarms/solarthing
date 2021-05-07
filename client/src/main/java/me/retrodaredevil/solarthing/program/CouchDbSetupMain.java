@@ -3,21 +3,29 @@ package me.retrodaredevil.solarthing.program;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.couchdb.CouchDbUtil;
-import me.retrodaredevil.couchdb.DocumentWrapper;
 import me.retrodaredevil.couchdb.design.DefaultPacketsDesign;
 import me.retrodaredevil.couchdb.design.SimpleView;
 import me.retrodaredevil.couchdbjava.CouchDbDatabase;
 import me.retrodaredevil.couchdbjava.CouchDbInstance;
 import me.retrodaredevil.couchdbjava.exception.CouchDbException;
 import me.retrodaredevil.couchdbjava.exception.CouchDbNotFoundException;
+import me.retrodaredevil.couchdbjava.exception.CouchDbUpdateConflictException;
+import me.retrodaredevil.couchdbjava.json.JsonData;
+import me.retrodaredevil.couchdbjava.json.StringJsonData;
+import me.retrodaredevil.couchdbjava.json.jackson.CouchDbJacksonUtil;
+import me.retrodaredevil.couchdbjava.response.DocumentData;
+import me.retrodaredevil.couchdbjava.security.DatabaseSecurity;
+import me.retrodaredevil.couchdbjava.security.SecurityGroup;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 
 import java.util.*;
 
 public class CouchDbSetupMain {
+	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
 	private static void createDatabase(CouchDbInstance instance, String database) throws CouchDbException {
 		if (instance.getDatabase(database).createIfNotExists()) {
 			System.out.println("Created " + database);
@@ -50,72 +58,71 @@ public class CouchDbSetupMain {
 		scanner.nextLine();
 		if (username != null) {
 			CouchDbDatabase usersDatabase = instance.getUsersDatabase();
+			String documentId = "org.couchdb.user:" + username;
 
-			UserEntry user = null;
+			DocumentData userDocumentData = null;
 			try {
-				user = usersClient.get(UserEntry.class, "org.couchdb.user:" + username);
+				userDocumentData = usersDatabase.getDocument(documentId);
 			} catch (CouchDbNotFoundException ignored) {
+			}
+			final UserEntry user;
+			if (userDocumentData != null) {
+				try {
+					user = CouchDbJacksonUtil.readValue(MAPPER, userDocumentData.getJsonData(), UserEntry.class);
+				} catch (JsonProcessingException e) {
+					throw new RuntimeException("Could not parse user document data. Please report this bug", e);
+				}
+			} else {
+				user = null;
 			}
 			if (user != null) {
 				System.out.println("The specified user exists! Continuing");
 			} else {
-				DocumentWrapper wrapper = new DocumentWrapper("org.couchdb.user:" + username);
 				System.out.println("Please enter a password for the new user to be created.");
 				String password = scanner.nextLine();
-				wrapper.setObject(new UserEntry(username, password));
-				usersClient.update(wrapper);
+				final JsonData jsonData;
+				try {
+					jsonData = new StringJsonData(MAPPER.writeValueAsString(new UserEntry(username, password)));
+				} catch (JsonProcessingException e) {
+					throw new RuntimeException("Couldn't serialize json! Report this!", e);
+				}
+				usersDatabase.putDocument(documentId, jsonData);
 			}
 		}
 
-		for (String database : Arrays.asList("solarthing", "solarthing_events", "solarthing_closed", "solarthing_open")) {
-			System.out.println("Adding packets design to database " + database);
-			CouchDbConnector client = new StdCouchDbConnector(database, instance, new StdObjectMapperFactory(){
-				@Override
-				protected void applyDefaultConfiguration(ObjectMapper om) {
-					JacksonUtil.defaultMapper(om);
-				}
-			});
-			DocumentWrapper documentWrapper = new DocumentWrapper("_design/packets");
+		for (String databaseName : Arrays.asList("solarthing", "solarthing_events", "solarthing_closed", "solarthing_open")) {
+			System.out.println("Adding packets design to database " + databaseName);
+			CouchDbDatabase database = instance.getDatabase(databaseName);
 			DefaultPacketsDesign design = new DefaultPacketsDesign();
-			if (!"solarthing_open".equals(database)) {
+			if (!"solarthing_open".equals(databaseName)) {
 				System.out.println("This database will be readonly");
 				String function = "function(newDoc, oldDoc, userCtx, secObj) {\n\n  secObj.admins = secObj.admins || {};\n  secObj.admins.names = secObj.admins.names || [];\n  secObj.admins.roles = secObj.admins.roles || [];\n\n  var isAdmin = false;\n  if(userCtx.roles.indexOf('_admin') !== -1) {\n    isAdmin = true;\n  }\n  if(secObj.admins.names.indexOf(userCtx.name) !== -1) {\n    isAdmin = true;\n  }\n  for(var i = 0; i < userCtx.roles; i++) {\n    if(secObj.admins.roles.indexOf(userCtx.roles[i]) !== -1) {\n      isAdmin = true;\n    }\n  }\n\n  if(!isAdmin) {\n    throw {'unauthorized':'This is read only when unauthorized'};\n  }\n}";
 				design.getViews().put("readonly_auth", new SimpleView(function));
 			}
-			documentWrapper.setObject(design);
+			final JsonData jsonData;
 			try {
-				client.create(documentWrapper);
-			} catch (UpdateConflictException e) {
-				System.out.println("_design/packets document already on database: " + database + ". We will not try to update it. Hopefully it is correct.");
+				jsonData = new StringJsonData(MAPPER.writeValueAsString(design));
+			} catch (JsonProcessingException e) {
+				throw new RuntimeException("Couldn't serialize json! Report this!", e);
 			}
-			System.out.println("Configuring security for database " + database);
-			Security oldSecurity = client.getSecurity();
-			SecurityGroup members = oldSecurity.getMembers();
-			SecurityGroup admins = oldSecurity.getAdmins();
-			if (members == null) {
-				members = new SecurityGroup();
+			try {
+				database.putDocument("_design/packets", jsonData); // TODO is this document ID name allowed/will it work with retrofit?
+			} catch (CouchDbUpdateConflictException e) {
+				System.out.println("_design/packets document already on database: " + databaseName + ". We will not try to update it. Hopefully it is correct.");
+			}
+			System.out.println("Configuring security for database " + databaseName);
+			DatabaseSecurity oldSecurity = database.getSecurity();
+			SecurityGroup oldAdmins = oldSecurity.getAdmins();
+			final SecurityGroup newAdmins;
+			if (username != null && !oldAdmins.getNames().contains(username)) {
+				List<String> admins = new ArrayList<>(oldAdmins.getNames());
+				admins.add(username);
+				newAdmins = new SecurityGroup(admins, oldAdmins.getRoles());
 			} else {
-				members = new SecurityGroup(
-						members.getNames() == null ? new ArrayList<>() : members.getNames(),
-						members.getRoles() == null ? new ArrayList<>() : members.getRoles()
-				);
+				newAdmins = oldAdmins;
 			}
-			if (admins == null) {
-				admins = new SecurityGroup();
-			} else {
-				admins = new SecurityGroup(
-						admins.getNames() == null ? new ArrayList<>() : admins.getNames(),
-						admins.getRoles() == null ? new ArrayList<>() : admins.getRoles()
-				);
-			}
-			members.getNames().clear();
-			members.getRoles().clear();
-			if (username != null) {
-				if (!admins.getNames().contains(username)) {
-					admins.getNames().add(username);
-				}
-			}
-			client.updateSecurity(new Security(admins, members));
+			// This database's security has no members (public database)
+			database.setSecurity(new DatabaseSecurity(newAdmins, SecurityGroup.BLANK));
 			System.out.println();
 		}
 		System.out.println("Completed successfully!");

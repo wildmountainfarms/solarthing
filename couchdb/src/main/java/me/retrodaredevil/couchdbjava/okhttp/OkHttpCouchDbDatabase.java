@@ -10,6 +10,7 @@ import me.retrodaredevil.couchdbjava.okhttp.util.OkHttpUtil;
 import me.retrodaredevil.couchdbjava.option.DatabaseCreationOption;
 import me.retrodaredevil.couchdbjava.response.*;
 import me.retrodaredevil.couchdbjava.exception.CouchDbException;
+import me.retrodaredevil.couchdbjava.security.DatabaseSecurity;
 import okhttp3.*;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
@@ -214,5 +215,15 @@ public class OkHttpCouchDbDatabase implements CouchDbDatabase {
 		return instance.executeAndHandle(service.queryView(designDoc, viewName, viewQueryParams));
 	}
 
+	@Override
+	public DatabaseSecurity getSecurity() throws CouchDbException {
+		instance.preAuthorize();
+		return instance.executeAndHandle(service.getSecurity());
+	}
 
+	@Override
+	public void setSecurity(DatabaseSecurity databaseSecurity) throws CouchDbException {
+		instance.preAuthorize();
+		instance.executeAndHandle(service.putSecurity(databaseSecurity));
+	}
 }

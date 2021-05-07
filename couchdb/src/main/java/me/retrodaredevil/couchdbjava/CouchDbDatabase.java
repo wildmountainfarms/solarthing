@@ -7,6 +7,7 @@ import me.retrodaredevil.couchdbjava.response.DatabaseInfo;
 import me.retrodaredevil.couchdbjava.response.DocumentData;
 import me.retrodaredevil.couchdbjava.response.DocumentResponse;
 import me.retrodaredevil.couchdbjava.response.ViewResponse;
+import me.retrodaredevil.couchdbjava.security.DatabaseSecurity;
 
 public interface CouchDbDatabase {
 	String getName();
@@ -53,5 +54,8 @@ public interface CouchDbDatabase {
 	default ViewResponse queryView(ViewQuery viewQuery) throws CouchDbException {
 		return queryView(viewQuery.getDesignDoc(), viewQuery.getViewName(), viewQuery.getParams());
 	}
+
+	DatabaseSecurity getSecurity() throws CouchDbException;
+	void setSecurity(DatabaseSecurity databaseSecurity) throws CouchDbException;
 
 }

@@ -13,7 +13,6 @@ import me.retrodaredevil.solarthing.config.io.SerialIOConfig;
 import me.retrodaredevil.solarthing.config.options.ProgramOptions;
 import me.retrodaredevil.solarthing.program.DatabaseConfig;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
-import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -30,7 +29,7 @@ public class DeserializeTest {
 	private static final File DATABASE_CONFIG_DIRECTORY = new File(SOLARTHING_ROOT, "config_templates/databases");
 	private static final File IO_CONFIG_DIRECTORY = new File(SOLARTHING_ROOT, "config_templates/io");
 
-	private static final FileFilter JSON_FILTER = new SuffixFileFilter(".json");
+	private static final FileFilter JSON_FILTER = file -> file.getName().endsWith(".json");
 
 	private static final ObjectMapper MAPPER = DatabaseSettingsUtil.registerDatabaseSettings(JacksonUtil.defaultMapper());
 
