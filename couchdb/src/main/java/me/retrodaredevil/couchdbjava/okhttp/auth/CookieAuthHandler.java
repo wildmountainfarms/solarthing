@@ -9,6 +9,8 @@ import me.retrodaredevil.couchdbjava.response.SessionPostResponse;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -24,6 +26,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class CookieAuthHandler implements OkHttpAuthHandler {
 	private static final ObjectMapper MAPPER = new ObjectMapper();
+	private static final Logger LOGGER = LoggerFactory.getLogger(CookieAuthHandler.class);
 
 	private final Object parallelLock = new Object();
 
@@ -50,7 +53,7 @@ public class CookieAuthHandler implements OkHttpAuthHandler {
 			r = authCookie;
 		}
 		if (r != null) {
-			if (r.persistent() || r.expiresAt() > System.currentTimeMillis()) {
+			if (r.expiresAt() > System.currentTimeMillis()) {
 				return r;
 			}
 		}
@@ -108,6 +111,7 @@ public class CookieAuthHandler implements OkHttpAuthHandler {
 			if (authSessionCookie == null) {
 				throw new CouchDbException("No AuthSession cookie was set!");
 			}
+			LOGGER.debug("Got new authentication cookie that expires at " + authSessionCookie.expiresAt() + ". Persistent: " + authSessionCookie.persistent());
 			synchronized (this) {
 				this.authCookie = authSessionCookie;
 			}
