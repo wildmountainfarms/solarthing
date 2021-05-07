@@ -12,10 +12,7 @@ import me.retrodaredevil.solarthing.config.options.PacketHandlingOption;
 import me.retrodaredevil.solarthing.couchdb.CouchDbDocumentKeyMap;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketRetriever;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketRetrieverHandler;
-import me.retrodaredevil.solarthing.packets.handling.FrequencySettings;
-import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
-import me.retrodaredevil.solarthing.packets.handling.PrintPacketHandleExceptionWrapper;
-import me.retrodaredevil.solarthing.packets.handling.ThrottleFactorPacketHandler;
+import me.retrodaredevil.solarthing.packets.handling.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,9 +35,7 @@ public class CommandUtil {
 
 				IndividualSettings individualSettings = config.getIndividualSettingsOrDefault(Constants.DATABASE_COMMAND_DOWNLOAD_ID, null);
 				FrequencySettings frequencySettings = individualSettings != null ? individualSettings.getFrequencySettings() : FrequencySettings.NORMAL_SETTINGS;
-				// Also note that as of 2021.05.07 we made this use a separate thread, so we don't really need PrintPacketHandleExceptionWrapper, but we'll keep it in case we change it back
-				//   Currently CouchDbPacketRetrieverHandler's implementation logs the error itself if it is executing in a separate thread.
-				commandRequesterHandlerList.add(new ThrottleFactorPacketHandler(new PrintPacketHandleExceptionWrapper(
+				commandRequesterHandlerList.add(new ThrottleFactorPacketHandler(new AsyncPacketHandlerWrapper(new PrintPacketHandleExceptionWrapper(
 						new CouchDbPacketRetrieverHandler(
 								new CouchDbPacketRetriever(
 										instance.getDatabase(SolarThingConstants.OPEN_UNIQUE_NAME),
@@ -53,10 +48,9 @@ public class CommandUtil {
 										packetGroupReceiver,
 										options.getSourceId(), options.getFragmentId(),
 										Collections.singleton(CommandOpenPacket.class)
-								),
-								true
+								)
 						)
-				), frequencySettings, true));
+				)), frequencySettings, true));
 			}
 		}
 		return commandRequesterHandlerList;

@@ -22,7 +22,7 @@ public class PrintPacketHandleExceptionWrapper implements PacketHandler {
 		try {
 			packetHandler.handle(packetCollection, instantType);
 		} catch (PacketHandleException e) {
-			LOGGER.error("Caught PacketHandleException from " + packetHandler + ". Message: " + e.getMessage());
+			LOGGER.error("Caught PacketHandleException from " + packetHandler + ". Message: " + e.getMessage() + ". (More info in log file)");
 			LOGGER.debug(SolarThingConstants.NO_CONSOLE, "Caught PacketHandleException from " + packetHandler, e);
 		}
 	}

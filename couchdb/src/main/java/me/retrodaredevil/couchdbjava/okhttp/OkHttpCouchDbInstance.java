@@ -4,6 +4,7 @@ import me.retrodaredevil.couchdbjava.CouchDbDatabase;
 import me.retrodaredevil.couchdbjava.CouchDbInstance;
 import me.retrodaredevil.couchdbjava.exception.CouchDbException;
 import me.retrodaredevil.couchdbjava.okhttp.auth.OkHttpAuthHandler;
+import me.retrodaredevil.couchdbjava.okhttp.util.HeaderRequestInterceptor;
 import me.retrodaredevil.couchdbjava.okhttp.util.OkHttpUtil;
 import me.retrodaredevil.couchdbjava.response.CouchDbGetResponse;
 import me.retrodaredevil.couchdbjava.response.DatabaseInfo;
@@ -46,6 +47,7 @@ public class OkHttpCouchDbInstance implements CouchDbInstance {
 					authHandler.setAuthHeaders(OkHttpCouchDbInstance.this, requestBuilder);
 					return chain.proceed(requestBuilder.build());
 				})
+//				.addInterceptor(new HeaderRequestInterceptor("Accept-Encoding", "deflate, gzip")) CouchDB doesn't support gzip by default, so we'll leave this out
 				.build();
 
 		Retrofit retrofit = new Retrofit.Builder()

@@ -46,6 +46,8 @@ for the message-sender program and other general 'actions'
 * DCDC Controller monitoring bug fixed
 * Pzem Shunt Support Added
 * MQTT Support added
+* Switched from Ektorp to custom CouchDB library
+* Started to make some aspects of SolarThing use their own thread
 
 
 ### Moving from Gson to Jackson

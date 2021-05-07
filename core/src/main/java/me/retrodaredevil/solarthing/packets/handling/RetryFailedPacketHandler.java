@@ -11,6 +11,8 @@ import java.util.List;
 
 /**
  * A class used to retry handling a packet at a later time if it fails
+ * <p>
+ * Note that this will never throw a {@link PacketHandleException}. It will log the error, though
  */
 public class RetryFailedPacketHandler implements PacketHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RetryFailedPacketHandler.class);

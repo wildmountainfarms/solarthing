@@ -55,21 +55,21 @@ public class PacketHandlerInit {
 				CouchDbDatabaseSettings settings = (CouchDbDatabaseSettings) config.getSettings();
 				CouchDbInstance instance = CouchDbUtil.createInstance(settings.getCouchProperties(), settings.getOkHttpProperties());
 				statusPacketHandlers.add(new ThrottleFactorPacketHandler(
-						new PrintPacketHandleExceptionWrapper(new CouchDbPacketSaver(instance.getDatabase(uniqueStatusName))),
+						new AsyncPacketHandlerWrapper(new PrintPacketHandleExceptionWrapper(new CouchDbPacketSaver(instance.getDatabase(uniqueStatusName)))),
 						statusFrequencySettings,
 						true
 				));
 				// TODO We should use Constants.DATABASE_UPLOAD_EVENT_ID and its FrequencySettings to stop this from doing stuff too frequently.
 				// The reason we aren't going to use a ThrottleFactorPacketHandler is all "event" packets are important. We do not want to
 				// miss adding a single event packet to a database
-				eventPacketHandlers.add(new RetryFailedPacketHandler(new CouchDbPacketSaver(instance.getDatabase(uniqueEventName)), 7));
+				eventPacketHandlers.add(new AsyncPacketHandlerWrapper(new RetryFailedPacketHandler(new CouchDbPacketSaver(instance.getDatabase(uniqueEventName)), 7)));
 			} else if(InfluxDbDatabaseSettings.TYPE.equals(config.getType())) {
 				LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "You are using InfluxDB 1.X! It is recommended that you switch to 2.0, but is not required.");
 				InfluxDbDatabaseSettings settings = (InfluxDbDatabaseSettings) config.getSettings();
 				String databaseName = settings.getDatabaseName();
 				String measurementName = settings.getMeasurementName();
 				statusPacketHandlers.add(new ThrottleFactorPacketHandler(
-						new InfluxDbPacketSaver(
+						new AsyncPacketHandlerWrapper(new PrintPacketHandleExceptionWrapper(new InfluxDbPacketSaver(
 								settings.getInfluxProperties(),
 								settings.getOkHttpProperties(),
 								new ConstantNameGetter(databaseName != null ? databaseName : uniqueStatusName),
@@ -80,11 +80,11 @@ public class PacketHandlerInit {
 												: DocumentedMeasurementPacketPointCreator.INSTANCE
 										),
 								new FrequentRetentionPolicyGetter(new FrequentHandler<>(settings.getFrequentStatusRetentionPolicyList()))
-						),
+						))),
 						statusFrequencySettings,
 						true
 				));
-				eventPacketHandlers.add(new RetryFailedPacketHandler(new InfluxDbPacketSaver(
+				eventPacketHandlers.add(new AsyncPacketHandlerWrapper(new RetryFailedPacketHandler(new InfluxDbPacketSaver(
 						settings.getInfluxProperties(),
 						settings.getOkHttpProperties(),
 						new ConstantNameGetter(databaseName != null ? databaseName : uniqueEventName),
@@ -95,25 +95,25 @@ public class PacketHandlerInit {
 										: DocumentedMeasurementPacketPointCreator.INSTANCE
 								),
 						new ConstantRetentionPolicyGetter(settings.getEventRetentionPolicy())
-				), 5));
+				), 5)));
 			} else if(InfluxDb2DatabaseSettings.TYPE.equals(config.getType())) {
 				InfluxDb2DatabaseSettings settings = (InfluxDb2DatabaseSettings) config.getSettings();
 				statusPacketHandlers.add(new ThrottleFactorPacketHandler(
-						new InfluxDb2PacketSaver(
+						new AsyncPacketHandlerWrapper(new PrintPacketHandleExceptionWrapper(new InfluxDb2PacketSaver(
 								settings.getInfluxDbProperties(),
 								settings.getOkHttpProperties(),
 								new ConstantNameGetter(uniqueStatusName),
 								DocumentedMeasurementPacketPoint2Creator.INSTANCE
-						),
+						))),
 						statusFrequencySettings,
 						true
 				));
-				eventPacketHandlers.add(new RetryFailedPacketHandler(new InfluxDb2PacketSaver(
+				eventPacketHandlers.add(new AsyncPacketHandlerWrapper(new RetryFailedPacketHandler(new InfluxDb2PacketSaver(
 						settings.getInfluxDbProperties(),
 						settings.getOkHttpProperties(),
 						new ConstantNameGetter(uniqueEventName),
 						DocumentedMeasurementPacketPoint2Creator.INSTANCE
-				), 5));
+				), 5)));
 			} else if (LatestFileDatabaseSettings.TYPE.equals(config.getType())){
 				LatestFileDatabaseSettings settings = (LatestFileDatabaseSettings) config.getSettings();
 				LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Adding latest file 'database'. This currently only saves 'status' packets");
@@ -126,7 +126,7 @@ public class PacketHandlerInit {
 				PostDatabaseSettings settings = (PostDatabaseSettings) config.getSettings();
 
 				statusPacketHandlers.add(new ThrottleFactorPacketHandler(
-						new PostPacketHandler(settings.getUrl(), new JacksonStringPacketHandler(MAPPER), MediaType.get("application/json")),
+						new AsyncPacketHandlerWrapper(new PostPacketHandler(settings.getUrl(), new JacksonStringPacketHandler(MAPPER), MediaType.get("application/json"))),
 						statusFrequencySettings,
 						false
 				));
@@ -139,7 +139,7 @@ public class PacketHandlerInit {
 				}
 
 				statusPacketHandlers.add(new ThrottleFactorPacketHandler(
-						new MqttPacketSaver(settings.getBroker(), client, settings.getUsername(), settings.getPassword(), settings.getTopicFormat(), settings.isRetain(), sourceId, fragmentId),
+						new AsyncPacketHandlerWrapper(new MqttPacketSaver(settings.getBroker(), client, settings.getUsername(), settings.getPassword(), settings.getTopicFormat(), settings.isRetain(), sourceId, fragmentId)),
 						statusFrequencySettings,
 						true
 				));
