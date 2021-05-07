@@ -17,6 +17,6 @@
     "username": "admin",
     "password": "relax",
     "connection_timeout": 1.5,
-    "socket_timeout": 10
+    "call_timeout": 10
   }
 }

@@ -25,14 +25,14 @@ This is for couchdb
     "username": "admin",
     "password": "relax",
     "connection_timeout": 5,
-    "socket_timeout": 5
+    "call_timeout": 6
   }
 }
 ```
 The "settings" object is used to specify settings for specific uses in the program. Right now the program has hard coded values
 for packet_upload and command_download. Only the mate program uses the command_download values.
 
-The config is used to specify the CouchDB config. Everything after "port" is optional. connection_timeout and socket_timeout
+The config is used to specify the CouchDB config. Everything after "port" is optional. connection_timeout and call_timeout
 are in seconds. Decimal or whole numbers can be used.
 
 This is for latest save

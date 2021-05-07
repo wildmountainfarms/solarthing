@@ -8,7 +8,10 @@ Once you have it running, it defaults to port 5984.
 ## Configuring SolarThing for CouchDB
 An example configuration can be found [here](../../config_templates/databases/couchdb_template.json).
 
-* `connection_timeout` and `socket_timeout` are in seconds and can be decimal values. Setting them to 0 makes it so there's no timeout
+* `connection_timeout` and `call_timeout` are in seconds and can be decimal values. Setting them to 0 makes it so there's no timeout
+  * `call_timeout` is the timeout for the entire call, `connection_timeout` is the timeout for once the connection has been made
+  * So, `call_timeout` is larger than `connection_timeout`. 
+  * Note: `call_timeout` used to be called `socket_timeout`
 * To start with, you should **put in admin credentials**. You can replace these credentials with a less privileged user later.
 
 ## Required setup
