@@ -43,10 +43,10 @@ public interface CouchDbDatabaseService {
 	 * @param revision The revision of the existing document or null if this is a new document. This could also be null if you put the revision in the body.
 	 */
 	@PUT("{docid}")
-	Call<DocumentResponse> putDocument(@Path(value = "docid", encoded = true) String docid, @Header("Match-If") String revision, @Body RequestBody jsonRequestBody);
+	Call<DocumentResponse> putDocument(@Path(value = "docid", encoded = true) String docid, @Header("If-Match") String revision, @Body RequestBody jsonRequestBody);
 
 	@DELETE("{docid}")
-	Call<DocumentResponse> deleteDocument(@Path(value = "docid", encoded = true) String docid, @Header("Match-If") String revision);
+	Call<DocumentResponse> deleteDocument(@Path(value = "docid", encoded = true) String docid, @Header("If-Match") String revision);
 
 
 	@HTTP(method = "COPY", path = "{docid}")

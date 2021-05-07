@@ -8,6 +8,7 @@ import me.retrodaredevil.couchdbjava.exception.CouchDbException;
 import me.retrodaredevil.couchdbjava.exception.CouchDbUpdateConflictException;
 import me.retrodaredevil.couchdbjava.json.JsonData;
 import me.retrodaredevil.couchdbjava.json.StringJsonData;
+import me.retrodaredevil.couchdbjava.response.DocumentResponse;
 import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
@@ -74,11 +75,14 @@ public class CouchDbPacketSaver implements PacketHandler {
 			throw new RuntimeException("Cannot serialize packet collection! This is bad!", e);
 		}
 		try {
+			final DocumentResponse response;
 			if (revision == null) {
-				database.putDocument(id, jsonData);
+				response = database.putDocument(id, jsonData);
 			} else {
-				database.updateDocument(id, revision, jsonData);
+				response = database.updateDocument(id, revision, jsonData);
 			}
+			LOGGER.debug("Now revision is: " + response.getRev() + ". It was: " + revision);
+			idMap.put(id, response.getRev());
 		} catch(CouchDbUpdateConflictException ex){
 			try {
 				String actualRev = database.getCurrentRevision(id);

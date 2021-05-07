@@ -11,7 +11,6 @@ import me.retrodaredevil.okhttp3.OkHttpProperties;
 import me.retrodaredevil.okhttp3.OkHttpUtil;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 
 @UtilityClass
 public final class CouchDbUtil {
@@ -34,7 +33,7 @@ public final class CouchDbUtil {
 
 		return new OkHttpCouchDbInstance(
 				builder
-						.addInterceptor(new HttpLoggingInterceptor(System.out::println).setLevel(HttpLoggingInterceptor.Level.BODY))
+//						.addInterceptor(new HttpLoggingInterceptor(System.out::println).setLevel(HttpLoggingInterceptor.Level.BODY))
 						.build(),
 				couchProperties.getHttpUrl(),
 				authHandler

@@ -58,6 +58,10 @@ public class OkHttpCouchDbDatabase implements CouchDbDatabase {
 			throw new IllegalArgumentException("Could not encode: '" + documentId + "'.", e);
 		}
 	}
+	private static String encodeRevisionForHeader(String revision) {
+		requireNonNull(revision);
+		return '"' + revision + '"';
+	}
 	private HttpUrl.Builder createUrlBuilder() {
 		return instance.createUrlBuilder().addPathSegment(name);
 	}
@@ -137,7 +141,7 @@ public class OkHttpCouchDbDatabase implements CouchDbDatabase {
 	@Override
 	public DocumentResponse updateDocument(String id, String revision, JsonData jsonData) throws CouchDbException {
 		instance.preAuthorize();
-		return instance.executeAndHandle(service.putDocument(requireNonNull(encodeDocumentId(id)), requireNonNull(revision), OkHttpUtil.createJsonRequestBody(jsonData)));
+		return instance.executeAndHandle(service.putDocument(requireNonNull(encodeDocumentId(id)), encodeRevisionForHeader(revision), OkHttpUtil.createJsonRequestBody(jsonData)));
 	}
 
 	@Override
@@ -157,7 +161,7 @@ public class OkHttpCouchDbDatabase implements CouchDbDatabase {
 				.get()
 				.url(createUrlBuilder().addEncodedPathSegments(encodeDocumentId(id)).build());
 		if (revision != null) {
-				builder.header("If-None-Match", revision);
+			builder.header("If-None-Match", revision);
 		}
 		Response response = instance.executeCall(instance.getClient().newCall(builder.build()));
 		if (response.isSuccessful()) {
