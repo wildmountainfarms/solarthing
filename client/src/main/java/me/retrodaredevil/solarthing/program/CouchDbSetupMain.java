@@ -86,6 +86,7 @@ public class CouchDbSetupMain {
 				} catch (JsonProcessingException e) {
 					throw new RuntimeException("Couldn't serialize json! Report this!", e);
 				}
+				usersDatabase.createIfNotExists();
 				usersDatabase.putDocument(documentId, jsonData);
 			}
 		}
@@ -112,9 +113,9 @@ public class CouchDbSetupMain {
 			}
 			System.out.println("Configuring security for database " + databaseName);
 			DatabaseSecurity oldSecurity = database.getSecurity();
-			SecurityGroup oldAdmins = oldSecurity.getAdmins();
+			SecurityGroup oldAdmins = oldSecurity.getAdminsOrBlank();
 			final SecurityGroup newAdmins;
-			if (username != null && !oldAdmins.getNames().contains(username)) {
+			if (username != null && !oldAdmins.getNamesOrEmpty().contains(username)) {
 				List<String> admins = new ArrayList<>(oldAdmins.getNames());
 				admins.add(username);
 				newAdmins = new SecurityGroup(admins, oldAdmins.getRoles());

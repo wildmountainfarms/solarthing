@@ -5,7 +5,9 @@ import com.lexicalscope.jewel.cli.ArgumentValidationException;
 import com.lexicalscope.jewel.cli.Cli;
 import com.lexicalscope.jewel.cli.CliFactory;
 import com.lexicalscope.jewel.cli.HelpRequestedException;
+import me.retrodaredevil.couchdbjava.exception.CouchDbCodeException;
 import me.retrodaredevil.couchdbjava.exception.CouchDbException;
+import me.retrodaredevil.couchdbjava.response.ErrorResponse;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
@@ -171,6 +173,13 @@ public final class SolarMain {
 			try {
 				return CouchDbSetupMain.doCouchDbSetupMain((CouchDbDatabaseSettings) settings);
 			} catch (CouchDbException e) {
+				if (e instanceof CouchDbCodeException) {
+					ErrorResponse error = ((CouchDbCodeException) e).getErrorResponse();
+					if (error != null) {
+						System.err.println(error.getError());
+						System.err.println(error.getReason());
+					}
+				}
 				throw new RuntimeException(e);
 			}
 		}

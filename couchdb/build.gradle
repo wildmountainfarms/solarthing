@@ -12,7 +12,7 @@ dependencies {
     api "com.squareup.retrofit2:converter-jackson:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-scalars:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-jackson:$retrofitVersion"
-    implementation "com.squareup.okhttp3:logging-interceptor:$okhttpVersion"
+    api "com.squareup.okhttp3:logging-interceptor:$okhttpVersion"
 
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
     api group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion

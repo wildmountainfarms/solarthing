@@ -17,6 +17,9 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,8 +45,18 @@ public class OkHttpCouchDbDatabase implements CouchDbDatabase {
 				.addConverterFactory(ScalarsConverterFactory.create())
 				.build()
 				;
-		System.out.println(retrofit.baseUrl());
+//		System.out.println(retrofit.baseUrl());
 		service = retrofit.create(CouchDbDatabaseService.class);
+	}
+	private static String encodeDocumentId(String documentId) {
+		if (documentId.startsWith("_design/")) {
+			return "_design/" + encodeDocumentId(documentId.substring("_design/".length()));
+		}
+		try {
+			return URLEncoder.encode(documentId, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException("Could not encode: '" + documentId + "'.", e);
+		}
 	}
 	private HttpUrl.Builder createUrlBuilder() {
 		return instance.createUrlBuilder().addPathSegment(name);
@@ -117,20 +130,20 @@ public class OkHttpCouchDbDatabase implements CouchDbDatabase {
 	@Override
 	public DocumentResponse putDocument(String id, JsonData jsonData) throws CouchDbException {
 		instance.preAuthorize();
-		return instance.executeAndHandle(service.putDocument(id, null, OkHttpUtil.createJsonRequestBody(jsonData)));
+		return instance.executeAndHandle(service.putDocument(encodeDocumentId(id), null, OkHttpUtil.createJsonRequestBody(jsonData)));
 	}
 
 
 	@Override
 	public DocumentResponse updateDocument(String id, String revision, JsonData jsonData) throws CouchDbException {
 		instance.preAuthorize();
-		return instance.executeAndHandle(service.putDocument(requireNonNull(id), requireNonNull(revision), OkHttpUtil.createJsonRequestBody(jsonData)));
+		return instance.executeAndHandle(service.putDocument(requireNonNull(encodeDocumentId(id)), requireNonNull(revision), OkHttpUtil.createJsonRequestBody(jsonData)));
 	}
 
 	@Override
 	public DocumentResponse deleteDocument(String id, String revision) throws CouchDbException {
 		instance.preAuthorize();
-		return instance.executeAndHandle(service.deleteDocument(requireNonNull(id), requireNonNull(revision)));
+		return instance.executeAndHandle(service.deleteDocument(requireNonNull(encodeDocumentId(id)), requireNonNull(revision)));
 	}
 
 	@Override
@@ -142,7 +155,7 @@ public class OkHttpCouchDbDatabase implements CouchDbDatabase {
 		instance.preAuthorize();
 		Request.Builder builder = new Request.Builder()
 				.get()
-				.url(createUrlBuilder().addPathSegment(id).build());
+				.url(createUrlBuilder().addEncodedPathSegments(encodeDocumentId(id)).build());
 		if (revision != null) {
 				builder.header("If-None-Match", revision);
 		}
@@ -166,7 +179,7 @@ public class OkHttpCouchDbDatabase implements CouchDbDatabase {
 		Response response = instance.executeCall(instance.getClient().newCall(
 				new Request.Builder()
 						.head()
-						.url(createUrlBuilder().addPathSegment(id).build())
+						.url(createUrlBuilder().addEncodedPathSegments(encodeDocumentId(id)).build())
 						.build()
 		));
 		if (response.isSuccessful()) {
@@ -188,31 +201,32 @@ public class OkHttpCouchDbDatabase implements CouchDbDatabase {
 	@Override
 	public DocumentResponse copyToNewDocument(String id, String newDocumentId) throws CouchDbException {
 		instance.preAuthorize();
-		return instance.executeAndHandle(service.copyToDocument(id, newDocumentId));
+		return instance.executeAndHandle(service.copyToDocument(encodeDocumentId(id), newDocumentId));
 	}
 
 	@Override
 	public DocumentResponse copyFromRevisionToNewDocument(String id, String revision, String newDocumentId) throws CouchDbException {
 		instance.preAuthorize();
-		return instance.executeAndHandle(service.copyFromRevisionToDocument(id, revision, newDocumentId));
+		return instance.executeAndHandle(service.copyFromRevisionToDocument(encodeDocumentId(id), revision, newDocumentId));
 	}
 
 	@Override
 	public DocumentResponse copyToExistingDocument(String id, String targetDocumentId, String targetDocumentRevision) throws CouchDbException {
 		instance.preAuthorize();
-		return instance.executeAndHandle(service.copyToDocument(id, targetDocumentId + "?rev=" + targetDocumentRevision));
+		return instance.executeAndHandle(service.copyToDocument(encodeDocumentId(id), targetDocumentId + "?rev=" + targetDocumentRevision));
 	}
 
 	@Override
 	public DocumentResponse copyFromRevisionToExistingDocument(String id, String revision, String targetDocumentId, String targetDocumentRevision) throws CouchDbException {
 		instance.preAuthorize();
-		return instance.executeAndHandle(service.copyFromRevisionToDocument(id, revision, targetDocumentId + "?rev=" + targetDocumentRevision));
+		return instance.executeAndHandle(service.copyFromRevisionToDocument(encodeDocumentId(id), revision, targetDocumentId + "?rev=" + targetDocumentRevision));
 	}
 
 	@Override
 	public ViewResponse queryView(String designDoc, String viewName, ViewQueryParams viewQueryParams) throws CouchDbException {
+		designDoc = designDoc.replaceAll(designDoc, "_design/"); // Just in case the user added _design/ to this, let's make that valid
 		instance.preAuthorize();
-		return instance.executeAndHandle(service.queryView(designDoc, viewName, viewQueryParams));
+		return instance.executeAndHandle(service.queryView(encodeDocumentId(designDoc), viewName, viewQueryParams));
 	}
 
 	@Override

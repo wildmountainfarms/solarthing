@@ -3,7 +3,6 @@ package me.retrodaredevil.couchdb;
 
 import me.retrodaredevil.couchdbjava.CouchDbAuth;
 import me.retrodaredevil.couchdbjava.CouchDbInstance;
-import me.retrodaredevil.couchdbjava.okhttp.CouchDbDatabaseService;
 import me.retrodaredevil.couchdbjava.okhttp.OkHttpCouchDbInstance;
 import me.retrodaredevil.couchdbjava.okhttp.auth.BasicAuthHandler;
 import me.retrodaredevil.couchdbjava.okhttp.auth.CookieAuthHandler;
@@ -12,6 +11,7 @@ import me.retrodaredevil.okhttp3.OkHttpProperties;
 import me.retrodaredevil.okhttp3.OkHttpUtil;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 
 @UtilityClass
 public final class CouchDbUtil {
@@ -32,7 +32,13 @@ public final class CouchDbUtil {
 			authHandler = new BasicAuthHandler(CouchDbAuth.createNoAuth());
 		}
 
-		return new OkHttpCouchDbInstance(builder.build(), couchProperties.getHttpUrl(), authHandler);
+		return new OkHttpCouchDbInstance(
+				builder
+						.addInterceptor(new HttpLoggingInterceptor(System.out::println).setLevel(HttpLoggingInterceptor.Level.BODY))
+						.build(),
+				couchProperties.getHttpUrl(),
+				authHandler
+		);
 	}
 
 }

@@ -42,29 +42,29 @@ public interface CouchDbDatabaseService {
 	 * Puts the document into the database with the given id.
 	 * @param revision The revision of the existing document or null if this is a new document. This could also be null if you put the revision in the body.
 	 */
-	@PUT("./{docid}")
-	Call<DocumentResponse> putDocument(@Path("docid") String docid, @Header("Match-If") String revision, @Body RequestBody jsonRequestBody);
+	@PUT("{docid}")
+	Call<DocumentResponse> putDocument(@Path(value = "docid", encoded = true) String docid, @Header("Match-If") String revision, @Body RequestBody jsonRequestBody);
 
-	@DELETE("./{docid}")
-	Call<DocumentResponse> deleteDocument(@Path("docid") String docid, @Header("Match-If") String revision);
+	@DELETE("{docid}")
+	Call<DocumentResponse> deleteDocument(@Path(value = "docid", encoded = true) String docid, @Header("Match-If") String revision);
 
 
-	@HTTP(method = "COPY", path = "./{docid}")
-	Call<DocumentResponse> copyToDocument(@Path("docid") String docid, @Header("Destination") String newDocumentId);
+	@HTTP(method = "COPY", path = "{docid}")
+	Call<DocumentResponse> copyToDocument(@Path(value = "docid", encoded = true) String docid, @Header("Destination") String newDocumentId);
 
-	@HTTP(method = "COPY", path = "./{docid}")
-	Call<DocumentResponse> copyFromRevisionToDocument(@Path("docid") String docid, @Query("rev") String revision, @Header("Destination") String newDocumentId);
+	@HTTP(method = "COPY", path = "{docid}")
+	Call<DocumentResponse> copyFromRevisionToDocument(@Path(value = "docid", encoded = true) String docid, @Query("rev") String revision, @Header("Destination") String newDocumentId);
 
 
 
 
 	@POST("_design/{ddoc}/_view/{view}")
-	Call<ViewResponse> queryView(@Path("ddoc") String designDoc, @Path("view") String viewName, @Body ViewQueryParams viewQueryParams);
+	Call<ViewResponse> queryView(@Path(value = "ddoc", encoded = true) String designDoc, @Path("view") String viewName, @Body ViewQueryParams viewQueryParams);
 
 
-	@GET("./security")
+	@GET("_security")
 	Call<DatabaseSecurity> getSecurity();
 
-	@PUT("./security")
+	@PUT("_security")
 	Call<SimpleStatus> putSecurity(@Body DatabaseSecurity databaseSecurity);
 }
