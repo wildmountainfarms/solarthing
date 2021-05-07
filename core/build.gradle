@@ -14,6 +14,6 @@ dependencies {
     api "com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion"
     api "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
 
-    api 'org.ektorp:org.ektorp:1.5.0'
+//    api 'org.ektorp:org.ektorp:1.5.0'
 }
 

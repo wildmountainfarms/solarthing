@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import me.retrodaredevil.couchdbjava.exception.CouchDbCodeException;
 import me.retrodaredevil.couchdbjava.exception.CouchDbException;
+import me.retrodaredevil.couchdbjava.json.StringJsonData;
 import me.retrodaredevil.couchdbjava.okhttp.OkHttpCouchDbInstance;
 import me.retrodaredevil.couchdbjava.okhttp.auth.CookieAuthHandler;
 import me.retrodaredevil.couchdbjava.response.CouchDbGetResponse;
@@ -54,7 +55,7 @@ public class CouchDbTestMain {
 
 		CouchDbDatabase database = instance.getDatabase("test");
 		database.createIfNotExists();
-		DocumentResponse documentResponse = database.postNewDocument("{\"hi\": 3}");
+		DocumentResponse documentResponse = database.postNewDocument(new StringJsonData("{\"hi\": 3}"));
 		System.out.println(MAPPER.writeValueAsString(documentResponse));
 		System.out.println(database.getCurrentRevision(documentResponse.getId()));
 		System.out.println(database.getDocument(documentResponse.getId()).getJsonData().getJson());

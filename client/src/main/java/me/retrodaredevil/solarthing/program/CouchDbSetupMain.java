@@ -4,35 +4,33 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import me.retrodaredevil.couchdb.CouchDbUtil;
 import me.retrodaredevil.couchdb.DocumentWrapper;
-import me.retrodaredevil.couchdb.EktorpUtil;
 import me.retrodaredevil.couchdb.design.DefaultPacketsDesign;
 import me.retrodaredevil.couchdb.design.SimpleView;
+import me.retrodaredevil.couchdbjava.CouchDbDatabase;
+import me.retrodaredevil.couchdbjava.CouchDbInstance;
+import me.retrodaredevil.couchdbjava.exception.CouchDbException;
+import me.retrodaredevil.couchdbjava.exception.CouchDbNotFoundException;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
-import org.ektorp.*;
-import org.ektorp.http.HttpClient;
-import org.ektorp.impl.StdCouchDbConnector;
-import org.ektorp.impl.StdCouchDbInstance;
-import org.ektorp.impl.StdObjectMapperFactory;
 
 import java.util.*;
 
 public class CouchDbSetupMain {
-	private static void createDatabase(CouchDbInstance instance, String database) {
-		if (instance.createDatabaseIfNotExists(database)) {
+	private static void createDatabase(CouchDbInstance instance, String database) throws CouchDbException {
+		if (instance.getDatabase(database).createIfNotExists()) {
 			System.out.println("Created " + database);
 		} else {
 			System.out.println("Already exists: " + database);
 		}
 	}
-	public static int doCouchDbSetupMain(CouchDbDatabaseSettings settings) {
+	public static int doCouchDbSetupMain(CouchDbDatabaseSettings settings) throws CouchDbException {
 		System.out.println("You will now setup your CouchDB instance! Some databases will be automatically created (enter)");
 		Scanner scanner = new Scanner(System.in);
 		scanner.nextLine();
 
-		HttpClient httpClient = EktorpUtil.createHttpClient(settings.getCouchProperties());
-		CouchDbInstance instance = new StdCouchDbInstance(httpClient);
+		CouchDbInstance instance = CouchDbUtil.createInstance(settings.getCouchProperties(), settings.getOkHttpProperties());
 		createDatabase(instance, "solarthing");
 		createDatabase(instance, "solarthing_events");
 		createDatabase(instance, "solarthing_closed");
@@ -51,17 +49,12 @@ public class CouchDbSetupMain {
 		}
 		scanner.nextLine();
 		if (username != null) {
-			CouchDbConnector usersClient = new StdCouchDbConnector("_users", instance, new StdObjectMapperFactory() {
-				@Override
-				protected void applyDefaultConfiguration(ObjectMapper om) {
-					JacksonUtil.defaultMapper(om);
-				}
-			});
+			CouchDbDatabase usersDatabase = instance.getUsersDatabase();
 
 			UserEntry user = null;
 			try {
 				user = usersClient.get(UserEntry.class, "org.couchdb.user:" + username);
-			} catch (DocumentNotFoundException ignored) {
+			} catch (CouchDbNotFoundException ignored) {
 			}
 			if (user != null) {
 				System.out.println("The specified user exists! Continuing");

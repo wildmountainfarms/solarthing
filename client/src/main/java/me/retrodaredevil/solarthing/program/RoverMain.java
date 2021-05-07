@@ -45,11 +45,6 @@ public class RoverMain {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RoverMain.class);
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
 
-	public static final SerialConfig ROVER_CONFIG = new SerialConfigBuilder(9600)
-			.setDataBits(8)
-			.setParity(SerialConfig.Parity.NONE)
-			.setStopBits(SerialConfig.StopBits.ONE)
-			.build();
 
 	private static int doRover(RoverProgramOptions options, AnalyticsManager analyticsManager, List<DataRequester> dataRequesterList){
 		return doRoverProgram(options, (slave, read, write, reloadCache, reloadIO) -> {
@@ -131,7 +126,7 @@ public class RoverMain {
 			runner.doProgram(null, readWrite, readWrite, () -> {}, () -> {});
 			return 0;
 		} else {
-			IOConfig ioConfig = SolarMain.parseIOConfig(options.getIOBundleFile(), ROVER_CONFIG);
+			IOConfig ioConfig = ConfigUtil.parseIOConfig(options.getIOBundleFile(), RoverReadTable.SERIAL_CONFIG);
 			try(ReloadableIOBundle ioBundle = new ReloadableIOBundle(ioConfig::createIOBundle)) {
 				ModbusSlaveBus modbus = new IOModbusSlaveBus(ioBundle, new RtuDataEncoder(2000, 20, 4));
 				MutableAddressModbusSlave slave = new MutableAddressModbusSlave(options.getModbusAddress(), modbus);

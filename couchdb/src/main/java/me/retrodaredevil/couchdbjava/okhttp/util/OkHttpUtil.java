@@ -3,13 +3,10 @@ package me.retrodaredevil.couchdbjava.okhttp.util;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import me.retrodaredevil.couchdbjava.CouchDbDatabase;
 import me.retrodaredevil.couchdbjava.CouchDbStatusCode;
-import me.retrodaredevil.couchdbjava.exception.CouchDbCodeException;
-import me.retrodaredevil.couchdbjava.exception.CouchDbException;
-import me.retrodaredevil.couchdbjava.exception.CouchDbUnauthorizedException;
+import me.retrodaredevil.couchdbjava.exception.*;
+import me.retrodaredevil.couchdbjava.json.JsonData;
 import me.retrodaredevil.couchdbjava.response.ErrorResponse;
-import me.retrodaredevil.couchdbjava.response.SessionGetResponse;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okhttp3.Response;
@@ -28,6 +25,9 @@ public final class OkHttpUtil {
 	public static RequestBody createJsonRequestBody(String json) {
 		requireNonNull(json);
 		return RequestBody.create(json, MediaType.parse("application/json; charset=utf-8"));
+	}
+	public static RequestBody createJsonRequestBody(JsonData jsonData) {
+		return createJsonRequestBody(jsonData.getJson());
 	}
 
 	public static <T> T parseResponseBodyJson(ResponseBody body, Class<T> clazz) throws CouchDbException {
@@ -70,10 +70,14 @@ public final class OkHttpUtil {
 	}
 	private static CouchDbException createException(ErrorResponse error, int code) {
 		switch(code) {
+			case CouchDbStatusCode.NOT_MODIFIED:
+				return new CouchDbNotModifiedException("Not modified!", error);
 			case CouchDbStatusCode.UNAUTHORIZED:
 				return new CouchDbUnauthorizedException("You are unauthorized!", error);
 			case CouchDbStatusCode.NOT_FOUND:
-				return new CouchDbCodeException("Got 'not found'!", code, error);
+				return new CouchDbNotFoundException("Got 'not found'!", error);
+			case CouchDbStatusCode.UPDATE_CONFLICT:
+				return new CouchDbUpdateConflictException("Update conflict!", error);
 		}
 		return new CouchDbCodeException("Unknown status code! code: " + code, code, error);
 	}

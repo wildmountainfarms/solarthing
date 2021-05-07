@@ -1,7 +1,9 @@
 package me.retrodaredevil.solarthing.program;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import me.retrodaredevil.couchdb.CouchDbUtil;
 import me.retrodaredevil.couchdb.CouchProperties;
+import me.retrodaredevil.couchdbjava.CouchDbInstance;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.config.databases.IndividualSettings;
@@ -51,16 +53,16 @@ public class PacketHandlerInit {
 
 			if (CouchDbDatabaseSettings.TYPE.equals(config.getType())) {
 				CouchDbDatabaseSettings settings = (CouchDbDatabaseSettings) config.getSettings();
-				CouchProperties couchProperties = settings.getCouchProperties();
+				CouchDbInstance instance = CouchDbUtil.createInstance(settings.getCouchProperties(), settings.getOkHttpProperties());
 				statusPacketHandlers.add(new ThrottleFactorPacketHandler(
-						new PrintPacketHandleExceptionWrapper(new CouchDbPacketSaver(couchProperties, uniqueStatusName)),
+						new PrintPacketHandleExceptionWrapper(new CouchDbPacketSaver(instance.getDatabase(uniqueStatusName))),
 						statusFrequencySettings,
 						true
 				));
 				// TODO We should use Constants.DATABASE_UPLOAD_EVENT_ID and its FrequencySettings to stop this from doing stuff too frequently.
 				// The reason we aren't going to use a ThrottleFactorPacketHandler is all "event" packets are important. We do not want to
 				// miss adding a single event packet to a database
-				eventPacketHandlers.add(new RetryFailedPacketHandler(new CouchDbPacketSaver(couchProperties, uniqueEventName), 7));
+				eventPacketHandlers.add(new RetryFailedPacketHandler(new CouchDbPacketSaver(instance.getDatabase(uniqueEventName)), 7));
 			} else if(InfluxDbDatabaseSettings.TYPE.equals(config.getType())) {
 				LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "You are using InfluxDB 1.X! It is recommended that you switch to 2.0, but is not required.");
 				InfluxDbDatabaseSettings settings = (InfluxDbDatabaseSettings) config.getSettings();

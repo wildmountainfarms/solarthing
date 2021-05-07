@@ -1,6 +1,7 @@
 package me.retrodaredevil.couchdbjava;
 
 import me.retrodaredevil.couchdbjava.exception.CouchDbException;
+import me.retrodaredevil.couchdbjava.json.JsonData;
 import me.retrodaredevil.couchdbjava.option.DatabaseCreationOption;
 import me.retrodaredevil.couchdbjava.response.DatabaseInfo;
 import me.retrodaredevil.couchdbjava.response.DocumentData;
@@ -19,26 +20,27 @@ public interface CouchDbDatabase {
 
 	DatabaseInfo getDatabaseInfo() throws CouchDbException;
 
-	DocumentResponse postNewDocument(String json) throws CouchDbException;
+	DocumentResponse postNewDocument(JsonData jsonData) throws CouchDbException;
 
 	/**
 	 * Puts a document with the given id in the database. This will either create a new document,
 	 * or may update an existing one. If updating an existing one, the json must have a `_rev` field
 	 * with the value of the current revision of the desired document to update.
 	 */
-	DocumentResponse putDocument(String id, String json) throws CouchDbException;
+	DocumentResponse putDocument(String id, JsonData jsonData) throws CouchDbException;
 
 	/**
-	 * Similar to {@link #putDocument(String, String)}, except this is only for updating existing
+	 * Similar to {@link #putDocument(String, JsonData)}, except this is only for updating existing
 	 * documents
 	 *
 	 * Uses the "If-Match" header to update this document
 	 */
-	DocumentResponse updateDocument(String id, String revision, String json) throws CouchDbException;
+	DocumentResponse updateDocument(String id, String revision, JsonData jsonData) throws CouchDbException;
 
 	DocumentResponse deleteDocument(String id, String revision) throws CouchDbException;
 
 	DocumentData getDocument(String id) throws CouchDbException;
+	DocumentData getDocumentIfUpdated(String id, String revision) throws CouchDbException;
 	String getCurrentRevision(String id) throws CouchDbException;
 
 	DocumentResponse copyToNewDocument(String id, String newDocumentId) throws CouchDbException;
@@ -47,6 +49,9 @@ public interface CouchDbDatabase {
 	DocumentResponse copyFromRevisionToExistingDocument(String id, String revision, String targetDocumentId, String targetDocumentRevision) throws CouchDbException;
 
 
-	ViewResponse queryView(String designDoc, String viewName, ViewQuery viewQuery) throws CouchDbException;
+	ViewResponse queryView(String designDoc, String viewName, ViewQueryParams viewQueryParams) throws CouchDbException;
+	default ViewResponse queryView(ViewQuery viewQuery) throws CouchDbException {
+		return queryView(viewQuery.getDesignDoc(), viewQuery.getViewName(), viewQuery.getParams());
+	}
 
 }

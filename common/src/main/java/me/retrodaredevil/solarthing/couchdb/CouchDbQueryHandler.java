@@ -1,38 +1,60 @@
 package me.retrodaredevil.solarthing.couchdb;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import me.retrodaredevil.couchdbjava.CouchDbDatabase;
+import me.retrodaredevil.couchdbjava.ViewQuery;
+import me.retrodaredevil.couchdbjava.exception.CouchDbException;
+import me.retrodaredevil.couchdbjava.exception.CouchDbNotFoundException;
+import me.retrodaredevil.couchdbjava.json.JsonData;
+import me.retrodaredevil.couchdbjava.json.jackson.CouchDbJacksonUtil;
+import me.retrodaredevil.couchdbjava.json.jackson.JacksonJsonData;
+import me.retrodaredevil.couchdbjava.response.ViewResponse;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
-import org.ektorp.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Objects.requireNonNull;
+
 public class CouchDbQueryHandler {
 //	private final Logger LOGGER = LoggerFactory.getLogger(CouchDbQueryHandler.class);
 
-	private final CouchDbConnector connector;
+	private final CouchDbDatabase database;
 
-	public CouchDbQueryHandler(CouchDbConnector connector) {
-		this.connector = connector;
+	public CouchDbQueryHandler(CouchDbDatabase database) {
+		requireNonNull(this.database = database);
 	}
+
 	public List<ObjectNode> query(ViewQuery query) throws PacketHandleException{
-		final ViewResult result;
+		final ViewResponse response;
 		try {
-			result = connector.queryView(query);
-		} catch(DocumentNotFoundException e){
+			response = database.queryView(query);
+		} catch(CouchDbNotFoundException e){
 			throw new PacketHandleException("Document not found... Maybe the view hasn't been created in design? query: " + query, e);
-		} catch(DbAccessException e){
+		} catch(CouchDbException e){
 			String message = e.getMessage();
 			if (message != null && message.contains("No rows can match your key range")) {
 				throw new PacketHandleException("There must be something wrong with your query. query: " + query, e);
 			}
 			throw new PacketHandleException("This probably means we couldn't reach the database", e);
 		}
-		List<ViewResult.Row> rows = result.getRows();
+		List<ViewResponse.DocumentEntry> rows = response.getRows();
 		List<ObjectNode> packets = new ArrayList<>(rows.size());
-		for (ViewResult.Row row : rows) {
-			ObjectNode value = (ObjectNode) row.getValueAsNode();
-			packets.add(value);
+		for (ViewResponse.DocumentEntry row : rows) {
+			JsonData value = row.getValue();
+			final JsonNode jsonNode;
+			try {
+				jsonNode = CouchDbJacksonUtil.getNodeFrom(value);
+			} catch (JsonProcessingException e) {
+				throw new PacketHandleException("Couldn't parse JSON data!", e);
+			}
+			if (!(jsonNode instanceof ObjectNode)) {
+				throw new IllegalStateException("One of the values is not an ObjectNode! This probably means that your view isn't correct. Please report this bug.");
+			}
+			ObjectNode node = (ObjectNode) jsonNode;
+			packets.add(node);
 		}
 		return packets;
 	}

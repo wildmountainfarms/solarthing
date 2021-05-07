@@ -24,7 +24,7 @@ public class CouchDbSolarThingTest {
 		ViewResponse response = instance.getDatabase("solarthing").queryView(
 				"packets",
 				"millis",
-				new ViewQueryBuilder()
+				new ViewQueryParamsBuilder()
 						.startKey(9999999999999L)
 						.limit(10)
 						.descending()

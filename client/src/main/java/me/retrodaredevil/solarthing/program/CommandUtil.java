@@ -1,6 +1,9 @@
 package me.retrodaredevil.solarthing.program;
 
+import me.retrodaredevil.couchdb.CouchDbUtil;
 import me.retrodaredevil.couchdb.CouchProperties;
+import me.retrodaredevil.couchdbjava.CouchDbInstance;
+import me.retrodaredevil.couchdbjava.ViewQueryParamsBuilder;
 import me.retrodaredevil.solarthing.PacketGroupReceiver;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.commands.packets.open.CommandOpenPacket;
@@ -14,7 +17,6 @@ import me.retrodaredevil.solarthing.packets.handling.FrequencySettings;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
 import me.retrodaredevil.solarthing.packets.handling.PrintPacketHandleExceptionWrapper;
 import me.retrodaredevil.solarthing.packets.handling.ThrottleFactorPacketHandler;
-import org.ektorp.ViewQuery;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,23 +29,20 @@ public class CommandUtil {
 		for(DatabaseConfig config : databaseConfigs){
 			if(CouchDbDatabaseSettings.TYPE.equals(config.getType())){
 				CouchDbDatabaseSettings settings = (CouchDbDatabaseSettings) config.getSettings();
-				CouchProperties couchProperties = settings.getCouchProperties();
+				CouchDbInstance instance = CouchDbUtil.createInstance(settings.getCouchProperties(), settings.getOkHttpProperties());
 
 				IndividualSettings individualSettings = config.getIndividualSettingsOrDefault(Constants.DATABASE_COMMAND_DOWNLOAD_ID, null);
 				FrequencySettings frequencySettings = individualSettings != null ? individualSettings.getFrequencySettings() : FrequencySettings.NORMAL_SETTINGS;
 				commandRequesterHandlerList.add(new ThrottleFactorPacketHandler(new PrintPacketHandleExceptionWrapper(
 						new CouchDbPacketRetrieverHandler(
 								new CouchDbPacketRetriever(
-										couchProperties,
-										SolarThingConstants.OPEN_UNIQUE_NAME
-								) {
-									@Override
-									protected ViewQuery alterView(ViewQuery view) {
-										return super.alterView(view).startKey(System.currentTimeMillis() - 5 * 60 * 1000); // last 5 minutes
-									}
-								},
+										instance.getDatabase(SolarThingConstants.OPEN_UNIQUE_NAME),
+										() -> new ViewQueryParamsBuilder()
+												.startKey(System.currentTimeMillis() - 5 * 60 * 1000)
+												.build()
+								),
 								new SecurityPacketReceiver(
-										CouchDbDocumentKeyMap.createDefault(couchProperties),
+										CouchDbDocumentKeyMap.createDefault(instance),
 										packetGroupReceiver,
 										options.getSourceId(), options.getFragmentId(),
 										Collections.singleton(CommandOpenPacket.class)

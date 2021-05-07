@@ -1,18 +1,19 @@
 package me.retrodaredevil.solarthing.couchdb;
 
-import me.retrodaredevil.couchdb.CouchProperties;
-import me.retrodaredevil.couchdb.EktorpUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import me.retrodaredevil.couchdbjava.CouchDbDatabase;
+import me.retrodaredevil.couchdbjava.CouchDbInstance;
+import me.retrodaredevil.couchdbjava.exception.CouchDbException;
+import me.retrodaredevil.couchdbjava.exception.CouchDbNotFoundException;
+import me.retrodaredevil.couchdbjava.exception.CouchDbNotModifiedException;
+import me.retrodaredevil.couchdbjava.json.jackson.CouchDbJacksonUtil;
+import me.retrodaredevil.couchdbjava.response.DocumentData;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.closed.authorization.AuthorizationPacket;
 import me.retrodaredevil.solarthing.closed.authorization.PermissionObject;
 import me.retrodaredevil.solarthing.packets.security.crypto.PublicKeyLookUp;
-import org.ektorp.CouchDbConnector;
-import org.ektorp.CouchDbInstance;
-import org.ektorp.DbAccessException;
-import org.ektorp.DocumentNotFoundException;
-import org.ektorp.http.HttpClient;
-import org.ektorp.impl.StdCouchDbConnector;
-import org.ektorp.impl.StdCouchDbInstance;
+import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,35 +21,46 @@ import java.security.PublicKey;
 
 public class CouchDbDocumentKeyMap implements PublicKeyLookUp {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CouchDbDocumentKeyMap.class);
+	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
 
-	private final CouchDbConnector connector;
+	private final CouchDbDatabase database;
 	private final String documentName;
 
 	private AuthorizationPacket authorizationPacket = null;
+	private String lastRevision = null;
 	private boolean notFound = false;
 	private Long lastUpdate = null;
 
-	public CouchDbDocumentKeyMap(CouchDbConnector connector, String documentName) {
-		this.connector = connector;
+	public CouchDbDocumentKeyMap(CouchDbDatabase database, String documentName) {
+		this.database = database;
 		this.documentName = documentName;
 	}
-	public static CouchDbDocumentKeyMap createDefault(CouchProperties couchProperties) {
-		final HttpClient httpClient = EktorpUtil.createHttpClient(couchProperties);
-		CouchDbInstance instance = new StdCouchDbInstance(httpClient);
-		return new CouchDbDocumentKeyMap(new StdCouchDbConnector(SolarThingConstants.CLOSED_UNIQUE_NAME, instance), "authorized");
+	public static CouchDbDocumentKeyMap createDefault(CouchDbInstance couchDbInstance) {
+		return new CouchDbDocumentKeyMap(couchDbInstance.getDatabase(SolarThingConstants.CLOSED_UNIQUE_NAME), "authorized");
 	}
 
 	private void updatePacket() {
+		DocumentData documentData = null;
 		try {
-			authorizationPacket = connector.find(AuthorizationPacket.class, documentName);
+			documentData = database.getDocumentIfUpdated(documentName, lastRevision);
 			notFound = false;
 			LOGGER.debug("Got new auth packet. senders: " + authorizationPacket.getSenderPermissions().keySet());
-		} catch (DocumentNotFoundException e) {
-			notFound = true;
-			LOGGER.info("Could not find document: " + documentName + " on database: " + connector.getDatabaseName());
-		} catch (DbAccessException e) {
-			LOGGER.error("Could not access database: " + connector.getDatabaseName(), e);
+		} catch (CouchDbNotModifiedException ignored) {
 			notFound = false;
+		} catch (CouchDbNotFoundException e) {
+			notFound = true;
+			LOGGER.info("Could not find document: " + documentName + " on database: " + database.getName());
+		} catch (CouchDbException e) {
+			LOGGER.error("Could not access database: " + database.getName(), e);
+			notFound = false;
+		}
+		if (documentData != null) {
+			try {
+				authorizationPacket = CouchDbJacksonUtil.readValue(MAPPER, documentData.getJsonData(), AuthorizationPacket.class);
+				lastRevision = documentData.getRevision();
+			} catch (JsonProcessingException e) {
+				LOGGER.error("Could not parse JSON!", e);
+			}
 		}
 		lastUpdate = System.currentTimeMillis();
 	}

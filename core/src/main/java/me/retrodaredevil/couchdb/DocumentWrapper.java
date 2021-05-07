@@ -10,6 +10,7 @@ import me.retrodaredevil.solarthing.annotations.JsonExplicit;
  * A simple class that wraps an object. This can be used with the Ektorp library and in CouchDB applications that use Jackson.
  */
 @JsonExplicit
+@Deprecated
 public class DocumentWrapper {
 	private final String id;
 	private String rev = null;

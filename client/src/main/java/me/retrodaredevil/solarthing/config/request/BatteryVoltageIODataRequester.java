@@ -6,8 +6,8 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.io.IOBundle;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
+import me.retrodaredevil.solarthing.program.ConfigUtil;
 import me.retrodaredevil.solarthing.program.RoverMain;
-import me.retrodaredevil.solarthing.program.SolarMain;
 import me.retrodaredevil.solarthing.solar.batteryvoltage.BatteryVoltageIOListUpdater;
 
 import java.io.File;
@@ -39,7 +39,7 @@ public class BatteryVoltageIODataRequester implements DataRequester {
 
 	@Override
 	public PacketListReceiver createPacketListReceiver(PacketListReceiver eventPacketReceiver) {
-		final IOBundle ioBundle = SolarMain.createIOBundle(ioBundleFile, RoverMain.ROVER_CONFIG);
+		final IOBundle ioBundle = ConfigUtil.createIOBundle(ioBundleFile, RoverMain.ROVER_CONFIG);
 
 		return new BatteryVoltageIOListUpdater(ioBundle.getInputStream(), dataId, multiplier, invalidWhenBelow, invalidWhenAbove);
 	}

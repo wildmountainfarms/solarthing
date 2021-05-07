@@ -2,9 +2,12 @@ package me.retrodaredevil.solarthing.graphql;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import me.retrodaredevil.couchdb.CouchDbUtil;
 import me.retrodaredevil.couchdb.CouchProperties;
-import me.retrodaredevil.couchdb.EktorpUtil;
+import me.retrodaredevil.couchdbjava.CouchDbInstance;
+import me.retrodaredevil.couchdbjava.ViewQueryParamsBuilder;
 import me.retrodaredevil.solarthing.SolarThingConstants;
+import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.couchdb.CouchDbQueryHandler;
 import me.retrodaredevil.solarthing.couchdb.SolarThingCouchDb;
 import me.retrodaredevil.solarthing.meta.*;
@@ -24,10 +27,6 @@ import me.retrodaredevil.solarthing.solar.outback.command.packets.MateCommandFee
 import me.retrodaredevil.solarthing.solar.outback.fx.meta.FXChargingSettingsPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.meta.FXChargingTemperatureAdjustPacket;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
-import org.ektorp.CouchDbInstance;
-import org.ektorp.http.HttpClient;
-import org.ektorp.impl.StdCouchDbConnector;
-import org.ektorp.impl.StdCouchDbInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +42,7 @@ public class SimpleQueryHandler {
 	private final MetaQueryHandler metaQueryHandler;
 	private final PacketGroupParser statusParser;
 	private final PacketGroupParser eventParser;
-	public SimpleQueryHandler(DefaultInstanceOptions defaultInstanceOptions, ObjectMapper originalObjectMapper, CouchProperties couchProperties) {
+	public SimpleQueryHandler(DefaultInstanceOptions defaultInstanceOptions, ObjectMapper originalObjectMapper, CouchDbDatabaseSettings couchDbDatabaseSettings) {
 		this.defaultInstanceOptions = defaultInstanceOptions;
 		ObjectMapper objectMapper = JacksonUtil.lenientMapper(originalObjectMapper.copy());
 		statusParser = new SimplePacketGroupParser(new LenientPacketParser(
@@ -53,13 +52,12 @@ public class SimpleQueryHandler {
 				MultiPacketConverter.createFrom(objectMapper, SolarEventPacket.class, MateCommandFeedbackPacket.class, InstancePacket.class)
 		));
 
-		final HttpClient httpClient = EktorpUtil.createHttpClient(couchProperties);
-		CouchDbInstance instance = new StdCouchDbInstance(httpClient);
-		statusQueryHandler = new CouchDbQueryHandler(new StdCouchDbConnector(SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, instance));
-		eventQueryHandler = new CouchDbQueryHandler(new StdCouchDbConnector(SolarThingConstants.SOLAR_EVENT_UNIQUE_NAME, instance));
+		CouchDbInstance instance = CouchDbUtil.createInstance(couchDbDatabaseSettings.getCouchProperties(), couchDbDatabaseSettings.getOkHttpProperties());
+		statusQueryHandler = new CouchDbQueryHandler(instance.getDatabase(SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME));
+		eventQueryHandler = new CouchDbQueryHandler(instance.getDatabase(SolarThingConstants.SOLAR_EVENT_UNIQUE_NAME));
 		ObjectMapper metaObjectMapper = objectMapper.copy();
 		metaObjectMapper.getSubtypeResolver().registerSubtypes(TargetMetaPacket.class, DeviceInfoPacket.class, DataMetaPacket.class, FXChargingSettingsPacket.class, FXChargingTemperatureAdjustPacket.class);
-		metaQueryHandler = new MetaQueryHandler(new StdCouchDbConnector(SolarThingConstants.CLOSED_UNIQUE_NAME, instance), metaObjectMapper);
+		metaQueryHandler = new MetaQueryHandler(instance.getDatabase(SolarThingConstants.CLOSED_UNIQUE_NAME), metaObjectMapper);
 	}
 
 	/**
@@ -86,10 +84,11 @@ public class SimpleQueryHandler {
 	private List<? extends InstancePacketGroup> queryPackets(CouchDbQueryHandler queryHandler, PacketGroupParser parser, long from, long to, String sourceId) {
 		final List<ObjectNode> packets;
 		try {
-			packets = queryHandler.query(SolarThingCouchDb.createMillisView()
+			packets = queryHandler.query(SolarThingCouchDb.createMillisView(new ViewQueryParamsBuilder()
 					.startKey(from)
 					.endKey(to)
-					.cacheOk(true));
+					.build()));
+			// TODO when we used Ektorp, it gave us a cacheOk option. We need to figure out how this ties to our new CouchDB API
 		} catch (PacketHandleException e) {
 			throw new RuntimeException(e);
 		}

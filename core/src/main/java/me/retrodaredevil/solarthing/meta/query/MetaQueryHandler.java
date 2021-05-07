@@ -1,22 +1,25 @@
 package me.retrodaredevil.solarthing.meta.query;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import me.retrodaredevil.couchdbjava.CouchDbDatabase;
+import me.retrodaredevil.couchdbjava.exception.CouchDbException;
+import me.retrodaredevil.couchdbjava.exception.CouchDbNotFoundException;
+import me.retrodaredevil.couchdbjava.json.JsonData;
+import me.retrodaredevil.couchdbjava.json.jackson.CouchDbJacksonUtil;
+import me.retrodaredevil.couchdbjava.response.DocumentData;
 import me.retrodaredevil.solarthing.meta.RootMetaPacket;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
-import org.ektorp.CouchDbConnector;
-import org.ektorp.DbAccessException;
 
 /**
  * Handles the querying of the meta document from the solarthing_closed database. ({@link me.retrodaredevil.solarthing.SolarThingConstants#CLOSED_UNIQUE_NAME})
  */
 public class MetaQueryHandler {
-	private final CouchDbConnector closedConnector;
+	private final CouchDbDatabase database;
 	private final ObjectMapper objectMapper;
 
-	public MetaQueryHandler(CouchDbConnector closedConnector, ObjectMapper objectMapper) {
-		this.closedConnector = closedConnector;
+	public MetaQueryHandler(CouchDbDatabase database, ObjectMapper objectMapper) {
+		this.database = database;
 		this.objectMapper = JacksonUtil.lenientSubTypeMapper(objectMapper.copy());
 	}
 
@@ -25,17 +28,17 @@ public class MetaQueryHandler {
 	 * @throws MetaException Thrown if database could not be accessed, if the meta document does not exist, or if this failed to parse the meta document correctly
 	 */
 	public RootMetaPacket query() throws MetaException {
-		final JsonNode jsonNode;
+		final DocumentData data;
 		try {
-			jsonNode = closedConnector.find(JsonNode.class, "meta");
-		} catch(DbAccessException e) {
-			throw new MetaException("Could not access database", e);
-		}
-		if (jsonNode == null) {
+			data = database.getDocument("meta");
+		} catch(CouchDbNotFoundException e){
 			throw new MetaException("Could not find meta document! You should add a meta document even if you aren't going to use it so it can be cached!");
+		} catch (CouchDbException e) {
+			throw new MetaException(e);
 		}
+		JsonData jsonData = data.getJsonData();
 		try {
-			return objectMapper.treeToValue(jsonNode, RootMetaPacket.class);
+			return CouchDbJacksonUtil.readValue(objectMapper, jsonData, RootMetaPacket.class);
 		} catch (JsonProcessingException e) {
 			throw new MetaException("Invalid meta! Failed to parse!", e);
 		}

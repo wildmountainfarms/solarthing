@@ -128,17 +128,17 @@ public class GraphQLProvider {
 
 		DefaultInstanceOptions defaultInstanceOptions = DefaultInstanceOptions.create(getDefaultSourceId(), getDefaultFragmentId());
 		System.out.println("Using defaultInstanceOptions=" + defaultInstanceOptions);
-		GraphQLSchema schema = createGraphQLSchemaGenerator(objectMapper, couchDbDatabaseSettings.getCouchProperties(), defaultInstanceOptions, solcastConfig).generate();
+		GraphQLSchema schema = createGraphQLSchemaGenerator(objectMapper, couchDbDatabaseSettings, defaultInstanceOptions, solcastConfig).generate();
 
 		this.graphQL = GraphQL.newGraphQL(schema).build();
 	}
 
-	static GraphQLSchemaGenerator createGraphQLSchemaGenerator(ObjectMapper objectMapper, CouchProperties couchProperties, DefaultInstanceOptions defaultInstanceOptions, @NotNull SolcastConfig solcastConfig) {
+	static GraphQLSchemaGenerator createGraphQLSchemaGenerator(ObjectMapper objectMapper, CouchDbDatabaseSettings couchDbDatabaseSettings, DefaultInstanceOptions defaultInstanceOptions, @NotNull SolcastConfig solcastConfig) {
 		JacksonValueMapperFactory jacksonValueMapperFactory = JacksonValueMapperFactory.builder()
 				.withPrototype(objectMapper)
 				.build();
 		ResolverBuilder resolverBuilder = new AnnotatedResolverBuilder();
-		SimpleQueryHandler simpleQueryHandler = new SimpleQueryHandler(defaultInstanceOptions, objectMapper, couchProperties);
+		SimpleQueryHandler simpleQueryHandler = new SimpleQueryHandler(defaultInstanceOptions, objectMapper, couchDbDatabaseSettings);
 		ZoneId zoneId = ZoneId.systemDefault(); // In the future, we could make this customizable, but like, bro just make sure your system time is correct
 		System.out.println("Using timezone: " + zoneId);
 		return new GraphQLSchemaGenerator()

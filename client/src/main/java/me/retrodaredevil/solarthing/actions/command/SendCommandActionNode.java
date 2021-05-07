@@ -7,9 +7,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.Actions;
-import me.retrodaredevil.couchdb.CouchProperties;
-import me.retrodaredevil.couchdb.DocumentWrapper;
-import me.retrodaredevil.couchdb.EktorpUtil;
+import me.retrodaredevil.couchdb.CouchDbUtil;
+import me.retrodaredevil.couchdbjava.CouchDbDatabase;
+import me.retrodaredevil.couchdbjava.CouchDbInstance;
+import me.retrodaredevil.couchdbjava.exception.CouchDbException;
+import me.retrodaredevil.couchdbjava.json.StringJsonData;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.actions.ActionNode;
 import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
@@ -17,6 +19,7 @@ import me.retrodaredevil.solarthing.actions.environment.CouchDbEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.SourceIdEnvironment;
 import me.retrodaredevil.solarthing.commands.packets.open.ImmutableRequestCommandPacket;
 import me.retrodaredevil.solarthing.commands.packets.open.RequestCommandPacket;
+import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollections;
@@ -27,10 +30,6 @@ import me.retrodaredevil.solarthing.packets.instance.InstanceTargetPackets;
 import me.retrodaredevil.solarthing.packets.security.ImmutableLargeIntegrityPacket;
 import me.retrodaredevil.solarthing.packets.security.crypto.*;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
-import org.ektorp.CouchDbConnector;
-import org.ektorp.DbAccessException;
-import org.ektorp.impl.StdCouchDbConnector;
-import org.ektorp.impl.StdCouchDbInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -116,11 +115,10 @@ public class SendCommandActionNode implements ActionNode {
 		InstanceSourcePacket instanceSourcePacket = InstanceSourcePackets.create(sourceId);
 		InstanceTargetPacket instanceTargetPacket = InstanceTargetPackets.create(fragmentIdTargets);
 
-		CouchProperties couchProperties = actionEnvironment.getInjectEnvironment().get(CouchDbEnvironment.class).getCouchProperties();
-		CouchDbConnector client = new StdCouchDbConnector(
-				SolarThingConstants.OPEN_UNIQUE_NAME,
-				new StdCouchDbInstance(EktorpUtil.createHttpClient(couchProperties))
-		);
+		CouchDbDatabaseSettings databaseSettings = actionEnvironment.getInjectEnvironment().get(CouchDbEnvironment.class).getDatabaseSettings();
+		CouchDbInstance instance = CouchDbUtil.createInstance(databaseSettings.getCouchProperties(), databaseSettings.getOkHttpProperties());
+		CouchDbDatabase database = instance.getDatabase(SolarThingConstants.OPEN_UNIQUE_NAME);
+
 		return Actions.createRunOnce(() -> {
 			PacketCollection encryptedCollection = PacketCollections.createFromPackets(
 					Arrays.asList(requestCommandPacket, instanceSourcePacket, instanceTargetPacket),
@@ -146,14 +144,18 @@ public class SendCommandActionNode implements ActionNode {
 					),
 					PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR, TimeZone.getDefault()
 			);
-			DocumentWrapper documentWrapper = new DocumentWrapper(packetCollection.getDbId());
-			documentWrapper.setObject(packetCollection);
+			final String packetCollectionJson;
+			try {
+				packetCollectionJson = MAPPER.writeValueAsString(packetCollection);
+			} catch (JsonProcessingException e) {
+				throw new RuntimeException("ERROR! Couldn't write the packet collection as JSON! Please report this error!", e);
+			}
 			try {
 				// TODO make this not block (separate thread?)
-				client.createDatabaseIfNotExists();
-				client.create(documentWrapper);
+				database.createIfNotExists();
+				database.putDocument(packetCollection.getDbId(), new StringJsonData(packetCollectionJson));
 				LOGGER.info("Uploaded command request document");
-			} catch (DbAccessException e) {
+			} catch (CouchDbException e) {
 				LOGGER.error("Error while uploading document.", e);
 			}
 		});

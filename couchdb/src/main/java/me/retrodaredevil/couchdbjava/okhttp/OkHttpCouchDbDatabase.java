@@ -2,14 +2,14 @@ package me.retrodaredevil.couchdbjava.okhttp;
 
 import me.retrodaredevil.couchdbjava.CouchDbDatabase;
 import me.retrodaredevil.couchdbjava.CouchDbStatusCode;
-import me.retrodaredevil.couchdbjava.ViewQuery;
+import me.retrodaredevil.couchdbjava.ViewQueryParams;
 import me.retrodaredevil.couchdbjava.exception.CouchDbCodeException;
+import me.retrodaredevil.couchdbjava.json.JsonData;
 import me.retrodaredevil.couchdbjava.json.StringJsonData;
 import me.retrodaredevil.couchdbjava.okhttp.util.OkHttpUtil;
 import me.retrodaredevil.couchdbjava.option.DatabaseCreationOption;
 import me.retrodaredevil.couchdbjava.response.*;
 import me.retrodaredevil.couchdbjava.exception.CouchDbException;
-import me.retrodaredevil.couchdbjava.exception.CouchDbUnauthorizedException;
 import okhttp3.*;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
@@ -108,22 +108,22 @@ public class OkHttpCouchDbDatabase implements CouchDbDatabase {
 	}
 
 	@Override
-	public DocumentResponse postNewDocument(String json) throws CouchDbException {
+	public DocumentResponse postNewDocument(JsonData jsonData) throws CouchDbException {
 		instance.preAuthorize();
-		return instance.executeAndHandle(service.postDocument(OkHttpUtil.createJsonRequestBody(json)));
+		return instance.executeAndHandle(service.postDocument(OkHttpUtil.createJsonRequestBody(jsonData)));
 	}
 
 	@Override
-	public DocumentResponse putDocument(String id, String json) throws CouchDbException {
+	public DocumentResponse putDocument(String id, JsonData jsonData) throws CouchDbException {
 		instance.preAuthorize();
-		return instance.executeAndHandle(service.putDocument(id, null, OkHttpUtil.createJsonRequestBody(json)));
+		return instance.executeAndHandle(service.putDocument(id, null, OkHttpUtil.createJsonRequestBody(jsonData)));
 	}
 
 
 	@Override
-	public DocumentResponse updateDocument(String id, String revision, String json) throws CouchDbException {
+	public DocumentResponse updateDocument(String id, String revision, JsonData jsonData) throws CouchDbException {
 		instance.preAuthorize();
-		return instance.executeAndHandle(service.putDocument(requireNonNull(id), requireNonNull(revision), OkHttpUtil.createJsonRequestBody(json)));
+		return instance.executeAndHandle(service.putDocument(requireNonNull(id), requireNonNull(revision), OkHttpUtil.createJsonRequestBody(jsonData)));
 	}
 
 	@Override
@@ -134,13 +134,18 @@ public class OkHttpCouchDbDatabase implements CouchDbDatabase {
 
 	@Override
 	public DocumentData getDocument(String id) throws CouchDbException {
+		return getDocumentIfUpdated(id, null);
+	}
+	@Override
+	public DocumentData getDocumentIfUpdated(String id, String revision) throws CouchDbException {
 		instance.preAuthorize();
-		Response response = instance.executeCall(instance.getClient().newCall(
-				new Request.Builder()
-						.get()
-						.url(createUrlBuilder().addPathSegment(id).build())
-						.build()
-		));
+		Request.Builder builder = new Request.Builder()
+				.get()
+				.url(createUrlBuilder().addPathSegment(id).build());
+		if (revision != null) {
+				builder.header("If-None-Match", revision);
+		}
+		Response response = instance.executeCall(instance.getClient().newCall(builder.build()));
 		if (response.isSuccessful()) {
 			String json;
 			try {
@@ -151,6 +156,7 @@ public class OkHttpCouchDbDatabase implements CouchDbDatabase {
 			return new DocumentData(getRevision(response), new StringJsonData(json));
 		}
 		throw OkHttpUtil.createExceptionFromResponse(response);
+
 	}
 
 	@Override
@@ -203,9 +209,9 @@ public class OkHttpCouchDbDatabase implements CouchDbDatabase {
 	}
 
 	@Override
-	public ViewResponse queryView(String designDoc, String viewName, ViewQuery viewQuery) throws CouchDbException {
+	public ViewResponse queryView(String designDoc, String viewName, ViewQueryParams viewQueryParams) throws CouchDbException {
 		instance.preAuthorize();
-		return instance.executeAndHandle(service.queryView(designDoc, viewName, viewQuery));
+		return instance.executeAndHandle(service.queryView(designDoc, viewName, viewQueryParams));
 	}
 
 

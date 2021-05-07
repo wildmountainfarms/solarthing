@@ -29,6 +29,7 @@ import me.retrodaredevil.solarthing.packets.handling.implementations.TimedPacket
 import me.retrodaredevil.solarthing.solar.DaySummaryLogListReceiver;
 import me.retrodaredevil.solarthing.solar.outback.FXStatusListUpdater;
 import me.retrodaredevil.solarthing.solar.outback.MatePacketCreator49;
+import me.retrodaredevil.solarthing.solar.outback.OutbackConstants;
 import me.retrodaredevil.solarthing.solar.outback.OutbackDuplicatePacketRemover;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXEventUpdaterListReceiver;
@@ -48,15 +49,9 @@ import static java.util.Objects.requireNonNull;
 public class OutbackMateMain {
 	private static final Logger LOGGER = LoggerFactory.getLogger(OutbackMateMain.class);
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
-	private static final SerialConfig MATE_CONFIG = new SerialConfigBuilder(19200)
-			.setDataBits(8)
-			.setParity(SerialConfig.Parity.NONE)
-			.setStopBits(SerialConfig.StopBits.ONE)
-			.setDTR(true)
-			.build();
 
 	private static IOBundle createIOBundle(MateProgramOptions options) throws Exception {
-		final IOBundle createdIO = SolarMain.createIOBundle(options.getIOBundleFile(), MATE_CONFIG);
+		final IOBundle createdIO = ConfigUtil.createIOBundle(options.getIOBundleFile(), OutbackConstants.MATE_CONFIG);
 		if(options.hasCommands()){
 			return createdIO;
 		}
@@ -76,7 +71,7 @@ public class OutbackMateMain {
 		analyticsManager.sendStartUp(ProgramType.MATE);
 		LOGGER.debug("IO Bundle File: " + options.getIOBundleFile());
 		try(IOBundle io = createIOBundle(options)) {
-			List<DatabaseConfig> databaseConfigs = SolarMain.getDatabaseConfigs(options);
+			List<DatabaseConfig> databaseConfigs = ConfigUtil.getDatabaseConfigs(options);
 			PacketHandlerBundle packetHandlerBundle = PacketHandlerInit.getPacketHandlerBundle(databaseConfigs, SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, SolarThingConstants.SOLAR_EVENT_UNIQUE_NAME, options.getSourceId(), options.getFragmentId());
 
 			PacketHandler eventPacketHandler = new PacketHandlerMultiplexer(packetHandlerBundle.getEventPacketHandlers());

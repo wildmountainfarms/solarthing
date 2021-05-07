@@ -68,6 +68,7 @@ project(":core"){
     apply plugin: 'java'
     dependencies {
         annotationProcessor project(":process-annotations")
+        api project(":couchdb")
     }
 }
 project(":common"){

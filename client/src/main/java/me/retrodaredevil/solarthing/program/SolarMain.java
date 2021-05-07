@@ -1,26 +1,15 @@
 package me.retrodaredevil.solarthing.program;
 
 import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.InjectableValues;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lexicalscope.jewel.cli.ArgumentValidationException;
 import com.lexicalscope.jewel.cli.Cli;
 import com.lexicalscope.jewel.cli.CliFactory;
 import com.lexicalscope.jewel.cli.HelpRequestedException;
-import me.retrodaredevil.couchdb.CouchProperties;
-import me.retrodaredevil.couchdb.EktorpUtil;
-import me.retrodaredevil.io.IOBundle;
-import me.retrodaredevil.io.serial.SerialConfig;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
-import me.retrodaredevil.solarthing.config.databases.DatabaseSettingsUtil;
-import me.retrodaredevil.solarthing.config.databases.DatabaseType;
-import me.retrodaredevil.solarthing.config.databases.implementations.*;
-import me.retrodaredevil.solarthing.config.io.IOConfig;
-import me.retrodaredevil.solarthing.config.io.SerialIOConfig;
+import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.config.options.*;
-import me.retrodaredevil.solarthing.couchdb.CouchDbQueryHandler;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.HourIntervalPacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
@@ -30,17 +19,11 @@ import me.retrodaredevil.solarthing.packets.handling.RawPacketReceiver;
 import me.retrodaredevil.solarthing.packets.instance.InstanceFragmentIndicatorPackets;
 import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePackets;
 import me.retrodaredevil.solarthing.program.pvoutput.PVOutputUploadMain;
-import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.apache.logging.log4j.LogManager;
-import org.ektorp.CouchDbInstance;
-import org.ektorp.http.HttpClient;
-import org.ektorp.impl.StdCouchDbConnector;
-import org.ektorp.impl.StdCouchDbInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -59,7 +42,6 @@ public final class SolarMain {
 	 */
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SolarMain.class);
-	private static final ObjectMapper MAPPER = DatabaseSettingsUtil.registerDatabaseSettings(JacksonUtil.defaultMapper());
 
 	public static void initReader(InputStream in, TextPacketCreator packetCreator, RawPacketReceiver rawPacketReceiver) {
 		SolarReader run = new SolarReader(in, packetCreator, rawPacketReceiver);
@@ -99,73 +81,6 @@ public final class SolarMain {
 		}
 		return new HourIntervalPacketCollectionIdGenerator(uniqueIdsInOneHour, new Random().nextInt());
 	}
-	public static List<DatabaseConfig> getDatabaseConfigs(PacketHandlingOption options){
-		List<File> files = options.getDatabaseConfigurationFiles();
-		List<DatabaseConfig> r = new ArrayList<>();
-		for(File file : files){
-			r.add(getDatabaseConfig(file));
-		}
-		return r;
-	}
-	public static DatabaseConfig getDatabaseConfig(File file){
-		FileInputStream reader;
-		try {
-			reader = new FileInputStream(file);
-		} catch (FileNotFoundException e) {
-			throw new RuntimeException(e);
-		}
-		try {
-			return MAPPER.readValue(reader, DatabaseConfig.class);
-		} catch (IOException e) {
-			throw new RuntimeException("Couldn't parse data!", e);
-		}
-	}
-
-	public static IOConfig parseIOConfig(File configFile, SerialConfig defaultSerialConfig) {
-		final FileInputStream inputStream;
-		try {
-			inputStream = new FileInputStream(configFile);
-		} catch (FileNotFoundException e) {
-			throw new RuntimeException(e);
-		}
-		InjectableValues.Std iv = new InjectableValues.Std();
-		iv.addValue(SerialIOConfig.DEFAULT_SERIAL_CONFIG_KEY, defaultSerialConfig);
-
-		ObjectMapper mapper = JacksonUtil.defaultMapper();
-		mapper.setInjectableValues(iv);
-		final IOConfig config;
-		try {
-			config = mapper.readValue(inputStream, IOConfig.class);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-		return config;
-	}
-	public static IOBundle createIOBundle(File configFile, SerialConfig defaultSerialConfig) {
-		IOConfig config = parseIOConfig(configFile, defaultSerialConfig);
-		try {
-			return config.createIOBundle();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-	public static CouchProperties createCouchProperties(DatabaseOption options) {
-		DatabaseConfig databaseConfig = SolarMain.getDatabaseConfig(options.getDatabase());
-		DatabaseType databaseType = databaseConfig.getType();
-		if(databaseType != CouchDbDatabaseSettings.TYPE){
-			throw new IllegalArgumentException("Only CouchDb can be used for this program type right now!");
-		}
-		CouchDbDatabaseSettings couchDbDatabaseSettings = (CouchDbDatabaseSettings) databaseConfig.getSettings();
-		return couchDbDatabaseSettings.getCouchProperties();
-	}
-	public static CouchDbQueryHandler createCouchDbQueryHandler(DatabaseOption options) {
-		return createCouchDbQueryHandler(createCouchProperties(options));
-	}
-	public static CouchDbQueryHandler createCouchDbQueryHandler(CouchProperties couchProperties) {
-		final HttpClient httpClient = EktorpUtil.createHttpClient(couchProperties);
-		CouchDbInstance instance = new StdCouchDbInstance(httpClient);
-		return new CouchDbQueryHandler(new StdCouchDbConnector(SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, instance));
-	}
 
 	public static int doMainCommand(CommandOptions commandOptions, File baseConfigFile) {
 		LOGGER.info("Using base configuration file: " + baseConfigFile);
@@ -178,7 +93,7 @@ public final class SolarMain {
 		}
 		final ProgramOptions options;
 		try {
-			options = MAPPER.readValue(fileReader, ProgramOptions.class);
+			options = ConfigUtil.MAPPER.readValue(fileReader, ProgramOptions.class);
 		} catch (IOException e) {
 			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)Error while parsing ProgramOptions.", e);
 			if (e instanceof JsonParseException) {
@@ -241,7 +156,7 @@ public final class SolarMain {
 		if (commandOptions.getCouchDbSetupFile() != null) {
 			final DatabaseConfig config;
 			try {
-				config = MAPPER.readValue(commandOptions.getCouchDbSetupFile(), DatabaseConfig.class);
+				config = ConfigUtil.MAPPER.readValue(commandOptions.getCouchDbSetupFile(), DatabaseConfig.class);
 			} catch (IOException e) {
 				e.printStackTrace();
 				System.err.println("Problem reading CouchDB database settings file.");

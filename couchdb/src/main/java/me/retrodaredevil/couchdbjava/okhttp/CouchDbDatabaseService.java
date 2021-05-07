@@ -1,6 +1,6 @@
 package me.retrodaredevil.couchdbjava.okhttp;
 
-import me.retrodaredevil.couchdbjava.ViewQuery;
+import me.retrodaredevil.couchdbjava.ViewQueryParams;
 import me.retrodaredevil.couchdbjava.response.DatabaseInfo;
 import me.retrodaredevil.couchdbjava.response.DocumentResponse;
 import me.retrodaredevil.couchdbjava.response.SimpleStatus;
@@ -58,5 +58,5 @@ public interface CouchDbDatabaseService {
 
 
 	@POST("_design/{ddoc}/_view/{view}")
-	Call<ViewResponse> queryView(@Path("ddoc") String designDoc, @Path("view") String viewName, @Body ViewQuery viewQuery);
+	Call<ViewResponse> queryView(@Path("ddoc") String designDoc, @Path("view") String viewName, @Body ViewQueryParams viewQueryParams);
 }

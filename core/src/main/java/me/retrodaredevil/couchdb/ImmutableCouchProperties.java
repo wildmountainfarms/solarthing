@@ -2,52 +2,43 @@ package me.retrodaredevil.couchdb;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.NotNull;
+import okhttp3.HttpUrl;
 
 import static java.util.Objects.requireNonNull;
 
 @JsonDeserialize(builder = CouchPropertiesBuilder.class)
 class ImmutableCouchProperties implements CouchProperties {
-	private final String protocol, host, path;
-	private final int port;
+	private final HttpUrl url;
 	private final String username, password;
-	private final Integer socketTimeout, connectionTimeout, maxConnections;
-	private final String proxyHost;
-	private final Integer proxyPort;
 
-	ImmutableCouchProperties(String protocol, String host, String path, int port, String username, String password, Integer socketTimeout, Integer connectionTimeout, Integer maxConnections, String proxyHost, Integer proxyPort) {
-		this.protocol = requireNonNull(protocol);
-		this.host = requireNonNull(host);
-		this.path = path;
-		this.port = port;
+	ImmutableCouchProperties(HttpUrl url, String username, String password) {
+		requireNonNull(this.url = url);
 		this.username = username;
 		this.password = password;
-		this.socketTimeout = socketTimeout;
-		this.connectionTimeout = connectionTimeout;
-		this.maxConnections = maxConnections;
-		this.proxyHost = proxyHost;
-		this.proxyPort = proxyPort;
 	}
-	@NotNull
-	@Override public String getProtocol() { return protocol; }
+
+	@Override
+	public @NotNull HttpUrl getHttpUrl() {
+		return url;
+	}
+
+	@Override
+	public @NotNull String getUrl() {
+		return url.toString();
+	}
 
 	@NotNull
-	@Override public String getHost() { return host; }
+	@Override public String getProtocol() { return url.scheme(); }
 
-	@Override public String getPath() { return path; }
+	@NotNull
+	@Override public String getHost() { return url.host(); }
 
-	@Override public int getPort() { return port; }
+	@Override public String getPath() { return url.encodedPath(); }
+
+	@Override public int getPort() { return url.port(); }
 
 	@Override public String getUsername() { return username; }
 
 	@Override public String getPassword() { return password; }
 
-	@Override public Integer getSocketTimeoutMillis() { return socketTimeout; }
-
-	@Override public Integer getConnectionTimeoutMillis() { return connectionTimeout; }
-
-	@Override public Integer getMaxConnections() { return maxConnections; }
-
-	@Override public String getProxyHost() { return proxyHost; }
-
-	@Override public Integer getProxyPort() { return proxyPort; }
 }

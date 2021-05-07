@@ -3,8 +3,8 @@ package me.retrodaredevil.solarthing.program.pvoutput;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import me.retrodaredevil.couchdb.CouchProperties;
-import me.retrodaredevil.couchdb.EktorpUtil;
+import me.retrodaredevil.couchdb.CouchDbUtil;
+import me.retrodaredevil.couchdbjava.ViewQueryParamsBuilder;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.analytics.AnalyticsManager;
 import me.retrodaredevil.solarthing.config.databases.DatabaseType;
@@ -17,19 +17,22 @@ import me.retrodaredevil.solarthing.misc.device.DevicePacket;
 import me.retrodaredevil.solarthing.misc.error.ErrorPacket;
 import me.retrodaredevil.solarthing.misc.weather.WeatherPacket;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
-import me.retrodaredevil.solarthing.packets.collection.parsing.*;
+import me.retrodaredevil.solarthing.packets.collection.parsing.LenientPacketParser;
+import me.retrodaredevil.solarthing.packets.collection.parsing.MultiPacketConverter;
+import me.retrodaredevil.solarthing.packets.collection.parsing.PacketGroupParser;
+import me.retrodaredevil.solarthing.packets.collection.parsing.SimplePacketGroupParser;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.instance.InstancePacket;
 import me.retrodaredevil.solarthing.program.CommandOptions;
 import me.retrodaredevil.solarthing.program.DatabaseConfig;
+import me.retrodaredevil.solarthing.program.ConfigUtil;
 import me.retrodaredevil.solarthing.program.PacketUtil;
-import me.retrodaredevil.solarthing.program.SolarMain;
 import me.retrodaredevil.solarthing.pvoutput.CsvUtil;
 import me.retrodaredevil.solarthing.pvoutput.SimpleDate;
 import me.retrodaredevil.solarthing.pvoutput.data.*;
 import me.retrodaredevil.solarthing.pvoutput.service.PVOutputOkHttpUtil;
-import me.retrodaredevil.solarthing.pvoutput.service.PVOutputService;
 import me.retrodaredevil.solarthing.pvoutput.service.PVOutputRetrofitUtil;
+import me.retrodaredevil.solarthing.pvoutput.service.PVOutputService;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacket;
 import me.retrodaredevil.solarthing.solar.daily.DailyConfig;
 import me.retrodaredevil.solarthing.solar.extra.SolarExtraPacket;
@@ -37,10 +40,6 @@ import me.retrodaredevil.solarthing.util.JacksonUtil;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
-import org.ektorp.CouchDbInstance;
-import org.ektorp.http.HttpClient;
-import org.ektorp.impl.StdCouchDbConnector;
-import org.ektorp.impl.StdCouchDbInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import retrofit2.Call;
@@ -51,7 +50,10 @@ import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.TimeZone;
 
 public class PVOutputUploadMain {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PVOutputUploadMain.class);
@@ -65,20 +67,17 @@ public class PVOutputUploadMain {
 		TimeZone timeZone = options.getTimeZone();
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Using time zone: {}", timeZone.getDisplayName());
 		LOGGER.info("Using default instance options: " + options.getDefaultInstanceOptions());
-		DatabaseConfig databaseConfig = SolarMain.getDatabaseConfig(options.getDatabase());
+		DatabaseConfig databaseConfig = ConfigUtil.getDatabaseConfig(options.getDatabase());
 		DatabaseType databaseType = databaseConfig.getType();
 		if(databaseType != CouchDbDatabaseSettings.TYPE){
 			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)Only CouchDb can be used for this program type right now!");
 			return 1;
 		}
 		CouchDbDatabaseSettings couchDbDatabaseSettings = (CouchDbDatabaseSettings) databaseConfig.getSettings();
-		CouchProperties couchProperties = couchDbDatabaseSettings.getCouchProperties();
-		final CouchDbQueryHandler queryHandler;
-		{
-			final HttpClient httpClient = EktorpUtil.createHttpClient(couchProperties);
-			CouchDbInstance instance = new StdCouchDbInstance(httpClient);
-			queryHandler = new CouchDbQueryHandler(new StdCouchDbConnector(SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, instance));
-		}
+		final CouchDbQueryHandler queryHandler = new CouchDbQueryHandler(
+				CouchDbUtil.createInstance(couchDbDatabaseSettings.getCouchProperties(), couchDbDatabaseSettings.getOkHttpProperties())
+						.getDatabase(SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME)
+		);
 		PacketGroupParser statusParser = new SimplePacketGroupParser(new LenientPacketParser(
 				MultiPacketConverter.createFrom(MAPPER, SolarStatusPacket.class, SolarExtraPacket.class, DevicePacket.class, ErrorPacket.class, WeatherPacket.class, InstancePacket.class)
 		));
@@ -132,9 +131,11 @@ public class PVOutputUploadMain {
 
 			List<ObjectNode> statusPacketNodes = null;
 			try {
-				statusPacketNodes = queryHandler.query(SolarThingCouchDb.createMillisView()
+				statusPacketNodes = queryHandler.query(SolarThingCouchDb.createMillisView(new ViewQueryParamsBuilder()
 						.startKey(dayStart)
-						.endKey(dayEnd).inclusiveEnd(false));
+						.endKey(dayEnd)
+						.inclusiveEnd(false)
+						.build()));
 				System.out.println("Got " + statusPacketNodes.size() + " packets for date: " + date.toPVOutputString());
 			} catch (PacketHandleException e) {
 				e.printStackTrace();
@@ -282,9 +283,10 @@ public class PVOutputUploadMain {
 			long dayStartTimeMillis = today.getDayStartDateMillis(timeZone);
 			List<ObjectNode> statusPacketNodes = null;
 			try {
-				statusPacketNodes = queryHandler.query(SolarThingCouchDb.createMillisView()
+				statusPacketNodes = queryHandler.query(SolarThingCouchDb.createMillisView(new ViewQueryParamsBuilder()
 						.startKey(dayStartTimeMillis)
-						.endKey(now));
+						.endKey(now)
+						.build()));
 				LOGGER.debug("Got packets");
 			} catch (PacketHandleException e) {
 				LOGGER.error("Couldn't get status packets", e);

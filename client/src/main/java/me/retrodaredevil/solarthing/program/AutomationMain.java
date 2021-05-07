@@ -4,11 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import me.retrodaredevil.action.ActionMultiplexer;
 import me.retrodaredevil.action.Actions;
-import me.retrodaredevil.couchdb.CouchProperties;
+import me.retrodaredevil.couchdb.CouchDbUtil;
+import me.retrodaredevil.couchdbjava.ViewQueryParamsBuilder;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.actions.ActionNode;
 import me.retrodaredevil.solarthing.actions.environment.*;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
+import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.config.options.AutomationProgramOptions;
 import me.retrodaredevil.solarthing.config.options.DatabaseTimeZoneOptionBase;
 import me.retrodaredevil.solarthing.couchdb.CouchDbQueryHandler;
@@ -51,8 +53,11 @@ public final class AutomationMain {
 	}
 	public static int startAutomation(List<ActionNode> actionNodes, DatabaseTimeZoneOptionBase options, long periodMillis) {
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Starting automation program.");
-		CouchProperties couchProperties = SolarMain.createCouchProperties(options);
-		CouchDbQueryHandler queryHandler = SolarMain.createCouchDbQueryHandler(couchProperties);
+		CouchDbDatabaseSettings couchSettings = ConfigUtil.expectCouchDbDatabaseSettings(options);
+		CouchDbQueryHandler queryHandler = new CouchDbQueryHandler(
+				CouchDbUtil.createInstance(couchSettings.getCouchProperties(), couchSettings.getOkHttpProperties())
+						.getDatabase(SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME)
+		);
 		PacketGroupParser statusParser = new SimplePacketGroupParser(new LenientPacketParser(
 				MultiPacketConverter.createFrom(PARSE_MAPPER, SolarStatusPacket.class, SolarExtraPacket.class, DevicePacket.class, ErrorPacket.class, InstancePacket.class)
 		));
@@ -63,7 +68,7 @@ public final class AutomationMain {
 		FragmentedPacketGroup[] latestPacketGroupReference = new FragmentedPacketGroup[1];
 		InjectEnvironment injectEnvironment = new InjectEnvironment.Builder()
 				.add(new SourceIdEnvironment(options.getSourceId()))
-				.add(new CouchDbEnvironment(couchProperties))
+				.add(new CouchDbEnvironment(couchSettings))
 				.add(new LatestPacketGroupEnvironment(() -> requireNonNull(latestPacketGroupReference[0])))
 				.build();
 
@@ -72,9 +77,9 @@ public final class AutomationMain {
 			List<ObjectNode> statusPacketNodes = null;
 			try {
 				long now = System.currentTimeMillis();
-				statusPacketNodes = queryHandler.query(SolarThingCouchDb.createMillisView()
+				statusPacketNodes = queryHandler.query(SolarThingCouchDb.createMillisView(new ViewQueryParamsBuilder()
 						.startKey(now - 5 * 60 * 1000)
-						.endKey(now));
+						.endKey(now).build()));
 				LOGGER.debug("Got packets");
 			} catch (PacketHandleException e) {
 				LOGGER.error("Couldn't get status packets", e);
