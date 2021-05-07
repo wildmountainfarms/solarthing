@@ -222,6 +222,8 @@ public class SecurityPacketReceiver implements JsonPacketReceiver {
 		}
 		TargetPacketGroup targetPacketGroup = PacketGroups.parseToTargetPacketGroup(packetGroup);
 		String targetSourceId = targetPacketGroup.getSourceId();
+		// We do the same checks as above just to double check. We already trust the sender here,
+		//   but double checks never hurt.
 		if (!targetSourceId.equals(sourceId)) {
 			LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "This packet is for sourceId: " + targetSourceId);
 		} else if (!targetPacketGroup.isTarget(fragmentId)) {

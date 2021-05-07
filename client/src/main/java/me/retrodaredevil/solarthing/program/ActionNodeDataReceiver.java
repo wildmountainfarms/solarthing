@@ -59,6 +59,8 @@ public abstract class ActionNodeDataReceiver implements PacketGroupReceiver {
 			Action action = requested.createAction(new ActionEnvironment(variableEnvironment, new VariableEnvironment(), injectEnvironmentBuilder.build()));
 			actionMultiplexer.add(action);
 			LOGGER.info(SolarThingConstants.SUMMARY_MARKER, sender + " has requested command sequence: " + data);
+		} else {
+			LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Sender: " + sender + " has requested unknown command: " + data);
 		}
 	}
 

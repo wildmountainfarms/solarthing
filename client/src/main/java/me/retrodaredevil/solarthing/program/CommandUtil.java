@@ -23,6 +23,12 @@ import java.util.List;
 
 public class CommandUtil {
 
+	/**
+	 * @param databaseConfigs The list of databaes configs
+	 * @param packetGroupReceiver Receives data that has been downloaded. Note that this may be called in a separate thread, so make sure it is thread safe
+	 * @param options The options object
+	 * @return A list of packet handlers that, when called, will possibly download commands and then forward those commands to {@code packetGroupReceiver}
+	 */
 	public static List<PacketHandler> getCommandRequesterHandlerList(List<DatabaseConfig> databaseConfigs, PacketGroupReceiver packetGroupReceiver, PacketHandlingOption options) {
 		final List<PacketHandler> commandRequesterHandlerList = new ArrayList<>(); // Handlers to request and get new commands to send (This may block the current thread). (This doesn't actually handle packets)
 		for(DatabaseConfig config : databaseConfigs){
@@ -32,6 +38,8 @@ public class CommandUtil {
 
 				IndividualSettings individualSettings = config.getIndividualSettingsOrDefault(Constants.DATABASE_COMMAND_DOWNLOAD_ID, null);
 				FrequencySettings frequencySettings = individualSettings != null ? individualSettings.getFrequencySettings() : FrequencySettings.NORMAL_SETTINGS;
+				// Also note that as of 2021.05.07 we made this use a separate thread, so we don't really need PrintPacketHandleExceptionWrapper, but we'll keep it in case we change it back
+				//   Currently CouchDbPacketRetrieverHandler's implementation logs the error itself if it is executing in a separate thread.
 				commandRequesterHandlerList.add(new ThrottleFactorPacketHandler(new PrintPacketHandleExceptionWrapper(
 						new CouchDbPacketRetrieverHandler(
 								new CouchDbPacketRetriever(
@@ -45,7 +53,8 @@ public class CommandUtil {
 										packetGroupReceiver,
 										options.getSourceId(), options.getFragmentId(),
 										Collections.singleton(CommandOpenPacket.class)
-								)
+								),
+								true
 						)
 				), frequencySettings, true));
 			}
