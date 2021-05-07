@@ -228,7 +228,7 @@ public class OkHttpCouchDbDatabase implements CouchDbDatabase {
 
 	@Override
 	public ViewResponse queryView(String designDoc, String viewName, ViewQueryParams viewQueryParams) throws CouchDbException {
-		designDoc = designDoc.replaceAll(designDoc, "_design/"); // Just in case the user added _design/ to this, let's make that valid
+		designDoc = designDoc.replaceAll("_design/", ""); // Just in case the user added _design/ to this, let's make that valid
 		instance.preAuthorize();
 		return instance.executeAndHandle(service.queryView(encodeDocumentId(designDoc), viewName, viewQueryParams));
 	}

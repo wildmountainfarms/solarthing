@@ -24,4 +24,13 @@ public class ViewQuery {
 	public ViewQueryParams getParams() {
 		return params;
 	}
+
+	@Override
+	public String toString() {
+		return "ViewQuery{" +
+				"designDoc='" + designDoc + '\'' +
+				", viewName='" + viewName + '\'' +
+				", params=" + params +
+				'}';
+	}
 }

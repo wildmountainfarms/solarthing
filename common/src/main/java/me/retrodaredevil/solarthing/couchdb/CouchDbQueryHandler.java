@@ -31,7 +31,13 @@ public class CouchDbQueryHandler {
 		try {
 			response = database.queryView(query);
 		} catch(CouchDbNotFoundException e){
-			throw new PacketHandleException("Document not found... Maybe the view hasn't been created in design? query: " + query, e);
+			String reason = "";
+			String error = "";
+			if (e.getErrorResponse() != null) {
+				reason = e.getErrorResponse().getReason();
+				error = e.getErrorResponse().getError();
+			}
+			throw new PacketHandleException("Document not found... Maybe the view hasn't been created in design? query: " + query + ". On database: " + database.getName() + " reason: " + reason + " " + error, e);
 		} catch(CouchDbException e){
 			String message = e.getMessage();
 			if (message != null && message.contains("No rows can match your key range")) {

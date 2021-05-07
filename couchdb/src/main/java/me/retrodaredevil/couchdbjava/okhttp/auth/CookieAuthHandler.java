@@ -50,7 +50,7 @@ public class CookieAuthHandler implements OkHttpAuthHandler {
 			r = authCookie;
 		}
 		if (r != null) {
-			if (r.persistent() || authCookie.expiresAt() > System.currentTimeMillis()) {
+			if (r.persistent() || r.expiresAt() > System.currentTimeMillis()) {
 				return r;
 			}
 		}
