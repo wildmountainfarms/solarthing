@@ -104,7 +104,7 @@ public class RoverModbusSlaveRead implements RoverReadTable {
 
 	private static final MessageHandler<int[]> PROTOCOL_VERSION = new ReadHoldingRegisters(0x001B, 2);
 	@Override
-	public @Nullable Integer getProtocolVersionValue() { // TODO test this on Rover 40A
+	public @Nullable Integer getProtocolVersionValue() {
 		return twoRegistersAsInt(PROTOCOL_VERSION);
 	}
 

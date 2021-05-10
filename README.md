@@ -29,7 +29,7 @@ Stores solar data in a database to view on Android, Grafana, or PVOutput
 Ready to install? Use the [Quickstart](other/docs/quickstart.md)!
 
 ## Post installation optinos
-Do any or all of these after following the quickstart.
+Do any or all of these after following the quickstart. (If you haven't already click on the quickstart link above)
 * [GraphQL Quickstart](other/docs/quickstart_graphql.md) - Expose CouchDB as a GraphQL API (used for Grafana)
   * This is the option I recommend most. Most people install SolarThing so they can get Grafana working
 * [PVOutput Quickstart](other/docs/quickstart_pvoutput.md) - uploads to PVOutput
@@ -43,6 +43,8 @@ Do any or all of these after following the quickstart.
 * Runs reliably **24-7**. Recovers from connection errors and has verbose logging features.
 * Fully customizable through JSON (**No programming experience required**).
 * Supports CouchDB, InfluxDB, local JSON file, and PVOutput exporting.
+  * Multiple databases can even be used at the same time!
+  * Packets are uploaded in parallel to multiple databases at the same time
 * Can [report Raspberry Pi CPU temperature](other/docs/raspberry_pi_cpu_temperature.md).
 * Easy setup on Linux. Runs *without* root.
 
