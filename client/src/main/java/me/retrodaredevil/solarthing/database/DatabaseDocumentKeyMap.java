@@ -1,12 +1,7 @@
-package me.retrodaredevil.solarthing.couchdb;
+package me.retrodaredevil.solarthing.database;
 
-import me.retrodaredevil.couchdbjava.CouchDbInstance;
 import me.retrodaredevil.solarthing.closed.authorization.AuthorizationPacket;
 import me.retrodaredevil.solarthing.closed.authorization.PermissionObject;
-import me.retrodaredevil.solarthing.database.SolarThingDatabase;
-import me.retrodaredevil.solarthing.database.UpdateToken;
-import me.retrodaredevil.solarthing.database.VersionedPacket;
-import me.retrodaredevil.solarthing.database.couchdb.CouchDbSolarThingDatabase;
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
 import me.retrodaredevil.solarthing.packets.security.crypto.PublicKeyLookUp;
 import org.slf4j.Logger;
@@ -14,8 +9,8 @@ import org.slf4j.LoggerFactory;
 
 import java.security.PublicKey;
 
-public class CouchDbDocumentKeyMap implements PublicKeyLookUp {
-	private static final Logger LOGGER = LoggerFactory.getLogger(CouchDbDocumentKeyMap.class);
+public class DatabaseDocumentKeyMap implements PublicKeyLookUp {
+	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseDocumentKeyMap.class);
 	private static final long UPDATE_PERIOD_MILLIS = 30 * 1000; // 30 seconds
 
 	private final SolarThingDatabase database;
@@ -24,12 +19,8 @@ public class CouchDbDocumentKeyMap implements PublicKeyLookUp {
 	private UpdateToken updateToken = null;
 	private Long lastUpdate = null;
 
-	public CouchDbDocumentKeyMap(SolarThingDatabase database) {
+	public DatabaseDocumentKeyMap(SolarThingDatabase database) {
 		this.database = database;
-	}
-	public static CouchDbDocumentKeyMap createDefault(CouchDbInstance couchDbInstance) {
-		SolarThingDatabase database = CouchDbSolarThingDatabase.create(couchDbInstance);
-		return new CouchDbDocumentKeyMap(database);
 	}
 
 	private void updatePacket() {

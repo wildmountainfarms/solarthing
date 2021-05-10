@@ -8,7 +8,7 @@ import me.retrodaredevil.solarthing.commands.packets.open.CommandOpenPacket;
 import me.retrodaredevil.solarthing.config.databases.IndividualSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.config.options.PacketHandlingOption;
-import me.retrodaredevil.solarthing.couchdb.CouchDbDocumentKeyMap;
+import me.retrodaredevil.solarthing.database.DatabaseDocumentKeyMap;
 import me.retrodaredevil.solarthing.database.MillisQueryBuilder;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
 import me.retrodaredevil.solarthing.database.couchdb.CouchDbSolarThingDatabase;
@@ -41,7 +41,7 @@ public class CommandUtil {
 				FrequencySettings frequencySettings = individualSettings != null ? individualSettings.getFrequencySettings() : FrequencySettings.NORMAL_SETTINGS;
 				PacketHandler packetHandler = new PacketHandler() {
 					private final SecurityPacketReceiver securityPacketReceiver = new SecurityPacketReceiver(
-							new CouchDbDocumentKeyMap(database),
+							new DatabaseDocumentKeyMap(database),
 							packetGroupReceiver,
 							options.getSourceId(), options.getFragmentId(),
 							Collections.singleton(CommandOpenPacket.class)

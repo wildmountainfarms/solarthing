@@ -89,7 +89,7 @@ public class SimpleQueryHandler {
 	public MetaDatabase queryMeta() {
 		// TODO We can have a better caching mechanism for this
 		try {
-			return new DefaultMetaDatabase(database.queryMetadata(null).getPacket());
+			return new DefaultMetaDatabase(database.queryMetadata().getPacket());
 		} catch (SolarThingDatabaseException e) {
 			return EmptyMetaDatabase.getInstance();
 		}

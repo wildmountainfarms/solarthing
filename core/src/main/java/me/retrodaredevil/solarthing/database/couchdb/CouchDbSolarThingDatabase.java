@@ -10,6 +10,7 @@ import me.retrodaredevil.couchdbjava.json.JsonData;
 import me.retrodaredevil.couchdbjava.json.jackson.CouchDbJacksonUtil;
 import me.retrodaredevil.couchdbjava.response.DocumentData;
 import me.retrodaredevil.solarthing.SolarThingConstants;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.closed.authorization.AuthorizationPacket;
 import me.retrodaredevil.solarthing.database.MillisDatabase;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
@@ -33,6 +34,7 @@ import me.retrodaredevil.solarthing.solar.outback.command.packets.MateCommandFee
 import me.retrodaredevil.solarthing.solar.outback.fx.meta.FXChargingSettingsPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.meta.FXChargingTemperatureAdjustPacket;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
+import org.jetbrains.annotations.NotNull;
 
 public class CouchDbSolarThingDatabase implements SolarThingDatabase {
 
@@ -44,6 +46,12 @@ public class CouchDbSolarThingDatabase implements SolarThingDatabase {
 	private final CouchDbMillisDatabase eventDatabase;
 	private final CouchDbMillisDatabase openDatabase;
 
+	/**
+	 *
+	 * @param instance
+	 * @param errorHandler
+	 * @param mapper The object mapper. "Lenient" settings should have already been applied to this
+	 */
 	public CouchDbSolarThingDatabase(CouchDbInstance instance, PacketParsingErrorHandler errorHandler, ObjectMapper mapper) {
 		closedDatabase = instance.getDatabase(SolarThingConstants.CLOSED_UNIQUE_NAME);
 		metaObjectMapper = JacksonUtil.lenientSubTypeMapper(mapper.copy());
@@ -68,14 +76,14 @@ public class CouchDbSolarThingDatabase implements SolarThingDatabase {
 
 
 	@Override
-	public MillisDatabase getStatusDatabase() { return statusDatabase; }
+	public @NotNull MillisDatabase getStatusDatabase() { return statusDatabase; }
 	@Override
-	public MillisDatabase getEventDatabase() { return eventDatabase; }
+	public @NotNull MillisDatabase getEventDatabase() { return eventDatabase; }
 	@Override
-	public MillisDatabase getOpenDatabase() { return openDatabase; }
+	public @NotNull MillisDatabase getOpenDatabase() { return openDatabase; }
 
 	@Override
-	public VersionedPacket<RootMetaPacket> queryMetadata(UpdateToken updateToken) throws SolarThingDatabaseException {
+	public @Nullable VersionedPacket<RootMetaPacket> queryMetadata(UpdateToken updateToken) throws SolarThingDatabaseException {
 		DocumentData data = queryDocument(closedDatabase, "meta", updateToken);
 		if (data == null) {
 			return null;
@@ -90,7 +98,7 @@ public class CouchDbSolarThingDatabase implements SolarThingDatabase {
 	}
 
 	@Override
-	public VersionedPacket<AuthorizationPacket> queryAuthorized(UpdateToken updateToken) throws SolarThingDatabaseException {
+	public @Nullable VersionedPacket<AuthorizationPacket> queryAuthorized(UpdateToken updateToken) throws SolarThingDatabaseException {
 		DocumentData data = queryDocument(closedDatabase, "closed", updateToken);
 		if (data == null) {
 			return null;
