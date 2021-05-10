@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import me.retrodaredevil.solarthing.JsonPacketReceiver;
 import me.retrodaredevil.solarthing.PacketGroupReceiver;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.packets.DocumentedPacket;
@@ -13,7 +12,10 @@ import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
 import me.retrodaredevil.solarthing.packets.collection.TargetPacketGroup;
-import me.retrodaredevil.solarthing.packets.collection.parsing.*;
+import me.retrodaredevil.solarthing.packets.collection.parsing.MultiPacketConverter;
+import me.retrodaredevil.solarthing.packets.collection.parsing.PacketGroupParser;
+import me.retrodaredevil.solarthing.packets.collection.parsing.PacketParseException;
+import me.retrodaredevil.solarthing.packets.collection.parsing.SimplePacketGroupParser;
 import me.retrodaredevil.solarthing.packets.instance.InstancePacket;
 import me.retrodaredevil.solarthing.packets.security.IntegrityPacket;
 import me.retrodaredevil.solarthing.packets.security.LargeIntegrityPacket;
@@ -29,11 +31,10 @@ import javax.crypto.NoSuchPaddingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
-public class SecurityPacketReceiver implements JsonPacketReceiver {
+public class SecurityPacketReceiver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SecurityPacketReceiver.class);
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
 
-	private static final PacketGroupParser PARSER = new SimplePacketGroupParser(MultiPacketConverter.createFrom(MAPPER, SecurityPacket.class, InstancePacket.class)); // This parser will fail if there's a packet it doesn't recognize
 
 	private final PublicKeyLookUp publicKeyLookUp;
 	private final PacketGroupReceiver packetGroupReceiver;
@@ -72,19 +73,11 @@ public class SecurityPacketReceiver implements JsonPacketReceiver {
 		listenStartTime = System.currentTimeMillis();
 	}
 
-	@Override
-	public void receivePackets(List<ObjectNode> jsonPackets) {
-		LOGGER.debug("received packets! size: " + jsonPackets.size());
-		List<TargetPacketGroup> packets = new ArrayList<>(jsonPackets.size());
+	public void receivePacketGroups(List<PacketGroup> packetGroups) {
+		LOGGER.debug("received packets! size: " + packetGroups.size());
+		List<TargetPacketGroup> packets = new ArrayList<>(packetGroups.size());
 		long minTime = System.currentTimeMillis() - 5 * 60 * 1000; // last 5 minutes allowed
-		for(ObjectNode packet : jsonPackets){
-			final PacketGroup packetGroup;
-			try {
-				packetGroup = PARSER.parse(packet);
-			} catch(Exception e){
-				LOGGER.error("tried to create a packet collection from: " + packet, e);
-				continue;
-			}
+		for(PacketGroup packetGroup : packetGroups){
 			if(packetGroup.getDateMillis() < minTime){
 				LOGGER.info("Ignoring old packet");
 				continue;

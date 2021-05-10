@@ -2,16 +2,19 @@ package me.retrodaredevil.solarthing.program;
 
 import me.retrodaredevil.couchdb.CouchDbUtil;
 import me.retrodaredevil.couchdbjava.CouchDbInstance;
-import me.retrodaredevil.couchdbjava.ViewQueryParamsBuilder;
+import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.PacketGroupReceiver;
-import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.commands.packets.open.CommandOpenPacket;
 import me.retrodaredevil.solarthing.config.databases.IndividualSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.config.options.PacketHandlingOption;
 import me.retrodaredevil.solarthing.couchdb.CouchDbDocumentKeyMap;
-import me.retrodaredevil.solarthing.couchdb.CouchDbPacketRetriever;
-import me.retrodaredevil.solarthing.couchdb.CouchDbPacketRetrieverHandler;
+import me.retrodaredevil.solarthing.database.MillisQueryBuilder;
+import me.retrodaredevil.solarthing.database.SolarThingDatabase;
+import me.retrodaredevil.solarthing.database.couchdb.CouchDbSolarThingDatabase;
+import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
+import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
+import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 import me.retrodaredevil.solarthing.packets.handling.*;
 
 import java.util.ArrayList;
@@ -32,24 +35,30 @@ public class CommandUtil {
 			if(CouchDbDatabaseSettings.TYPE.equals(config.getType())){
 				CouchDbDatabaseSettings settings = (CouchDbDatabaseSettings) config.getSettings();
 				CouchDbInstance instance = CouchDbUtil.createInstance(settings.getCouchProperties(), settings.getOkHttpProperties());
+				SolarThingDatabase database = CouchDbSolarThingDatabase.create(instance);
 
 				IndividualSettings individualSettings = config.getIndividualSettingsOrDefault(Constants.DATABASE_COMMAND_DOWNLOAD_ID, null);
 				FrequencySettings frequencySettings = individualSettings != null ? individualSettings.getFrequencySettings() : FrequencySettings.NORMAL_SETTINGS;
+				PacketHandler packetHandler = new PacketHandler() {
+					private final SecurityPacketReceiver securityPacketReceiver = new SecurityPacketReceiver(
+							new CouchDbDocumentKeyMap(database),
+							packetGroupReceiver,
+							options.getSourceId(), options.getFragmentId(),
+							Collections.singleton(CommandOpenPacket.class)
+					);
+					@Override
+					public void handle(PacketCollection packetCollection, InstantType instantType) throws PacketHandleException {
+						final List<PacketGroup> packetGroups;
+						try {
+							packetGroups = database.getOpenDatabase().query(new MillisQueryBuilder().startKey(System.currentTimeMillis() - 5 * 60 * 1000).build());
+						} catch (SolarThingDatabaseException e) {
+							throw new PacketHandleException(e);
+						}
+						securityPacketReceiver.receivePacketGroups(packetGroups);
+					}
+				};
 				commandRequesterHandlerList.add(new ThrottleFactorPacketHandler(new AsyncPacketHandlerWrapper(new PrintPacketHandleExceptionWrapper(
-						new CouchDbPacketRetrieverHandler(
-								new CouchDbPacketRetriever(
-										instance.getDatabase(SolarThingConstants.OPEN_UNIQUE_NAME),
-										() -> new ViewQueryParamsBuilder()
-												.startKey(System.currentTimeMillis() - 5 * 60 * 1000)
-												.build()
-								),
-								new SecurityPacketReceiver(
-										CouchDbDocumentKeyMap.createDefault(instance),
-										packetGroupReceiver,
-										options.getSourceId(), options.getFragmentId(),
-										Collections.singleton(CommandOpenPacket.class)
-								)
-						)
+						packetHandler
 				)), frequencySettings, true));
 			}
 		}

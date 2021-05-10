@@ -12,6 +12,7 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
+@Deprecated
 public class SimplePacketGroupParser implements PacketGroupParser {
 	private final JsonPacketParser packetParser;
 

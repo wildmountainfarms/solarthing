@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
+@Deprecated
 public class MultiPacketConverter implements JsonPacketParser {
 	private final ObjectMapper mapper;
 

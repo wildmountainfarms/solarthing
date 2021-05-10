@@ -1,11 +1,9 @@
 package me.retrodaredevil.solarthing.program;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import me.retrodaredevil.action.ActionMultiplexer;
 import me.retrodaredevil.action.Actions;
 import me.retrodaredevil.couchdb.CouchDbUtil;
-import me.retrodaredevil.couchdbjava.ViewQueryParamsBuilder;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.actions.ActionNode;
 import me.retrodaredevil.solarthing.actions.environment.*;
@@ -13,19 +11,12 @@ import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.config.options.AutomationProgramOptions;
 import me.retrodaredevil.solarthing.config.options.DatabaseTimeZoneOptionBase;
-import me.retrodaredevil.solarthing.couchdb.CouchDbQueryHandler;
-import me.retrodaredevil.solarthing.couchdb.SolarThingCouchDb;
-import me.retrodaredevil.solarthing.misc.device.DevicePacket;
-import me.retrodaredevil.solarthing.misc.error.ErrorPacket;
+import me.retrodaredevil.solarthing.database.MillisQueryBuilder;
+import me.retrodaredevil.solarthing.database.SolarThingDatabase;
+import me.retrodaredevil.solarthing.database.couchdb.CouchDbSolarThingDatabase;
+import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
-import me.retrodaredevil.solarthing.packets.collection.parsing.LenientPacketParser;
-import me.retrodaredevil.solarthing.packets.collection.parsing.MultiPacketConverter;
-import me.retrodaredevil.solarthing.packets.collection.parsing.PacketGroupParser;
-import me.retrodaredevil.solarthing.packets.collection.parsing.SimplePacketGroupParser;
-import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
-import me.retrodaredevil.solarthing.packets.instance.InstancePacket;
-import me.retrodaredevil.solarthing.solar.SolarStatusPacket;
-import me.retrodaredevil.solarthing.solar.extra.SolarExtraPacket;
+import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +34,7 @@ public final class AutomationMain {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AutomationMain.class);
 	private static final ObjectMapper CONFIG_MAPPER = JacksonUtil.defaultMapper();
-	private static final ObjectMapper PARSE_MAPPER = JacksonUtil.lenientMapper(JacksonUtil.defaultMapper());
+
 	public static int startAutomation(AutomationProgramOptions options) throws IOException {
 		List<ActionNode> actionNodes = new ArrayList<>();
 		for (File file : options.getActionNodeFiles()) {
@@ -54,13 +45,7 @@ public final class AutomationMain {
 	public static int startAutomation(List<ActionNode> actionNodes, DatabaseTimeZoneOptionBase options, long periodMillis) {
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Starting automation program.");
 		CouchDbDatabaseSettings couchSettings = ConfigUtil.expectCouchDbDatabaseSettings(options);
-		CouchDbQueryHandler queryHandler = new CouchDbQueryHandler(
-				CouchDbUtil.createInstance(couchSettings.getCouchProperties(), couchSettings.getOkHttpProperties())
-						.getDatabase(SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME)
-		);
-		PacketGroupParser statusParser = new SimplePacketGroupParser(new LenientPacketParser(
-				MultiPacketConverter.createFrom(PARSE_MAPPER, SolarStatusPacket.class, SolarExtraPacket.class, DevicePacket.class, ErrorPacket.class, InstancePacket.class)
-		));
+		SolarThingDatabase database = CouchDbSolarThingDatabase.create(CouchDbUtil.createInstance(couchSettings.getCouchProperties(), couchSettings.getOkHttpProperties()));
 
 		VariableEnvironment variableEnvironment = new VariableEnvironment();
 
@@ -75,18 +60,19 @@ public final class AutomationMain {
 
 		ActionMultiplexer multiplexer = new Actions.ActionMultiplexerBuilder().build();
 		while (!Thread.currentThread().isInterrupted()) {
-			List<ObjectNode> statusPacketNodes = null;
+			List<PacketGroup> rawPacketGroups = null;
 			try {
 				long now = System.currentTimeMillis();
-				statusPacketNodes = queryHandler.query(SolarThingCouchDb.createMillisView(new ViewQueryParamsBuilder()
+				rawPacketGroups = database.getStatusDatabase().query(new MillisQueryBuilder()
 						.startKey(now - 5 * 60 * 1000)
-						.endKey(now).build()));
+						.endKey(now)
+						.build());
 				LOGGER.debug("Got packets");
-			} catch (PacketHandleException e) {
+			} catch (SolarThingDatabaseException e) {
 				LOGGER.error("Couldn't get status packets", e);
 			}
-			if(statusPacketNodes != null) {
-				List<FragmentedPacketGroup> packetGroups = PacketUtil.getPacketGroups(options.getSourceId(), options.getDefaultInstanceOptions(), statusPacketNodes, statusParser);
+			if(rawPacketGroups != null) {
+				List<FragmentedPacketGroup> packetGroups = PacketUtil.getPacketGroups(options.getSourceId(), options.getDefaultInstanceOptions(), rawPacketGroups);
 				if (packetGroups != null) {
 					FragmentedPacketGroup packetGroup = packetGroups.get(packetGroups.size() - 1);
 					latestPacketGroupReference[0] = packetGroup;

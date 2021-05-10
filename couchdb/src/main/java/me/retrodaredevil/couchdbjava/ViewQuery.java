@@ -27,10 +27,10 @@ public class ViewQuery {
 
 	@Override
 	public String toString() {
-		return "ViewQuery{" +
+		return "ViewQuery(" +
 				"designDoc='" + designDoc + '\'' +
 				", viewName='" + viewName + '\'' +
 				", params=" + params +
-				'}';
+				')';
 	}
 }

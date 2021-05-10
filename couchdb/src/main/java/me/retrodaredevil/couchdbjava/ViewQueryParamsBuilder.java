@@ -77,6 +77,10 @@ public class ViewQueryParamsBuilder {
 		}
 		return this;
 	}
+
+	/**
+	 * Defaults to true
+	 */
 	public ViewQueryParamsBuilder inclusiveEnd(Boolean inclusiveEnd) { this.inclusiveEnd = inclusiveEnd; return this; }
 	// key defined below
 	// keys defined below

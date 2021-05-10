@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.Packet;
 
+@Deprecated
 public class LenientPacketParser implements JsonPacketParser {
 	private final JsonPacketParser parser;
 

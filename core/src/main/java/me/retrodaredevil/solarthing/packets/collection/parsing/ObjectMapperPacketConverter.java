@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 
+@Deprecated
 public class ObjectMapperPacketConverter implements JsonPacketParser {
 	private final ObjectMapper mapper;
 	private final Class<? extends Packet> convertTo;

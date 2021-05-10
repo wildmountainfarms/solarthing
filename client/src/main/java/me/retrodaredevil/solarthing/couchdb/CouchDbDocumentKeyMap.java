@@ -1,19 +1,14 @@
 package me.retrodaredevil.solarthing.couchdb;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import me.retrodaredevil.couchdbjava.CouchDbDatabase;
 import me.retrodaredevil.couchdbjava.CouchDbInstance;
-import me.retrodaredevil.couchdbjava.exception.CouchDbException;
-import me.retrodaredevil.couchdbjava.exception.CouchDbNotFoundException;
-import me.retrodaredevil.couchdbjava.exception.CouchDbNotModifiedException;
-import me.retrodaredevil.couchdbjava.json.jackson.CouchDbJacksonUtil;
-import me.retrodaredevil.couchdbjava.response.DocumentData;
-import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.closed.authorization.AuthorizationPacket;
 import me.retrodaredevil.solarthing.closed.authorization.PermissionObject;
+import me.retrodaredevil.solarthing.database.SolarThingDatabase;
+import me.retrodaredevil.solarthing.database.UpdateToken;
+import me.retrodaredevil.solarthing.database.VersionedPacket;
+import me.retrodaredevil.solarthing.database.couchdb.CouchDbSolarThingDatabase;
+import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
 import me.retrodaredevil.solarthing.packets.security.crypto.PublicKeyLookUp;
-import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,55 +16,43 @@ import java.security.PublicKey;
 
 public class CouchDbDocumentKeyMap implements PublicKeyLookUp {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CouchDbDocumentKeyMap.class);
-	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
 	private static final long UPDATE_PERIOD_MILLIS = 30 * 1000; // 30 seconds
 
-	private final CouchDbDatabase database;
-	private final String documentName;
+	private final SolarThingDatabase database;
 
 	private AuthorizationPacket authorizationPacket = null;
-	private String lastRevision = null;
-	private boolean notFound = false;
+	private UpdateToken updateToken = null;
 	private Long lastUpdate = null;
 
-	public CouchDbDocumentKeyMap(CouchDbDatabase database, String documentName) {
+	public CouchDbDocumentKeyMap(SolarThingDatabase database) {
 		this.database = database;
-		this.documentName = documentName;
 	}
 	public static CouchDbDocumentKeyMap createDefault(CouchDbInstance couchDbInstance) {
-		return new CouchDbDocumentKeyMap(couchDbInstance.getDatabase(SolarThingConstants.CLOSED_UNIQUE_NAME), "authorized");
+		SolarThingDatabase database = CouchDbSolarThingDatabase.create(couchDbInstance);
+		return new CouchDbDocumentKeyMap(database);
 	}
 
 	private void updatePacket() {
-		DocumentData documentData = null;
-		try {
-			documentData = database.getDocumentIfUpdated(documentName, lastRevision);
-			notFound = false;
-			LOGGER.debug("Got new auth packet. senders: " + authorizationPacket.getSenderPermissions().keySet());
-		} catch (CouchDbNotModifiedException ignored) {
-			notFound = false;
-		} catch (CouchDbNotFoundException e) {
-			notFound = true;
-			LOGGER.info("Could not find document: " + documentName + " on database: " + database.getName());
-		} catch (CouchDbException e) {
-			LOGGER.error("Could not access database: " + database.getName(), e);
-			notFound = false;
-		}
-		if (documentData != null) {
-			try {
-				authorizationPacket = CouchDbJacksonUtil.readValue(MAPPER, documentData.getJsonData(), AuthorizationPacket.class);
-				lastRevision = documentData.getRevision();
-			} catch (JsonProcessingException e) {
-				LOGGER.error("Could not parse JSON!", e);
-			}
-		}
 		lastUpdate = System.currentTimeMillis();
+		final VersionedPacket<AuthorizationPacket> versionedPacket;
+		try {
+			versionedPacket = database.queryAuthorized(updateToken);
+		} catch (SolarThingDatabaseException e) {
+			LOGGER.error("Error getting authorization packet", e);
+			return;
+		}
+		if (versionedPacket == null) {
+			LOGGER.debug("Packet is the same since the last request");
+			return;
+		}
+		updateToken = versionedPacket.getUpdateToken();
+		authorizationPacket = versionedPacket.getPacket();
 	}
 
 	@Override
 	public PublicKey getKey(String sender) {
 		Long lastUpdate = this.lastUpdate;
-		if ((authorizationPacket == null && !notFound) || lastUpdate == null || lastUpdate + UPDATE_PERIOD_MILLIS < System.currentTimeMillis()) {
+		if (lastUpdate == null || lastUpdate + UPDATE_PERIOD_MILLIS < System.currentTimeMillis()) {
 			updatePacket();
 		}
 		AuthorizationPacket authorizationPacket = this.authorizationPacket;

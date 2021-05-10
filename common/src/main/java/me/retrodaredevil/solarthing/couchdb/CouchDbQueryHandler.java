@@ -17,6 +17,7 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
+@Deprecated
 public class CouchDbQueryHandler {
 //	private final Logger LOGGER = LoggerFactory.getLogger(CouchDbQueryHandler.class);
 

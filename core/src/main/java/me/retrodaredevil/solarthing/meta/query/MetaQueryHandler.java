@@ -14,6 +14,7 @@ import me.retrodaredevil.solarthing.util.JacksonUtil;
 /**
  * Handles the querying of the meta document from the solarthing_closed database. ({@link me.retrodaredevil.solarthing.SolarThingConstants#CLOSED_UNIQUE_NAME})
  */
+@Deprecated
 public class MetaQueryHandler {
 	private final CouchDbDatabase database;
 	private final ObjectMapper objectMapper;

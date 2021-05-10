@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 
+@Deprecated
 public interface JsonPacketParser {
 	/**
 	 * Note: This is meant to return null and throw an exception because callers can handle both of these outcomes differently.

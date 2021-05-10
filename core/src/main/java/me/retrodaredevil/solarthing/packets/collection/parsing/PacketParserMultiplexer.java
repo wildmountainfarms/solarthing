@@ -11,6 +11,7 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
+@Deprecated
 public class PacketParserMultiplexer implements JsonPacketParser {
 	private final List<JsonPacketParser> parserList;
 	private final LenientType lenientType;

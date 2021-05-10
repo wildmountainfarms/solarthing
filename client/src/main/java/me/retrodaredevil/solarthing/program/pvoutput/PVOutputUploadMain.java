@@ -2,30 +2,23 @@ package me.retrodaredevil.solarthing.program.pvoutput;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import me.retrodaredevil.couchdb.CouchDbUtil;
-import me.retrodaredevil.couchdbjava.ViewQueryParamsBuilder;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.analytics.AnalyticsManager;
 import me.retrodaredevil.solarthing.config.databases.DatabaseType;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.config.options.PVOutputUploadProgramOptions;
 import me.retrodaredevil.solarthing.config.options.ProgramType;
-import me.retrodaredevil.solarthing.couchdb.CouchDbQueryHandler;
-import me.retrodaredevil.solarthing.couchdb.SolarThingCouchDb;
-import me.retrodaredevil.solarthing.misc.device.DevicePacket;
-import me.retrodaredevil.solarthing.misc.error.ErrorPacket;
-import me.retrodaredevil.solarthing.misc.weather.WeatherPacket;
+import me.retrodaredevil.solarthing.database.MillisQueryBuilder;
+import me.retrodaredevil.solarthing.database.SolarThingDatabase;
+import me.retrodaredevil.solarthing.database.couchdb.CouchDbSolarThingDatabase;
+import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
-import me.retrodaredevil.solarthing.packets.collection.parsing.LenientPacketParser;
-import me.retrodaredevil.solarthing.packets.collection.parsing.MultiPacketConverter;
-import me.retrodaredevil.solarthing.packets.collection.parsing.PacketGroupParser;
-import me.retrodaredevil.solarthing.packets.collection.parsing.SimplePacketGroupParser;
+import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
-import me.retrodaredevil.solarthing.packets.instance.InstancePacket;
 import me.retrodaredevil.solarthing.program.CommandOptions;
-import me.retrodaredevil.solarthing.program.DatabaseConfig;
 import me.retrodaredevil.solarthing.program.ConfigUtil;
+import me.retrodaredevil.solarthing.program.DatabaseConfig;
 import me.retrodaredevil.solarthing.program.PacketUtil;
 import me.retrodaredevil.solarthing.pvoutput.CsvUtil;
 import me.retrodaredevil.solarthing.pvoutput.SimpleDate;
@@ -33,9 +26,7 @@ import me.retrodaredevil.solarthing.pvoutput.data.*;
 import me.retrodaredevil.solarthing.pvoutput.service.PVOutputOkHttpUtil;
 import me.retrodaredevil.solarthing.pvoutput.service.PVOutputRetrofitUtil;
 import me.retrodaredevil.solarthing.pvoutput.service.PVOutputService;
-import me.retrodaredevil.solarthing.solar.SolarStatusPacket;
 import me.retrodaredevil.solarthing.solar.daily.DailyConfig;
-import me.retrodaredevil.solarthing.solar.extra.SolarExtraPacket;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
@@ -74,13 +65,7 @@ public class PVOutputUploadMain {
 			return 1;
 		}
 		CouchDbDatabaseSettings couchDbDatabaseSettings = (CouchDbDatabaseSettings) databaseConfig.getSettings();
-		final CouchDbQueryHandler queryHandler = new CouchDbQueryHandler(
-				CouchDbUtil.createInstance(couchDbDatabaseSettings.getCouchProperties(), couchDbDatabaseSettings.getOkHttpProperties())
-						.getDatabase(SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME)
-		);
-		PacketGroupParser statusParser = new SimplePacketGroupParser(new LenientPacketParser(
-				MultiPacketConverter.createFrom(MAPPER, SolarStatusPacket.class, SolarExtraPacket.class, DevicePacket.class, ErrorPacket.class, WeatherPacket.class, InstancePacket.class)
-		));
+		SolarThingDatabase database = CouchDbSolarThingDatabase.create(CouchDbUtil.createInstance(couchDbDatabaseSettings.getCouchProperties(), couchDbDatabaseSettings.getOkHttpProperties()));
 
 		OkHttpClient client = PVOutputOkHttpUtil.configure(new OkHttpClient.Builder(), options.getApiKey(), options.getSystemId())
 				.addInterceptor(new HttpLoggingInterceptor(LOGGER::debug).setLevel(HttpLoggingInterceptor.Level.BASIC))
@@ -105,7 +90,7 @@ public class PVOutputUploadMain {
 			}
 			return startRangeUpload(
 					fromDate, toDate,
-					options, queryHandler, statusParser, handler, service, options.getTimeZone()
+					options, database, handler, service, options.getTimeZone()
 			);
 		} else if ((fromDateString == null) != (toDateString == null)) {
 			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)You need to define both from and to, or define neither to do the normal PVOutput program!");
@@ -114,12 +99,12 @@ public class PVOutputUploadMain {
 		AnalyticsManager analyticsManager = new AnalyticsManager(options.isAnalyticsEnabled(), dataDirectory);
 		analyticsManager.sendStartUp(ProgramType.PVOUTPUT_UPLOAD);
 
-		return startRealTimeProgram(options, queryHandler, statusParser, handler, service, options.getTimeZone());
+		return startRealTimeProgram(options, database, handler, service, options.getTimeZone());
 	}
 	private static int startRangeUpload(
 			SimpleDate fromDate, SimpleDate toDate,
-			PVOutputUploadProgramOptions options, CouchDbQueryHandler queryHandler,
-			PacketGroupParser statusParser, PVOutputHandler handler, PVOutputService service, TimeZone timeZone
+			PVOutputUploadProgramOptions options, SolarThingDatabase database,
+			PVOutputHandler handler, PVOutputService service, TimeZone timeZone
 	) {
 		List<AddOutputParameters> addOutputParameters = new ArrayList<>();
 		SimpleDate date = fromDate;
@@ -129,20 +114,21 @@ public class PVOutputUploadMain {
 			long dayStart = date.getDayStartDateMillis(timeZone);
 			long dayEnd = tomorrow.getDayStartDateMillis(timeZone);
 
-			List<ObjectNode> statusPacketNodes = null;
+			List<PacketGroup> rawPacketGroups = null;
 			try {
-				statusPacketNodes = queryHandler.query(SolarThingCouchDb.createMillisView(new ViewQueryParamsBuilder()
+				rawPacketGroups = database.getStatusDatabase().query(new MillisQueryBuilder()
 						.startKey(dayStart)
 						.endKey(dayEnd)
 						.inclusiveEnd(false)
-						.build()));
-				System.out.println("Got " + statusPacketNodes.size() + " packets for date: " + date.toPVOutputString());
-			} catch (PacketHandleException e) {
+						.build()
+				);
+				System.out.println("Got " + rawPacketGroups.size() + " packets for date: " + date.toPVOutputString());
+			} catch (SolarThingDatabaseException e) {
 				e.printStackTrace();
 				System.err.println("Couldn't query packets. Skipping " + date.toPVOutputString());
 			}
-			if (statusPacketNodes != null) {
-				List<FragmentedPacketGroup> packetGroups = PacketUtil.getPacketGroups(options.getSourceId(), options.getDefaultInstanceOptions(), statusPacketNodes, statusParser);
+			if (rawPacketGroups != null) {
+				List<FragmentedPacketGroup> packetGroups = PacketUtil.getPacketGroups(options.getSourceId(), options.getDefaultInstanceOptions(), rawPacketGroups);
 
 				if (packetGroups != null) {
 					if (!handler.checkPackets(dayStart, packetGroups)) {
@@ -234,8 +220,8 @@ public class PVOutputUploadMain {
 	}
 
 	private static int startRealTimeProgram(
-			PVOutputUploadProgramOptions options, CouchDbQueryHandler queryHandler,
-			PacketGroupParser statusParser, PVOutputHandler handler, PVOutputService service, TimeZone timeZone
+			PVOutputUploadProgramOptions options, SolarThingDatabase database,
+			PVOutputHandler handler, PVOutputService service, TimeZone timeZone
 	) {
 		if (options.isJoinTeams()) {
 			LOGGER.info("Going to join SolarThing team...");
@@ -281,18 +267,19 @@ public class PVOutputUploadMain {
 			long now = System.currentTimeMillis();
 			SimpleDate today = SimpleDate.fromDateMillis(now, timeZone);
 			long dayStartTimeMillis = today.getDayStartDateMillis(timeZone);
-			List<ObjectNode> statusPacketNodes = null;
+			List<PacketGroup> rawPacketGroups = null;
 			try {
-				statusPacketNodes = queryHandler.query(SolarThingCouchDb.createMillisView(new ViewQueryParamsBuilder()
+				rawPacketGroups = database.getStatusDatabase().query(new MillisQueryBuilder()
 						.startKey(dayStartTimeMillis)
 						.endKey(now)
-						.build()));
+						.build()
+				);
 				LOGGER.debug("Got packets");
-			} catch (PacketHandleException e) {
+			} catch (SolarThingDatabaseException e) {
 				LOGGER.error("Couldn't get status packets", e);
 			}
-			if(statusPacketNodes != null){
-				List<FragmentedPacketGroup> packetGroups = PacketUtil.getPacketGroups(options.getSourceId(), options.getDefaultInstanceOptions(), statusPacketNodes, statusParser);
+			if(rawPacketGroups != null){
+				List<FragmentedPacketGroup> packetGroups = PacketUtil.getPacketGroups(options.getSourceId(), options.getDefaultInstanceOptions(), rawPacketGroups);
 				if (packetGroups != null) {
 					FragmentedPacketGroup latestPacketGroup = packetGroups.get(packetGroups.size() - 1);
 					if (latestPacketGroup.getDateMillis() < now - 5 * 60 * 1000) {
@@ -315,7 +302,7 @@ public class PVOutputUploadMain {
 						}
 					}
 				} else {
-					LOGGER.warn("Got " + statusPacketNodes.size() + " packets but, there must not have been any packets with the source: " + options.getSourceId());
+					LOGGER.warn("Got " + rawPacketGroups.size() + " packets but, there must not have been any packets with the source: " + options.getSourceId());
 				}
 			}
 			LOGGER.debug("Going to sleep now");

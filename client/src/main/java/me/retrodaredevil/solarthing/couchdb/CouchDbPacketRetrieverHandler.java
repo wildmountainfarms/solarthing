@@ -6,6 +6,7 @@ import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
 
+@Deprecated
 public class CouchDbPacketRetrieverHandler implements PacketHandler {
 
 	private final CouchDbPacketRetriever couchDbPacketRetriever;

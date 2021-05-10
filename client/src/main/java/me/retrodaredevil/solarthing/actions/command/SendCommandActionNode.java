@@ -8,11 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.Actions;
 import me.retrodaredevil.couchdb.CouchDbUtil;
-import me.retrodaredevil.couchdbjava.CouchDbDatabase;
 import me.retrodaredevil.couchdbjava.CouchDbInstance;
-import me.retrodaredevil.couchdbjava.exception.CouchDbException;
-import me.retrodaredevil.couchdbjava.json.StringJsonData;
-import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.actions.ActionNode;
 import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.CouchDbEnvironment;
@@ -21,6 +17,9 @@ import me.retrodaredevil.solarthing.actions.environment.TimeZoneEnvironment;
 import me.retrodaredevil.solarthing.commands.packets.open.ImmutableRequestCommandPacket;
 import me.retrodaredevil.solarthing.commands.packets.open.RequestCommandPacket;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
+import me.retrodaredevil.solarthing.database.SolarThingDatabase;
+import me.retrodaredevil.solarthing.database.couchdb.CouchDbSolarThingDatabase;
+import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollections;
@@ -122,7 +121,7 @@ public class SendCommandActionNode implements ActionNode {
 
 		CouchDbDatabaseSettings databaseSettings = actionEnvironment.getInjectEnvironment().get(CouchDbEnvironment.class).getDatabaseSettings();
 		CouchDbInstance instance = CouchDbUtil.createInstance(databaseSettings.getCouchProperties(), databaseSettings.getOkHttpProperties());
-		CouchDbDatabase database = instance.getDatabase(SolarThingConstants.OPEN_UNIQUE_NAME);
+		SolarThingDatabase database = CouchDbSolarThingDatabase.create(instance);
 		TimeZone timeZone = actionEnvironment.getInjectEnvironment().get(TimeZoneEnvironment.class).getTimeZone();
 
 		return Actions.createRunOnce(() -> {
@@ -150,18 +149,11 @@ public class SendCommandActionNode implements ActionNode {
 					),
 					PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR, TimeZone.getDefault()
 			);
-			final String packetCollectionJson;
-			try {
-				packetCollectionJson = MAPPER.writeValueAsString(packetCollection);
-			} catch (JsonProcessingException e) {
-				throw new RuntimeException("ERROR! Couldn't write the packet collection as JSON! Please report this error!", e);
-			}
 			executorService.execute(() -> {
 				try {
-					database.createIfNotExists();
-					database.putDocument(packetCollection.getDbId(), new StringJsonData(packetCollectionJson));
+					database.getOpenDatabase().uploadPacketCollection(packetCollection, null);
 					LOGGER.info("Uploaded command request document");
-				} catch (CouchDbException e) {
+				} catch (SolarThingDatabaseException e) {
 					LOGGER.error("Error while uploading document.", e);
 				}
 			});

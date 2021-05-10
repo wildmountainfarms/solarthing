@@ -12,6 +12,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Helps query packets using the default millis view
  */
+@Deprecated
 public class CouchDbPacketRetriever {
 //	private final Logger LOGGER = LoggerFactory.getLogger(CouchDbPacketRetriever.class);
 
