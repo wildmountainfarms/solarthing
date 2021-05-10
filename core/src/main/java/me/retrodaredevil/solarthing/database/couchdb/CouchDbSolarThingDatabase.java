@@ -23,6 +23,7 @@ import me.retrodaredevil.solarthing.misc.common.meta.DataMetaPacket;
 import me.retrodaredevil.solarthing.misc.device.DevicePacket;
 import me.retrodaredevil.solarthing.misc.error.ErrorPacket;
 import me.retrodaredevil.solarthing.misc.weather.WeatherPacket;
+import me.retrodaredevil.solarthing.packets.collection.parsing.PacketParsingErrorHandler;
 import me.retrodaredevil.solarthing.packets.instance.InstancePacket;
 import me.retrodaredevil.solarthing.packets.security.SecurityPacket;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacket;

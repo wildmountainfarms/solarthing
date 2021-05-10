@@ -1,7 +1,9 @@
 package me.retrodaredevil.solarthing.packets.collection.parsing;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import me.retrodaredevil.solarthing.packets.DocumentedPacket;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
@@ -12,15 +14,16 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
-@Deprecated
-public class SimplePacketGroupParser implements PacketGroupParser {
-	private final JsonPacketParser packetParser;
+public class SimplePacketGroupParser {
+	private final ObjectMapper mapper;
+	private final PacketParsingErrorHandler errorHandler;
 
-	public SimplePacketGroupParser(JsonPacketParser packetParser) {
-		this.packetParser = requireNonNull(packetParser);
+	public SimplePacketGroupParser(ObjectMapper mapper, PacketParsingErrorHandler errorHandler) {
+		this.mapper = mapper;
+		this.errorHandler = errorHandler;
 	}
 
-	@Override
+
 	public @NotNull PacketGroup parse(ObjectNode objectNode) throws PacketParseException {
 		JsonNode dateMillisNode = objectNode.get("dateMillis");
 		if(dateMillisNode == null){
@@ -37,14 +40,19 @@ public class SimplePacketGroupParser implements PacketGroupParser {
 		if(!packetsNode.isArray()){
 			throw new PacketParseException("'packets' is not an array! packetsNode=" + packetsNode);
 		}
+
 		List<Packet> packetList = new ArrayList<>();
 		for (JsonNode jsonPacket : packetsNode) {
-			Packet packet = packetParser.parsePacket(jsonPacket);
+			DocumentedPacket packet = null;
+			try {
+				packet = mapper.convertValue(jsonPacket, DocumentedPacket.class);
+			} catch (IllegalArgumentException ex) {
+				errorHandler.handleError(ex);
+			}
 			if(packet != null){
 				packetList.add(packet);
 			}
 		}
-
 		return PacketGroups.createPacketGroup(packetList, dateMillis);
 	}
 }

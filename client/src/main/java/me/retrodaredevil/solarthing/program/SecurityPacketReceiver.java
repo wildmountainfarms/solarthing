@@ -12,10 +12,7 @@ import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
 import me.retrodaredevil.solarthing.packets.collection.TargetPacketGroup;
-import me.retrodaredevil.solarthing.packets.collection.parsing.MultiPacketConverter;
-import me.retrodaredevil.solarthing.packets.collection.parsing.PacketGroupParser;
-import me.retrodaredevil.solarthing.packets.collection.parsing.PacketParseException;
-import me.retrodaredevil.solarthing.packets.collection.parsing.SimplePacketGroupParser;
+import me.retrodaredevil.solarthing.packets.collection.parsing.*;
 import me.retrodaredevil.solarthing.packets.instance.InstancePacket;
 import me.retrodaredevil.solarthing.packets.security.IntegrityPacket;
 import me.retrodaredevil.solarthing.packets.security.LargeIntegrityPacket;
@@ -41,7 +38,7 @@ public class SecurityPacketReceiver {
 	private final String sourceId;
 	private final int fragmentId;
 
-	private final PacketGroupParser integrityParser;
+	private final SimplePacketGroupParser integrityParser;
 
 	private final Cipher cipher;
 
@@ -63,7 +60,9 @@ public class SecurityPacketReceiver {
 
 		List<Class<? extends DocumentedPacket>> classList = new ArrayList<>(packetClasses);
 		classList.add(InstancePacket.class);
-		integrityParser = new SimplePacketGroupParser(MultiPacketConverter.createFrom(MAPPER, classList));
+		ObjectMapper integrityMapper = MAPPER.copy();
+		integrityMapper.getSubtypeResolver().registerSubtypes(Collections.unmodifiableList(classList));
+		integrityParser = new SimplePacketGroupParser(integrityMapper, PacketParsingErrorHandler.DO_NOTHING);
 
 		try {
 			cipher = Cipher.getInstance(KeyUtil.CIPHER_TRANSFORMATION);

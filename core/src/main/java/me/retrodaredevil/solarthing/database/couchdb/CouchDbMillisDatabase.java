@@ -20,6 +20,9 @@ import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
+import me.retrodaredevil.solarthing.packets.collection.parsing.PacketParseException;
+import me.retrodaredevil.solarthing.packets.collection.parsing.PacketParsingErrorHandler;
+import me.retrodaredevil.solarthing.packets.collection.parsing.SimplePacketGroupParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,12 +31,12 @@ public class CouchDbMillisDatabase implements MillisDatabase {
 
 	private final CouchDbDatabase database;
 	private final ObjectMapper mapper;
-	private final PacketParsingErrorHandler errorHandler;
+	private final SimplePacketGroupParser parser;
 
 	public CouchDbMillisDatabase(CouchDbDatabase database, ObjectMapper mapper, PacketParsingErrorHandler errorHandler) {
 		this.database = database;
 		this.mapper = mapper;
-		this.errorHandler = errorHandler;
+		this.parser = new SimplePacketGroupParser(mapper, errorHandler);
 	}
 
 	@Override
@@ -58,40 +61,15 @@ public class CouchDbMillisDatabase implements MillisDatabase {
 				throw new SolarThingDatabaseException("Something must be wrong with the packet millis view because we got this jsonNode: " + jsonNode);
 			}
 			ObjectNode objectNode = (ObjectNode) jsonNode;
-			r.add(parsePacketGroup(objectNode));
+			final PacketGroup packetGroup;
+			try {
+				packetGroup = parser.parse(objectNode);
+			} catch (PacketParseException e) {
+				throw new SolarThingDatabaseException(e);
+			}
+			r.add(packetGroup);
 		}
 		return r;
-	}
-	private PacketGroup parsePacketGroup(ObjectNode objectNode) throws SolarThingDatabaseException {
-		JsonNode dateMillisNode = objectNode.get("dateMillis");
-		if(dateMillisNode == null){
-			throw new SolarThingDatabaseException("'dateMillis' does not exist for objectNode=" + objectNode);
-		}
-		if(!dateMillisNode.isNumber()){
-			throw new SolarThingDatabaseException("'dateMillis' is not a number! dateMillisNode=" + dateMillisNode);
-		}
-		long dateMillis = dateMillisNode.asLong();
-		JsonNode packetsNode = objectNode.get("packets");
-		if(packetsNode == null){
-			throw new SolarThingDatabaseException("'packets' does not exist for objectNode=" + objectNode);
-		}
-		if(!packetsNode.isArray()){
-			throw new SolarThingDatabaseException("'packets' is not an array! packetsNode=" + packetsNode);
-		}
-		List<Packet> packetList = new ArrayList<>();
-		for (JsonNode jsonPacket : packetsNode) {
-			DocumentedPacket packet = null;
-			try {
-				packet = mapper.convertValue(jsonPacket, DocumentedPacket.class);
-			} catch (IllegalArgumentException ex) {
-				errorHandler.handleError(ex);
-			}
-			if(packet != null){
-				packetList.add(packet);
-			}
-		}
-
-		return PacketGroups.createPacketGroup(packetList, dateMillis);
 	}
 
 	@Override
