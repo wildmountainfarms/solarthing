@@ -32,10 +32,9 @@ public class IdentifierFragmentBase<T extends Identifier> implements KnownIdenti
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+		if (!(o instanceof IdentifierFragment)) return false;
 		IdentifierFragment that = (IdentifierFragment) o;
-		return fragmentId == that.getFragmentId() &&
-				identifier.equals(that.getIdentifier());
+		return matches(that);
 	}
 
 	@Override
