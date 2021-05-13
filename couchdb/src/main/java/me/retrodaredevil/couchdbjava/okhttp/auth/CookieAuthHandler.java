@@ -25,6 +25,10 @@ import static java.util.Objects.requireNonNull;
  * to only be used with one {@link OkHttpCouchDbInstance} at a time.
  */
 public class CookieAuthHandler implements OkHttpAuthHandler {
+	/*
+	Also note while using this, "require_valid_user" should be false https://stackoverflow.com/questions/49443975/couchdb-cookie-authentication-is-not-working
+	 */
+
 	private static final ObjectMapper MAPPER = new ObjectMapper();
 	private static final Logger LOGGER = LoggerFactory.getLogger(CookieAuthHandler.class);
 
@@ -155,6 +159,9 @@ public class CookieAuthHandler implements OkHttpAuthHandler {
 		public List<Cookie> loadForRequest(@NotNull HttpUrl httpUrl) {
 			Cookie authCookie = getAuthCookie();
 			if (authCookie == null) {
+				if (!httpUrl.encodedPathSegments().contains("_session")) {
+					LOGGER.debug("authCookie was null, so not being used.");
+				}
 				return Collections.emptyList();
 			}
 			return Collections.singletonList(authCookie);

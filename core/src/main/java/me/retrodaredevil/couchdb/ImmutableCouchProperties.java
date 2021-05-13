@@ -10,8 +10,10 @@ import static java.util.Objects.requireNonNull;
 class ImmutableCouchProperties implements CouchProperties {
 	private final HttpUrl url;
 	private final String username, password;
+	private final boolean basicAuth;
 
-	ImmutableCouchProperties(HttpUrl url, String username, String password) {
+	ImmutableCouchProperties(HttpUrl url, String username, String password, boolean basicAuth) {
+		this.basicAuth = basicAuth;
 		requireNonNull(this.url = url);
 		this.username = username;
 		this.password = password;
@@ -41,4 +43,6 @@ class ImmutableCouchProperties implements CouchProperties {
 
 	@Override public String getPassword() { return password; }
 
+	@Override
+	public boolean useBasicAuth() { return basicAuth; }
 }

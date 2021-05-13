@@ -107,7 +107,7 @@ public class CouchDbSetupMain {
 				throw new RuntimeException("Couldn't serialize json! Report this!", e);
 			}
 			try {
-				database.putDocument("_design/packets", jsonData); // TODO is this document ID name allowed/will it work with retrofit?
+				database.putDocument("_design/packets", jsonData);
 			} catch (CouchDbUpdateConflictException e) {
 				System.out.println("_design/packets document already on database: " + databaseName + ". We will not try to update it. Hopefully it is correct.");
 			}
@@ -116,9 +116,9 @@ public class CouchDbSetupMain {
 			SecurityGroup oldAdmins = oldSecurity.getAdminsOrBlank();
 			final SecurityGroup newAdmins;
 			if (username != null && !oldAdmins.getNamesOrEmpty().contains(username)) {
-				List<String> admins = new ArrayList<>(oldAdmins.getNames());
+				List<String> admins = new ArrayList<>(oldAdmins.getNamesOrEmpty());
 				admins.add(username);
-				newAdmins = new SecurityGroup(admins, oldAdmins.getRoles());
+				newAdmins = new SecurityGroup(admins, oldAdmins.getRolesOrEmpty());
 			} else {
 				newAdmins = oldAdmins;
 			}

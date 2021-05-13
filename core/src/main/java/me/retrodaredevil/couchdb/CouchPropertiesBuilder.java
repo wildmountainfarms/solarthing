@@ -10,6 +10,7 @@ public class CouchPropertiesBuilder {
 	private HttpUrl.Builder httpUrlBuilder;
 	private String username;
 	private String password;
+	private boolean basicAuth = false;
 
 	public CouchPropertiesBuilder(){
 		httpUrlBuilder = new HttpUrl.Builder();
@@ -73,7 +74,13 @@ public class CouchPropertiesBuilder {
 		return this;
 	}
 
+	@JsonSetter("basic_auth")
+	public CouchPropertiesBuilder setBasicAuth(boolean basicAuth) {
+		this.basicAuth = basicAuth;
+		return this;
+	}
+
 	public CouchProperties build() {
-		return new ImmutableCouchProperties(httpUrlBuilder.build(), username, password);
+		return new ImmutableCouchProperties(httpUrlBuilder.build(), username, password, basicAuth);
 	}
 }

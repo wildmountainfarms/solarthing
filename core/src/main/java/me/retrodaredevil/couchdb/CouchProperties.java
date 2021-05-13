@@ -33,4 +33,7 @@ public interface CouchProperties {
 
 	@JsonProperty("password")
 	@Nullable String getPassword();
+
+	@JsonProperty("basic_auth")
+	boolean useBasicAuth();
 }

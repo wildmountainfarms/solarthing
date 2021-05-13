@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.couchdb.design.DefaultPacketsDesign;
 import me.retrodaredevil.couchdbjava.CouchDbDatabase;
 import me.retrodaredevil.couchdbjava.exception.CouchDbException;
+import me.retrodaredevil.couchdbjava.exception.CouchDbNotFoundException;
 import me.retrodaredevil.couchdbjava.exception.CouchDbUpdateConflictException;
 import me.retrodaredevil.couchdbjava.json.JsonData;
 import me.retrodaredevil.couchdbjava.json.StringJsonData;
@@ -37,16 +38,13 @@ public class CouchDbPacketSaver implements PacketHandler {
 		this.addDefaultDesign = addDefaultDesign;
 	}
 	public CouchDbPacketSaver(CouchDbDatabase database){
-		this(database, true);
+		this(database, false);
 	}
 
 	@Override
 	public void handle(PacketCollection packetCollection, InstantType instantType) throws PacketHandleException {
-		try {
-			database.createIfNotExists();
-		} catch(CouchDbException ex){
-			throw new PacketHandleException("Could not establish connection", ex);
-		}
+		// Normally we would try and create the database, but that doesn't work with non-admin cookie authenticated users
+
 		if (addDefaultDesign && !defaultDesignAdded) {
 			final String json;
 			try {
@@ -58,6 +56,8 @@ public class CouchDbPacketSaver implements PacketHandler {
 				database.putDocument("_design/packets", new StringJsonData(json));
 				defaultDesignAdded = true;
 				LOGGER.info("Created default design document on database=" + database.getName());
+			} catch (CouchDbNotFoundException ex) {
+				LOGGER.info("Got 'not found'. Does the database exist? Make sure to run the couchdb-setup!", ex);
 			} catch(CouchDbUpdateConflictException ex) {
 				defaultDesignAdded = true;
 				LOGGER.debug("Already had a design document for packets on database=" + database.getName());
@@ -83,6 +83,8 @@ public class CouchDbPacketSaver implements PacketHandler {
 			}
 			LOGGER.debug("Now revision is: " + response.getRev() + ". It was: " + revision);
 			idMap.put(id, response.getRev());
+		} catch (CouchDbNotFoundException ex) {
+			throw new PacketHandleException("Got 'not found'. Does the database exist? Make sure to run the couchdb-setup!", ex);
 		} catch(CouchDbUpdateConflictException ex){
 			try {
 				String actualRev = database.getCurrentRevision(id);

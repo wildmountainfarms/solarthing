@@ -69,16 +69,20 @@ public final class OkHttpUtil {
 		return createException(error, response.code());
 	}
 	private static CouchDbException createException(ErrorResponse error, int code) {
+		String additionalString = "";
+		if (error != null) {
+			additionalString = " error: " + error.getError() + " reason: " + error.getReason();
+		}
 		switch(code) {
 			case CouchDbStatusCode.NOT_MODIFIED:
-				return new CouchDbNotModifiedException("Not modified!", error);
+				return new CouchDbNotModifiedException("Not modified!" + additionalString, error);
 			case CouchDbStatusCode.UNAUTHORIZED:
-				return new CouchDbUnauthorizedException("You are unauthorized!", error);
+				return new CouchDbUnauthorizedException("You are unauthorized!" + additionalString, error);
 			case CouchDbStatusCode.NOT_FOUND:
-				return new CouchDbNotFoundException("Got 'not found'!", error);
+				return new CouchDbNotFoundException("Got 'not found'!" + additionalString, error);
 			case CouchDbStatusCode.UPDATE_CONFLICT:
-				return new CouchDbUpdateConflictException("Update conflict!", error);
+				return new CouchDbUpdateConflictException("Update conflict!" + additionalString, error);
 		}
-		return new CouchDbCodeException("Unknown status code! code: " + code, code, error);
+		return new CouchDbCodeException("Unknown status code! code: " + code + additionalString, code, error);
 	}
 }

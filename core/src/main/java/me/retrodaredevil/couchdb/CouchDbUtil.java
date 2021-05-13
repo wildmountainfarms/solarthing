@@ -26,8 +26,15 @@ public final class CouchDbUtil {
 			if (password == null) {
 				throw new IllegalArgumentException("If username isn't null, then password cannot be null!");
 			}
-			authHandler = new CookieAuthHandler(username, password);
+			if (couchProperties.useBasicAuth()) {
+				authHandler = new BasicAuthHandler(CouchDbAuth.create(username, password));
+			} else {
+				authHandler = new CookieAuthHandler(username, password);
+			}
 		} else {
+			if (password != null) {
+				throw new IllegalArgumentException("If username is null, then you shouldn't have a password set!");
+			}
 			authHandler = new BasicAuthHandler(CouchDbAuth.createNoAuth());
 		}
 
