@@ -45,8 +45,10 @@ public class CookieAuthHandler implements OkHttpAuthHandler {
 		updateCredentials(username, password);
 	}
 	public synchronized void updateCredentials(String username, String password) {
-		requireNonNull(this.username = username);
-		requireNonNull(this.password = password);
+		requireNonNull(username);
+		requireNonNull(password);
+		this.username = username;
+		this.password = password;
 	}
 	public void setAutoAuth(boolean autoAuth) {
 		this.autoAuth = autoAuth;
