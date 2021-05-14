@@ -7,11 +7,8 @@ You will now define the message-sender action in a separate file. The recommende
 
 You can find an example action [here](../../config_templates/actions/message_sender.json)
 
-This action file references different message senders. Currently `mattermost`, `slack` and `log` are supported.
+This action file references different message senders. Currently `slack` and `log` are supported.
 These are defined in separate files and referenced in the `senders` node as you can see in the example action file.
 
 ## Slack
 An example slack configuration can be found [here](../../config_templates/message/slack_template.json).
-
-## Mattermost
-An example mattermost configuration can be found [here](../../config_templates/message/mattermost_template.json).

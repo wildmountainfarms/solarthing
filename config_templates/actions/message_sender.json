@@ -1,8 +1,8 @@
 {
   "type": "message-sender",
   "senders": {
-    "important": "config/mattermost_important.json",
-    "basic": "config/mattermost.json"
+    "important": "config/slack_important.json",
+    "basic": "config/slack.json"
   },
   "events": [
     {

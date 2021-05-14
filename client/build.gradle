@@ -17,8 +17,6 @@ dependencies {
     implementation 'com.github.retrodaredevil:action-lib:v1.3.0'
     implementation 'com.brsanthu:google-analytics-java:2.0.0'
 
-    implementation 'net.bis5.mattermost4j:mattermost4j-core:0.22.1'
-
     implementation 'com.slack.api:slack-api-client:1.7.1'
 
     // https://mvnrepository.com/artifact/com.lexicalscope.jewelcli/jewelcli

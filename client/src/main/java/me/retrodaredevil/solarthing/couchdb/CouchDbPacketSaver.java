@@ -27,44 +27,16 @@ public class CouchDbPacketSaver implements PacketHandler {
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
 
 	/** A map of document IDs to the current revision of that document */
-	private final Map<String, String> idMap = new HashMap<>(); // TODO we could probably figure out a way to clear old values
+	private final Map<String, String> idMap = new HashMap<>();
 	private final CouchDbDatabase database;
-	private final boolean addDefaultDesign;
 
-	private boolean defaultDesignAdded = false;
-
-	public CouchDbPacketSaver(CouchDbDatabase database, boolean addDefaultDesign){
-		this.database = database;
-		this.addDefaultDesign = addDefaultDesign;
-	}
 	public CouchDbPacketSaver(CouchDbDatabase database){
-		this(database, false);
+		this.database = database;
 	}
 
 	@Override
 	public void handle(PacketCollection packetCollection, InstantType instantType) throws PacketHandleException {
 		// Normally we would try and create the database, but that doesn't work with non-admin cookie authenticated users
-
-		if (addDefaultDesign && !defaultDesignAdded) {
-			final String json;
-			try {
-				json = MAPPER.writeValueAsString(new DefaultPacketsDesign());
-			} catch (JsonProcessingException e) {
-				throw new RuntimeException("Should be able to serialize this design to json!", e);
-			}
-			try {
-				database.putDocument("_design/packets", new StringJsonData(json));
-				defaultDesignAdded = true;
-				LOGGER.info("Created default design document on database=" + database.getName());
-			} catch (CouchDbNotFoundException ex) {
-				LOGGER.info("Got 'not found'. Does the database exist? Make sure to run the couchdb-setup!", ex);
-			} catch(CouchDbUpdateConflictException ex) {
-				defaultDesignAdded = true;
-				LOGGER.debug("Already had a design document for packets on database=" + database.getName());
-			} catch(CouchDbException ex) {
-				LOGGER.debug("Couldn't create default design", ex);
-			}
-		}
 
 		String id = packetCollection.getDbId();
 		String revision = idMap.get(id);
@@ -82,6 +54,7 @@ public class CouchDbPacketSaver implements PacketHandler {
 				response = database.updateDocument(id, revision, jsonData);
 			}
 			LOGGER.debug("Now revision is: " + response.getRev() + ". It was: " + revision);
+			idMap.clear(); // Currently, if we have a new document ID, we never, ever, need to worry about using an older document ID, so we can clear the map to avoid keeping unnecessary memory
 			idMap.put(id, response.getRev());
 		} catch (CouchDbNotFoundException ex) {
 			throw new PacketHandleException("Got 'not found'. Does the database exist? Make sure to run the couchdb-setup!", ex);

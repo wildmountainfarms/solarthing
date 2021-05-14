@@ -27,6 +27,8 @@ import static java.util.Objects.requireNonNull;
 public class CookieAuthHandler implements OkHttpAuthHandler {
 	/*
 	Also note while using this, "require_valid_user" should be false https://stackoverflow.com/questions/49443975/couchdb-cookie-authentication-is-not-working
+
+	Eventually, we could generate tokens clientside https://medium.com/@eiri/couchdb-cookie-authentication-6dd0af6817da
 	 */
 
 	private static final ObjectMapper MAPPER = new ObjectMapper();

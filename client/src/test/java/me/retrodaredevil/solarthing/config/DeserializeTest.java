@@ -92,11 +92,11 @@ public class DeserializeTest {
 	@Test
 	void testAllActions() {
 		/*
+		Also note that mattermost stuff was here, so we may not need it after it was removed on 2021.05.13
+
 		ObjectMapper mapper = MAPPER.copy();
 		InjectableValues.Std iv = new InjectableValues.Std();
 		Map<String, File> hardcodedFileMap = new HashMap<>();
-		hardcodedFileMap.put("config/mattermost_important.json", new File(SOLARTHING_ROOT, "config_templates/message/mattermost_template.json"));
-		hardcodedFileMap.put("config/mattermost.json", new File(SOLARTHING_ROOT, "config_templates/message/mattermost_template.json"));
 		iv.addValue(FileMapper.JACKSON_INJECT_IDENTIFIER, (FileMapper) hardcodedFileMap::get);
 		mapper.setInjectableValues(iv);
 		TODO in future, uncomment if https://github.com/FasterXML/jackson-databind/issues/3072 is implemented
