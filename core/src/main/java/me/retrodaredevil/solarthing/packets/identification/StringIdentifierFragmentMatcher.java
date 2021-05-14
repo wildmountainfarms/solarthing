@@ -4,6 +4,7 @@ import me.retrodaredevil.solarthing.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
 
+@Deprecated
 public class StringIdentifierFragmentMatcher implements IdentifierFragmentMatcher {
 	private final int fragmentId;
 	private final String identifierRepresentation;

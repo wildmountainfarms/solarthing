@@ -1,16 +1,16 @@
 package me.retrodaredevil.solarthing.config.options;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.identification.IdentifierFragmentMatcher;
-import me.retrodaredevil.solarthing.packets.identification.StringIdentifierFragmentMatcher;
+import me.retrodaredevil.solarthing.packets.identification.IdentifierRepFragment;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings("FieldMayBeFinal")
 @JsonTypeName("pvoutput-upload")
 @JsonExplicit
 public class PVOutputUploadProgramOptions extends DatabaseTimeZoneOptionBase implements AnalyticsOption, DatabaseOption, ProgramOptions {
@@ -26,9 +26,9 @@ public class PVOutputUploadProgramOptions extends DatabaseTimeZoneOptionBase imp
 	private boolean isAnalyticsEnabled = AnalyticsOption.DEFAULT_IS_ANALYTICS_ENABLED;
 
 	@JsonProperty("voltage_identifier")
-	private IdentifierFragmentObject voltageIdentifierFragmentObject = null;
+	private IdentifierRepFragment voltageIdentifierFragmentObject = null;
 	@JsonProperty("temperature_identifier")
-	private IdentifierFragmentObject temperatureIdentifierFragmentObject = null;
+	private IdentifierRepFragment temperatureIdentifierFragmentObject = null;
 
 	@JsonProperty("include_import")
 	private boolean includeImport = false;
@@ -63,18 +63,18 @@ public class PVOutputUploadProgramOptions extends DatabaseTimeZoneOptionBase imp
 		return r;
 	}
 	public IdentifierFragmentMatcher getVoltageIdentifierFragmentMatcher() {
-		IdentifierFragmentObject object = voltageIdentifierFragmentObject;
+		IdentifierRepFragment object = voltageIdentifierFragmentObject;
 		if (object == null) {
 			return IdentifierFragmentMatcher.NO_MATCH;
 		}
-		return object.identifierFragmentMatcher;
+		return object;
 	}
 	public IdentifierFragmentMatcher getTemperatureIdentifierFragmentMatcher() {
-		IdentifierFragmentObject object = temperatureIdentifierFragmentObject;
+		IdentifierRepFragment object = temperatureIdentifierFragmentObject;
 		if (object == null) {
 			return IdentifierFragmentMatcher.NO_MATCH;
 		}
-		return object.identifierFragmentMatcher;
+		return object;
 	}
 
 	public boolean isIncludeImport() {
@@ -89,14 +89,4 @@ public class PVOutputUploadProgramOptions extends DatabaseTimeZoneOptionBase imp
 		return joinTeams;
 	}
 
-	static class IdentifierFragmentObject {
-		private final IdentifierFragmentMatcher identifierFragmentMatcher;
-		@JsonCreator
-		IdentifierFragmentObject(
-				@JsonProperty("fragment") int fragmentId,
-				@JsonProperty("identifier") String identifierString
-		) {
-			identifierFragmentMatcher = new StringIdentifierFragmentMatcher(fragmentId, identifierString);
-		}
-	}
 }

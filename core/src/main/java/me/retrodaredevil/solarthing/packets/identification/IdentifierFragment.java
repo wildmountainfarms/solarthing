@@ -5,7 +5,7 @@ import me.retrodaredevil.solarthing.annotations.NotNull;
 /**
  * This is usually used as a unique key that groups a fragmentId and an {@link Identifier} together.
  */
-public interface IdentifierFragment extends IdentifierFragmentMatcher { // TODO make all implementations serializable into JSON
+public interface IdentifierFragment extends IdentifierFragmentMatcher { // It would be nice to make these serializable to JSON, but nah. Probably not necessary.
 	int getFragmentId();
 	@NotNull Identifier getIdentifier();
 

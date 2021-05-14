@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.slack.api.Slack;
 import com.slack.api.SlackConfig;
+import com.slack.api.methods.MethodsClient;
 import com.slack.api.methods.SlackApiException;
 import com.slack.api.util.http.SlackHttpClient;
 import me.retrodaredevil.solarthing.message.MessageSender;
@@ -17,6 +18,8 @@ import java.time.Duration;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static java.util.Objects.requireNonNull;
+
 @JsonTypeName("slack")
 public class SlackMessageSender implements MessageSender {
 	/*
@@ -25,23 +28,21 @@ public class SlackMessageSender implements MessageSender {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SlackMessageSender.class);
 
-	private final String authToken;
 	private final String channelId;
-
-
-	private final Slack slack = Slack.getInstance(new SlackConfig(), new SlackHttpClient(new OkHttpClient.Builder()
-			.callTimeout(Duration.ofSeconds(10))
-			.connectTimeout(Duration.ofSeconds(3))
-//			.addInterceptor(new UserAgentInterceptor(Collections.emptyMap()))
-			.build()));
-//	private final Slack slack = Slack.getInstance();
-
+	private final MethodsClient methodsClient;
 	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
 	@JsonCreator
 	public SlackMessageSender(@JsonProperty("token") String authToken, @JsonProperty("channel_id") String channelId) {
-		this.authToken = authToken;
-		this.channelId = channelId;
+		requireNonNull(authToken);
+		requireNonNull(this.channelId = channelId);
+
+		Slack slack = Slack.getInstance(new SlackConfig(), new SlackHttpClient(new OkHttpClient.Builder()
+				.callTimeout(Duration.ofSeconds(10))
+				.connectTimeout(Duration.ofSeconds(3))
+//				.addInterceptor(new UserAgentInterceptor(Collections.emptyMap()))
+				.build()));
+		methodsClient = slack.methods(authToken);
 	}
 
 	@Override
@@ -54,8 +55,18 @@ public class SlackMessageSender implements MessageSender {
 			return;
 		}
 		executorService.execute(() -> {
+			if (depth > 0) {
+				// If we've failed before, start waiting a tiny bit longer before doing another request.
+				//   This will also stop other messages from being sent, but that's OK because if we failed for some reason, we don't need other messages being sent. They can wait too.
+				try {
+					Thread.sleep(depth * 100L);
+				} catch (InterruptedException e) {
+					LOGGER.error("Interrupted", e);
+					return;
+				}
+			}
 			try {
-				slack.methods(authToken).chatPostMessage(req -> req.channel(channelId).text(message));
+				methodsClient.chatPostMessage(req -> req.channel(channelId).text(message));
 			} catch (IOException | SlackApiException e) {
 				LOGGER.error("Could not connect to slack.", e);
 				send(message, depth + 1);

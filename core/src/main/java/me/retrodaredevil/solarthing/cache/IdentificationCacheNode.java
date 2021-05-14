@@ -1,12 +1,28 @@
 package me.retrodaredevil.solarthing.cache;
 
-import me.retrodaredevil.solarthing.packets.identification.Identifier;
-import me.retrodaredevil.solarthing.packets.identification.IdentifierFragment;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import me.retrodaredevil.solarthing.annotations.NotNull;
+import me.retrodaredevil.solarthing.packets.identification.IdentifierRepFragment;
 
-public interface IdentificationCacheNode<T extends IdentificationCacheData> {
-	Identifier getIdentifier();
-	int getFragment();
-	IdentifierFragment getIdentifierFragment();
+import static java.util.Objects.requireNonNull;
 
-	T getData();
+public class IdentificationCacheNode<T extends IdentificationCacheData> {
+	private final IdentifierRepFragment identifierRepFragment;
+	private final T data;
+
+	@JsonCreator
+	public IdentificationCacheNode(
+			@JsonProperty("fragment") int fragmentId,
+			@JsonProperty("identifier") String identifierRepresentation,
+			@JsonProperty("data") T data) {
+		this.identifierRepFragment = new IdentifierRepFragment(fragmentId, identifierRepresentation);
+		requireNonNull(this.data = data);
+	}
+
+	public int getFragmentId() { return identifierRepFragment.getFragmentId(); }
+	public @NotNull String getIdentifierRepresentation() { return identifierRepFragment.getIdentifierRepresentation(); }
+	public @NotNull IdentifierRepFragment getIdentifierRepFragment() { return identifierRepFragment; }
+
+	public @NotNull T getData() { return data; }
 }
