@@ -1,18 +1,26 @@
 package me.retrodaredevil.solarthing.solar.outback;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.packets.identification.IntegerIdentifier;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 
 import java.util.Objects;
 
+@JsonTypeName("outback")
+@JsonExplicit
 public class OutbackIdentifier implements IntegerIdentifier, OutbackData, Comparable<Identifier> {
 	private final int address;
 
-	public OutbackIdentifier(int address) {
+	@JsonCreator
+	public OutbackIdentifier(@JsonProperty(value = "address", required = true) int address) {
 		this.address = address;
 	}
 
+	@JsonProperty("address")
 	@Override
 	public int getAddress(){
 		return address;

@@ -19,7 +19,7 @@ import java.util.Collection;
 import java.util.Set;
 
 @JsonExplicit
-public interface FXDailyData extends OutbackData, DailyBatteryVoltage, ErrorReporter, FXWarningReporter, FXMiscReporter {
+public interface FXDailyData extends OutbackData, DailyBatteryVoltage, ErrorReporter, FXWarningReporter, FXMiscReporter, FXAccumulationData {
 	@Override
 	default boolean isNewDay(DailyData previousDailyData){
 		if (!(previousDailyData instanceof FXDailyData)) {
@@ -49,14 +49,7 @@ public interface FXDailyData extends OutbackData, DailyBatteryVoltage, ErrorRepo
 	@Nullable
 	Long getStartDateMillis();
 
-	@JsonProperty("inverterKWH")
-	float getInverterKWH();
-	@JsonProperty("chargerKWH")
-	float getChargerKWH();
-	@JsonProperty("buyKWH")
-	float getBuyKWH();
-	@JsonProperty("sellKWH")
-	float getSellKWH();
+	// FX Accumulation Data
 
 	@JsonProperty("operationalModeValues")
 	@NotNull Collection<@NotNull Integer> getOperationalModeValues();

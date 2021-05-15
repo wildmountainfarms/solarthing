@@ -1,9 +1,14 @@
 package me.retrodaredevil.solarthing.packets.identification;
 
 import com.fasterxml.jackson.annotation.JsonClassDescription;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
 import me.retrodaredevil.solarthing.annotations.NotNull;
+import me.retrodaredevil.solarthing.misc.common.DataIdentifier;
+import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
+import me.retrodaredevil.solarthing.solar.renogy.rover.RoverIdentifier;
 
 /**
  * All {@link Identifier}s have their {@link #equals(Object)} and {@link #hashCode()} methods implemented so
@@ -16,13 +21,22 @@ import me.retrodaredevil.solarthing.annotations.NotNull;
  * <p>
  * The string representation should not contain slashes (/) and should generally avoid special Non alpha-numeric characters.
  * The exception to this are '(', ')', '='.
+ * <p>
+ * Some Identifiers can be serialized to JSON and deserialized from JSON. However, serialization and deserialization should not be considered stable.
+ *
  */
+@JsonSubTypes({
+		@JsonSubTypes.Type(DataIdentifier.class),
+		@JsonSubTypes.Type(OutbackIdentifier.class),
+		@JsonSubTypes.Type(RoverIdentifier.class),
+})
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type") // don't use "EXISTING_PROPERTY" because we want it to serialize the name we give the subclass without overhead of a getter
 @JsonClassDescription("Contains a representation that is unique across all packets in a particular fragment")
 public interface Identifier {
 	/**
 	 * @return A representation of this identifier
 	 */
-	@JsonProperty("representation")
+	@GraphQLInclude("representation")
 	@JsonPropertyDescription("A string representation of this identifier")
 	@NotNull String getRepresentation();
 

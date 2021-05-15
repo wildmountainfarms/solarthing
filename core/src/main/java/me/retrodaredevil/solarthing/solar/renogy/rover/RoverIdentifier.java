@@ -1,5 +1,8 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
@@ -11,6 +14,8 @@ import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
  * there could be multiple rovers across a single fragment. Right now, this is not the case so, we can assume that
  * all {@link RoverIdentifier}s are equal to each other.
  */
+@JsonTypeName("rover")
+@JsonExplicit
 public final class RoverIdentifier implements Identifier, Comparable<Identifier> {
 	private static final RoverIdentifier DEFAULT_IDENTIFIER = new RoverIdentifier();
 
@@ -20,6 +25,7 @@ public final class RoverIdentifier implements Identifier, Comparable<Identifier>
 	/**
 	 * @return A {@link RoverIdentifier} that is equal to all other rover identifiers.
 	 */
+	@JsonCreator
 	public static RoverIdentifier getDefaultIdentifier() {
 		return DEFAULT_IDENTIFIER;
 	}
