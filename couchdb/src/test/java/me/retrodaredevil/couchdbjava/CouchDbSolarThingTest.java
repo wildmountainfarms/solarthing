@@ -3,6 +3,7 @@ package me.retrodaredevil.couchdbjava;
 import me.retrodaredevil.couchdbjava.exception.CouchDbException;
 import me.retrodaredevil.couchdbjava.okhttp.OkHttpCouchDbInstance;
 import me.retrodaredevil.couchdbjava.okhttp.auth.BasicAuthHandler;
+import me.retrodaredevil.couchdbjava.request.ViewQueryParamsBuilder;
 import me.retrodaredevil.couchdbjava.response.ViewResponse;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;

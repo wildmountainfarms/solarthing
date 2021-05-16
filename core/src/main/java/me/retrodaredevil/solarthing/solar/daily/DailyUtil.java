@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@SuppressWarnings("Java8MapApi") // needs to compatible with Android SDK 19
 @UtilityClass
 public final class DailyUtil {
 	private DailyUtil(){ throw new UnsupportedOperationException(); }
@@ -80,11 +79,7 @@ public final class DailyUtil {
 					int fragmentId = packetGroup.getFragmentId(packet);
 					T t = (T) packet;
 					IdentifierFragment identifierFragment = IdentifierFragment.create(fragmentId, t.getIdentifier());
-					List<TimestampedPacket<T>> packetList = packetMap.get(identifierFragment);
-					if (packetList == null) {
-						packetList = new ArrayList<>();
-						packetMap.put(identifierFragment, packetList);
-					}
+					List<TimestampedPacket<T>> packetList = packetMap.computeIfAbsent(identifierFragment, k -> new ArrayList<>());
 					Long dateMillis = packetGroup.getDateMillis(packet);
 					if (dateMillis == null) {
 						dateMillis = packetGroup.getDateMillis();

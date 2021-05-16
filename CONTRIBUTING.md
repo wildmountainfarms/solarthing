@@ -13,8 +13,7 @@ If the `.gitignore` file needs something added to it, please add it **at the bot
 ---
 
 ### Conventions
-This project requires Java 8+. However, Java 8 API additions aren't used in the `core` module to remain compatible with Android SDK level 19.
-This does not apply to the `client` module.
+This project requires Java 8+. You can fully utilize Java 8 APIs as long as they are compatible with Android Core Desugaring.
 
 You can set your editor up with [Editor Config](https://www.editorconfig.org) to work with the [.editorconfig file](.editorconfig)
 * Use 1 tab for indentation

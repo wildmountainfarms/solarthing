@@ -1,10 +1,8 @@
 package me.retrodaredevil.couchdbjava.okhttp;
 
-import me.retrodaredevil.couchdbjava.ViewQueryParams;
-import me.retrodaredevil.couchdbjava.response.DatabaseInfo;
-import me.retrodaredevil.couchdbjava.response.DocumentResponse;
-import me.retrodaredevil.couchdbjava.response.SimpleStatus;
-import me.retrodaredevil.couchdbjava.response.ViewResponse;
+import me.retrodaredevil.couchdbjava.request.BulkGetRequest;
+import me.retrodaredevil.couchdbjava.request.ViewQueryParams;
+import me.retrodaredevil.couchdbjava.response.*;
 import me.retrodaredevil.couchdbjava.security.DatabaseSecurity;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -67,4 +65,7 @@ public interface CouchDbDatabaseService {
 
 	@PUT("_security")
 	Call<SimpleStatus> putSecurity(@Body DatabaseSecurity databaseSecurity);
+
+	@POST("_bulk_get")
+	Call<BulkGetResponse> getDocumentsBulk(@Body BulkGetRequest request);
 }

@@ -1,7 +1,7 @@
 package me.retrodaredevil.solarthing.database.couchdb;
 
-import me.retrodaredevil.couchdbjava.ViewQueryParams;
-import me.retrodaredevil.couchdbjava.ViewQueryParamsBuilder;
+import me.retrodaredevil.couchdbjava.request.ViewQueryParams;
+import me.retrodaredevil.couchdbjava.request.ViewQueryParamsBuilder;
 import me.retrodaredevil.solarthing.database.MillisQuery;
 
 public final class CouchDbQueryUtil {

@@ -2,7 +2,8 @@ package me.retrodaredevil.couchdbjava.okhttp;
 
 import me.retrodaredevil.couchdbjava.CouchDbDatabase;
 import me.retrodaredevil.couchdbjava.CouchDbStatusCode;
-import me.retrodaredevil.couchdbjava.ViewQueryParams;
+import me.retrodaredevil.couchdbjava.request.BulkGetRequest;
+import me.retrodaredevil.couchdbjava.request.ViewQueryParams;
 import me.retrodaredevil.couchdbjava.exception.CouchDbCodeException;
 import me.retrodaredevil.couchdbjava.json.JsonData;
 import me.retrodaredevil.couchdbjava.json.StringJsonData;
@@ -19,7 +20,6 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -243,5 +243,11 @@ public class OkHttpCouchDbDatabase implements CouchDbDatabase {
 	public void setSecurity(DatabaseSecurity databaseSecurity) throws CouchDbException {
 		instance.preAuthorize();
 		instance.executeAndHandle(service.putSecurity(databaseSecurity));
+	}
+
+	@Override
+	public BulkGetResponse getDocumentsBulk(BulkGetRequest request) throws CouchDbException {
+		instance.preAuthorize();
+		return instance.executeAndHandle(service.getDocumentsBulk(request));
 	}
 }

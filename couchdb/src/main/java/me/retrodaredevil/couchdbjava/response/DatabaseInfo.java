@@ -8,6 +8,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * https://docs.couchdb.org/en/stable/api/database/common.html
  */
+@SuppressWarnings("unused")
 public class DatabaseInfo {
 	private final String name;
 	private final String purgeSequence;

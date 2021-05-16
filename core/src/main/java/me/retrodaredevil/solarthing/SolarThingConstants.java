@@ -12,6 +12,7 @@ public final class SolarThingConstants {
 	public static final String SOLAR_EVENT_UNIQUE_NAME = "solarthing_events";
 	public static final String OPEN_UNIQUE_NAME = "solarthing_open";
 	public static final String CLOSED_UNIQUE_NAME = "solarthing_closed";
+	public static final String CACHE_UNIQUE_NAME = "solarthing_cache";
 
 	// for documentation on markers: https://logging.apache.org/log4j/2.0/manual/filters.html#MarkerFilter
 	/**

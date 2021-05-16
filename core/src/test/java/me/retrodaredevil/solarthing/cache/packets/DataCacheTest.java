@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.cache.packets;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import me.retrodaredevil.solarthing.cache.packets.data.ChargeControllerAccumulationDataCache;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
@@ -26,13 +27,14 @@ class DataCacheTest {
 		ChargeControllerAccumulationDataCache v2 = new ChargeControllerAccumulationDataCache(
 				identifier,
 				6.5f,
-				8100L, 13100L,
+				7900L, 13100L, // even thought this period starts at 8000, we have the last packet's dateMillis from the previous period
 				0.0f,
 				null
 		);
 
 		ChargeControllerAccumulationDataCache actualResult = v1.combine(v2);
 		String resultJson = mapper.writeValueAsString(actualResult);
+//		System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(actualResult));
 		ChargeControllerAccumulationDataCache parsedResult = mapper.readValue(resultJson, ChargeControllerAccumulationDataCache.class);
 
 		for (ChargeControllerAccumulationDataCache result : new ChargeControllerAccumulationDataCache[] { actualResult, parsedResult }) {

@@ -3,10 +3,10 @@ package me.retrodaredevil.couchdbjava;
 import me.retrodaredevil.couchdbjava.exception.CouchDbException;
 import me.retrodaredevil.couchdbjava.json.JsonData;
 import me.retrodaredevil.couchdbjava.option.DatabaseCreationOption;
-import me.retrodaredevil.couchdbjava.response.DatabaseInfo;
-import me.retrodaredevil.couchdbjava.response.DocumentData;
-import me.retrodaredevil.couchdbjava.response.DocumentResponse;
-import me.retrodaredevil.couchdbjava.response.ViewResponse;
+import me.retrodaredevil.couchdbjava.request.BulkGetRequest;
+import me.retrodaredevil.couchdbjava.request.ViewQuery;
+import me.retrodaredevil.couchdbjava.request.ViewQueryParams;
+import me.retrodaredevil.couchdbjava.response.*;
 import me.retrodaredevil.couchdbjava.security.DatabaseSecurity;
 
 public interface CouchDbDatabase {
@@ -66,5 +66,7 @@ public interface CouchDbDatabase {
 
 	DatabaseSecurity getSecurity() throws CouchDbException;
 	void setSecurity(DatabaseSecurity databaseSecurity) throws CouchDbException;
+
+	BulkGetResponse getDocumentsBulk(BulkGetRequest request) throws CouchDbException;
 
 }

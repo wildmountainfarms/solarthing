@@ -12,7 +12,6 @@ import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 
-@SuppressWarnings({"Java8MapApi", "ComparatorCombinators"}) // must remain compatible with Android SDK 19 (without core library desugaring)
 @UtilityClass
 public final class PacketGroups {
 	private PacketGroups(){ throw new UnsupportedOperationException(); }
@@ -110,12 +109,8 @@ public final class PacketGroups {
 		for(PacketGroup group : groups){
 			InstancePacketGroup instancePacketGroup = parseToInstancePacketGroup(group, defaultInstanceOptions);
 			String sourceId = instancePacketGroup.getSourceId();
-			List<InstancePacketGroup> list = map.get(sourceId);
+			List<InstancePacketGroup> list = map.computeIfAbsent(sourceId, k -> new ArrayList<>());
 
-			if(list == null){
-				list = new ArrayList<>();
-				map.put(sourceId, list);
-			}
 			list.add(instancePacketGroup);
 		}
 		return map;
@@ -168,8 +163,7 @@ public final class PacketGroups {
 			fragmentIdsSet.addAll(fragmentMap.keySet());
 			fragmentIds = new ArrayList<>(fragmentIdsSet); // now this is sorted
 		}
-//		TreeSet<FragmentedPacketGroup> packetGroups = new TreeSet<>(Comparator.comparingLong(PacketGroup::getDateMillis));
-		TreeSet<FragmentedPacketGroup> packetGroups = new TreeSet<>((p1, p2) -> Long.compare(p1.getDateMillis(), p2.getDateMillis()));
+		TreeSet<FragmentedPacketGroup> packetGroups = new TreeSet<>(Comparator.comparingLong(PacketGroup::getDateMillis));
 		addToPacketGroups(
 				maxTimeDistance, masterIdIgnoreDistance,
 				Long.MIN_VALUE, Long.MAX_VALUE,
@@ -309,11 +303,7 @@ public final class PacketGroups {
 		Map<Integer, List<InstancePacketGroup>> r = new HashMap<>();
 		for(InstancePacketGroup packetGroup : packetGroups) {
 			int fragmentId = packetGroup.getFragmentId();
-			List<InstancePacketGroup> list = r.get(fragmentId);
-			if (list == null) {
-				list = new ArrayList<>();
-				r.put(fragmentId, list);
-			}
+			List<InstancePacketGroup> list = r.computeIfAbsent(fragmentId, k -> new ArrayList<>());
 			list.add(packetGroup);
 		}
 		return r;

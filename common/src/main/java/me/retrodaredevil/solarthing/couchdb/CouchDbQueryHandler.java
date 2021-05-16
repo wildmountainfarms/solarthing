@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import me.retrodaredevil.couchdbjava.CouchDbDatabase;
-import me.retrodaredevil.couchdbjava.ViewQuery;
+import me.retrodaredevil.couchdbjava.request.ViewQuery;
 import me.retrodaredevil.couchdbjava.exception.CouchDbException;
 import me.retrodaredevil.couchdbjava.exception.CouchDbNotFoundException;
 import me.retrodaredevil.couchdbjava.json.JsonData;

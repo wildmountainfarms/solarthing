@@ -33,3 +33,6 @@ dependencies {
 jar {
     enabled = true
 }
+bootRun {
+    workingDir = new File("../program/graphql")
+}
