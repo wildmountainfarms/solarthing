@@ -15,7 +15,6 @@ import me.retrodaredevil.solarthing.database.couchdb.CouchDbSolarThingDatabase;
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
-import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.program.CommandOptions;
 import me.retrodaredevil.solarthing.program.ConfigUtil;
 import me.retrodaredevil.solarthing.program.DatabaseConfig;
@@ -26,7 +25,7 @@ import me.retrodaredevil.solarthing.pvoutput.data.*;
 import me.retrodaredevil.solarthing.pvoutput.service.PVOutputOkHttpUtil;
 import me.retrodaredevil.solarthing.pvoutput.service.PVOutputRetrofitUtil;
 import me.retrodaredevil.solarthing.pvoutput.service.PVOutputService;
-import me.retrodaredevil.solarthing.solar.daily.DailyConfig;
+import me.retrodaredevil.solarthing.solar.accumulation.AccumulationConfig;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
@@ -143,7 +142,7 @@ public class PVOutputUploadMain {
 						AddOutputParametersBuilder outputParametersBuilder = new AddOutputParametersBuilder(statusParameters.getDate())
 								.setGenerated(statusParameters.getEnergyGeneration())
 								.setConsumption(statusParameters.getEnergyConsumption());
-						PVOutputHandler.setImportedExported(outputParametersBuilder, packetGroups, DailyConfig.createDefault(dayStart), options.isIncludeImport(), options.isIncludeExport());
+						PVOutputHandler.setImportedExported(outputParametersBuilder, packetGroups, AccumulationConfig.createDefault(dayStart), options.isIncludeImport(), options.isIncludeExport());
 						AddOutputParameters outputParameters = outputParametersBuilder.build();
 						addOutputParameters.add(outputParameters);
 						System.out.println("Added parameters for " + date.toPVOutputString() + " to queue.");
@@ -296,7 +295,7 @@ public class PVOutputUploadMain {
 						if (uploadStatus(service, parameters) && (options.isIncludeImport() || options.isIncludeExport())) {
 							// only upload output if status is successful
 							AddOutputParametersBuilder outputParametersBuilder = new AddOutputParametersBuilder(parameters.getDate());
-							PVOutputHandler.setImportedExported(outputParametersBuilder, packetGroups, DailyConfig.createDefault(dayStartTimeMillis), options.isIncludeImport(), options.isIncludeExport());
+							PVOutputHandler.setImportedExported(outputParametersBuilder, packetGroups, AccumulationConfig.createDefault(dayStartTimeMillis), options.isIncludeImport(), options.isIncludeExport());
 							AddOutputParameters outputParameters = outputParametersBuilder.build();
 							uploadOutput(service, outputParameters);
 						}

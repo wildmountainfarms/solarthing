@@ -136,5 +136,8 @@ public class BulkGetResponse {
 		public String getReason() {
 			return reason;
 		}
+		public boolean hasRevision() {
+			return !"undefined".equals(revision);
+		}
 	}
 }

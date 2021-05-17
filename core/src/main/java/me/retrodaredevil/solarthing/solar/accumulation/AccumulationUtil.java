@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing.solar.daily;
+package me.retrodaredevil.solarthing.solar.accumulation;
 
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.packets.Packet;
@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.Map;
 
 @UtilityClass
-public final class DailyUtil {
-	private DailyUtil(){ throw new UnsupportedOperationException(); }
+public final class AccumulationUtil {
+	private AccumulationUtil(){ throw new UnsupportedOperationException(); }
 
 	/**
 	 *
@@ -24,22 +24,22 @@ public final class DailyUtil {
 	 *                Helps determine if the first packet needs to be interpreted as data from today or from yesterday.
 	 */
 	@Contract(pure = true)
-	private static <T extends DailyData> DailyPair<T> createDailyPair(boolean isFirst, TimestampedPacket<T> firstPacket, TimestampedPacket<T> endPacket, DailyConfig dailyConfig) {
-		final DailyPair.StartPacketType startPacketType;
+	private static <T extends DailyData> AccumulationPair<T> createAccumulationPair(boolean isFirst, TimestampedPacket<T> firstPacket, TimestampedPacket<T> endPacket, AccumulationConfig accumulationConfig) {
+		final AccumulationPair.StartPacketType startPacketType;
 		if (isFirst) {
-			if (firstPacket.getDateMillis() < dailyConfig.getCutOffIfStartBeforeDateMillis() || endPacket.getDateMillis() < dailyConfig.getCutOffIfEndBeforeDateMillis()) {
-				startPacketType = DailyPair.StartPacketType.CUT_OFF;
+			if (firstPacket.getDateMillis() < accumulationConfig.getCutOffIfStartBeforeDateMillis() || endPacket.getDateMillis() < accumulationConfig.getCutOffIfEndBeforeDateMillis()) {
+				startPacketType = AccumulationPair.StartPacketType.CUT_OFF;
 			} else {
-				startPacketType = DailyPair.StartPacketType.MIDDLE_OF_DAY_CONNECT;
+				startPacketType = AccumulationPair.StartPacketType.MIDDLE_OF_DAY_CONNECT;
 			}
 		} else {
-			startPacketType = DailyPair.StartPacketType.FIRST_AFTER_RESET;
+			startPacketType = AccumulationPair.StartPacketType.FIRST_AFTER_RESET;
 		}
-		return new DailyPair<>(firstPacket, endPacket, startPacketType);
+		return new AccumulationPair<>(firstPacket, endPacket, startPacketType);
 	}
 	@Contract(pure = true)
-	public static <T extends DailyData> List<DailyPair<T>> getDailyPairs(List<? extends TimestampedPacket<T>> packets, DailyConfig dailyConfig) {
-		List<DailyPair<T>> r = new ArrayList<>();
+	public static <T extends DailyData> List<AccumulationPair<T>> getAccumulationPairs(List<? extends TimestampedPacket<T>> packets, AccumulationConfig accumulationConfig) {
+		List<AccumulationPair<T>> r = new ArrayList<>();
 		TimestampedPacket<T> firstPacket = null;
 		TimestampedPacket<T> lastPacket = null;
 		for (TimestampedPacket<T> packet : packets) {
@@ -48,7 +48,7 @@ public final class DailyUtil {
 			}
 			if (lastPacket != null) {
 				if (packet.getPacket().isNewDay(lastPacket.getPacket())) {
-					r.add(createDailyPair(r.isEmpty(), firstPacket, lastPacket, dailyConfig));
+					r.add(createAccumulationPair(r.isEmpty(), firstPacket, lastPacket, accumulationConfig));
 					firstPacket = packet;
 				}
 			}
@@ -57,15 +57,15 @@ public final class DailyUtil {
 		if (firstPacket != null) {
 			//noinspection ConstantConditions
 			assert lastPacket != null;
-			r.add(createDailyPair(r.isEmpty(), firstPacket, lastPacket, dailyConfig));
+			r.add(createAccumulationPair(r.isEmpty(), firstPacket, lastPacket, accumulationConfig));
 		}
 		return r;
 	}
 	@Contract(pure = true)
-	public static <T extends DailyData> Map<IdentifierFragment, List<DailyPair<T>>> getDailyPairs(Map<IdentifierFragment, List<TimestampedPacket<T>>> packetMap, DailyConfig dailyConfig) {
-		Map<IdentifierFragment, List<DailyPair<T>>> r = new HashMap<>(packetMap.size());
+	public static <T extends DailyData> Map<IdentifierFragment, List<AccumulationPair<T>>> getAccumulationPairs(Map<IdentifierFragment, List<TimestampedPacket<T>>> packetMap, AccumulationConfig accumulationConfig) {
+		Map<IdentifierFragment, List<AccumulationPair<T>>> r = new HashMap<>(packetMap.size());
 		for (Map.Entry<IdentifierFragment, List<TimestampedPacket<T>>> entry : packetMap.entrySet()) {
-			r.put(entry.getKey(), getDailyPairs(entry.getValue(), dailyConfig));
+			r.put(entry.getKey(), getAccumulationPairs(entry.getValue(), accumulationConfig));
 		}
 		return r;
 	}
@@ -80,10 +80,7 @@ public final class DailyUtil {
 					T t = (T) packet;
 					IdentifierFragment identifierFragment = IdentifierFragment.create(fragmentId, t.getIdentifier());
 					List<TimestampedPacket<T>> packetList = packetMap.computeIfAbsent(identifierFragment, k -> new ArrayList<>());
-					Long dateMillis = packetGroup.getDateMillis(packet);
-					if (dateMillis == null) {
-						dateMillis = packetGroup.getDateMillis();
-					}
+					long dateMillis = packetGroup.getDateMillisOrKnown(packet);
 					packetList.add(new TimestampedPacket<>(t, dateMillis));
 				}
 			}

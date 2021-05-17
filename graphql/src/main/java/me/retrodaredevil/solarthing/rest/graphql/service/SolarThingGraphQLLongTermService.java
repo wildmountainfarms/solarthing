@@ -11,10 +11,10 @@ import me.retrodaredevil.solarthing.packets.collection.InstancePacketGroup;
 import me.retrodaredevil.solarthing.packets.identification.IdentifierFragment;
 import me.retrodaredevil.solarthing.solar.common.AccumulatedChargeController;
 import me.retrodaredevil.solarthing.solar.common.DailyChargeController;
-import me.retrodaredevil.solarthing.solar.daily.DailyCalc;
-import me.retrodaredevil.solarthing.solar.daily.DailyConfig;
-import me.retrodaredevil.solarthing.solar.daily.DailyPair;
-import me.retrodaredevil.solarthing.solar.daily.DailyUtil;
+import me.retrodaredevil.solarthing.solar.accumulation.AccumulationCalc;
+import me.retrodaredevil.solarthing.solar.accumulation.AccumulationConfig;
+import me.retrodaredevil.solarthing.solar.accumulation.AccumulationPair;
+import me.retrodaredevil.solarthing.solar.accumulation.AccumulationUtil;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -40,13 +40,13 @@ public class SolarThingGraphQLLongTermService {
 			@GraphQLArgument(name = "sourceId", description = DESCRIPTION_OPTIONAL_SOURCE) @Nullable String sourceId){
 
 		List<? extends InstancePacketGroup> packets = simpleQueryHandler.queryStatus(from, to, sourceId);
-		DailyConfig dailyConfig = DailyConfig.createDefault(from);
+		AccumulationConfig accumulationConfig = AccumulationConfig.createDefault(from);
 
 		// Note that unlike most other places, here we do NOT call simpleQueryHandler.sortPackets.
 		//   This is because sortPackets sometimes will disregard packets with a lower priority fragment ID.
 		//   And, since we don't actually need the merged packets, there's no point in merging them.
 		//   Also (2021.04.17), now that I think about it, we should probably have a better way to merge packets without sometimes losing ones with lower priority fragments. (TODO)
-		return new SolarThingLongTermQuery(packets, dailyConfig, sourceId);
+		return new SolarThingLongTermQuery(packets, accumulationConfig, sourceId);
 	}
 	@GraphQLQuery
 	public SolarThingLongTermQuery queryLongTermMonth(
@@ -64,22 +64,22 @@ public class SolarThingGraphQLLongTermService {
 	}
 	public static class SolarThingLongTermQuery {
 		private final List<? extends FragmentedPacketGroup> packetGroups;
-		private final DailyConfig dailyConfig;
+		private final AccumulationConfig accumulationConfig;
 		private final String sourceId;
 
-		public SolarThingLongTermQuery(List<? extends FragmentedPacketGroup> packetGroups, DailyConfig dailyConfig, String sourceId) {
+		public SolarThingLongTermQuery(List<? extends FragmentedPacketGroup> packetGroups, AccumulationConfig accumulationConfig, String sourceId) {
 			this.packetGroups = packetGroups;
-			this.dailyConfig = dailyConfig;
+			this.accumulationConfig = accumulationConfig;
 			this.sourceId = sourceId;
 		}
 
 		@GraphQLQuery
 		public @NotNull List<@NotNull DataPoint<Float>> solarKWHIndividual() {
 			List<DataPoint<Float>> r = new ArrayList<>();
-			Map<IdentifierFragment, List<DailyPair<DailyChargeController>>> chargeControllerMap = DailyUtil.getDailyPairs(DailyUtil.mapPackets(DailyChargeController.class, packetGroups), dailyConfig);
+			Map<IdentifierFragment, List<AccumulationPair<DailyChargeController>>> chargeControllerMap = AccumulationUtil.getAccumulationPairs(AccumulationUtil.mapPackets(DailyChargeController.class, packetGroups), accumulationConfig);
 
-			for (Map.Entry<IdentifierFragment, List<DailyPair<DailyChargeController>>> entry : chargeControllerMap.entrySet()) {
-				float total = DailyCalc.getTotal(entry.getValue(), AccumulatedChargeController::getDailyKWH);
+			for (Map.Entry<IdentifierFragment, List<AccumulationPair<DailyChargeController>>> entry : chargeControllerMap.entrySet()) {
+				float total = AccumulationCalc.getTotal(entry.getValue(), AccumulatedChargeController::getDailyKWH);
 				r.add(new DataPoint<>(total, entry.getValue().get(0).getStartPacket().getPacket(), sourceId, entry.getKey().getFragmentId()));
 			}
 

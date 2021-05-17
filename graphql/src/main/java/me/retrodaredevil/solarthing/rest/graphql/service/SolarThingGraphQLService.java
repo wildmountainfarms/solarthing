@@ -195,10 +195,7 @@ public class SolarThingGraphQLService {
 						BatteryVoltage batteryVoltagePacket = (BatteryVoltage) packet;
 						float batteryVoltage = batteryVoltagePacket.getBatteryVoltage();
 						float compensated = BatteryUtil.getOutbackCompensatedBatteryVoltage(batteryVoltage, temperatureCelsius);
-						Long dateMillis = packetGroup.getDateMillis(packet);
-						if (dateMillis == null) {
-							dateMillis = packetGroup.getDateMillis();
-						}
+						long dateMillis = packetGroup.getDateMillisOrKnown(packet);
 						r.add(new DataNode<>(compensated, batteryVoltagePacket, dateMillis, packetGroup.getSourceId(packet), fragmentId));
 					}
 				}

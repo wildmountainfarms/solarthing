@@ -26,10 +26,7 @@ public final class PacketUtil {
 				}
 				int fragmentId = packetGroup.getFragmentId(packet);
 				String sourceId = packetGroup.getSourceId(packet);
-				Long dateMillis = packetGroup.getDateMillis(packet);
-				if(dateMillis == null) {
-					dateMillis = packetGroup.getDateMillis();
-				}
+				long dateMillis = packetGroup.getDateMillisOrKnown(packet);
 				PacketNode<T> packetNode = new PacketNode<>((T) packet, dateMillis, sourceId, fragmentId);
 				if(filter.keep(packetNode)) {
 					r.add(packetNode);

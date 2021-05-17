@@ -1,0 +1,12 @@
+package me.retrodaredevil.solarthing.rest.cache;
+
+import me.retrodaredevil.solarthing.cache.packets.CacheDataPacket;
+import me.retrodaredevil.solarthing.packets.collection.InstancePacketGroup;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.util.List;
+
+public interface CacheCreator {
+	CacheDataPacket createFrom(String sourceId, List<InstancePacketGroup> packetGroups, Instant periodStart, Duration periodDuration);
+}

@@ -14,14 +14,14 @@ public interface PacketGroup {
 	 */
 	@JsonProperty("packets")
 	List<? extends Packet> getPackets();
-	
+
 	/**
 	 * Should be serialized as "dateMillis"
 	 * @return The date this packet collection was created in milliseconds (UTC)
 	 */
 	@JsonProperty("dateMillis")
 	long getDateMillis();
-	
+
 	/**
 	 * @param packet The packet to get the date millis from
 	 * @return The date millis of the specific packet or null
@@ -29,5 +29,12 @@ public interface PacketGroup {
 	 */
 	default Long getDateMillis(Packet packet){
 		return null;
+	}
+	default long getDateMillisOrKnown(Packet packet) {
+		Long dateMillis = getDateMillis(packet);
+		if (dateMillis == null) {
+			return getDateMillis();
+		}
+		return dateMillis;
 	}
 }
