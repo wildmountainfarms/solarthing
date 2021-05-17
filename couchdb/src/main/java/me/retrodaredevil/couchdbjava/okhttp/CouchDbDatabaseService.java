@@ -1,6 +1,7 @@
 package me.retrodaredevil.couchdbjava.okhttp;
 
 import me.retrodaredevil.couchdbjava.request.BulkGetRequest;
+import me.retrodaredevil.couchdbjava.request.BulkPostRequest;
 import me.retrodaredevil.couchdbjava.request.ViewQueryParams;
 import me.retrodaredevil.couchdbjava.response.*;
 import me.retrodaredevil.couchdbjava.security.DatabaseSecurity;
@@ -8,6 +9,7 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.*;
 
+import java.util.List;
 import java.util.Map;
 
 public interface CouchDbDatabaseService {
@@ -68,4 +70,7 @@ public interface CouchDbDatabaseService {
 
 	@POST("_bulk_get")
 	Call<BulkGetResponse> getDocumentsBulk(@Body BulkGetRequest request);
+
+	@POST("_bulk_docs")
+	Call<List<BulkDocumentResponse>> postDocumentsBulk(@Body BulkPostRequest request);
 }

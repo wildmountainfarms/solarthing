@@ -112,7 +112,7 @@ public class BulkGetResponse {
 		@JsonCreator
 		public ErrorDoc(
 				@JsonProperty(value = "id", required = true) String documentId,
-				@JsonProperty(value = "revision", required = true) String revision,
+				@JsonProperty(value = "rev", required = true) String revision,
 				@JsonProperty(value = "error", required = true) String error,
 				@JsonProperty(value = "reason", required = true) String reason) {
 			requireNonNull(this.documentId = documentId);

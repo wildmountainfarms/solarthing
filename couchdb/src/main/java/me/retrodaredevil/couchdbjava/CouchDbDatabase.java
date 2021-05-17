@@ -4,10 +4,13 @@ import me.retrodaredevil.couchdbjava.exception.CouchDbException;
 import me.retrodaredevil.couchdbjava.json.JsonData;
 import me.retrodaredevil.couchdbjava.option.DatabaseCreationOption;
 import me.retrodaredevil.couchdbjava.request.BulkGetRequest;
+import me.retrodaredevil.couchdbjava.request.BulkPostRequest;
 import me.retrodaredevil.couchdbjava.request.ViewQuery;
 import me.retrodaredevil.couchdbjava.request.ViewQueryParams;
 import me.retrodaredevil.couchdbjava.response.*;
 import me.retrodaredevil.couchdbjava.security.DatabaseSecurity;
+
+import java.util.List;
 
 public interface CouchDbDatabase {
 	String getName();
@@ -68,5 +71,6 @@ public interface CouchDbDatabase {
 	void setSecurity(DatabaseSecurity databaseSecurity) throws CouchDbException;
 
 	BulkGetResponse getDocumentsBulk(BulkGetRequest request) throws CouchDbException;
+	List<BulkDocumentResponse> postDocumentsBulk(BulkPostRequest request) throws CouchDbException;
 
 }

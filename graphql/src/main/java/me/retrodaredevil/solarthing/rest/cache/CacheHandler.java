@@ -7,8 +7,11 @@ import me.retrodaredevil.couchdbjava.CouchDbDatabase;
 import me.retrodaredevil.couchdbjava.CouchDbInstance;
 import me.retrodaredevil.couchdbjava.exception.CouchDbException;
 import me.retrodaredevil.couchdbjava.json.JsonData;
+import me.retrodaredevil.couchdbjava.json.StringJsonData;
 import me.retrodaredevil.couchdbjava.json.jackson.CouchDbJacksonUtil;
 import me.retrodaredevil.couchdbjava.request.BulkGetRequest;
+import me.retrodaredevil.couchdbjava.request.BulkPostRequest;
+import me.retrodaredevil.couchdbjava.response.BulkDocumentResponse;
 import me.retrodaredevil.couchdbjava.response.BulkGetResponse;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.cache.CacheUtil;
@@ -132,6 +135,32 @@ public class CacheHandler {
 		if (queryStartPeriodNumber != null) {
 			List<CacheDataPacket> calculatedPackets = calculatePeriod(queryStartPeriodNumber, queryEndPeriodNumber);
 			// TODO throw these into CouchDB ^
+			List<JsonData> calculatedPacketsJsonDataList = new ArrayList<>();
+			for (CacheDataPacket packet : calculatedPackets) {
+				JsonData json;
+				try {
+					json = new StringJsonData(mapper.writeValueAsString(packet));
+				} catch (JsonProcessingException e) {
+					throw new RuntimeException("Should be able to serialize!", e);
+				}
+				calculatedPacketsJsonDataList.add(json);
+			}
+			final List<BulkDocumentResponse> postResponse;
+			try {
+				postResponse = cacheDatabase.postDocumentsBulk(new BulkPostRequest(calculatedPacketsJsonDataList));
+			} catch (CouchDbException e) {
+				throw new RuntimeException(e);
+			}
+			int successCount = 0;
+			int failCount = 0;
+			for (BulkDocumentResponse documentResponse : postResponse) {
+				if (documentResponse.isOk()) {
+					successCount++;
+				} else {
+					failCount++;
+				}
+			}
+			System.out.println("Success: " + successCount + " fail: " + failCount);
 
 			for (CacheDataPacket cacheDataPacket : calculatedPackets) {
 				if (cacheDataPacket.getCacheName().equals(ChargeControllerAccumulationDataCache.CACHE_NAME)) {
@@ -141,6 +170,8 @@ public class CacheHandler {
 					periodNumberPacketMap.put(periodNumber, packet);
 				}
 			}
+		} else {
+			System.out.println("Didn't have to get any data");
 		}
 
 		return new ArrayList<>(periodNumberPacketMap.values());
