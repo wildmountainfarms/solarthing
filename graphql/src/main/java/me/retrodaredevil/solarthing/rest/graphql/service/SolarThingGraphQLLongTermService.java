@@ -9,6 +9,8 @@ import me.retrodaredevil.solarthing.rest.graphql.packets.nodes.DataPoint;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.InstancePacketGroup;
 import me.retrodaredevil.solarthing.packets.identification.IdentifierFragment;
+import me.retrodaredevil.solarthing.solar.accumulation.value.FloatAccumulationValue;
+import me.retrodaredevil.solarthing.solar.accumulation.value.FloatAccumulationValueFactory;
 import me.retrodaredevil.solarthing.solar.common.AccumulatedChargeController;
 import me.retrodaredevil.solarthing.solar.common.DailyChargeController;
 import me.retrodaredevil.solarthing.solar.accumulation.AccumulationCalc;
@@ -79,7 +81,7 @@ public class SolarThingGraphQLLongTermService {
 			Map<IdentifierFragment, List<AccumulationPair<DailyChargeController>>> chargeControllerMap = AccumulationUtil.getAccumulationPairs(AccumulationUtil.mapPackets(DailyChargeController.class, packetGroups), accumulationConfig);
 
 			for (Map.Entry<IdentifierFragment, List<AccumulationPair<DailyChargeController>>> entry : chargeControllerMap.entrySet()) {
-				float total = AccumulationCalc.getTotal(entry.getValue(), AccumulatedChargeController::getDailyKWH);
+				float total = AccumulationCalc.getTotal(entry.getValue(), FloatAccumulationValue.convert(AccumulatedChargeController::getDailyKWH), FloatAccumulationValueFactory.getInstance()).getValue();
 				r.add(new DataPoint<>(total, entry.getValue().get(0).getStartPacket().getPacket(), sourceId, entry.getKey().getFragmentId()));
 			}
 

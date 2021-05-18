@@ -8,6 +8,8 @@ import me.retrodaredevil.solarthing.solar.accumulation.AccumulationCalc;
 import me.retrodaredevil.solarthing.solar.accumulation.AccumulationConfig;
 import me.retrodaredevil.solarthing.solar.accumulation.AccumulationPair;
 import me.retrodaredevil.solarthing.solar.accumulation.AccumulationUtil;
+import me.retrodaredevil.solarthing.solar.accumulation.value.FloatAccumulationValue;
+import me.retrodaredevil.solarthing.solar.accumulation.value.FloatAccumulationValueFactory;
 import me.retrodaredevil.solarthing.solar.common.DailyChargeController;
 
 import java.time.Duration;
@@ -29,21 +31,27 @@ public class ChargeControllerAccumulationCacheNodeCreator implements Identificat
 	public IdentificationCacheNode<ChargeControllerAccumulationDataCache> create(IdentifierFragment identifierFragment, List<TimestampedPacket<DailyChargeController>> timestampedPackets, Instant periodStart, Duration periodDuration) {
 		AccumulationConfig accumulationConfig = AccumulationConfig.createDefault(periodStart.toEpochMilli());
 		List<AccumulationPair<DailyChargeController>> accumulationPairs = AccumulationUtil.getAccumulationPairs(timestampedPackets, accumulationConfig);
-		List<AccumulationCalc.SumNode> sumNodes = AccumulationCalc.getTotals(accumulationPairs, DailyChargeController::getDailyKWH, timestampedPackets);
+		List<AccumulationCalc.SumNode<FloatAccumulationValue>> sumNodes = AccumulationCalc.getTotals(accumulationPairs, FloatAccumulationValue.convert(DailyChargeController::getDailyKWH), timestampedPackets, FloatAccumulationValueFactory.getInstance());
 		long periodStartDateMillis = periodStart.toEpochMilli();
+		long previousPeriodStartDateMillis = periodStartDateMillis - periodDuration.toMillis();
 		long unknownCutOffDateMillis = periodStartDateMillis - CacheHandler.INFO_DURATION.toMillis();
 		long periodEndDateMillis = periodStart.toEpochMilli() + periodDuration.toMillis();
-		AccumulationCalc.SumNode lastDataBeforeCutOff = null;
-		AccumulationCalc.SumNode lastDataBeforePeriodStart = null;
-		AccumulationCalc.SumNode firstDataAfterPeriodStart = null;
-		AccumulationCalc.SumNode lastDataBeforePeriodEnd = null;
-		for (AccumulationCalc.SumNode sumNode : sumNodes) {
+		AccumulationCalc.SumNode<FloatAccumulationValue> lastDataBeforePreviousPeriodStart = null;
+		AccumulationCalc.SumNode<FloatAccumulationValue> lastDataBeforePeriodStart = null;
+		AccumulationCalc.SumNode<FloatAccumulationValue> firstDataAfterPeriodStart = null;
+		AccumulationCalc.SumNode<FloatAccumulationValue> lastDataBeforePeriodEnd = null;
+		for (AccumulationCalc.SumNode<FloatAccumulationValue> sumNode : sumNodes) {
 			long dateMillis = sumNode.getDateMillis();
 			if (dateMillis >= periodEndDateMillis) {
 				break;
 			}
 			if (dateMillis < unknownCutOffDateMillis) {
-				lastDataBeforeCutOff = sumNode;
+				// If we have data before this, we need to not use it because using it could yield different results depending on the amount of data
+				//   we have available to use -- We don't want that because the result of calculating a cache should be the same every time.
+				continue;
+			}
+			if (dateMillis < previousPeriodStartDateMillis) {
+				lastDataBeforePreviousPeriodStart = sumNode;
 			} else if (dateMillis < periodStartDateMillis) {
 				lastDataBeforePeriodStart = sumNode;
 			} else {
@@ -65,13 +73,13 @@ public class ChargeControllerAccumulationCacheNodeCreator implements Identificat
 					null
 			);
 		} else {
-			AccumulationCalc.SumNode firstData = lastDataBeforePeriodStart == null ? firstDataAfterPeriodStart : lastDataBeforePeriodStart;
-			float generationKWH = lastDataBeforePeriodEnd.getSum() - firstData.getSum();
+			AccumulationCalc.SumNode<FloatAccumulationValue> firstData = lastDataBeforePeriodStart == null ? firstDataAfterPeriodStart : lastDataBeforePeriodStart;
+			float generationKWH = lastDataBeforePeriodEnd.getSum().getValue() - firstData.getSum().getValue();
 			final float unknownGenerationKWH;
 			final Long unknownStartDateMillis;
-			if (lastDataBeforePeriodStart == null && lastDataBeforeCutOff != null) {
-				unknownGenerationKWH = firstDataAfterPeriodStart.getSum() - lastDataBeforeCutOff.getSum();
-				unknownStartDateMillis = lastDataBeforeCutOff.getDateMillis();
+			if (lastDataBeforePeriodStart == null && lastDataBeforePreviousPeriodStart != null) {
+				unknownGenerationKWH = firstDataAfterPeriodStart.getSum().getValue() - lastDataBeforePreviousPeriodStart.getSum().getValue();
+				unknownStartDateMillis = lastDataBeforePreviousPeriodStart.getDateMillis();
 			} else {
 				unknownGenerationKWH = 0.0f;
 				unknownStartDateMillis = null;

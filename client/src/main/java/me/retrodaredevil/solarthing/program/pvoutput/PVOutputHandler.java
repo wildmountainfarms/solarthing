@@ -12,6 +12,8 @@ import me.retrodaredevil.solarthing.pvoutput.data.AddOutputParametersBuilder;
 import me.retrodaredevil.solarthing.pvoutput.data.AddStatusParameters;
 import me.retrodaredevil.solarthing.pvoutput.data.AddStatusParametersBuilder;
 import me.retrodaredevil.solarthing.solar.PowerUtil;
+import me.retrodaredevil.solarthing.solar.accumulation.value.FloatAccumulationValue;
+import me.retrodaredevil.solarthing.solar.accumulation.value.FloatAccumulationValueFactory;
 import me.retrodaredevil.solarthing.solar.common.PVCurrentAndVoltage;
 import me.retrodaredevil.solarthing.solar.accumulation.AccumulationCalc;
 import me.retrodaredevil.solarthing.solar.accumulation.AccumulationConfig;
@@ -106,13 +108,13 @@ public class PVOutputHandler {
 		Map<IdentifierFragment, List<AccumulationPair<RoverStatusPacket>>> roverMap = AccumulationUtil.getAccumulationPairs(AccumulationUtil.mapPackets(RoverStatusPacket.class, packetGroups), accumulationConfig);
 		Map<IdentifierFragment, List<AccumulationPair<DailyFXPacket>>> dailyFXMap = AccumulationUtil.getAccumulationPairs(AccumulationUtil.mapPackets(DailyFXPacket.class, packetGroups), accumulationConfig);
 		if (!mxMap.isEmpty() || !roverMap.isEmpty()) { // energy produced
-			float generationKWH = AccumulationCalc.getSumTotal(mxMap.values(), MXStatusPacket::getDailyKWH) +
-					AccumulationCalc.getSumTotal(roverMap.values(), RoverStatusPacket::getDailyKWH);
+			float generationKWH = AccumulationCalc.getSumTotal(mxMap.values(), FloatAccumulationValue.convert(MXStatusPacket::getDailyKWH), FloatAccumulationValueFactory.getInstance()).getValue() +
+					AccumulationCalc.getSumTotal(roverMap.values(), FloatAccumulationValue.convert(RoverStatusPacket::getDailyKWH), FloatAccumulationValueFactory.getInstance()).getValue();
 			builder.setEnergyGeneration(Math.round(generationKWH * 1000.0f));
 		}
 		if (!dailyFXMap.isEmpty() || !roverMap.isEmpty()) { // energy consumed
-			float consumptionKWH = AccumulationCalc.getSumTotal(roverMap.values(), RoverStatusPacket::getDailyKWHConsumption) +
-					AccumulationCalc.getSumTotal(dailyFXMap.values(), dailyFXPacket -> dailyFXPacket.getInverterKWH() + dailyFXPacket.getBuyKWH() - dailyFXPacket.getChargerKWH());
+			float consumptionKWH = AccumulationCalc.getSumTotal(roverMap.values(), FloatAccumulationValue.convert(RoverStatusPacket::getDailyKWHConsumption), FloatAccumulationValueFactory.getInstance()).getValue() +
+					AccumulationCalc.getSumTotal(dailyFXMap.values(), FloatAccumulationValue.convert(dailyFXPacket -> dailyFXPacket.getInverterKWH() + dailyFXPacket.getBuyKWH() - dailyFXPacket.getChargerKWH()), FloatAccumulationValueFactory.getInstance()).getValue();
 
 			if (consumptionKWH >= 0) {// This if statement should almost always be executed, however, there are rare cases where (buy - charger) is negative for FX packets only
 				builder.setEnergyConsumption(Math.round(consumptionKWH * 1000.0f));
@@ -124,11 +126,11 @@ public class PVOutputHandler {
 		Map<IdentifierFragment, List<AccumulationPair<DailyFXPacket>>> dailyFXMap = AccumulationUtil.getAccumulationPairs(AccumulationUtil.mapPackets(DailyFXPacket.class, packetGroups), accumulationConfig);
 		if (!dailyFXMap.isEmpty()) {
 			if (includeImport) {
-				float importKWH = AccumulationCalc.getSumTotal(dailyFXMap.values(), FXDailyData::getBuyKWH);
+				float importKWH = AccumulationCalc.getSumTotal(dailyFXMap.values(), FloatAccumulationValue.convert(FXDailyData::getBuyKWH), FloatAccumulationValueFactory.getInstance()).getValue();
 				builder.setImportOffPeak(Math.round(importKWH * 1000.0f));
 			}
 			if (includeExport) {
-				float exportKWH = AccumulationCalc.getSumTotal(dailyFXMap.values(), FXDailyData::getSellKWH);
+				float exportKWH = AccumulationCalc.getSumTotal(dailyFXMap.values(), FloatAccumulationValue.convert(FXDailyData::getSellKWH), FloatAccumulationValueFactory.getInstance()).getValue();
 				builder.setExported(Math.round(exportKWH * 1000.0f));
 			}
 		}
