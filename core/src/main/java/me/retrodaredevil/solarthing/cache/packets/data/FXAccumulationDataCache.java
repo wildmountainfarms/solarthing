@@ -25,7 +25,7 @@ public class FXAccumulationDataCache extends BaseAccumulationDataCache implement
 			@JsonProperty(value = "firstDateMillis", required = true) Long firstDateMillis,
 			@JsonProperty(value = "lastDateMillis", required = true) Long lastDateMillis,
 			@JsonProperty(value = "unknownData", required = true) Data unknownData,
-			Long unknownStartDateMillis) {
+			@JsonProperty(value = "unknownStartDateMillis", required = true) Long unknownStartDateMillis) {
 		super(firstDateMillis, lastDateMillis, unknownStartDateMillis);
 		requireNonNull(this.mainData = mainData);
 		requireNonNull(this.unknownData = unknownData);

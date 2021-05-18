@@ -14,7 +14,7 @@ public final class FloatAccumulationValue implements AccumulationValue<FloatAccu
 	public float getValue() {
 		return value;
 	}
-	public static <T> TotalGetter<T, FloatAccumulationValue> convert(Function<? super T, Float> totalGetter) {
+	public static <T> TotalGetter<T, FloatAccumulationValue> convert(Function<T, Float> totalGetter) {
 		return packet -> new FloatAccumulationValue(totalGetter.apply(packet));
 	}
 
