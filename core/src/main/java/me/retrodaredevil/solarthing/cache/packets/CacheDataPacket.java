@@ -34,4 +34,11 @@ public interface CacheDataPacket extends PacketEntry, SourcedPacket {
 	@NotNull Instant getPeriodStart();
 	@NotNull Instant getPeriodEnd();
 	@NotNull Duration getPeriodDuration();
+
+	/**
+	 * Combines this packet with a future packet. Note this will only work as expected if these packets are back to back
+	 * @param futurePacket
+	 * @return
+	 */
+	CacheDataPacket combine(CacheDataPacket futurePacket);
 }

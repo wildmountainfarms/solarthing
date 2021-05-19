@@ -3,10 +3,12 @@ package me.retrodaredevil.solarthing.cache.packets;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.cache.packets.data.IdentificationCacheData;
+import me.retrodaredevil.solarthing.packets.identification.IdentifierFragment;
 
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
-public class DefaultIdentificationCacheDataPacket<T extends IdentificationCacheData> extends BaseCacheDataPacket implements IdentificationCacheDataPacket<T> {
+public final class DefaultIdentificationCacheDataPacket<T extends IdentificationCacheData> extends BaseCacheDataPacket implements IdentificationCacheDataPacket<T> {
 	private final List<IdentificationCacheNode<T>> nodes;
 	@JsonCreator
 	public DefaultIdentificationCacheDataPacket(
@@ -22,5 +24,42 @@ public class DefaultIdentificationCacheDataPacket<T extends IdentificationCacheD
 	@Override
 	public List<IdentificationCacheNode<T>> getNodes() {
 		return nodes;
+	}
+
+	private static <T extends IdentificationCacheData> void putOnMap(Map<IdentifierFragment, T> map, List<IdentificationCacheNode<T>> list) {
+		for (IdentificationCacheNode<T> node : list) {
+			IdentifierFragment identifierFragment = IdentifierFragment.create(node.getFragmentId(), node.getData().getIdentifier());
+			T currentData = map.get(identifierFragment);
+			if (currentData != null) {
+				//noinspection unchecked
+				map.put(identifierFragment, (T) currentData.combine(node.getData()));
+			} else {
+				map.put(identifierFragment, node.getData());
+			}
+		}
+	}
+
+	private static <T extends IdentificationCacheData> List<IdentificationCacheNode<T>> combineNodes(List<IdentificationCacheNode<T>> first, List<IdentificationCacheNode<T>> second) {
+		Map<IdentifierFragment, T> map = new HashMap<>();
+		putOnMap(map, first);
+		putOnMap(map, second);
+		return map.entrySet().stream().map((identifierFragmentTEntry -> {
+			IdentifierFragment identifierFragment = identifierFragmentTEntry.getKey();
+			T data = identifierFragmentTEntry.getValue();
+			return new IdentificationCacheNode<>(identifierFragment.getFragmentId(), data);
+		})).collect(Collectors.toList());
+	}
+
+	@Override
+	public CacheDataPacket combine(CacheDataPacket futurePacket) {
+		@SuppressWarnings("unchecked")
+		DefaultIdentificationCacheDataPacket<T> packet = (DefaultIdentificationCacheDataPacket<T>) futurePacket;
+		return new DefaultIdentificationCacheDataPacket<>(
+				getPeriodStartDateMillis(),
+				packet.getPeriodEndDateMillis() - getPeriodStartDateMillis(),
+				getSourceId(),
+				getCacheName(),
+				combineNodes(getNodes(), packet.getNodes())
+		);
 	}
 }

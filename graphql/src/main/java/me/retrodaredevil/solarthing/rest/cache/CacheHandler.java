@@ -166,7 +166,9 @@ public class CacheHandler {
 				JsonData jsonData = result.getJsonDataAssertNotConflicted();
 				try {
 					value = CouchDbJacksonUtil.readValue(mapper, jsonData, typeReference);
-					periodNumberPacketMap.put(periodNumber, value);
+					if (value.getSourceId().equals(sourceId) && value.getCacheName().equals(cacheName)) {
+						periodNumberPacketMap.put(periodNumber, value);
+					}
 					doNotUpdateDocumentIdsSet.add(value.getDbId());
 				} catch (JsonProcessingException ignored) { // We ignore this exception because getRevisionFromJsonData will throw an exception if the JSON is bad
 					String revision = getRevisionFromJsonData(jsonData);
@@ -224,14 +226,20 @@ public class CacheHandler {
 			}
 			System.out.println("Success: " + successCount + " fail: " + failCount + ". Tried to update: " + updateAttemptCount);
 
+			int numberOfWantedType = 0;
 			for (CacheDataPacket cacheDataPacket : calculatedPackets) {
-				if (cacheDataPacket.getCacheName().equals(cacheName)) {
+				if (cacheDataPacket.getSourceId().equals(sourceId) && cacheDataPacket.getCacheName().equals(cacheName)) {
 					@SuppressWarnings("unchecked")
 					T packet = (T) cacheDataPacket;
-					long periodNumber = getPeriodNumber(packet.getPeriodStartDateMillis());
+					Long periodNumber = documentIdPeriodNumberMap.get(cacheDataPacket.getDbId());
+					if (periodNumber == null) {
+						throw new NullPointerException("No period number for id: " + cacheDataPacket.getDbId());
+					}
 					periodNumberPacketMap.put(periodNumber, packet);
+					numberOfWantedType++;
 				}
 			}
+			System.out.println("Calculated " + calculatedPackets.size() + " and " + numberOfWantedType + " were of type " + cacheName);
 		} else {
 			System.out.println("Didn't have to get any data");
 		}
