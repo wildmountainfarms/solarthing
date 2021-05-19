@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing.rest.cache;
+package me.retrodaredevil.solarthing.rest.cache.creators;
 
 import me.retrodaredevil.solarthing.cache.packets.IdentificationCacheNode;
 import me.retrodaredevil.solarthing.cache.packets.data.IdentificationCacheData;

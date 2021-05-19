@@ -1,8 +1,12 @@
 package me.retrodaredevil.solarthing.rest.cache;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import me.retrodaredevil.couchdbjava.CouchDbDatabase;
 import me.retrodaredevil.couchdbjava.CouchDbInstance;
 import me.retrodaredevil.couchdbjava.exception.CouchDbException;
@@ -14,27 +18,28 @@ import me.retrodaredevil.couchdbjava.request.BulkPostRequest;
 import me.retrodaredevil.couchdbjava.response.BulkDocumentResponse;
 import me.retrodaredevil.couchdbjava.response.BulkGetResponse;
 import me.retrodaredevil.solarthing.SolarThingConstants;
+import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.cache.CacheUtil;
 import me.retrodaredevil.solarthing.cache.packets.CacheDataPacket;
-import me.retrodaredevil.solarthing.cache.packets.IdentificationCacheDataPacket;
-import me.retrodaredevil.solarthing.cache.packets.IdentificationCacheNode;
-import me.retrodaredevil.solarthing.cache.packets.data.ChargeControllerAccumulationDataCache;
 import me.retrodaredevil.solarthing.database.MillisQuery;
 import me.retrodaredevil.solarthing.database.MillisQueryBuilder;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
 import me.retrodaredevil.solarthing.database.couchdb.CouchDbSolarThingDatabase;
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
-import me.retrodaredevil.solarthing.packets.TimestampedPacket;
 import me.retrodaredevil.solarthing.packets.collection.DefaultInstanceOptions;
 import me.retrodaredevil.solarthing.packets.collection.InstancePacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
-import me.retrodaredevil.solarthing.packets.identification.IdentifierFragment;
-import me.retrodaredevil.solarthing.solar.accumulation.AccumulationConfig;
+import me.retrodaredevil.solarthing.rest.cache.creators.CacheCreator;
+import me.retrodaredevil.solarthing.rest.cache.creators.ChargeControllerAccumulationCacheNodeCreator;
+import me.retrodaredevil.solarthing.rest.cache.creators.DefaultIdentificationCacheCreator;
+import me.retrodaredevil.solarthing.rest.cache.creators.FXAccumulationCacheNodeCreator;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
+
+import static java.util.Objects.requireNonNull;
 
 public class CacheHandler {
 	private static final int QUERY_PERIOD_COUNT = 4 * 24; // we can request data a day at a time, but we won't do more than that
@@ -42,7 +47,8 @@ public class CacheHandler {
 	 * that period actually requires data from 6:00 to 11:00 */
 	public static final Duration INFO_DURATION = Duration.ofHours(4);
 	private static final List<CacheCreator> CACHE_CREATORS = Arrays.asList(
-			new DefaultIdentificationCacheCreator<>(new ChargeControllerAccumulationCacheNodeCreator())
+			new DefaultIdentificationCacheCreator<>(new ChargeControllerAccumulationCacheNodeCreator()),
+			new DefaultIdentificationCacheCreator<>(new FXAccumulationCacheNodeCreator())
 	);
 	private final Duration duration = Duration.ofMinutes(15);
 
@@ -71,27 +77,67 @@ public class CacheHandler {
 	private Instant getPeriodStartFromMillis(long dateMillis) {
 		return Instant.ofEpochMilli(getPeriodNumber(dateMillis) * duration.toMillis());
 	}
-	public List<IdentificationCacheDataPacket<ChargeControllerAccumulationDataCache>> getChargeControllerAccumulation(String sourceId, long startPeriodNumber, long endPeriodNumber) {
-		if (endPeriodNumber - startPeriodNumber + 1 <= QUERY_PERIOD_COUNT) {
-			return getChargeControllerAccumulationRaw(sourceId, startPeriodNumber, endPeriodNumber);
+	public long getMaxPeriodNumber() {
+		long currentPeriodNumber = getPeriodNumber(System.currentTimeMillis());
+		return currentPeriodNumber - 2; // We cannot get data from the current period, and we cannot get data from the previous period
+	}
+	public <T extends CacheDataPacket> List<T> getCachesFromDateMillis(TypeReference<T> typeReference, String cacheName, String sourceId, long startMillis, long endMillis) {
+		if (endMillis < startMillis) {
+			throw new IllegalArgumentException("endMillis cannot be less than startMillis! startMillis: " + startMillis + " endMillis: " + endMillis);
 		}
-		List<IdentificationCacheDataPacket<ChargeControllerAccumulationDataCache>> r = new ArrayList<>();
+		return getCaches(typeReference, cacheName, sourceId, getPeriodNumber(startMillis), getPeriodNumber(endMillis));
+	}
+	public <T extends CacheDataPacket> List<T> getCaches(TypeReference<T> typeReference, String cacheName, String sourceId, long startPeriodNumber, long endPeriodNumber) {
+		requireNonNull(typeReference);
+		requireNonNull(cacheName);
+		requireNonNull(sourceId, "The source cannot be null!");
+		if (endPeriodNumber < startPeriodNumber) {
+			throw new IllegalArgumentException("endPeriodNumber cannot be less than startPeriodNumber! startPeriodNumber: " + startPeriodNumber + " endPeriodNumber: " + endPeriodNumber);
+		}
+
+		long maxPeriodNumber = getMaxPeriodNumber();
+		startPeriodNumber = Math.min(startPeriodNumber, maxPeriodNumber);
+		endPeriodNumber = Math.min(endPeriodNumber, maxPeriodNumber);
+
+		if (endPeriodNumber - startPeriodNumber + 1 <= QUERY_PERIOD_COUNT) {
+			return queryOrCalculateCaches(typeReference, cacheName, sourceId, startPeriodNumber, endPeriodNumber);
+		}
+		List<T> r = new ArrayList<>();
 		for (long periodNumber = startPeriodNumber; periodNumber <= endPeriodNumber; ) {
 			long start = periodNumber;
 			periodNumber += QUERY_PERIOD_COUNT;
 			long end = Math.min(endPeriodNumber, periodNumber);
-			r.addAll(getChargeControllerAccumulationRaw(sourceId, start, end));
+			r.addAll(queryOrCalculateCaches(typeReference, cacheName, sourceId, start, end));
 		}
 		return r;
 	}
-	private List<IdentificationCacheDataPacket<ChargeControllerAccumulationDataCache>> getChargeControllerAccumulationRaw(String sourceId, long startPeriodNumber, long endPeriodNumber) {
-		final TypeReference<IdentificationCacheDataPacket<ChargeControllerAccumulationDataCache>> typeReference = new TypeReference<IdentificationCacheDataPacket<ChargeControllerAccumulationDataCache>>() {};
+	private String getRevisionFromJsonData(JsonData jsonData) {
+		final JsonNode node;
+		try {
+			node = CouchDbJacksonUtil.getNodeFrom(jsonData);
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException("Couldn't parse to type, so tried parsing to JsonNode. That failed too.", e);
+		}
+		if (!node.isObject()) {
+			throw new RuntimeException("The parsed JsonNode is not an object! node: " + node);
+		}
+		ObjectNode objectNode = (ObjectNode) node;
+		JsonNode revisionNode = objectNode.get("_rev");
+		if (revisionNode == null) {
+			throw new RuntimeException("No _rev field on returned JSON!");
+		}
+		if (!revisionNode.isTextual()) {
+			throw new RuntimeException("The _rev field is not a string! revisionNode: " + revisionNode);
+		}
+		return revisionNode.asText();
+	}
+	private <T extends CacheDataPacket> List<T> queryOrCalculateCaches(TypeReference<T> typeReference, String cacheName, String sourceId, long startPeriodNumber, long endPeriodNumber) {
 		List<String> documentIds = new ArrayList<>();
 		Map<String, Long> documentIdPeriodNumberMap = new HashMap<>();
 
 		for (long periodNumber = startPeriodNumber; periodNumber <= endPeriodNumber; periodNumber++) {
 			Instant periodStart = getPeriodStartFromNumber(periodNumber);
-			String documentId = CacheUtil.getDocumentId(periodStart, duration, sourceId, ChargeControllerAccumulationDataCache.CACHE_NAME);
+			String documentId = CacheUtil.getDocumentId(periodStart, duration, sourceId, cacheName);
 			documentIds.add(documentId);
 			documentIdPeriodNumberMap.put(documentId, periodNumber);
 		}
@@ -102,7 +148,9 @@ public class CacheHandler {
 		} catch (CouchDbException e) {
 			throw new RuntimeException("Couldn't get documents", e);
 		}
-		Map<Long, IdentificationCacheDataPacket<ChargeControllerAccumulationDataCache>> periodNumberPacketMap = new TreeMap<>();
+		Map<String, String> documentIdRevisionMapForUpdate = new HashMap<>(); // map for documents that need to be updated. The value represents the revision that needs to be used to update it
+		Map<Long, T> periodNumberPacketMap = new TreeMap<>(); // Map for period number -> cached data. This helps us make sure we only return a single piece of data for each period
+		Set<String> doNotUpdateDocumentIdsSet = new HashSet<>(); // Set for document IDs that we already have and do not need to be updated
 		Long queryStartPeriodNumber = null;
 		Long queryEndPeriodNumber = null;
 		for (BulkGetResponse.Result result : response.getResults()) {
@@ -113,7 +161,19 @@ public class CacheHandler {
 			if (periodNumber == null) {
 				throw new IllegalStateException("Could not get period number for doc id: " + result.getDocumentId() + ". This should never happen.");
 			}
-			if (result.isError()) {
+			T value = null;
+			if (!result.isError()) {
+				JsonData jsonData = result.getJsonDataAssertNotConflicted();
+				try {
+					value = CouchDbJacksonUtil.readValue(mapper, jsonData, typeReference);
+					periodNumberPacketMap.put(periodNumber, value);
+					doNotUpdateDocumentIdsSet.add(value.getDbId());
+				} catch (JsonProcessingException ignored) { // We ignore this exception because getRevisionFromJsonData will throw an exception if the JSON is bad
+					String revision = getRevisionFromJsonData(jsonData);
+					documentIdRevisionMapForUpdate.put(result.getDocumentId(), revision);
+				}
+			}
+			if (value == null) {
 				if (queryStartPeriodNumber == null) {
 					queryStartPeriodNumber = periodNumber;
 					queryEndPeriodNumber = periodNumber;
@@ -121,25 +181,26 @@ public class CacheHandler {
 					queryStartPeriodNumber = Math.min(queryStartPeriodNumber, periodNumber);
 					queryEndPeriodNumber = Math.max(queryEndPeriodNumber, periodNumber);
 				}
-			} else {
-				JsonData jsonData = result.getJsonDataAssertNotConflicted();
-				final IdentificationCacheDataPacket<ChargeControllerAccumulationDataCache> value;
-				try {
-					value = CouchDbJacksonUtil.readValue(mapper, jsonData, typeReference);
-				} catch (JsonProcessingException e) {
-					throw new RuntimeException("TODO: eventually getting an error like this should be the same as result.isError() check above", e);
-				}
-				periodNumberPacketMap.put(periodNumber, value);
 			}
 		}
 		if (queryStartPeriodNumber != null) {
 			List<CacheDataPacket> calculatedPackets = calculatePeriod(queryStartPeriodNumber, queryEndPeriodNumber);
-			// TODO throw these into CouchDB ^
+
 			List<JsonData> calculatedPacketsJsonDataList = new ArrayList<>();
+			int updateAttemptCount = 0;
 			for (CacheDataPacket packet : calculatedPackets) {
+				if (doNotUpdateDocumentIdsSet.contains(packet.getDbId())) {
+					continue;
+				}
 				JsonData json;
 				try {
-					json = new StringJsonData(mapper.writeValueAsString(packet));
+					String revision = documentIdRevisionMapForUpdate.get(packet.getDbId());
+					if (revision == null) {
+						json = new StringJsonData(mapper.writeValueAsString(packet));
+					} else {
+						json = new StringJsonData(mapper.writeValueAsString(new DocumentRevisionWrapper(revision, packet)));
+						updateAttemptCount++;
+					}
 				} catch (JsonProcessingException e) {
 					throw new RuntimeException("Should be able to serialize!", e);
 				}
@@ -158,14 +219,15 @@ public class CacheHandler {
 					successCount++;
 				} else {
 					failCount++;
+					System.err.println("Error: " + documentResponse.getError() + " reason: " + documentResponse.getReason() + " on id: " + documentResponse.getId());
 				}
 			}
-			System.out.println("Success: " + successCount + " fail: " + failCount);
+			System.out.println("Success: " + successCount + " fail: " + failCount + ". Tried to update: " + updateAttemptCount);
 
 			for (CacheDataPacket cacheDataPacket : calculatedPackets) {
-				if (cacheDataPacket.getCacheName().equals(ChargeControllerAccumulationDataCache.CACHE_NAME)) {
+				if (cacheDataPacket.getCacheName().equals(cacheName)) {
 					@SuppressWarnings("unchecked")
-					IdentificationCacheDataPacket<ChargeControllerAccumulationDataCache> packet = (IdentificationCacheDataPacket<ChargeControllerAccumulationDataCache>) cacheDataPacket;
+					T packet = (T) cacheDataPacket;
 					long periodNumber = getPeriodNumber(packet.getPeriodStartDateMillis());
 					periodNumberPacketMap.put(periodNumber, packet);
 				}
@@ -208,10 +270,24 @@ public class CacheHandler {
 		}
 		return r;
 	}
+	@JsonExplicit
+	private static class DocumentRevisionWrapper {
+		private final String revision;
+		private final Object data;
 
+		private DocumentRevisionWrapper(String revision, Object data) {
+			requireNonNull(this.revision = revision);
+			requireNonNull(this.data = data);
+		}
 
-	public interface IdentificationCacheExporter<T> {
-		IdentificationCacheNode<?> export(IdentifierFragment identifierFragment, List<InstancePacketGroup> packets, Instant periodStart, Duration periodDuration);
+		@JsonProperty("_rev")
+		public String getRevision() {
+			return revision;
+		}
+
+		@JsonUnwrapped
+		public Object getData() {
+			return data;
+		}
 	}
-
 }

@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing.rest.cache;
+package me.retrodaredevil.solarthing.rest.cache.creators;
 
 import me.retrodaredevil.solarthing.cache.packets.CacheDataPacket;
 import me.retrodaredevil.solarthing.packets.collection.InstancePacketGroup;
