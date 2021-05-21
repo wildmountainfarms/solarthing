@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
+import me.retrodaredevil.solarthing.util.MathUtil;
 
 import static java.util.Objects.requireNonNull;
 
@@ -51,7 +52,7 @@ public class ChargeControllerAccumulationDataCache extends BaseAccumulationDataC
 		}
 		return new ChargeControllerAccumulationDataCache(
 				identifier,
-				generationKWH + data.generationKWH + data.unknownGenerationKWH,
+				MathUtil.roundFloat(generationKWH + data.generationKWH + data.unknownGenerationKWH),
 				getFirstDateMillis(), data.getLastDateMillis(),
 				unknownGenerationKWH,
 				getUnknownStartDateMillis()
