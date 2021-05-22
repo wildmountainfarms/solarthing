@@ -31,8 +31,9 @@ public final class DefaultIdentificationCacheDataPacket<T extends Identification
 			IdentifierFragment identifierFragment = IdentifierFragment.create(node.getFragmentId(), node.getData().getIdentifier());
 			T currentData = map.get(identifierFragment);
 			if (currentData != null) {
-				//noinspection unchecked
-				map.put(identifierFragment, (T) currentData.combine(node.getData()));
+				@SuppressWarnings("unchecked")
+				T data = (T) currentData.combine(node.getData());
+				map.put(identifierFragment, data);
 			} else {
 				map.put(identifierFragment, node.getData());
 			}

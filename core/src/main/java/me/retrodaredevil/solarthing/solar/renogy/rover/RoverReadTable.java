@@ -347,10 +347,11 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	// endregion
 
 	/** AKA PV/Solar Panel voltage*/
+	@SerializeNameDefinedInBase
 	@Override
 	@NotNull Float getPVVoltage();
 
-	@JsonProperty("pvCurrent")
+	@SerializeNameDefinedInBase
 	@Override
 	@NotNull Float getPVCurrent();
 
@@ -358,10 +359,12 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	@Override
 	@NotNull Integer getChargingPower();
 
+	@SerializeNameDefinedInBase
 	@ResetEvening
 	@Override
 	float getDailyMinBatteryVoltage();
 
+	@SerializeNameDefinedInBase
 	@ResetMorning
 	@Override
 	float getDailyMaxBatteryVoltage();
@@ -396,9 +399,11 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	int getDailyAHDischarging();
 
 	// 0x0113
+	@SerializeNameDefinedInBase
 	@ResetMorning
 	@Override
 	float getDailyKWH();
+	@SerializeNameDefinedInBase
 	@Override
 	float getDailyKWHConsumption();
 
