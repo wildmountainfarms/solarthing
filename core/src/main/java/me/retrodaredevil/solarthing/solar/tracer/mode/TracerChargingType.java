@@ -2,17 +2,14 @@ package me.retrodaredevil.solarthing.solar.tracer.mode;
 
 import me.retrodaredevil.solarthing.packets.CodeMode;
 
-/**
- * @deprecated The values of this enum may not be complete
- */
-@Deprecated
-public enum TracerChargingMode implements CodeMode {
+public enum TracerChargingType implements CodeMode {
 	PWM(1, "PWM")
+	// TODO I assume we will have to define a MPPT enum value
 	;
 	private final int value;
 	private final String name;
 
-	TracerChargingMode(int value, String name) {
+	TracerChargingType(int value, String name) {
 		this.value = value;
 		this.name = name;
 	}

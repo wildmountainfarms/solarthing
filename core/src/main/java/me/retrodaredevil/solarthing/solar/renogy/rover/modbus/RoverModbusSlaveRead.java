@@ -11,18 +11,21 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.RoverIdentifier;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverIdentityInfo;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverReadTable;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverVariant;
+import me.retrodaredevil.solarthing.solar.util.AbstractModbusRead;
 
-public class RoverModbusSlaveRead implements RoverReadTable {
+import static me.retrodaredevil.solarthing.solar.util.ByteUtil.lower;
+import static me.retrodaredevil.solarthing.solar.util.ByteUtil.upper;
+
+public class RoverModbusSlaveRead extends AbstractModbusRead implements RoverReadTable {
 	private static final float KWH_DIVIDER = 1_000; // units are returned in Watt Hours
 	private static final int READ_EXCEPTION_UNSUPPORTED_FUNCTION_CODE = 1;
 	private static final int READ_EXCEPTION_UNSUPPORTED_REGISTER = 2;
 	private static final int READ_EXCEPTION_TOO_MANY_REGISTERS_TO_READ = 3;
 	private static final int READ_EXCEPTION_CANNOT_READ_MULTIPLE_REGISTERS = 4;
 
-	private final ModbusSlave modbus;
 
 	public RoverModbusSlaveRead(ModbusSlave modbus) {
-		this.modbus = modbus;
+		super(modbus, Endian.BIG);
 	}
 	@Override
 	public @NotNull RoverIdentifier getIdentifier() {
@@ -32,25 +35,6 @@ public class RoverModbusSlaveRead implements RoverReadTable {
 	@Override
 	public @NotNull IdentityInfo getIdentityInfo() {
 		return new RoverIdentityInfo(getRatedChargingCurrentValue(), RoverVariant.getVariant(getProductModel()));
-	}
-
-	private static int upper(int number16Bit){
-		return (number16Bit & 0xFF00) >> 8;
-	}
-	private static int lower(int number16Bit){
-		return number16Bit & 0xFF;
-	}
-	private static int convertTo32Bit(int[] arrayWithLengthOf2){
-		return (arrayWithLengthOf2[0] << 16) | arrayWithLengthOf2[1];
-	}
-	private int[] get(MessageHandler<int[]> readHandler){
-		return modbus.sendRequestMessage(readHandler);
-	}
-	private int oneRegister(MessageHandler<int[]> readHandler){
-		return get(readHandler)[0];
-	}
-	private int twoRegistersAsInt(MessageHandler<int[]> readHandler){
-		return convertTo32Bit(get(readHandler));
 	}
 
 

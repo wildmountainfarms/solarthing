@@ -2,17 +2,21 @@ package me.retrodaredevil.solarthing.solar.tracer;
 
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.MonthDay;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TracerUtilTest {
 
 	@Test
 	void test() {
-		assertEquals(
-				LocalDateTime.of(2021, 5, 22, 14, 58, 15),
-				TracerUtil.convertTracerRawToDateTime(58 << 8 | 15, 22 << 8 | 14, 2021 << 8 | 5)
-		);
+		int yearNumber = 97;
+		MonthDay monthDay = MonthDay.of(5, 22);
+		LocalTime localTime = LocalTime.of(14, 58, 15);
+		long raw = 15 | (58 << 8) | (14 << 16) | (22 << 24) | (5L << 32L) | (97L << 40L);
+		assertEquals(yearNumber, TracerUtil.extractTracer48BitRawInstantToYearNumber(raw));
+		assertEquals(monthDay, TracerUtil.extractTracer48BitRawInstantToMonthDay(raw));
+		assertEquals(localTime, TracerUtil.extractTracer48BitRawInstantToLocalTime(raw));
 	}
 }

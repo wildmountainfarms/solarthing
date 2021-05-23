@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing;
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.lang.ArchRule;
+import me.retrodaredevil.solarthing.annotations.SerializeNameDefinedInBase;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.packets.DocumentedPacketType;
 import me.retrodaredevil.solarthing.packets.Mode;
@@ -27,6 +28,7 @@ public class ArchTest {
 				noMethods().that().areNotStatic().should().beDeclaredInClassesThat().areAnnotatedWith(UtilityClass.class),
 				noFields().that().areNotStatic().should().beDeclaredInClassesThat().areAnnotatedWith(UtilityClass.class),
 				noConstructors().that().areNotPrivate().should().beDeclaredInClassesThat().areAnnotatedWith(UtilityClass.class),
+				methods().that().areAnnotatedWith(SerializeNameDefinedInBase.class).should().notBePrivate(),
 		}) {
 			rule.check(importedClasses);
 		}
