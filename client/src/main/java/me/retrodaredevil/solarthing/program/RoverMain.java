@@ -2,8 +2,6 @@ package me.retrodaredevil.solarthing.program;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.io.modbus.*;
-import me.retrodaredevil.io.serial.SerialConfig;
-import me.retrodaredevil.io.serial.SerialConfigBuilder;
 import me.retrodaredevil.solarthing.DataSource;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.actions.ActionNode;
@@ -15,14 +13,12 @@ import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.config.io.IOConfig;
 import me.retrodaredevil.solarthing.config.options.*;
 import me.retrodaredevil.solarthing.config.request.DataRequester;
-import me.retrodaredevil.solarthing.config.request.RaspberryPiCpuTemperatureDataRequester;
 import me.retrodaredevil.solarthing.io.ReloadableIOBundle;
 import me.retrodaredevil.solarthing.packets.handling.LatestPacketHandler;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandlerMultiplexer;
 import me.retrodaredevil.solarthing.program.modbus.ModbusCacheSlave;
 import me.retrodaredevil.solarthing.program.modbus.MutableAddressModbusSlave;
-import me.retrodaredevil.solarthing.solar.DaySummaryLogListReceiver;
 import me.retrodaredevil.solarthing.solar.renogy.rover.DummyRoverReadWrite;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverReadTable;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
@@ -49,7 +45,7 @@ public class RoverMain {
 	private static int doRover(RoverProgramOptions options, AnalyticsManager analyticsManager, List<DataRequester> dataRequesterList){
 		return doRoverProgram(options, (slave, read, write, reloadCache, reloadIO) -> {
 			List<DataRequester> list = new ArrayList<>(dataRequesterList);
-			list.add((o) -> new RoverPacketListUpdater(read, write, reloadCache, reloadIO, options.isSendErrorPackets()));
+			list.add((o) -> new ModbusListUpdatedWrapper(new RoverPacketListUpdater(read, write), reloadCache, reloadIO, options.isSendErrorPackets()));
 
 			// this may be used in the future
 			List<PacketHandler> extraPacketHandlers = new ArrayList<>();
