@@ -22,7 +22,7 @@ public class TracerModbusSlaveWrite extends AbstractModbusWrite implements Trace
 		int[] data16Bit = new int[3];
 		data16Bit[0] = (int) (raw & 0xFFFFL);
 		data16Bit[1] = (int) ((raw >> 16) & 0xFFFFL);
-		data16Bit[1] = (int) ((raw >> 32) & 0xFFFFL);
+		data16Bit[2] = (int) ((raw >> 32) & 0xFFFFL);
 		return get8BitDataFrom16BitArray(data16Bit);
 	}
 
