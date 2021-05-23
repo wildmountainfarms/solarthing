@@ -8,13 +8,14 @@ import me.retrodaredevil.solarthing.solar.renogy.Voltage;
 import me.retrodaredevil.solarthing.solar.renogy.rover.LoadWorkingMode;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverWriteTable;
 import me.retrodaredevil.solarthing.solar.renogy.rover.StreetLight;
+import me.retrodaredevil.solarthing.solar.util.AbstractModbusWrite;
 
 import static java.util.Objects.requireNonNull;
 import static me.retrodaredevil.io.modbus.ModbusMessages.get8BitDataFrom16BitArray;
 import static me.retrodaredevil.solarthing.solar.renogy.rover.special.UpperLower16Bit.getCombined;
 import static me.retrodaredevil.util.NumberUtil.checkRange;
 
-public class RoverModbusSlaveWrite implements RoverWriteTable {
+public class RoverModbusSlaveWrite extends AbstractModbusWrite implements RoverWriteTable {
 	private static final int WRITE_EXCEPTION_UNSUPPORTED_FUNCTION_CODE = 1;
 	private static final int WRITE_EXCEPTION_UNSUPPORTED_REGISTER = 2;
 	private static final int WRITE_SINGLE_EXCEPTION_OUTSIDE_RANGE = 3;
@@ -22,14 +23,8 @@ public class RoverModbusSlaveWrite implements RoverWriteTable {
 	private static final int WRITE_SINGLE_EXCEPTION_MULTIPLE_EXPECTED = 4;
 	private static final int WRITE_MULTI_EXCEPTION_SINGLE_EXPECTED = 4;
 
-	private final ModbusSlave modbus;
-
 	public RoverModbusSlaveWrite(ModbusSlave modbus) {
-		this.modbus = modbus;
-	}
-
-	private void write(int register, int value){
-		modbus.sendRequestMessage(new WriteSingleRegister(register, value));
+		super(modbus);
 	}
 
 	@Override

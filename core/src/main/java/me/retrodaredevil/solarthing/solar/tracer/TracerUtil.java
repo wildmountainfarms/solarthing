@@ -21,6 +21,18 @@ public final class TracerUtil {
 	}
 
 	/**
+	 * Used for 0x903E, 0x903F, 0x9065
+	 * @param duration
+	 * @return
+	 */
+	public static int convertDurationToTracerDurationRaw(Duration duration) {
+		long totalMinutes = duration.toMinutes();
+		long hours = totalMinutes / 60;
+		long minutes = totalMinutes % 60;
+		return ((int) minutes) | ((int) hours << 8);
+	}
+
+	/**
 	 * @param secondMinuteHourRaw 48 bit number where low 16 bits are seconds, middle 16 bits are minutes and high 16 bits is hour
 	 */
 	public static LocalTime convertTracer48BitRawTimeToLocalTime(long secondMinuteHourRaw) {
@@ -29,6 +41,9 @@ public final class TracerUtil {
 				(int) ((secondMinuteHourRaw >> 16L) & 0xFF),
 				(int) (secondMinuteHourRaw & 0xFF)
 		);
+	}
+	public static long convertLocalTimeToTracer48BitRawTime(LocalTime time) {
+		return ((long) time.getHour() << 32L) | ((long) time.getMinute() << 16L) | time.getSecond();
 	}
 
 	public static LocalTime extractTracer48BitRawInstantToLocalTime(long raw) {
@@ -44,5 +59,9 @@ public final class TracerUtil {
 	}
 	public static int extractTracer48BitRawInstantToYearNumber(long raw) {
 		return (int) ((raw >> 40) & 0xFF);
+	}
+	public static long convertInstantToTracer48BitRaw(int yearNumber, MonthDay monthDay, LocalTime time) {
+		return ((long) yearNumber << 40L) | ((long) monthDay.getMonthValue() << 32L) | ((long) monthDay.getDayOfMonth() << 24L) |
+				(time.getHour() << 16) | (time.getMinute() << 8) | time.getSecond();
 	}
 }

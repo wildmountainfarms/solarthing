@@ -16,7 +16,6 @@ import me.retrodaredevil.solarthing.solar.common.RecordBatteryVoltage;
 import me.retrodaredevil.solarthing.solar.tracer.mode.*;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.MonthDay;
 import java.util.Set;
@@ -184,6 +183,7 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 	// region Read-write settings
 	@JsonProperty("batteryTypeValue")
 	int getBatteryTypeValue(); // 0x9000
+	default @NotNull TracerBatteryType getBatteryType() { return Modes.getActiveMode(TracerBatteryType.class, getBatteryTypeValue()); }
 	@JsonProperty("batteryCapacityAmpHours")
 	int getBatteryCapacityAmpHours();
 	@JsonProperty("temperatureCompensationCoefficient")
@@ -212,8 +212,6 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 	float getLowVoltageDisconnect();
 	@JsonProperty("dischargingLimitVoltage")
 	float getDischargingLimitVoltage();
-
-	// Minutes and Seconds on 0x9013
 
 	/** @return 48 bit number representing a real time clock. Low 8 bits represent seconds, ..., high 8 bits represent year */
 	@JsonProperty("secondMinuteHourDayMonthYearRaw")
@@ -283,7 +281,8 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 	int getBatteryRatedVoltageCode();
 	default @NotNull BatteryDetection getBatteryDetection() { return Modes.getActiveMode(BatteryDetection.class, getBatteryRatedVoltageCode()); }
 	@JsonProperty("loadTimingControlSelectionValueRaw")
-	int getLoadTimingControlSelectionValueRaw();
+	int getLoadTimingControlSelectionValue();
+	default @NotNull LoadTimingControlSelection getLoadTimingControlSelection() { return Modes.getActiveMode(LoadTimingControlSelection.class, getLoadTimingControlSelectionValue()); }
 	@JsonProperty("isLoadOnByDefaultInManualMode")
 	boolean isLoadOnByDefaultInManualMode(); // 0x906A
 	@JsonProperty("equalizeDurationMinutes")
@@ -304,11 +303,13 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 	boolean isLoadTestModeEnabled();
 	@JsonProperty("isLoadForcedOn")
 	boolean isLoadForcedOn();
+
+	// endregion
+
 	@JsonProperty("isInsideControllerOverTemperature")
 	boolean isInsideControllerOverTemperature();
 	@JsonProperty("isNight")
 	boolean isNight();
 
-	// endregion
 
 }

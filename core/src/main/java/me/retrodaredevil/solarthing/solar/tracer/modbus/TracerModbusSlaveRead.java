@@ -507,7 +507,7 @@ public class TracerModbusSlaveRead extends AbstractModbusRead implements TracerR
 
 	private static final MessageHandler<int[]> LOAD_TIMING_CONTROL_SELECTION = new ReadHoldingRegisters(0x9069, 1);
 	@Override
-	public int getLoadTimingControlSelectionValueRaw() {
+	public int getLoadTimingControlSelectionValue() {
 		return oneRegister(LOAD_TIMING_CONTROL_SELECTION);
 	}
 

@@ -18,5 +18,7 @@ class TracerUtilTest {
 		assertEquals(yearNumber, TracerUtil.extractTracer48BitRawInstantToYearNumber(raw));
 		assertEquals(monthDay, TracerUtil.extractTracer48BitRawInstantToMonthDay(raw));
 		assertEquals(localTime, TracerUtil.extractTracer48BitRawInstantToLocalTime(raw));
+
+		assertEquals(raw, TracerUtil.convertInstantToTracer48BitRaw(yearNumber, monthDay, localTime));
 	}
 }
