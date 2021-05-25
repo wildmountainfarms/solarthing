@@ -27,20 +27,26 @@ description = """SolarThing"""
 
 spotless {
     // More info on ratchet https://github.com/diffplug/spotless/tree/master/plugin-gradle#ratchet
-    // https://github.com/diffplug/spotless/tree/master/plugin-gradle#eclipse-jdt if you have eclipse xml
 //    ratchetFrom 'origin/master'
+    // https://github.com/diffplug/spotless/tree/master/plugin-gradle#eclipse-jdt if you have eclipse xml
     enforceCheck = false // doesn't have to be formatted correctly for ./gradlew build to work
-    java {
+    format 'javaLenient', com.diffplug.gradle.spotless.JavaExtension, {
         target fileTree('.') {
             include '**/*.java'
             exclude '**/build/**', '**/build-*/**'
         }
         toggleOffOn()
-//        googleJavaFormat()
-//        indentWithTabs()
         removeUnusedImports()
-//        trimTrailingWhitespace()
         endWithNewline()
+    }
+    format 'javaHarsh', com.diffplug.gradle.spotless.JavaExtension, {
+        target fileTree('.') {
+            include '**/*.java'
+            exclude '**/build/**', '**/build-*/**'
+        }
+        toggleOffOn()
+        indentWithTabs()
+        toggleOffOn("/*", "*/") // It doesn't like tabs then a space, which are present in Javadocs, so just disable
     }
 }
 
