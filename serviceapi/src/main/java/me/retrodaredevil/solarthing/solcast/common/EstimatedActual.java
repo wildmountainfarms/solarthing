@@ -2,7 +2,6 @@ package me.retrodaredevil.solarthing.solcast.common;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import me.retrodaredevil.solarthing.solcast.common.SimpleEstimatedActual;
 
 import java.time.Duration;
 import java.time.Instant;

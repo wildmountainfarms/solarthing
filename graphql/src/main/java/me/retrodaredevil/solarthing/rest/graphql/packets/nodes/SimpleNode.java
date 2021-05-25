@@ -28,4 +28,3 @@ public final class SimpleNode<T> {
 	}
 
 }
-

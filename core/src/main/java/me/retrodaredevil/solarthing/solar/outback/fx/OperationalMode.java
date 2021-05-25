@@ -89,4 +89,3 @@ public enum OperationalMode implements CodeMode { // one must be active
 	}
 
 }
-

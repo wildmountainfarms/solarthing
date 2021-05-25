@@ -10,6 +10,7 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 import java.util.Set;
+import java.util.List;
 
 @SupportedAnnotationTypes({"me.retrodaredevil.solarthing.annotations.UtilityClass"})
 @SupportedSourceVersion(SourceVersion.RELEASE_8)

@@ -4,7 +4,6 @@ import me.retrodaredevil.couchdbjava.CouchDbDatabase;
 import me.retrodaredevil.couchdbjava.CouchDbInstance;
 import me.retrodaredevil.couchdbjava.exception.CouchDbException;
 import me.retrodaredevil.couchdbjava.okhttp.auth.OkHttpAuthHandler;
-import me.retrodaredevil.couchdbjava.okhttp.util.HeaderRequestInterceptor;
 import me.retrodaredevil.couchdbjava.okhttp.util.OkHttpUtil;
 import me.retrodaredevil.couchdbjava.response.CouchDbGetResponse;
 import me.retrodaredevil.couchdbjava.response.DatabaseInfo;

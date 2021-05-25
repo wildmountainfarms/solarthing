@@ -6,16 +6,11 @@ import me.retrodaredevil.io.modbus.ModbusTimeoutException;
 import me.retrodaredevil.io.modbus.handling.ParsedResponseException;
 import me.retrodaredevil.io.modbus.handling.RawResponseException;
 import me.retrodaredevil.solarthing.InstantType;
-import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.io.NotInitializedIOException;
 import me.retrodaredevil.solarthing.misc.error.ImmutableExceptionErrorPacket;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
-import me.retrodaredevil.solarthing.solar.renogy.rover.RoverReadTable;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
-import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPackets;
-import me.retrodaredevil.solarthing.solar.renogy.rover.RoverWriteTable;
-import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerControl_E02D;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

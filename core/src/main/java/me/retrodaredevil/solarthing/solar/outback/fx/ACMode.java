@@ -33,4 +33,3 @@ public enum ACMode implements CodeMode { // one must be active
 		return name;
 	}
 }
-

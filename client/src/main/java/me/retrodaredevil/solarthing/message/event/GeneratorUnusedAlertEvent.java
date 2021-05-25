@@ -7,10 +7,8 @@ import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.message.MessageSender;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
-import me.retrodaredevil.solarthing.solar.outback.OutbackUtil;
 import me.retrodaredevil.solarthing.solar.outback.fx.ACMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
-import me.retrodaredevil.solarthing.solar.outback.fx.MiscMode;
 
 @JsonTypeName("generatorunusedalert")
 public class GeneratorUnusedAlertEvent extends GracePeriodTimeoutEvent {

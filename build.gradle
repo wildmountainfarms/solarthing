@@ -1,5 +1,3 @@
-version "0.0.1-SNAPSHOT"
-description = """SolarThing"""
 
 buildscript {
     ext {
@@ -19,6 +17,32 @@ buildscript {
     }
 }
 
+
+plugins {
+    id 'com.diffplug.spotless' version '5.12.5'
+}
+
+version "0.0.1-SNAPSHOT"
+description = """SolarThing"""
+
+spotless {
+    // More info on ratchet https://github.com/diffplug/spotless/tree/master/plugin-gradle#ratchet
+    // https://github.com/diffplug/spotless/tree/master/plugin-gradle#eclipse-jdt if you have eclipse xml
+//    ratchetFrom 'origin/master'
+    enforceCheck = false // doesn't have to be formatted correctly for ./gradlew build to work
+    java {
+        target fileTree('.') {
+            include '**/*.java'
+            exclude '**/build/**', '**/build-*/**'
+        }
+        toggleOffOn()
+//        googleJavaFormat()
+//        indentWithTabs()
+        removeUnusedImports()
+//        trimTrailingWhitespace()
+        endWithNewline()
+    }
+}
 
 allprojects {
     repositories {

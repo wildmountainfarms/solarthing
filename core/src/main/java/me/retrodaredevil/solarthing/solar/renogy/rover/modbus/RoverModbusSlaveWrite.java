@@ -2,7 +2,6 @@ package me.retrodaredevil.solarthing.solar.renogy.rover.modbus;
 
 import me.retrodaredevil.io.modbus.ModbusSlave;
 import me.retrodaredevil.io.modbus.handling.WriteMultipleRegisters;
-import me.retrodaredevil.io.modbus.handling.WriteSingleRegister;
 import me.retrodaredevil.solarthing.solar.renogy.BatteryType;
 import me.retrodaredevil.solarthing.solar.renogy.Voltage;
 import me.retrodaredevil.solarthing.solar.renogy.rover.LoadWorkingMode;

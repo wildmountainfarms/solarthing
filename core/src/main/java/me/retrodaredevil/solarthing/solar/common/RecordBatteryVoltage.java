@@ -3,8 +3,6 @@ package me.retrodaredevil.solarthing.solar.common;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
-import me.retrodaredevil.solarthing.solar.renogy.rover.annotations.ResetEvening;
-import me.retrodaredevil.solarthing.solar.renogy.rover.annotations.ResetMorning;
 
 public interface RecordBatteryVoltage extends Identifiable {
 	@JsonProperty("dailyMinBatteryVoltage")

@@ -9,7 +9,6 @@ import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.program.ConfigUtil;
 import me.retrodaredevil.solarthing.program.PzemShuntPacketListUpdater;
-import me.retrodaredevil.solarthing.program.SolarMain;
 import me.retrodaredevil.solarthing.solar.pzem.PzemShuntReadTable;
 import me.retrodaredevil.solarthing.solar.pzem.modbus.PzemShuntModbusSlaveRead;
 

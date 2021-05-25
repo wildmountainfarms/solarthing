@@ -45,4 +45,3 @@ public enum WarningMode implements BitmaskMode { // multiple can be active (or 0
 		return name;
 	}
 }
-

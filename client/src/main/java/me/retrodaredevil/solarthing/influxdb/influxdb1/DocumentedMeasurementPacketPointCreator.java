@@ -4,8 +4,6 @@ import me.retrodaredevil.solarthing.influxdb.PointUtil;
 import me.retrodaredevil.solarthing.packets.DocumentedPacket;
 import me.retrodaredevil.solarthing.packets.DocumentedPacketType;
 import me.retrodaredevil.solarthing.packets.Packet;
-import me.retrodaredevil.solarthing.packets.identification.Identifiable;
-import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import org.influxdb.dto.Point;
 
 import java.util.Map;

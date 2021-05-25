@@ -3,7 +3,6 @@ package me.retrodaredevil.solarthing.solar.tracer;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.MonthDay;
 

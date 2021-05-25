@@ -2,7 +2,6 @@ package me.retrodaredevil.solarthing.program;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.couchdb.CouchDbUtil;
-import me.retrodaredevil.couchdb.CouchProperties;
 import me.retrodaredevil.couchdbjava.CouchDbInstance;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
@@ -13,7 +12,6 @@ import me.retrodaredevil.solarthing.influxdb.ConstantNameGetter;
 import me.retrodaredevil.solarthing.influxdb.influxdb1.ConstantMeasurementPacketPointCreator;
 import me.retrodaredevil.solarthing.influxdb.influxdb1.DocumentedMeasurementPacketPointCreator;
 import me.retrodaredevil.solarthing.influxdb.influxdb1.InfluxDbPacketSaver;
-import me.retrodaredevil.solarthing.influxdb.infuxdb2.ConstantMeasurementPacketPoint2Creator;
 import me.retrodaredevil.solarthing.influxdb.infuxdb2.DocumentedMeasurementPacketPoint2Creator;
 import me.retrodaredevil.solarthing.influxdb.infuxdb2.InfluxDb2PacketSaver;
 import me.retrodaredevil.solarthing.influxdb.retention.ConstantRetentionPolicyGetter;

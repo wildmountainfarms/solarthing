@@ -11,7 +11,6 @@ import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnvironment;
 import me.retrodaredevil.solarthing.solar.outback.OutbackUtil;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
-import me.retrodaredevil.solarthing.solar.outback.fx.MiscMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
