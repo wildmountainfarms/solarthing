@@ -23,11 +23,11 @@ public class RoverProgramOptions extends RequestProgramOptionsBase implements Ro
 	private boolean bulkRequest = true;
 
 	@JsonProperty("commands")
-	private List<Command> commands;
+	private List<CommandConfig> commandConfigs;
 
 	@Override
-	public @Nullable List<Command> getDeclaredCommandsNullable() {
-		return commands;
+	public @Nullable List<CommandConfig> getDeclaredCommandsNullable() {
+		return commandConfigs;
 	}
 
 	public boolean isSendErrorPackets() {
@@ -41,11 +41,6 @@ public class RoverProgramOptions extends RequestProgramOptionsBase implements Ro
 	@Override
 	public int getModbusAddress() {
 		return modbusAddress;
-	}
-
-	@Override
-	public File getDummyFile() {
-		return dummyFile;
 	}
 
 	@Override

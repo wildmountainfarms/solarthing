@@ -29,15 +29,15 @@ public class MateProgramOptions extends PacketHandlingOptionBase implements IOBu
 	private Map<Integer, Integer> fxWarningIgnoreMap;
 
 	@JsonProperty("commands")
-	private List<Command> commands;
+	private List<CommandConfig> commandConfigs;
 
 	@JsonProperty(AnalyticsOption.PROPERTY_NAME)
 	private boolean isAnalyticsEnabled = AnalyticsOption.DEFAULT_IS_ANALYTICS_ENABLED;
 
 
 	@Override
-	public @Nullable List<Command> getDeclaredCommandsNullable() {
-		return commands;
+	public @Nullable List<CommandConfig> getDeclaredCommandsNullable() {
+		return commandConfigs;
 	}
 
 	public boolean isIgnoreCheckSum() {

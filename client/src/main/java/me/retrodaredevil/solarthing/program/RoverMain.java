@@ -13,6 +13,9 @@ import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.config.io.IOConfig;
 import me.retrodaredevil.solarthing.config.options.*;
 import me.retrodaredevil.solarthing.config.request.DataRequester;
+import me.retrodaredevil.solarthing.config.request.modbus.ModbusDataRequester;
+import me.retrodaredevil.solarthing.config.request.modbus.ModbusRequester;
+import me.retrodaredevil.solarthing.config.request.modbus.RoverModbusRequester;
 import me.retrodaredevil.solarthing.io.ReloadableIOBundle;
 import me.retrodaredevil.solarthing.packets.handling.LatestPacketHandler;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
@@ -34,6 +37,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -43,38 +47,47 @@ public class RoverMain {
 
 
 	private static int doRover(RoverProgramOptions options, AnalyticsManager analyticsManager, List<DataRequester> dataRequesterList){
+		RoverModbusRequester roverModbusRequester = new RoverModbusRequester(options.isSendErrorPackets(), options.isBulkRequest(), options.getDeclaredCommandsNullable());
+		Map<Integer, ModbusRequester> deviceMap = new HashMap<>();
+		deviceMap.put(options.getModbusAddress(), roverModbusRequester);
+		ModbusDataRequester dataRequester = new ModbusDataRequester(options.getIOBundleFile(), deviceMap);
+
+		List<DataRequester> list = new ArrayList<>(dataRequesterList);
+		list.add(dataRequester);
+
+		// this may be used in the future
+		List<PacketHandler> extraPacketHandlers = new ArrayList<>();
+
+		final ActionNodeDataReceiver commandReceiver;
+		if (options.hasCommands()) {
+			LatestPacketHandler latestPacketHandler = new LatestPacketHandler(false); // this is used to determine the state of the system when a command is requested
+			extraPacketHandlers.add(latestPacketHandler);
+			final Map<String, ActionNode> actionNodeMap;
+			try {
+				actionNodeMap = ActionUtil.getActionNodeMap(MAPPER, options);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+			commandReceiver = new ActionNodeDataReceiver(actionNodeMap) {
+				@Override
+				protected void updateInjectEnvironment(DataSource dataSource, InjectEnvironment.Builder injectEnvironmentBuilder) {
+					injectEnvironmentBuilder.add(new RoverModbusEnvironment(read, write));
+				}
+			};
+			extraPacketHandlers.add((packetCollection, instantType) -> commandReceiver.getActionUpdater().update());
+		} else {
+			commandReceiver = null;
+		}
+
+		if (true) {
+			return RequestMain.startRequestProgram(options, analyticsManager, list, options.getPeriod(), options.getMinimumWait(), commandReceiver, options.getCommandInfoList(), new PacketHandlerMultiplexer(extraPacketHandlers));
+		}
 		return doRoverProgram(options, (slave, read, write, reloadCache, reloadIO) -> {
 			List<DataRequester> list = new ArrayList<>(dataRequesterList);
 			list.add((o) -> new ModbusListUpdatedWrapper(new RoverPacketListUpdater(read, write), reloadCache, reloadIO, options.isSendErrorPackets()));
 
-			// this may be used in the future
-			List<PacketHandler> extraPacketHandlers = new ArrayList<>();
-
-			final ActionNodeDataReceiver commandReceiver;
-			if (options.hasCommands()) {
-				LatestPacketHandler latestPacketHandler = new LatestPacketHandler(false); // this is used to determine the state of the system when a command is requested
-				extraPacketHandlers.add(latestPacketHandler);
-				final Map<String, ActionNode> actionNodeMap;
-				try {
-					actionNodeMap = ActionUtil.getActionNodeMap(MAPPER, options);
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
-				commandReceiver = new ActionNodeDataReceiver(actionNodeMap) {
-					@Override
-					protected void updateInjectEnvironment(DataSource dataSource, InjectEnvironment.Builder injectEnvironmentBuilder) {
-						injectEnvironmentBuilder.add(new RoverModbusEnvironment(read, write));
-					}
-				};
-				extraPacketHandlers.add((packetCollection, instantType) -> commandReceiver.getActionUpdater().update());
-			} else {
-				commandReceiver = null;
-			}
-			if (options.getDummyFile() == null) { // only send analytics if it's not a dummy
-				extraPacketHandlers.add(new RoverAnalyticsHandler(analyticsManager));
-			} else {
-				LOGGER.debug("We will not attempt to send rover analytic data because dummy file is active.");
-			}
+			extraPacketHandlers.add(new RoverAnalyticsHandler(analyticsManager));
+//				LOGGER.debug("We will not attempt to send rover analytic data because dummy file is active.");
 			return RequestMain.startRequestProgram(options, analyticsManager, list, options.getPeriod(), options.getMinimumWait(), commandReceiver, options.getCommandInfoList(), new PacketHandlerMultiplexer(extraPacketHandlers));
 		}, options.isBulkRequest() ? modbusCacheSlave -> {
 			modbusCacheSlave.cacheRangeInclusive(0x000A, 0x001A);
@@ -101,47 +114,25 @@ public class RoverMain {
 		return doRoverProgram(options, RoverSetupProgram::startRoverSetup, null);
 	}
 	private static int doRoverProgram(RoverOption options, RoverProgramRunner runner, @Nullable RegisterCacheHandler registerCacheHandler) {
-		File dummyFile = options.getDummyFile();
-		if(dummyFile != null){
-			final FileInputStream fileInputStream;
-			try {
-				fileInputStream = new FileInputStream(dummyFile);
-			} catch (FileNotFoundException e) {
-				throw new RuntimeException("The dummy file was not found!", e);
+		IOConfig ioConfig = ConfigUtil.parseIOConfig(options.getIOBundleFile(), RoverReadTable.SERIAL_CONFIG);
+		try(ReloadableIOBundle ioBundle = new ReloadableIOBundle(ioConfig::createIOBundle)) {
+			ModbusSlaveBus modbus = new IOModbusSlaveBus(ioBundle, new RtuDataEncoder(2000, 20, 4));
+			MutableAddressModbusSlave slave = new MutableAddressModbusSlave(options.getModbusAddress(), modbus);
+			final RoverReadTable read;
+			final Runnable reloadCache;
+			if (registerCacheHandler != null) {
+				ModbusCacheSlave modbusCacheSlave = new ModbusCacheSlave(slave);
+				read = new RoverModbusSlaveRead(modbusCacheSlave);
+				reloadCache = () -> registerCacheHandler.cacheRegisters(modbusCacheSlave);
+			} else {
+				read = new RoverModbusSlaveRead(slave);
+				reloadCache = () -> {};
 			}
-			final RoverStatusPacket roverStatusPacket;
-			try {
-				roverStatusPacket = MAPPER.readValue(fileInputStream, RoverStatusPacket.class);
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-			DummyRoverReadWrite readWrite = new DummyRoverReadWrite(
-					roverStatusPacket,
-					(fieldName, previousValue, newValue) -> System.out.println(fieldName + " changed from " + previousValue + " to " + newValue)
-			);
-			runner.doProgram(null, readWrite, readWrite, () -> {}, () -> {});
-			return 0;
-		} else {
-			IOConfig ioConfig = ConfigUtil.parseIOConfig(options.getIOBundleFile(), RoverReadTable.SERIAL_CONFIG);
-			try(ReloadableIOBundle ioBundle = new ReloadableIOBundle(ioConfig::createIOBundle)) {
-				ModbusSlaveBus modbus = new IOModbusSlaveBus(ioBundle, new RtuDataEncoder(2000, 20, 4));
-				MutableAddressModbusSlave slave = new MutableAddressModbusSlave(options.getModbusAddress(), modbus);
-				final RoverReadTable read;
-				final Runnable reloadCache;
-				if (registerCacheHandler != null) {
-					ModbusCacheSlave modbusCacheSlave = new ModbusCacheSlave(slave);
-					read = new RoverModbusSlaveRead(modbusCacheSlave);
-					reloadCache = () -> registerCacheHandler.cacheRegisters(modbusCacheSlave);
-				} else {
-					read = new RoverModbusSlaveRead(slave);
-					reloadCache = () -> {};
-				}
-				RoverWriteTable write = new RoverModbusSlaveWrite(slave);
-				return runner.doProgram(slave, read, write, reloadCache, ioBundle::reload);
-			} catch (Exception e) {
-				LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)Got exception!", e);
-				return 1;
-			}
+			RoverWriteTable write = new RoverModbusSlaveWrite(slave);
+			return runner.doProgram(slave, read, write, reloadCache, ioBundle::reload);
+		} catch (Exception e) {
+			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)Got exception!", e);
+			return 1;
 		}
 	}
 	@FunctionalInterface

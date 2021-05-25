@@ -6,14 +6,14 @@ import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 
 import java.io.File;
 
+import static java.util.Objects.requireNonNull;
+
 @JsonTypeName("rover-setup")
 @JsonExplicit
 public class RoverSetupProgramOptions implements ProgramOptions, RoverOption {
 	@JsonProperty("modbus")
 	private int modbusAddress = 1;
-	@JsonProperty("dummy")
-	private File dummyFile = null;
-	@JsonProperty("io")
+	@JsonProperty(value = "io", required = true)
 	private File io;
 
 	@Override
@@ -22,22 +22,8 @@ public class RoverSetupProgramOptions implements ProgramOptions, RoverOption {
 	}
 
 	@Override
-	public File getDummyFile() {
-		return dummyFile;
-	}
-
-	@Override
 	public File getIOBundleFile() {
-		File io = this.io;
-		if(io == null){
-			if(dummyFile == null){
-				throw new IllegalStateException("(Configuration error) Both 'io' and 'dummy' are null or unspecified. You must define one!");
-			} else {
-				throw new IllegalStateException("(Program error) 'io' is null! 'dummy' is not null! You should use 'dummy'!");
-			}
-		}
-		return io;
-
+		return requireNonNull(io);
 	}
 
 	@Override
