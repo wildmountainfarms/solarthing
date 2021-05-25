@@ -1,3 +1,5 @@
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 buildscript {
     ext {
@@ -30,7 +32,7 @@ spotless {
 //    ratchetFrom 'origin/master'
     // https://github.com/diffplug/spotless/tree/master/plugin-gradle#eclipse-jdt if you have eclipse xml
     enforceCheck = false // doesn't have to be formatted correctly for ./gradlew build to work
-    format 'javaLenient', com.diffplug.gradle.spotless.JavaExtension, {
+    format 'javaBasic', com.diffplug.gradle.spotless.JavaExtension, {
         target fileTree('.') {
             include '**/*.java'
             exclude '**/build/**', '**/build-*/**'
@@ -39,7 +41,7 @@ spotless {
         removeUnusedImports()
         endWithNewline()
     }
-    format 'javaHarsh', com.diffplug.gradle.spotless.JavaExtension, {
+    format 'javaIndent', com.diffplug.gradle.spotless.JavaExtension, {
         target fileTree('.') {
             include '**/*.java'
             exclude '**/build/**', '**/build-*/**'
@@ -47,6 +49,29 @@ spotless {
         toggleOffOn()
         indentWithTabs()
         toggleOffOn("/*", "*/") // It doesn't like tabs then a space, which are present in Javadocs, so just disable
+    }
+
+    format 'javaNewOnly', com.diffplug.gradle.spotless.JavaExtension, {
+        ratchetFrom 'origin/master'
+        target fileTree('.') {
+            include '**/*.java'
+            exclude '**/build/**', '**/build-*/**'
+        }
+        toggleOffOn()
+        trimTrailingWhitespace()
+        // https://github.com/diffplug/spotless/issues/649#issuecomment-738199681
+//        replaceRegex("No wildcard", "import\\s+[^\\*\\s]+\\*;(\\r\\n|\\r|\\n)", "\$1") // disables wildcard imports if we want
+        /*
+        Pattern pattern = Pattern.compile("import\\s+[^\\*\\s]+\\*;(\\r\\n|\\r|\\n)", Pattern.UNIX_LINES | Pattern.MULTILINE)
+        custom "No wildcard", { original ->
+            Matcher matcher = pattern.matcher(original)
+            if (matcher.find()) {
+                throw new AssertionError("Wildcard imports are not allowed")
+            }
+            return original
+        }
+         */
+
     }
 }
 
