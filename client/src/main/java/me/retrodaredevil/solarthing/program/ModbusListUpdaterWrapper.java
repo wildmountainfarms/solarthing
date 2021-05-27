@@ -6,23 +6,18 @@ import me.retrodaredevil.io.modbus.ModbusTimeoutException;
 import me.retrodaredevil.io.modbus.handling.ParsedResponseException;
 import me.retrodaredevil.io.modbus.handling.RawResponseException;
 import me.retrodaredevil.solarthing.InstantType;
-import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.io.NotInitializedIOException;
 import me.retrodaredevil.solarthing.misc.error.ImmutableExceptionErrorPacket;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
-import me.retrodaredevil.solarthing.solar.renogy.rover.RoverReadTable;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
-import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPackets;
-import me.retrodaredevil.solarthing.solar.renogy.rover.RoverWriteTable;
-import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerControl_E02D;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class ModbusListUpdatedWrapper implements PacketListReceiver {
-	private static final Logger LOGGER = LoggerFactory.getLogger(ModbusListUpdatedWrapper.class);
+public class ModbusListUpdaterWrapper implements PacketListReceiver {
+	private static final Logger LOGGER = LoggerFactory.getLogger(ModbusListUpdaterWrapper.class);
 	private static final String MODBUS_RUNTIME_EXCEPTION_CATCH_LOCATION_IDENTIFIER = "rover.read.modbus";
 	private static final String MODBUS_RUNTIME_INSTANCE_IDENTIFIER = "instance.1";
 	private static final int TIMEOUTS_NEEDED_TO_RELOAD = 5;
@@ -36,7 +31,7 @@ public class ModbusListUpdatedWrapper implements PacketListReceiver {
 	private boolean hasBeenSuccessful = false;
 	private int timeoutsInARow = 0;
 
-	public ModbusListUpdatedWrapper(PacketListReceiver packetListReceiver, Runnable reloadCache, Runnable reloadIO, boolean isSendErrorPackets) {
+	public ModbusListUpdaterWrapper(PacketListReceiver packetListReceiver, Runnable reloadCache, Runnable reloadIO, boolean isSendErrorPackets) {
 		this.packetListReceiver = packetListReceiver;
 		this.reloadCache = reloadCache;
 		this.reloadIO = reloadIO;

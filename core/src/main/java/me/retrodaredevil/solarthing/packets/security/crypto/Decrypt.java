@@ -7,7 +7,9 @@ import me.retrodaredevil.solarthing.packets.security.IntegrityPacket;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
+import java.nio.charset.StandardCharsets;
 import java.security.PublicKey;
+import java.util.Base64;
 
 import static java.util.Objects.requireNonNull;
 
@@ -29,7 +31,7 @@ public final class Decrypt {
 		requireNonNull(cipher);
 		requireNonNull(key);
 		requireNonNull(base64EncryptedData);
-		byte[] encryptedData = Base64Variants.getDefaultVariant().decode(base64EncryptedData);
+		byte[] encryptedData = Base64.getDecoder().decode(base64EncryptedData);
 		try {
 			cipher.init(Cipher.DECRYPT_MODE, key);
 		} catch (java.security.InvalidKeyException e) {
@@ -41,6 +43,6 @@ public final class Decrypt {
 		} catch (IllegalBlockSizeException | BadPaddingException e) {
 			throw new DecryptException(e);
 		}
-		return new String(characterByteArray);
+		return new String(characterByteArray, StandardCharsets.UTF_8);
 	}
 }

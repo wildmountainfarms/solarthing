@@ -8,7 +8,7 @@ import java.io.File;
 import java.util.List;
 
 @JsonTypeName("rover")
-public class RoverProgramOptions extends RequestProgramOptionsBase implements RoverOption, CommandOption {
+public class RoverProgramOptions extends RequestProgramOptionsBase implements RoverOption {
 	@JsonProperty("modbus")
 	private int modbusAddress = 1;
 	@JsonProperty("dummy")
@@ -21,14 +21,6 @@ public class RoverProgramOptions extends RequestProgramOptionsBase implements Ro
 
 	@JsonProperty("bulk_request")
 	private boolean bulkRequest = true;
-
-	@JsonProperty("commands")
-	private List<CommandConfig> commandConfigs;
-
-	@Override
-	public @Nullable List<CommandConfig> getDeclaredCommandsNullable() {
-		return commandConfigs;
-	}
 
 	public boolean isSendErrorPackets() {
 		return sendErrorPackets;

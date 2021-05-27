@@ -2,7 +2,6 @@ package me.retrodaredevil.solarthing.config.request;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 
 @JsonSubTypes({
 		@JsonSubTypes.Type(RaspberryPiCpuTemperatureDataRequester.class),
@@ -13,6 +12,6 @@ import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 public interface DataRequester {
 
-	PacketListReceiver createPacketListReceiver(PacketListReceiver eventPacketReceiver);
+	DataRequesterResult createPacketListReceiver(RequestObject requestObject);
 
 }

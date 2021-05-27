@@ -55,51 +55,7 @@ public class RoverMain {
 		List<DataRequester> list = new ArrayList<>(dataRequesterList);
 		list.add(dataRequester);
 
-		// this may be used in the future
-		List<PacketHandler> extraPacketHandlers = new ArrayList<>();
-
-		final ActionNodeDataReceiver commandReceiver;
-		if (options.hasCommands()) {
-			LatestPacketHandler latestPacketHandler = new LatestPacketHandler(false); // this is used to determine the state of the system when a command is requested
-			extraPacketHandlers.add(latestPacketHandler);
-			final Map<String, ActionNode> actionNodeMap;
-			try {
-				actionNodeMap = ActionUtil.getActionNodeMap(MAPPER, options);
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-			commandReceiver = new ActionNodeDataReceiver(actionNodeMap) {
-				@Override
-				protected void updateInjectEnvironment(DataSource dataSource, InjectEnvironment.Builder injectEnvironmentBuilder) {
-					injectEnvironmentBuilder.add(new RoverModbusEnvironment(read, write));
-				}
-			};
-			extraPacketHandlers.add((packetCollection, instantType) -> commandReceiver.getActionUpdater().update());
-		} else {
-			commandReceiver = null;
-		}
-
-		if (true) {
-			return RequestMain.startRequestProgram(options, analyticsManager, list, options.getPeriod(), options.getMinimumWait(), commandReceiver, options.getCommandInfoList(), new PacketHandlerMultiplexer(extraPacketHandlers));
-		}
-		return doRoverProgram(options, (slave, read, write, reloadCache, reloadIO) -> {
-			List<DataRequester> list = new ArrayList<>(dataRequesterList);
-			list.add((o) -> new ModbusListUpdatedWrapper(new RoverPacketListUpdater(read, write), reloadCache, reloadIO, options.isSendErrorPackets()));
-
-			extraPacketHandlers.add(new RoverAnalyticsHandler(analyticsManager));
-//				LOGGER.debug("We will not attempt to send rover analytic data because dummy file is active.");
-			return RequestMain.startRequestProgram(options, analyticsManager, list, options.getPeriod(), options.getMinimumWait(), commandReceiver, options.getCommandInfoList(), new PacketHandlerMultiplexer(extraPacketHandlers));
-		}, options.isBulkRequest() ? modbusCacheSlave -> {
-			modbusCacheSlave.cacheRangeInclusive(0x000A, 0x001A);
-
-			modbusCacheSlave.cacheRangeInclusive(0x0100, 0x0109); // skip 0x010A
-			modbusCacheSlave.cacheRangeInclusive(0x010B, 0x0122);
-
-			modbusCacheSlave.cacheRangeInclusive(0xE002, 0xE014);
-			// break here just because they're for different things
-			modbusCacheSlave.cacheRangeInclusive(0xE015, 0xE021);
-//			modbusCacheSlave.cacheRangeInclusive(0xE022, 0xE02D); these do not work when querying in bulk for some reason
-		} : null);
+		return RequestMain.startRequestProgram(options, analyticsManager, list, options.getPeriod(), options.getMinimumWait());
 	}
 
 	public static int connectRover(RoverProgramOptions options, File dataDirectory) {

@@ -3,8 +3,6 @@ package me.retrodaredevil.solarthing.program;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.io.IOBundle;
-import me.retrodaredevil.io.serial.SerialConfig;
-import me.retrodaredevil.io.serial.SerialConfigBuilder;
 import me.retrodaredevil.solarthing.DataSource;
 import me.retrodaredevil.solarthing.OnDataReceive;
 import me.retrodaredevil.solarthing.SolarThingConstants;
@@ -19,11 +17,10 @@ import me.retrodaredevil.solarthing.commands.CommandProvider;
 import me.retrodaredevil.solarthing.commands.CommandProviderMultiplexer;
 import me.retrodaredevil.solarthing.commands.SourcedCommand;
 import me.retrodaredevil.solarthing.commands.packets.status.AvailableCommandsListUpdater;
-import me.retrodaredevil.solarthing.config.options.ExtraOptionFlag;
 import me.retrodaredevil.solarthing.config.options.MateProgramOptions;
 import me.retrodaredevil.solarthing.config.options.ProgramType;
 import me.retrodaredevil.solarthing.config.request.DataRequester;
-import me.retrodaredevil.solarthing.misc.device.RaspberryPiCpuTemperatureListUpdater;
+import me.retrodaredevil.solarthing.config.request.RequestObject;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.handling.*;
 import me.retrodaredevil.solarthing.packets.handling.implementations.TimedPacketReceiver;
@@ -75,44 +72,13 @@ public class OutbackMateMain {
 			List<DatabaseConfig> databaseConfigs = ConfigUtil.getDatabaseConfigs(options);
 			PacketHandlerBundle packetHandlerBundle = PacketHandlerInit.getPacketHandlerBundle(databaseConfigs, SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, SolarThingConstants.SOLAR_EVENT_UNIQUE_NAME, options.getSourceId(), options.getFragmentId());
 
-			PacketHandler eventPacketHandler = new PacketHandlerMultiplexer(packetHandlerBundle.getEventPacketHandlers());
-			PacketListReceiver sourceAndFragmentUpdater = SolarMain.getSourceAndFragmentUpdater(options);
-			PacketListReceiverHandler eventPacketListReceiverHandler = new PacketListReceiverHandler(
-					new PacketListReceiverMultiplexer(
-							sourceAndFragmentUpdater,
-							(packets, instantType) -> {
-								LOGGER.debug(SolarThingConstants.NO_CONSOLE, "Debugging event packets");
-								try {
-									LOGGER.debug(SolarThingConstants.NO_CONSOLE, MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(packets));
-								} catch (JsonProcessingException e) {
-									LOGGER.debug("Never mind about that...", e);
-								}
-							}
-					),
-					eventPacketHandler,
-					PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR,
-					options.getTimeZone()
-			);
+			PacketListReceiverHandlerBundle bundle = PacketListReceiverHandlerBundle.createFrom(options, packetHandlerBundle, statusPacketHandlers);
 
 			final OnDataReceive onDataReceive;
 			List<PacketHandler> statusPacketHandlers = new ArrayList<>();
 			if(options.hasCommands()) {
 				LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Commands are allowed");
 				List<CommandProvider<MateCommand>> commandProviders = new ArrayList<>();
-				{ // InputStreamCommandProvider command_input.txt block
-					// TODO make the file path customizable through json (a DatabaseConfig)
-					File commandInputFile = new File("command_input.txt");
-					Files.write(commandInputFile.toPath(), new byte[0], StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
-					InputStream fileInputStream = null;
-					try {
-						fileInputStream = new FileInputStream(commandInputFile);
-					} catch (FileNotFoundException e) {
-						LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "No command input file! We created the file, but for some reason it isn't there...");
-					}
-					if (fileInputStream != null) {
-						commandProviders.add(InputStreamCommandProvider.createFrom(fileInputStream, "command_input.txt", EnumSet.allOf(MateCommand.class)));
-					}
-				}
 				Map<String, ActionNode> actionNodeMap = ActionUtil.getActionNodeMap(MAPPER, options);
 				LOGGER.debug("actionNodeMap={}", actionNodeMap);
 
@@ -120,7 +86,7 @@ public class OutbackMateMain {
 				statusPacketHandlers.add(latestPacketHandler);
 
 				Queue<SourcedCommand<MateCommand>> queue = new LinkedList<>();
-				final ActionNodeDataReceiver actionNodeDataReceiver = new ActionNodeDataReceiver(actionNodeMap) {
+				final ActionNodeDataReceiver actionNodeDataReceiver = new ActionNodeDataReceiver(actionNodeMap, environmentUpdater) {
 					@Override
 					protected void updateInjectEnvironment(DataSource dataSource, InjectEnvironment.Builder injectEnvironmentBuilder) {
 						injectEnvironmentBuilder
@@ -155,22 +121,6 @@ public class OutbackMateMain {
 			}
 			statusPacketHandlers.addAll(packetHandlerBundle.getStatusPacketHandlers());
 			statusPacketHandlers.add(new MateAnalyticsHandler(analyticsManager));
-			PacketListReceiverHandler statusPacketListReceiverHandler = new PacketListReceiverHandler(
-					new PacketListReceiverMultiplexer(
-							sourceAndFragmentUpdater,
-							(packets, instantType) -> {
-								LOGGER.debug("Debugging all packets");
-								try {
-									LOGGER.debug(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(packets));
-								} catch (JsonProcessingException e) {
-									LOGGER.debug("Never mind about that...", e);
-								}
-							}
-					),
-					new PacketHandlerMultiplexer(statusPacketHandlers),
-					statusIdGenerator,
-					options.getTimeZone()
-			);
 
 			List<PacketListReceiver> packetListReceiverList = new ArrayList<>(Arrays.asList(
 					OutbackDuplicatePacketRemover.INSTANCE,
@@ -183,7 +133,7 @@ public class OutbackMateMain {
 				packetListReceiverList.add(new AvailableCommandsListUpdater(options.getCommandInfoList()));
 			}
 			for (DataRequester dataRequester : options.getDataRequesterList()) {
-				packetListReceiverList.add(dataRequester.createPacketListReceiver(eventPacketListReceiverHandler.getPacketListReceiverAccepter()));
+				packetListReceiverList.add(dataRequester.createPacketListReceiver(new RequestObject(eventPacketListReceiverHandler.getPacketListReceiverAccepter(), Collections.emptyMap())));
 			}
 			packetListReceiverList.addAll(Arrays.asList(
 					statusPacketListReceiverHandler.getPacketListReceiverAccepter(),

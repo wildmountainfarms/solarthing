@@ -21,8 +21,19 @@ public class InjectEnvironment {
 		return r;
 	}
 
+	public Builder newBuilder() {
+		return new Builder(new HashMap<>(map));
+	}
+
 	public static final class Builder {
-		private final Map<Class<?>, Object> map = new HashMap<>();
+		private final Map<Class<?>, Object> map;
+
+		private Builder(Map<Class<?>, Object> map) {
+			this.map = map;
+		}
+		public Builder() {
+			this(new HashMap<>());
+		}
 
 		public Builder add(Object object) {
 			map.put(object.getClass(), object);

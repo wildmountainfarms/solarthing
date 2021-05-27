@@ -1,0 +1,37 @@
+{
+  "type": "request",
+  "source": "default",
+  "fragment": 2,
+  "unique": 30,
+  "databases": [
+    "config/couchdb.json"
+  ],
+  "request": [
+    {
+      "type": "modbus",
+      "io": "../../config_templates/io/default_linux_serial.json",
+      "devices": {
+        "1": {
+          "type": "rover",
+          "attach_to": [
+            "LOAD ON", "LOAD OFF"
+          ]
+        }
+      }
+    }
+  ],
+  "commands": [
+    {
+      "name": "LOAD ON",
+      "display_name": "Load On",
+      "description": "Turns on the load",
+      "action": "config/commands/load_on.json"
+    },
+    {
+      "name": "LOAD OFF",
+      "display_name": "Load Off",
+      "description": "Turns off the load",
+      "action": "config/commands/load_off.json"
+    }
+  ]
+}

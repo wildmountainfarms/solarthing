@@ -7,6 +7,7 @@ import me.retrodaredevil.solarthing.DataSource;
 import me.retrodaredevil.solarthing.PacketGroupReceiver;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.actions.ActionNode;
+import me.retrodaredevil.solarthing.actions.command.EnvironmentUpdater;
 import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.InjectEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.VariableEnvironment;
@@ -20,18 +21,18 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-public abstract class ActionNodeDataReceiver implements PacketGroupReceiver {
+public class ActionNodeDataReceiver implements PacketGroupReceiver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionNodeDataReceiver.class);
 	private final VariableEnvironment variableEnvironment = new VariableEnvironment();
 	private final ActionMultiplexer actionMultiplexer = new Actions.ActionMultiplexerBuilder().build();
 
 	private final Map<String, ActionNode> actionNodeMap;
+	private final EnvironmentUpdater environmentUpdater;
 
-	public ActionNodeDataReceiver(Map<String, ActionNode> actionNodeMap) {
+	public ActionNodeDataReceiver(Map<String, ActionNode> actionNodeMap, EnvironmentUpdater environmentUpdater) {
 		this.actionNodeMap = actionNodeMap;
+		this.environmentUpdater = environmentUpdater;
 	}
-
-	protected abstract void updateInjectEnvironment(DataSource dataSource, InjectEnvironment.Builder injectEnvironmentBuilder);
 
 	public Action getActionUpdater() {
 		return actionMultiplexer;
@@ -50,17 +51,17 @@ public abstract class ActionNodeDataReceiver implements PacketGroupReceiver {
 		}
 	}
 
-	private void receiveData(String sender, long dateMillis, String data) {
-		ActionNode requested = actionNodeMap.get(data);
+	private void receiveData(String sender, long dateMillis, String commandName) {
+		ActionNode requested = actionNodeMap.get(commandName);
 		if(requested != null){
-			DataSource dataSource = new DataSource(sender, dateMillis, data);
+			DataSource dataSource = new DataSource(sender, dateMillis, commandName);
 			InjectEnvironment.Builder injectEnvironmentBuilder = new InjectEnvironment.Builder();
-			updateInjectEnvironment(dataSource, injectEnvironmentBuilder);
+			environmentUpdater.updateInjectEnvironment(dataSource, injectEnvironmentBuilder);
 			Action action = requested.createAction(new ActionEnvironment(variableEnvironment, new VariableEnvironment(), injectEnvironmentBuilder.build()));
 			actionMultiplexer.add(action);
-			LOGGER.info(SolarThingConstants.SUMMARY_MARKER, sender + " has requested command sequence: " + data);
+			LOGGER.info(SolarThingConstants.SUMMARY_MARKER, sender + " has requested command sequence: " + commandName);
 		} else {
-			LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Sender: " + sender + " has requested unknown command: " + data);
+			LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Sender: " + sender + " has requested unknown command: " + commandName);
 		}
 	}
 

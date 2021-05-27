@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import me.retrodaredevil.io.modbus.ModbusSlave;
 import me.retrodaredevil.io.serial.SerialConfig;
+import me.retrodaredevil.solarthing.actions.ActionNode;
+import me.retrodaredevil.solarthing.config.request.RequestObject;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
@@ -12,5 +14,9 @@ import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 })
 public interface ModbusRequester {
 	SerialConfig getDefaultSerialConfig();
-	PacketListReceiver createPacketListReceiver(PacketListReceiver eventPacketReceiver, ModbusSlave modbus);
+	PacketListReceiver createPacketListReceiver(RequestObject requestObject, ModbusSlave modbus);
+
+	default ActionNode alterCommandActionNode(ActionNode actionNode) {
+		return actionNode;
+	}
 }

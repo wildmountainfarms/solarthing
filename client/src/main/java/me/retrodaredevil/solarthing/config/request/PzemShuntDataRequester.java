@@ -9,7 +9,6 @@ import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.program.ConfigUtil;
 import me.retrodaredevil.solarthing.program.PzemShuntPacketListUpdater;
-import me.retrodaredevil.solarthing.program.SolarMain;
 import me.retrodaredevil.solarthing.solar.pzem.PzemShuntReadTable;
 import me.retrodaredevil.solarthing.solar.pzem.modbus.PzemShuntModbusSlaveRead;
 
@@ -33,7 +32,7 @@ public class PzemShuntDataRequester implements DataRequester {
 	}
 
 	@Override
-	public PacketListReceiver createPacketListReceiver(PacketListReceiver eventPacketReceiver) {
+	public PacketListReceiver createPacketListReceiver(RequestObject requestObject) {
 		final IOBundle ioBundle = ConfigUtil.createIOBundle(ioBundleFile, PzemShuntReadTable.SERIAL_CONFIG);
 		ModbusSlaveBus bus = new IOModbusSlaveBus(ioBundle, new RtuDataEncoder());
 		ModbusSlave slave = new ImmutableAddressModbusSlave(modbusAddress, bus);
