@@ -24,7 +24,8 @@ import java.util.List;
 public class CommandUtil {
 
 	/**
-	 * @param databaseConfigs The list of databaes configs
+	 * Gets packet handlers that will download requested commands
+	 * @param databaseConfigs The list of database configs
 	 * @param packetGroupReceiver Receives data that has been downloaded. Note that this may be called in a separate thread, so make sure it is thread safe
 	 * @param options The options object
 	 * @return A list of packet handlers that, when called, will possibly download commands and then forward those commands to {@code packetGroupReceiver}

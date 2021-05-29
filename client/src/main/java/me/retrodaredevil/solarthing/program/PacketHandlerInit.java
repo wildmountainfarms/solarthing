@@ -5,9 +5,15 @@ import me.retrodaredevil.couchdb.CouchDbUtil;
 import me.retrodaredevil.couchdb.CouchProperties;
 import me.retrodaredevil.couchdbjava.CouchDbInstance;
 import me.retrodaredevil.solarthing.SolarThingConstants;
+import me.retrodaredevil.solarthing.actions.ActionNode;
+import me.retrodaredevil.solarthing.actions.command.EnvironmentUpdater;
+import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.TimeZoneEnvironment;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.config.databases.IndividualSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.*;
+import me.retrodaredevil.solarthing.config.options.CommandOption;
+import me.retrodaredevil.solarthing.config.options.PacketHandlingOption;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketSaver;
 import me.retrodaredevil.solarthing.influxdb.ConstantNameGetter;
 import me.retrodaredevil.solarthing.influxdb.influxdb1.ConstantMeasurementPacketPointCreator;
@@ -29,8 +35,10 @@ import okhttp3.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @UtilityClass
 public class PacketHandlerInit {
@@ -146,6 +154,45 @@ public class PacketHandlerInit {
 			}
 		}
 		return new PacketHandlerBundle(statusPacketHandlers, eventPacketHandlers);
+	}
+
+	public static <T extends PacketHandlingOption & CommandOption> PacketListReceiverHandlerBundle createBundle(T options) throws IOException {
+		List<DatabaseConfig> databaseConfigs = ConfigUtil.getDatabaseConfigs(options);
+		PacketHandlerBundle packetHandlerBundle = PacketHandlerInit.getPacketHandlerBundle(databaseConfigs, SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, SolarThingConstants.SOLAR_EVENT_UNIQUE_NAME, options.getSourceId(), options.getFragmentId());
+		List<PacketHandler> statusPacketHandlers = new ArrayList<>();
+
+		EnvironmentUpdater[] environmentUpdaterReference = new EnvironmentUpdater[1];
+		if (options.hasCommands()) {
+			LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Command are enabled!");
+			LatestPacketHandler latestPacketHandler = new LatestPacketHandler(false); // this is used to determine the state of the system when a command is requested
+			statusPacketHandlers.add(latestPacketHandler);
+
+			Map<String, ActionNode> actionNodeMap = ActionUtil.getActionNodeMap(MAPPER, options);
+			ActionNodeDataReceiver commandReceiver = new ActionNodeDataReceiver(
+					actionNodeMap,
+					(dataSource, injectEnvironmentBuilder) -> {
+						injectEnvironmentBuilder
+								.add(new TimeZoneEnvironment(options.getTimeZone()))
+								.add(new LatestPacketGroupEnvironment(latestPacketHandler::getLatestPacketCollection))
+						;
+						environmentUpdaterReference[0].updateInjectEnvironment(dataSource, injectEnvironmentBuilder);
+					}
+			);
+
+			statusPacketHandlers.add((packetCollection, instantType) -> commandReceiver.getActionUpdater().update());
+
+			List<PacketHandler> commandPacketHandlers = CommandUtil.getCommandRequesterHandlerList(databaseConfigs, commandReceiver, options);
+			statusPacketHandlers.add(new PacketHandlerMultiplexer(commandPacketHandlers));
+		} else {
+			LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Commands are disabled");
+		}
+		statusPacketHandlers.addAll(packetHandlerBundle.getStatusPacketHandlers());
+
+		PacketListReceiverHandlerBundle bundle = PacketListReceiverHandlerBundle.createFrom(options, packetHandlerBundle, statusPacketHandlers);
+	}
+
+	public static class Result {
+		private final PacketListReceiverHandlerBundle bundle;
 	}
 
 }

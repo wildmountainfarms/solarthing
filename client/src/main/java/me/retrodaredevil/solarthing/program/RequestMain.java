@@ -33,58 +33,19 @@ import static java.util.Objects.requireNonNull;
 public class RequestMain {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RequestMain.class);
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
-	public static int startRequestProgram(RequestProgramOptions options, File dataDirectory) {
+	public static int startRequestProgram(RequestProgramOptions options, File dataDirectory) throws Exception {
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Beginning request program");
 		AnalyticsManager analyticsManager = new AnalyticsManager(options.isAnalyticsEnabled(), dataDirectory);
 		analyticsManager.sendStartUp(ProgramType.REQUEST);
 		return startRequestProgram(options, analyticsManager, options.getDataRequesterList(), options.getPeriod(), options.getMinimumWait());
 	}
 
-	public static <T extends PacketHandlingOption & CommandOption> int startRequestProgram(T options, AnalyticsManager analyticsManager, List<DataRequester> dataRequesterList, long period, long minimumWait) {
-		List<DatabaseConfig> databaseConfigs = ConfigUtil.getDatabaseConfigs(options);
-		PacketHandlerBundle packetHandlerBundle = PacketHandlerInit.getPacketHandlerBundle(databaseConfigs, SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, SolarThingConstants.SOLAR_EVENT_UNIQUE_NAME, options.getSourceId(), options.getFragmentId());
-		List<PacketHandler> statusPacketHandlers = new ArrayList<>(packetHandlerBundle.getStatusPacketHandlers());
-
-
-		final Map<String, ActionNode> actionNodeMap;
-		EnvironmentUpdater[] environmentUpdaterReference = new EnvironmentUpdater[1];
-		if (options.hasCommands()) {
-			LatestPacketHandler latestPacketHandler = new LatestPacketHandler(false); // this is used to determine the state of the system when a command is requested
-			statusPacketHandlers.add(latestPacketHandler);
-
-			try {
-				actionNodeMap = ActionUtil.getActionNodeMap(MAPPER, options);
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-			ActionNodeDataReceiver commandReceiver = new ActionNodeDataReceiver(
-					actionNodeMap,
-					(dataSource, injectEnvironmentBuilder) -> {
-						injectEnvironmentBuilder
-								.add(new TimeZoneEnvironment(options.getTimeZone()))
-								.add(new LatestPacketGroupEnvironment(latestPacketHandler::getLatestPacketCollection))
-								;
-						environmentUpdaterReference[0].updateInjectEnvironment(dataSource, injectEnvironmentBuilder);
-					}
-			);
-
-			statusPacketHandlers.add((packetCollection, instantType) -> commandReceiver.getActionUpdater().update());
-
-			LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Command are enabled!");
-			List<PacketHandler> commandPacketHandlers = CommandUtil.getCommandRequesterHandlerList(databaseConfigs, commandReceiver, options);
-			statusPacketHandlers.add(new PacketHandlerMultiplexer(commandPacketHandlers));
-		} else {
-			actionNodeMap = Collections.emptyMap();
-		}
-
-//		List<PacketHandler> eventPacketHandlers = new ArrayList<>(packetHandlerBundle.getEventPacketHandlers());
-
-		PacketListReceiverHandlerBundle bundle = PacketListReceiverHandlerBundle.createFrom(options, packetHandlerBundle, statusPacketHandlers);
+	public static <T extends PacketHandlingOption & CommandOption> int startRequestProgram(T options, AnalyticsManager analyticsManager, List<DataRequester> dataRequesterList, long period, long minimumWait) throws Exception {
 
 		List<PacketListReceiver> packetListReceiverList = new ArrayList<>();
 		for (DataRequester dataRequester : dataRequesterList) {
 			DataRequesterResult result = dataRequester.createPacketListReceiver(new RequestObject(bundle.getEventHandler().getPacketListReceiverAccepter()));
-			packetListReceiverList.add();
+			packetListReceiverList.add(result.getStatusPacketListReceiver());
 		}
 		if (options.hasCommands()) {
 			packetListReceiverList.add(new AvailableCommandsListUpdater(options.getCommandInfoList()));

@@ -7,6 +7,7 @@ import me.retrodaredevil.solarthing.DataSource;
 import me.retrodaredevil.solarthing.OnDataReceive;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.actions.ActionNode;
+import me.retrodaredevil.solarthing.actions.command.EnvironmentUpdater;
 import me.retrodaredevil.solarthing.actions.environment.InjectEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.MateCommandEnvironment;
@@ -20,6 +21,7 @@ import me.retrodaredevil.solarthing.commands.packets.status.AvailableCommandsLis
 import me.retrodaredevil.solarthing.config.options.MateProgramOptions;
 import me.retrodaredevil.solarthing.config.options.ProgramType;
 import me.retrodaredevil.solarthing.config.request.DataRequester;
+import me.retrodaredevil.solarthing.config.request.DataRequesterResult;
 import me.retrodaredevil.solarthing.config.request.RequestObject;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.handling.*;
@@ -48,6 +50,8 @@ public class OutbackMateMain {
 	private static final Logger LOGGER = LoggerFactory.getLogger(OutbackMateMain.class);
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
 
+	private static final Collection<MateCommand> ALLOWED_COMMANDS = EnumSet.of(MateCommand.AUX_OFF, MateCommand.AUX_ON, MateCommand.USE, MateCommand.DROP);
+
 	private static IOBundle createIOBundle(MateProgramOptions options) throws Exception {
 		final IOBundle createdIO = ConfigUtil.createIOBundle(options.getIOBundleFile(), OutbackConstants.MATE_CONFIG);
 		if(options.hasCommands()){
@@ -60,6 +64,18 @@ public class OutbackMateMain {
 			@Override public void close() throws Exception { createdIO.close(); }
 		};
 	}
+	private void todo(){
+		// TODO
+		Queue<SourcedCommand<MateCommand>> queue = new LinkedList<>();
+		List<CommandProvider<MateCommand>> commandProviders = new ArrayList<>(); // if there are no commands, this should remain empty
+		final CommandProvider<MateCommand> commandProvider = () -> {
+//			actionNodeDataReceiver.getActionUpdater().update(); won't need this because we'll update actions correctly
+			return queue.poll();
+		};
+		commandProviders.add(commandProvider);
+
+//		.add(new MateCommandEnvironment(dataSource.toString(), queue))
+	}
 
 	@SuppressWarnings("SameReturnValue")
 	public static int connectMate(MateProgramOptions options, File dataDirectory) throws Exception {
@@ -71,56 +87,38 @@ public class OutbackMateMain {
 		try(IOBundle io = createIOBundle(options)) {
 			List<DatabaseConfig> databaseConfigs = ConfigUtil.getDatabaseConfigs(options);
 			PacketHandlerBundle packetHandlerBundle = PacketHandlerInit.getPacketHandlerBundle(databaseConfigs, SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, SolarThingConstants.SOLAR_EVENT_UNIQUE_NAME, options.getSourceId(), options.getFragmentId());
-
-			PacketListReceiverHandlerBundle bundle = PacketListReceiverHandlerBundle.createFrom(options, packetHandlerBundle, statusPacketHandlers);
-
-			final OnDataReceive onDataReceive;
 			List<PacketHandler> statusPacketHandlers = new ArrayList<>();
-			if(options.hasCommands()) {
-				LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Commands are allowed");
-				List<CommandProvider<MateCommand>> commandProviders = new ArrayList<>();
-				Map<String, ActionNode> actionNodeMap = ActionUtil.getActionNodeMap(MAPPER, options);
-				LOGGER.debug("actionNodeMap={}", actionNodeMap);
 
+			EnvironmentUpdater[] environmentUpdaterReference = new EnvironmentUpdater[1];
+			if(options.hasCommands()) {
+				LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Command are enabled!");
 				LatestPacketHandler latestPacketHandler = new LatestPacketHandler(false); // this is used to determine the state of the system when a command is requested
 				statusPacketHandlers.add(latestPacketHandler);
 
-				Queue<SourcedCommand<MateCommand>> queue = new LinkedList<>();
-				final ActionNodeDataReceiver actionNodeDataReceiver = new ActionNodeDataReceiver(actionNodeMap, environmentUpdater) {
-					@Override
-					protected void updateInjectEnvironment(DataSource dataSource, InjectEnvironment.Builder injectEnvironmentBuilder) {
-						injectEnvironmentBuilder
-								.add(new TimeZoneEnvironment(options.getTimeZone()))
-								.add(new MateCommandEnvironment(dataSource.toString(), queue))
-								.add(new LatestPacketGroupEnvironment(latestPacketHandler::getLatestPacketCollection));
-					}
-				};
-				final CommandProvider<MateCommand> commandProvider = () -> {
-					actionNodeDataReceiver.getActionUpdater().update();
-					return queue.poll();
-				};
-				commandProviders.add(commandProvider);
-				final List<PacketHandler> commandRequesterHandlerList = CommandUtil.getCommandRequesterHandlerList(databaseConfigs, actionNodeDataReceiver, options); // Handlers to request and get new commands to send (This may block the current thread). (This doesn't actually handle packets)
-
-				final PacketHandler commandRequesterHandler = new PacketHandlerMultiplexer(commandRequesterHandlerList);
-				Collection<MateCommand> allowedCommands = EnumSet.of(MateCommand.AUX_OFF, MateCommand.AUX_ON, MateCommand.USE, MateCommand.DROP);
-				onDataReceive = new MateCommandSender(
-						new CommandProviderMultiplexer<>(commandProviders),
-						io.getOutputStream(),
-						allowedCommands,
-						new OnMateCommandSent(new PacketListReceiverMultiplexer(
-								eventPacketListReceiverHandler.getPacketListReceiverAccepter(),
-								eventPacketListReceiverHandler.getPacketListReceiverPacker(),
-								eventPacketListReceiverHandler.getPacketListReceiverHandler()
-						))
+				Map<String, ActionNode> actionNodeMap = ActionUtil.getActionNodeMap(MAPPER, options);
+				ActionNodeDataReceiver commandReceiver = new ActionNodeDataReceiver(
+						actionNodeMap,
+						(dataSource, injectEnvironmentBuilder) -> {
+							injectEnvironmentBuilder
+									.add(new TimeZoneEnvironment(options.getTimeZone()))
+									.add(new LatestPacketGroupEnvironment(latestPacketHandler::getLatestPacketCollection))
+							;
+							environmentUpdaterReference[0].updateInjectEnvironment(dataSource, injectEnvironmentBuilder);
+						}
 				);
-				statusPacketHandlers.add(commandRequesterHandler);
+
+				statusPacketHandlers.add((packetCollection, instantType) -> commandReceiver.getActionUpdater().update());
+
+				final List<PacketHandler> commandPacketHandlers = CommandUtil.getCommandRequesterHandlerList(databaseConfigs, commandReceiver, options); // Handlers to request and get new commands to send (This may block the current thread). (This doesn't actually handle packets)
+				statusPacketHandlers.add(new PacketHandlerMultiplexer(commandPacketHandlers));
 			} else {
 				LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Commands are disabled");
-				onDataReceive = OnDataReceive.Defaults.NOTHING;
 			}
 			statusPacketHandlers.addAll(packetHandlerBundle.getStatusPacketHandlers());
 			statusPacketHandlers.add(new MateAnalyticsHandler(analyticsManager));
+			// now we're done updating statusPacketHandlers
+
+			PacketListReceiverHandlerBundle bundle = PacketListReceiverHandlerBundle.createFrom(options, packetHandlerBundle, statusPacketHandlers);
 
 			List<PacketListReceiver> packetListReceiverList = new ArrayList<>(Arrays.asList(
 					OutbackDuplicatePacketRemover.INSTANCE,
@@ -129,26 +127,30 @@ public class OutbackMateMain {
 					new FXStatusListUpdater(new DailyIdentifier(options.getTimeZone())),
 					new DaySummaryLogListReceiver()
 			));
+			for (DataRequester dataRequester : options.getDataRequesterList()) {
+				DataRequesterResult result = dataRequester.createPacketListReceiver(new RequestObject(bundle.getEventHandler().getPacketListReceiverAccepter()));
+				packetListReceiverList.add(result.getStatusPacketListReceiver());
+			}
 			if (options.hasCommands()) {
 				packetListReceiverList.add(new AvailableCommandsListUpdater(options.getCommandInfoList()));
 			}
-			for (DataRequester dataRequester : options.getDataRequesterList()) {
-				packetListReceiverList.add(dataRequester.createPacketListReceiver(new RequestObject(eventPacketListReceiverHandler.getPacketListReceiverAccepter(), Collections.emptyMap())));
-			}
-			packetListReceiverList.addAll(Arrays.asList(
-					statusPacketListReceiverHandler.getPacketListReceiverAccepter(),
-					statusPacketListReceiverHandler.getPacketListReceiverPacker(),
-					eventPacketListReceiverHandler.getPacketListReceiverPacker(),
-					statusPacketListReceiverHandler.getPacketListReceiverHandler(),
-					eventPacketListReceiverHandler.getPacketListReceiverHandler()
-			));
+			packetListReceiverList.addAll(bundle.createDefaultPacketListReceivers());
 			SolarMain.initReader(
 					requireNonNull(io.getInputStream()),
 					new MatePacketCreator49(MateProgramOptions.getIgnoreCheckSum(options)),
 					new TimedPacketReceiver(
 							250,
 							new PacketListReceiverMultiplexer(packetListReceiverList),
-							onDataReceive
+							new MateCommandSender(
+									new CommandProviderMultiplexer<>(commandProviders), // if commands aren't allowed, commandProviders will be empty, so this will do nothing
+									io.getOutputStream(),
+									ALLOWED_COMMANDS,
+									new OnMateCommandSent(new PacketListReceiverMultiplexer(
+											bundle.getEventHandler().getPacketListReceiverAccepter(),
+											bundle.getEventHandler().getPacketListReceiverPacker(),
+											bundle.getEventHandler().getPacketListReceiverHandler()
+									))
+							)
 					)
 			);
 		}
