@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.config.request.modbus;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.io.modbus.*;
 import me.retrodaredevil.solarthing.actions.command.EnvironmentUpdater;
 import me.retrodaredevil.solarthing.actions.command.EnvironmentUpdaterMultiplexer;
@@ -22,6 +23,7 @@ import java.util.NoSuchElementException;
 
 import static java.util.Objects.requireNonNull;
 
+@JsonTypeName("modbus")
 public class ModbusDataRequester implements DataRequester {
 	private final File ioBundleFile;
 	private final Map<Integer, ModbusRequester> addressToModbusRequesterMap;

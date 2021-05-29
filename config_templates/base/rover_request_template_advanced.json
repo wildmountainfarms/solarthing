@@ -13,7 +13,7 @@
       "devices": {
         "1": {
           "type": "rover",
-          "attach_to": [
+          "commands": [
             "LOAD ON", "LOAD OFF"
           ]
         }

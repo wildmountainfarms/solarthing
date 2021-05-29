@@ -1,4 +1,4 @@
 {
   "type": "rover-setup",
-  "dummy": "solar/dummy_rover.json"
+  "dummy": "test/dummy_rover.json"
 }
