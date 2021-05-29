@@ -12,6 +12,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 public interface DataRequester {
 
-	DataRequesterResult createPacketListReceiver(RequestObject requestObject);
+	DataRequesterResult create(RequestObject requestObject);
 
 }

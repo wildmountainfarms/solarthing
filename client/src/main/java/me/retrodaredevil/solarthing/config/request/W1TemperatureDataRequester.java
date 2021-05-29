@@ -23,7 +23,7 @@ public class W1TemperatureDataRequester implements DataRequester {
 	}
 
 	@Override
-	public PacketListReceiver createPacketListReceiver(RequestObject requestObject) {
-		return new W1TemperatureListUpdater(directory, dataId);
+	public DataRequesterResult create(RequestObject requestObject) {
+		return new DataRequesterResult(new W1TemperatureListUpdater(directory, dataId));
 	}
 }

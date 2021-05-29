@@ -2,7 +2,6 @@ package me.retrodaredevil.solarthing.program;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.couchdb.CouchDbUtil;
-import me.retrodaredevil.couchdb.CouchProperties;
 import me.retrodaredevil.couchdbjava.CouchDbInstance;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.actions.ActionNode;
@@ -19,7 +18,6 @@ import me.retrodaredevil.solarthing.influxdb.ConstantNameGetter;
 import me.retrodaredevil.solarthing.influxdb.influxdb1.ConstantMeasurementPacketPointCreator;
 import me.retrodaredevil.solarthing.influxdb.influxdb1.DocumentedMeasurementPacketPointCreator;
 import me.retrodaredevil.solarthing.influxdb.influxdb1.InfluxDbPacketSaver;
-import me.retrodaredevil.solarthing.influxdb.infuxdb2.ConstantMeasurementPacketPoint2Creator;
 import me.retrodaredevil.solarthing.influxdb.infuxdb2.DocumentedMeasurementPacketPoint2Creator;
 import me.retrodaredevil.solarthing.influxdb.infuxdb2.InfluxDb2PacketSaver;
 import me.retrodaredevil.solarthing.influxdb.retention.ConstantRetentionPolicyGetter;
@@ -39,6 +37,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 @UtilityClass
 public class PacketHandlerInit {
@@ -156,12 +155,12 @@ public class PacketHandlerInit {
 		return new PacketHandlerBundle(statusPacketHandlers, eventPacketHandlers);
 	}
 
-	public static <T extends PacketHandlingOption & CommandOption> PacketListReceiverHandlerBundle createBundle(T options) throws IOException {
+	public static <T extends PacketHandlingOption & CommandOption> Result initHandlers(T options, Supplier<? extends EnvironmentUpdater> environmentUpdaterSupplier) throws IOException {
 		List<DatabaseConfig> databaseConfigs = ConfigUtil.getDatabaseConfigs(options);
 		PacketHandlerBundle packetHandlerBundle = PacketHandlerInit.getPacketHandlerBundle(databaseConfigs, SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, SolarThingConstants.SOLAR_EVENT_UNIQUE_NAME, options.getSourceId(), options.getFragmentId());
 		List<PacketHandler> statusPacketHandlers = new ArrayList<>();
 
-		EnvironmentUpdater[] environmentUpdaterReference = new EnvironmentUpdater[1];
+		final Runnable updateCommandActions;
 		if (options.hasCommands()) {
 			LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Command are enabled!");
 			LatestPacketHandler latestPacketHandler = new LatestPacketHandler(false); // this is used to determine the state of the system when a command is requested
@@ -175,7 +174,11 @@ public class PacketHandlerInit {
 								.add(new TimeZoneEnvironment(options.getTimeZone()))
 								.add(new LatestPacketGroupEnvironment(latestPacketHandler::getLatestPacketCollection))
 						;
-						environmentUpdaterReference[0].updateInjectEnvironment(dataSource, injectEnvironmentBuilder);
+						EnvironmentUpdater environmentUpdater = environmentUpdaterSupplier.get();
+						if (environmentUpdater == null) {
+							throw new NullPointerException("The EnvironmentUpdater supplier gave a null value! (Fatal)");
+						}
+						environmentUpdater.updateInjectEnvironment(dataSource, injectEnvironmentBuilder);
 					}
 			);
 
@@ -183,16 +186,34 @@ public class PacketHandlerInit {
 
 			List<PacketHandler> commandPacketHandlers = CommandUtil.getCommandRequesterHandlerList(databaseConfigs, commandReceiver, options);
 			statusPacketHandlers.add(new PacketHandlerMultiplexer(commandPacketHandlers));
+			updateCommandActions = () -> commandReceiver.getActionUpdater().update();
 		} else {
 			LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Commands are disabled");
+			updateCommandActions = () -> {};
 		}
 		statusPacketHandlers.addAll(packetHandlerBundle.getStatusPacketHandlers());
 
 		PacketListReceiverHandlerBundle bundle = PacketListReceiverHandlerBundle.createFrom(options, packetHandlerBundle, statusPacketHandlers);
+
+		return new Result(bundle, updateCommandActions);
 	}
 
 	public static class Result {
 		private final PacketListReceiverHandlerBundle bundle;
+		private final Runnable updateCommandActions;
+
+		public Result(PacketListReceiverHandlerBundle bundle, Runnable updateCommandActions) {
+			this.bundle = bundle;
+			this.updateCommandActions = updateCommandActions;
+		}
+
+		public PacketListReceiverHandlerBundle getBundle() {
+			return bundle;
+		}
+
+		public Runnable getUpdateCommandActions() {
+			return updateCommandActions;
+		}
 	}
 
 }

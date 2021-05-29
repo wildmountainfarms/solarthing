@@ -6,9 +6,9 @@ import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 
 @JsonTypeName("rpi-cpu-temp")
 public class RaspberryPiCpuTemperatureDataRequester implements DataRequester {
-	private final PacketListReceiver packetListReceiver = new RaspberryPiCpuTemperatureListUpdater();
+	private final DataRequesterResult result = new DataRequesterResult(new RaspberryPiCpuTemperatureListUpdater());
 	@Override
-	public PacketListReceiver createPacketListReceiver(RequestObject requestObject) {
-		return packetListReceiver;
+	public DataRequesterResult create(RequestObject requestObject) {
+		return result;
 	}
 }

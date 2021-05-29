@@ -32,10 +32,10 @@ public class PzemShuntDataRequester implements DataRequester {
 	}
 
 	@Override
-	public PacketListReceiver createPacketListReceiver(RequestObject requestObject) {
+	public DataRequesterResult create(RequestObject requestObject) {
 		final IOBundle ioBundle = ConfigUtil.createIOBundle(ioBundleFile, PzemShuntReadTable.SERIAL_CONFIG);
 		ModbusSlaveBus bus = new IOModbusSlaveBus(ioBundle, new RtuDataEncoder());
 		ModbusSlave slave = new ImmutableAddressModbusSlave(modbusAddress, bus);
-		return new PzemShuntPacketListUpdater(dataId, modbusAddress, new PzemShuntModbusSlaveRead(slave));
+		return new DataRequesterResult(new PzemShuntPacketListUpdater(dataId, modbusAddress, new PzemShuntModbusSlaveRead(slave)));
 	}
 }

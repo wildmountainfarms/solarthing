@@ -1,12 +1,9 @@
 package me.retrodaredevil.solarthing.program;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.SolarThingConstants;
-import me.retrodaredevil.solarthing.actions.ActionNode;
 import me.retrodaredevil.solarthing.actions.command.EnvironmentUpdater;
-import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnvironment;
-import me.retrodaredevil.solarthing.actions.environment.TimeZoneEnvironment;
+import me.retrodaredevil.solarthing.actions.command.EnvironmentUpdaterMultiplexer;
 import me.retrodaredevil.solarthing.analytics.AnalyticsManager;
 import me.retrodaredevil.solarthing.commands.packets.status.AvailableCommandsListUpdater;
 import me.retrodaredevil.solarthing.config.options.CommandOption;
@@ -18,21 +15,19 @@ import me.retrodaredevil.solarthing.config.request.DataRequesterResult;
 import me.retrodaredevil.solarthing.config.request.RequestObject;
 import me.retrodaredevil.solarthing.misc.common.DataIdentifiablePacketListChecker;
 import me.retrodaredevil.solarthing.packets.Packet;
-import me.retrodaredevil.solarthing.packets.handling.*;
+import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
+import me.retrodaredevil.solarthing.packets.handling.PacketListReceiverMultiplexer;
 import me.retrodaredevil.solarthing.solar.DaySummaryLogListReceiver;
-import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.*;
-
-import static java.util.Objects.requireNonNull;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RequestMain {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RequestMain.class);
-	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
+
 	public static int startRequestProgram(RequestProgramOptions options, File dataDirectory) throws Exception {
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Beginning request program");
 		AnalyticsManager analyticsManager = new AnalyticsManager(options.isAnalyticsEnabled(), dataDirectory);
@@ -41,20 +36,29 @@ public class RequestMain {
 	}
 
 	public static <T extends PacketHandlingOption & CommandOption> int startRequestProgram(T options, AnalyticsManager analyticsManager, List<DataRequester> dataRequesterList, long period, long minimumWait) throws Exception {
+		EnvironmentUpdater[] environmentUpdaterReference = new EnvironmentUpdater[1];
+		PacketHandlerInit.Result handlersResult = PacketHandlerInit.initHandlers(options, () -> environmentUpdaterReference[0]);
+		PacketListReceiverHandlerBundle bundle = handlersResult.getBundle();
 
 		List<PacketListReceiver> packetListReceiverList = new ArrayList<>();
+		List<EnvironmentUpdater> environmentUpdaters = new ArrayList<>();
 		for (DataRequester dataRequester : dataRequesterList) {
-			DataRequesterResult result = dataRequester.createPacketListReceiver(new RequestObject(bundle.getEventHandler().getPacketListReceiverAccepter()));
+			DataRequesterResult result = dataRequester.create(new RequestObject(bundle.getEventHandler().getPacketListReceiverAccepter()));
 			packetListReceiverList.add(result.getStatusPacketListReceiver());
+			environmentUpdaters.add(result.getEnvironmentUpdater());
 		}
 		if (options.hasCommands()) {
 			packetListReceiverList.add(new AvailableCommandsListUpdater(options.getCommandInfoList()));
 		}
-		// now we are done adding PacketListReceivers to packetListReceiverList that update the list
+		environmentUpdaterReference[0] = new EnvironmentUpdaterMultiplexer(environmentUpdaters);
+
 		packetListReceiverList.add(new DataIdentifiablePacketListChecker());
 		packetListReceiverList.add(new DaySummaryLogListReceiver());
 		packetListReceiverList.addAll(bundle.createDefaultPacketListReceivers());
-		PacketListReceiver packetListReceiver = new PacketListReceiverMultiplexer(packetListReceiverList);
+
+		return doRequest(new PacketListReceiverMultiplexer(packetListReceiverList), period, minimumWait);
+	}
+	private static int doRequest(PacketListReceiver packetListReceiver, long period, long minimumWait) {
 		while (!Thread.currentThread().isInterrupted()) {
 			long startTime = System.currentTimeMillis();
 			List<Packet> packets = new ArrayList<>();

@@ -11,6 +11,7 @@ import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.InjectEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.RoverModbusEnvironment;
 import me.retrodaredevil.solarthing.config.options.CommandConfig;
+import me.retrodaredevil.solarthing.config.request.DataRequesterResult;
 import me.retrodaredevil.solarthing.config.request.RequestObject;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.program.ModbusListUpdaterWrapper;
@@ -29,16 +30,16 @@ import java.util.Map;
 public class RoverModbusRequester implements ModbusRequester {
 	private final boolean sendErrorPackets;
 	private final boolean bulkRequest;
-	private final List<CommandConfig> commandConfigs;
+	private final List<String> attachToCommands;
 
 	@JsonCreator
 	public RoverModbusRequester(
 			@JsonProperty("error_packets") Boolean sendErrorPackets,
 			@JsonProperty("bulk_request") Boolean bulkRequest,
-			@JsonProperty("commands") List<CommandConfig> commandConfigs) {
+			@JsonProperty("commands") List<String> attachToCommands) {
 		this.sendErrorPackets = Boolean.TRUE.equals(sendErrorPackets); // default false
 		this.bulkRequest = !Boolean.FALSE.equals(sendErrorPackets); // default true
-		this.commandConfigs = commandConfigs == null ? Collections.emptyList() : commandConfigs;
+		this.attachToCommands = attachToCommands == null ? Collections.emptyList() : attachToCommands;
 	}
 
 
@@ -60,7 +61,7 @@ public class RoverModbusRequester implements ModbusRequester {
 	}
 
 	@Override
-	public PacketListReceiver createPacketListReceiver(RequestObject requestObject, ModbusSlave modbus) {
+	public DataRequesterResult create(RequestObject requestObject, ModbusSlave modbus) {
 		final RoverReadTable read;
 		final Runnable reloadCache;
 		if (bulkRequest) {
@@ -72,15 +73,17 @@ public class RoverModbusRequester implements ModbusRequester {
 			reloadCache = () -> {};
 		}
 		RoverWriteTable write = new RoverModbusSlaveWrite(modbus);
-		Map<String, ActionNode> commandActionNodeMap = requestObject.getCommandActionNodeMap();
-		for (String commandName : commandActionNodeMap.keySet()) {
-			ActionNode actionNode = requestObject.getCommandActionNodeMap().get(commandName);
-			ActionNode newActionNode = actionEnvironment -> {
-				InjectEnvironment injectEnvironment = actionEnvironment.getInjectEnvironment().newBuilder().add(new RoverModbusEnvironment(read, write)).build();
-				return actionNode.createAction(new ActionEnvironment(actionEnvironment.getGlobalEnvironment(), actionEnvironment.getLocalEnvironment(), injectEnvironment));
-			};
-			requestObject.getCommandActionNodeMap().put(commandName, newActionNode);
-		}
-		return new ModbusListUpdaterWrapper(new RoverPacketListUpdater(read, write), reloadCache, reloadIO, sendErrorPackets));
+		RoverModbusEnvironment roverModbusEnvironment = new RoverModbusEnvironment(read, write);
+		// TODO make reload IO like it used to be before refactor
+		Runnable reloadIO = () -> {};
+		return new DataRequesterResult(
+				new ModbusListUpdaterWrapper(new RoverPacketListUpdater(read, write), reloadCache, reloadIO, sendErrorPackets),
+				(dataSource, injectEnvironmentBuilder) -> {
+					String commandName = dataSource.getData();
+					if (attachToCommands.contains(commandName)) {
+						injectEnvironmentBuilder.add(roverModbusEnvironment);
+					}
+				}
+		);
 	}
 }
