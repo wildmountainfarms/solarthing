@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
+import me.retrodaredevil.solarthing.packets.identification.NumberedIdentifier;
 
 @JsonIgnoreProperties(value = {"productModelString", "hardwareVersionString", "softwareVersionString", "streetLightBrightness", "streetLightOn", "chargingStateName", "errors", "batteryTypeName", "loadWorkingModeName"}, allowGetters = true)
 public class ImmutableRoverStatusPacket implements RoverStatusPacket {
@@ -94,6 +95,7 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	@JsonCreator
 	public ImmutableRoverStatusPacket(
 			@JsonProperty("packetVersion") @Nullable Integer packetVersion,
+			@JsonProperty("number") Integer number,
 			@JsonProperty(value = "maxVoltage", required = true) int maxVoltage, @JsonProperty(value = "ratedChargingCurrent", required = true) int ratedChargingCurrent, @JsonProperty(value = "ratedDischargingCurrent", required = true) int ratedDischargingCurrent, @JsonProperty(value = "productType", required = true) int productType, @JsonProperty(value = "productModelEncoded", required = true) byte[] productModel,
 			@JsonProperty(value = "softwareVersion", required = true) int softwareVersion, @JsonProperty(value = "hardwareVersion", required = true) int hardwareVersion, @JsonProperty(value = "productSerialNumber", required = true) int productSerialNumber,
 			@JsonProperty(value = "controllerDeviceAddress", required = true) int controllerDeviceAddress,
@@ -199,13 +201,18 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 		this.specialPowerControlE02DRaw = specialPowerControlE02DRaw;
 		// endregion
 
-		identifier = RoverIdentifier.getDefaultIdentifier();
+		identifier = RoverIdentifier.getFromNumber(number == null ? NumberedIdentifier.DEFAULT_NUMBER : number);
 		identityInfo = new RoverIdentityInfo(ratedChargingCurrent, RoverVariant.getVariant(getProductModel()));
 	}
 
 	@Override
 	public @Nullable Integer getPacketVersion() {
 		return packetVersion;
+	}
+
+	@Override
+	public int getNumber() {
+		return identifier.getNumber();
 	}
 
 	@Override

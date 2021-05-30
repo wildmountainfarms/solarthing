@@ -6,10 +6,11 @@ import me.retrodaredevil.solarthing.annotations.UtilityClass;
 public final class RoverStatusPackets {
 	private RoverStatusPackets(){ throw new UnsupportedOperationException(); }
 
-	public static RoverStatusPacket createFromReadTable(RoverReadTable read){
+	public static RoverStatusPacket createFromReadTable(int number, RoverReadTable read){
 		// it has to be read 76 different times
 		return new ImmutableRoverStatusPacket(
-				RoverStatusPacket.VERSION_CORRECT_TWO_REGISTER,
+				RoverStatusPacket.VERSION_NUMBERED_IDENTIFIER,
+				number,
 				read.getMaxVoltageValue(), read.getRatedChargingCurrentValue(),
 				read.getRatedDischargingCurrentValue(), read.getProductTypeValue(),
 				read.getProductModelValue(),

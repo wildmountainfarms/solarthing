@@ -1,10 +1,8 @@
 package me.retrodaredevil.solarthing.config.io.modbus;
 
 import me.retrodaredevil.io.IOBundle;
-import me.retrodaredevil.io.modbus.IODataEncoder;
-import me.retrodaredevil.io.modbus.ModbusMessage;
-import me.retrodaredevil.io.modbus.ModbusSlave;
-import me.retrodaredevil.io.modbus.UnexpectedSlaveResponseException;
+import me.retrodaredevil.io.modbus.*;
+import me.retrodaredevil.io.modbus.handling.RawResponseLengthException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +39,9 @@ public class DummyModbusIO implements IOBundle {
 			Long lastWrite = this.lastWrite;
 			if (lastWrite == null || lastWrite + 6 < now) {
 				byte[] data = new byte[inputData.size()];
-				if (data.length > 0) { // this is a necessary check because the current RtuIODataEncoder implementation hangs when given 0 bytes
+				// RtuIODataEncoder requires at least 4 bytes to do something useful, so if we don't have that, just wait
+				//   Also note that if data.length is 0, then the current implementation of RtuIODataEncoder would hang because the call to available() would stay 0
+				if (data.length >= 4) {
 					for (int i = 0; i < data.length; i++) {
 						int value = requireNonNull(inputData.poll(), "Should not have gotten null! i: " + i + " length: " + data.length);
 						data[i] = (byte) value;
@@ -57,6 +57,9 @@ public class DummyModbusIO implements IOBundle {
 							requestMessage = ioDataEncoder.readMessage(address, new ByteArrayInputStream(data));
 						} catch (UnexpectedSlaveResponseException ignored) {
 							continue;
+						} catch (RedundancyException ex) {
+							LOGGER.debug("Got redundancy exception", ex);
+							break;
 						}
 						respondingAddress = address;
 						responseMessage = slave.sendRequestMessage(requestMessage);

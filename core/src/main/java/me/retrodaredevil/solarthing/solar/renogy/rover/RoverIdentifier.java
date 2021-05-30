@@ -1,11 +1,16 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.annotations.NotNull;
+import me.retrodaredevil.solarthing.annotations.SerializeNameDefinedInBase;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
+import me.retrodaredevil.solarthing.packets.identification.NumberedIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
+
+import java.util.Objects;
 
 /**
  * All {@link RoverIdentifier}s are equal to each other.
@@ -16,18 +21,33 @@ import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
  */
 @JsonTypeName("rover")
 @JsonExplicit
-public final class RoverIdentifier implements Identifier, Comparable<Identifier> {
-	private static final RoverIdentifier DEFAULT_IDENTIFIER = new RoverIdentifier();
+public final class RoverIdentifier implements NumberedIdentifier, Comparable<Identifier> {
 
-	private RoverIdentifier() {
+	private final int number;
+
+	private RoverIdentifier(int number) {
+		this.number = number;
 	}
 
 	/**
-	 * @return A {@link RoverIdentifier} that is equal to all other rover identifiers.
+	 * @return A {@link RoverIdentifier} with the default number
 	 */
-	@JsonCreator
+	@Deprecated
 	public static RoverIdentifier getDefaultIdentifier() {
-		return DEFAULT_IDENTIFIER;
+		return new RoverIdentifier(NumberedIdentifier.DEFAULT_NUMBER);
+	}
+	public static RoverIdentifier getFromNumber(int number) {
+		return new RoverIdentifier(number);
+	}
+	@JsonCreator
+	private static RoverIdentifier deserialize(@JsonProperty("number") Integer number) {
+		return getFromNumber(number == null ? 0 : number);
+	}
+
+	@SerializeNameDefinedInBase
+	@Override
+	public int getNumber() {
+		return number;
 	}
 
 	@Override
@@ -43,19 +63,21 @@ public final class RoverIdentifier implements Identifier, Comparable<Identifier>
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		return o != null && getClass() == o.getClass();
+		if (o == null || getClass() != o.getClass()) return false;
+		RoverIdentifier that = (RoverIdentifier) o;
+		return number == that.number;
 	}
 
 	@Override
 	public int hashCode() {
-		return -1908729263;
+		return Objects.hash(number);
 	}
 
 
 	@Override
 	public int compareTo(@NotNull Identifier o) {
 		if(o instanceof RoverIdentifier){
-			return 0;
+			return Integer.compare(number, ((RoverIdentifier) o).number);
 		}
 		if(o instanceof OutbackIdentifier){
 			return 1; // renogy devices show up after outback devices

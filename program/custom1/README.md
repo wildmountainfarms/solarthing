@@ -3,4 +3,4 @@ Sometimes you will need to run two of the same program. You can use this directo
 
 If you need multiple, feel free to create more directories such as `custom2` or `custom3`!
 
-Note that when you install this as a systemd service, you will have to do so manually.
+Note you will need to copy run.sh into this directory from something like the `request` directory.

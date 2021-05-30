@@ -17,17 +17,19 @@ import java.util.List;
 public class RoverPacketListUpdater implements PacketListReceiver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RoverPacketListUpdater.class);
 
+	private final int number;
 	private final RoverReadTable read;
 	private final RoverWriteTable write;
 
-	public RoverPacketListUpdater(RoverReadTable read, RoverWriteTable write) {
+	public RoverPacketListUpdater(int number, RoverReadTable read, RoverWriteTable write) {
+		this.number = number;
 		this.read = read;
 		this.write = write;
 	}
 
 	@Override
 	public void receive(List<Packet> packets, InstantType instantType) {
-		RoverStatusPacket packet = RoverStatusPackets.createFromReadTable(read);
+		RoverStatusPacket packet = RoverStatusPackets.createFromReadTable(number, read);
 		SpecialPowerControl_E02D specialPower2 = packet.getSpecialPowerControlE02D();
 		LOGGER.debug(SolarThingConstants.NO_CONSOLE, "Debugging special power control values: (Will debug all packets later)\n" +
 				packet.getSpecialPowerControlE021().getFormattedInfo().replaceAll("\n", "\n\t") +

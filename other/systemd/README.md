@@ -4,7 +4,7 @@ if you want to run the `client` program from the `program` directory.
 
 ```shell script
 cd other/systemd
-./install.sh <mate|rover|graphql|pvoutput>
+./install.sh <mate|request|graphql|pvoutput>
 cd ../../program
 echo Configure stuff in the config directory!
 systemctl start solarthing # start the service now

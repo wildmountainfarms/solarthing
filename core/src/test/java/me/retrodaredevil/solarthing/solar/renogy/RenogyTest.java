@@ -117,8 +117,8 @@ final class RenogyTest {
 		Rover.OperatingSettingBundle operating = new Rover.OperatingSettingBundle(0, 0);
 		Rover.SensingBundle sensing = new Rover.SensingBundle(0, 0, 0);
 		RoverStatusPacket packet = new ImmutableRoverStatusPacket(
-				null, 12,30,0,0,
-				"     HI         ".getBytes(StandardCharsets.UTF_8),
+				null, null, 12,30,0,0,
+				"     HI         ".getBytes(StandardCharsets.US_ASCII),
 				0,0,
 				0,0,0,26.2f,0,
 				0,0,0,0,0,0,0,

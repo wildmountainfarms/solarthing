@@ -1,0 +1,30 @@
+{
+  "type": "request",
+  "source": "default",
+  "fragment": 2,
+  "unique": 30,
+  "databases": [
+    "config/couchdb.json"
+  ],
+  "request": [
+    {
+      "type": "modbus",
+      "io": "../../config_templates/io/default_linux_serial.json",
+      "devices": {
+        "1": {
+          "type": "rover"
+        }
+      }
+    },
+    {
+      "type": "modbus",
+      "io": "config/some_other_io.json",
+      "devices": {
+        "1": {
+          "type": "rover",
+          "number": 1
+        }
+      }
+    }
+  ]
+}

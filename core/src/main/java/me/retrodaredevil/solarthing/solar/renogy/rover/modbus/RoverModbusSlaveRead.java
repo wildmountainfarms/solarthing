@@ -5,8 +5,9 @@ import me.retrodaredevil.io.modbus.handling.ErrorCodeException;
 import me.retrodaredevil.io.modbus.handling.ReadHoldingRegisters;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
+import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
-import me.retrodaredevil.solarthing.solar.renogy.rover.RoverIdentifier;
+import me.retrodaredevil.solarthing.packets.identification.SingleTypeIdentifier;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverIdentityInfo;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverReadTable;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverVariant;
@@ -16,6 +17,7 @@ import static me.retrodaredevil.solarthing.solar.util.ByteUtil.lower;
 import static me.retrodaredevil.solarthing.solar.util.ByteUtil.upper;
 
 public class RoverModbusSlaveRead extends AbstractModbusRead implements RoverReadTable {
+	private final Identifier IDENTIFIER = new SingleTypeIdentifier("RoverModbusSlaveRead");
 	private static final float KWH_DIVIDER = 1_000; // units are returned in Watt Hours
 	public static final int READ_EXCEPTION_UNSUPPORTED_FUNCTION_CODE = 1;
 	public static final int READ_EXCEPTION_UNSUPPORTED_REGISTER = 2;
@@ -27,8 +29,8 @@ public class RoverModbusSlaveRead extends AbstractModbusRead implements RoverRea
 		super(modbus, Endian.BIG);
 	}
 	@Override
-	public @NotNull RoverIdentifier getIdentifier() {
-		return RoverIdentifier.getDefaultIdentifier();
+	public @NotNull Identifier getIdentifier() {
+		return IDENTIFIER;
 	}
 
 	@Override

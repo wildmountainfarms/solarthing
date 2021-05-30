@@ -13,6 +13,7 @@
       "devices": {
         "1": {
           "type": "rover",
+          "bulk_request": true,
           "commands": [
             "LOAD ON", "LOAD OFF"
           ]

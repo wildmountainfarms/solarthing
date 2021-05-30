@@ -40,8 +40,8 @@ public class RoverMain {
 	private static int doRover(RoverProgramOptions options, AnalyticsManager analyticsManager, List<DataRequester> dataRequesterList) throws Exception {
 		RoverModbusRequester roverModbusRequester = new RoverModbusRequester(
 				options.isSendErrorPackets(), options.isBulkRequest(),
-				options.getCommandInfoList().stream().map(CommandInfo::getName).collect(Collectors.toList()) // attach the given rover modbus environment to all commands
-		);
+				options.getCommandInfoList().stream().map(CommandInfo::getName).collect(Collectors.toList()), // attach the given rover modbus environment to all commands
+                null);
 		Map<Integer, ModbusRequester> deviceMap = new HashMap<>();
 		deviceMap.put(options.getModbusAddress(), roverModbusRequester);
 		ModbusDataRequester dataRequester = new ModbusDataRequester(options.getIOBundleFile(), deviceMap);

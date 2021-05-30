@@ -7,7 +7,6 @@ import me.retrodaredevil.io.serial.SerialConfigBuilder;
 import me.retrodaredevil.solarthing.annotations.*;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.packets.annotations.ValidSinceVersion;
-import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 import me.retrodaredevil.solarthing.solar.common.*;
 import me.retrodaredevil.solarthing.solar.renogy.BatteryType;
 import me.retrodaredevil.solarthing.solar.renogy.ProductType;
@@ -28,7 +27,7 @@ import java.util.Collections;
 import static java.util.Objects.requireNonNull;
 
 @JsonExplicit
-public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeController, DailyChargeController, AdvancedAccumulatedChargeController, RecordBatteryVoltage, Identifiable {
+public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeController, DailyChargeController, AdvancedAccumulatedChargeController, RecordBatteryVoltage {
 	SerialConfig SERIAL_CONFIG = new SerialConfigBuilder(9600)
 			.setDataBits(8)
 			.setParity(SerialConfig.Parity.NONE)
@@ -39,9 +38,6 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	Note, some methods in this class are annotated with @WillBeUsedEventually, which means that they do not appear in the status
 	packet because of lack of testing.
 	 */
-
-	@Override
-	@NotNull RoverIdentifier getIdentifier();
 
 	@Override
 	default boolean isNewDay(DailyData previousDailyData) {

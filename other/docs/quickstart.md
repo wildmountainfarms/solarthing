@@ -20,13 +20,13 @@ you are using a Raspberry Pi, you can run `sudo raspi-config` to change it.
 If you don't have Java installed, [click here](installing_java.md).
 
 ## Edit Configurations
-Now SolarThing is installed, all you have to do is edit configurations in `/opt/solarthing/program/<mate|rover|graphql|pvoutput>/config`.
+Now SolarThing is installed, all you have to do is edit configurations in `/opt/solarthing/program/<mate|request|graphql|pvoutput>/config`.
 ```shell script
 # Navigate to your program's directory
-cd /opt/solarthing/program/<mate|rover|graphql|pvoutput>
+cd /opt/solarthing/program/<mate|request|graphql|pvoutput>
 ```
 NOTE: In each program, paths are relative to their respective directory.<br/>
-For instance if you are running the `rover` program, paths will be relative to [program/rover](../../program/rover).
+For instance if you are running the `request` program (if you have a rover you should be using this), paths will be relative to [program/request](../../program/request).
 
 ### Program Specific Configuration
 You will have to adjust the configuration to your needs and based on the type of program you want to run.
@@ -56,6 +56,8 @@ Note that there are other databases to choose from, but unless you know what you
 
 
 ### Add databases to base configuration
+You should have already begun to edit your base.json file. This continues the configuration.
+
 Edit `config/base.json` with your editor of choice
 ```json5
 {
@@ -78,12 +80,15 @@ Note that if you decided to put them in the [program/config](../../program/confi
   ]
 }
 ```
+Remember that you don't need multiple databases! You could even have no databases if you'd like!
 
 ### Running for the first time
 Once you have your configuration the way you want it, it's time for a test run. Run this command:
 ```shell script
 # Using 'sudo' may be required depending on how you set it up
 ./run.sh
+# If you do use sudo, I recommend using this:
+sudo -u solarthing ./run.sh
 ```
 Note that you can also do this:
 ```shell script

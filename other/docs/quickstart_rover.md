@@ -1,52 +1,48 @@
 # Quick Start Renogy Charge Controller or other SRNE (re)branded charge controllers
-If you haven't already, [click here](quickstart.md) to view how to clone this repo and install the service.
+* If you haven't already, [click here](quickstart.md) to view how to clone this repo and install the service.
+* If you don't have a cable to connect to your device, [click here](../solar/README.md#connecting-to-renogy-rover)
+* Looking for legacy (pre SolarThing 2021.5.0) documentation? [Click here](./legacy_rover.md).
+* If you don't have a Rover and you see the term "rover", that's OK. This will still work with your
+charge controller as long as your charge controller uses the same protocol as the Rover. Whenever you see Rover,
+you can think "Rover and compatible devices".
+* You're going to notice that the configuration of this is very similar to the [request quickstart](./quickstart_request.md).
+That's because this actually uses the request program. You may notice that there is a `program/rover` directory. That directory
+is no longer used and can be ignored.
 
-If you don't have a cable to connect to your device, [click here](../solar/README.md#connecting-to-renogy-rover)
+---
 
-Once everything is installed, you're ready to edit the configs. You will `cd` to the `program` directory.
+Once everything is installed, you're ready to edit the configs. You will `cd` to the `program/request` directory.
 ```
-cd /opt/solarthing/program/rover
+cd /opt/solarthing/program/request
 ```
 
-Copy some template config files ([default_linux_serial](../../config_templates/io/default_linux_serial.json) and [rover_template](../../config_templates/base/rover_template.json) or [rover_setup_template](../../config_templates/base/rover_setup_template.json))
+Copy some template config files ([default_linux_serial](../../config_templates/io/default_linux_serial.json) and [rover_template](../../config_templates/base/rover_request_template.json) or [rover_setup_template](../../config_templates/base/rover_setup_template.json))
 ```
 # sudo should not be required unless permissions were not set up correctly (add yourself to the solarthing group)
 cp ../../config_templates/io/default_linux_serial.json config/
-cp ../../config_templates/base/rover_template.json config/base.json
-# or do this if you want to run the setup program:
+cp ../../config_templates/base/rover_request_template.json config/base.json
+# or do this if you want to run the setup program: (You probably don't unless you want to test something)
 cp ../../config_templates/base/rover_setup_template.json config/base.json
 ```
-Edit `base.json`
-```json5
-{
-  //...
-  "io": "config/default_linux_serial.json"
-}
-```
 
-### Other parameters
-The `bulk_request` parameter is by default true in SolarThing versions >= 2020.3.2. By keeping it true, requests to the rover
-are a lot faster.
+Now edit `config/base.json`
+* Most rovers have a default modbus address of 1, hence the `"1"` present in the template configuration. However,
+this is not always the case for newer Rover models, especially if a BT module has been plugged into them. You will
+likely have to use the `rover-setup` program to scan
+* Make sure you change the `"io"` property to correctly point to the io JSON file you want to use. Remember paths
+are relative to `program/request`, so `config/io.json` would point to `program/request/config/io.json`.
 
-### Configuring the dummy file
-If you want to test this program **without a rover**, both the `rover` and `rover-setup` program types support it.
-You can edit your `base.json` like so:
-```json5
-{
-  //...
-  "dummy": "test/dummy_rover.json"
-}
-```
-If the default file in `test/dummy_rover.json` doesn't work for you, feel free to copy it to your `config` directory and change it.
-
-### I want to test this without a Renogy Rover
-Make sure to configure the `dummy` field as the above section describes, then just run `./run.sh`.
 
 ### I'm ready to use this for real!
 Once your configuration is how you want it, you can go back to the [quickstart](quickstart.md#configuration-continued) to enable and start the service.
 
-### I want to test this easily!
+### I'm not ready to test this on my Rover yet
+That's OK! If you want to get some "dummy" data into your database of choice, you can use a different
+IO configuration. [Go here](./rover_dummy.md) for more info.
+
+### I want to test this on my Rover without a database!
 See [Rover Setup Info](rover_setup_info.md) for information on how to use the `rover-setup` program.
+This is a good option if you want to interact with your Rover live.
 
 ---
 
@@ -58,7 +54,7 @@ your Rover, but if you set it to User through SolarThing, the values will be loc
 #### \<Insert Advanced Feature\> isn't working on my Rover!
 Yes, I hear you. When I first started trying to configure certain things on my Rover, it just straight up didn't work.
 Here's an incomplete list of things I was unable to do:
-* Settings certain values
+* Settings certain values that are supposed to be writable
 * Getting (accurate) special power control values
   * These values didn't really seem correct (maybe they only work on certain charge controllers or only when the battery type is lithium)
 

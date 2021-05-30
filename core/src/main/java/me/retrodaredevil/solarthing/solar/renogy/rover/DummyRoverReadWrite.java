@@ -3,7 +3,9 @@ package me.retrodaredevil.solarthing.solar.renogy.rover;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.Modes;
+import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
+import me.retrodaredevil.solarthing.packets.identification.SingleTypeIdentifier;
 import me.retrodaredevil.solarthing.solar.renogy.BatteryType;
 import me.retrodaredevil.solarthing.solar.renogy.Voltage;
 
@@ -13,6 +15,7 @@ import java.util.Map;
 import static java.util.Objects.requireNonNull;
 
 public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
+	private final Identifier IDENTIFIER = new SingleTypeIdentifier("DummyRoverReadWrite");
 	public interface OnChange {
 		void onChange(String fieldName, String previousValue, String newValue);
 	}
@@ -123,8 +126,8 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 	}
 
 	@Override
-	public @NotNull RoverIdentifier getIdentifier() {
-		return RoverIdentifier.getDefaultIdentifier();
+	public @NotNull Identifier getIdentifier() {
+		return IDENTIFIER;
 	}
 
 	@Override
