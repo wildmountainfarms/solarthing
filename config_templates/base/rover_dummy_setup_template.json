@@ -1,4 +1,4 @@
 {
   "type": "rover-setup",
-  "dummy": "test/dummy_rover.json"
+  "io": "config/dummy_rover_io.json"
 }

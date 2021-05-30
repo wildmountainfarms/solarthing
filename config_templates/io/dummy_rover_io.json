@@ -1,0 +1,9 @@
+{
+  "type": "dummy-modbus",
+  "devices": {
+    "1": {
+      "type": "rover",
+      "file": "test/dummy_rover.json"
+    }
+  }
+}
