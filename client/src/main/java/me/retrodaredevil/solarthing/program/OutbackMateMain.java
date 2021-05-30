@@ -68,7 +68,6 @@ public class OutbackMateMain {
 		LOGGER.debug("IO Bundle File: " + options.getIOBundleFile());
 		try(IOBundle io = createIOBundle(options)) {
 
-			// TODO mate analytics
 			EnvironmentUpdater[] environmentUpdaterReference = new EnvironmentUpdater[1];
 			PacketHandlerInit.Result handlersResult = PacketHandlerInit.initHandlers(
 					options,

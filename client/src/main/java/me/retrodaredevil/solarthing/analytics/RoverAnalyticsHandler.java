@@ -28,12 +28,11 @@ public class RoverAnalyticsHandler implements PacketHandler {
 		for (Packet packet : packetCollection.getPackets()) {
 			if (packet instanceof RoverStatusPacket) {
 				RoverStatusPacket rover = (RoverStatusPacket) packet;
-				String data = rover.getProductModel() + "," + rover.getRatedChargingCurrentValue();
+				String data = "(" + rover.getNumber() + ") " + rover.getProductModel() + "," + rover.getRatedChargingCurrentValue();
 				if (!rover.supportsMesLoad()) {
 					data += ",no MES Load";
 				}
 				analyticsManager.sendRoverStatus(data, timer.getUptimeHours());
-				return;
 			}
 		}
 	}
