@@ -7,6 +7,7 @@ import me.retrodaredevil.solarthing.actions.command.EnvironmentUpdater;
 import me.retrodaredevil.solarthing.actions.command.EnvironmentUpdaterMultiplexer;
 import me.retrodaredevil.solarthing.actions.environment.MateCommandEnvironment;
 import me.retrodaredevil.solarthing.analytics.AnalyticsManager;
+import me.retrodaredevil.solarthing.analytics.MateAnalyticsHandler;
 import me.retrodaredevil.solarthing.commands.CommandProvider;
 import me.retrodaredevil.solarthing.commands.CommandProviderMultiplexer;
 import me.retrodaredevil.solarthing.commands.SourcedCommand;
@@ -63,7 +64,6 @@ public class OutbackMateMain {
 	@SuppressWarnings("SameReturnValue")
 	public static int connectMate(MateProgramOptions options, File dataDirectory) throws Exception {
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Beginning mate program");
-		PacketCollectionIdGenerator statusIdGenerator = SolarMain.createIdGenerator(options.getUniqueIdsInOneHour());
 		AnalyticsManager analyticsManager = new AnalyticsManager(options.isAnalyticsEnabled(), dataDirectory);
 		analyticsManager.sendStartUp(ProgramType.MATE);
 		LOGGER.debug("IO Bundle File: " + options.getIOBundleFile());
@@ -71,7 +71,11 @@ public class OutbackMateMain {
 
 			// TODO mate analytics
 			EnvironmentUpdater[] environmentUpdaterReference = new EnvironmentUpdater[1];
-			PacketHandlerInit.Result handlersResult = PacketHandlerInit.initHandlers(options, () -> environmentUpdaterReference[0]);
+			PacketHandlerInit.Result handlersResult = PacketHandlerInit.initHandlers(
+					options,
+					() -> environmentUpdaterReference[0],
+					Collections.singleton(new MateAnalyticsHandler(analyticsManager))
+			);
 			PacketListReceiverHandlerBundle bundle = handlersResult.getBundle();
 
 

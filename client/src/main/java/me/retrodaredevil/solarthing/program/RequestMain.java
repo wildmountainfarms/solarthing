@@ -5,6 +5,7 @@ import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.actions.command.EnvironmentUpdater;
 import me.retrodaredevil.solarthing.actions.command.EnvironmentUpdaterMultiplexer;
 import me.retrodaredevil.solarthing.analytics.AnalyticsManager;
+import me.retrodaredevil.solarthing.analytics.RoverAnalyticsHandler;
 import me.retrodaredevil.solarthing.commands.packets.status.AvailableCommandsListUpdater;
 import me.retrodaredevil.solarthing.config.options.CommandOption;
 import me.retrodaredevil.solarthing.config.options.PacketHandlingOption;
@@ -23,6 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class RequestMain {
@@ -37,7 +39,11 @@ public class RequestMain {
 
 	public static <T extends PacketHandlingOption & CommandOption> int startRequestProgram(T options, AnalyticsManager analyticsManager, List<DataRequester> dataRequesterList, long period, long minimumWait) throws Exception {
 		EnvironmentUpdater[] environmentUpdaterReference = new EnvironmentUpdater[1];
-		PacketHandlerInit.Result handlersResult = PacketHandlerInit.initHandlers(options, () -> environmentUpdaterReference[0]);
+		PacketHandlerInit.Result handlersResult = PacketHandlerInit.initHandlers(
+				options,
+				() -> environmentUpdaterReference[0],
+				Collections.singleton(new RoverAnalyticsHandler(analyticsManager))
+		);
 		PacketListReceiverHandlerBundle bundle = handlersResult.getBundle();
 
 		List<PacketListReceiver> packetListReceiverList = new ArrayList<>();

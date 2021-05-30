@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -155,7 +156,7 @@ public class PacketHandlerInit {
 		return new PacketHandlerBundle(statusPacketHandlers, eventPacketHandlers);
 	}
 
-	public static <T extends PacketHandlingOption & CommandOption> Result initHandlers(T options, Supplier<? extends EnvironmentUpdater> environmentUpdaterSupplier) throws IOException {
+	public static <T extends PacketHandlingOption & CommandOption> Result initHandlers(T options, Supplier<? extends EnvironmentUpdater> environmentUpdaterSupplier, Collection<? extends PacketHandler> additionalPacketHandlers) throws IOException {
 		List<DatabaseConfig> databaseConfigs = ConfigUtil.getDatabaseConfigs(options);
 		PacketHandlerBundle packetHandlerBundle = PacketHandlerInit.getPacketHandlerBundle(databaseConfigs, SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, SolarThingConstants.SOLAR_EVENT_UNIQUE_NAME, options.getSourceId(), options.getFragmentId());
 		List<PacketHandler> statusPacketHandlers = new ArrayList<>();
@@ -191,6 +192,7 @@ public class PacketHandlerInit {
 			LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Commands are disabled");
 			updateCommandActions = () -> {};
 		}
+		statusPacketHandlers.addAll(additionalPacketHandlers);
 		statusPacketHandlers.addAll(packetHandlerBundle.getStatusPacketHandlers());
 
 		PacketListReceiverHandlerBundle bundle = PacketListReceiverHandlerBundle.createFrom(options, packetHandlerBundle, statusPacketHandlers);
