@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -32,16 +31,15 @@ public class DummyModbusIO implements IOBundle {
 		this.ioDataEncoder = ioDataEncoder;
 
 		Thread thread = new Thread(this::runThread);
+		thread.setDaemon(true);
 		thread.start();
 	}
-
-
 
 	private void runThread() {
 		while (!Thread.currentThread().isInterrupted() && !isClosed) {
 			long now = System.currentTimeMillis();
 			Long lastWrite = this.lastWrite;
-			if (lastWrite == null || lastWrite + 30 < now) {
+			if (lastWrite == null || lastWrite + 6 < now) {
 				byte[] data = new byte[inputData.size()];
 				if (data.length > 0) { // this is a necessary check because the current RtuIODataEncoder implementation hangs when given 0 bytes
 					for (int i = 0; i < data.length; i++) {
@@ -79,7 +77,7 @@ public class DummyModbusIO implements IOBundle {
 			}
 
 			try {
-				Thread.sleep(10);
+				Thread.sleep(3);
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
 			}
@@ -97,7 +95,7 @@ public class DummyModbusIO implements IOBundle {
 		}
 
 		@Override
-		public int available() throws IOException {
+		public int available() {
 			return outputData.size();
 		}
 	};

@@ -2,10 +2,8 @@ package me.retrodaredevil.solarthing.config.options;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 
 import java.io.File;
-import java.util.List;
 
 @JsonTypeName("rover")
 public class RoverProgramOptions extends RequestProgramOptionsBase implements RoverOption {
