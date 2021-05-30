@@ -7,7 +7,6 @@ import me.retrodaredevil.io.serial.SerialConfig;
 import me.retrodaredevil.solarthing.actions.ActionNode;
 import me.retrodaredevil.solarthing.config.request.DataRequesterResult;
 import me.retrodaredevil.solarthing.config.request.RequestObject;
-import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({

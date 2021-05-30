@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.io.IOBundle;
 import me.retrodaredevil.io.modbus.*;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.program.ConfigUtil;
 import me.retrodaredevil.solarthing.program.PzemShuntPacketListUpdater;
 import me.retrodaredevil.solarthing.solar.pzem.PzemShuntReadTable;

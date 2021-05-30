@@ -4,8 +4,6 @@ import me.retrodaredevil.solarthing.util.CheckSumException;
 import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
 import me.retrodaredevil.solarthing.util.ParsePacketAsciiDecimalDigitException;
 
-import java.nio.charset.StandardCharsets;
-
 import static me.retrodaredevil.solarthing.util.ParseUtil.toInt;
 
 public final class FXStatusPackets {

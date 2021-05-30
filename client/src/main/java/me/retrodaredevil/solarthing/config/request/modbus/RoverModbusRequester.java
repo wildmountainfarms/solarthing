@@ -3,17 +3,11 @@ package me.retrodaredevil.solarthing.config.request.modbus;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import me.retrodaredevil.action.Action;
 import me.retrodaredevil.io.modbus.ModbusSlave;
 import me.retrodaredevil.io.serial.SerialConfig;
-import me.retrodaredevil.solarthing.actions.ActionNode;
-import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
-import me.retrodaredevil.solarthing.actions.environment.InjectEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.RoverModbusEnvironment;
-import me.retrodaredevil.solarthing.config.options.CommandConfig;
 import me.retrodaredevil.solarthing.config.request.DataRequesterResult;
 import me.retrodaredevil.solarthing.config.request.RequestObject;
-import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.program.ModbusListUpdaterWrapper;
 import me.retrodaredevil.solarthing.program.RoverPacketListUpdater;
 import me.retrodaredevil.solarthing.program.modbus.ModbusCacheSlave;
@@ -24,7 +18,6 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusSlaveWr
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 @JsonTypeName("rover")
 public class RoverModbusRequester implements ModbusRequester {

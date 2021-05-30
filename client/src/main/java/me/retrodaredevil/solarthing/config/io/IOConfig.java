@@ -3,7 +3,6 @@ package me.retrodaredevil.solarthing.config.io;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import me.retrodaredevil.io.IOBundle;
-import me.retrodaredevil.solarthing.config.io.modbus.DummyModbusIO;
 import me.retrodaredevil.solarthing.config.io.modbus.DummyModbusIOConfig;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")

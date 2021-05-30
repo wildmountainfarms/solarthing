@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.misc.weather.W1TemperatureListUpdater;
-import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 
 import java.io.File;
 
