@@ -12,6 +12,7 @@ import me.retrodaredevil.couchdbjava.response.DocumentData;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.closed.authorization.AuthorizationPacket;
+import me.retrodaredevil.solarthing.commands.packets.status.CommandStatusPacket;
 import me.retrodaredevil.solarthing.database.MillisDatabase;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
 import me.retrodaredevil.solarthing.database.UpdateToken;
@@ -59,7 +60,7 @@ public class CouchDbSolarThingDatabase implements SolarThingDatabase {
 		simpleObjectMapper = mapper.copy();
 
 		ObjectMapper statusMapper = mapper.copy();
-		statusMapper.getSubtypeResolver().registerSubtypes(SolarStatusPacket.class, SolarExtraPacket.class, DevicePacket.class, ErrorPacket.class, WeatherPacket.class, InstancePacket.class);
+		statusMapper.getSubtypeResolver().registerSubtypes(SolarStatusPacket.class, SolarExtraPacket.class, DevicePacket.class, ErrorPacket.class, WeatherPacket.class, InstancePacket.class, CommandStatusPacket.class);
 		statusDatabase = new CouchDbMillisDatabase(instance.getDatabase(SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME), statusMapper, errorHandler);
 
 		ObjectMapper eventMapper = mapper.copy();
