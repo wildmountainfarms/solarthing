@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.config.io.modbus;
 
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.io.IOBundle;
 import me.retrodaredevil.io.modbus.IODataEncoder;
 import me.retrodaredevil.io.modbus.ModbusMessage;
@@ -14,8 +13,6 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import static java.util.Objects.requireNonNull;
 
@@ -51,7 +48,6 @@ public class DummyModbusIO implements IOBundle {
 						int value = requireNonNull(inputData.poll(), "Should not have gotten null! i: " + i + " length: " + data.length);
 						data[i] = (byte) value;
 					}
-					LOGGER.debug("Got data: " + Arrays.toString(data));
 					Integer respondingAddress = null;
 					ModbusMessage responseMessage = null;
 					for (Map.Entry<Integer, ModbusSlave> entry : addressToSlaveMap.entrySet()) {
@@ -76,7 +72,6 @@ public class DummyModbusIO implements IOBundle {
 						for (byte b : responseBytes) {
 							outputData.add(b);
 						}
-						LOGGER.debug("Responded with: " + Arrays.toString(responseBytes));
 					} else {
 						LOGGER.debug("Didn't have a response");
 					}
@@ -98,7 +93,6 @@ public class DummyModbusIO implements IOBundle {
 				throw new IOException("This is closed!");
 			}
 			Byte result = outputData.poll();
-			LOGGER.debug("Polled result: " + result);
 			return result == null ? -1 : (result & 0xFF);
 		}
 
@@ -114,7 +108,6 @@ public class DummyModbusIO implements IOBundle {
 				throw new IOException("This is closed!");
 			}
 			byte dataByte = (byte) dataByteInt;
-			System.out.println("Wrote: " + dataByte);
 			inputData.add(dataByte);
 			lastWrite = System.currentTimeMillis();
 		}

@@ -38,7 +38,7 @@ public class RoverModbusRequester implements ModbusRequester {
 			@JsonProperty("bulk_request") Boolean bulkRequest,
 			@JsonProperty("commands") List<String> attachToCommands) {
 		this.sendErrorPackets = Boolean.TRUE.equals(sendErrorPackets); // default false
-		this.bulkRequest = !Boolean.FALSE.equals(sendErrorPackets); // default true
+		this.bulkRequest = !Boolean.FALSE.equals(bulkRequest); // default true
 		this.attachToCommands = attachToCommands == null ? Collections.emptyList() : attachToCommands;
 	}
 
