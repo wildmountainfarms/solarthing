@@ -7,7 +7,6 @@ import me.retrodaredevil.io.IOBundle;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.program.ConfigUtil;
-import me.retrodaredevil.solarthing.program.RoverMain;
 import me.retrodaredevil.solarthing.solar.batteryvoltage.BatteryVoltageIOListUpdater;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverReadTable;
 

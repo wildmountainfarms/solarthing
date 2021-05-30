@@ -12,8 +12,6 @@ import me.retrodaredevil.solarthing.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.util.Objects.requireNonNull;
-
 public class SimplePacketGroupParser {
 	private final ObjectMapper mapper;
 	private final PacketParsingErrorHandler errorHandler;

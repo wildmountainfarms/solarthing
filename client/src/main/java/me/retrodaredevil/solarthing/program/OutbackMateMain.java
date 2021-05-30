@@ -18,7 +18,8 @@ import me.retrodaredevil.solarthing.config.request.DataRequesterResult;
 import me.retrodaredevil.solarthing.config.request.RequestObject;
 import me.retrodaredevil.solarthing.misc.common.DataIdentifiablePacketListChecker;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
-import me.retrodaredevil.solarthing.packets.handling.*;
+import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
+import me.retrodaredevil.solarthing.packets.handling.PacketListReceiverMultiplexer;
 import me.retrodaredevil.solarthing.packets.handling.implementations.TimedPacketReceiver;
 import me.retrodaredevil.solarthing.solar.DaySummaryLogListReceiver;
 import me.retrodaredevil.solarthing.solar.outback.FXStatusListUpdater;
@@ -33,7 +34,9 @@ import me.retrodaredevil.solarthing.util.time.DailyIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.*;
 
 import static java.util.Objects.requireNonNull;
@@ -55,9 +58,6 @@ public class OutbackMateMain {
 			@Override public OutputStream getOutputStream() { throw new IllegalStateException("You cannot access the output stream while commands are disabled!"); }
 			@Override public void close() throws Exception { createdIO.close(); }
 		};
-	}
-	private void todo(){
-		// TODO
 	}
 
 	@SuppressWarnings("SameReturnValue")

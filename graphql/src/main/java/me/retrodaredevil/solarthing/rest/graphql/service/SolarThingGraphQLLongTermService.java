@@ -6,27 +6,13 @@ import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.cache.packets.IdentificationCacheDataPacket;
 import me.retrodaredevil.solarthing.cache.packets.data.ChargeControllerAccumulationDataCache;
-import me.retrodaredevil.solarthing.packets.collection.InstancePacketGroup;
-import me.retrodaredevil.solarthing.packets.identification.IdentifierFragment;
 import me.retrodaredevil.solarthing.rest.cache.CacheController;
-import me.retrodaredevil.solarthing.rest.graphql.packets.nodes.DataPoint;
-import me.retrodaredevil.solarthing.solar.accumulation.AccumulationCalc;
-import me.retrodaredevil.solarthing.solar.accumulation.AccumulationConfig;
-import me.retrodaredevil.solarthing.solar.accumulation.AccumulationPair;
-import me.retrodaredevil.solarthing.solar.accumulation.AccumulationUtil;
-import me.retrodaredevil.solarthing.solar.accumulation.value.FloatAccumulationValue;
-import me.retrodaredevil.solarthing.solar.accumulation.value.FloatAccumulationValueFactory;
-import me.retrodaredevil.solarthing.solar.common.AccumulatedChargeController;
-import me.retrodaredevil.solarthing.solar.common.DailyChargeController;
 
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.YearMonth;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
 
 import static me.retrodaredevil.solarthing.rest.graphql.service.SchemaConstants.*;
 

@@ -10,7 +10,6 @@ import me.retrodaredevil.solarthing.solar.accumulation.value.AccumulationValue;
 import me.retrodaredevil.solarthing.solar.accumulation.value.AccumulationValueFactory;
 import me.retrodaredevil.solarthing.solar.outback.OutbackData;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
-import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.FXAccumulationData;
 import me.retrodaredevil.solarthing.solar.outback.fx.extra.DailyFXPacket;
 

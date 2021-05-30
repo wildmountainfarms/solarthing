@@ -39,4 +39,3 @@ public enum MiscMode implements BitmaskMode {
 	}
 
 }
-

@@ -34,4 +34,3 @@ public enum MXErrorMode implements BitmaskMode {
 	}
 
 }
-

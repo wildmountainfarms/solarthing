@@ -1,10 +1,8 @@
 package me.retrodaredevil.couchdbjava;
 
-import com.fasterxml.jackson.core.Base64Variant;
 import com.fasterxml.jackson.core.Base64Variants;
 
 import javax.annotation.CheckForNull;
-
 import java.nio.charset.StandardCharsets;
 
 import static java.util.Objects.requireNonNull;

@@ -12,7 +12,7 @@ import java.io.File;
 @JsonTypeName("latest")
 public final class LatestFileDatabaseSettings implements DatabaseSettings {
 	public static final DatabaseType TYPE = new SimpleDatabaseType("latest");
-	
+
 	private final File file;
 
 	@JsonCreator
