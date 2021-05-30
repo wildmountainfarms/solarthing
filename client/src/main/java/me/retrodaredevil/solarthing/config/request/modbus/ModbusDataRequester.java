@@ -43,13 +43,15 @@ public class ModbusDataRequester implements DataRequester {
 		ReloadableIOBundle ioBundle = new ReloadableIOBundle(ioConfig::createIOBundle);
 		ModbusSlaveBus modbus = new IOModbusSlaveBus(ioBundle, new RtuDataEncoder(2000, 20, 4));
 
+		ReloadIOSuccessReporterHandler reloadIOSuccessReporterHandler = new ReloadIOSuccessReporterHandler(ioBundle::reload);
+
 		List<PacketListReceiver> packetListReceiverList = new ArrayList<>();
 		List<EnvironmentUpdater> environmentUpdaterList = new ArrayList<>();
 		for (Map.Entry<Integer, ModbusRequester> entry : addressToModbusRequesterMap.entrySet()) {
 			int address = entry.getKey();
 			ModbusRequester modbusRequester = entry.getValue();
 			ModbusSlave slave = new ImmutableAddressModbusSlave(address, modbus);
-			DataRequesterResult result = modbusRequester.create(requestObject, slave);
+			DataRequesterResult result = modbusRequester.create(requestObject, reloadIOSuccessReporterHandler.createReporter(), slave);
 			packetListReceiverList.add(result.getStatusPacketListReceiver());
 			environmentUpdaterList.add(result.getEnvironmentUpdater());
 		}

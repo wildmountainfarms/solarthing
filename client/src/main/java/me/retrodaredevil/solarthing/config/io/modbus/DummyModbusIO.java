@@ -2,7 +2,6 @@ package me.retrodaredevil.solarthing.config.io.modbus;
 
 import me.retrodaredevil.io.IOBundle;
 import me.retrodaredevil.io.modbus.*;
-import me.retrodaredevil.io.modbus.handling.RawResponseLengthException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,8 +38,8 @@ public class DummyModbusIO implements IOBundle {
 			Long lastWrite = this.lastWrite;
 			if (lastWrite == null || lastWrite + 6 < now) {
 				byte[] data = new byte[inputData.size()];
-				// RtuIODataEncoder requires at least 4 bytes to do something useful, so if we don't have that, just wait
-				//   Also note that if data.length is 0, then the current implementation of RtuIODataEncoder would hang because the call to available() would stay 0
+				// RtuDataEncoder requires at least 4 bytes to do something useful, so if we don't have that, just wait
+				//   Also note that if data.length is 0, then the current implementation of RtuDataEncoder would hang because the call to available() would stay 0
 				if (data.length >= 4) {
 					for (int i = 0; i < data.length; i++) {
 						int value = requireNonNull(inputData.poll(), "Should not have gotten null! i: " + i + " length: " + data.length);

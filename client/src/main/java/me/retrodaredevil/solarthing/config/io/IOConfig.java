@@ -10,6 +10,7 @@ import me.retrodaredevil.solarthing.config.io.modbus.DummyModbusIOConfig;
 		@JsonSubTypes.Type(SerialIOConfig.class),
 		@JsonSubTypes.Type(StandardIOConfig.class),
 		@JsonSubTypes.Type(DummyModbusIOConfig.class),
+		@JsonSubTypes.Type(BlankIOConfig.class),
 })
 public interface IOConfig {
 	IOBundle createIOBundle() throws Exception;

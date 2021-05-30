@@ -25,7 +25,7 @@ import java.util.List;
 
 @JsonTypeName("rover")
 public class RoverModbusRequester implements ModbusRequester {
-	private final Logger LOGGER = LoggerFactory.getLogger(RoverModbusRequester.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(RoverModbusRequester.class);
 	private final boolean sendErrorPackets;
 	private final boolean bulkRequest;
 	private final List<String> attachToCommands;
@@ -65,7 +65,7 @@ public class RoverModbusRequester implements ModbusRequester {
 	}
 
 	@Override
-	public DataRequesterResult create(RequestObject requestObject, ModbusSlave modbus) {
+	public DataRequesterResult create(RequestObject requestObject, SuccessReporter successReporter, ModbusSlave modbus) {
 		final RoverReadTable read;
 		final Runnable reloadCache;
 		if (bulkRequest) {
@@ -78,10 +78,8 @@ public class RoverModbusRequester implements ModbusRequester {
 		}
 		RoverWriteTable write = new RoverModbusSlaveWrite(modbus);
 		RoverModbusEnvironment roverModbusEnvironment = new RoverModbusEnvironment(read, write);
-		// TODO make reload IO like it used to be before refactor
-		Runnable reloadIO = () -> {};
 		return new DataRequesterResult(
-				new ModbusListUpdaterWrapper(new RoverPacketListUpdater(number, read, write), reloadCache, reloadIO, sendErrorPackets),
+				new ModbusListUpdaterWrapper(new RoverPacketListUpdater(number, read, write), reloadCache, successReporter, sendErrorPackets),
 				(dataSource, injectEnvironmentBuilder) -> {
 					String commandName = dataSource.getData();
 					if (attachToCommands.contains(commandName)) {

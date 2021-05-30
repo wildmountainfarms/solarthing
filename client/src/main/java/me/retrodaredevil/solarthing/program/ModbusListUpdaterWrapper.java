@@ -6,11 +6,11 @@ import me.retrodaredevil.io.modbus.ModbusTimeoutException;
 import me.retrodaredevil.io.modbus.handling.ParsedResponseException;
 import me.retrodaredevil.io.modbus.handling.RawResponseException;
 import me.retrodaredevil.solarthing.InstantType;
+import me.retrodaredevil.solarthing.config.request.modbus.SuccessReporter;
 import me.retrodaredevil.solarthing.io.NotInitializedIOException;
 import me.retrodaredevil.solarthing.misc.error.ImmutableExceptionErrorPacket;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
-import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,23 +18,21 @@ import java.util.List;
 
 public class ModbusListUpdaterWrapper implements PacketListReceiver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModbusListUpdaterWrapper.class);
-	private static final String MODBUS_RUNTIME_EXCEPTION_CATCH_LOCATION_IDENTIFIER = "rover.read.modbus";
+	private static final String MODBUS_RUNTIME_EXCEPTION_CATCH_LOCATION_IDENTIFIER = "read.modbus";
 	private static final String MODBUS_RUNTIME_INSTANCE_IDENTIFIER = "instance.1";
-	private static final int TIMEOUTS_NEEDED_TO_RELOAD = 5;
 
 	private final PacketListReceiver packetListReceiver;
 	private final Runnable reloadCache;
-	private final Runnable reloadIO;
+	private final SuccessReporter successReporter;
 
 	private final boolean isSendErrorPackets;
 
 	private boolean hasBeenSuccessful = false;
-	private int timeoutsInARow = 0;
 
-	public ModbusListUpdaterWrapper(PacketListReceiver packetListReceiver, Runnable reloadCache, Runnable reloadIO, boolean isSendErrorPackets) {
+	public ModbusListUpdaterWrapper(PacketListReceiver packetListReceiver, Runnable reloadCache, SuccessReporter successReporter, boolean isSendErrorPackets) {
 		this.packetListReceiver = packetListReceiver;
 		this.reloadCache = reloadCache;
-		this.reloadIO = reloadIO;
+		this.successReporter = successReporter;
 		this.isSendErrorPackets = isSendErrorPackets;
 	}
 	private static String dataToSplitHex(byte[] data) {
@@ -54,7 +52,6 @@ public class ModbusListUpdaterWrapper implements PacketListReceiver {
 	@Override
 	public void receive(List<Packet> packets, InstantType instantType) {
 		final long startTime = System.currentTimeMillis();
-		final RoverStatusPacket packet;
 		try {
 			reloadCache.run();
 			packetListReceiver.receive(packets, instantType);
@@ -95,19 +92,14 @@ public class ModbusListUpdaterWrapper implements PacketListReceiver {
 				LOGGER.info("Got part of a response back. (Maybe timed out halfway through?) data='" + dataToSplitHex(data) + "' Feel free to open an issue at https://github.com/wildmountainfarms/solarthing/issues/");
 			}
 			if (isTimeout) {
-				timeoutsInARow++;
+				successReporter.reportTimeout();
 			} else {
-				timeoutsInARow = 0;
-			}
-			if (timeoutsInARow == TIMEOUTS_NEEDED_TO_RELOAD) {
-				LOGGER.debug("Going to try to recreate IO now. We failed a bunch of times in a row");
-				reloadIO.run();
-				timeoutsInARow = 0;
+				successReporter.reportSuccessWithError();
 			}
 			return;
 		}
-		timeoutsInARow = 0;
 		hasBeenSuccessful = true;
+		successReporter.reportSuccess();
 		final long readDuration = System.currentTimeMillis() - startTime;
 		LOGGER.debug("took " + readDuration + "ms to read from Rover");
 	}

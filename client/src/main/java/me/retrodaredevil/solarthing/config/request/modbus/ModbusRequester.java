@@ -14,7 +14,7 @@ import me.retrodaredevil.solarthing.config.request.RequestObject;
 })
 public interface ModbusRequester {
 	SerialConfig getDefaultSerialConfig();
-	DataRequesterResult create(RequestObject requestObject, ModbusSlave modbus);
+	DataRequesterResult create(RequestObject requestObject, SuccessReporter successReporter, ModbusSlave modbus);
 
 	default ActionNode alterCommandActionNode(ActionNode actionNode) {
 		return actionNode;
