@@ -19,21 +19,22 @@ import java.util.List;
 public class ModbusListUpdaterWrapper implements PacketListReceiver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModbusListUpdaterWrapper.class);
 	private static final String MODBUS_RUNTIME_EXCEPTION_CATCH_LOCATION_IDENTIFIER = "read.modbus";
-	private static final String MODBUS_RUNTIME_INSTANCE_IDENTIFIER = "instance.1";
 
 	private final PacketListReceiver packetListReceiver;
 	private final Runnable reloadCache;
 	private final SuccessReporter successReporter;
 
 	private final boolean isSendErrorPackets;
+	private final String errorIdentifierString;
 
 	private boolean hasBeenSuccessful = false;
 
-	public ModbusListUpdaterWrapper(PacketListReceiver packetListReceiver, Runnable reloadCache, SuccessReporter successReporter, boolean isSendErrorPackets) {
+	public ModbusListUpdaterWrapper(PacketListReceiver packetListReceiver, Runnable reloadCache, SuccessReporter successReporter, boolean isSendErrorPackets, String errorIdentifierString) {
 		this.packetListReceiver = packetListReceiver;
 		this.reloadCache = reloadCache;
 		this.successReporter = successReporter;
 		this.isSendErrorPackets = isSendErrorPackets;
+		this.errorIdentifierString = errorIdentifierString;
 	}
 	private static String dataToSplitHex(byte[] data) {
 		StringBuilder builder = new StringBuilder();
@@ -64,7 +65,7 @@ public class ModbusListUpdaterWrapper implements PacketListReceiver {
 						e.getClass().getName(),
 						e.getMessage(),
 						MODBUS_RUNTIME_EXCEPTION_CATCH_LOCATION_IDENTIFIER,
-						MODBUS_RUNTIME_INSTANCE_IDENTIFIER
+						errorIdentifierString
 				));
 			}
 			boolean isTimeout = false;

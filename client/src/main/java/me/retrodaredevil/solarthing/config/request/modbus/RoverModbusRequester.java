@@ -79,7 +79,7 @@ public class RoverModbusRequester implements ModbusRequester {
 		RoverWriteTable write = new RoverModbusSlaveWrite(modbus);
 		RoverModbusEnvironment roverModbusEnvironment = new RoverModbusEnvironment(read, write);
 		return new DataRequesterResult(
-				new ModbusListUpdaterWrapper(new RoverPacketListUpdater(number, read, write), reloadCache, successReporter, sendErrorPackets),
+				new ModbusListUpdaterWrapper(new RoverPacketListUpdater(number, read, write), reloadCache, successReporter, sendErrorPackets, "rover.error." + number),
 				(dataSource, injectEnvironmentBuilder) -> {
 					String commandName = dataSource.getData();
 					if (attachToCommands.contains(commandName)) {

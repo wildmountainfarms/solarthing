@@ -89,7 +89,7 @@ public class TracerModbusRequester implements ModbusRequester {
 		TracerWriteTable write = new TracerModbusSlaveWrite(modbus);
 		TracerModbusEnvironment tracerModbusEnvironment = new TracerModbusEnvironment(read, write);
 		return new DataRequesterResult(
-				new ModbusListUpdaterWrapper(new TracerPacketListUpdater(number, read, write), reloadCache, successReporter, sendErrorPackets),
+				new ModbusListUpdaterWrapper(new TracerPacketListUpdater(number, read, write), reloadCache, successReporter, sendErrorPackets, "tracer.error." + number),
 				(dataSource, injectEnvironmentBuilder) -> {
 					String commandName = dataSource.getData();
 					if (attachToCommands.contains(commandName)) {
