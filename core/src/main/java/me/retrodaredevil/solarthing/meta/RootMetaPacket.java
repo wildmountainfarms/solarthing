@@ -9,6 +9,7 @@ import java.util.List;
 
 @JsonIgnoreProperties(value = { "_id", "_rev" }, allowGetters = true)
 public class RootMetaPacket implements PacketEntry {
+	public static final String DOCUMENT_ID = "meta";
 	private final List<TimedMetaCollection> meta;
 
 	@JsonCreator
@@ -18,7 +19,7 @@ public class RootMetaPacket implements PacketEntry {
 
 	@Override
 	public String getDbId() {
-		return "meta";
+		return DOCUMENT_ID;
 	}
 
 	@JsonProperty("meta")

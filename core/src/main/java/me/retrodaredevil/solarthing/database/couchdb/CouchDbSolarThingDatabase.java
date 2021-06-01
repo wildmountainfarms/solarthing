@@ -85,7 +85,7 @@ public class CouchDbSolarThingDatabase implements SolarThingDatabase {
 
 	@Override
 	public @Nullable VersionedPacket<RootMetaPacket> queryMetadata(UpdateToken updateToken) throws SolarThingDatabaseException {
-		DocumentData data = queryDocument(closedDatabase, "meta", updateToken);
+		DocumentData data = queryDocument(closedDatabase, RootMetaPacket.DOCUMENT_ID, updateToken);
 		if (data == null) {
 			return null;
 		}
@@ -100,7 +100,7 @@ public class CouchDbSolarThingDatabase implements SolarThingDatabase {
 
 	@Override
 	public @Nullable VersionedPacket<AuthorizationPacket> queryAuthorized(UpdateToken updateToken) throws SolarThingDatabaseException {
-		DocumentData data = queryDocument(closedDatabase, "closed", updateToken);
+		DocumentData data = queryDocument(closedDatabase, AuthorizationPacket.DOCUMENT_ID, updateToken);
 		if (data == null) {
 			return null;
 		}

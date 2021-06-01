@@ -11,6 +11,7 @@ import java.util.Map;
 @JsonExplicit
 @JsonIgnoreProperties(value = {"_id", "_rev"}, allowGetters = true)
 public final class AuthorizationPacket implements PacketEntry {
+	public static final String DOCUMENT_ID = "authorized";
 	private final Map<String, PermissionObject> senderPermissions;
 
 	@JsonCreator
@@ -27,6 +28,6 @@ public final class AuthorizationPacket implements PacketEntry {
 
 	@Override
 	public String getDbId() {
-		return "authorized";
+		return DOCUMENT_ID;
 	}
 }
