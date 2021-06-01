@@ -24,6 +24,8 @@ Stores solar data in a database to view on Android, Grafana, or PVOutput
   * Compatible with all [SRNE Solar](https://www.srnesolar.com) Charge Controllers (And rebranded products)
   * Compatible with **Zenith Grape** Solar Charge Controller, **PowMr** MPPT Charge Controller, **RICH** SOLAR MPPT, **WindyNations TrakMax** MPPT
 * DS18B20 Temperature Sensors and PZEM-003 and PZEM-017 Shunts
+* Coming soon:
+  * EPEver Tracer support
 
 # Quickstart
 Ready to install? Use the [Quickstart](other/docs/quickstart.md)!

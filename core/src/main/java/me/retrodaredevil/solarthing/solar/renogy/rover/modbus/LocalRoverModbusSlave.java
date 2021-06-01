@@ -54,6 +54,7 @@ public class LocalRoverModbusSlave implements ModbusSlave {
 	private ModbusMessage handleRead(ReadHoldingRegisters read) {
 		int startingAddress = read.getStartingDataAddress();
 		// we don't care if the number of registers they want to read is different. That's their problem. They'll get an error.
+		// TODO because we do it this way, bulk_request does not work. We can change that sometime in the future...
 		if (startingAddress == RoverModbusSlaveRead.MAX_VOLTAGE_AND_CHARGING.getStartingDataAddress()) {
 			int maxVoltageValue = rover.getMaxVoltageValue();
 			int ratedChargingCurrentValue = rover.getRatedChargingCurrentValue();
