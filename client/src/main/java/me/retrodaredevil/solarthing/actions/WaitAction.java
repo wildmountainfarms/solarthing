@@ -2,25 +2,29 @@ package me.retrodaredevil.solarthing.actions;
 
 import me.retrodaredevil.action.SimpleAction;
 
+import java.time.Duration;
+
+import static java.util.Objects.requireNonNull;
+
 public class WaitAction extends SimpleAction {
-	private final long waitMillis;
+	private final Duration waitDuration;
 
-	private Long startTimeMillis = null;
+	private Long startTimeNanos = null;
 
-	public WaitAction(long waitMillis) {
+	public WaitAction(Duration waitDuration) {
 		super(false);
-		this.waitMillis = waitMillis;
+		requireNonNull(this.waitDuration = waitDuration);
 	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
-		startTimeMillis = System.currentTimeMillis();
+		startTimeNanos = System.nanoTime();
 	}
 
 	@Override
 	protected void onUpdate() {
 		super.onUpdate();
-		setDone(startTimeMillis + waitMillis <= System.currentTimeMillis());
+		setDone(System.nanoTime() - startTimeNanos >= waitDuration.toNanos());
 	}
 }

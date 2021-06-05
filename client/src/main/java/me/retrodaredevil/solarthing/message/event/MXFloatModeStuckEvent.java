@@ -28,15 +28,16 @@ public class MXFloatModeStuckEvent implements MessageEvent {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MXFloatModeStuckEvent.class);
 
 	private final Map<IdentifierFragment, Boolean> enabledMap = new HashMap<>();
+	/** Map of {@link IdentifierFragment} to nano second values relative to a nanoTime() call */
 	private final Map<IdentifierFragment, Long> lastNotifyMap = new HashMap<>();
 
-	private final long timeoutMillis;
+	private final Duration timeout;
 
 	@JsonCreator
 	public MXFloatModeStuckEvent(
 			@JsonProperty(value = "timeout", required = true) String timeoutDurationString
 	) {
-		this.timeoutMillis = Duration.parse(timeoutDurationString).toMillis();
+		this.timeout = Duration.parse(timeoutDurationString);
 	}
 
 	@Override
@@ -73,15 +74,15 @@ public class MXFloatModeStuckEvent implements MessageEvent {
 		}
 	}
 	private void doAlert(MessageSender sender, KnownIdentifierFragment<OutbackIdentifier> identifierFragment) {
-		Long lastNotify = lastNotifyMap.get(identifierFragment);
-		long now = System.currentTimeMillis();
-		if (lastNotify != null && lastNotify + timeoutMillis > now) {
+		Long lastNotifyNanos = lastNotifyMap.get(identifierFragment);
+		long nowNanos = System.nanoTime();
+		if (lastNotifyNanos != null && nowNanos - lastNotifyNanos < timeout.toNanos()) {
 			return; // timeout has not passed
 		}
 		LOGGER.debug("Float alert for " + identifierFragment);
 		// alert
 		sender.sendMessage("MX " + identifierFragment.getIdentifier().getAddress() + " is stuck in float mode. (Fragment " + identifierFragment.getFragmentId() + ") (Low priority)");
 		enabledMap.put(identifierFragment, false); // don't notify until next day
-		lastNotifyMap.put(identifierFragment, now);
+		lastNotifyMap.put(identifierFragment, nowNanos);
 	}
 }

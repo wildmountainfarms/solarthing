@@ -14,10 +14,10 @@ public class TemperatureEvent implements MessageEvent {
 	private final boolean low;
 	private final boolean displayFahrenheit;
 	private final float thresholdCelsius;
-	private final long timeoutMillis;
+	private final Duration timeout;
 	private final TemperatureType temperatureType;
 
-	private Long lastSend = null;
+	private Long lastSendNanos = null;
 
 	public TemperatureEvent(
 			@JsonProperty("low") Boolean low,
@@ -35,7 +35,7 @@ public class TemperatureEvent implements MessageEvent {
 		} else {
 			throw new IllegalArgumentException("Either celsius or fahrenheit must be defined!");
 		}
-		this.timeoutMillis = Duration.parse(timeoutDurationString).toMillis();
+		this.timeout = Duration.parse(timeoutDurationString);
 		if (temperatureType == null) {
 			this.temperatureType = TemperatureType.BATTERY;
 		} else {
@@ -45,10 +45,10 @@ public class TemperatureEvent implements MessageEvent {
 
 	@Override
 	public void run(MessageSender sender, FragmentedPacketGroup previous, FragmentedPacketGroup current) {
-		Long lastSend = this.lastSend;
-		if (lastSend != null) {
-			if (lastSend + timeoutMillis > System.currentTimeMillis()) {
-				return;
+		Long lastSendNanos = this.lastSendNanos;
+		if (lastSendNanos != null) {
+			if (System.nanoTime() - lastSendNanos < timeout.toNanos()) {
+				return; // timeout has not passed yet
 			}
 		}
 		for (Packet packet : current.getPackets()) {
@@ -71,6 +71,7 @@ public class TemperatureEvent implements MessageEvent {
 		}
 	}
 	private String temperatureToString(float temperatureCelsius) {
+		// these character escapes are for the fahrenheit and celsius degree symbols
 		if (displayFahrenheit) {
 			return (temperatureCelsius * 1.8 + 32) + "\u2109";
 		}
@@ -80,13 +81,13 @@ public class TemperatureEvent implements MessageEvent {
 		if (low) {
 			if (temperatureCelsius <= thresholdCelsius) {
 				sender.sendMessage("Low temperature! " + temperatureToString(temperatureCelsius));
-				lastSend = System.currentTimeMillis();
+				lastSendNanos = System.nanoTime();
 				return true;
 			}
 		} else {
 			if (temperatureCelsius >= thresholdCelsius) {
 				sender.sendMessage("High temperature! " + temperatureToString(temperatureCelsius));
-				lastSend = System.currentTimeMillis();
+				lastSendNanos = System.nanoTime();
 				return true;
 			}
 		}

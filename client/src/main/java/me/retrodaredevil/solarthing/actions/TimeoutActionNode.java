@@ -11,26 +11,26 @@ import java.time.Duration;
 @JsonTypeName("timeout")
 public class TimeoutActionNode implements ActionNode {
 
-	private final long timeoutMillis;
+	private final long timeoutNanos;
 	private final ActionNode actionNode;
 
-	private Long lastFire = null;
+	private Long lastFireNanos = null;
 
 	public TimeoutActionNode(
 			@JsonProperty(value = "timeout", required = true) String timeoutDurationString,
 			@JsonProperty(value = "action", required = true) ActionNode actionNode
 	) {
-		timeoutMillis = Duration.parse(timeoutDurationString).toMillis();
+		timeoutNanos = Duration.parse(timeoutDurationString).toNanos();
 		this.actionNode = actionNode;
 	}
 
 	@Override
 	public Action createAction(ActionEnvironment actionEnvironment) {
 		return Actions.createDynamicActionRunner(() -> {
-			final Long lastFire = this.lastFire;
-			long now = System.currentTimeMillis();
-			if (lastFire == null || lastFire + timeoutMillis < now) {
-				this.lastFire = now;
+			final Long lastFireNanos = this.lastFireNanos;
+			long nowNanos = System.nanoTime();
+			if (lastFireNanos == null || nowNanos - lastFireNanos > timeoutNanos) {
+				this.lastFireNanos = nowNanos;
 				return actionNode.createAction(actionEnvironment);
 			}
 			return Actions.createRunOnce(() -> {});

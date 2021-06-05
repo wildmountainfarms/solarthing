@@ -14,6 +14,10 @@ import static java.util.Objects.requireNonNull;
 
 public class DummyModbusIO implements IOBundle {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DummyModbusIO.class);
+	/*
+	Just a note: In the past, there have been reports of bugs regarding the use of System.nanoTime() across threads.
+	Those bugs should not be present, so using System.nanoTime() *should* be safe.
+	 */
 
 	private final Map<Integer, ModbusSlave> addressToSlaveMap;
 	private final IODataEncoder ioDataEncoder;
@@ -21,7 +25,7 @@ public class DummyModbusIO implements IOBundle {
 	private final Queue<Byte> outputData = new ConcurrentLinkedDeque<>();
 	private final Queue<Byte> inputData = new ConcurrentLinkedDeque<>();
 	private transient boolean isClosed = false;
-	private transient Long lastWrite = null;
+	private transient Long lastWriteNanos = null;
 
 	public DummyModbusIO(Map<Integer, ModbusSlave> addressToSlaveMap, IODataEncoder ioDataEncoder) {
 		this.addressToSlaveMap = addressToSlaveMap;
@@ -34,9 +38,9 @@ public class DummyModbusIO implements IOBundle {
 
 	private void runThread() {
 		while (!Thread.currentThread().isInterrupted() && !isClosed) {
-			long now = System.currentTimeMillis();
-			Long lastWrite = this.lastWrite;
-			if (lastWrite == null || lastWrite + 6 < now) {
+			long nowNanos = System.nanoTime();
+			Long lastWriteNanos = this.lastWriteNanos;
+			if (lastWriteNanos == null || nowNanos - lastWriteNanos > 6_000_000) { // 6ms have passed since the last write
 				byte[] data = new byte[inputData.size()];
 				// RtuDataEncoder requires at least 4 bytes to do something useful, so if we don't have that, just wait
 				//   Also note that if data.length is 0, then the current implementation of RtuDataEncoder would hang because the call to available() would stay 0
@@ -109,7 +113,7 @@ public class DummyModbusIO implements IOBundle {
 			}
 			byte dataByte = (byte) dataByteInt;
 			inputData.add(dataByte);
-			lastWrite = System.currentTimeMillis();
+			lastWriteNanos = System.nanoTime();
 		}
 	};
 	@Override

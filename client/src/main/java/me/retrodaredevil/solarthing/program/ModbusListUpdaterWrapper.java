@@ -11,6 +11,7 @@ import me.retrodaredevil.solarthing.io.NotInitializedIOException;
 import me.retrodaredevil.solarthing.misc.error.ImmutableExceptionErrorPacket;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
+import me.retrodaredevil.solarthing.util.TimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +53,7 @@ public class ModbusListUpdaterWrapper implements PacketListReceiver {
 
 	@Override
 	public void receive(List<Packet> packets, InstantType instantType) {
-		final long startTime = System.currentTimeMillis();
+		final long startTimeNanos = System.nanoTime();
 		try {
 			reloadCache.run();
 			packetListReceiver.receive(packets, instantType);
@@ -101,7 +102,7 @@ public class ModbusListUpdaterWrapper implements PacketListReceiver {
 		}
 		hasBeenSuccessful = true;
 		successReporter.reportSuccess();
-		final long readDuration = System.currentTimeMillis() - startTime;
-		LOGGER.debug("took " + readDuration + "ms to read from Rover");
+		final long readDurationNanos = System.nanoTime() - startTimeNanos;
+		LOGGER.debug("took " + TimeUtil.nanosToSecondsString(readDurationNanos) + " seconds to read from Rover");
 	}
 }

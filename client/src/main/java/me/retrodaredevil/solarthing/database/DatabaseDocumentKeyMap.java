@@ -8,23 +8,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.security.PublicKey;
+import java.time.Duration;
 
 public class DatabaseDocumentKeyMap implements PublicKeyLookUp {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseDocumentKeyMap.class);
-	private static final long UPDATE_PERIOD_MILLIS = 30 * 1000; // 30 seconds
+	private static final long UPDATE_PERIOD_NANOS = Duration.ofSeconds(30).toNanos();
 
 	private final SolarThingDatabase database;
 
 	private AuthorizationPacket authorizationPacket = null;
 	private UpdateToken updateToken = null;
-	private Long lastUpdate = null;
+	private Long lastUpdateNanos = null;
 
 	public DatabaseDocumentKeyMap(SolarThingDatabase database) {
 		this.database = database;
 	}
 
 	private void updatePacket() {
-		lastUpdate = System.currentTimeMillis();
+		lastUpdateNanos = System.nanoTime();
 		final VersionedPacket<AuthorizationPacket> versionedPacket;
 		try {
 			versionedPacket = database.queryAuthorized(updateToken);
@@ -42,8 +43,8 @@ public class DatabaseDocumentKeyMap implements PublicKeyLookUp {
 
 	@Override
 	public PublicKey getKey(String sender) {
-		Long lastUpdate = this.lastUpdate;
-		if (lastUpdate == null || lastUpdate + UPDATE_PERIOD_MILLIS < System.currentTimeMillis()) {
+		Long lastUpdateNanos = this.lastUpdateNanos;
+		if (lastUpdateNanos == null || System.nanoTime() - lastUpdateNanos >= UPDATE_PERIOD_NANOS) {
 			updatePacket();
 		}
 		AuthorizationPacket authorizationPacket = this.authorizationPacket;

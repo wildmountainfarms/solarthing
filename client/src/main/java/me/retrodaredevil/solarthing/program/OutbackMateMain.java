@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.time.Duration;
 import java.util.*;
 
 import static java.util.Objects.requireNonNull;
@@ -117,7 +118,7 @@ public class OutbackMateMain {
 					requireNonNull(io.getInputStream()),
 					new MatePacketCreator49(MateProgramOptions.getIgnoreCheckSum(options)),
 					new TimedPacketReceiver(
-							250,
+							Duration.ofMillis(250),
 							new PacketListReceiverMultiplexer(packetListReceiverList),
 							new MateCommandSender(
 									new CommandProviderMultiplexer<>(commandProviders), // if commands aren't allowed, commandProviders will be empty, so this will do nothing

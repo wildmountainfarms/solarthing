@@ -5,6 +5,7 @@ import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.misc.source.W1Source;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
+import me.retrodaredevil.solarthing.util.TimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +40,7 @@ public class W1TemperatureListUpdater implements PacketListReceiver {
 
 	@Override
 	public void receive(List<Packet> packets, InstantType instantType) {
-		long startTime = System.currentTimeMillis();
+		long startTimeNanos = System.nanoTime();
 		final String name;
 		try {
 			name = readContents(nameFile).replaceAll("\n", ""); // remove new line at end
@@ -94,7 +95,7 @@ public class W1TemperatureListUpdater implements PacketListReceiver {
 			LOGGER.debug("crc=00! name=" + name + " line1: " + line1 + " line2: " + line2); // debug since this is so common
 			return;
 		}
-		long timeTaken = System.currentTimeMillis() - startTime;
+		long timeTakenNanos = System.nanoTime() - startTimeNanos;
 		float temperatureCelsius = temperatureRaw / 1000.0f;
 		if (temperatureCelsius < RATED_MIN_TEMP_CELSIUS - LENIENT_TEMP_CELSIUS) {
 			LOGGER.warn("Extremely low temp! Probably not accurate! temperatureCelsius: " + temperatureCelsius);
@@ -105,7 +106,7 @@ public class W1TemperatureListUpdater implements PacketListReceiver {
 			return;
 		}
 		packets.add(new CelsiusTemperaturePacket(dataId, new W1Source(name), temperatureCelsius));
-		LOGGER.debug("Read temperature " + temperatureCelsius + "C from " + name + " in " + timeTaken + "ms");
+		LOGGER.debug("Read temperature " + temperatureCelsius + "C from " + name + " in " + TimeUtil.nanosToSecondsString(timeTakenNanos) + " seconds");
 	}
 	private static String readContents(File file) throws IOException {
 		return new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);

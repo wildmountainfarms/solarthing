@@ -1,31 +1,33 @@
 package me.retrodaredevil.solarthing.analytics;
 
+import java.time.Duration;
+
 import static java.util.Objects.requireNonNull;
 
 public class AnalyticsTimer {
 	private State state = State.SEND_FIRST;
-	private Long startTime = null;
-	private long nextSend = 0;
+	private Long startTimeNanos = null;
+	private long nextSendNanos = Long.MIN_VALUE;
 
 	public boolean shouldSend() {
-		return System.currentTimeMillis() >= nextSend;
+		return System.nanoTime() >= nextSendNanos;
 	}
 	public int getUptimeHours() {
-		long uptimeMillis = System.currentTimeMillis() - requireNonNull(startTime);
-		return (int) Math.round(uptimeMillis / (60 * 60 * 1000.0));
+		long uptimeNanos = System.nanoTime() - requireNonNull(startTimeNanos);
+		return (int) Math.round(Duration.ofNanos(uptimeNanos).toMinutes() / 60.0);
 	}
 	public void onSend() {
-		long now = System.currentTimeMillis();
+		long nowNanos = System.nanoTime();
 		switch(requireNonNull(state)) {
 			case SEND_FIRST:
 				state = State.SEND_ONE_HOUR;
-				nextSend = now + 60 * 60 * 1000;
-				startTime = now;
+				nextSendNanos = nowNanos + Duration.ofMinutes(60).toNanos();
+				startTimeNanos = nowNanos;
 				break;
 			case SEND_ONE_HOUR:
 			case SEND_DAILY:
 				state = State.SEND_DAILY;
-				nextSend = now + 20 * 60 * 60 * 1000;
+				nextSendNanos = nowNanos + Duration.ofHours(20).toNanos();
 				break;
 			default:
 				throw new AssertionError("Unknown state: " + state);

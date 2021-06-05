@@ -19,10 +19,12 @@ import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiverMultiplexer;
 import me.retrodaredevil.solarthing.solar.DaySummaryLogListReceiver;
+import me.retrodaredevil.solarthing.util.TimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -62,19 +64,19 @@ public class RequestMain {
 		packetListReceiverList.add(new DaySummaryLogListReceiver());
 		packetListReceiverList.addAll(bundle.createDefaultPacketListReceivers());
 
-		return doRequest(new PacketListReceiverMultiplexer(packetListReceiverList), period, minimumWait);
+		return doRequest(new PacketListReceiverMultiplexer(packetListReceiverList), Duration.ofMillis(period), Duration.ofMillis(minimumWait));
 	}
-	private static int doRequest(PacketListReceiver packetListReceiver, long period, long minimumWait) {
+	private static int doRequest(PacketListReceiver packetListReceiver, Duration period, Duration minimumWait) {
 		while (!Thread.currentThread().isInterrupted()) {
-			long startTime = System.currentTimeMillis();
+			long startTimeNanos = System.nanoTime();
 			List<Packet> packets = new ArrayList<>();
 			packetListReceiver.receive(packets, InstantType.INSTANT);
-			long timeTaken = System.currentTimeMillis() - startTime;
+			long timeTakenNanos = System.nanoTime() - startTimeNanos;
 
-			long sleepTime = Math.max(minimumWait, period - timeTaken);
-			LOGGER.debug("Going to sleep for " + sleepTime + "ms");
+			long sleepTimeNanos = Math.max(minimumWait.toNanos(), period.toNanos() - timeTakenNanos);
+			LOGGER.debug("Going to sleep for " + TimeUtil.nanosToSecondsString(sleepTimeNanos) + " seconds");
 			try {
-				Thread.sleep(sleepTime);
+				Thread.sleep(sleepTimeNanos / 1_000_000, (int) (sleepTimeNanos % 1_000_000));
 			} catch (InterruptedException ex) {
 				Thread.currentThread().interrupt();
 				break;

@@ -9,6 +9,7 @@ import me.retrodaredevil.solarthing.message.MessageSender;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
+import me.retrodaredevil.solarthing.util.TimeUtil;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
