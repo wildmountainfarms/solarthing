@@ -49,29 +49,28 @@ public class DummyModbusIO implements IOBundle {
 						int value = requireNonNull(inputData.poll(), "Should not have gotten null! i: " + i + " length: " + data.length);
 						data[i] = (byte) value;
 					}
-					Integer respondingAddress = null;
+					AddressedModbusMessage requestMessage = null;
+					try {
+						requestMessage = ioDataEncoder.parseMessage(data);
+					} catch (RedundancyException ex) {
+						LOGGER.debug("Got redundancy exception", ex);
+					}
 					ModbusMessage responseMessage = null;
-					for (Map.Entry<Integer, ModbusSlave> entry : addressToSlaveMap.entrySet()) {
-						int address = entry.getKey();
-						ModbusSlave slave = entry.getValue();
-						final ModbusMessage requestMessage;
-						try {
-							// TODO IODataEncoder needs a method that doesn't require the address, but can parse a modbus message along with the present address
-							requestMessage = ioDataEncoder.readMessage(address, new ByteArrayInputStream(data));
-						} catch (UnexpectedSlaveResponseException ignored) {
-							continue;
-						} catch (RedundancyException ex) {
-							LOGGER.debug("Got redundancy exception", ex);
-							break;
+					Integer address = null;
+					if (requestMessage != null) {
+						address = requestMessage.getAddress();
+						ModbusSlave slave = addressToSlaveMap.get(address);
+						if (slave == null) {
+							LOGGER.warn("No corresponding slave for address: " + address);
+						} else {
+							responseMessage = slave.sendRequestMessage(requestMessage.getModbusMessage());
 						}
-						respondingAddress = address;
-						responseMessage = slave.sendRequestMessage(requestMessage);
-						break;
 					}
 					if (responseMessage != null) {
-						requireNonNull(respondingAddress);
+						//noinspection ConstantConditions
+						assert address != null;
 						ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-						ioDataEncoder.sendMessage(outputStream, respondingAddress, responseMessage);
+						ioDataEncoder.sendMessage(outputStream, address, responseMessage);
 						byte[] responseBytes = outputStream.toByteArray();
 						for (byte b : responseBytes) {
 							outputData.add(b);
