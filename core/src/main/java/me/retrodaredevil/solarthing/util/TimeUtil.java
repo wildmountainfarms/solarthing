@@ -12,7 +12,7 @@ public class TimeUtil {
 	private static final Format SECONDS_FORMAT = new DecimalFormat("0.000");
 
 	public static String nanosToSecondsString(long nanos) {
-		return SECONDS_FORMAT.format(nanos / 1_000_000_000);
+		return SECONDS_FORMAT.format(nanos / 1_000_000_000.0);
 	}
 	public static long nanosToMillis(long nanos) {
 		return nanos / 1_000_000;
