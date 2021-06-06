@@ -1,15 +1,16 @@
 package me.retrodaredevil.solarthing.misc.device;
 
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 
 public class DeviceIdentityInfo implements IdentityInfo {
 	@Override
-	public String getName() {
+	public @NotNull String getName() {
 		return "Device";
 	}
 
 	@Override
-	public String getSuffix() {
+	public @NotNull String getSuffix() {
 		return "";
 	}
 
@@ -19,7 +20,7 @@ public class DeviceIdentityInfo implements IdentityInfo {
 	}
 
 	@Override
-	public String getShortName() {
+	public @NotNull String getShortName() {
 		return "DEV";
 	}
 }

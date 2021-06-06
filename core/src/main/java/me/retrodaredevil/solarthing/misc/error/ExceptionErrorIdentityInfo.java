@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.misc.error;
 
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 
 public class ExceptionErrorIdentityInfo implements IdentityInfo {
@@ -10,17 +11,17 @@ public class ExceptionErrorIdentityInfo implements IdentityInfo {
 	}
 
 	@Override
-	public String getName() {
+	public @NotNull String getName() {
 		return exceptionErrorIdentifier.getExceptionCatchLocationIdentifier();
 	}
 
 	@Override
-	public String getSuffix() {
+	public @NotNull String getSuffix() {
 		return exceptionErrorIdentifier.getExceptionInstanceIdentifier();
 	}
 
 	@Override
-	public String getShortName() {
+	public @NotNull String getShortName() {
 		return "EX";
 	}
 }

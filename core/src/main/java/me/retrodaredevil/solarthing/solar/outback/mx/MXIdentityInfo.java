@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.solar.outback.mx;
 
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 
 public class MXIdentityInfo implements IdentityInfo {
@@ -10,17 +11,17 @@ public class MXIdentityInfo implements IdentityInfo {
 	}
 
 	@Override
-	public String getName() {
+	public @NotNull String getName() {
 		return "MX";
 	}
 
 	@Override
-	public String getShortName() {
+	public @NotNull String getShortName() {
 		return "MX";
 	}
 
 	@Override
-	public String getSuffix() {
+	public @NotNull String getSuffix() {
 		return "" + address;
 	}
 }

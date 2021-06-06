@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.solar.outback.fx;
 
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 
 public class FXIdentityInfo implements IdentityInfo {
@@ -10,17 +11,17 @@ public class FXIdentityInfo implements IdentityInfo {
 	}
 
 	@Override
-	public String getName() {
+	public @NotNull String getName() {
 		return "FX";
 	}
 
 	@Override
-	public String getShortName() {
+	public @NotNull String getShortName() {
 		return "FX";
 	}
 
 	@Override
-	public String getSuffix() {
+	public @NotNull String getSuffix() {
 		return "" + address;
 	}
 }

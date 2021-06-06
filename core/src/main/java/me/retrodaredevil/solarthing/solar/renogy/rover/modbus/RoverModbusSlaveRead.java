@@ -17,7 +17,7 @@ import static me.retrodaredevil.solarthing.solar.util.ByteUtil.lower;
 import static me.retrodaredevil.solarthing.solar.util.ByteUtil.upper;
 
 public class RoverModbusSlaveRead extends AbstractModbusRead implements RoverReadTable {
-	private final Identifier IDENTIFIER = new SingleTypeIdentifier("RoverModbusSlaveRead");
+	private static final Identifier IDENTIFIER = new SingleTypeIdentifier("RoverModbusSlaveRead");
 	private static final float KWH_DIVIDER = 1_000; // units are returned in Watt Hours
 	public static final int READ_EXCEPTION_UNSUPPORTED_FUNCTION_CODE = 1;
 	public static final int READ_EXCEPTION_UNSUPPORTED_REGISTER = 2;

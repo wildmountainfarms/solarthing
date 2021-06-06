@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.solar.batteryvoltage;
 
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 
 public class BatteryVoltageOnlyIdentityInfo implements IdentityInfo {
@@ -10,17 +11,17 @@ public class BatteryVoltageOnlyIdentityInfo implements IdentityInfo {
 	}
 
 	@Override
-	public String getName() {
+	public @NotNull String getName() {
 		return "Battery Voltage";
 	}
 
 	@Override
-	public String getSuffix() {
+	public @NotNull String getSuffix() {
 		return "" + dataId;
 	}
 
 	@Override
-	public String getShortName() {
+	public @NotNull String getShortName() {
 		return "BAT";
 	}
 }

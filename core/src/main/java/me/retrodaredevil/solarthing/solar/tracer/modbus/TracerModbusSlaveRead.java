@@ -5,12 +5,15 @@ import me.retrodaredevil.io.modbus.handling.*;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
+import me.retrodaredevil.solarthing.packets.identification.SingleTypeIdentifier;
+import me.retrodaredevil.solarthing.solar.tracer.TracerIdentityInfo;
 import me.retrodaredevil.solarthing.solar.tracer.TracerReadTable;
 import me.retrodaredevil.solarthing.solar.util.AbstractModbusRead;
 
 import static me.retrodaredevil.solarthing.solar.util.ByteUtil.convertTo48BitLittleEndian;
 
 public class TracerModbusSlaveRead extends AbstractModbusRead implements TracerReadTable {
+	private static final Identifier IDENTIFIER = new SingleTypeIdentifier("TracerModbusSlaveRead");
 
 	public TracerModbusSlaveRead(ModbusSlave modbus) {
 		super(modbus, Endian.LITTLE);
@@ -18,12 +21,12 @@ public class TracerModbusSlaveRead extends AbstractModbusRead implements TracerR
 
 	@Override
 	public @NotNull Identifier getIdentifier() {
-		throw new UnsupportedOperationException("TODO");
+		return IDENTIFIER;
 	}
 
 	@Override
 	public @NotNull IdentityInfo getIdentityInfo() {
-		throw new UnsupportedOperationException("TODO");
+		return new TracerIdentityInfo(getRatedOutputCurrent());
 	}
 
 	// region 0x3000..0x300E - Rated data (read only) input register

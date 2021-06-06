@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.solar.pzem;
 
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 
 public class PzemShuntIdentityInfo implements IdentityInfo {
@@ -10,17 +11,17 @@ public class PzemShuntIdentityInfo implements IdentityInfo {
 	}
 
 	@Override
-	public String getName() {
+	public @NotNull String getName() {
 		return "Pzem Shunt";
 	}
 
 	@Override
-	public String getSuffix() {
+	public @NotNull String getSuffix() {
 		return "" + dataId;
 	}
 
 	@Override
-	public String getShortName() {
+	public @NotNull String getShortName() {
 		return "PZ";
 	}
 }

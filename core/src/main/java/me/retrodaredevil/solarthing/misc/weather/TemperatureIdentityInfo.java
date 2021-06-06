@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.misc.weather;
 
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 
 public class TemperatureIdentityInfo implements IdentityInfo {
@@ -10,17 +11,17 @@ public class TemperatureIdentityInfo implements IdentityInfo {
 	}
 
 	@Override
-	public String getName() {
+	public @NotNull String getName() {
 		return "Temperature Sensor";
 	}
 
 	@Override
-	public String getShortName() {
+	public @NotNull String getShortName() {
 		return "TMP";
 	}
 
 	@Override
-	public String getSuffix() {
+	public @NotNull String getSuffix() {
 		return "" + dataId;
 	}
 }

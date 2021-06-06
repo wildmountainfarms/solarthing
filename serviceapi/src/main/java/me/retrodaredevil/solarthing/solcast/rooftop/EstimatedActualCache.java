@@ -128,7 +128,7 @@ public class EstimatedActualCache {
 
 		@Override
 		public int compareTo(@NotNull EstimatedActualCache.Node node) {
-			return (int) (dateMillis - node.dateMillis);
+			return Long.compare(dateMillis, node.dateMillis);
 		}
 	}
 }
