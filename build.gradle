@@ -79,7 +79,6 @@ allprojects {
         mavenCentral()
         maven { url "https://plugins.gradle.org/m2/" }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-        jcenter()
         google()
     }
 }
@@ -97,11 +96,11 @@ subprojects {
         testImplementation "org.junit.jupiter:junit-jupiter-params:$junit5Version"
         testImplementation "org.junit.platform:junit-platform-commons:$junit5PlatformVersion"
         testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: junit5Version
-        testImplementation 'com.tngtech.archunit:archunit:0.17.0'
+        testImplementation 'com.tngtech.archunit:archunit:0.19.0' // https://github.com/TNG/ArchUnit/releases
 
         // https://mvnrepository.com/artifact/com.google.code.findbugs/jsr305
         implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
-        implementation 'org.jetbrains:annotations:15.0'
+        implementation 'org.jetbrains:annotations:21.0.1' // https://search.maven.org/search?q=g:org.jetbrains%20AND%20a:annotations
     }
     test {
         useJUnitPlatform()

@@ -4,7 +4,10 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -29,19 +32,36 @@ public class SecurityGroup {
 
 	@JsonProperty("names")
 	@JsonInclude(JsonInclude.Include.NON_NULL)
-	public List<String> getNames() {
+	public @Nullable List<String> getNames() {
 		return names;
 	}
-	public List<String> getNamesOrEmpty() {
+	public @NotNull List<String> getNamesOrEmpty() {
 		return names == null ? Collections.emptyList() : names;
 	}
 
 	@JsonProperty("roles")
 	@JsonInclude(JsonInclude.Include.NON_NULL)
-	public List<String> getRoles() {
+	public @Nullable List<String> getRoles() {
 		return roles;
 	}
-	public List<String> getRolesOrEmpty() {
+	public @NotNull List<String> getRolesOrEmpty() {
 		return roles == null ? Collections.emptyList() : roles;
+	}
+
+	public SecurityGroup withName(@Nullable String name) {
+		if (name == null || getNamesOrEmpty().contains(name)) {
+			return this;
+		}
+		List<String> newNames = new ArrayList<>(getNamesOrEmpty());
+		newNames.add(name);
+		return new SecurityGroup(newNames, roles);
+	}
+	public SecurityGroup withRole(@Nullable String role) {
+		if (role == null || getRolesOrEmpty().contains(role)) {
+			return this;
+		}
+		List<String> newRoles = new ArrayList<>(getRolesOrEmpty());
+		newRoles.add(role);
+		return new SecurityGroup(names, newRoles);
 	}
 }

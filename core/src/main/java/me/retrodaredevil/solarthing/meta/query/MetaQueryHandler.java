@@ -12,7 +12,7 @@ import me.retrodaredevil.solarthing.meta.RootMetaPacket;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 
 /**
- * Handles the querying of the meta document from the solarthing_closed database. ({@link me.retrodaredevil.solarthing.SolarThingConstants#CLOSED_UNIQUE_NAME})
+ * Handles the querying of the meta document from the solarthing_closed database. ({@link me.retrodaredevil.solarthing.SolarThingConstants#CLOSED_DATABASE})
  */
 @Deprecated
 public class MetaQueryHandler {

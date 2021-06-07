@@ -54,22 +54,22 @@ public class CouchDbSolarThingDatabase implements SolarThingDatabase {
 	 * @param mapper The object mapper. "Lenient" settings should have already been applied to this
 	 */
 	public CouchDbSolarThingDatabase(CouchDbInstance instance, PacketParsingErrorHandler errorHandler, ObjectMapper mapper) {
-		closedDatabase = instance.getDatabase(SolarThingConstants.CLOSED_UNIQUE_NAME);
+		closedDatabase = instance.getDatabase(SolarThingConstants.CLOSED_DATABASE);
 		metaObjectMapper = JacksonUtil.lenientSubTypeMapper(mapper.copy());
 		metaObjectMapper.getSubtypeResolver().registerSubtypes(TargetMetaPacket.class, DeviceInfoPacket.class, DataMetaPacket.class, FXChargingSettingsPacket.class, FXChargingTemperatureAdjustPacket.class);
 		simpleObjectMapper = mapper.copy();
 
 		ObjectMapper statusMapper = mapper.copy();
 		statusMapper.getSubtypeResolver().registerSubtypes(SolarStatusPacket.class, SolarExtraPacket.class, DevicePacket.class, ErrorPacket.class, WeatherPacket.class, InstancePacket.class, CommandStatusPacket.class);
-		statusDatabase = new CouchDbMillisDatabase(instance.getDatabase(SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME), statusMapper, errorHandler);
+		statusDatabase = new CouchDbMillisDatabase(instance.getDatabase(SolarThingConstants.STATUS_DATABASE), statusMapper, errorHandler);
 
 		ObjectMapper eventMapper = mapper.copy();
 		eventMapper.getSubtypeResolver().registerSubtypes(SolarEventPacket.class, MateCommandFeedbackPacket.class, InstancePacket.class, InstancePacket.class);
-		eventDatabase = new CouchDbMillisDatabase(instance.getDatabase(SolarThingConstants.SOLAR_EVENT_UNIQUE_NAME), eventMapper, errorHandler);
+		eventDatabase = new CouchDbMillisDatabase(instance.getDatabase(SolarThingConstants.EVENT_DATABASE), eventMapper, errorHandler);
 
 		ObjectMapper openMapper = mapper.copy();
 		openMapper.getSubtypeResolver().registerSubtypes(SecurityPacket.class, InstancePacket.class);
-		openDatabase = new CouchDbMillisDatabase(instance.getDatabase(SolarThingConstants.OPEN_UNIQUE_NAME), openMapper, errorHandler);
+		openDatabase = new CouchDbMillisDatabase(instance.getDatabase(SolarThingConstants.OPEN_DATABASE), openMapper, errorHandler);
 	}
 	public static CouchDbSolarThingDatabase create(CouchDbInstance instance) {
 		return new CouchDbSolarThingDatabase(instance, PacketParsingErrorHandler.DO_NOTHING, JacksonUtil.lenientMapper(JacksonUtil.defaultMapper()));

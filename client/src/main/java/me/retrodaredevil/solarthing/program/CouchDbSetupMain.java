@@ -6,8 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.couchdb.CouchDbUtil;
-import me.retrodaredevil.couchdb.design.DefaultPacketsDesign;
-import me.retrodaredevil.couchdb.design.SimpleView;
+import me.retrodaredevil.couchdb.design.MutablePacketsDesign;
 import me.retrodaredevil.couchdbjava.CouchDbDatabase;
 import me.retrodaredevil.couchdbjava.CouchDbInstance;
 import me.retrodaredevil.couchdbjava.exception.CouchDbException;
@@ -19,114 +18,162 @@ import me.retrodaredevil.couchdbjava.json.jackson.CouchDbJacksonUtil;
 import me.retrodaredevil.couchdbjava.response.DocumentData;
 import me.retrodaredevil.couchdbjava.security.DatabaseSecurity;
 import me.retrodaredevil.couchdbjava.security.SecurityGroup;
+import me.retrodaredevil.solarthing.SolarThingDatabaseType;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 
-import java.util.*;
+import java.io.PrintStream;
+import java.util.Collections;
+import java.util.List;
+import java.util.Scanner;
 
 public class CouchDbSetupMain {
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
-	private static void createDatabase(CouchDbInstance instance, String database) throws CouchDbException {
+
+	private final CouchDbInstance instance;
+	private final Scanner scanner;
+	private final PrintStream out;
+
+	public CouchDbSetupMain(CouchDbInstance instance, Scanner scanner, PrintStream out) {
+		this.instance = instance;
+		this.scanner = scanner;
+		this.out = out;
+	}
+	public static CouchDbSetupMain createFrom(CouchDbDatabaseSettings settings) {
+		CouchDbInstance instance = CouchDbUtil.createInstance(settings.getCouchProperties(), settings.getOkHttpProperties());
+		Scanner scanner = new Scanner(System.in);
+		PrintStream out = System.out;
+		return new CouchDbSetupMain(instance, scanner, out);
+	}
+
+	private void createDatabase(String database) throws CouchDbException {
 		if (instance.getDatabase(database).createIfNotExists()) {
-			System.out.println("Created " + database);
+			out.println("Created " + database);
 		} else {
-			System.out.println("Already exists: " + database);
+			out.println("Already exists: " + database);
 		}
 	}
-	public static int doCouchDbSetupMain(CouchDbDatabaseSettings settings) throws CouchDbException {
-		System.out.println("You will now setup your CouchDB instance! Some databases will be automatically created (enter)");
-		Scanner scanner = new Scanner(System.in);
-		scanner.nextLine();
 
-		CouchDbInstance instance = CouchDbUtil.createInstance(settings.getCouchProperties(), settings.getOkHttpProperties());
-		createDatabase(instance, "solarthing");
-		createDatabase(instance, "solarthing_events");
-		createDatabase(instance, "solarthing_closed");
-		createDatabase(instance, "solarthing_open");
-		System.out.println("All 4 necessary databases have been created.");
-		System.out.println();
-		System.out.println("Now views and security will be configured for each database. Please enter the name of the user to be added as an admin to each database.");
-		System.out.println("This user is commonly named 'uploader' and a password for this user needs to be configured. (Leave blank to not configure)");
-		System.out.print("Name of user: ");
-		String username = scanner.nextLine();
-		if (username.isEmpty()) {
-			username = null;
-			System.out.println("No user will be added as an admin, but members will still be cleared. (Enter to confirm)");
-		} else {
-			System.out.println("User: " + username + " will be used. (Enter to confirm)");
+	private void createUserIfNotExists(String username) throws CouchDbException {
+		CouchDbDatabase usersDatabase = instance.getUsersDatabase();
+		String documentId = "org.couchdb.user:" + username;
+
+		DocumentData userDocumentData = null;
+		try {
+			userDocumentData = usersDatabase.getDocument(documentId);
+		} catch (CouchDbNotFoundException ignored) {
 		}
-		scanner.nextLine();
-		if (username != null) {
-			CouchDbDatabase usersDatabase = instance.getUsersDatabase();
-			String documentId = "org.couchdb.user:" + username;
-
-			DocumentData userDocumentData = null;
+		final UserEntry user;
+		if (userDocumentData != null) {
 			try {
-				userDocumentData = usersDatabase.getDocument(documentId);
-			} catch (CouchDbNotFoundException ignored) {
+				user = CouchDbJacksonUtil.readValue(MAPPER, userDocumentData.getJsonData(), UserEntry.class);
+			} catch (JsonProcessingException e) {
+				throw new RuntimeException("Could not parse user document data. Please report this bug", e);
 			}
-			final UserEntry user;
-			if (userDocumentData != null) {
-				try {
-					user = CouchDbJacksonUtil.readValue(MAPPER, userDocumentData.getJsonData(), UserEntry.class);
-				} catch (JsonProcessingException e) {
-					throw new RuntimeException("Could not parse user document data. Please report this bug", e);
-				}
-			} else {
-				user = null;
-			}
-			if (user != null) {
-				System.out.println("The specified user exists! Continuing");
-			} else {
-				System.out.println("Please enter a password for the new user to be created.");
-				String password = scanner.nextLine();
-				final JsonData jsonData;
-				try {
-					jsonData = new StringJsonData(MAPPER.writeValueAsString(new UserEntry(username, password)));
-				} catch (JsonProcessingException e) {
-					throw new RuntimeException("Couldn't serialize json! Report this!", e);
-				}
-				usersDatabase.createIfNotExists();
-				usersDatabase.putDocument(documentId, jsonData);
-			}
+		} else {
+			user = null;
 		}
-
-		for (String databaseName : Arrays.asList("solarthing", "solarthing_events", "solarthing_closed", "solarthing_open")) {
-			System.out.println("Adding packets design to database " + databaseName);
-			CouchDbDatabase database = instance.getDatabase(databaseName);
-			DefaultPacketsDesign design = new DefaultPacketsDesign();
-			if (!"solarthing_open".equals(databaseName)) {
-				System.out.println("This database will be readonly");
-				String function = "function(newDoc, oldDoc, userCtx, secObj) {\n\n  secObj.admins = secObj.admins || {};\n  secObj.admins.names = secObj.admins.names || [];\n  secObj.admins.roles = secObj.admins.roles || [];\n\n  var isAdmin = false;\n  if(userCtx.roles.indexOf('_admin') !== -1) {\n    isAdmin = true;\n  }\n  if(secObj.admins.names.indexOf(userCtx.name) !== -1) {\n    isAdmin = true;\n  }\n  for(var i = 0; i < userCtx.roles; i++) {\n    if(secObj.admins.roles.indexOf(userCtx.roles[i]) !== -1) {\n      isAdmin = true;\n    }\n  }\n\n  if(!isAdmin) {\n    throw {'unauthorized':'This is read only when unauthorized'};\n  }\n}";
-				design.getViews().put("readonly_auth", new SimpleView(function));
-			}
+		if (user != null) {
+			out.println("User: " + username + " exists! Continuing.");
+		} else {
+			out.println("Please enter a password for '" + username + "'.");
+			String password = scanner.nextLine();
 			final JsonData jsonData;
 			try {
-				jsonData = new StringJsonData(MAPPER.writeValueAsString(design));
+				jsonData = new StringJsonData(MAPPER.writeValueAsString(new UserEntry(username, password)));
 			} catch (JsonProcessingException e) {
 				throw new RuntimeException("Couldn't serialize json! Report this!", e);
 			}
-			try {
-				database.putDocument("_design/packets", jsonData);
-			} catch (CouchDbUpdateConflictException e) {
-				System.out.println("_design/packets document already on database: " + databaseName + ". We will not try to update it. Hopefully it is correct.");
+			usersDatabase.createIfNotExists();
+			usersDatabase.putDocument(documentId, jsonData);
+		}
+
+	}
+
+	public int doCouchDbSetupMain() throws CouchDbException {
+		out.println("You will now setup your CouchDB instance! Some databases will be automatically created (enter)");
+		scanner.nextLine();
+
+		for (SolarThingDatabaseType databaseType : SolarThingDatabaseType.values()) {
+			createDatabase(databaseType.getName());
+		}
+		out.println("All necessary databases have been created.");
+		out.println();
+		out.println("Now views and security will be configured for each database. Please enter the name of the user to be added as an admin to each database.");
+		out.println("This user is commonly named 'uploader'. (Leave blank to not configure)");
+		out.print("Name of user: ");
+		String uploaderUser = scanner.nextLine();
+		if (uploaderUser.isEmpty()) {
+			uploaderUser = null;
+			out.println("No user will be added as an admin, but members will still be cleared. (Enter to confirm)");
+		} else {
+			out.println("User: " + uploaderUser + " will be used. (Enter to confirm)");
+		}
+		scanner.nextLine();
+		if (uploaderUser != null) {
+			createUserIfNotExists(uploaderUser);
+		}
+
+		out.println("You can also enter the name of the user to manage the solarthing_cache database.");
+		out.println("This user is commonly named 'manager'. (Leave blank to not configure)" + (uploaderUser == null ? "" : " (Use '" + uploaderUser + "' to use same user to manage the cache database)"));
+		String cacheManagerUser = scanner.nextLine();
+		if (cacheManagerUser.isEmpty()) {
+			cacheManagerUser = null;
+			out.println("No user will be configured to manage the solarthing_cache database. (Enter to confirm)");
+		} else {
+			out.println("User: " + cacheManagerUser + " will be used to manage solarthing_cache. (Enter to confirm)");
+		}
+		scanner.nextLine();
+		if (cacheManagerUser != null && !cacheManagerUser.equals(uploaderUser)) {
+			createUserIfNotExists(cacheManagerUser);
+		}
+
+		out.println();
+
+		for (SolarThingDatabaseType databaseType : SolarThingDatabaseType.values()) {
+			CouchDbDatabase database = instance.getDatabase(databaseType.getName());
+			if (databaseType.needsAnyViews()) {
+				out.println("Adding packets design to database " + databaseType.getName());
+				MutablePacketsDesign design = new MutablePacketsDesign();
+				if (databaseType.needsMillisView()) {
+					out.println("This database will have the millis view");
+					design.addMillisView();
+				}
+				if (databaseType.needsReadonlyView()) {
+					out.println("This database will be readonly");
+					design.addReadonlyAuth();
+				}
+				final JsonData jsonData;
+				try {
+					jsonData = new StringJsonData(MAPPER.writeValueAsString(design));
+				} catch (JsonProcessingException e) {
+					throw new RuntimeException("Couldn't serialize json! Report this!", e);
+				}
+				try {
+					database.putDocument("_design/packets", jsonData);
+				} catch (CouchDbUpdateConflictException e) {
+					out.println("_design/packets document already on database: " + databaseType.getName() + ". We will not try to update it. Hopefully it is correct.");
+				}
 			}
-			System.out.println("Configuring security for database " + databaseName);
+			out.println("Configuring security for database " + databaseType.getName());
 			DatabaseSecurity oldSecurity = database.getSecurity();
 			SecurityGroup oldAdmins = oldSecurity.getAdminsOrBlank();
 			final SecurityGroup newAdmins;
-			if (username != null && !oldAdmins.getNamesOrEmpty().contains(username)) {
-				List<String> admins = new ArrayList<>(oldAdmins.getNamesOrEmpty());
-				admins.add(username);
-				newAdmins = new SecurityGroup(admins, oldAdmins.getRolesOrEmpty());
+			if (databaseType.isReadonlyByAll()) {
+				newAdmins = oldAdmins; // only true admins can edit stuff in CLOSED database
+			} else if (databaseType == SolarThingDatabaseType.CACHE) {
+				newAdmins = oldAdmins.withName(cacheManagerUser);
 			} else {
-				newAdmins = oldAdmins;
+				newAdmins = oldAdmins.withName(uploaderUser);
 			}
 			// This database's security has no members (public database)
-			database.setSecurity(new DatabaseSecurity(newAdmins, SecurityGroup.BLANK));
-			System.out.println();
+			database.setSecurity(new DatabaseSecurity(
+					newAdmins, // update the list of admins
+					databaseType.isPublic() ? SecurityGroup.BLANK : oldSecurity.getMembers() // if database is public, this has no members, if private, keep old members which should include an _admin role
+			));
+			out.println();
 		}
-		System.out.println("Completed successfully!");
+		out.println("Completed successfully!");
 
 		return 0;
 	}

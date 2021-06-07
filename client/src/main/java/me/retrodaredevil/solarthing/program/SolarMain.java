@@ -171,7 +171,7 @@ public final class SolarMain {
 				return 1;
 			}
 			try {
-				return CouchDbSetupMain.doCouchDbSetupMain((CouchDbDatabaseSettings) settings);
+				return CouchDbSetupMain.createFrom((CouchDbDatabaseSettings) settings).doCouchDbSetupMain();
 			} catch (CouchDbException e) {
 				if (e instanceof CouchDbCodeException) {
 					ErrorResponse error = ((CouchDbCodeException) e).getErrorResponse();

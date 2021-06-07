@@ -62,7 +62,7 @@ public class CacheHandler {
 		this.defaultInstanceOptions = defaultInstanceOptions;
 		database = CouchDbSolarThingDatabase.create(couchDbInstance);
 
-		cacheDatabase = couchDbInstance.getDatabase(SolarThingConstants.CACHE_UNIQUE_NAME);
+		cacheDatabase = couchDbInstance.getDatabase(SolarThingConstants.CACHE_DATABASE);
 	}
 
 	public Duration getDuration() {

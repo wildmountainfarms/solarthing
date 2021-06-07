@@ -158,7 +158,7 @@ public class PacketHandlerInit {
 
 	public static <T extends PacketHandlingOption & CommandOption> Result initHandlers(T options, Supplier<? extends EnvironmentUpdater> environmentUpdaterSupplier, Collection<? extends PacketHandler> additionalPacketHandlers) throws IOException {
 		List<DatabaseConfig> databaseConfigs = ConfigUtil.getDatabaseConfigs(options);
-		PacketHandlerBundle packetHandlerBundle = PacketHandlerInit.getPacketHandlerBundle(databaseConfigs, SolarThingConstants.SOLAR_STATUS_UNIQUE_NAME, SolarThingConstants.SOLAR_EVENT_UNIQUE_NAME, options.getSourceId(), options.getFragmentId());
+		PacketHandlerBundle packetHandlerBundle = PacketHandlerInit.getPacketHandlerBundle(databaseConfigs, SolarThingConstants.STATUS_DATABASE, SolarThingConstants.EVENT_DATABASE, options.getSourceId(), options.getFragmentId());
 		List<PacketHandler> statusPacketHandlers = new ArrayList<>();
 
 		final Runnable updateCommandActions;
