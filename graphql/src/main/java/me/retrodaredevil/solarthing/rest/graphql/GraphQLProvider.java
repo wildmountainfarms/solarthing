@@ -101,7 +101,7 @@ public class GraphQLProvider {
 		return new GraphQLSchemaGenerator()
 				.withBasePackages("me.retrodaredevil.solarthing")
 				.withOperationsFromSingleton(new SolarThingGraphQLService(simpleQueryHandler))
-				.withOperationsFromSingleton(new SolarThingGraphQLDailyService(simpleQueryHandler, zoneId))
+				.withOperationsFromSingleton(new SolarThingGraphQLDailyService(simpleQueryHandler, zoneId, cacheController))
 				.withOperationsFromSingleton(new SolarThingGraphQLLongTermService(cacheController, zoneId))
 				.withOperationsFromSingleton(new SolarThingGraphQLMetaService(simpleQueryHandler))
 				.withOperationsFromSingleton(new SolarThingGraphQLExtensions())

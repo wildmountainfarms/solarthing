@@ -107,6 +107,7 @@ public class CacheHandler {
 			long start = periodNumber;
 			periodNumber += QUERY_PERIOD_COUNT;
 			long end = Math.min(endPeriodNumber, periodNumber);
+			periodNumber++; // increment periodNumber because we are going to fetch [start, end], and next time want to get [end + 1, ...]
 			r.addAll(queryOrCalculateCaches(typeReference, cacheName, sourceId, start, end));
 		}
 		return r;

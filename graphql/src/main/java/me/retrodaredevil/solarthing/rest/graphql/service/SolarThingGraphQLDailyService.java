@@ -4,6 +4,7 @@ import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLQuery;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
+import me.retrodaredevil.solarthing.rest.cache.CacheController;
 import me.retrodaredevil.solarthing.rest.graphql.SimpleQueryHandler;
 import me.retrodaredevil.solarthing.rest.graphql.packets.nodes.DataNode;
 import me.retrodaredevil.solarthing.rest.graphql.packets.PacketFilter;
@@ -35,21 +36,37 @@ import static me.retrodaredevil.solarthing.rest.graphql.service.SchemaConstants.
 public class SolarThingGraphQLDailyService {
 	private final SimpleQueryHandler simpleQueryHandler;
 	private final ZoneId zoneId;
+	private final CacheController cacheController;
 
-	public SolarThingGraphQLDailyService(SimpleQueryHandler simpleQueryHandler, ZoneId zoneId) {
+	public SolarThingGraphQLDailyService(SimpleQueryHandler simpleQueryHandler, ZoneId zoneId, CacheController cacheController) {
 		this.simpleQueryHandler = simpleQueryHandler;
 		this.zoneId = zoneId;
+		this.cacheController = cacheController;
 	}
 
 	interface NodeAdder <T extends DailyData> {
 		void addNodes(Collection<? super DataNode<Float>> nodesOut, List<TimestampedPacket<T>> timestampedPackets, List<AccumulationPair<T>> accumulationPairs, String sourceId, int fragmentId, long dayStartTimeMillis);
 	}
 
-	public class SolarThingFullDayStatusQuery {
+	public interface SolarThingFullDayStatusQuery {
+		@GraphQLQuery(description = "Gives a list of a list entries. Each entry can be grouped by their identifier as entries may represent different devices")
+		@NotNull List<@NotNull DataNode<Float>> dailyKWH();
+
+		@GraphQLQuery(description = "Gives a list of entries where each entry is a sum of the daily kWh at that instant in time for the day at that time.")
+		@NotNull List<@NotNull SimpleNode<Float>> dailyKWHSum();
+
+		/**
+		 * @return A list of {@link SimpleNode}s where each node is a different day
+		 */
+		@GraphQLQuery(description = "Gives entries where each entry is timestamped at the start of a certain day and its value represents the daily kWh of that device for that day. (Results can be grouped by their identifiers as there may be different devices)")
+		@NotNull List<@NotNull DataNode<Float>> singleDailyKWH();
+	}
+
+	public class SimpleSolarThingFullDayStatusQuery implements SolarThingFullDayStatusQuery {
 		private final PacketGetter packetGetter;
 		private final List<? extends FragmentedPacketGroup> sortedPackets;
 
-		public SolarThingFullDayStatusQuery(PacketGetter packetGetter, List<? extends FragmentedPacketGroup> sortedPackets) {
+		public SimpleSolarThingFullDayStatusQuery(PacketGetter packetGetter, List<? extends FragmentedPacketGroup> sortedPackets) {
 			this.packetGetter = packetGetter;
 			this.sortedPackets = sortedPackets;
 		}
@@ -101,7 +118,7 @@ public class SolarThingGraphQLDailyService {
 			nodesOut.add(new DataNode<>(total, firstPacket, dayStartTimeMillis, sourceId, fragmentId));
 		}
 
-		@GraphQLQuery(description = "Gives a list of a list entries. Each entry can be grouped by their identifier as entries may represent different devices")
+		@Override
 		public @NotNull List<@NotNull DataNode<Float>> dailyKWH() {
 			return getPoints(
 					DailyChargeController.class,
@@ -109,7 +126,7 @@ public class SolarThingGraphQLDailyService {
 							addAllPoints(nodesOut, timestampedPackets, dailyPairs, sourceId, fragmentId, DailyChargeController::getDailyKWH)
 			);
 		}
-		@GraphQLQuery(description = "Gives a list of entries where each entry is a sum of the daily kWh at that instant in time for the day at that time.")
+		@Override
 		public @NotNull List<@NotNull SimpleNode<Float>> dailyKWHSum() {
 			Map<LocalDate, Map<IdentifierFragment, List<TimestampedPacket<DailyChargeController>>>> map = new HashMap<>();
 			for (FragmentedPacketGroup fragmentedPacketGroup : sortedPackets) {
@@ -147,11 +164,7 @@ public class SolarThingGraphQLDailyService {
 			return new ArrayList<>(r);
 		}
 
-		/**
-		 *
-		 * @return A list of {@link SimpleNode}s where each node is a different day
-		 */
-		@GraphQLQuery(description = "Gives entries where each entry is timestamped at the start of a certain day and its value represents the daily kWh of that device for that day. (Results can be grouped by their identifiers as there may be different devices)")
+		@Override
 		public @NotNull List<@NotNull DataNode<Float>> singleDailyKWH() {
 			return getPoints(
 					DailyChargeController.class,
@@ -168,7 +181,7 @@ public class SolarThingGraphQLDailyService {
 
 
 	@GraphQLQuery
-	public SolarThingFullDayStatusQuery queryFullDay(
+	public SimpleSolarThingFullDayStatusQuery queryFullDay(
 			@GraphQLArgument(name = "from", description = DESCRIPTION_FROM) long from, @GraphQLArgument(name = "to", description = DESCRIPTION_TO) long to,
 			@GraphQLArgument(name = "sourceId", description = DESCRIPTION_OPTIONAL_SOURCE) @Nullable String sourceId){
 
@@ -179,6 +192,6 @@ public class SolarThingGraphQLDailyService {
 				toDate.plusDays(1).atStartOfDay(zoneId).toInstant().toEpochMilli() - 1,
 				sourceId
 		);
-		return new SolarThingFullDayStatusQuery(new BasicPacketGetter(packets, PacketFilter.KEEP_ALL), simpleQueryHandler.sortPackets(packets, sourceId));
+		return new SimpleSolarThingFullDayStatusQuery(new BasicPacketGetter(packets, PacketFilter.KEEP_ALL), simpleQueryHandler.sortPackets(packets, sourceId));
 	}
 }
