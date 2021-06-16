@@ -126,6 +126,13 @@ public final class SolarMain {
 			}
 			throw new AssertionError("Unknown program type... type=" + programType + " programOptions=" + options);
 		} catch (Throwable t) {
+			if (t instanceof ClassNotFoundException || t instanceof NoClassDefFoundError) {
+				LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "We're about to give you an error with some technical stuff, but this error is likely caused by you switching out jar files while SolarThing is running. If it isn't, please report this error.");
+			}
+			String logMessage = "Ending SolarThing. Jar: " + JarUtil.getJarFileName() + " Java version: " + System.getProperty("java.version");
+			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "[LOG] " + logMessage);
+			System.out.println("[stdout] " + logMessage);
+			System.err.println("[stderr] " + logMessage);
 			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)Got throwable", t);
 			LOGGER.debug("Going to shutdown LogManager.");
 			LogManager.shutdown(); // makes sure all buffered logs are flushed // this should be done automatically, but we'll do it anyway

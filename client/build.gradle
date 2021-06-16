@@ -12,6 +12,7 @@ dependencies {
     implementation group: 'org.influxdb', name: 'influxdb-java', version: '2.19' // for InfluxDB 1.X
     implementation "com.influxdb:influxdb-client-java:2.3.0" // for InfluxDB 2.0 // https://github.com/influxdata/influxdb-client-java/releases
 
+//    runtimeOnly "org.apache.logging.log4j:log4j-core:$log4jVersion" shouldn't be necessary
     implementation "org.apache.logging.log4j:log4j-jcl:$log4jVersion" // commons logging bridge.
     implementation "org.apache.logging.log4j:log4j-slf4j-impl:$log4jVersion"
     implementation 'com.github.retrodaredevil:action-lib:v1.3.1'
