@@ -71,7 +71,7 @@ public class SolarThingGraphQLService {
 		for(List<InstancePacketGroup> packetGroups : PacketGroups.mapFragments(packets).values()) {
 			lastPackets.add(packetGroups.get(packetGroups.size() - 1));
 		}
-		return new SolarThingStatusQuery(new ReversedPacketGetter(new BasicPacketGetter(lastPackets, PacketFilter.KEEP_ALL), reversed), simpleQueryHandler.sortPackets(lastPackets, sourceId), simpleQueryHandler);
+		return new SolarThingStatusQuery(new ReversedPacketGetter(new LastPacketGetter(packets, PacketFilter.KEEP_ALL), reversed), simpleQueryHandler.sortPackets(lastPackets, sourceId), simpleQueryHandler);
 	}
 	@GraphQLQuery
 	public SolarThingEventQuery queryEvent(
@@ -166,7 +166,9 @@ public class SolarThingGraphQLService {
 		public @NotNull List<@NotNull DataNode<Float>> batteryVoltageTemperatureCompensated() {
 			MetaDatabase metaDatabase = simpleQueryHandler.queryMeta();
 			FXChargingTemperatureAdjustPacket fxChargingTemperatureAdjustPacket = null;
-			for (BasicMetaPacket basicMetaPacket : metaDatabase.getMeta(sortedPackets.get(sortedPackets.size() - 1).getDateMillis())) {
+			// Depending on the date, there could be different configurations. So, this just gets the date of the last packet
+			long currentConfigurationDateMillis = sortedPackets.get(sortedPackets.size() - 1).getDateMillis();
+			for (BasicMetaPacket basicMetaPacket : metaDatabase.getMeta(currentConfigurationDateMillis)) {
 				if (basicMetaPacket instanceof TargetMetaPacket) {
 					TargetMetaPacket targetMetaPacket = (TargetMetaPacket) basicMetaPacket;
 					for (TargetedMetaPacket targetedMetaPacket : targetMetaPacket.getPackets()) {
