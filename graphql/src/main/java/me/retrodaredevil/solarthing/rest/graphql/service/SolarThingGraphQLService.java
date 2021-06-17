@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.rest.graphql.service;
 
 import io.leangen.graphql.annotations.*;
 import io.leangen.graphql.annotations.types.GraphQLType;
+import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.rest.graphql.SimpleQueryHandler;
@@ -65,7 +66,7 @@ public class SolarThingGraphQLService {
 			@GraphQLArgument(name = "to", description = DESCRIPTION_TO) long to,
 			@GraphQLArgument(name = "sourceId", description = DESCRIPTION_OPTIONAL_SOURCE) @Nullable String sourceId,
 			@GraphQLArgument(name = "reversed", defaultValue = "false", description = "If set to true, the returned list will be reversed. Useful to set to true if you want the very latest packet to be first.") boolean reversed){
-		List<? extends InstancePacketGroup> packets = simpleQueryHandler.queryStatus(to - 2 * 60 * 1000, to, sourceId);
+		List<? extends InstancePacketGroup> packets = simpleQueryHandler.queryStatus(to - SolarThingConstants.LATEST_PACKETS_DURATION.toMillis(), to, sourceId);
 		List<InstancePacketGroup> lastPackets = new ArrayList<>();
 		for(List<InstancePacketGroup> packetGroups : PacketGroups.mapFragments(packets).values()) {
 			lastPackets.add(packetGroups.get(packetGroups.size() - 1));

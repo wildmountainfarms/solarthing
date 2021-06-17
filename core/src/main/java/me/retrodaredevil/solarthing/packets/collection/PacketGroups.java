@@ -163,6 +163,7 @@ public final class PacketGroups {
 			fragmentIdsSet.addAll(fragmentMap.keySet());
 			fragmentIds = new ArrayList<>(fragmentIdsSet); // now this is sorted
 		}
+		// Create an ordered set so that whenever something is added to it, it gets ordered correctly
 		TreeSet<FragmentedPacketGroup> packetGroups = new TreeSet<>(Comparator.comparingLong(PacketGroup::getDateMillis));
 		addToPacketGroups(
 				maxTimeDistance, masterIdIgnoreDistance,
@@ -186,6 +187,11 @@ public final class PacketGroups {
 			Map<Integer, ? extends List<? extends InstancePacketGroup>> fragmentMap,
 			Collection<? super FragmentedPacketGroup> packetGroupsOut
 	){
+		/*
+		Yeah, I didn't comment this when I wrote this, so good luck understanding it.
+		It does some recursive stuff if there's a gap in the master fragment, so it might call
+		itself and use the next most important fragment ID as the master fragment
+		 */
 		if(minTime > maxTime){
 			return;
 		}
@@ -193,29 +199,42 @@ public final class PacketGroups {
 			throw new IllegalArgumentException("Fragment IDs is empty!");
 		}
 		int masterFragmentId = fragmentIds.get(0);
+		List<Integer> subFragmentIds = fragmentIds.subList(1, fragmentIds.size()); // List of fragment IDs not including the master
 		List<? extends InstancePacketGroup> masterList = requireNonNull(fragmentMap.get(masterFragmentId));
 		if(masterIdIgnoreDistance != null && fragmentIds.size() > 1){ // see if we need to check for gaps in the master list
-			InstancePacketGroup last = null;
 			List<Integer> splitIndexes = new ArrayList<>();
-			for(int i = 0; i < masterList.size(); i++){
-				InstancePacketGroup group = masterList.get(i);
-				if(last != null && Math.abs(last.getDateMillis() - group.getDateMillis()) > masterIdIgnoreDistance * 2){
-					splitIndexes.add(i);
+			{
+				InstancePacketGroup lastMaster = null;
+				for (int i = 0; i < masterList.size(); i++) {
+					InstancePacketGroup currentMaster = masterList.get(i);
+					// We multiply masterIdIgnoreDistance by 2 because each master packet has a distance going away from it in both directions.
+					//   So we want to check if there's a gap in the middle
+					assert lastMaster == null || currentMaster.getDateMillis() >= lastMaster.getDateMillis();
+					if (lastMaster != null && currentMaster.getDateMillis() - lastMaster.getDateMillis() > masterIdIgnoreDistance * 2) {
+						splitIndexes.add(i);
+					}
+					lastMaster = currentMaster;
 				}
-				last = group;
 			}
-			List<List<? extends InstancePacketGroup>> subListList = new ArrayList<>();
-			int lastIndex = 0;
-			for(int index : splitIndexes){
-				subListList.add(masterList.subList(lastIndex, index));
-				lastIndex = index;
-			}
-			subListList.add(masterList.subList(lastIndex, masterList.size()));
 
-			List<Integer> subFragmentIds = fragmentIds.subList(1, fragmentIds.size());
+			// subListList is a list of list of master packets, where each list of master packets represents
+			//   a period where there are no gaps
+			List<List<? extends InstancePacketGroup>> subListList = new ArrayList<>();
+			{
+				int lastIndex = 0;
+				for (int index : splitIndexes) {
+					subListList.add(masterList.subList(lastIndex, index));
+					lastIndex = index;
+				}
+				subListList.add(masterList.subList(lastIndex, masterList.size()));
+			}
+
+			// The first master packet (also the earliest master packet)
 			InstancePacketGroup firstPacket = subListList
 					.get(0) // we know this won't fail because we added at least one element above
 					.get(0); // we're going to infer that this won't fail because it should never be empty
+
+			// Add non-master packets before the first master packet
 			addToPacketGroups(
 					maxTimeDistance, masterIdIgnoreDistance,
 					Long.MIN_VALUE, firstPacket.getDateMillis() - masterIdIgnoreDistance,
@@ -224,14 +243,19 @@ public final class PacketGroups {
 			Long lastTime = null;
 			for(List<? extends InstancePacketGroup> subList : subListList){
 				if(lastTime != null){
+					// This deals with our first gap
 					addToPacketGroups(
 							maxTimeDistance, masterIdIgnoreDistance,
 							lastTime + masterIdIgnoreDistance, subList.get(0).getDateMillis() - masterIdIgnoreDistance,
 							subFragmentIds, fragmentMap, packetGroupsOut
 					);
 				}
+				// Copy fragmentMap
 				Map<Integer, List<? extends InstancePacketGroup>> subFragmentMap = new HashMap<>(fragmentMap);
+				// But then make the master fragment ID entry this sublist, so we only do stuff with this smaller set of master packets
 				subFragmentMap.put(masterFragmentId, subList);
+
+				// This gets us to not go in this if statement and just add nearby packets
 				addToPacketGroups(
 						maxTimeDistance, null,
 						minTime, maxTime, // we don't have to limit the time more because we limited the selection with subFragmentMap
@@ -240,6 +264,7 @@ public final class PacketGroups {
 				lastTime = subList.get(subList.size() - 1).getDateMillis();
 			}
 			List<? extends InstancePacketGroup> lastSubList = subListList.get(subListList.size() - 1);
+			// Add non-master packets after the last master packet
 			addToPacketGroups(
 					maxTimeDistance, masterIdIgnoreDistance,
 					lastSubList.get(lastSubList.size() - 1).getDateMillis() + masterIdIgnoreDistance, Long.MAX_VALUE,
@@ -248,6 +273,7 @@ public final class PacketGroups {
 			return;
 		}
 
+		// This is the basic part of the method. Go over each master packet, and grab non-master packets that are close to it
 		for(InstancePacketGroup masterGroup : masterList){
 			if(masterGroup.getDateMillis() < minTime){
 				continue;
@@ -257,8 +283,7 @@ public final class PacketGroups {
 			}
 			List<InstancePacketGroup> instancePacketGroupList = new ArrayList<>();
 			instancePacketGroupList.add(masterGroup);
-			for(int fragmentId : fragmentIds){
-				if(fragmentId == masterFragmentId) continue;
+			for(int fragmentId : subFragmentIds) { // iterate over non-master fragment IDs
 				List<? extends InstancePacketGroup> packetGroupList = requireNonNull(fragmentMap.get(fragmentId));
 				// now we want to find the closest packet group
 				InstancePacketGroup closest = getClosest(packetGroupList, masterGroup.getDateMillis());

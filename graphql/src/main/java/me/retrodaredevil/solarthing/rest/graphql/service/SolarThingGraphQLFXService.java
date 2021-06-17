@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.rest.graphql.service;
 
 import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLQuery;
+import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.rest.graphql.SimpleQueryHandler;
 import me.retrodaredevil.solarthing.rest.graphql.packets.nodes.DataNode;
 import me.retrodaredevil.solarthing.meta.MetaDatabase;
@@ -52,8 +53,10 @@ public class SolarThingGraphQLFXService {
 
 		long startTime = from - 3 * 60 * 60 * 1000; // 3 hours back
 		List<? extends InstancePacketGroup> packets = simpleQueryHandler.queryStatus(startTime, to, null);
+
+		// We make masterIdIgnoreDistance null because we will only be using fragmentId as the master fragment ID
 		Map<String, List<FragmentedPacketGroup>> map = PacketGroups.sortPackets( // separate based on source ID
-				packets, simpleQueryHandler.getDefaultInstanceOptions(), 5 * 60 * 1000, null,
+				packets, simpleQueryHandler.getDefaultInstanceOptions(), SolarThingConstants.STANDARD_MAX_TIME_DISTANCE.toMillis(), null,
 				FragmentUtil.createPriorityComparator(fragmentId) // make fragmentId be the master ID
 		);
 		List<FragmentedPacketGroup> sortedPackets = null;

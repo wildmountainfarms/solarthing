@@ -18,6 +18,8 @@
     for older packets.
     * Because of the additional overhead of saving more packets per hour, the `unique` option could be lowered to
     something like 15 per hour.
+* Have standard timings for grouping/sorting packets and increase time for GraphQL grouped queries so that
+all temperature readings show up even if one is from 10 minutes ago.
   
 ### Completed
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
