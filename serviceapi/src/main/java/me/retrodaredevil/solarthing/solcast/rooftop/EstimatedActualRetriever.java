@@ -8,6 +8,8 @@ import retrofit2.Response;
 
 import java.io.IOException;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Should retrieve past estimated actuals or future forecasts seven days in the past and seven days in the future, respectively.
  */
@@ -23,7 +25,7 @@ public interface EstimatedActualRetriever {
 				Response<EstimatedActualResult> response = call.execute();
 				EstimatedActualResult result = response.body();
 				if (result == null) {
-					throw new IOException("Null body! Code: " + response.code());
+					throw createException(response);
 				}
 				return result;
 			}
@@ -34,9 +36,13 @@ public interface EstimatedActualRetriever {
 				Response<ForecastResult> response = call.execute();
 				ForecastResult result = response.body();
 				if (result == null) {
-					throw new IOException("Null body! Code: " + response.code());
+					throw createException(response);
 				}
 				return result;
+			}
+			private IOException createException(Response<?> response) throws IOException {
+				String error = requireNonNull(response.errorBody()).string();
+				return new IOException("Error! Code: " + response.code() + " message: " + error);
 			}
 		};
 	}

@@ -1,7 +1,6 @@
 package me.retrodaredevil.solarthing.rest.graphql.service;
 
 import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.InstancePacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
 import me.retrodaredevil.solarthing.rest.graphql.packets.PacketFilter;
