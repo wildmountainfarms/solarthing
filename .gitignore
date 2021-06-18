@@ -3,6 +3,9 @@
 .~lock*
 *.log.gz
 
+/config.json
+/other/systemd/config.json
+
 /logs/
 /logrotate.conf
 
