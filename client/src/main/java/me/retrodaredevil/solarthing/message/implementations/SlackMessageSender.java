@@ -39,7 +39,7 @@ public class SlackMessageSender implements MessageSender {
 
 		Slack slack = Slack.getInstance(new SlackConfig(), new SlackHttpClient(new OkHttpClient.Builder()
 				.callTimeout(Duration.ofSeconds(10))
-				.connectTimeout(Duration.ofSeconds(3))
+				.connectTimeout(Duration.ofSeconds(4))
 //				.addInterceptor(new UserAgentInterceptor(Collections.emptyMap()))
 				.build()));
 		methodsClient = slack.methods(authToken);
@@ -59,7 +59,11 @@ public class SlackMessageSender implements MessageSender {
 				// If we've failed before, start waiting a tiny bit longer before doing another request.
 				//   This will also stop other messages from being sent, but that's OK because if we failed for some reason, we don't need other messages being sent. They can wait too.
 				try {
-					Thread.sleep(depth * 100L);
+					if (depth == 4) {
+						Thread.sleep(7000); // if we're about to fail for the last time, just wait a bit longer
+					} else {
+						Thread.sleep(depth * 700L);
+					}
 				} catch (InterruptedException e) {
 					LOGGER.error("Interrupted", e);
 					return;

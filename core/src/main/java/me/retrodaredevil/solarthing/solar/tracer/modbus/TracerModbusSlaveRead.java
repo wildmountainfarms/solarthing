@@ -138,19 +138,19 @@ public class TracerModbusSlaveRead extends AbstractModbusRead implements TracerR
 	private static final MessageHandler<int[]> BATTERY_TEMPERATURE_CELSIUS = new ReadInputRegisters(0x3110, 1);
 	@Override
 	public float getBatteryTemperatureCelsius() {
-		return oneRegister(BATTERY_TEMPERATURE_CELSIUS) / 100.0f;
+		return convertRawTemperatureToCelsius(oneRegister(BATTERY_TEMPERATURE_CELSIUS));
 	}
 
 	private static final MessageHandler<int[]> INSIDE_CONTROLLER_TEMPERATURE_CELSIUS = new ReadInputRegisters(0x3111, 1);
 	@Override
 	public float getInsideControllerTemperatureCelsius() {
-		return oneRegister(INSIDE_CONTROLLER_TEMPERATURE_CELSIUS) / 100.0f;
+		return convertRawTemperatureToCelsius(oneRegister(INSIDE_CONTROLLER_TEMPERATURE_CELSIUS));
 	}
 
 	private static final MessageHandler<int[]> POWER_COMPONENT_TEMPERATURE_CELSIUS = new ReadInputRegisters(0x3112, 1);
 	@Override
 	public float getPowerComponentTemperatureCelsius() {
-		return oneRegister(POWER_COMPONENT_TEMPERATURE_CELSIUS) / 100.0f;
+		return convertRawTemperatureToCelsius(oneRegister(POWER_COMPONENT_TEMPERATURE_CELSIUS));
 	}
 
 	private static final MessageHandler<int[]> BATTERY_SOC = new ReadInputRegisters(0x311A, 1);
@@ -162,7 +162,7 @@ public class TracerModbusSlaveRead extends AbstractModbusRead implements TracerR
 	private static final MessageHandler<int[]> REMOTE_BATTERY_TEMPERATURE_CELSIUS = new ReadInputRegisters(0x311B, 1);
 	@Override
 	public float getRemoteBatteryTemperatureCelsius() {
-		return oneRegister(REMOTE_BATTERY_TEMPERATURE_CELSIUS) / 100.0f;
+		return convertRawTemperatureToCelsius(oneRegister(REMOTE_BATTERY_TEMPERATURE_CELSIUS));
 	}
 
 	private static final MessageHandler<int[]> REAL_BATTERY_RATED_VOLTAGE = new ReadInputRegisters(0x311D, 1);
@@ -275,13 +275,13 @@ public class TracerModbusSlaveRead extends AbstractModbusRead implements TracerR
 	private static final MessageHandler<int[]> BATTERY_TEMPERATURE_CELSIUS_331D = new ReadInputRegisters(0x331D, 1);
 	@Override
 	public float getBatteryTemperatureCelsius331D() {
-		return oneRegister(BATTERY_TEMPERATURE_CELSIUS_331D) / 100.0f;
+		return convertRawTemperatureToCelsius(oneRegister(BATTERY_TEMPERATURE_CELSIUS_331D));
 	}
 
 	private static final MessageHandler<int[]> AMBIENT_TEMPERATURE_CELSIUS = new ReadInputRegisters(0x331E, 1);
 	@Override
 	public float getAmbientTemperatureCelsius() {
-		return oneRegister(AMBIENT_TEMPERATURE_CELSIUS) / 100.0f;
+		return convertRawTemperatureToCelsius(oneRegister(AMBIENT_TEMPERATURE_CELSIUS));
 	}
 	// endregion
 
@@ -301,7 +301,7 @@ public class TracerModbusSlaveRead extends AbstractModbusRead implements TracerR
 	private static final MessageHandler<int[]> TEMPERATURE_COMPENSATION_COEFFICIENT = new ReadHoldingRegisters(0x9002, 1);
 	@Override
 	public int getTemperatureCompensationCoefficient() {
-		return oneRegister(TEMPERATURE_COMPENSATION_COEFFICIENT) / 100; // TODO do we have to divide this?
+		return oneRegister(TEMPERATURE_COMPENSATION_COEFFICIENT) / 100;
 	}
 
 	private static final MessageHandler<int[]> HIGH_VOLTAGE_DISCONNECT = new ReadHoldingRegisters(0x9003, 1);

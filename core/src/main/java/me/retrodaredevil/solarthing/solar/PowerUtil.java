@@ -7,6 +7,7 @@ import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPacket;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
+import me.retrodaredevil.solarthing.solar.tracer.TracerStatusPacket;
 
 import static java.util.Objects.requireNonNull;
 
@@ -48,6 +49,19 @@ public final class PowerUtil {
 					generatingW += ((RoverStatusPacket) packet).getChargingPower();
 				} else throw new AssertionError("Unknown generatingType: " + generatingType);
 				usingW += ((RoverStatusPacket) packet).getLoadPower();
+			} else if (packet instanceof TracerStatusPacket) {
+				if (generatingW == null) {
+					generatingW = 0;
+				}
+				if (usingW == null) {
+					usingW = 0;
+				}
+				if (generatingType == GeneratingType.PV_ONLY) {
+					generatingW += ((TracerStatusPacket) packet).getPVWattage().intValue();
+				} else if (generatingType == GeneratingType.TOTAL_CHARGING) {
+					generatingW += ((TracerStatusPacket) packet).getChargingPower().intValue();
+				} else throw new AssertionError("Unknown generatingType: " + generatingType);
+				usingW += (int) ((TracerStatusPacket) packet).getLoadPower();
 			}
 		}
 		return new Data(generatingW, usingW);

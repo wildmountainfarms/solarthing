@@ -22,6 +22,7 @@ import me.retrodaredevil.solarthing.solar.outback.fx.charge.ImmutableFXChargingP
 import me.retrodaredevil.solarthing.solar.outback.fx.meta.FXChargingSettingsPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.meta.FXChargingTemperatureAdjustPacket;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
+import me.retrodaredevil.solarthing.solar.tracer.TracerStatusPacket;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,6 +83,10 @@ public class SolarThingGraphQLFXService {
 					fxPackets.add((FXStatusPacket) packet);
 				} else if (packet instanceof RoverStatusPacket) {
 					temperature = ((RoverStatusPacket) packet).getBatteryTemperatureCelsius();
+				} else if (packet instanceof TracerStatusPacket) {
+					if (temperature == null) {
+						temperature = (int) ((TracerStatusPacket) packet).getBatteryTemperatureCelsius();
+					}
 				}
 			}
 			if (fxPackets.isEmpty()) {

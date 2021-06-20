@@ -96,6 +96,10 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 	@JsonProperty("loadPower")
 	float getLoadPower();
 
+	/**
+	 * If not connected, this will return 25.0f
+	 * @return The temperature reading of the remote temperature sensor (the sensor plugged into the controller)
+	 */
 	@JsonProperty("batteryTemperatureCelsius")
 	float getBatteryTemperatureCelsius(); // 0x3110
 
@@ -140,7 +144,7 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 	@JsonProperty("temp_isBatteryWrongIdentificationForRatedVoltage")
 	@GraphQLInclude("isBatteryWrongIdentificationForRatedVoltage")
 	default boolean isBatteryWrongIdentificationForRatedVoltage() { return ((getBatteryStatusValue() >> 15) & 1) != 0; } // check bit15
-	@JsonProperty("temp_isBatteryWrongIdentificationForRatedVoltage")
+	@JsonProperty("temp_getBatteryVoltageStatus")
 	@GraphQLInclude("temp_getBatteryVoltageStatus")
 	default @NotNull TracerBatteryVoltageStatus getBatteryVoltageStatus() { return Modes.getActiveMode(TracerBatteryVoltageStatus.class, getBatteryVoltageStatusValue()); }
 	@JsonProperty("temp_getBatteryTemperatureStatus")
@@ -212,14 +216,13 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 	float getNetBatteryCurrent();
 
 	/**
-	 * In my experience, this has the same value as {@link #getAmbientTemperatureCelsius()}
+	 * In my experience, this has the same value as {@link #getBatteryTemperatureCelsius()}}
 	 */
 	@JsonProperty("batteryTemperatureCelsius331D")
 	float getBatteryTemperatureCelsius331D(); // 0x331D
 
 	/**
-	 *
-	 * @return The temperature reading of the remote temperature sensor (the sensor plugged into the controller)
+	 * In my experience, this has the same value as {@link #getBatteryTemperatureCelsius()}}
 	 */
 	@JsonProperty("ambientTemperatureCelsius")
 	float getAmbientTemperatureCelsius();
@@ -231,6 +234,7 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 	default @NotNull TracerBatteryType getBatteryType() { return Modes.getActiveMode(TracerBatteryType.class, getBatteryTypeValue()); }
 	@JsonProperty("batteryCapacityAmpHours")
 	int getBatteryCapacityAmpHours();
+	/** @return number in range 0-9 */
 	@JsonProperty("temperatureCompensationCoefficient")
 	int getTemperatureCompensationCoefficient();
 	@JsonProperty("highVoltageDisconnect")
@@ -319,12 +323,15 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 	default LocalTime getTurnOffTiming1() { return TracerUtil.convertTracer48BitRawTimeToLocalTime(getTurnOffTiming1Raw()); }
 	@JsonProperty("turnOnTiming2Raw")
 	long getTurnOnTiming2Raw();
+	@JsonProperty("temp_getTurnOnTiming2")
 	default LocalTime getTurnOnTiming2() { return TracerUtil.convertTracer48BitRawTimeToLocalTime(getTurnOnTiming2Raw()); }
 	@JsonProperty("turnOffTiming2Raw")
 	long getTurnOffTiming2Raw();
+	@JsonProperty("temp_getTurnOffTiming2")
 	default LocalTime getTurnOffTiming2() { return TracerUtil.convertTracer48BitRawTimeToLocalTime(getTurnOffTiming2Raw()); }
 	@JsonProperty("lengthOfNightRaw")
 	int getLengthOfNightRaw();
+	@JsonProperty("temp_getLengthOfNight")
 	default Duration getLengthOfNight() { return TracerUtil.convertTracerDurationRawToDuration(getLengthOfNightRaw()); }
 
 	@JsonProperty("batteryRatedVoltageCode")

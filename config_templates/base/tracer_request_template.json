@@ -1,0 +1,19 @@
+{
+  "type": "request",
+  "source": "default",
+  "fragment": 5,
+  "unique": 30,
+  "databases": [
+  ],
+  "request": [
+    {
+      "type": "modbus",
+      "io": "config/io.json",
+      "devices": {
+        "1": {
+          "type": "tracer"
+        }
+      }
+    }
+  ]
+}
