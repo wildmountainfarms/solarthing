@@ -69,9 +69,9 @@ public class TracerModbusRequester implements ModbusRequester {
 		modbusCacheSlave.cacheHoldingRangeInclusive(0x9013, 0x9021);
 		modbusCacheSlave.cacheHoldingRangeInclusive(0x903D, 0x903F);
 		modbusCacheSlave.cacheHoldingRangeInclusive(0x9042, 0x904D);
-		modbusCacheSlave.cacheInput(0x9065, 1);
+		modbusCacheSlave.cacheHolding(0x9065, 1); // not always valid
 		modbusCacheSlave.cacheHoldingRangeInclusive(0x9069, 0x906E);
-		modbusCacheSlave.cacheInput(0x9070, 1);
+		modbusCacheSlave.cacheHolding(0x9070, 1);
 	}
 
 	@Override

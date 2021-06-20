@@ -35,7 +35,7 @@ public class TracerPacketListUpdater implements PacketListReceiver {
 		try {
 			LOGGER.debug(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(read));
 		} catch (JsonProcessingException e) {
-			throw new RuntimeException(e);
+			LOGGER.error("Error", e);
 		}
 
 	}

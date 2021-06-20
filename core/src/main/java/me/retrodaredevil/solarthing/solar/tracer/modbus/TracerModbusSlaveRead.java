@@ -275,13 +275,13 @@ public class TracerModbusSlaveRead extends AbstractModbusRead implements TracerR
 	private static final MessageHandler<int[]> BATTERY_TEMPERATURE_CELSIUS_331D = new ReadInputRegisters(0x331D, 1);
 	@Override
 	public float getBatteryTemperatureCelsius331D() {
-		return twoRegistersAsInt(BATTERY_TEMPERATURE_CELSIUS_331D);
+		return oneRegister(BATTERY_TEMPERATURE_CELSIUS_331D) / 100.0f;
 	}
 
 	private static final MessageHandler<int[]> AMBIENT_TEMPERATURE_CELSIUS = new ReadInputRegisters(0x331E, 1);
 	@Override
 	public float getAmbientTemperatureCelsius() {
-		return twoRegistersAsInt(AMBIENT_TEMPERATURE_CELSIUS) / 100.0f;
+		return oneRegister(AMBIENT_TEMPERATURE_CELSIUS) / 100.0f;
 	}
 	// endregion
 
