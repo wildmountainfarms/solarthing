@@ -8,10 +8,7 @@ import me.retrodaredevil.solarthing.annotations.*;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.packets.annotations.ValidSinceVersion;
 import me.retrodaredevil.solarthing.solar.common.*;
-import me.retrodaredevil.solarthing.solar.renogy.BatteryType;
-import me.retrodaredevil.solarthing.solar.renogy.ProductType;
-import me.retrodaredevil.solarthing.solar.renogy.Version;
-import me.retrodaredevil.solarthing.solar.renogy.Voltage;
+import me.retrodaredevil.solarthing.solar.renogy.*;
 import me.retrodaredevil.solarthing.solar.renogy.rover.annotations.DcdcOnly;
 import me.retrodaredevil.solarthing.solar.renogy.rover.annotations.ResetEvening;
 import me.retrodaredevil.solarthing.solar.renogy.rover.annotations.ResetMorning;
@@ -67,7 +64,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	 */
 	@GraphQLInclude("isDcdc")
 	default boolean isDcdc() {
-		return !hasLoad() && getMaxVoltage() == Voltage.V12 && getProductModel().startsWith("RBC");
+		return !hasLoad() && getMaxVoltage() == Voltage.V12 && ProductModelUtil.isDcdc(getProductModel());
 	}
 
 	/**

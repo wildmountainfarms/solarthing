@@ -31,8 +31,10 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 			.build();
 
 	@Override
-	default @NotNull Mode getChargingMode() {
-		throw new UnsupportedOperationException("TODO - We need to do this. We will probably use a combination of ChargingStatus and something else for this as charging status doesn't have a bulk mode");
+	default @NotNull ChargingStatus getChargingMode() {
+		// TODO, if we figure out if there's a way to tell if the tracer is actually in one of these modes rather than just in Bulk, we may
+		//   consider creating another enum representing that possibility
+		return getChargingStatus();
 	}
 
 	@Override
@@ -97,8 +99,15 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 
 	@JsonProperty("batteryTemperatureCelsius")
 	float getBatteryTemperatureCelsius(); // 0x3110
+
+	/**
+	 * @return The temperature inside the controller
+	 */
 	@JsonProperty("insideControllerTemperatureCelsius")
 	float getInsideControllerTemperatureCelsius();
+	/**
+	 * In my experience, this has the same value as {@link #getInsideControllerTemperatureCelsius()}
+	 */
 	@JsonProperty("powerComponentTemperatureCelsius")
 	float getPowerComponentTemperatureCelsius();
 
@@ -109,6 +118,9 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 	@JsonProperty("batterySOC")
 	int getBatterySOC();
 
+	/**
+	 * On EPEver tracer, I always find this value is 0.0, so don't use this
+	 */
 	@JsonProperty("remoteBatteryTemperatureCelsius")
 	float getRemoteBatteryTemperatureCelsius();
 
@@ -199,8 +211,17 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 
 	@JsonProperty("netBatteryCurrent")
 	float getNetBatteryCurrent();
+
+	/**
+	 * In my experience, this has the same value as {@link #getAmbientTemperatureCelsius()}
+	 */
 	@JsonProperty("batteryTemperatureCelsius331D")
 	float getBatteryTemperatureCelsius331D(); // 0x331D
+
+	/**
+	 *
+	 * @return The temperature reading of the remote temperature sensor (the sensor plugged into the controller)
+	 */
 	@JsonProperty("ambientTemperatureCelsius")
 	float getAmbientTemperatureCelsius();
 	// endregion

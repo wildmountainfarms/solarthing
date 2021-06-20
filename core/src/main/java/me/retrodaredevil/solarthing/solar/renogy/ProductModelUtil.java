@@ -25,7 +25,7 @@ public final class ProductModelUtil {
 		return productModel.contains("WND");
 	}
 	public static boolean isDcdc(String productModel) {
-		return productModel.contains("RBC");
+		return productModel.startsWith("RBC");
 	}
 	public static boolean isRenogy(String productModel) {
 		return isRover(productModel) || isWanderer(productModel) || isDcdc(productModel) || isRoverElite(productModel)

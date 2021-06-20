@@ -2,6 +2,10 @@ package me.retrodaredevil.solarthing.solar.tracer.mode;
 
 import me.retrodaredevil.solarthing.packets.CodeMode;
 
+/**
+ * Charging status represents the current mode of the charge controller. However, while in any of these modes, (except {@link #NO_CHARGING},
+ * the controller may actually be in Bulk mode.
+ */
 public enum ChargingStatus implements CodeMode {
 	NO_CHARGING(0, "No charging"),
 	FLOAT(1, "Float"),

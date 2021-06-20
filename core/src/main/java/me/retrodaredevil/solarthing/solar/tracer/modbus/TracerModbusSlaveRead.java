@@ -388,40 +388,44 @@ public class TracerModbusSlaveRead extends AbstractModbusRead implements TracerR
 		return oneRegister(EQUALIZING_CHARGING_INTERVAL);
 	}
 
+	private static float convertRawTemperatureToCelsius(int temperature16BitRaw) {
+		return ((short) temperature16BitRaw) / 100.0f;
+	}
+
 	private static final MessageHandler<int[]> BATTERY_TEMPERATURE_WARNING_UPPER_LIMIT = new ReadHoldingRegisters(0x9017, 1);
 	@Override
 	public float getBatteryTemperatureWarningUpperLimit() {
-		return oneRegister(BATTERY_TEMPERATURE_WARNING_UPPER_LIMIT) / 100.0f;
+		return convertRawTemperatureToCelsius(oneRegister(BATTERY_TEMPERATURE_WARNING_UPPER_LIMIT));
 	}
 
 	private static final MessageHandler<int[]> BATTERY_TEMPERATURE_WARNING_LOWER_LIMIT = new ReadHoldingRegisters(0x9018, 1);
 	@Override
 	public float getBatteryTemperatureWarningLowerLimit() {
-		return oneRegister(BATTERY_TEMPERATURE_WARNING_LOWER_LIMIT) / 100.0f;
+		return convertRawTemperatureToCelsius(oneRegister(BATTERY_TEMPERATURE_WARNING_LOWER_LIMIT));
 	}
 
 	private static final MessageHandler<int[]> INSIDE_CONTROLLER_TEMPERATURE_WARNING_UPPER_LIMIT = new ReadHoldingRegisters(0x9019, 1);
 	@Override
 	public float getInsideControllerTemperatureWarningUpperLimit() {
-		return oneRegister(INSIDE_CONTROLLER_TEMPERATURE_WARNING_UPPER_LIMIT) / 100.0f;
+		return convertRawTemperatureToCelsius(oneRegister(INSIDE_CONTROLLER_TEMPERATURE_WARNING_UPPER_LIMIT));
 	}
 
 	private static final MessageHandler<int[]> INSIDE_CONTROLLER_TEMPERATURE_WARNING_UPPER_LIMIT_RECOVER = new ReadHoldingRegisters(0x901A, 1);
 	@Override
 	public float getInsideControllerTemperatureWarningUpperLimitRecover() {
-		return oneRegister(INSIDE_CONTROLLER_TEMPERATURE_WARNING_UPPER_LIMIT_RECOVER) / 100.0f;
+		return convertRawTemperatureToCelsius(oneRegister(INSIDE_CONTROLLER_TEMPERATURE_WARNING_UPPER_LIMIT_RECOVER));
 	}
 
 	private static final MessageHandler<int[]> POWER_COMPONENT_TEMPERATURE_UPPER_LIMIT = new ReadHoldingRegisters(0x901B, 1);
 	@Override
 	public float getPowerComponentTemperatureUpperLimit() {
-		return oneRegister(POWER_COMPONENT_TEMPERATURE_UPPER_LIMIT) / 100.0f;
+		return convertRawTemperatureToCelsius(oneRegister(POWER_COMPONENT_TEMPERATURE_UPPER_LIMIT));
 	}
 
 	private static final MessageHandler<int[]> POWER_COMPONENT_TEMPERATURE_UPPER_LIMIT_RECOVER = new ReadHoldingRegisters(0x901C, 1);
 	@Override
 	public float getPowerComponentTemperatureUpperLimitRecover() {
-		return oneRegister(POWER_COMPONENT_TEMPERATURE_UPPER_LIMIT_RECOVER) / 100.0f;
+		return convertRawTemperatureToCelsius(oneRegister(POWER_COMPONENT_TEMPERATURE_UPPER_LIMIT_RECOVER));
 	}
 
 	private static final MessageHandler<int[]> LINE_IMPEDANCE = new ReadHoldingRegisters(0x901D, 1);
