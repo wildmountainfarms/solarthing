@@ -102,8 +102,12 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 	@JsonProperty("powerComponentTemperatureCelsius")
 	float getPowerComponentTemperatureCelsius();
 
+	/**
+	 * Note: State of charge values are estimates and are usually never accurate
+	 * @return A number in range [0..100] representing the SOC
+	 */
 	@JsonProperty("batterySOC")
-	int getBatterySOC(); // TODO Is the raw range of this 0 to 100? Or 0 to (100 * 100)? If 0 to (100 * 100), then we should make this a double, maybe make it a double anyway
+	int getBatterySOC();
 
 	@JsonProperty("remoteBatteryTemperatureCelsius")
 	float getRemoteBatteryTemperatureCelsius();
@@ -115,21 +119,30 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 
 	@JsonProperty("batteryStatusValue")
 	int getBatteryStatusValue();
+	@JsonProperty("temp_getBatteryVoltageStatusValue")
 	default int getBatteryVoltageStatusValue() { return getBatteryStatusValue() & 0b1111; }
+	@JsonProperty("temp_getBatteryTemperatureStatusValue")
 	default int getBatteryTemperatureStatusValue() { return getBatteryStatusValue() & 0b11110000; }
+	@JsonProperty("temp_isBatteryInternalResistanceAbnormal")
 	@GraphQLInclude("isBatteryInternalResistanceAbnormal")
 	default boolean isBatteryInternalResistanceAbnormal() { return (getBatteryStatusValue() & 0b100000000) != 0; } // check bit8
+	@JsonProperty("temp_isBatteryWrongIdentificationForRatedVoltage")
 	@GraphQLInclude("isBatteryWrongIdentificationForRatedVoltage")
 	default boolean isBatteryWrongIdentificationForRatedVoltage() { return ((getBatteryStatusValue() >> 15) & 1) != 0; } // check bit15
-	@GraphQLInclude("batteryVoltageStatus")
+	@JsonProperty("temp_isBatteryWrongIdentificationForRatedVoltage")
+	@GraphQLInclude("temp_getBatteryVoltageStatus")
 	default @NotNull TracerBatteryVoltageStatus getBatteryVoltageStatus() { return Modes.getActiveMode(TracerBatteryVoltageStatus.class, getBatteryVoltageStatusValue()); }
+	@JsonProperty("temp_getBatteryTemperatureStatus")
 	@GraphQLInclude("batteryTemperatureStatus")
 	default @NotNull TracerBatteryTemperatureStatus getBatteryTemperatureStatus() { return Modes.getActiveMode(TracerBatteryTemperatureStatus.class, getBatteryTemperatureStatusValue()); }
 
 	@JsonProperty("chargingEquipmentStatusValue")
 	int getChargingEquipmentStatus();
+	@JsonProperty("temp_getInputVoltageStatusValue")
 	default int getInputVoltageStatusValue() { return getChargingEquipmentStatus() >> 14; }
+	@JsonProperty("temp_getChargingStatusValue")
 	default int getChargingStatusValue() { return (getChargingEquipmentStatus() >> 2) & 0b11; }
+	@JsonProperty("temp_getErrorModes")
 	@Override
 	default @NotNull Set<ChargingEquipmentError> getErrorModes() { return Modes.getActiveModes(ChargingEquipmentError.class, getChargingEquipmentStatus()); }
 	/**
@@ -139,10 +152,13 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 	@Deprecated
 	@Override
 	default int getErrorModeValue() { return getChargingEquipmentStatus(); }
+	@JsonProperty("temp_isRunning")
 	@GraphQLInclude("isRunning")
 	default boolean isRunning() { return (getChargingEquipmentStatus() & 1) == 1; }
+	@JsonProperty("temp_getInputVoltageStatus")
 	@GraphQLInclude("inputVoltageStatus")
 	default @NotNull InputVoltageStatus getInputVoltageStatus() { return Modes.getActiveMode(InputVoltageStatus.class, getInputVoltageStatusValue()); }
+	@JsonProperty("temp_getChargingStatus")
 	@GraphQLInclude("chargingStatus")
 	default @NotNull ChargingStatus getChargingStatus() { return Modes.getActiveMode(ChargingStatus.class, getChargingStatusValue()); }
 
@@ -225,12 +241,15 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 	/** @return 48 bit number representing a real time clock. Low 8 bits represent seconds, ..., high 8 bits represent year */
 	@JsonProperty("secondMinuteHourDayMonthYearRaw")
 	long getSecondMinuteHourDayMonthYearRaw();
+	@JsonProperty("temp_getClockTime")
 	default LocalTime getClockTime() {
 		return TracerUtil.convertTracer48BitRawTimeToLocalTime(getSecondMinuteHourDayMonthYearRaw());
 	}
+	@JsonProperty("temp_getClockMonthDay")
 	default MonthDay getClockMonthDay() {
 		return TracerUtil.extractTracer48BitRawInstantToMonthDay(getSecondMinuteHourDayMonthYearRaw());
 	}
+	@JsonProperty("temp_getClockYearNumber")
 	default int getClockYearNumber() {
 		return TracerUtil.extractTracer48BitRawInstantToYearNumber(getSecondMinuteHourDayMonthYearRaw());
 	}
@@ -265,9 +284,11 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 
 	@JsonProperty("workingTimeLength1Raw")
 	int getWorkingTimeLength1Raw();
+	@JsonProperty("temp_getWorkingTime1Length")
 	default Duration getWorkingTime1Length() { return TracerUtil.convertTracerDurationRawToDuration(getWorkingTimeLength1Raw()); }
 	@JsonProperty("workingTimeLength2Raw")
 	int getWorkingTimeLength2Raw();
+	@JsonProperty("temp_getWorkingTime2Length")
 	default Duration getWorkingTime2Length() { return TracerUtil.convertTracerDurationRawToDuration(getWorkingTimeLength2Raw()); }
 
 	@JsonProperty("turnOnTiming1Raw")
@@ -322,6 +343,5 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 	boolean isInsideControllerOverTemperature();
 	@JsonProperty("isNight")
 	boolean isNight();
-
 
 }

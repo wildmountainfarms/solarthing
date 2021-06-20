@@ -39,7 +39,7 @@ public class TracerModbusSlaveRead extends AbstractModbusRead implements TracerR
 	private static final MessageHandler<int[]> RATED_INPUT_CURRENT = new ReadInputRegisters(0x3001, 1);
 	@Override
 	public float getRatedInputCurrent() {
-		return oneRegister(RATED_INPUT_CURRENT);
+		return oneRegister(RATED_INPUT_CURRENT) / 100.0f;
 	}
 
 	private static final MessageHandler<int[]> RATED_INPUT_POWER = new ReadInputRegisters(0x3002, 2);
@@ -63,7 +63,7 @@ public class TracerModbusSlaveRead extends AbstractModbusRead implements TracerR
 	private static final MessageHandler<int[]> RATED_OUTPUT_POWER = new ReadInputRegisters(0x3006, 2);
 	@Override
 	public float getRatedOutputPower() {
-		return twoRegistersAsInt(RATED_OUTPUT_POWER);
+		return twoRegistersAsInt(RATED_OUTPUT_POWER) / 100.0f;
 	}
 
 	/** Called Charging mode on PDF */
@@ -76,7 +76,7 @@ public class TracerModbusSlaveRead extends AbstractModbusRead implements TracerR
 	private static final MessageHandler<int[]> RATED_LOAD_OUTPUT_CURRENT = new ReadInputRegisters(0x300E, 1);
 	@Override
 	public float getRatedLoadOutputCurrent() {
-		return oneRegister(RATED_LOAD_OUTPUT_CURRENT);
+		return oneRegister(RATED_LOAD_OUTPUT_CURRENT) / 100.0f;
 	}
 	// endregion
 
@@ -120,7 +120,7 @@ public class TracerModbusSlaveRead extends AbstractModbusRead implements TracerR
 	private static final MessageHandler<int[]> LOAD_VOLTAGE = new ReadInputRegisters(0x310C, 1);
 	@Override
 	public float getLoadVoltage() {
-		return oneRegister(LOAD_VOLTAGE);
+		return oneRegister(LOAD_VOLTAGE) / 100.0f;
 	}
 
 	private static final MessageHandler<int[]> LOAD_CURRENT = new ReadInputRegisters(0x310D, 1);
@@ -132,7 +132,7 @@ public class TracerModbusSlaveRead extends AbstractModbusRead implements TracerR
 	private static final MessageHandler<int[]> LOAD_POWER = new ReadInputRegisters(0x310E, 2);
 	@Override
 	public float getLoadPower() {
-		return twoRegistersAsInt(LOAD_POWER);
+		return twoRegistersAsInt(LOAD_POWER) / 100.0f;
 	}
 
 	private static final MessageHandler<int[]> BATTERY_TEMPERATURE_CELSIUS = new ReadInputRegisters(0x3110, 1);
@@ -156,7 +156,7 @@ public class TracerModbusSlaveRead extends AbstractModbusRead implements TracerR
 	private static final MessageHandler<int[]> BATTERY_SOC = new ReadInputRegisters(0x311A, 1);
 	@Override
 	public int getBatterySOC() {
-		return oneRegister(BATTERY_SOC); // TODO do we need to divide this one by 100? I would assume the controller gives us 0-100 not 0.00 to 100.00
+		return oneRegister(BATTERY_SOC);
 	}
 
 	private static final MessageHandler<int[]> REMOTE_BATTERY_TEMPERATURE_CELSIUS = new ReadInputRegisters(0x311B, 1);
