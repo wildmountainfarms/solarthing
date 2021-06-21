@@ -309,18 +309,23 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 
 	@JsonProperty("turnOnTiming1Raw")
 	long getTurnOnTiming1Raw();
+	@GraphQLInclude("turnOnTiming1")
 	default LocalTime getTurnOnTiming1() { return TracerUtil.convertTracer48BitRawTimeToLocalTime(getTurnOnTiming1Raw()); }
 	@JsonProperty("turnOffTiming1Raw")
 	long getTurnOffTiming1Raw();
+	@GraphQLInclude("turnOffTiming1")
 	default LocalTime getTurnOffTiming1() { return TracerUtil.convertTracer48BitRawTimeToLocalTime(getTurnOffTiming1Raw()); }
 	@JsonProperty("turnOnTiming2Raw")
 	long getTurnOnTiming2Raw();
+	@GraphQLInclude("turnOnTiming2")
 	default LocalTime getTurnOnTiming2() { return TracerUtil.convertTracer48BitRawTimeToLocalTime(getTurnOnTiming2Raw()); }
 	@JsonProperty("turnOffTiming2Raw")
 	long getTurnOffTiming2Raw();
+	@GraphQLInclude("turnOffTiming2")
 	default LocalTime getTurnOffTiming2() { return TracerUtil.convertTracer48BitRawTimeToLocalTime(getTurnOffTiming2Raw()); }
 	@JsonProperty("lengthOfNightRaw")
 	int getLengthOfNightRaw();
+	@GraphQLInclude("lengthOfNight")
 	default Duration getLengthOfNight() { return TracerUtil.convertTracerDurationRawToDuration(getLengthOfNightRaw()); }
 
 	@JsonProperty("batteryRatedVoltageCode")
