@@ -34,6 +34,7 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.RoverIdentifier;
 @JsonClassDescription("Contains a representation that is unique across all packets in a particular fragment")
 public interface Identifier {
 	/**
+	 * Also note that representations could change at any time after a SolarThing update, but generally they don't.
 	 * @return A representation of this identifier
 	 */
 	@GraphQLInclude("representation")

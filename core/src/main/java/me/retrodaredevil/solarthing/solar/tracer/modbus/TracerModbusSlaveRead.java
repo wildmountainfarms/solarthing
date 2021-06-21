@@ -33,37 +33,37 @@ public class TracerModbusSlaveRead extends AbstractModbusRead implements TracerR
 
 	private static final MessageHandler<int[]> RATED_INPUT_VOLTAGE = new ReadInputRegisters(0x3000, 1);
 	@Override
-	public float getRatedInputVoltage() {
-		return oneRegister(RATED_INPUT_VOLTAGE) / 100.0f;
+	public int getRatedInputVoltage() {
+		return oneRegister(RATED_INPUT_VOLTAGE) / 100;
 	}
 	private static final MessageHandler<int[]> RATED_INPUT_CURRENT = new ReadInputRegisters(0x3001, 1);
 	@Override
-	public float getRatedInputCurrent() {
-		return oneRegister(RATED_INPUT_CURRENT) / 100.0f;
+	public int getRatedInputCurrent() {
+		return oneRegister(RATED_INPUT_CURRENT) / 100;
 	}
 
 	private static final MessageHandler<int[]> RATED_INPUT_POWER = new ReadInputRegisters(0x3002, 2);
 	@Override
-	public float getRatedInputPower() {
-		return twoRegistersAsInt(RATED_INPUT_POWER) / 100.0f;
+	public int getRatedInputPower() {
+		return twoRegistersAsInt(RATED_INPUT_POWER) / 100;
 	}
 
 	private static final MessageHandler<int[]> RATED_OUTPUT_VOLTAGE = new ReadInputRegisters(0x3004, 1);
 	@Override
-	public float getRatedOutputVoltage() {
-		return oneRegister(RATED_OUTPUT_VOLTAGE) / 100.0f;
+	public int getRatedOutputVoltage() {
+		return oneRegister(RATED_OUTPUT_VOLTAGE) / 100;
 	}
 
 	private static final MessageHandler<int[]> RATED_OUTPUT_CURRENT = new ReadInputRegisters(0x3005, 1);
 	@Override
-	public float getRatedOutputCurrent() {
-		return oneRegister(RATED_OUTPUT_CURRENT) / 100.0f;
+	public int getRatedOutputCurrent() {
+		return oneRegister(RATED_OUTPUT_CURRENT) / 100;
 	}
 
 	private static final MessageHandler<int[]> RATED_OUTPUT_POWER = new ReadInputRegisters(0x3006, 2);
 	@Override
-	public float getRatedOutputPower() {
-		return twoRegistersAsInt(RATED_OUTPUT_POWER) / 100.0f;
+	public int getRatedOutputPower() {
+		return twoRegistersAsInt(RATED_OUTPUT_POWER) / 100;
 	}
 
 	/** Called Charging mode on PDF */
@@ -75,8 +75,8 @@ public class TracerModbusSlaveRead extends AbstractModbusRead implements TracerR
 
 	private static final MessageHandler<int[]> RATED_LOAD_OUTPUT_CURRENT = new ReadInputRegisters(0x300E, 1);
 	@Override
-	public float getRatedLoadOutputCurrent() {
-		return oneRegister(RATED_LOAD_OUTPUT_CURRENT) / 100.0f;
+	public int getRatedLoadOutputCurrent() {
+		return oneRegister(RATED_LOAD_OUTPUT_CURRENT) / 100;
 	}
 	// endregion
 

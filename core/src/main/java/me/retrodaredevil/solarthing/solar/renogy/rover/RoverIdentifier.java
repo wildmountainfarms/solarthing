@@ -29,13 +29,6 @@ public final class RoverIdentifier implements NumberedIdentifier, Comparable<Ide
 		this.number = number;
 	}
 
-	/**
-	 * @return A {@link RoverIdentifier} with the default number
-	 */
-	@Deprecated
-	public static RoverIdentifier getDefaultIdentifier() {
-		return new RoverIdentifier(NumberedIdentifier.DEFAULT_NUMBER);
-	}
 	public static RoverIdentifier getFromNumber(int number) {
 		return new RoverIdentifier(number);
 	}
@@ -52,6 +45,9 @@ public final class RoverIdentifier implements NumberedIdentifier, Comparable<Ide
 
 	@Override
 	public @NotNull String getRepresentation() {
+		if (number != NumberedIdentifier.DEFAULT_NUMBER) {
+			return "RoverIdentifier(number=" + number + ")";
+		}
 		return "RoverIdentifier()";
 	}
 
