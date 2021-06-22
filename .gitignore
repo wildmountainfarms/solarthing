@@ -6,6 +6,8 @@
 /config.json
 /other/systemd/config.json
 
+other/linux/.downloads/
+
 /logs/
 /logrotate.conf
 
