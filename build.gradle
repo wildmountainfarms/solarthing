@@ -157,6 +157,6 @@ project(":graphql"){
 }
 
 wrapper {
-    gradleVersion = '7.1'
+    gradleVersion = '6.9'
     distributionType = Wrapper.DistributionType.ALL
 }
