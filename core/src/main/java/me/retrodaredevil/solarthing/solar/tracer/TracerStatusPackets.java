@@ -8,7 +8,7 @@ public class TracerStatusPackets {
 
 	public static TracerStatusPacket createFromReadTable(int number, TracerReadTable read) {
 		return new ImmutableTracerStatusPacket(
-				number,
+				TracerStatusPacket.CHARGING_EQUIPMENT_FIX_VERSION, number,
 				read.getRatedInputVoltage(), read.getRatedInputCurrent(), read.getRatedInputPower(),
 				read.getRatedOutputVoltage(), read.getRatedOutputCurrent(), read.getRatedOutputPower(),
 				read.getChargingTypeValue(), read.getRatedLoadOutputCurrent(),
@@ -18,7 +18,7 @@ public class TracerStatusPackets {
 				read.getBatteryTemperatureCelsius(), read.getInsideControllerTemperatureCelsius(), read.getPowerComponentTemperatureCelsius(),
 				read.getBatterySOC(),
 				read.getRemoteBatteryTemperatureCelsius(),
-				read.getRealBatteryRatedVoltageValue(), read.getBatteryStatusValue(), read.getChargingStatusValue(),
+				read.getRealBatteryRatedVoltageValue(), read.getBatteryStatusValue(), read.getChargingEquipmentStatus(),
 				read.getDailyMaxPVVoltage(), read.getDailyMinPVVoltage(),
 				read.getDailyMaxBatteryVoltage(), read.getDailyMinBatteryVoltage(),
 				read.getDailyKWHConsumption(), read.getMonthlyKWHConsumption(), read.getYearlyKWHConsumption(), read.getCumulativeKWHConsumption(),

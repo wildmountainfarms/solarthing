@@ -3,10 +3,12 @@ package me.retrodaredevil.solarthing.solar.tracer;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.NotNull;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.packets.identification.NumberedIdentifier;
 
 public class ImmutableTracerStatusPacket implements TracerStatusPacket {
+	private final @Nullable Integer packetVersion;
 	private final TracerIdentifier identifier;
 	private final TracerIdentityInfo identityInfo;
 
@@ -60,6 +62,7 @@ public class ImmutableTracerStatusPacket implements TracerStatusPacket {
 
 	@JsonCreator
 	public ImmutableTracerStatusPacket(
+			@JsonProperty("packetVersion") @Nullable Integer packetVersion,
 			@JsonProperty("number") Integer number,
 			@JsonProperty(value = "ratedInputVoltage", required = true) int ratedInputVoltage,
 			@JsonProperty(value = "ratedInputCurrent", required = true) int ratedInputCurrent,
@@ -116,6 +119,7 @@ public class ImmutableTracerStatusPacket implements TracerStatusPacket {
 			@JsonProperty(value = "batteryManagementModeValue", required = true) int batteryManagementModeValue,
 			@JsonProperty(value = "isManualLoadControlOn", required = true) boolean isManualLoadControlOn, @JsonProperty(value = "isLoadTestModeEnabled", required = true) boolean isLoadTestModeEnabled, @JsonProperty(value = "isLoadForcedOn", required = true) boolean isLoadForcedOn,
 			@JsonProperty(value = "isInsideControllerOverTemperature", required = true) boolean isInsideControllerOverTemperature, @JsonProperty(value = "isNight", required = true) boolean isNight) {
+		this.packetVersion = packetVersion;
 		identifier = TracerIdentifier.createFromNumber(number == null ? NumberedIdentifier.DEFAULT_NUMBER : number);
 		identityInfo = new TracerIdentityInfo(ratedOutputCurrent);
 
@@ -210,7 +214,11 @@ public class ImmutableTracerStatusPacket implements TracerStatusPacket {
 		this.isInsideControllerOverTemperature = isInsideControllerOverTemperature;
 		this.isNight = isNight;
 	}
-	// region temp
+
+	@Override
+	public @Nullable Integer getPacketVersion() {
+		return packetVersion;
+	}
 	@Override public @NotNull TracerIdentifier getIdentifier() { return identifier; }
 	@Override public @NotNull IdentityInfo getIdentityInfo() { return identityInfo; }
 
