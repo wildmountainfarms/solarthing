@@ -6,6 +6,7 @@ import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.packets.identification.SingleTypeIdentifier;
+import me.retrodaredevil.solarthing.solar.common.DailyData;
 import me.retrodaredevil.solarthing.solar.tracer.TracerIdentityInfo;
 import me.retrodaredevil.solarthing.solar.tracer.TracerReadTable;
 import me.retrodaredevil.solarthing.solar.util.AbstractModbusRead;
@@ -17,6 +18,11 @@ public class TracerModbusSlaveRead extends AbstractModbusRead implements TracerR
 
 	public TracerModbusSlaveRead(ModbusSlave modbus) {
 		super(modbus, Endian.LITTLE);
+	}
+
+	@Override
+	public boolean isNewDay(DailyData previousDailyData) {
+		return false;
 	}
 
 	@Override
