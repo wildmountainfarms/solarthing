@@ -11,7 +11,8 @@ public class TracerTest {
 	@Test
 	void test() throws JsonProcessingException {
 		TracerStatusPacket packet = new ImmutableTracerStatusPacket(
-                TracerStatusPacket.CHARGING_EQUIPMENT_FIX_VERSION, null, 100, 20, 200, 24, 20, 200,
+				TracerStatusPacket.CHARGING_EQUIPMENT_FIX_VERSION, null,
+				100, 20, 200, 24, 20, 200,
 				1, 20, 0.0f, 0.0f, 0.0f,
 				12.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 25.0f, 26.0f, 26.0f,
 				50, 0.0f, 12, 0, 2 << 2, 0.0f,
