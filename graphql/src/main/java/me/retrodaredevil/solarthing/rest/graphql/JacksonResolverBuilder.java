@@ -96,6 +96,10 @@ public class JacksonResolverBuilder implements ResolverBuilder {
 		List<Resolver> r = new ArrayList<>();
 		for(BeanPropertyDefinition property : properties){
 			AnnotatedMember accessor = property.getAccessor();
+			if (accessor == null) {
+				// accessor may be null if JsonIgnore is present
+				continue;
+			}
 
 			if(AnnotationUtil.hasAnnotation(GraphQLIgnore.class, accessor)
 					|| AnnotationUtil.hasAnnotation(GraphQLInclude.class, accessor)
