@@ -36,6 +36,9 @@ other/linux/.downloads/
 
 !/program/graphql/download_solarting_graphql.sh
 
+/program/custom*
+!/program/create_custom.sh
+
 
 */__pycache__/*
 
