@@ -180,6 +180,8 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 	default @NotNull InputVoltageStatus getInputVoltageStatus() { return Modes.getActiveMode(InputVoltageStatus.class, getInputVoltageStatusValue()); }
 	@GraphQLInclude("chargingStatus")
 	default @NotNull ChargingStatus getChargingStatus() { return Modes.getActiveMode(ChargingStatus.class, getChargingStatusValue()); }
+	@GraphQLInclude("chargingStatusName")
+	default @NotNull String getChargingStatusName() { return getChargingStatus().getModeName(); }
 
 	// Page 3
 	// region Read Only Accumulators + Extra

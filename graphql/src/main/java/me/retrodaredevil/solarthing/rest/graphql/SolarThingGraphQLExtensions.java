@@ -13,6 +13,7 @@ import me.retrodaredevil.solarthing.solar.outback.fx.event.FXOperationalModeChan
 import me.retrodaredevil.solarthing.solar.outback.mx.ChargerMode;
 import me.retrodaredevil.solarthing.solar.outback.mx.event.MXChargerModeChangePacket;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
+import me.retrodaredevil.solarthing.solar.tracer.TracerStatusPacket;
 
 public class SolarThingGraphQLExtensions {
 	@GraphQLQuery(name = "controllerTemperatureFahrenheit")
@@ -22,6 +23,14 @@ public class SolarThingGraphQLExtensions {
 	@GraphQLQuery(name = "batteryTemperatureFahrenheit")
 	public float getBatteryTemperatureFahrenheit(@GraphQLContext RoverStatusPacket roverStatusPacket){
 		return roverStatusPacket.getBatteryTemperatureCelsius() * 9 / 5.0f + 32;
+	}
+	@GraphQLQuery(name = "insideControllerTemperatureFahrenheit")
+	public float getControllerTemperatureFahrenheit(@GraphQLContext TracerStatusPacket packet){
+		return packet.getInsideControllerTemperatureCelsius() * 9 / 5.0f + 32;
+	}
+	@GraphQLQuery(name = "batteryTemperatureFahrenheit")
+	public float getBatteryTemperatureFahrenheit(@GraphQLContext TracerStatusPacket packet){
+		return packet.getBatteryTemperatureCelsius() * 9 / 5.0f + 32;
 	}
 
 	@GraphQLQuery(name = "acModeName")
