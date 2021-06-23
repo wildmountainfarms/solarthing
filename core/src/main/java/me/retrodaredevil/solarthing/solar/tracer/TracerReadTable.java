@@ -271,12 +271,15 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 	/** @return 48 bit number representing a real time clock. Low 8 bits represent seconds, ..., high 8 bits represent year */
 	@JsonProperty("secondMinuteHourDayMonthYearRaw")
 	long getSecondMinuteHourDayMonthYearRaw();
+	@GraphQLInclude("clockTime")
 	default LocalTime getClockTime() {
-		return TracerUtil.convertTracer48BitRawTimeToLocalTime(getSecondMinuteHourDayMonthYearRaw());
+		return TracerUtil.extractTracer48BitRawInstantToLocalTime(getSecondMinuteHourDayMonthYearRaw());
 	}
+	@GraphQLInclude("clockMonthDay")
 	default MonthDay getClockMonthDay() {
 		return TracerUtil.extractTracer48BitRawInstantToMonthDay(getSecondMinuteHourDayMonthYearRaw());
 	}
+	@GraphQLInclude("clockYearNumber")
 	default int getClockYearNumber() {
 		return TracerUtil.extractTracer48BitRawInstantToYearNumber(getSecondMinuteHourDayMonthYearRaw());
 	}
