@@ -2,8 +2,9 @@ package me.retrodaredevil.solarthing.solar.common;
 
 import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
 import me.retrodaredevil.solarthing.annotations.NotNull;
+import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 
-public interface SolarDevice {
+public interface SolarDevice extends Identifiable {
 	@NotNull SolarMode getSolarMode();
 
 	@GraphQLInclude("solarModeName")

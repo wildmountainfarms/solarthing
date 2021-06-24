@@ -31,4 +31,9 @@ public class TracerIdentityInfo implements IdentityInfo {
 	public @NotNull String getShortName() {
 		return "TCR";
 	}
+
+	@Override
+	public IdentityInfo stripExtra() {
+		return new TracerIdentityInfo(null);
+	}
 }
