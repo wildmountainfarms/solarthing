@@ -24,7 +24,7 @@ import java.util.Collections;
 import static java.util.Objects.requireNonNull;
 
 @JsonExplicit
-public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeController, DailyChargeController, AdvancedAccumulatedChargeController, RecordBatteryVoltage {
+public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeController, DailyChargeController, AdvancedAccumulatedChargeController, RecordBatteryVoltage, DualTemperature {
 	SerialConfig SERIAL_CONFIG = new SerialConfigBuilder(9600)
 			.setDataBits(8)
 			.setParity(SerialConfig.Parity.NONE)
@@ -240,15 +240,15 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	/**
 	 * @return The temperature of the controller in degrees celsius
 	 */
-	@GraphQLInclude("controllerTemperatureCelsius")
-	default int getControllerTemperatureCelsius(){
+	@Override
+	default @NotNull Integer getControllerTemperatureCelsius(){
 		return convertRawTemperature(getControllerTemperatureRaw());
 	}
 	/**
 	 * @return The temperature of the battery in degrees celsius
 	 */
-	@GraphQLInclude("batteryTemperatureCelsius")
-	default int getBatteryTemperatureCelsius(){
+	@Override
+	default @NotNull Integer getBatteryTemperatureCelsius(){
 		return convertRawTemperature(getBatteryTemperatureRaw());
 	}
 	static int convertRawTemperature(int temperatureRaw){

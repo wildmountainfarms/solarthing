@@ -10,6 +10,8 @@ import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
+import me.retrodaredevil.solarthing.solar.common.SolarDevice;
+import me.retrodaredevil.solarthing.solar.common.SolarMode;
 import me.retrodaredevil.solarthing.solar.outback.OutbackStatusPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.FXMiscReporter;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.FXWarningReporter;
@@ -26,11 +28,16 @@ import java.util.Set;
 @JsonTypeName("FX_STATUS")
 @JsonExplicit
 @JsonClassDescription("Status packet for FX devices")
-public interface FXStatusPacket extends OutbackStatusPacket, BatteryVoltage, FXWarningReporter, FXMiscReporter {
+public interface FXStatusPacket extends OutbackStatusPacket, BatteryVoltage, FXWarningReporter, FXMiscReporter, SolarDevice {
 	@DefaultFinal
 	@Override
 	default @NotNull SolarStatusPacketType getPacketType(){
 		return SolarStatusPacketType.FX_STATUS;
+	}
+
+	@Override
+	default @NotNull SolarMode getSolarMode() {
+		return getOperationalMode();
 	}
 
 	// region Packet Values

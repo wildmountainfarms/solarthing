@@ -18,10 +18,7 @@ import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.InstancePacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
 import me.retrodaredevil.solarthing.solar.BatteryUtil;
-import me.retrodaredevil.solarthing.solar.common.BasicChargeController;
-import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
-import me.retrodaredevil.solarthing.solar.common.DailyChargeController;
-import me.retrodaredevil.solarthing.solar.common.PVCurrentAndVoltage;
+import me.retrodaredevil.solarthing.solar.common.*;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
 import me.retrodaredevil.solarthing.solar.outback.command.packets.SuccessMateCommandPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
@@ -142,6 +139,10 @@ public class SolarThingGraphQLService {
 			return packetGetter.getPackets(TracerStatusPacket.class);
 		}
 		@GraphQLQuery
+		public @NotNull List<@NotNull PacketNode<SolarDevice>> solarDevice() {
+			return packetGetter.getPackets(SolarDevice.class);
+		}
+		@GraphQLQuery
 		public @NotNull List<@NotNull PacketNode<PVCurrentAndVoltage>> solar() {
 			return packetGetter.getPackets(PVCurrentAndVoltage.class);
 		}
@@ -187,16 +188,19 @@ public class SolarThingGraphQLService {
 
 			List<DataNode<Float>> r = new ArrayList<>();
 			for (FragmentedPacketGroup packetGroup : sortedPackets) {
-				RoverStatusPacket rover = null;
+				Number batteryTemperatureCelsius = null;
 				for (Packet packet : packetGroup.getPackets()) {
-					if (packet instanceof RoverStatusPacket) {
-						rover = (RoverStatusPacket) packet;
+					if (packet instanceof BatteryTemperature) {
+						batteryTemperatureCelsius = ((BatteryTemperature) packet).getBatteryTemperatureCelsius();
+						if (packet instanceof TracerStatusPacket) {
+							break; // prefer tracer temperature as it is more precise
+						}
 					}
 				}
-				if (rover == null) {
+				if (batteryTemperatureCelsius == null) {
 					continue;
 				}
-				int temperatureCelsius = rover.getBatteryTemperatureCelsius() + (fxChargingTemperatureAdjustPacket == null ? 0 : fxChargingTemperatureAdjustPacket.getTemperatureAdjustCelsius());
+				int temperatureCelsius = Math.round(batteryTemperatureCelsius.floatValue()) + (fxChargingTemperatureAdjustPacket == null ? 0 : fxChargingTemperatureAdjustPacket.getTemperatureAdjustCelsius());
 				for (Packet packet : packetGroup.getPackets()) {
 					if (packet instanceof BatteryVoltage) {
 						int fragmentId = packetGroup.getFragmentId(packet);

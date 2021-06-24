@@ -242,7 +242,7 @@ public class ImmutableTracerStatusPacket implements TracerStatusPacket {
 	@Override public float getLoadCurrent() { return loadCurrent; }
 	@Override public float getLoadPower() { return loadPower; }
 
-	@Override public float getBatteryTemperatureCelsius() { return batteryTemperatureCelsius; }
+	@Override public @NotNull Float getBatteryTemperatureCelsius() { return batteryTemperatureCelsius; }
 	@Override public float getInsideControllerTemperatureCelsius() { return insideControllerTemperatureCelsius; }
 	@Override public float getPowerComponentTemperatureCelsius() { return powerComponentTemperatureCelsius; }
 	@Override public int getBatterySOC() { return batterySOC; }

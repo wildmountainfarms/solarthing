@@ -16,21 +16,14 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
 import me.retrodaredevil.solarthing.solar.tracer.TracerStatusPacket;
 
 public class SolarThingGraphQLExtensions {
-	@GraphQLQuery(name = "controllerTemperatureFahrenheit")
-	public float getControllerTemperatureFahrenheit(@GraphQLContext RoverStatusPacket roverStatusPacket){
-		return roverStatusPacket.getControllerTemperatureCelsius() * 9 / 5.0f + 32;
-	}
 	@GraphQLQuery(name = "batteryTemperatureFahrenheit")
 	public float getBatteryTemperatureFahrenheit(@GraphQLContext RoverStatusPacket roverStatusPacket){
 		return roverStatusPacket.getBatteryTemperatureCelsius() * 9 / 5.0f + 32;
 	}
+	@Deprecated
 	@GraphQLQuery(name = "insideControllerTemperatureFahrenheit")
 	public float getControllerTemperatureFahrenheit(@GraphQLContext TracerStatusPacket packet){
 		return packet.getInsideControllerTemperatureCelsius() * 9 / 5.0f + 32;
-	}
-	@GraphQLQuery(name = "batteryTemperatureFahrenheit")
-	public float getBatteryTemperatureFahrenheit(@GraphQLContext TracerStatusPacket packet){
-		return packet.getBatteryTemperatureCelsius() * 9 / 5.0f + 32;
 	}
 
 	@GraphQLQuery(name = "acModeName")

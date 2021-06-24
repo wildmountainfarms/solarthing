@@ -19,7 +19,7 @@ import java.time.MonthDay;
 import java.util.Set;
 
 @JsonExplicit
-public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeController, DailyChargeController, AdvancedAccumulatedChargeController, ErrorReporter {
+public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeController, DailyChargeController, AdvancedAccumulatedChargeController, ErrorReporter, DualTemperature {
 
 	SerialConfig SERIAL_CONFIG = new SerialConfigBuilder(115200)
 			.setDataBits(8)
@@ -117,7 +117,13 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 	 * @return The temperature reading of the remote temperature sensor (the sensor plugged into the controller)
 	 */
 	@JsonProperty("batteryTemperatureCelsius")
-	float getBatteryTemperatureCelsius(); // 0x3110
+	@Override
+	@NotNull Float getBatteryTemperatureCelsius(); // 0x3110
+
+	@Override
+	default @NotNull Float getControllerTemperatureCelsius() {
+		return getInsideControllerTemperatureCelsius();
+	}
 
 	/**
 	 * @return The temperature inside the controller

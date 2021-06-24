@@ -3,8 +3,6 @@ package me.retrodaredevil.solarthing.rest.graphql.service;
 import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLQuery;
 import me.retrodaredevil.solarthing.SolarThingConstants;
-import me.retrodaredevil.solarthing.rest.graphql.SimpleQueryHandler;
-import me.retrodaredevil.solarthing.rest.graphql.packets.nodes.DataNode;
 import me.retrodaredevil.solarthing.meta.MetaDatabase;
 import me.retrodaredevil.solarthing.meta.TargetedMetaPacket;
 import me.retrodaredevil.solarthing.meta.TargetedMetaPacketType;
@@ -13,6 +11,9 @@ import me.retrodaredevil.solarthing.packets.collection.FragmentUtil;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.InstancePacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
+import me.retrodaredevil.solarthing.rest.graphql.SimpleQueryHandler;
+import me.retrodaredevil.solarthing.rest.graphql.packets.nodes.DataNode;
+import me.retrodaredevil.solarthing.solar.common.BatteryTemperature;
 import me.retrodaredevil.solarthing.solar.outback.OutbackUtil;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.charge.FXChargingPacket;
@@ -21,8 +22,6 @@ import me.retrodaredevil.solarthing.solar.outback.fx.charge.FXChargingStateHandl
 import me.retrodaredevil.solarthing.solar.outback.fx.charge.ImmutableFXChargingPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.meta.FXChargingSettingsPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.meta.FXChargingTemperatureAdjustPacket;
-import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
-import me.retrodaredevil.solarthing.solar.tracer.TracerStatusPacket;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,12 +80,8 @@ public class SolarThingGraphQLFXService {
 			for (Packet packet : packetGroup.getPackets()) {
 				if (packet instanceof FXStatusPacket && packetGroup.getFragmentId(packet) == fragmentId) {
 					fxPackets.add((FXStatusPacket) packet);
-				} else if (packet instanceof RoverStatusPacket) {
-					temperature = ((RoverStatusPacket) packet).getBatteryTemperatureCelsius();
-				} else if (packet instanceof TracerStatusPacket) {
-					if (temperature == null) {
-						temperature = (int) ((TracerStatusPacket) packet).getBatteryTemperatureCelsius();
-					}
+				} else if (packet instanceof BatteryTemperature) {
+					temperature = Math.round(((BatteryTemperature) packet).getBatteryTemperatureCelsius().floatValue());
 				}
 			}
 			if (fxPackets.isEmpty()) {

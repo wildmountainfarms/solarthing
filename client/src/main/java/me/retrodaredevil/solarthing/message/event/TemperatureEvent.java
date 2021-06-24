@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.message.MessageSender;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
-import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
+import me.retrodaredevil.solarthing.solar.common.DualTemperature;
 
 import java.time.Duration;
 
@@ -52,18 +52,18 @@ public class TemperatureEvent implements MessageEvent {
 			}
 		}
 		for (Packet packet : current.getPackets()) {
-			if (packet instanceof RoverStatusPacket) {
-				RoverStatusPacket rover = (RoverStatusPacket) packet;
+			if (packet instanceof DualTemperature) {
+				DualTemperature dualTemperature = (DualTemperature) packet;
 				if (temperatureType == TemperatureType.BATTERY) {
-					if (check(sender, rover.getBatteryTemperatureCelsius())) {
+					if (check(sender, dualTemperature.getBatteryTemperatureCelsius().floatValue())) {
 						return;
 					}
 				} else if (temperatureType == TemperatureType.CONTROLLER) {
-					if (check(sender, rover.getControllerTemperatureCelsius())) {
+					if (check(sender, dualTemperature.getControllerTemperatureCelsius().floatValue())) {
 						return;
 					}
 				} else { // either
-					if (check(sender, rover.getBatteryTemperatureCelsius()) || check(sender, rover.getControllerTemperatureCelsius())) {
+					if (check(sender, dualTemperature.getBatteryTemperatureCelsius().floatValue()) || check(sender, dualTemperature.getControllerTemperatureCelsius().floatValue())) {
 						return;
 					}
 				}
