@@ -12,11 +12,13 @@ import me.retrodaredevil.solarthing.commands.CommandProvider;
 import me.retrodaredevil.solarthing.commands.CommandProviderMultiplexer;
 import me.retrodaredevil.solarthing.commands.SourcedCommand;
 import me.retrodaredevil.solarthing.commands.packets.status.AvailableCommandsListUpdater;
+import me.retrodaredevil.solarthing.config.io.IOConfig;
 import me.retrodaredevil.solarthing.config.options.MateProgramOptions;
 import me.retrodaredevil.solarthing.config.options.ProgramType;
 import me.retrodaredevil.solarthing.config.request.DataRequester;
 import me.retrodaredevil.solarthing.config.request.DataRequesterResult;
 import me.retrodaredevil.solarthing.config.request.RequestObject;
+import me.retrodaredevil.solarthing.io.ReloadableIOBundle;
 import me.retrodaredevil.solarthing.misc.common.DataIdentifiablePacketListChecker;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiverMultiplexer;
@@ -48,26 +50,14 @@ public class OutbackMateMain {
 
 	private static final Collection<MateCommand> ALLOWED_COMMANDS = EnumSet.of(MateCommand.AUX_OFF, MateCommand.AUX_ON, MateCommand.USE, MateCommand.DROP);
 
-	private static IOBundle createIOBundle(MateProgramOptions options) throws Exception {
-		final IOBundle createdIO = ConfigUtil.createIOBundle(options.getIOBundleFile(), OutbackConstants.MATE_CONFIG);
-		if(options.hasCommands()){
-			return createdIO;
-		}
-		// just a simple safe guard to stop people from accessing the OutputStream if this program becomes more complex in the future
-		return new IOBundle() {
-			@Override public InputStream getInputStream() { return createdIO.getInputStream(); }
-			@Override public OutputStream getOutputStream() { throw new IllegalStateException("You cannot access the output stream while commands are disabled!"); }
-			@Override public void close() throws Exception { createdIO.close(); }
-		};
-	}
-
 	@SuppressWarnings("SameReturnValue")
 	public static int connectMate(MateProgramOptions options, File dataDirectory) throws Exception {
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Beginning mate program");
 		AnalyticsManager analyticsManager = new AnalyticsManager(options.isAnalyticsEnabled(), dataDirectory);
 		analyticsManager.sendStartUp(ProgramType.MATE);
 		LOGGER.debug("IO Bundle File: " + options.getIOBundleFile());
-		try(IOBundle io = createIOBundle(options)) {
+		IOConfig ioConfig = ConfigUtil.parseIOConfig(options.getIOBundleFile(), OutbackConstants.MATE_CONFIG);
+		try(ReloadableIOBundle ioBundle = new ReloadableIOBundle(ioConfig::createIOBundle)) {
 
 			EnvironmentUpdater[] environmentUpdaterReference = new EnvironmentUpdater[1];
 			PacketHandlerInit.Result handlersResult = PacketHandlerInit.initHandlers(
@@ -115,14 +105,15 @@ public class OutbackMateMain {
 			packetListReceiverList.addAll(bundle.createDefaultPacketListReceivers());
 
 			SolarMain.initReader(
-					requireNonNull(io.getInputStream()),
+					requireNonNull(ioBundle.getInputStream()),
+					ioBundle::reload,
 					new MatePacketCreator49(MateProgramOptions.getIgnoreCheckSum(options)),
 					new TimedPacketReceiver(
 							Duration.ofMillis(250),
 							new PacketListReceiverMultiplexer(packetListReceiverList),
 							new MateCommandSender(
 									new CommandProviderMultiplexer<>(commandProviders), // if commands aren't allowed, commandProviders will be empty, so this will do nothing
-									io.getOutputStream(),
+									ioBundle.getOutputStream(),
 									ALLOWED_COMMANDS,
 									new OnMateCommandSent(new PacketListReceiverMultiplexer(
 											bundle.getEventHandler().getPacketListReceiverAccepter(),

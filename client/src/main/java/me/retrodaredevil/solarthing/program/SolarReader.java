@@ -40,7 +40,10 @@ public class SolarReader {
 		// As of <some time later>: I actually haven't tested this, so I don't know if this fixed the problem. However, this only matters while testing.
 
 		int available = in.available();
-		if(available < 0) throw new AssertionError("available cannot be less than 0! available: " + available);
+
+		// JSerial implementation ends up returning -1 when disconnected, which isn't part of the contract of InputStream, but we'll deal with it anyway
+		if(available < 0) throw new IOException("available is " + available + ". (Stream has closed)");
+
 		final int len;
 		if(available == 0){ // if nothing is available, we want to try to see if we've reached the end of the file
 			boolean isEOF = in.read(buffer, 0, 0) == -1;

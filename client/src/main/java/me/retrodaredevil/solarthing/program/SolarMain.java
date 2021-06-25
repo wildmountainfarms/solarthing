@@ -46,16 +46,20 @@ public final class SolarMain {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SolarMain.class);
 
-	public static void initReader(InputStream in, TextPacketCreator packetCreator, RawPacketReceiver rawPacketReceiver) {
-		SolarReader run = new SolarReader(in, packetCreator, rawPacketReceiver);
+	public static void initReader(InputStream in, Runnable reloadIO, TextPacketCreator packetCreator, RawPacketReceiver rawPacketReceiver) {
+		SolarReader solarReader = new SolarReader(in, packetCreator, rawPacketReceiver);
 		try {
 			while (!Thread.currentThread().isInterrupted()) {
 				try {
-					run.update();
+					solarReader.update();
 				} catch (EOFException e) {
 					break;
 				} catch (IOException e) {
-					throw new RuntimeException(e);
+					LOGGER.error("Got IOException!", e);
+					Thread.sleep(500);
+					reloadIO.run();
+					LOGGER.debug("Reloaded IO bundle");
+					Thread.sleep(1000);
 				}
 				Thread.sleep(5);
 			}

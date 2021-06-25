@@ -1,6 +1,9 @@
 # Quick Start With Outback MATE
 If you haven't already, [click here](quickstart.md) to view how to clone this repo and install the service.
 
+Connecting a RS232 DB9 to USB cable is very simple. Note that the Mate will draw some power from this cable,
+so I recommend a powered USB hub.
+
 Once everything is installed, you're ready to edit the configs. You will cd to the `program/mate` directory.
 ```
 cd /opt/solarthing/program/mate
