@@ -234,7 +234,7 @@ public class TracerModbusSlaveWrite extends AbstractModbusWrite implements Trace
 
 	@Override
 	public void setDischargingPercentage(int dischargingPercentage) {
-		write(0x906D, dischargingPercentage); // TODO may have to change this if interface changes
+		write(0x906D, dischargingPercentage);
 	}
 
 	@Override

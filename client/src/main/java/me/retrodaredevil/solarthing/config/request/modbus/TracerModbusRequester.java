@@ -9,6 +9,7 @@ import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.actions.environment.TracerModbusEnvironment;
 import me.retrodaredevil.solarthing.config.request.DataRequesterResult;
 import me.retrodaredevil.solarthing.config.request.RequestObject;
+import me.retrodaredevil.solarthing.config.request.TracerClockOptions;
 import me.retrodaredevil.solarthing.packets.identification.NumberedIdentifier;
 import me.retrodaredevil.solarthing.program.ModbusListUpdaterWrapper;
 import me.retrodaredevil.solarthing.program.TracerPacketListUpdater;
@@ -31,17 +32,20 @@ public class TracerModbusRequester implements ModbusRequester {
 	private final boolean bulkRequest;
 	private final List<String> attachToCommands;
 	private final int number;
+	private final TracerClockOptions tracerClockOptions;
 
 	@JsonCreator
 	public TracerModbusRequester(
 			@JsonProperty("error_packets") Boolean sendErrorPackets,
 			@JsonProperty("bulk_request") Boolean bulkRequest,
 			@JsonProperty("commands") List<String> attachToCommands,
-			@JsonProperty("number") Integer number) {
+			@JsonProperty("number") Integer number,
+			@JsonProperty("clock") TracerClockOptions tracerClockOptions) {
 		this.sendErrorPackets = Boolean.TRUE.equals(sendErrorPackets); // default false
 		this.bulkRequest = !Boolean.FALSE.equals(bulkRequest); // default true
 		this.attachToCommands = attachToCommands == null ? Collections.emptyList() : attachToCommands;
 		this.number = number == null ? NumberedIdentifier.DEFAULT_NUMBER : number;
+		this.tracerClockOptions = tracerClockOptions;
 		if (number != null) {
 			LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Hey! We noticed you are defining 'number' on this tracer modbus requester! Please don't do that unless you actually need to!!");
 		}
@@ -69,7 +73,7 @@ public class TracerModbusRequester implements ModbusRequester {
 		modbusCacheSlave.cacheHoldingRangeInclusive(0x9013, 0x9021);
 		modbusCacheSlave.cacheHoldingRangeInclusive(0x903D, 0x903F);
 		modbusCacheSlave.cacheHoldingRangeInclusive(0x9042, 0x904D);
-		modbusCacheSlave.cacheHolding(0x9065, 1); // not always valid
+		modbusCacheSlave.cacheHolding(0x9065, 1);
 		modbusCacheSlave.cacheHoldingRangeInclusive(0x9069, 0x906E);
 		modbusCacheSlave.cacheHolding(0x9070, 1);
 	}
@@ -89,7 +93,7 @@ public class TracerModbusRequester implements ModbusRequester {
 		TracerWriteTable write = new TracerModbusSlaveWrite(modbus);
 		TracerModbusEnvironment tracerModbusEnvironment = new TracerModbusEnvironment(read, write);
 		return new DataRequesterResult(
-				new ModbusListUpdaterWrapper(new TracerPacketListUpdater(number, read, write), reloadCache, successReporter, sendErrorPackets, "tracer.error." + number),
+				new ModbusListUpdaterWrapper(new TracerPacketListUpdater(number, read, write, tracerClockOptions), reloadCache, successReporter, sendErrorPackets, "tracer.error." + number),
 				(dataSource, injectEnvironmentBuilder) -> {
 					String commandName = dataSource.getData();
 					if (attachToCommands.contains(commandName)) {

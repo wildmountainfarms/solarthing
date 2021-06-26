@@ -18,6 +18,7 @@
     for older packets.
     * Because of the additional overhead of saving more packets per hour, the `unique` option could be lowered to
     something like 15 per hour.
+* Look into graylog or logstash for better logging
   
 ### Completed
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
