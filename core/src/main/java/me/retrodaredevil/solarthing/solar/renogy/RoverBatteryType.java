@@ -2,13 +2,14 @@ package me.retrodaredevil.solarthing.solar.renogy;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import me.retrodaredevil.solarthing.packets.CodeMode;
+import me.retrodaredevil.solarthing.solar.renogy.rover.annotations.DcdcOnly;
 
 /**
  * The battery type
  * <p><p>
  * PDU address: 0xE004, Bytes: 2
  */
-public enum BatteryType implements CodeMode {
+public enum RoverBatteryType implements CodeMode {
 	/**
 	 * This represents the User battery type when it is directly configured from the Rover. When this is selected, charging parameters are unlocked
 	 * <p>
@@ -32,6 +33,7 @@ public enum BatteryType implements CodeMode {
 	USER_LOCKED("user-locked", 5),
 //	LITHIUM_36V("lithium-36", 5), // this is used on Rover Boost models and conflicts with the user-locked battery type, so we'll leave this commented until we find a better solution
 	/** Used on Rover Boost models*/
+	@DcdcOnly
 	LITHIUM_48V("lithium-48", 6),
 	;
 	// manual here has battery types: https://www.renogy.com/content/RNG-CTRL-RVR60/RVR60-Manual.pdf
@@ -39,7 +41,7 @@ public enum BatteryType implements CodeMode {
 	private final String name;
 	private final int code;
 
-	BatteryType(String name, int code) {
+	RoverBatteryType(String name, int code) {
 		this.name = name;
 		this.code = code;
 	}
@@ -57,7 +59,7 @@ public enum BatteryType implements CodeMode {
 	public boolean isUser() {
 		return this == USER_LOCKED || this == USER_UNLOCKED;
 	}
-	public static BatteryType parseOrNull(String batteryType) {
+	public static RoverBatteryType parseOrNull(String batteryType) {
 		try {
 			return parse(batteryType);
 		} catch (IllegalArgumentException e) {
@@ -65,10 +67,10 @@ public enum BatteryType implements CodeMode {
 		}
 	}
 	@JsonCreator
-	public static BatteryType parse(Object object) {
+	public static RoverBatteryType parse(Object object) {
 		if (object instanceof Integer) {
 			int code = (int) object;
-			for (BatteryType type : BatteryType.values()) {
+			for (RoverBatteryType type : RoverBatteryType.values()) {
 				if (type.isActive(code)) {
 					return type;
 				}
@@ -79,15 +81,15 @@ public enum BatteryType implements CodeMode {
 		}
 		throw new IllegalArgumentException("Unknown type to parse to a battery type: " + object.getClass());
 	}
-	public static BatteryType parseFromString(String batteryType) {
+	public static RoverBatteryType parseFromString(String batteryType) {
 		switch(batteryType){
-			case "self-customized": case "custom": case "customized": case "user": case "user-unlocked": return BatteryType.USER_UNLOCKED;
-			case "open": case "flooded": return BatteryType.OPEN;
-			case "sealed": return BatteryType.SEALED;
-			case "gel": return BatteryType.GEL;
-			case "lithium": return BatteryType.LITHIUM;
-			case "user-locked": case "lithium-36": return BatteryType.USER_LOCKED;
-			case "lithium-48": return BatteryType.LITHIUM_48V;
+			case "self-customized": case "custom": case "customized": case "user": case "user-unlocked": return RoverBatteryType.USER_UNLOCKED;
+			case "open": case "flooded": return RoverBatteryType.OPEN;
+			case "sealed": return RoverBatteryType.SEALED;
+			case "gel": return RoverBatteryType.GEL;
+			case "lithium": return RoverBatteryType.LITHIUM;
+			case "user-locked": case "lithium-36": return RoverBatteryType.USER_LOCKED;
+			case "lithium-48": return RoverBatteryType.LITHIUM_48V;
 			default: return valueOf(batteryType);
 		}
 	}

@@ -5,7 +5,7 @@ import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.program.modbus.MutableAddressModbusSlave;
-import me.retrodaredevil.solarthing.solar.renogy.BatteryType;
+import me.retrodaredevil.solarthing.solar.renogy.RoverBatteryType;
 import me.retrodaredevil.solarthing.solar.renogy.Voltage;
 import me.retrodaredevil.solarthing.solar.renogy.rover.LoadWorkingMode;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverReadTable;
@@ -327,7 +327,7 @@ public final class RoverSetupProgram {
 						}
 						break;
 					case "batterytype":
-						BatteryType batteryType = BatteryType.parseOrNull(toSet);
+						RoverBatteryType batteryType = RoverBatteryType.parseOrNull(toSet);
 
 						if(batteryType != null) {
 							write.setBatteryType(batteryType);
@@ -478,7 +478,7 @@ public final class RoverSetupProgram {
 				} else {
 					write.setSystemVoltageSetting(systemVoltage);
 				}
-				BatteryType batteryType = BatteryType.parseOrNull(split[2]);
+				RoverBatteryType batteryType = RoverBatteryType.parseOrNull(split[2]);
 				if (batteryType == null) {
 					System.out.println("Unsupported battery type: " + split[2]);
 					break;

@@ -550,7 +550,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	@JsonProperty("batteryType")
 	int getBatteryTypeValue();
 	@GraphQLInclude("batteryType")
-	default BatteryType getBatteryType(){ return Modes.getActiveMode(BatteryType.class, getBatteryTypeValue()); }
+	default RoverBatteryType getBatteryType(){ return Modes.getActiveMode(RoverBatteryType.class, getBatteryTypeValue()); }
 	@JsonProperty("batteryTypeName") // convenient
 	default String getBatteryTypeName(){ return getBatteryType().getModeName(); }
 

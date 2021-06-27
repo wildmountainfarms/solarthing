@@ -6,7 +6,7 @@ import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.packets.identification.SingleTypeIdentifier;
-import me.retrodaredevil.solarthing.solar.renogy.BatteryType;
+import me.retrodaredevil.solarthing.solar.renogy.RoverBatteryType;
 import me.retrodaredevil.solarthing.solar.renogy.Voltage;
 
 import java.util.HashMap;
@@ -25,7 +25,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 	private int controllerDeviceAddress;
 	private int streetLightValue;
 	private Voltage systemVoltageSetting;
-	private BatteryType batteryType;
+	private RoverBatteryType batteryType;
 
 	private int overVoltageThresholdRaw;
 	private int chargingVoltageLimitRaw;
@@ -232,8 +232,8 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 		return batteryType.getValueCode();
 	}
 	@Override
-	public void setBatteryType(BatteryType batteryType) {
-		BatteryType oldType = this.batteryType;
+	public void setBatteryType(RoverBatteryType batteryType) {
+		RoverBatteryType oldType = this.batteryType;
 		this.batteryType = batteryType;
 		onChange.onChange("batteryType", oldType.getModeName(), batteryType.getModeName());
 	}

@@ -14,6 +14,7 @@ import me.retrodaredevil.solarthing.solar.common.*;
 import me.retrodaredevil.solarthing.solar.tracer.mode.*;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.MonthDay;
 import java.util.Set;
@@ -288,6 +289,14 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 	@GraphQLInclude("clockYearNumber")
 	default int getClockYearNumber() {
 		return TracerUtil.extractTracer48BitRawInstantToYearNumber(getSecondMinuteHourDayMonthYearRaw());
+	}
+
+	/**
+	 * A non-standard method that returns a {@link LocalDateTime} where the year 2021 is internally represented as 21
+	 */
+	@GraphQLInclude("clockSolarThing")
+	default LocalDateTime getSolarThingLocalDateTime() {
+		return getClockTime().atDate(getClockMonthDay().atYear(getClockYearNumber() + 2000));
 	}
 
 	@JsonProperty("equalizationChargingCycleDays")

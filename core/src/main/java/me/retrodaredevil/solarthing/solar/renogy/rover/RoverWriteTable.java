@@ -3,7 +3,7 @@ package me.retrodaredevil.solarthing.solar.renogy.rover;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.solar.renogy.BatteryType;
+import me.retrodaredevil.solarthing.solar.renogy.RoverBatteryType;
 import me.retrodaredevil.solarthing.solar.renogy.Voltage;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerControl_E021;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerControl_E02D;
@@ -25,7 +25,7 @@ public interface RoverWriteTable extends Rover {
 	void setStreetLightBrightnessPercent(int brightnessPercent);
 	default void setBatteryParameters(
 			Voltage systemVoltage,
-			BatteryType batteryType,
+			RoverBatteryType batteryType,
 			int overVoltageThreshold,
 			int chargingVoltageLimit,
 			int equalizingChargingVoltage,
@@ -76,7 +76,7 @@ public interface RoverWriteTable extends Rover {
 	}
 	// I don't think we can set the recognized voltage
 	@JsonProperty("batteryType")
-	void setBatteryType(BatteryType batteryType);
+	void setBatteryType(RoverBatteryType batteryType);
 
 	@JsonProperty("overVoltageThresholdRaw")
 	void setOverVoltageThresholdRaw(int value);

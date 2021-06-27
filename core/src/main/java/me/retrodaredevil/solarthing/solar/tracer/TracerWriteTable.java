@@ -1,44 +1,82 @@
 package me.retrodaredevil.solarthing.solar.tracer;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.solar.tracer.mode.*;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.MonthDay;
 
 public interface TracerWriteTable {
+	@JsonProperty("batteryType")
 	void setBatteryType(TracerBatteryType batteryType);
+	@JsonProperty("batteryCapacityAmpHours")
 	void setBatteryCapacityAmpHours(int batteryCapacityAmpHours);
+	@JsonProperty("temperatureCompensationCoefficient")
 	void setTemperatureCompensationCoefficient(int temperatureCompensationCoefficient);
+	@JsonProperty("highVoltageDisconnect")
 	void setHighVoltageDisconnect(float highVoltageDisconnect);
+	@JsonProperty("chargingLimitVoltage")
 	void setChargingLimitVoltage(float chargingLimitVoltage);
+	@JsonProperty("overVoltageReconnect")
 	void setOverVoltageReconnect(float overVoltageReconnect);
+	@JsonProperty("equalizationVoltage")
 	void setEqualizationVoltage(float equalizationVoltage);
+	@JsonProperty("boostVoltage")
 	void setBoostVoltage(float boostVoltage);
+	@JsonProperty("floatVoltage")
 	void setFloatVoltage(float floatVoltage);
+	@JsonProperty("boostReconnectVoltage")
 	void setBoostReconnectVoltage(float boostReconnectVoltage);
+	@JsonProperty("lowVoltageReconnect")
 	void setLowVoltageReconnect(float lowVoltageReconnect);
+	@JsonProperty("underVoltageRecover")
 	void setUnderVoltageRecover(float underVoltageRecover);
+	@JsonProperty("underVoltageWarning")
 	void setUnderVoltageWarning(float underVoltageWarning);
+	@JsonProperty("lowVoltageDisconnect")
 	void setLowVoltageDisconnect(float lowVoltageDisconnect);
+	@JsonProperty("dischargingLimitVoltage")
 	void setDischargingLimitVoltage(float dischargingLimitVoltage);
 	void setSecondMinuteHourDayMonthYearRaw(long raw);
 	default void setClock(int yearNumber, MonthDay monthDay, LocalTime time) {
 		setSecondMinuteHourDayMonthYearRaw(TracerUtil.convertInstantToTracer48BitRaw(yearNumber, monthDay, time));
 	}
 
+	/**
+	 * This is a non-standard method that represents the year 2021 as 21, 2022 as 22, etc.
+	 */
+	@JsonProperty("clockSolarThing")
+	default void setSolarThingLocalDateTime(LocalDateTime localDateTime) {
+		int newYear = localDateTime.getYear() - 2000;
+		setClock(newYear, MonthDay.from(localDateTime), localDateTime.toLocalTime());
+	}
+
+	@JsonProperty("equalizationChargingCycleDays")
 	void setEqualizationChargingCycleDays(int equalizationChargingCycleDays);
+	@JsonProperty("batteryTemperatureWarningUpperLimit")
 	void setBatteryTemperatureWarningUpperLimit(float batteryTemperatureWarningUpperLimit);
+	@JsonProperty("batteryTemperatureWarningLowerLimit")
 	void setBatteryTemperatureWarningLowerLimit(float batteryTemperatureWarningLowerLimit);
+	@JsonProperty("insideControllerTemperatureWarningUpperLimit")
 	void setInsideControllerTemperatureWarningUpperLimit(float insideControllerTemperatureWarningUpperLimit);
+	@JsonProperty("insideControllerTemperatureWarningUpperLimitRecover")
 	void setInsideControllerTemperatureWarningUpperLimitRecover(float insideControllerTemperatureWarningUpperLimitRecover);
+	@JsonProperty("powerComponentTemperatureWarningUpperLimit")
 	void setPowerComponentTemperatureUpperLimit(float powerComponentTemperatureUpperLimit);
+	@JsonProperty("powerComponentTemperatureWarningUpperLimitRecover")
 	void setPowerComponentTemperatureUpperLimitRecover(float powerComponentTemperatureUpperLimitRecover);
+	@JsonProperty("lineImpedance")
 	void setLineImpedance(float lineImpedance); // 0x901D // milliohms
+	@JsonProperty("nightPVVoltageThreshold")
 	void setNightPVVoltageThreshold(float nightPVVoltageThreshold);
+	@JsonProperty("lightSignalStartupDelayTime")
 	void setLightSignalStartupDelayTime(int lightSignalStartupDelayTime);
+	@JsonProperty("dayPVVoltageThreshold")
 	void setDayPVVoltageThreshold(float dayPVVoltageThreshold);
+	@JsonProperty("lightSignalTurnOffDelayTime")
 	void setLightSignalTurnOffDelayTime(int lightSignalTurnOffDelayTime);
 	void setLoadControlMode(LoadControlMode loadControlMode);
 
@@ -65,15 +103,23 @@ public interface TracerWriteTable {
 	 */
 	void setBatteryDetection(@NotNull BatteryDetection batteryDetection);
 	void setLoadTimingControlSelection(@NotNull LoadTimingControlSelection loadTimingControlSelection);
+	@JsonProperty("isLoadOnByDefaultInManualMode")
 	void setLoadOnByDefaultInManualMode(boolean isLoadOnByDefaultInManualMode); // 0x906A
+	@JsonProperty("equalizeDurationMinutes")
 	void setEqualizeDurationMinutes(int equalizeDurationMinutes);
+	@JsonProperty("boostDurationMinutes")
 	void setBoostDurationMinutes(int boostDurationMinutes);
-	void setDischargingPercentage(int dischargingPercentage); // TODO we may change this if we decide to change the get interface too
+	@JsonProperty("dischargingPercentage")
+	void setDischargingPercentage(int dischargingPercentage);
+	@JsonProperty("chargingPercentage")
 	void setChargingPercentage(int chargingPercentage);
 	void setBatteryManagementMode(@NotNull BatteryManagementMode batteryManagementMode);
 
+	@JsonProperty("isManualLoadControlOn")
 	void setManualLoadControlOn(boolean isManualLoadControlOn);
+	@JsonProperty("isLoadTestModeEnabled")
 	void setLoadTestModeEnabled(boolean isLoadTestModeEnabled);
+	@JsonProperty("isLoadForcedOn")
 	void setLoadForcedOn(boolean isLoadForcedOn);
 
 }

@@ -10,4 +10,7 @@ if [ "$#" -gt 0 ]; then
   hostnamectl set-hostname "$NEW_HOSTNAME" || exit 1
   echo "127.0.0.1 $NEW_HOSTNAME" >> /etc/hosts || exit 1
   echo "Success!"
+else
+  echo You need to give at least one argument!
+  exit 1
 fi
