@@ -59,7 +59,7 @@ public final class ConfigUtil {
 		InjectableValues.Std iv = new InjectableValues.Std();
 		iv.addValue(SerialIOConfig.DEFAULT_SERIAL_CONFIG_KEY, defaultSerialConfig);
 
-		ObjectMapper mapper = JacksonUtil.defaultMapper();
+		ObjectMapper mapper = JacksonUtil.configurationMapper(JacksonUtil.defaultMapper());
 		mapper.setInjectableValues(iv);
 		final IOConfig config;
 		try {

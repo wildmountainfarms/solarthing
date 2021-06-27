@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.program;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.actions.command.EnvironmentUpdater;
 import me.retrodaredevil.solarthing.actions.command.EnvironmentUpdaterMultiplexer;
@@ -30,7 +29,6 @@ import me.retrodaredevil.solarthing.solar.outback.OutbackDuplicatePacketRemover;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXEventUpdaterListReceiver;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXEventUpdaterListReceiver;
-import me.retrodaredevil.solarthing.util.JacksonUtil;
 import me.retrodaredevil.solarthing.util.time.DailyIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +41,6 @@ import static java.util.Objects.requireNonNull;
 
 public class OutbackMateMain {
 	private static final Logger LOGGER = LoggerFactory.getLogger(OutbackMateMain.class);
-	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
 
 	private static final Collection<MateCommand> ALLOWED_COMMANDS = EnumSet.of(MateCommand.AUX_OFF, MateCommand.AUX_ON, MateCommand.USE, MateCommand.DROP);
 

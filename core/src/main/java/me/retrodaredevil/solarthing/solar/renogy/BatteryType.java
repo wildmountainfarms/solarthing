@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.solar.renogy;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import me.retrodaredevil.solarthing.packets.CodeMode;
 
 /**
@@ -55,5 +56,39 @@ public enum BatteryType implements CodeMode {
 
 	public boolean isUser() {
 		return this == USER_LOCKED || this == USER_UNLOCKED;
+	}
+	public static BatteryType parseOrNull(String batteryType) {
+		try {
+			return parse(batteryType);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
+	}
+	@JsonCreator
+	public static BatteryType parse(Object object) {
+		if (object instanceof Integer) {
+			int code = (int) object;
+			for (BatteryType type : BatteryType.values()) {
+				if (type.isActive(code)) {
+					return type;
+				}
+			}
+			throw new IllegalArgumentException("Unknown code: " + code);
+		} else if (object instanceof String ) {
+			return parseFromString((String) object);
+		}
+		throw new IllegalArgumentException("Unknown type to parse to a battery type: " + object.getClass());
+	}
+	public static BatteryType parseFromString(String batteryType) {
+		switch(batteryType){
+			case "self-customized": case "custom": case "customized": case "user": case "user-unlocked": return BatteryType.USER_UNLOCKED;
+			case "open": case "flooded": return BatteryType.OPEN;
+			case "sealed": return BatteryType.SEALED;
+			case "gel": return BatteryType.GEL;
+			case "lithium": return BatteryType.LITHIUM;
+			case "user-locked": case "lithium-36": return BatteryType.USER_LOCKED;
+			case "lithium-48": return BatteryType.LITHIUM_48V;
+			default: return valueOf(batteryType);
+		}
 	}
 }

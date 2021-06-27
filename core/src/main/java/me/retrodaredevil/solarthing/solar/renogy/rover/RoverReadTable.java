@@ -589,38 +589,20 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	@JsonProperty("overDischargeTimeDelaySeconds")
 	int getOverDischargeTimeDelaySeconds();
 
-	@Deprecated
-	static int getEqualizingChargingTimeMinutesFromRaw(int raw){ return raw + 10; }
 	@JsonProperty("equalizingChargingTimeRaw")
 	int getEqualizingChargingTimeRaw();
 	default int getEqualizingChargingTimeMinutes(){ return getEqualizingChargingTimeRaw(); }
 
-	@Deprecated
-	static int getBoostChargingTimeMinutesFromRaw(int raw){ return raw + 10; }
 	@JsonProperty("boostChargingTimeRaw")
 	int getBoostChargingTimeRaw();
 	default int getBoostChargingTimeMinutes(){ return getBoostChargingTimeRaw(); }
 
-	@Deprecated
-	static int getEqualizingChargingIntervalDaysFromRaw(int raw){
-		if(raw == 0){
-			return 0;
-		}
-		return raw + 5;
-	}
 	@JsonProperty("equalizingChargingIntervalRaw")
 	int getEqualizingChargingIntervalRaw();
 	default int getEqualizingChargingIntervalDays(){
 		return getEqualizingChargingIntervalRaw();
 	}
 
-	@Deprecated
-	static int getTemperatureCompensationFactorFromRaw(int raw){
-		if(raw == 0){
-			return 0;
-		}
-		return raw + 1;
-	}
 	@JsonProperty("temperatureCompensationFactorRaw")
 	int getTemperatureCompensationFactorRaw();
 	/** Units: mV/C/2V*/

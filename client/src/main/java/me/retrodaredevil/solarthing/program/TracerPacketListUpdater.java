@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.program;
 
 import me.retrodaredevil.solarthing.InstantType;
+import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.config.request.TracerClockOptions;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
@@ -52,7 +53,7 @@ public class TracerPacketListUpdater implements PacketListReceiver {
 				LOGGER.info("Going to update time to " + desiredTime + " from " + currentTime);
 				int newYear = desiredTime.getYear() - 2000;
 				write.setClock(newYear, MonthDay.from(desiredTime), desiredTime.toLocalTime());
-				LOGGER.info("Success updating time!");
+				LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Success updating time!");
 			}
 		}
 	}

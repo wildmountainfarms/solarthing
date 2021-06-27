@@ -25,4 +25,6 @@ public enum TracerBatteryType implements CodeMode {
 	public String getModeName() {
 		return name;
 	}
+
+
 }

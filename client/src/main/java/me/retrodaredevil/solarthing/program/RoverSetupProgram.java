@@ -7,13 +7,14 @@ import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.program.modbus.MutableAddressModbusSlave;
 import me.retrodaredevil.solarthing.solar.renogy.BatteryType;
 import me.retrodaredevil.solarthing.solar.renogy.Voltage;
-import me.retrodaredevil.solarthing.solar.renogy.rover.*;
+import me.retrodaredevil.solarthing.solar.renogy.rover.LoadWorkingMode;
+import me.retrodaredevil.solarthing.solar.renogy.rover.RoverReadTable;
+import me.retrodaredevil.solarthing.solar.renogy.rover.RoverWriteTable;
+import me.retrodaredevil.solarthing.solar.renogy.rover.StreetLight;
 import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusConstants;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerControl_E02D;
+import me.retrodaredevil.solarthing.util.StringUtil;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Scanner;
 
 @UtilityClass
@@ -24,17 +25,7 @@ public final class RoverSetupProgram {
 		Scanner scanner = new Scanner(System.in);
 		while (scanner.hasNextLine()) {
 			String command = scanner.nextLine();
-			String[] commentSplit = command.split("#");
-			final String[] split;
-			if(commentSplit.length == 0){
-				split = new String[0];
-			} else {
-				List<String> splitList = new ArrayList<>(Arrays.asList(commentSplit[0].split(" ")));
-				//noinspection StatementWithEmptyBody
-				while(splitList.remove(""));
-
-				split = splitList.toArray(new String[0]);
-			}
+			String[] split = StringUtil.terminalSplit(command);
 			handleSplit(split, slave, read, write);
 		}
 		return 0;
@@ -336,7 +327,7 @@ public final class RoverSetupProgram {
 						}
 						break;
 					case "batterytype":
-						BatteryType batteryType = parseBatteryType(toSet);
+						BatteryType batteryType = BatteryType.parseOrNull(toSet);
 
 						if(batteryType != null) {
 							write.setBatteryType(batteryType);
@@ -487,7 +478,7 @@ public final class RoverSetupProgram {
 				} else {
 					write.setSystemVoltageSetting(systemVoltage);
 				}
-				BatteryType batteryType = parseBatteryType(split[2]);
+				BatteryType batteryType = BatteryType.parseOrNull(split[2]);
 				if (batteryType == null) {
 					System.out.println("Unsupported battery type: " + split[2]);
 					break;
@@ -519,17 +510,6 @@ public final class RoverSetupProgram {
 			throw new IllegalArgumentException("raw voltage cannot be greater than 170!");
 		}
 		return rawVoltage;
-	}
-	private static BatteryType parseBatteryType(String string) {
-		switch(string){
-			case "user-unlocked": return BatteryType.USER_UNLOCKED;
-			case "open": case "flooded": return BatteryType.OPEN;
-			case "sealed": return BatteryType.SEALED;
-			case "gel": return BatteryType.GEL;
-			case "lithium": return BatteryType.LITHIUM;
-			case "self-customized": case "custom": case "customized": case "user": return BatteryType.USER_LOCKED;
-			default: return null;
-		}
 	}
 	private static Voltage parseVoltage(String string) {
 		Voltage systemVoltage = null;
