@@ -1,7 +1,9 @@
 package me.retrodaredevil.solarthing.solar.tracer;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.NotNull;
+import me.retrodaredevil.solarthing.solar.tracer.batteryconfig.TracerBatteryConfig;
 import me.retrodaredevil.solarthing.solar.tracer.mode.*;
 
 import java.time.Duration;
@@ -16,30 +18,47 @@ public interface TracerWriteTable {
 	void setBatteryCapacityAmpHours(int batteryCapacityAmpHours);
 	@JsonProperty("temperatureCompensationCoefficient")
 	void setTemperatureCompensationCoefficient(int temperatureCompensationCoefficient);
+
+	void setBatteryConfig(TracerBatteryConfig tracerBatteryConfig);
+
+	@Deprecated
 	@JsonProperty("highVoltageDisconnect")
 	void setHighVoltageDisconnect(float highVoltageDisconnect);
+	@Deprecated
 	@JsonProperty("chargingLimitVoltage")
 	void setChargingLimitVoltage(float chargingLimitVoltage);
+	@Deprecated
 	@JsonProperty("overVoltageReconnect")
 	void setOverVoltageReconnect(float overVoltageReconnect);
+	@Deprecated
 	@JsonProperty("equalizationVoltage")
 	void setEqualizationVoltage(float equalizationVoltage);
+	@Deprecated
 	@JsonProperty("boostVoltage")
 	void setBoostVoltage(float boostVoltage);
+	@Deprecated
 	@JsonProperty("floatVoltage")
 	void setFloatVoltage(float floatVoltage);
+	@Deprecated
 	@JsonProperty("boostReconnectVoltage")
 	void setBoostReconnectVoltage(float boostReconnectVoltage);
+	@Deprecated
 	@JsonProperty("lowVoltageReconnect")
 	void setLowVoltageReconnect(float lowVoltageReconnect);
+	@Deprecated
 	@JsonProperty("underVoltageRecover")
 	void setUnderVoltageRecover(float underVoltageRecover);
+	@Deprecated
 	@JsonProperty("underVoltageWarning")
 	void setUnderVoltageWarning(float underVoltageWarning);
+	@Deprecated
 	@JsonProperty("lowVoltageDisconnect")
 	void setLowVoltageDisconnect(float lowVoltageDisconnect);
+	@Deprecated
 	@JsonProperty("dischargingLimitVoltage")
 	void setDischargingLimitVoltage(float dischargingLimitVoltage);
+
+
 	void setSecondMinuteHourDayMonthYearRaw(long raw);
 	default void setClock(int yearNumber, MonthDay monthDay, LocalTime time) {
 		setSecondMinuteHourDayMonthYearRaw(TracerUtil.convertInstantToTracer48BitRaw(yearNumber, monthDay, time));
@@ -101,6 +120,8 @@ public interface TracerWriteTable {
 	 * Sets the battery rated voltage code
 	 * @param batteryDetection The battery detection
 	 */
+	@JsonProperty("batteryDetection")
+	@JsonAlias("batteryRatedVoltageCode")
 	void setBatteryDetection(@NotNull BatteryDetection batteryDetection);
 	void setLoadTimingControlSelection(@NotNull LoadTimingControlSelection loadTimingControlSelection);
 	@JsonProperty("isLoadOnByDefaultInManualMode")

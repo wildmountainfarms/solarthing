@@ -11,6 +11,7 @@ import me.retrodaredevil.solarthing.annotations.SerializeNameDefinedInBase;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.packets.support.Support;
 import me.retrodaredevil.solarthing.solar.common.*;
+import me.retrodaredevil.solarthing.solar.tracer.batteryconfig.TracerBatteryConfig;
 import me.retrodaredevil.solarthing.solar.tracer.mode.*;
 
 import java.time.Duration;
@@ -20,7 +21,7 @@ import java.time.MonthDay;
 import java.util.Set;
 
 @JsonExplicit
-public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeController, DailyChargeController, AdvancedAccumulatedChargeController, ErrorReporter, DualTemperature {
+public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeController, DailyChargeController, AdvancedAccumulatedChargeController, ErrorReporter, DualTemperature, TracerBatteryConfig {
 
 	SerialConfig SERIAL_CONFIG = new SerialConfigBuilder(115200)
 			.setDataBits(8)
@@ -244,36 +245,10 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 	// region Read-write settings
 	@JsonProperty("batteryTypeValue")
 	int getBatteryTypeValue(); // 0x9000
+	@GraphQLInclude("batteryType")
+	@Override
 	default @NotNull TracerBatteryType getBatteryType() { return Modes.getActiveMode(TracerBatteryType.class, getBatteryTypeValue()); }
-	@JsonProperty("batteryCapacityAmpHours")
-	int getBatteryCapacityAmpHours();
-	/** @return number in range 0-9 */
-	@JsonProperty("temperatureCompensationCoefficient")
-	int getTemperatureCompensationCoefficient();
-	@JsonProperty("highVoltageDisconnect")
-	float getHighVoltageDisconnect();
-	@JsonProperty("chargingLimitVoltage")
-	float getChargingLimitVoltage();
-	@JsonProperty("overVoltageReconnect")
-	float getOverVoltageReconnect();
-	@JsonProperty("equalizationVoltage")
-	float getEqualizationVoltage();
-	@JsonProperty("boostVoltage")
-	float getBoostVoltage();
-	@JsonProperty("floatVoltage")
-	float getFloatVoltage();
-	@JsonProperty("boostReconnectVoltage")
-	float getBoostReconnectVoltage();
-	@JsonProperty("lowVoltageReconnect")
-	float getLowVoltageReconnect();
-	@JsonProperty("underVoltageRecover")
-	float getUnderVoltageRecover();
-	@JsonProperty("underVoltageWarning")
-	float getUnderVoltageWarning();
-	@JsonProperty("lowVoltageDisconnect")
-	float getLowVoltageDisconnect();
-	@JsonProperty("dischargingLimitVoltage")
-	float getDischargingLimitVoltage();
+	// 0x9001 to 0x900E defined in TracerBatteryConfig
 
 	/** @return 48 bit number representing a real time clock. Low 8 bits represent seconds, ..., high 8 bits represent year */
 	@JsonProperty("secondMinuteHourDayMonthYearRaw")

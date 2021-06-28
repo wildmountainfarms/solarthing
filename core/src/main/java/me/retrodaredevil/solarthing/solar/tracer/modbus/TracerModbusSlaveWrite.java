@@ -5,6 +5,7 @@ import me.retrodaredevil.io.modbus.handling.WriteMultipleRegisters;
 import me.retrodaredevil.io.modbus.handling.WriteSingleCoil;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.solar.tracer.TracerWriteTable;
+import me.retrodaredevil.solarthing.solar.tracer.batteryconfig.TracerBatteryConfig;
 import me.retrodaredevil.solarthing.solar.tracer.mode.*;
 import me.retrodaredevil.solarthing.solar.util.AbstractModbusWrite;
 
@@ -42,60 +43,95 @@ public class TracerModbusSlaveWrite extends AbstractModbusWrite implements Trace
 	}
 
 	@Override
+	public void setBatteryConfig(TracerBatteryConfig config) {
+		multiWrite(0x9000, get8BitDataFrom16BitArray(
+				config.getBatteryType().getValueCode(),
+				config.getTemperatureCompensationCoefficient() * 100,
+				convertDecimalToRaw(config.getHighVoltageDisconnect()),
+				convertDecimalToRaw(config.getChargingLimitVoltage()),
+				convertDecimalToRaw(config.getOverVoltageReconnect()),
+				convertDecimalToRaw(config.getEqualizationVoltage()),
+				convertDecimalToRaw(config.getBoostVoltage()),
+				convertDecimalToRaw(config.getFloatVoltage()),
+				convertDecimalToRaw(config.getBoostReconnectVoltage()),
+				convertDecimalToRaw(config.getLowVoltageReconnect()),
+				convertDecimalToRaw(config.getUnderVoltageRecover()),
+				convertDecimalToRaw(config.getUnderVoltageWarning()),
+				convertDecimalToRaw(config.getLowVoltageDisconnect()),
+				convertDecimalToRaw(config.getDischargingLimitVoltage())
+		));
+	}
+
+	// TODO NOTE for voltage setpoints, they must be set using a multiple register write command from registers 0x9000 to 0x900E
+	// also note that the equalize and boost duration (0x906B and 0x906C) are normally set together, but it is not required
+	// also note that NTTV, startup delay, DTTV, turn off delay (0x901E to 0x9021) are normally set together, but it is not required
+	@Deprecated
+	@Override
 	public void setHighVoltageDisconnect(float highVoltageDisconnect) {
 		write(0x9003, convertDecimalToRaw(highVoltageDisconnect));
 	}
 
+	@Deprecated
 	@Override
 	public void setChargingLimitVoltage(float chargingLimitVoltage) {
 		write(0x9004, convertDecimalToRaw(chargingLimitVoltage));
 	}
 
+	@Deprecated
 	@Override
 	public void setOverVoltageReconnect(float overVoltageReconnect) {
 		write(0x9005, convertDecimalToRaw(overVoltageReconnect));
 	}
 
+	@Deprecated
 	@Override
 	public void setEqualizationVoltage(float equalizationVoltage) {
 		write(0x9006, convertDecimalToRaw(equalizationVoltage));
 	}
 
+	@Deprecated
 	@Override
 	public void setBoostVoltage(float boostVoltage) {
 		write(0x9007, convertDecimalToRaw(boostVoltage));
 	}
 
+	@Deprecated
 	@Override
 	public void setFloatVoltage(float floatVoltage) {
 		write(0x9008, convertDecimalToRaw(floatVoltage));
 	}
 
+	@Deprecated
 	@Override
 	public void setBoostReconnectVoltage(float boostReconnectVoltage) {
 		write(0x9009, convertDecimalToRaw(boostReconnectVoltage));
 	}
 
+	@Deprecated
 	@Override
 	public void setLowVoltageReconnect(float lowVoltageReconnect) {
 		write(0x900A, convertDecimalToRaw(lowVoltageReconnect));
 	}
 
+	@Deprecated
 	@Override
 	public void setUnderVoltageRecover(float underVoltageRecover) {
 		write(0x900B, convertDecimalToRaw(underVoltageRecover));
 	}
 
+	@Deprecated
 	@Override
 	public void setUnderVoltageWarning(float underVoltageWarning) {
 		write(0x900C, convertDecimalToRaw(underVoltageWarning));
 	}
 
+	@Deprecated
 	@Override
 	public void setLowVoltageDisconnect(float lowVoltageDisconnect) {
 		write(0x900D, convertDecimalToRaw(lowVoltageDisconnect));
 	}
 
+	@Deprecated
 	@Override
 	public void setDischargingLimitVoltage(float dischargingLimitVoltage) {
 		write(0x900E, convertDecimalToRaw(dischargingLimitVoltage));

@@ -17,6 +17,8 @@ underVoltageWarning 22.4  # default 24.0
 lowVoltageDisconnect 22.0 # default 22.2
 dischargingLimitVoltage 22.4  # default 21.2
 
+flushBatteryConfig
+
 equalizationChargingCycleDays 0  # default 30 - disable auto equalize
 
 batteryTemperatureWarningUpperLimit 35.0  # default 65.0
