@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.util;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -29,6 +30,10 @@ public final class JacksonUtil {
 	public static ObjectMapper defaultMapper(){
 		return defaultMapper(new ObjectMapper());
 	}
+	public static ObjectMapper configurationMapper(ObjectMapper mapper) {
+		// When parsing configuration files, we should allow comments
+		return mapper.configure(JsonParser.Feature.ALLOW_COMMENTS, true);
+	}
 
 	/**
 	 * This edits {@code mapper}'s deserialization config to make deserializing more lenient. This is useful for
@@ -43,5 +48,8 @@ public final class JacksonUtil {
 	public static ObjectMapper lenientSubTypeMapper(ObjectMapper mapper) {
 		mapper.setConfig(mapper.getDeserializationConfig().without(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE));
 		return mapper;
+	}
+	public static ObjectMapper jsonLikeTolerantMapper(ObjectMapper mapper) {
+		return mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
 	}
 }

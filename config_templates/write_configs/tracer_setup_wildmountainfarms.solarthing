@@ -1,0 +1,40 @@
+
+batteryType user
+
+batteryCapacityAmpHours 400  # I don't know if this is right, it probably isn't
+
+temperatureCompensationCoefficient 5  # I think this makes it the same as the outback
+highVoltageDisconnect 32.0  # the default is 32.0
+chargingLimitVoltage 30.8  # default is 30.0
+overVoltageReconnect 30.8  # default is 30.0
+equalizationVoltage 30.4  # default 29.2
+boostVoltage 29.5  # FXs get 29.2, MXs get 29.4, rover gets 29.6, this goes in the middle
+floatVoltage 27.2  # default 27.6
+boostReconnectVoltage 26.4  # default 26.4 - keep default
+lowVoltageReconnect 25.2  # default 25.2 - keep default
+underVoltageRecover 24.4 # default 24.4 - keep default
+underVoltageWarning 22.4  # default 24.0
+lowVoltageDisconnect 22.0 # default 22.2
+dischargingLimitVoltage 22.4  # default 21.2
+
+flushBatteryConfig
+
+equalizationChargingCycleDays 0  # default 30 - disable auto equalize
+
+batteryTemperatureWarningUpperLimit 35.0  # default 65.0
+batteryTemperatureWarningLowerLimit 3.0  # default -40.0
+
+insideControllerTemperatureWarningUpperLimit 60.0  # default 85.0
+insideControllerTemperatureWarningUpperLimitRecover 55.0  # default 75.0
+
+powerComponentTemperatureWarningUpperLimit 60.0  # same as above
+powerComponentTemperatureWarningUpperLimitRecover 55.0  # same as above
+
+nightPVVoltageThreshold 18.0  # default 10.0
+dayPVVoltageThreshold 20.0  # default 12.0
+
+isLoadOnByDefaultInManualMode false  # default true
+equalizeDurationMinutes 120  # default 120
+boostDurationMinutes 90  # default 120
+
+

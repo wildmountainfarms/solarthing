@@ -15,6 +15,8 @@ import me.retrodaredevil.solarthing.solar.outback.mx.ChargerMode;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPacket;
 import me.retrodaredevil.solarthing.solar.renogy.rover.ChargingState;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
+import me.retrodaredevil.solarthing.solar.tracer.TracerStatusPacket;
+import me.retrodaredevil.solarthing.solar.tracer.mode.ChargingStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,6 +67,16 @@ public class RequireFullOutputActionNode implements ActionNode {
 								if (state != ChargingState.ACTIVATED && state != ChargingState.DEACTIVATED && state != ChargingState.MPPT) {
 									if (log) {
 										LOGGER.info(identifier.getRepresentation() + " on fragment " + fragmentId + " is in mode " + state.getModeName());
+									}
+									return false;
+								}
+							} else if (packet instanceof TracerStatusPacket) {
+								TracerStatusPacket tracer = (TracerStatusPacket) packet;
+								ChargingStatus status = tracer.getChargingMode();
+								// we currently cannot tell if while in BOOST or EQUALIZE if the controller is actually in Bulk, so float is the only mode we know that isn't at full output
+								if (status == ChargingStatus.FLOAT) {
+									if (log) {
+										LOGGER.info(identifier.getRepresentation() + " on fragment " + fragmentId + " is in mode " + status.getModeName());
 									}
 									return false;
 								}

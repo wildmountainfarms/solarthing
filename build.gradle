@@ -10,16 +10,17 @@ buildscript {
         jacksonVersion = '2.12.3' // https://github.com/FasterXML/jackson-databind/releases
         // retrofit is why we need allow-opens. context: https://stackoverflow.com/questions/60915381/retrofit2-maven-project-illegal-reflective-access-warning // https://github.com/square/retrofit/issues/3341
         retrofitVersion = "2.9.0" // https://github.com/square/retrofit/releases
-        shadowVersion = '7.0.0' // https://github.com/johnrengelman/shadow/releases
+//        shadowVersion = '7.0.0' // https://github.com/johnrengelman/shadow/releases // only works on gradle 7
+        shadowVersion = '6.1.0' // https://github.com/johnrengelman/shadow/releases
 //        ioLibVersion = '2.1.0' // https://github.com/retrodaredevil/io-lib/releases
-        ioLibVersion = '76e68360a7'
+        ioLibVersion = 'cc13e29d6d'
         okhttpVersion = "4.9.1" // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
     }
 }
 
 
 plugins {
-    id 'com.diffplug.spotless' version '5.12.5' // https://search.maven.org/search?q=a:spotless-plugin-gradle
+    id 'com.diffplug.spotless' version '5.14.0' // https://search.maven.org/search?q=a:spotless-plugin-gradle
 }
 
 version "0.0.1-SNAPSHOT"
@@ -157,6 +158,6 @@ project(":graphql"){
 }
 
 wrapper {
-    gradleVersion = '7.0.2'
+    gradleVersion = '6.9'
     distributionType = Wrapper.DistributionType.ALL
 }

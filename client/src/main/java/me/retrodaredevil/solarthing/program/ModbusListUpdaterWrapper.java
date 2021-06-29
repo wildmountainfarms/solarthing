@@ -78,10 +78,10 @@ public class ModbusListUpdaterWrapper implements PacketListReceiver {
 				// These messages will hopefully help people with problems fix it faster.
 				if (hasBeenSuccessful) {
 					LOGGER.info("\n\nHey! We noticed you got a ModbusTimeoutException after getting this to work.\n" +
-							"This is likely a fluke and hopefully this message isn't printed a bunch of times. If it is, you may want to check your cable.\n");
+							"This is likely a fluke and hopefully this message isn't printed a bunch of times. If it is not a fluke, you may want to check your cable.\n");
 				} else {
 					LOGGER.info("\n\nHey! We noticed you got a ModbusTimeoutException.\n" +
-							"This is likely a problem with your cable. SolarThing is communicating fine with your serial adapter, but it cannot reach the Rover.\n" +
+							"This is likely a problem with your cable. SolarThing is communicating fine with your serial adapter, but it cannot reach the device.\n" +
 							"Make sure the cable you have has the correct pinout, and feel free to open an issue at https://github.com/wildmountainfarms/solarthing/issues if you need help.\n");
 				}
 			} else if (e instanceof ParsedResponseException) {
@@ -103,6 +103,6 @@ public class ModbusListUpdaterWrapper implements PacketListReceiver {
 		hasBeenSuccessful = true;
 		successReporter.reportSuccess();
 		final long readDurationNanos = System.nanoTime() - startTimeNanos;
-		LOGGER.debug("took " + TimeUtil.nanosToSecondsString(readDurationNanos) + " seconds to read from Rover");
+		LOGGER.debug("took " + TimeUtil.nanosToSecondsString(readDurationNanos) + " seconds to read from device");
 	}
 }

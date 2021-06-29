@@ -1,21 +1,31 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover;
 
-import me.retrodaredevil.solarthing.solar.renogy.BatteryType;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import me.retrodaredevil.solarthing.annotations.JsonExplicit;
+import me.retrodaredevil.solarthing.solar.renogy.RoverBatteryType;
 import me.retrodaredevil.solarthing.solar.renogy.Voltage;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerControl_E021;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerControl_E02D;
 
 @SuppressWarnings("unused")
+@JsonExplicit
 public interface RoverWriteTable extends Rover {
 	void factoryReset();
 	void clearHistory();
 
+	@JsonSetter("address")
 	void setControllerDeviceAddress(int address);
 	void setStreetLightStatus(StreetLight streetLightStatus);
+	@JsonSetter("load")
+	default void setLoadState(boolean on) {
+		setStreetLightStatus(on ? StreetLight.ON : StreetLight.OFF);
+	}
+	@JsonSetter("streetLightBrightness")
 	void setStreetLightBrightnessPercent(int brightnessPercent);
 	default void setBatteryParameters(
 			Voltage systemVoltage,
-			BatteryType batteryType,
+			RoverBatteryType batteryType,
 			int overVoltageThreshold,
 			int chargingVoltageLimit,
 			int equalizingChargingVoltage,
@@ -54,90 +64,72 @@ public interface RoverWriteTable extends Rover {
 	}
 
 	void setSystemVoltageSetting(Voltage voltage);
+	@JsonProperty("systemVoltageSetting")
+	default void setSystemVoltageSettingValue(Integer voltageValue) {
+		final Voltage voltage;
+		if (voltageValue == null) {
+			voltage = Voltage.AUTO;
+		} else {
+			voltage = Voltage.from(voltageValue);
+		}
+		setSystemVoltageSetting(voltage);
+	}
 	// I don't think we can set the recognized voltage
-	void setBatteryType(BatteryType batteryType);
+	@JsonProperty("batteryType")
+	void setBatteryType(RoverBatteryType batteryType);
 
+	@JsonProperty("overVoltageThresholdRaw")
 	void setOverVoltageThresholdRaw(int value);
+	@JsonProperty("chargingVoltageLimitRaw")
 	void setChargingVoltageLimitRaw(int value);
+	@JsonProperty("equalizingChargingVoltageRaw")
 	void setEqualizingChargingVoltageRaw(int value);
+	@JsonProperty("boostChargingVoltageRaw")
 	void setBoostChargingVoltageRaw(int value);
+	@JsonProperty("floatingChargingVoltageRaw")
 	void setFloatingChargingVoltageRaw(int value);
+	@JsonProperty("boostChargingRecoveryVoltageRaw")
 	void setBoostChargingRecoveryVoltageRaw(int value);
+	@JsonProperty("overDischargeRecoveryVoltageRaw")
 	void setOverDischargeRecoveryVoltageRaw(int value);
+	@JsonProperty("underVoltageWarningLevelRaw")
 	void setUnderVoltageWarningLevelRaw(int value);
+	@JsonProperty("overDischargeVoltageRaw")
 	void setOverDischargeVoltageRaw(int value);
+	@JsonProperty("dischargingLimitVoltageRaw")
 	void setDischargingLimitVoltageRaw(int value);
 
 	void setEndOfChargeSOCEndOfDischargeSOC(int endOfChargeSOCValue, int endOfDischargeSOCValue);
 
+	@JsonProperty("overDischargeTimeDelaySeconds")
 	void setOverDischargeTimeDelaySeconds(int seconds);
 
-	@Deprecated
-	static int getEqualizingChargingTimeRawFromMinutes(int minutes){
-		if(minutes < 10){
-			throw new IllegalArgumentException("minutes cannot be less than 10! it was: " + minutes);
-		}
-		if(minutes > 310){
-			throw new IllegalArgumentException("minutes cannot be greater than 310! it was: " + minutes);
-		}
-		return minutes - 10;
-	}
+	@JsonProperty("equalizingChargingTimeRaw")
 	void setEqualizingChargingTimeRaw(int value);
+	@JsonProperty("equalizingChargingTimeMinutes")
 	default void setEqualizingChargingTimeMinutes(int minutes){
 		setEqualizingChargingTimeRaw(minutes);
 	}
 
-	@Deprecated
-	static int getBoostChargingTimeRawFromMinutes(int minutes){
-		if(minutes < 20){
-			throw new IllegalArgumentException("minutes cannot be less than 20! it was: " + minutes);
-		}
-		if(minutes > 310){
-			throw new IllegalArgumentException("minutes cannot be greater than 310! it was: " + minutes);
-		}
-		return minutes - 10;
-	}
+	@JsonProperty("boostChargingTimeRaw")
 	void setBoostChargingTimeRaw(int value);
+	@JsonProperty("boostChargingTimeMinutes")
 	default void setBoostChargingTimeMinutes(int minutes){
 		setBoostChargingTimeRaw(minutes);
 	}
 
-	@Deprecated
-	static int getEqualizingChargingIntervalRawFromDays(int days){
-		if(days == 0){
-			return 0;
-		} else {
-			if(days <= 5){
-				throw new IllegalArgumentException("days cannot be less than or equal to 5! it was: " + days);
-			}
-			if(days > 300){
-				throw new IllegalArgumentException("days cannot be greater than 300! it was: " + days);
-			}
-			return days - 5;
-		}
-	}
+	@JsonProperty("equalizingChargingIntervalRaw")
 	void setEqualizingChargingIntervalRaw(int value);
+	@JsonProperty("equalizingChargingIntervalDays")
 	default void setEqualizingChargingIntervalDays(int days){
 		setEqualizingChargingIntervalRaw(days);
 	}
 
-	@Deprecated
-	static int getTemperatureCompensationFactorRaw(int nonRaw){
-		if(nonRaw == 0){
-			return 0;
-		} else {
-			if(nonRaw <= 1){
-				throw new IllegalArgumentException("value cannot be less than or equal to 1! it was: " + nonRaw);
-			}
-			if(nonRaw > 6){
-				throw new IllegalArgumentException("value cannot be greater than 6! it was: " + nonRaw);
-			}
-			return nonRaw - 1;
-		}
-	}
 	/** NOTE: Untested */
+	@JsonProperty("temperatureCompensationFactorRaw")
 	void setTemperatureCompensationFactorRaw(int value);
 	/** NOTE: Untested */
+	@JsonProperty("temperatureCompensationFactor")
 	default void setTemperatureCompensationFactor(int value){
 		setTemperatureCompensationFactorRaw(value);
 	}
@@ -149,17 +141,21 @@ public interface RoverWriteTable extends Rover {
 	/**
 	 * @param minutes A number in range [0..60]
 	 */
+	@JsonProperty("lightControlDelayMinutes")
 	void setLightControlDelayMinutes(int minutes);
 
 	/**
 	 * @param voltage A number in range [1..40]
 	 */
+	@JsonProperty("lightControlVoltage")
 	void setLightControlVoltage(int voltage);
 
 	/**
 	 * @param value Unknown range.
 	 */
+	@JsonProperty("ledLoadCurrentSettingRaw")
 	void setLEDLoadCurrentSettingRaw(int value);
+	@JsonProperty("ledLoadCurrentSettingMilliAmps")
 	default void setLEDLoadCurrentSettingMilliAmps(int milliAmps){
 		if(milliAmps % 10 != 0){
 			throw new IllegalArgumentException("milliAmps must a multiple of 10! it was: " + milliAmps);

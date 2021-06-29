@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.program;
 
 import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.SolarThingConstants;
+import me.retrodaredevil.solarthing.netcat.ConnectionHandler;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverReadTable;
@@ -14,17 +15,21 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+import static java.util.Objects.requireNonNull;
+
 public class RoverPacketListUpdater implements PacketListReceiver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RoverPacketListUpdater.class);
 
 	private final int number;
 	private final RoverReadTable read;
 	private final RoverWriteTable write;
+	private final ConnectionHandler connectionHandler;
 
-	public RoverPacketListUpdater(int number, RoverReadTable read, RoverWriteTable write) {
+	public RoverPacketListUpdater(int number, RoverReadTable read, RoverWriteTable write, ConnectionHandler connectionHandler) {
 		this.number = number;
-		this.read = read;
-		this.write = write;
+		requireNonNull(this.read = read);
+		requireNonNull(this.write = write);
+		this.connectionHandler = connectionHandler;
 	}
 
 	@Override
@@ -36,5 +41,8 @@ public class RoverPacketListUpdater implements PacketListReceiver {
 				(specialPower2 == null ? "" : "\n" + specialPower2.getFormattedInfo().replaceAll("\n", "\n\t"))
 		);
 		packets.add(packet);
+		if (connectionHandler != null) {
+			connectionHandler.handleRequests(request -> NetCatUtil.handle(write, packet, request));
+		}
 	}
 }

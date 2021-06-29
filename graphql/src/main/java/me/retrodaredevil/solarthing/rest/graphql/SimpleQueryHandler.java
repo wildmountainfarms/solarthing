@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.rest.graphql;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.couchdb.CouchDbUtil;
 import me.retrodaredevil.couchdbjava.CouchDbInstance;
+import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.database.MillisDatabase;
 import me.retrodaredevil.solarthing.database.MillisQueryBuilder;
@@ -14,8 +15,6 @@ import me.retrodaredevil.solarthing.meta.EmptyMetaDatabase;
 import me.retrodaredevil.solarthing.meta.MetaDatabase;
 import me.retrodaredevil.solarthing.packets.collection.*;
 import me.retrodaredevil.solarthing.packets.collection.parsing.PacketParsingErrorHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.List;
@@ -23,7 +22,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 public class SimpleQueryHandler {
-	private static final Logger LOGGER = LoggerFactory.getLogger(SimpleQueryHandler.class);
 
 	private final DefaultInstanceOptions defaultInstanceOptions;
 
@@ -44,9 +42,16 @@ public class SimpleQueryHandler {
 			return Collections.emptyList();
 		}
 		if (sourceId == null) {
-			return PacketGroups.mergePackets(PacketGroups.parseToInstancePacketGroups(packets, defaultInstanceOptions), 2 * 60 * 1000, 2 * 60 * 1000L);
+			return PacketGroups.mergePackets(
+					PacketGroups.parseToInstancePacketGroups(packets, defaultInstanceOptions),
+					SolarThingConstants.STANDARD_MAX_TIME_DISTANCE.toMillis(), SolarThingConstants.STANDARD_MASTER_ID_IGNORE_DISTANCE.toMillis()
+			);
 		}
-		return PacketGroups.sortPackets(packets, defaultInstanceOptions, 2 * 60 * 1000, 2 * 60 * 1000L).getOrDefault(sourceId, Collections.emptyList());
+		return PacketGroups.sortPackets(
+				packets,
+				defaultInstanceOptions,
+				SolarThingConstants.STANDARD_MAX_TIME_DISTANCE.toMillis(), SolarThingConstants.STANDARD_MASTER_ID_IGNORE_DISTANCE.toMillis()
+		).getOrDefault(sourceId, Collections.emptyList());
 	}
 	/**
 	 *

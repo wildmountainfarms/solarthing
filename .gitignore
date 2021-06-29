@@ -3,6 +3,11 @@
 .~lock*
 *.log.gz
 
+/config.json
+/other/systemd/config.json
+
+other/linux/.downloads/
+
 /logs/
 /logrotate.conf
 
@@ -30,6 +35,9 @@
 !/program/**/config/actions/README.md
 
 !/program/graphql/download_solarting_graphql.sh
+
+/program/custom*
+!/program/create_custom.sh
 
 
 */__pycache__/*

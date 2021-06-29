@@ -1,44 +1,101 @@
 package me.retrodaredevil.solarthing.solar.tracer;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.NotNull;
+import me.retrodaredevil.solarthing.solar.tracer.batteryconfig.TracerBatteryConfig;
 import me.retrodaredevil.solarthing.solar.tracer.mode.*;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.MonthDay;
 
 public interface TracerWriteTable {
+	@JsonProperty("batteryType")
 	void setBatteryType(TracerBatteryType batteryType);
+	@JsonProperty("batteryCapacityAmpHours")
 	void setBatteryCapacityAmpHours(int batteryCapacityAmpHours);
+	@JsonProperty("temperatureCompensationCoefficient")
 	void setTemperatureCompensationCoefficient(int temperatureCompensationCoefficient);
+
+	void setBatteryConfig(TracerBatteryConfig tracerBatteryConfig);
+
+	@Deprecated
+	@JsonProperty("highVoltageDisconnect")
 	void setHighVoltageDisconnect(float highVoltageDisconnect);
+	@Deprecated
+	@JsonProperty("chargingLimitVoltage")
 	void setChargingLimitVoltage(float chargingLimitVoltage);
+	@Deprecated
+	@JsonProperty("overVoltageReconnect")
 	void setOverVoltageReconnect(float overVoltageReconnect);
+	@Deprecated
+	@JsonProperty("equalizationVoltage")
 	void setEqualizationVoltage(float equalizationVoltage);
+	@Deprecated
+	@JsonProperty("boostVoltage")
 	void setBoostVoltage(float boostVoltage);
+	@Deprecated
+	@JsonProperty("floatVoltage")
 	void setFloatVoltage(float floatVoltage);
+	@Deprecated
+	@JsonProperty("boostReconnectVoltage")
 	void setBoostReconnectVoltage(float boostReconnectVoltage);
+	@Deprecated
+	@JsonProperty("lowVoltageReconnect")
 	void setLowVoltageReconnect(float lowVoltageReconnect);
+	@Deprecated
+	@JsonProperty("underVoltageRecover")
 	void setUnderVoltageRecover(float underVoltageRecover);
+	@Deprecated
+	@JsonProperty("underVoltageWarning")
 	void setUnderVoltageWarning(float underVoltageWarning);
+	@Deprecated
+	@JsonProperty("lowVoltageDisconnect")
 	void setLowVoltageDisconnect(float lowVoltageDisconnect);
+	@Deprecated
+	@JsonProperty("dischargingLimitVoltage")
 	void setDischargingLimitVoltage(float dischargingLimitVoltage);
+
+
 	void setSecondMinuteHourDayMonthYearRaw(long raw);
 	default void setClock(int yearNumber, MonthDay monthDay, LocalTime time) {
 		setSecondMinuteHourDayMonthYearRaw(TracerUtil.convertInstantToTracer48BitRaw(yearNumber, monthDay, time));
 	}
 
+	/**
+	 * This is a non-standard method that represents the year 2021 as 21, 2022 as 22, etc.
+	 */
+	@JsonProperty("clockSolarThing")
+	default void setSolarThingLocalDateTime(LocalDateTime localDateTime) {
+		int newYear = localDateTime.getYear() - 2000;
+		setClock(newYear, MonthDay.from(localDateTime), localDateTime.toLocalTime());
+	}
+
+	@JsonProperty("equalizationChargingCycleDays")
 	void setEqualizationChargingCycleDays(int equalizationChargingCycleDays);
+	@JsonProperty("batteryTemperatureWarningUpperLimit")
 	void setBatteryTemperatureWarningUpperLimit(float batteryTemperatureWarningUpperLimit);
+	@JsonProperty("batteryTemperatureWarningLowerLimit")
 	void setBatteryTemperatureWarningLowerLimit(float batteryTemperatureWarningLowerLimit);
+	@JsonProperty("insideControllerTemperatureWarningUpperLimit")
 	void setInsideControllerTemperatureWarningUpperLimit(float insideControllerTemperatureWarningUpperLimit);
+	@JsonProperty("insideControllerTemperatureWarningUpperLimitRecover")
 	void setInsideControllerTemperatureWarningUpperLimitRecover(float insideControllerTemperatureWarningUpperLimitRecover);
+	@JsonProperty("powerComponentTemperatureWarningUpperLimit")
 	void setPowerComponentTemperatureUpperLimit(float powerComponentTemperatureUpperLimit);
+	@JsonProperty("powerComponentTemperatureWarningUpperLimitRecover")
 	void setPowerComponentTemperatureUpperLimitRecover(float powerComponentTemperatureUpperLimitRecover);
+	@JsonProperty("lineImpedance")
 	void setLineImpedance(float lineImpedance); // 0x901D // milliohms
+	@JsonProperty("nightPVVoltageThreshold")
 	void setNightPVVoltageThreshold(float nightPVVoltageThreshold);
+	@JsonProperty("lightSignalStartupDelayTime")
 	void setLightSignalStartupDelayTime(int lightSignalStartupDelayTime);
+	@JsonProperty("dayPVVoltageThreshold")
 	void setDayPVVoltageThreshold(float dayPVVoltageThreshold);
+	@JsonProperty("lightSignalTurnOffDelayTime")
 	void setLightSignalTurnOffDelayTime(int lightSignalTurnOffDelayTime);
 	void setLoadControlMode(LoadControlMode loadControlMode);
 
@@ -63,17 +120,27 @@ public interface TracerWriteTable {
 	 * Sets the battery rated voltage code
 	 * @param batteryDetection The battery detection
 	 */
+	@JsonProperty("batteryDetection")
+	@JsonAlias("batteryRatedVoltageCode")
 	void setBatteryDetection(@NotNull BatteryDetection batteryDetection);
 	void setLoadTimingControlSelection(@NotNull LoadTimingControlSelection loadTimingControlSelection);
+	@JsonProperty("isLoadOnByDefaultInManualMode")
 	void setLoadOnByDefaultInManualMode(boolean isLoadOnByDefaultInManualMode); // 0x906A
+	@JsonProperty("equalizeDurationMinutes")
 	void setEqualizeDurationMinutes(int equalizeDurationMinutes);
+	@JsonProperty("boostDurationMinutes")
 	void setBoostDurationMinutes(int boostDurationMinutes);
-	void setDischargingPercentage(int dischargingPercentage); // TODO we may change this if we decide to change the get interface too
+	@JsonProperty("dischargingPercentage")
+	void setDischargingPercentage(int dischargingPercentage);
+	@JsonProperty("chargingPercentage")
 	void setChargingPercentage(int chargingPercentage);
 	void setBatteryManagementMode(@NotNull BatteryManagementMode batteryManagementMode);
 
+	@JsonProperty("isManualLoadControlOn")
 	void setManualLoadControlOn(boolean isManualLoadControlOn);
+	@JsonProperty("isLoadTestModeEnabled")
 	void setLoadTestModeEnabled(boolean isLoadTestModeEnabled);
+	@JsonProperty("isLoadForcedOn")
 	void setLoadForcedOn(boolean isLoadForcedOn);
 
 }

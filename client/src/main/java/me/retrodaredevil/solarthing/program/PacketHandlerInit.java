@@ -46,6 +46,7 @@ public class PacketHandlerInit {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PacketHandlerInit.class);
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
+	private static final ObjectMapper CONFIG_MAPPER = JacksonUtil.defaultMapper();
 
 	public static PacketHandlerBundle getPacketHandlerBundle(List<DatabaseConfig> configs, String uniqueStatusName, String uniqueEventName, String sourceId, int fragmentId){
 		List<PacketHandler> statusPacketHandlers = new ArrayList<>();
@@ -167,7 +168,7 @@ public class PacketHandlerInit {
 			LatestPacketHandler latestPacketHandler = new LatestPacketHandler(false); // this is used to determine the state of the system when a command is requested
 			statusPacketHandlers.add(latestPacketHandler);
 
-			Map<String, ActionNode> actionNodeMap = ActionUtil.getActionNodeMap(MAPPER, options);
+			Map<String, ActionNode> actionNodeMap = ActionUtil.getActionNodeMap(CONFIG_MAPPER, options);
 			ActionNodeDataReceiver commandReceiver = new ActionNodeDataReceiver(
 					actionNodeMap,
 					(dataSource, injectEnvironmentBuilder) -> {

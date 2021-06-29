@@ -2,7 +2,7 @@ package me.retrodaredevil.solarthing.solar.renogy.rover.modbus;
 
 import me.retrodaredevil.io.modbus.ModbusSlave;
 import me.retrodaredevil.io.modbus.handling.WriteMultipleRegisters;
-import me.retrodaredevil.solarthing.solar.renogy.BatteryType;
+import me.retrodaredevil.solarthing.solar.renogy.RoverBatteryType;
 import me.retrodaredevil.solarthing.solar.renogy.Voltage;
 import me.retrodaredevil.solarthing.solar.renogy.rover.LoadWorkingMode;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverWriteTable;
@@ -55,7 +55,7 @@ public class RoverModbusSlaveWrite extends AbstractModbusWrite implements RoverW
 	@Override
 	public void setBatteryParameters(
 			Voltage systemVoltage,
-			BatteryType batteryType,
+			RoverBatteryType batteryType,
 			int overVoltageThreshold, int chargingVoltageLimit, int equalizingChargingVoltage, int boostChargingVoltage,
 			int floatingChargingVoltage, int boostChargingRecoveryVoltage, int overDischargeRecoveryVoltage,
 			int underVoltageWarningLevel, int overDischargeVoltage, int dischargingLimitVoltage,
@@ -86,7 +86,7 @@ public class RoverModbusSlaveWrite extends AbstractModbusWrite implements RoverW
 	}
 
 	@Override
-	public void setBatteryType(BatteryType batteryType) {
+	public void setBatteryType(RoverBatteryType batteryType) {
 		write(0xE004, batteryType.getValueCode());
 	}
 

@@ -1,0 +1,26 @@
+# Rover Setup Config
+#batteryType                     user # You cannot set this here (you can only set this manually)
+systemVoltageSetting                   24
+
+# Under Voltage
+underVoltageWarningLevelRaw     112 # 22.2
+dischargingLimitVoltageRaw      110 # 22.0
+overDischargeRecoveryVoltageRaw 112 # 22.4 # has to get back to 22.4
+overDischargeTimeDelaySeconds   120 # 2 minutes before "over discharge"
+
+# Boost (Absorb)
+boostChargingVoltageRaw         148 # 29.4 # We give the FXs 29.2, but all charge controllers 29.4 so they don't "give up" -- the rover gets 29.6 because it seems to give up sooner
+boostChargingRecoveryVoltageRaw 120 # 24.0
+boostChargingTimeMinutes         90 # 1.5 hours
+
+# EQ
+equalizingChargingVoltageRaw    151 # 30.2 # We give the FXs 30.0, and when we bump up the boost voltage, this needs to be >=
+equalizingChargingTimeMinutes   120 # 2 hours
+equalizingChargingIntervalDays    0 # Let's disable this for now
+
+# Float
+floatingChargingVoltageRaw      136 # 27.2
+
+# Over Voltage
+chargingVoltageLimitRaw         154 # default 155
+overVoltageThresholdRaw         156 # default 160

@@ -12,17 +12,17 @@ import me.retrodaredevil.solarthing.pvoutput.data.AddOutputParametersBuilder;
 import me.retrodaredevil.solarthing.pvoutput.data.AddStatusParameters;
 import me.retrodaredevil.solarthing.pvoutput.data.AddStatusParametersBuilder;
 import me.retrodaredevil.solarthing.solar.PowerUtil;
-import me.retrodaredevil.solarthing.solar.accumulation.value.FloatAccumulationValue;
-import me.retrodaredevil.solarthing.solar.accumulation.value.FloatAccumulationValueFactory;
-import me.retrodaredevil.solarthing.solar.common.PVCurrentAndVoltage;
 import me.retrodaredevil.solarthing.solar.accumulation.AccumulationCalc;
 import me.retrodaredevil.solarthing.solar.accumulation.AccumulationConfig;
 import me.retrodaredevil.solarthing.solar.accumulation.AccumulationPair;
 import me.retrodaredevil.solarthing.solar.accumulation.AccumulationUtil;
+import me.retrodaredevil.solarthing.solar.accumulation.value.FloatAccumulationValue;
+import me.retrodaredevil.solarthing.solar.accumulation.value.FloatAccumulationValueFactory;
+import me.retrodaredevil.solarthing.solar.common.DailyAdvancedChargeController;
+import me.retrodaredevil.solarthing.solar.common.DailyChargeController;
+import me.retrodaredevil.solarthing.solar.common.PVCurrentAndVoltage;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.FXDailyData;
 import me.retrodaredevil.solarthing.solar.outback.fx.extra.DailyFXPacket;
-import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPacket;
-import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
 import me.retrodaredevil.solarthing.util.IdentifierUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,16 +104,16 @@ public class PVOutputHandler {
 				.setPowerConsumption(data.getConsumingWatts());
 	}
 	private static AddStatusParametersBuilder setStatusEnergyValues(AddStatusParametersBuilder builder, List<FragmentedPacketGroup> packetGroups, AccumulationConfig accumulationConfig) {
-		Map<IdentifierFragment, List<AccumulationPair<MXStatusPacket>>> mxMap = AccumulationUtil.getAccumulationPairs(AccumulationUtil.mapPackets(MXStatusPacket.class, packetGroups), accumulationConfig);
-		Map<IdentifierFragment, List<AccumulationPair<RoverStatusPacket>>> roverMap = AccumulationUtil.getAccumulationPairs(AccumulationUtil.mapPackets(RoverStatusPacket.class, packetGroups), accumulationConfig);
+		Map<IdentifierFragment, List<AccumulationPair<DailyChargeController>>> dailyMap = AccumulationUtil.getAccumulationPairs(AccumulationUtil.mapPackets(DailyChargeController.class, packetGroups), accumulationConfig);
+		Map<IdentifierFragment, List<AccumulationPair<DailyAdvancedChargeController>>> advancedMap = AccumulationUtil.getAccumulationPairs(AccumulationUtil.mapPackets(DailyAdvancedChargeController.class, packetGroups), accumulationConfig);
 		Map<IdentifierFragment, List<AccumulationPair<DailyFXPacket>>> dailyFXMap = AccumulationUtil.getAccumulationPairs(AccumulationUtil.mapPackets(DailyFXPacket.class, packetGroups), accumulationConfig);
-		if (!mxMap.isEmpty() || !roverMap.isEmpty()) { // energy produced
-			float generationKWH = AccumulationCalc.getSumTotal(mxMap.values(), FloatAccumulationValue.convert(MXStatusPacket::getDailyKWH), FloatAccumulationValueFactory.getInstance()).getValue() +
-					AccumulationCalc.getSumTotal(roverMap.values(), FloatAccumulationValue.convert(RoverStatusPacket::getDailyKWH), FloatAccumulationValueFactory.getInstance()).getValue();
+
+		if (!dailyMap.isEmpty()) { // energy produced
+			float generationKWH = AccumulationCalc.getSumTotal(dailyMap.values(), FloatAccumulationValue.convert(DailyChargeController::getDailyKWH), FloatAccumulationValueFactory.getInstance()).getValue();
 			builder.setEnergyGeneration(Math.round(generationKWH * 1000.0f));
 		}
-		if (!dailyFXMap.isEmpty() || !roverMap.isEmpty()) { // energy consumed
-			float consumptionKWH = AccumulationCalc.getSumTotal(roverMap.values(), FloatAccumulationValue.convert(RoverStatusPacket::getDailyKWHConsumption), FloatAccumulationValueFactory.getInstance()).getValue() +
+		if (!dailyFXMap.isEmpty() || !advancedMap.isEmpty()) { // energy consumed
+			float consumptionKWH = AccumulationCalc.getSumTotal(advancedMap.values(), FloatAccumulationValue.convert(DailyAdvancedChargeController::getDailyKWHConsumption), FloatAccumulationValueFactory.getInstance()).getValue() +
 					AccumulationCalc.getSumTotal(dailyFXMap.values(), FloatAccumulationValue.convert(dailyFXPacket -> dailyFXPacket.getInverterKWH() + dailyFXPacket.getBuyKWH() - dailyFXPacket.getChargerKWH()), FloatAccumulationValueFactory.getInstance()).getValue();
 
 			if (consumptionKWH >= 0) {// This if statement should almost always be executed, however, there are rare cases where (buy - charger) is negative for FX packets only

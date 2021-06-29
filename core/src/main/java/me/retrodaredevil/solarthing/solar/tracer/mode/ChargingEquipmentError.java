@@ -10,7 +10,7 @@ public enum ChargingEquipmentError implements BitmaskMode {
 	LOAD_OVER_CURRENT(1 << 9, "The load is Over current"),
 	LOAD_SHORT(1 << 8, "The load is short"),
 	LOAD_MOSFET_SHORT(1 << 7, "Load MOSFET is short"),
-	PV_INPUT_SHORT(1 << 6, "PV Input is short"),
+	PV_INPUT_SHORT(1 << 4, "PV Input is short"),
 	FAULT(1 << 1, "Fault"),
 	;
 

@@ -2,9 +2,12 @@ package me.retrodaredevil.solarthing.solar.tracer.mode;
 
 import me.retrodaredevil.solarthing.packets.CodeMode;
 
+/**
+ * Represents what type of controller this is, doesn't actually tell you about if the controller is charging or not
+ */
 public enum TracerChargingType implements CodeMode {
-	PWM(1, "PWM")
-	// TODO I assume we will have to define a MPPT enum value
+	PWM(1, "PWM"),
+	MPPT(2, "MPPT"),
 	;
 	private final int value;
 	private final String name;

@@ -1,12 +1,12 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover;
 
-import me.retrodaredevil.solarthing.solar.renogy.BatteryType;
+import me.retrodaredevil.solarthing.solar.renogy.RoverBatteryType;
 import me.retrodaredevil.solarthing.solar.renogy.Voltage;
 
 import java.util.Collection;
 import java.util.EnumSet;
 
-import static me.retrodaredevil.solarthing.solar.renogy.BatteryType.*;
+import static me.retrodaredevil.solarthing.solar.renogy.RoverBatteryType.*;
 import static me.retrodaredevil.solarthing.solar.renogy.Voltage.*;
 
 public enum KnownRoverController {
@@ -35,12 +35,12 @@ public enum KnownRoverController {
 			ROVER_20, ROVER_20_PG, ROVER_30, ROVER_30_PG, ROVER_40, ROVER_40_PG, ROVER_60, ROVER_60_PG, WANDERER_10, WANDERER_PG_10
 	);
 	private final String model;
-	private final Collection<BatteryType> batteryTypes;
+	private final Collection<RoverBatteryType> batteryTypes;
 	private final Collection<Voltage> voltages;
 	private final int ratedChargingCurrent;
 
 
-	KnownRoverController(String model, Collection<BatteryType> batteryTypes, Collection<Voltage> voltages, int ratedChargingCurrent) {
+	KnownRoverController(String model, Collection<RoverBatteryType> batteryTypes, Collection<Voltage> voltages, int ratedChargingCurrent) {
 		this.model = model;
 		this.batteryTypes = batteryTypes;
 		this.voltages = voltages;
@@ -53,7 +53,7 @@ public enum KnownRoverController {
 	public String getModel() {
 		return model;
 	}
-	public Collection<BatteryType> getBatteryTypes() {
+	public Collection<RoverBatteryType> getBatteryTypes() {
 		return batteryTypes;
 	}
 	public Collection<Voltage> getVoltages() {

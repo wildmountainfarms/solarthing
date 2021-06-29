@@ -8,10 +8,7 @@ import me.retrodaredevil.solarthing.annotations.*;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.packets.annotations.ValidSinceVersion;
 import me.retrodaredevil.solarthing.solar.common.*;
-import me.retrodaredevil.solarthing.solar.renogy.BatteryType;
-import me.retrodaredevil.solarthing.solar.renogy.ProductType;
-import me.retrodaredevil.solarthing.solar.renogy.Version;
-import me.retrodaredevil.solarthing.solar.renogy.Voltage;
+import me.retrodaredevil.solarthing.solar.renogy.*;
 import me.retrodaredevil.solarthing.solar.renogy.rover.annotations.DcdcOnly;
 import me.retrodaredevil.solarthing.solar.renogy.rover.annotations.ResetEvening;
 import me.retrodaredevil.solarthing.solar.renogy.rover.annotations.ResetMorning;
@@ -27,7 +24,7 @@ import java.util.Collections;
 import static java.util.Objects.requireNonNull;
 
 @JsonExplicit
-public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeController, DailyChargeController, AdvancedAccumulatedChargeController, RecordBatteryVoltage {
+public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeController, DailyAdvancedChargeController, RecordBatteryVoltage, DualTemperature {
 	SerialConfig SERIAL_CONFIG = new SerialConfigBuilder(9600)
 			.setDataBits(8)
 			.setParity(SerialConfig.Parity.NONE)
@@ -67,7 +64,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	 */
 	@GraphQLInclude("isDcdc")
 	default boolean isDcdc() {
-		return !hasLoad() && getMaxVoltage() == Voltage.V12 && getProductModel().startsWith("RBC");
+		return !hasLoad() && getMaxVoltage() == Voltage.V12 && ProductModelUtil.isDcdc(getProductModel());
 	}
 
 	/**
@@ -243,15 +240,15 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	/**
 	 * @return The temperature of the controller in degrees celsius
 	 */
-	@GraphQLInclude("controllerTemperatureCelsius")
-	default int getControllerTemperatureCelsius(){
+	@Override
+	default @NotNull Integer getControllerTemperatureCelsius(){
 		return convertRawTemperature(getControllerTemperatureRaw());
 	}
 	/**
 	 * @return The temperature of the battery in degrees celsius
 	 */
-	@GraphQLInclude("batteryTemperatureCelsius")
-	default int getBatteryTemperatureCelsius(){
+	@Override
+	default @NotNull Integer getBatteryTemperatureCelsius(){
 		return convertRawTemperature(getBatteryTemperatureRaw());
 	}
 	static int convertRawTemperature(int temperatureRaw){
@@ -553,7 +550,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	@JsonProperty("batteryType")
 	int getBatteryTypeValue();
 	@GraphQLInclude("batteryType")
-	default BatteryType getBatteryType(){ return Modes.getActiveMode(BatteryType.class, getBatteryTypeValue()); }
+	default RoverBatteryType getBatteryType(){ return Modes.getActiveMode(RoverBatteryType.class, getBatteryTypeValue()); }
 	@JsonProperty("batteryTypeName") // convenient
 	default String getBatteryTypeName(){ return getBatteryType().getModeName(); }
 
@@ -592,38 +589,20 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	@JsonProperty("overDischargeTimeDelaySeconds")
 	int getOverDischargeTimeDelaySeconds();
 
-	@Deprecated
-	static int getEqualizingChargingTimeMinutesFromRaw(int raw){ return raw + 10; }
 	@JsonProperty("equalizingChargingTimeRaw")
 	int getEqualizingChargingTimeRaw();
 	default int getEqualizingChargingTimeMinutes(){ return getEqualizingChargingTimeRaw(); }
 
-	@Deprecated
-	static int getBoostChargingTimeMinutesFromRaw(int raw){ return raw + 10; }
 	@JsonProperty("boostChargingTimeRaw")
 	int getBoostChargingTimeRaw();
 	default int getBoostChargingTimeMinutes(){ return getBoostChargingTimeRaw(); }
 
-	@Deprecated
-	static int getEqualizingChargingIntervalDaysFromRaw(int raw){
-		if(raw == 0){
-			return 0;
-		}
-		return raw + 5;
-	}
 	@JsonProperty("equalizingChargingIntervalRaw")
 	int getEqualizingChargingIntervalRaw();
 	default int getEqualizingChargingIntervalDays(){
 		return getEqualizingChargingIntervalRaw();
 	}
 
-	@Deprecated
-	static int getTemperatureCompensationFactorFromRaw(int raw){
-		if(raw == 0){
-			return 0;
-		}
-		return raw + 1;
-	}
 	@JsonProperty("temperatureCompensationFactorRaw")
 	int getTemperatureCompensationFactorRaw();
 	/** Units: mV/C/2V*/

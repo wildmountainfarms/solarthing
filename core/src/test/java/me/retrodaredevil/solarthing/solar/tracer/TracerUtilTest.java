@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.solar.tracer;
 
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
 import java.time.LocalTime;
 import java.time.MonthDay;
 
@@ -20,5 +21,10 @@ class TracerUtilTest {
 		assertEquals(localTime, TracerUtil.extractTracer48BitRawInstantToLocalTime(raw));
 
 		assertEquals(raw, TracerUtil.convertInstantToTracer48BitRaw(yearNumber, monthDay, localTime));
+
+
+		assertEquals(Duration.ofHours(12), TracerUtil.convertTracerDurationRawToDuration(3072));
+		assertEquals(LocalTime.of(6, 0), TracerUtil.convertTracer48BitRawTimeToLocalTime(25769803776L));
+		assertEquals(LocalTime.of(19, 0), TracerUtil.convertTracer48BitRawTimeToLocalTime(81604378624L));
 	}
 }

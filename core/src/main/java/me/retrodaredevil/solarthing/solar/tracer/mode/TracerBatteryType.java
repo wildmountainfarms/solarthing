@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.solar.tracer.mode;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import me.retrodaredevil.solarthing.packets.CodeMode;
 
 public enum TracerBatteryType implements CodeMode {
@@ -24,5 +25,31 @@ public enum TracerBatteryType implements CodeMode {
 	@Override
 	public String getModeName() {
 		return name;
+	}
+
+	@JsonCreator
+	public static TracerBatteryType parse(Object object) {
+		if (object instanceof Integer) {
+			int code = (int) object;
+			for (TracerBatteryType type : values()) {
+				if (type.isActive(code)) {
+					return type;
+				}
+			}
+			throw new IllegalArgumentException("Unknown code: " + code);
+		}
+		if (object instanceof String) {
+			return parseFromString((String) object);
+		}
+		throw new IllegalArgumentException("Unknown type: " + object.getClass());
+	}
+
+	public static TracerBatteryType parseFromString(String batteryType) {
+		for (TracerBatteryType type : values()) {
+			if (type.name.equalsIgnoreCase(batteryType)) {
+				return type;
+			}
+		}
+		throw new IllegalArgumentException("Unknown type: " + batteryType);
 	}
 }

@@ -41,7 +41,7 @@ public class ModbusDataRequester implements DataRequester {
 		ModbusRequester first = addressToModbusRequesterMap.values().stream().findFirst().orElseThrow(NoSuchElementException::new);
 		IOConfig ioConfig = ConfigUtil.parseIOConfig(ioBundleFile, first.getDefaultSerialConfig());
 		ReloadableIOBundle ioBundle = new ReloadableIOBundle(ioConfig::createIOBundle);
-		ModbusSlaveBus modbus = new IOModbusSlaveBus(ioBundle, new RtuDataEncoder(2000, 20, 4));
+		ModbusSlaveBus modbus = new IOModbusSlaveBus(ioBundle, new RtuDataEncoder(2000, 40, 4));
 
 		ReloadIOSuccessReporterHandler reloadIOSuccessReporterHandler = new ReloadIOSuccessReporterHandler(ioBundle::reload);
 

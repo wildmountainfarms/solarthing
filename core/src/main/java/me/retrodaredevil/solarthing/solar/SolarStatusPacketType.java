@@ -29,5 +29,6 @@ public enum SolarStatusPacketType implements DocumentedPacketType {
 	RENOGY_ROVER_STATUS,
 
 	BATTERY_VOLTAGE_ONLY,
-	PZEM_SHUNT
+	PZEM_SHUNT,
+	TRACER_STATUS,
 }

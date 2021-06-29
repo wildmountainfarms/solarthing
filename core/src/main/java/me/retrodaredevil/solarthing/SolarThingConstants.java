@@ -4,6 +4,8 @@ import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
+import java.time.Duration;
+
 @UtilityClass
 public final class SolarThingConstants {
 	private SolarThingConstants(){ throw new UnsupportedOperationException(); }
@@ -30,4 +32,14 @@ public final class SolarThingConstants {
 	 * This can be used to make sure something doesn't go to the console. This is useful for debugs that aren't important
 	 */
 	public static final Marker NO_CONSOLE = MarkerFactory.getMarker("NO_CONSOLE");
+
+
+	/** Duration for how long to query back in time to get only the latest packets*/
+	public static final Duration LATEST_PACKETS_DURATION = Duration.ofMinutes(12);
+
+	public static final Duration STANDARD_MAX_TIME_DISTANCE = Duration.ofMinutes(8);
+	public static final Duration STANDARD_MASTER_ID_IGNORE_DISTANCE = Duration.ofMinutes(4);
+
+	public static final Duration SHORT_MAX_TIME_DISTANCE = Duration.ofMinutes(4);
+	public static final Duration SHORT_MASTER_ID_IGNORE_DISTANCE = Duration.ofMinutes(2);
 }

@@ -126,7 +126,7 @@ final class RenogyTest {
 				0,0,0,0,0,
 				0,0,0,0,0,0,
 				0,0,0,0,0,0,0,
-				BatteryType.OPEN.getValueCode(),0,0,0,0,0,
+				RoverBatteryType.OPEN.getValueCode(),0,0,0,0,0,
 				0,0,0,0,0,
 				0,0,0,0,0,0,
 				0, operating, operating, operating, operating, 0,0,0,0,

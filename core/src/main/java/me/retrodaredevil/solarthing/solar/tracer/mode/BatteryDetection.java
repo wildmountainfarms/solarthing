@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.solar.tracer.mode;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import me.retrodaredevil.solarthing.packets.CodeMode;
 
 public enum BatteryDetection implements CodeMode {
@@ -23,5 +24,15 @@ public enum BatteryDetection implements CodeMode {
 	@Override
 	public String getModeName() {
 		return name;
+	}
+
+	@JsonCreator
+	public static BatteryDetection parseFromString(String detection) {
+		switch (detection) {
+			case "auto": return AUTO;
+			case "12": return V12;
+			case "24": return V24;
+		}
+		throw new IllegalArgumentException("Unknown detection: " + detection);
 	}
 }

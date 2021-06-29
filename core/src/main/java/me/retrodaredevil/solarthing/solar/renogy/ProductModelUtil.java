@@ -10,6 +10,7 @@ public final class ProductModelUtil {
 	RBC30D1S-G1      - Dual Input DC-DC on board battery charger
 	RNG-CTRL-RVRPG40 - Renogy Rover 40A Positive Ground
 	RCC20RVRE-G1     - Rover Elite 20A
+	ML2440           - SRNE 40 AMP
 	 */
 
 	public static boolean isRoverElite(String productModel){
@@ -25,7 +26,7 @@ public final class ProductModelUtil {
 		return productModel.contains("WND");
 	}
 	public static boolean isDcdc(String productModel) {
-		return productModel.contains("RBC");
+		return productModel.startsWith("RBC");
 	}
 	public static boolean isRenogy(String productModel) {
 		return isRover(productModel) || isWanderer(productModel) || isDcdc(productModel) || isRoverElite(productModel)

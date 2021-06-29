@@ -19,7 +19,7 @@ public class TimedPacketReceiver implements RawPacketReceiver {
 	private final PacketListReceiver packetListReceiver;
 	private final OnDataReceive onDataReceive;
 
-	private long lastFirstReceivedDataNanos = Long.MIN_VALUE; // the last time a packet was added to packetList
+	private Long lastFirstReceivedDataNanos = null; // the last time a packet was added to packetList
 
 	/** A list that piles up packets and handles when needed. May be cleared */
 	private final List<Packet> packetList = new ArrayList<>(); //
@@ -45,7 +45,7 @@ public class TimedPacketReceiver implements RawPacketReceiver {
 	@Override
 	public void update(Collection<? extends Packet> newPackets) {
 		long nowNanos = System.nanoTime();
-		boolean isFirstData = nowNanos - lastFirstReceivedDataNanos > samePacketTimeDuration.toNanos();
+		boolean isFirstData = lastFirstReceivedDataNanos == null || nowNanos - lastFirstReceivedDataNanos > samePacketTimeDuration.toNanos();
 		if (isFirstData) {
 			lastFirstReceivedDataNanos = nowNanos; // set this to the first time we get bytes
 		}
@@ -56,7 +56,7 @@ public class TimedPacketReceiver implements RawPacketReceiver {
 	@Override
 	public void updateNoNewData() {
 		long nowNanos = System.nanoTime();
-		if (nowNanos - lastFirstReceivedDataNanos > samePacketTimeDuration.toNanos()) { // if there's no new packets coming any time soon
+		if (lastFirstReceivedDataNanos == null || nowNanos - lastFirstReceivedDataNanos > samePacketTimeDuration.toNanos()) { // if there's no new packets coming any time soon
 			if (packetList.isEmpty()) {
 				instant = true;
 			} else {

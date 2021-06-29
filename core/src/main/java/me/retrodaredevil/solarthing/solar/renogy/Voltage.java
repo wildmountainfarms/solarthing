@@ -19,22 +19,22 @@ public enum Voltage implements CodeMode {
 	;
 	private final int code;
 	private final Integer voltage;
-	
+
 	Voltage(int code, Integer voltage) {
 		this.code = code;
 		this.voltage = voltage;
 	}
-	
+
 	@Override
 	public int getValueCode() {
 		return code;
 	}
-	
+
 	@Override
 	public String getModeName() {
 		return voltage != null ? (voltage + "V") : "Auto";
 	}
-	
+
 	public boolean isSupported(Voltage maxVoltage){
 		requireNonNull(maxVoltage);
 		if(maxVoltage == AUTO){
@@ -44,5 +44,13 @@ public enum Voltage implements CodeMode {
 			return true;
 		}
 		return voltage <= maxVoltage.voltage;
+	}
+	public static Voltage from(int value) {
+		for (Voltage voltage : values()) {
+			if (voltage != AUTO && voltage.voltage == value) {
+				return voltage;
+			}
+		}
+		throw new IllegalArgumentException("Unknown value: " + value);
 	}
 }

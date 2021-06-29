@@ -46,16 +46,20 @@ public final class SolarMain {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SolarMain.class);
 
-	public static void initReader(InputStream in, TextPacketCreator packetCreator, RawPacketReceiver rawPacketReceiver) {
-		SolarReader run = new SolarReader(in, packetCreator, rawPacketReceiver);
+	public static void initReader(InputStream in, Runnable reloadIO, TextPacketCreator packetCreator, RawPacketReceiver rawPacketReceiver) {
+		SolarReader solarReader = new SolarReader(in, packetCreator, rawPacketReceiver);
 		try {
 			while (!Thread.currentThread().isInterrupted()) {
 				try {
-					run.update();
+					solarReader.update();
 				} catch (EOFException e) {
 					break;
 				} catch (IOException e) {
-					throw new RuntimeException(e);
+					LOGGER.error("Got IOException!", e);
+					Thread.sleep(500);
+					reloadIO.run();
+					LOGGER.debug("Reloaded IO bundle");
+					Thread.sleep(1000);
 				}
 				Thread.sleep(5);
 			}
@@ -126,6 +130,13 @@ public final class SolarMain {
 			}
 			throw new AssertionError("Unknown program type... type=" + programType + " programOptions=" + options);
 		} catch (Throwable t) {
+			if (t instanceof ClassNotFoundException || t instanceof NoClassDefFoundError) {
+				LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "We're about to give you an error with some technical stuff, but this error is likely caused by you switching out jar files while SolarThing is running. If it isn't, please report this error.");
+			}
+			String logMessage = "Ending SolarThing. Jar: " + JarUtil.getJarFileName() + " Java version: " + System.getProperty("java.version");
+			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "[LOG] " + logMessage);
+			System.out.println("[stdout] " + logMessage);
+			System.err.println("[stderr] " + logMessage);
 			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)Got throwable", t);
 			LOGGER.debug("Going to shutdown LogManager.");
 			LogManager.shutdown(); // makes sure all buffered logs are flushed // this should be done automatically, but we'll do it anyway

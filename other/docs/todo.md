@@ -7,6 +7,19 @@
 * Send packet when mate serial port hasn't output data for 30 seconds
 * Create Dockerfile and example docker-compose file
 * Add event packets for rover devices (like we did for MXs and FXs)
+* Short term record packets for high/low battery voltage, FX inverter current, pv wattage, charging current, etc  
+  * This would be very useful so that if packets are replaced there is still information on how
+  high or low the battery voltage got or how high the load was
+  * Another possibility is that multiple packets could be saved per each period
+    * For instance this document id: `2021,06,12,19,(15/30),[d9587f95]` could also have additional things to tack onto
+    it such as: `2021,06,12,19,(15/30),[d9587f95]-high_battery_voltage` or `2021,06,12,19,(15/30),[d9587f95]-high_fx_inv`.
+    This has the advantage of being easy to query. When data is queried, the last packet in that period is queried
+    along with the record packets, meaning no additional code needs to be written to find the high/low packets
+    for older packets.
+    * Because of the additional overhead of saving more packets per hour, the `unique` option could be lowered to
+    something like 15 per hour.
+* Look into graylog or logstash for better logging
+  * https://hub.docker.com/r/graylog/graylog
   
 ### Completed
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
@@ -45,6 +58,8 @@ easy displaying in Grafana
 * Silence warning for GraphQL
 * Make CouchDB and InfluxDB database configuration warn when setting unused values
 * Add way to scan for rover modbus slave addresses
+* Have standard timings for grouping/sorting packets and increase time for GraphQL grouped queries so that
+  all temperature readings show up even if one is from 10 minutes ago.
 
 ### Look into
 * Look into supporting Elasticsearch, MongoDB, Graphite

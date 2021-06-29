@@ -5,9 +5,12 @@ import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 
 public class TracerIdentityInfo implements IdentityInfo {
-	private final @Nullable Float ratedChargingCurrent;
+	private final @Nullable Integer ratedChargingCurrent;
 
-	public TracerIdentityInfo(@Nullable Float ratedChargingCurrent) {
+	/**
+	 * @param ratedChargingCurrent The rated charging/output current
+	 */
+	public TracerIdentityInfo(@Nullable Integer ratedChargingCurrent) {
 		this.ratedChargingCurrent = ratedChargingCurrent;
 	}
 
@@ -19,7 +22,7 @@ public class TracerIdentityInfo implements IdentityInfo {
 	@Override
 	public @NotNull String getSuffix() {
 		if (ratedChargingCurrent != null) {
-			return Math.round(ratedChargingCurrent) + "A";
+			return ratedChargingCurrent + "A";
 		}
 		return "";
 	}
@@ -27,5 +30,10 @@ public class TracerIdentityInfo implements IdentityInfo {
 	@Override
 	public @NotNull String getShortName() {
 		return "TCR";
+	}
+
+	@Override
+	public IdentityInfo stripExtra() {
+		return new TracerIdentityInfo(null);
 	}
 }

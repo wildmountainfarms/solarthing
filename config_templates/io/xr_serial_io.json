@@ -1,0 +1,4 @@
+{
+  "type": "serial",
+  "port": "/dev/ttyXRUSB0"
+}
