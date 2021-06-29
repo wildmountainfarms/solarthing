@@ -21,7 +21,7 @@ import java.time.MonthDay;
 import java.util.Set;
 
 @JsonExplicit
-public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeController, DailyChargeController, AdvancedAccumulatedChargeController, ErrorReporter, DualTemperature, TracerBatteryConfig {
+public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeController, DailyAdvancedChargeController, ErrorReporter, DualTemperature, TracerBatteryConfig {
 
 	SerialConfig SERIAL_CONFIG = new SerialConfigBuilder(115200)
 			.setDataBits(8)

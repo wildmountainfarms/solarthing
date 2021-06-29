@@ -24,7 +24,7 @@ import java.util.Collections;
 import static java.util.Objects.requireNonNull;
 
 @JsonExplicit
-public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeController, DailyChargeController, AdvancedAccumulatedChargeController, RecordBatteryVoltage, DualTemperature {
+public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeController, DailyAdvancedChargeController, RecordBatteryVoltage, DualTemperature {
 	SerialConfig SERIAL_CONFIG = new SerialConfigBuilder(9600)
 			.setDataBits(8)
 			.setParity(SerialConfig.Parity.NONE)
