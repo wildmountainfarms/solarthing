@@ -59,7 +59,7 @@ public abstract class BaseCacheDataPacket implements CacheDataPacket {
 
 	@Override
 	public long getPeriodEndDateMillis() {
-		return periodStart.toEpochMilli();
+		return periodEnd.toEpochMilli();
 	}
 
 	@Override

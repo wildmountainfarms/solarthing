@@ -4,7 +4,12 @@ import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLQuery;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
+import me.retrodaredevil.solarthing.cache.packets.IdentificationCacheDataPacket;
+import me.retrodaredevil.solarthing.cache.packets.IdentificationCacheNode;
+import me.retrodaredevil.solarthing.cache.packets.data.ChargeControllerAccumulationDataCache;
+import me.retrodaredevil.solarthing.packets.identification.SourceIdentifierFragment;
 import me.retrodaredevil.solarthing.rest.cache.CacheController;
+import me.retrodaredevil.solarthing.rest.graphql.PacketFinder;
 import me.retrodaredevil.solarthing.rest.graphql.SimpleQueryHandler;
 import me.retrodaredevil.solarthing.rest.graphql.packets.nodes.DataNode;
 import me.retrodaredevil.solarthing.rest.graphql.packets.PacketFilter;
@@ -31,9 +36,11 @@ import java.time.ZoneId;
 import java.util.*;
 import java.util.function.Function;
 
+import static java.util.Objects.requireNonNull;
 import static me.retrodaredevil.solarthing.rest.graphql.service.SchemaConstants.*;
 
 public class SolarThingGraphQLDailyService {
+	private static final boolean USE_CACHE = true;
 	private final SimpleQueryHandler simpleQueryHandler;
 	private final ZoneId zoneId;
 	private final CacheController cacheController;
@@ -179,19 +186,111 @@ public class SolarThingGraphQLDailyService {
 //		}
 	}
 
+	public class CacheSolarThingFullDayStatusQuery implements SolarThingFullDayStatusQuery {
+
+		private final List<IdentificationCacheDataPacket<ChargeControllerAccumulationDataCache>> chargeControllerData;
+		private final PacketFinder packetFinder;
+
+		public CacheSolarThingFullDayStatusQuery(List<IdentificationCacheDataPacket<ChargeControllerAccumulationDataCache>> chargeControllerData) {
+			this.chargeControllerData = chargeControllerData;
+			packetFinder = new PacketFinder(simpleQueryHandler);
+		}
+
+		@Override
+		public @NotNull List<@NotNull DataNode<Float>> dailyKWH() {
+			List<DataNode<Float>> r = new ArrayList<>();
+			Map<LocalDate, Map<SourceIdentifierFragment, ChargeControllerAccumulationDataCache>> dateToControllerCache = new HashMap<>();
+			for (IdentificationCacheDataPacket<ChargeControllerAccumulationDataCache> cache : chargeControllerData) {
+				LocalDate date = cache.getPeriodStart().atZone(zoneId).toLocalDate();
+				long midpointMillis = cache.getPeriodStartDateMillis() + cache.getPeriodDurationMillis() / 2;
+				String sourceId = cache.getSourceId();
+				for (IdentificationCacheNode<ChargeControllerAccumulationDataCache> node : cache.getNodes()) {
+					ChargeControllerAccumulationDataCache data = node.getData();
+					SourceIdentifierFragment sourceIdentifierFragment = SourceIdentifierFragment.create(sourceId, node.getFragmentId(), data.getIdentifier());
+					ChargeControllerAccumulationDataCache total = dateToControllerCache.getOrDefault(date, Collections.emptyMap()).get(sourceIdentifierFragment);
+					if (total == null) {
+						total = data;
+					} else {
+						total = total.combine(data);
+					}
+					Identifiable identifiable = packetFinder.findPacket(sourceIdentifierFragment.getIdentifierFragment(), cache.getPeriodStartDateMillis(), cache.getPeriodEndDateMillis());
+					if (identifiable != null) {
+						r.add(new DataNode<>(data.getGenerationKWH(), identifiable, midpointMillis, sourceId, sourceIdentifierFragment.getIdentifierFragment().getFragmentId()));
+					} else {
+						System.err.println("Could not find identifiable for " + sourceIdentifierFragment );
+					}
+					dateToControllerCache.computeIfAbsent(date, _date -> new HashMap<>()).put(sourceIdentifierFragment, total);
+				}
+			}
+			return r;
+		}
+
+		@Override
+		public @NotNull List<@NotNull SimpleNode<Float>> dailyKWHSum() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public @NotNull List<@NotNull DataNode<Float>> singleDailyKWH() {
+			Map<LocalDate, Map<SourceIdentifierFragment, ChargeControllerAccumulationDataCache>> dateToControllerCache = new HashMap<>();
+			Map<SourceIdentifierFragment, Identifiable> identifierFragmentToIdentifiableMap = new HashMap<>();
+			for (IdentificationCacheDataPacket<ChargeControllerAccumulationDataCache> cache : chargeControllerData) {
+				LocalDate date = cache.getPeriodStart().atZone(zoneId).toLocalDate();
+				String sourceId = cache.getSourceId();
+				for (IdentificationCacheNode<ChargeControllerAccumulationDataCache> node : cache.getNodes()) {
+					ChargeControllerAccumulationDataCache data = node.getData();
+					SourceIdentifierFragment sourceIdentifierFragment = SourceIdentifierFragment.create(sourceId, node.getFragmentId(), data.getIdentifier());
+					ChargeControllerAccumulationDataCache total = dateToControllerCache.getOrDefault(date, Collections.emptyMap()).get(sourceIdentifierFragment);
+					if (total == null) {
+						total = data;
+					} else {
+						total = total.combine(data);
+					}
+					if (!identifierFragmentToIdentifiableMap.containsKey(sourceIdentifierFragment)) {
+						Identifiable identifiable = packetFinder.findPacket(sourceIdentifierFragment.getIdentifierFragment(), cache.getPeriodStartDateMillis(), cache.getPeriodEndDateMillis());
+						if (identifiable != null) {
+							identifierFragmentToIdentifiableMap.put(sourceIdentifierFragment, identifiable);
+						}
+					}
+					dateToControllerCache.computeIfAbsent(date, _date -> new HashMap<>()).put(sourceIdentifierFragment, total);
+				}
+			}
+			List<DataNode<Float>> r = new ArrayList<>();
+			for (Map.Entry<LocalDate, Map<SourceIdentifierFragment, ChargeControllerAccumulationDataCache>> entry : dateToControllerCache.entrySet()) {
+				LocalDate date = entry.getKey();
+				Map<SourceIdentifierFragment, ChargeControllerAccumulationDataCache> map = entry.getValue();
+				long dayStart = date.atStartOfDay(zoneId).toInstant().toEpochMilli();
+				for (Map.Entry<SourceIdentifierFragment, ChargeControllerAccumulationDataCache> entry2 : map.entrySet()) {
+					SourceIdentifierFragment sourceIdentifierFragment = entry2.getKey();
+					Identifiable identifiable = identifierFragmentToIdentifiableMap.get(sourceIdentifierFragment);
+					requireNonNull(identifiable, "The identifiable for " + sourceIdentifierFragment + " is null!");
+					float value = entry2.getValue().getGenerationKWH();
+					r.add(new DataNode<>(value, identifiable, dayStart, sourceIdentifierFragment.getSourceId(), sourceIdentifierFragment.getIdentifierFragment().getFragmentId()));
+				}
+			}
+			return r;
+		}
+	}
 
 	@GraphQLQuery
-	public SimpleSolarThingFullDayStatusQuery queryFullDay(
+	public SolarThingFullDayStatusQuery queryFullDay(
 			@GraphQLArgument(name = "from", description = DESCRIPTION_FROM) long from, @GraphQLArgument(name = "to", description = DESCRIPTION_TO) long to,
-			@GraphQLArgument(name = "sourceId", description = DESCRIPTION_OPTIONAL_SOURCE) @Nullable String sourceId){
+			@GraphQLArgument(name = "sourceId", description = DESCRIPTION_OPTIONAL_SOURCE) @Nullable String sourceId,
+			@GraphQLArgument(name = "useCache", defaultValue = "false") boolean useCache){
 
 		LocalDate fromDate = Instant.ofEpochMilli(from).atZone(zoneId).toLocalDate();
 		LocalDate toDate = Instant.ofEpochMilli(to).atZone(zoneId).toLocalDate();
-		List<? extends InstancePacketGroup> packets = simpleQueryHandler.queryStatus(
-				fromDate.atStartOfDay(zoneId).toInstant().toEpochMilli(),
-				toDate.plusDays(1).atStartOfDay(zoneId).toInstant().toEpochMilli() - 1,
-				sourceId
-		);
-		return new SimpleSolarThingFullDayStatusQuery(new BasicPacketGetter(packets, PacketFilter.KEEP_ALL), simpleQueryHandler.sortPackets(packets, sourceId));
+		long queryStart = fromDate.atStartOfDay(zoneId).toInstant().toEpochMilli();
+		long queryEnd = toDate.plusDays(1).atStartOfDay(zoneId).toInstant().toEpochMilli() - 1;
+		if (useCache) {
+			return new CacheSolarThingFullDayStatusQuery(cacheController.getChargeControllerAccumulation(sourceId, queryStart, queryEnd));
+		} else {
+			List<? extends InstancePacketGroup> packets = simpleQueryHandler.queryStatus(
+					queryStart,
+					queryEnd,
+					sourceId
+			);
+			return new SimpleSolarThingFullDayStatusQuery(new BasicPacketGetter(packets, PacketFilter.KEEP_ALL), simpleQueryHandler.sortPackets(packets, sourceId));
+		}
 	}
 }

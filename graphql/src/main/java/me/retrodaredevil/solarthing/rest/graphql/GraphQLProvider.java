@@ -94,7 +94,7 @@ public class GraphQLProvider {
 		JacksonValueMapperFactory jacksonValueMapperFactory = JacksonValueMapperFactory.builder()
 				.withPrototype(objectMapper)
 				.build();
-		ResolverBuilder resolverBuilder = new AnnotatedResolverBuilder();
+		ResolverBuilder resolverBuilder = new SolarThingAnnotatedResolverBuilder();
 		SimpleQueryHandler simpleQueryHandler = new SimpleQueryHandler(defaultInstanceOptions, couchDbDatabaseSettings, objectMapper);
 		ZoneId zoneId = ZoneId.systemDefault(); // In the future, we could make this customizable, but like, bro just make sure your system time is correct
 		System.out.println("Using timezone: " + zoneId);

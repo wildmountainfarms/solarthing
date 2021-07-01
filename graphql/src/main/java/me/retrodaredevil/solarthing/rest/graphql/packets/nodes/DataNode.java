@@ -7,6 +7,10 @@ import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Represents a single data point from some {@link Identifiable}
+ * @param <T> The type of the data.
+ */
 @JsonExplicit
 public final class DataNode<T> implements Comparable<DataNode<?>> {
 	private final T data;
@@ -16,11 +20,11 @@ public final class DataNode<T> implements Comparable<DataNode<?>> {
 	private final int fragmentId;
 
 	public DataNode(@NotNull T data, @NotNull Identifiable identifiable, long dateMillis, @NotNull String sourceId, int fragmentId) {
-		this.fragmentId = fragmentId;
 		requireNonNull(this.data = data);
 		requireNonNull(this.identifiable = identifiable);
 		this.dateMillis = dateMillis;
 		requireNonNull(this.sourceId = sourceId);
+		this.fragmentId = fragmentId;
 	}
 
 	@JsonProperty("data")
@@ -55,7 +59,7 @@ public final class DataNode<T> implements Comparable<DataNode<?>> {
 	public int compareTo(DataNode<?> dataNode) {
 		int r = Long.compare(dateMillis, dataNode.dateMillis);
 		if (r == 0) {
-			return identifiable.getIdentifier().hashCode() - dataNode.identifiable.getIdentifier().hashCode();
+			return Integer.compare(identifiable.getIdentifier().hashCode(), dataNode.identifiable.getIdentifier().hashCode());
 		}
 		return r;
 	}

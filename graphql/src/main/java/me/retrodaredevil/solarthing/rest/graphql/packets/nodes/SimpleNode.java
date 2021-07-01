@@ -7,6 +7,10 @@ import me.retrodaredevil.solarthing.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Represents a data point not associated with a particular device
+ * @param <T> The type of the data
+ */
 @JsonExplicit
 public final class SimpleNode<T> {
 	private final T data;

@@ -4,6 +4,7 @@ import com.lexicalscope.jewel.cli.Option;
 import com.lexicalscope.jewel.cli.Unparsed;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 
 public interface CommandOptions {
@@ -21,5 +22,13 @@ public interface CommandOptions {
 	String getPVOutputToDate();
 
 	@Unparsed(name = "LEGACY ARGUMENTS")
-	List<String> getLegacyOptions();
+	List<String> getLegacyOptionsRaw();
+
+	default List<String> getLegacyOptions() {
+		List<String> r = getLegacyOptionsRaw();
+		if (r == null) {
+			return Collections.emptyList();
+		}
+		return r;
+	}
 }
