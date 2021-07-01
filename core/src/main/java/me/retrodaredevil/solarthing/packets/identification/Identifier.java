@@ -9,6 +9,7 @@ import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.misc.common.DataIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverIdentifier;
+import me.retrodaredevil.solarthing.solar.tracer.TracerIdentifier;
 
 /**
  * All {@link Identifier}s have their {@link #equals(Object)} and {@link #hashCode()} methods implemented so
@@ -29,6 +30,7 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.RoverIdentifier;
 		@JsonSubTypes.Type(DataIdentifier.class),
 		@JsonSubTypes.Type(OutbackIdentifier.class),
 		@JsonSubTypes.Type(RoverIdentifier.class),
+		@JsonSubTypes.Type(TracerIdentifier.class),
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type") // don't use "EXISTING_PROPERTY" because we want it to serialize the name we give the subclass without overhead of a getter
 @JsonClassDescription("Contains a representation that is unique across all packets in a particular fragment")

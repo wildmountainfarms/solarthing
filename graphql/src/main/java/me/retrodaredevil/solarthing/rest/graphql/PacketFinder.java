@@ -26,7 +26,6 @@ public class PacketFinder {
 		if (result != null) {
 			return result;
 		}
-		System.out.println("Finding identifiable for " + identifierFragment);
 		updateWithRange(queryStart, queryEnd);
 		return cacheMap.get(identifierFragment);
 	}

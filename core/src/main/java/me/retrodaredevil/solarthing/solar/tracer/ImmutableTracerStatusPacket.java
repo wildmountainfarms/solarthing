@@ -120,7 +120,7 @@ public class ImmutableTracerStatusPacket implements TracerStatusPacket {
 			@JsonProperty(value = "isManualLoadControlOn", required = true) boolean isManualLoadControlOn, @JsonProperty(value = "isLoadTestModeEnabled", required = true) boolean isLoadTestModeEnabled, @JsonProperty(value = "isLoadForcedOn", required = true) boolean isLoadForcedOn,
 			@JsonProperty(value = "isInsideControllerOverTemperature", required = true) boolean isInsideControllerOverTemperature, @JsonProperty(value = "isNight", required = true) boolean isNight) {
 		this.packetVersion = packetVersion;
-		identifier = TracerIdentifier.createFromNumber(number == null ? NumberedIdentifier.DEFAULT_NUMBER : number);
+		identifier = TracerIdentifier.getFromNumber(number == null ? NumberedIdentifier.DEFAULT_NUMBER : number);
 		identityInfo = new TracerIdentityInfo(ratedOutputCurrent);
 
 		this.ratedInputVoltage = ratedInputVoltage;

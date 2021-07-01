@@ -246,7 +246,8 @@ public class SolarThingGraphQLDailyService {
 					} else {
 						total = total.combine(data);
 					}
-					if (!identifierFragmentToIdentifiableMap.containsKey(sourceIdentifierFragment)) {
+					// We don't want to search for the identifier of data this is unknown, because that means the packet isn't there!
+					if (!data.isUnknown() && !identifierFragmentToIdentifiableMap.containsKey(sourceIdentifierFragment)) {
 						Identifiable identifiable = packetFinder.findPacket(sourceIdentifierFragment.getIdentifierFragment(), cache.getPeriodStartDateMillis(), cache.getPeriodEndDateMillis());
 						if (identifiable != null) {
 							identifierFragmentToIdentifiableMap.put(sourceIdentifierFragment, identifiable);

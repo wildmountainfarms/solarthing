@@ -1,5 +1,9 @@
 package me.retrodaredevil.solarthing.solar.tracer;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.SerializeNameDefinedInBase;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
@@ -9,14 +13,21 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.RoverIdentifier;
 
 import java.util.Objects;
 
+@JsonTypeName("tracer")
+@JsonExplicit
 public final class TracerIdentifier implements NumberedIdentifier, Comparable<Identifier> {
 	private final int number;
 
 	private TracerIdentifier(int number) {
 		this.number = number;
 	}
-	public static TracerIdentifier createFromNumber(int number) {
+	public static TracerIdentifier getFromNumber(int number) {
 		return new TracerIdentifier(number);
+	}
+
+	@JsonCreator
+	private static TracerIdentifier deserialize(@JsonProperty("number") Integer number) {
+		return getFromNumber(number == null ? 0 : number);
 	}
 
 	@SerializeNameDefinedInBase

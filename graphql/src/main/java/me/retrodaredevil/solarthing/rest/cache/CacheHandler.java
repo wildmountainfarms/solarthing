@@ -133,8 +133,8 @@ public class CacheHandler {
 		return revisionNode.asText();
 	}
 	private <T extends CacheDataPacket> List<T> queryOrCalculateCaches(TypeReference<T> typeReference, String cacheName, String sourceId, long startPeriodNumber, long endPeriodNumber) {
-		List<String> documentIds = new ArrayList<>();
-		Map<String, Long> documentIdPeriodNumberMap = new HashMap<>();
+		List<String> documentIds = new ArrayList<>(); // the document IDs needed to return data
+		Map<String, Long> documentIdPeriodNumberMap = new HashMap<>(); // a map from a document ID to a period number
 
 		for (long periodNumber = startPeriodNumber; periodNumber <= endPeriodNumber; periodNumber++) {
 			Instant periodStart = getPeriodStartFromNumber(periodNumber);
@@ -193,6 +193,15 @@ public class CacheHandler {
 			int updateAttemptCount = 0;
 			for (CacheDataPacket packet : calculatedPackets) {
 				if (doNotUpdateDocumentIdsSet.contains(packet.getDbId())) {
+					continue;
+				}
+				if (!sourceId.equals(packet.getSourceId()) || !cacheName.equals(packet.getCacheName())) {
+					// Although we should be able to update packets from other sources, the logic above only gets
+					//   revisions for documents of sourceId.
+					// Also, the doNotUpdateDocumentIdsSet does not contain docuent IDs from other sources, so
+					//   most of the time we have no idea if we actually need to update a packet from another source ID, which
+					//   leads to conflicts
+					// This is the same with different cache names, we don't know which ones we need to update and which ones we cannot
 					continue;
 				}
 				JsonData json;
