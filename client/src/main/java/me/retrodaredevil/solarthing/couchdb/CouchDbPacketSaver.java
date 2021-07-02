@@ -61,9 +61,9 @@ public class CouchDbPacketSaver implements PacketHandler {
 			try {
 				String actualRev = database.getCurrentRevision(id);
 				idMap.put(id, actualRev);
-				LOGGER.info("We were able to get the actual Revision ID for id=" + id + " actual rev=" + actualRev);
+				LOGGER.debug("We were able to get the actual Revision ID for id=" + id + " actual rev=" + actualRev);
 			} catch(CouchDbException revEx){
-				LOGGER.warn("Unable to get the actual Revision ID for id=" + id, revEx);
+				LOGGER.debug("Unable to get the actual Revision ID for id=" + id, revEx);
 			}
 			throw new PacketHandleException("Conflict while saving something to couchdb. id=" + id + " rev=" + revision + ". This usually means we put a packet in the database, but we weren't able to cache its rev id.", ex);
 		} catch(CouchDbException ex){

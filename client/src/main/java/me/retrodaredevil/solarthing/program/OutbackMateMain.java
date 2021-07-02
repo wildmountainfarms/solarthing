@@ -98,7 +98,7 @@ public class OutbackMateMain {
 			packetListReceiverList.add(new DaySummaryLogListReceiver());
 			packetListReceiverList.addAll(bundle.createDefaultPacketListReceivers());
 
-			SolarMain.initReader(
+			return SolarMain.initReader(
 					requireNonNull(ioBundle.getInputStream()),
 					ioBundle::reload,
 					new MatePacketCreator49(MateProgramOptions.getIgnoreCheckSum(options)),
@@ -118,6 +118,5 @@ public class OutbackMateMain {
 					)
 			);
 		}
-		return 0;
 	}
 }
