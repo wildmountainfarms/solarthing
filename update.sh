@@ -3,7 +3,8 @@ BASEDIR=$(dirname "$0")
 cd "$BASEDIR" || exit 1
 
 git pull
-if [ "$BASEDIR" = "/opt/solarthing" ]; then
+FULLDIR=$(pwd)
+if [ "$FULLDIR" = "/opt/solarthing" ]; then
   other/linux/update_perms.sh continue
 else
   echo Not updating perms because installed in non-standard location
