@@ -1,5 +1,6 @@
-## Tracer quickstart
-Work in progress
+## Tracer Notes
+Just some notes to help me understand the tracer better. These notes aren't for anyone else.
+
 
 I found my serial on `/dev/ttyACM0` using an RPi4
 

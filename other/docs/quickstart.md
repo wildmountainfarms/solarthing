@@ -109,6 +109,12 @@ You can stop the service like this: `sudo systemctl stop solarthing-<program typ
 
 Now SolarThing should be set up and running!
 
+To see if SolarThing crashed, run: `systemctl status solarthing-<program type>`. If you need to view the log files,
+informational logs are by default in `/opt/solarthing/program/<program type>/logs/log_info.log`. If you want to view
+that log file live, you can run `tail -f /opt/solarthing/program/<program type>/logs/log_info.log`.
+
+If any documentation is lacking (many parts are), feel free to open an issue at https://github.com/wildmountainfarms/solarthing/issues
+
 ---
 
 ---

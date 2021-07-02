@@ -1,6 +1,8 @@
 # Rover setup program
 This has some more information on how to use the `rover-setup` program.
 
+Note: This will be deprecated soon in favor of documentation I have not yet written.
+
 How to get started: [Rover Quickstart](quickstart_rover.md)
 
 ### What is this for?

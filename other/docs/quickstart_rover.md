@@ -15,20 +15,20 @@ Once everything is installed, you're ready to edit the configs. You will `cd` to
 ```
 cd /opt/solarthing/program/request
 ```
+If you are already using the request directory, click [here](./custom_directories.md).
 
-Copy some template config files ([default_linux_serial](../../config_templates/io/default_linux_serial.json) and [rover_template](../../config_templates/base/rover_request_template.json) or [rover_setup_template](../../config_templates/base/rover_setup_template.json))
+Copy some template config files ([default_linux_serial](../../config_templates/io/default_linux_serial.json) and [rover_template](../../config_templates/base/rover_request_template.json))
 ```
 # sudo should not be required unless permissions were not set up correctly (add yourself to the solarthing group)
 cp ../../config_templates/io/default_linux_serial.json config/
 cp ../../config_templates/base/rover_request_template.json config/base.json
-# or do this if you want to run the setup program: (You probably don't unless you want to test something)
-cp ../../config_templates/base/rover_setup_template.json config/base.json
 ```
 
 Now edit `config/base.json`
 * Most rovers have a default modbus address of 1, hence the `"1"` present in the template configuration. However,
 this is not always the case for newer Rover models, especially if a BT module has been plugged into them. You will
 likely have to use the `rover-setup` program to scan
+  * rover-setup will be deprecated soon, and there will need to be a new feature for this
 * Make sure you change the `"io"` property to correctly point to the io JSON file you want to use. Remember paths
 are relative to `program/request`, so `config/io.json` would point to `program/request/config/io.json`.
 
