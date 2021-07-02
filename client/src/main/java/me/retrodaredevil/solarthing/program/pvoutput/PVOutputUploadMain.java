@@ -61,7 +61,7 @@ public class PVOutputUploadMain {
 		DatabaseType databaseType = databaseConfig.getType();
 		if(databaseType != CouchDbDatabaseSettings.TYPE){
 			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)Only CouchDb can be used for this program type right now!");
-			return 1;
+			return SolarThingConstants.EXIT_CODE_INVALID_CONFIG;
 		}
 		CouchDbDatabaseSettings couchDbDatabaseSettings = (CouchDbDatabaseSettings) databaseConfig.getSettings();
 		SolarThingDatabase database = CouchDbSolarThingDatabase.create(CouchDbUtil.createInstance(couchDbDatabaseSettings.getCouchProperties(), couchDbDatabaseSettings.getOkHttpProperties()));
@@ -85,7 +85,7 @@ public class PVOutputUploadMain {
 			} catch (ParseException e) {
 				e.printStackTrace();
 				System.err.println("Unable to parser either from date or to date. Use the yyyy-MM-dd format");
-				return 1;
+				return SolarThingConstants.EXIT_CODE_INVALID_OPTIONS;
 			}
 			return startRangeUpload(
 					fromDate, toDate,
@@ -93,7 +93,7 @@ public class PVOutputUploadMain {
 			);
 		} else if ((fromDateString == null) != (toDateString == null)) {
 			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)You need to define both from and to, or define neither to do the normal PVOutput program!");
-			return 1;
+			return SolarThingConstants.EXIT_CODE_INVALID_OPTIONS;
 		}
 		AnalyticsManager analyticsManager = new AnalyticsManager(options.isAnalyticsEnabled(), dataDirectory);
 		analyticsManager.sendStartUp(ProgramType.PVOUTPUT_UPLOAD);
@@ -167,7 +167,7 @@ public class PVOutputUploadMain {
 				} catch (InterruptedException e) {
 					Thread.currentThread().interrupt();
 					System.err.println("Interrupted");
-					return 1;
+					return SolarThingConstants.EXIT_CODE_INTERRUPTED;
 				}
 			}
 			int endIndex = Math.min(i + 30, addOutputParameters.size());
@@ -189,7 +189,7 @@ public class PVOutputUploadMain {
 					} catch (InterruptedException e) {
 						Thread.currentThread().interrupt();
 						System.err.println("Interrupted");
-						return 1;
+						return SolarThingConstants.EXIT_CODE_INTERRUPTED;
 					}
 				}
 				Call<String> call = service.addBatchOutput(batchOutputParameters);
@@ -211,7 +211,7 @@ public class PVOutputUploadMain {
 			}
 			if (!successful) {
 				System.err.println("All tries were unsuccessful. Ending");
-				return 1;
+				return SolarThingConstants.EXIT_CODE_FAIL;
 			}
 		}
 		System.out.println("Done!");
@@ -312,7 +312,7 @@ public class PVOutputUploadMain {
 				Thread.currentThread().interrupt();
 			}
 		}
-		return 1;
+		return SolarThingConstants.EXIT_CODE_INTERRUPTED;
 	}
 	private static boolean uploadStatus(PVOutputService service, AddStatusParameters addStatusParameters) {
 		try {

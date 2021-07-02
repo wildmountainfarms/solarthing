@@ -7,6 +7,7 @@ ExecStart=##solarthing_root##/program/##name##/run.sh
 User=solarthing
 Group=solarthing
 StandardOutput=null
+RestartForceExitStatus=210 211 212
 
 [Install]
 WantedBy=multi-user.target

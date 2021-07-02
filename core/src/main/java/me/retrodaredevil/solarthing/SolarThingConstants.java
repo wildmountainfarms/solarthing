@@ -42,4 +42,27 @@ public final class SolarThingConstants {
 
 	public static final Duration SHORT_MAX_TIME_DISTANCE = Duration.ofMinutes(4);
 	public static final Duration SHORT_MASTER_ID_IGNORE_DISTANCE = Duration.ofMinutes(2);
+
+	// We avoid exit codes 1-127 because the JVM may use those
+	// We avoid exit codes 128-192 because those exit codes may be used by kill signals
+
+	/** The exit code that is used when SolarThing has invalid config */
+	public static final int EXIT_CODE_INVALID_CONFIG = 195;
+	/** The exit code that is used when SolarThing has invalid CLI options */
+	public static final int EXIT_CODE_INVALID_OPTIONS = 196;
+	/** The exit code that is used when SolarThing crashes */
+	public static final int EXIT_CODE_CRASH = 197;
+	public static final int EXIT_CODE_INTERRUPTED = 198;
+	public static final int EXIT_CODE_FAIL = 199;
+
+	// https://www.freedesktop.org/software/systemd/man/systemd.service.html#RestartForceExitStatus=
+
+	/** The exit code that is used when SolarThing crashes because of a {@link NoClassDefFoundError} */
+	public static final int EXIT_CODE_RESTART_NEEDED_JAR_UPDATED = 210;
+	/** Not used yet but we have this defined in solarthing.service.template */
+	@Deprecated
+	public static final int EXIT_CODE_RESTART_NEEDED_UNUSED_1 = 211;
+	/** Not used yet but we have this defined in solarthing.service.template */
+	@Deprecated
+	public static final int EXIT_CODE_RESTART_NEEDED_UNUSED_2 = 212;
 }

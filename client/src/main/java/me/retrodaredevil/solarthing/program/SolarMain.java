@@ -96,7 +96,7 @@ public final class SolarMain {
 			fileReader = new FileReader(baseConfigFile);
 		} catch(FileNotFoundException ex){
 			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)File not found", ex);
-			return 1;
+			return SolarThingConstants.EXIT_CODE_CRASH;
 		}
 		final ProgramOptions options;
 		try {
@@ -106,12 +106,12 @@ public final class SolarMain {
 			if (e instanceof JsonParseException) {
 				LOGGER.error("Hey! Just wanted to let you know that the above error is just saying that your JSON is formatted incorrectly!");
 			}
-			return 1;
+			return SolarThingConstants.EXIT_CODE_INVALID_CONFIG;
 		}
 		File dataDirectory = new File(".data");
 		if(!dataDirectory.mkdirs() && !dataDirectory.isDirectory()){
 			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)Unable to create data directory! dataDirectory=" + dataDirectory + " absolute=" + dataDirectory.getAbsolutePath());
-			return 1;
+			return SolarThingConstants.EXIT_CODE_CRASH;
 		}
 		final ProgramType programType = options.getProgramType();
 		try {
@@ -130,7 +130,8 @@ public final class SolarMain {
 			}
 			throw new AssertionError("Unknown program type... type=" + programType + " programOptions=" + options);
 		} catch (Throwable t) {
-			if (t instanceof ClassNotFoundException || t instanceof NoClassDefFoundError) {
+			boolean invalidJar = t instanceof ClassNotFoundException || t instanceof NoClassDefFoundError;
+			if (invalidJar) {
 				LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "We're about to give you an error with some technical stuff, but this error is likely caused by you switching out jar files while SolarThing is running. If it isn't, please report this error.");
 			}
 			String logMessage = "Ending SolarThing. Jar: " + JarUtil.getJarFileName() + " Java version: " + System.getProperty("java.version");
@@ -142,7 +143,7 @@ public final class SolarMain {
 			LogManager.shutdown(); // makes sure all buffered logs are flushed // this should be done automatically, but we'll do it anyway
 			System.err.println();
 			t.printStackTrace(System.err); // print to stderr just in case logging isn't going well
-			return 1;
+			return invalidJar ? SolarThingConstants.EXIT_CODE_RESTART_NEEDED_JAR_UPDATED : SolarThingConstants.EXIT_CODE_CRASH;
 		}
 	}
 
@@ -162,7 +163,7 @@ public final class SolarMain {
 			}
 			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, ex.getMessage());
 			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)Incorrect args");
-			return 1;
+			return SolarThingConstants.EXIT_CODE_INVALID_OPTIONS;
 		}
 		if (commandOptions.getBaseConfigFile() != null) {
 			return doMainCommand(commandOptions, commandOptions.getBaseConfigFile());
@@ -174,12 +175,12 @@ public final class SolarMain {
 			} catch (IOException e) {
 				e.printStackTrace();
 				System.err.println("Problem reading CouchDB database settings file.");
-				return 1;
+				return SolarThingConstants.EXIT_CODE_INVALID_CONFIG;
 			}
 			DatabaseSettings settings = config.getSettings();
 			if (!(settings instanceof CouchDbDatabaseSettings)) {
 				System.err.println("Must be CouchDB database settings!");
-				return 1;
+				return SolarThingConstants.EXIT_CODE_INVALID_CONFIG;
 			}
 			try {
 				return CouchDbSetupMain.createFrom((CouchDbDatabaseSettings) settings).doCouchDbSetupMain();
@@ -197,7 +198,7 @@ public final class SolarMain {
 		List<String> legacyArguments = commandOptions.getLegacyOptions();
 		if (legacyArguments.isEmpty()) {
 			System.err.println(cli.getHelpMessage());
-			return 1;
+			return SolarThingConstants.EXIT_CODE_INVALID_OPTIONS;
 		}
 		System.out.println("Using legacy arguments! Please use --base instead! (If you are running this using ./run.sh, this will be automatically fixed in a future update) (ignore this).");
 		return doMainCommand(commandOptions, new File(legacyArguments.get(0)));

@@ -83,7 +83,7 @@ public class RoverMain {
 			return runner.doProgram(slave, read, write, reloadCache, ioBundle::reload);
 		} catch (Exception e) {
 			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)Got exception!", e);
-			return 1;
+			return SolarThingConstants.EXIT_CODE_CRASH;
 		}
 	}
 	@FunctionalInterface

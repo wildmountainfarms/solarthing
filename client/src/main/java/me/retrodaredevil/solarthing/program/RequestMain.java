@@ -83,7 +83,7 @@ public class RequestMain {
 			}
 		}
 		LOGGER.info("Ending program. Must have been interrupted.");
-		return 1;
+		return SolarThingConstants.EXIT_CODE_INTERRUPTED;
 	}
 
 
