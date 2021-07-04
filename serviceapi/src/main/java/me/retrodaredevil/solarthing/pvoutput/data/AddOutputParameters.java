@@ -37,7 +37,7 @@ public interface AddOutputParameters {
 		if(value == null){
 			return null;
 		}
-		return WeatherCondition.getConditionFromString(value);
+		return WeatherCondition.getConditionFromStringOrNull(value);
 	}
 
 	@JsonProperty("tm")
@@ -59,6 +59,16 @@ public interface AddOutputParameters {
 	@JsonProperty("c")
 	Number getConsumption();
 
+	@JsonProperty("ep")
+	Number getExportPeak();
+	@JsonProperty("eo")
+	Number getExportOffPeak();
+	@JsonProperty("es")
+	Number getExportShoulder();
+	@JsonProperty("eh")
+	Number getExportHighShoulder();
+
+	@Deprecated
 	default String[] toBatchCsvArray() {
 		return new String[] {
 				getOutputDate().toPVOutputString(),
@@ -74,6 +84,28 @@ public interface AddOutputParameters {
 				toStringOrNull(getImportPeak()),
 				toStringOrNull(getImportOffPeak()),
 				toStringOrNull(getImportShoulder())
+		};
+	}
+	default String[] toCsvArray() {
+		return new String[] {
+				getOutputDate().toPVOutputString(),
+				toStringOrNull(getGenerated()),
+				toStringOrNull(getExported()),
+				toStringOrNull(getPeakPower()),
+				toStringOrNull(getPeakTime()),
+				getConditionValue(),
+				toStringOrNull(getMinimumTemperatureCelsius()),
+				toStringOrNull(getMaximumTemperatureCelsius()),
+				getComments(),
+				toStringOrNull(getImportPeak()),
+				toStringOrNull(getImportOffPeak()),
+				toStringOrNull(getImportShoulder()),
+				toStringOrNull(getImportHighShoulder()),
+				toStringOrNull(getConsumption()),
+				toStringOrNull(getExportPeak()),
+				toStringOrNull(getExportOffPeak()),
+				toStringOrNull(getExportShoulder()),
+				toStringOrNull(getExportHighShoulder()),
 		};
 	}
 	static String toStringOrNull(Object object) {

@@ -22,13 +22,14 @@ public class AddOutputParametersBuilder implements AddOutputParameters {
 	private Number importShoulder;
 	private Number importHighShoulder;
 	private Number consumption;
+	private Number exportPeak, exportOffPeak, exportShoulder, exportHighShoulder;
 
 	public AddOutputParametersBuilder(SimpleDate date) {
 		this.date = requireNonNull(date);
 	}
 
 	public AddOutputParameters build(){
-		return new ImmutableAddOutputParameters(date, generated, exported, peakPower, peakTime, condition, minimumTemperatureCelsius, maximumTemperatureCelsius, comments, importPeak, importOffPeak, importShoulder, importHighShoulder, consumption);
+		return new ImmutableAddOutputParameters(date, generated, exported, peakPower, peakTime, condition, minimumTemperatureCelsius, maximumTemperatureCelsius, comments, importPeak, importOffPeak, importShoulder, importHighShoulder, consumption, exportPeak, exportOffPeak, exportShoulder, exportHighShoulder);
 	}
 
 	@Override
@@ -174,6 +175,31 @@ public class AddOutputParametersBuilder implements AddOutputParameters {
 		return consumption;
 	}
 
+	@Override public Number getExportPeak() { return exportPeak; }
+	public AddOutputParametersBuilder setExportPeak(Number exportPeak) {
+		this.exportPeak = exportPeak;
+		return this;
+	}
+
+	@Override public Number getExportOffPeak() { return exportOffPeak; }
+	public AddOutputParametersBuilder setExportOffPeak(Number exportOffPeak) {
+		this.exportOffPeak = exportOffPeak;
+		return this;
+	}
+
+	@Override public Number getExportShoulder() { return exportShoulder; }
+	public AddOutputParametersBuilder setExportShoulder(Number exportShoulder) {
+		this.exportShoulder = exportShoulder;
+		return this;
+	}
+
+	@Override public Number getExportHighShoulder() { return exportHighShoulder; }
+	public AddOutputParametersBuilder setExportHighShoulder(Number exportHighShoulder) {
+		this.exportHighShoulder = exportHighShoulder;
+		return this;
+	}
+
+
 	private static final class ImmutableAddOutputParameters implements AddOutputParameters {
 		private final SimpleDate date;
 		private final Number generated;
@@ -189,8 +215,9 @@ public class AddOutputParametersBuilder implements AddOutputParameters {
 		private final Number importShoulder;
 		private final Number importHighShoulder;
 		private final Number consumption;
+		private final Number exportPeak, exportOffPeak, exportShoulder, exportHighShoulder;
 
-		private ImmutableAddOutputParameters(SimpleDate date, Number generated, Number exported, Number peakPower, SimpleTime peakTime, String condition, Float minimumTemperatureCelsius, Float maximumTemperatureCelsius, String comments, Number importPeak, Number importOffPeak, Number importShoulder, Number importHighShoulder, Number consumption) {
+		private ImmutableAddOutputParameters(SimpleDate date, Number generated, Number exported, Number peakPower, SimpleTime peakTime, String condition, Float minimumTemperatureCelsius, Float maximumTemperatureCelsius, String comments, Number importPeak, Number importOffPeak, Number importShoulder, Number importHighShoulder, Number consumption, Number exportPeak, Number exportOffPeak, Number exportShoulder, Number exportHighShoulder) {
 			this.date = requireNonNull(date);
 			this.generated = generated;
 			this.exported = exported;
@@ -205,6 +232,10 @@ public class AddOutputParametersBuilder implements AddOutputParameters {
 			this.importShoulder = importShoulder;
 			this.importHighShoulder = importHighShoulder;
 			this.consumption = consumption;
+			this.exportPeak = exportPeak;
+			this.exportOffPeak = exportOffPeak;
+			this.exportShoulder = exportShoulder;
+			this.exportHighShoulder = exportHighShoulder;
 		}
 
 		@Override public SimpleDate getOutputDate() { return date; }
@@ -222,5 +253,9 @@ public class AddOutputParametersBuilder implements AddOutputParameters {
 		@Override public Number getImportShoulder() { return importShoulder; }
 		@Override public Number getImportHighShoulder() { return importHighShoulder; }
 		@Override public Number getConsumption() { return consumption; }
+		@Override public Number getExportPeak() { return exportPeak; }
+		@Override public Number getExportOffPeak() { return exportOffPeak; }
+		@Override public Number getExportShoulder() { return exportShoulder; }
+		@Override public Number getExportHighShoulder() { return exportHighShoulder; }
 	}
 }

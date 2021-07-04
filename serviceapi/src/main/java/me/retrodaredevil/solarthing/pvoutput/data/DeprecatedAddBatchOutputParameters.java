@@ -6,8 +6,12 @@ import me.retrodaredevil.solarthing.pvoutput.CsvUtil;
 
 import java.util.List;
 
+/**
+ * @deprecated This was used for the old addbatchoutput.
+ */
+@Deprecated
 @JsonExplicit
-public interface AddBatchOutputParameters {
+public interface DeprecatedAddBatchOutputParameters {
 	List<AddOutputParameters> getOutputs();
 
 	@JsonProperty("data")
@@ -18,7 +22,7 @@ public interface AddBatchOutputParameters {
 			if (!first) {
 				r.append(';');
 			}
-			r.append(CsvUtil.toCsvString(addOutputParameters.toCsvArray()));
+			r.append(CsvUtil.toCsvString(addOutputParameters.toBatchCsvArray()));
 			first = false;
 		}
 		return r.toString();

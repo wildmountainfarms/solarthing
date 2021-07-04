@@ -147,8 +147,8 @@ public class PVOutputUploadMain {
 						addOutputParameters.add(outputParameters);
 						System.out.println("Added parameters for " + date.toPVOutputString() + " to queue.");
 						System.out.println("Generated: " + statusParameters.getEnergyGeneration());
-						System.out.println(Arrays.toString(outputParameters.toBatchCsvArray()));
-						System.out.println(CsvUtil.toCsvString(outputParameters.toBatchCsvArray()));
+						System.out.println(Arrays.toString(outputParameters.toCsvArray()));
+						System.out.println(CsvUtil.toCsvString(outputParameters.toCsvArray()));
 					}
 				} else {
 					System.err.println("Didn't find any packets with source: " + options.getSourceId() + " for date: " + date.toPVOutputString());

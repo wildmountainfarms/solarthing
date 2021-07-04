@@ -7,7 +7,12 @@ public enum WeatherCondition implements PVOutputString {
 	CLOUDY("Cloudy"),
 	SHOWERS("Showers"),
 	SNOW("Snow"),
-	NOT_SURE("Not Sure")
+	HAZY("Hazy"),
+	FOG("Fog"),
+	DUSTY("Dusty"),
+	FROST("Frost"),
+	STORM("Storm"),
+	NOT_SURE("Not Sure"),
 	;
 	private final String name;
 
@@ -23,7 +28,7 @@ public enum WeatherCondition implements PVOutputString {
 	public String getName(){
 		return name;
 	}
-	public static WeatherCondition getConditionFromString(String string){
+	public static WeatherCondition getConditionFromStringOrNull(String string){
 		for(WeatherCondition condition : values()){
 			if(condition.name.equals(string)){
 				return condition;
