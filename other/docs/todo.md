@@ -20,6 +20,11 @@
     something like 15 per hour.
 * Look into graylog or logstash for better logging
   * https://hub.docker.com/r/graylog/graylog
+* Look into implementing pymate like features into SolarThing: https://github.com/jorticus/pymate
+  * https://github.com/jorticus/pymate/blob/master/doc/protocol/Protocol.md
+* More accurate solcast by using actual kWh data throughout the day
+* Add way to queue up commands in the automation program
+  * The goal here is to be able to say "start generator at 5PM" and then also be able to cancel it
   
 ### Completed
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)

@@ -29,6 +29,9 @@ public class ViewResponse {
 		this.updateSequence = updateSequence;
 	}
 
+	/**
+	 * @return Offset where document list started
+	 */
 	@JsonProperty("offset")
 	public int getOffset() {
 		return offset;
@@ -39,11 +42,17 @@ public class ViewResponse {
 		return rows;
 	}
 
+	/**
+	 * @return The number of documents in the database/view
+	 */
 	@JsonProperty("total_rows")
 	public int getTotalRows() {
 		return totalRows;
 	}
 
+	/**
+	 * @return The update sequence if {@link me.retrodaredevil.couchdbjava.request.ViewQueryParamsBuilder#updateSequence(Boolean)} was set to true, otherwise returns null
+	 */
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	@JsonProperty("update_seq")
 	public @Nullable String getUpdateSequence() {

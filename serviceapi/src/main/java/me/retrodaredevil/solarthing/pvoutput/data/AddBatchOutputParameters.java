@@ -8,6 +8,7 @@ import java.util.List;
 
 @JsonExplicit
 public interface AddBatchOutputParameters {
+	int MAX_BATCH_SIZE = 100;
 	List<AddOutputParameters> getOutputs();
 
 	@JsonProperty("data")
