@@ -6,6 +6,10 @@ version "0.0.1-SNAPSHOT"
 
 dependencies {
     api "com.github.retrodaredevil.io-lib:core:$ioLibVersion"
+    api "com.github.retrodaredevil:couchdb-java:$couchdbJavaVersion"
+    // Currently, this commented line isn't used. If we add more modules to couchdb-java in the future, we may have to do this.
+    //   My guess is that Jitpack sees we only have a single module in couchdb-java and does something special with it.
+//    api "com.github.retrodaredevil.couchdb-java:couchdb:$couchdbJavaVersion"
 
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
     api group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion
