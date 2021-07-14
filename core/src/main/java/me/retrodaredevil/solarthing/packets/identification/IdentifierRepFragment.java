@@ -25,8 +25,8 @@ public class IdentifierRepFragment implements IdentifierFragmentMatcher {
 
 	@Override
 	public boolean matches(IdentifierFragment identifierFragment) {
-		return identifierFragment.getFragmentId() == identifierFragment.getFragmentId()
-				&& identifierFragment.getIdentifier().getRepresentation().equals(identifierRepresentation);
+		return fragmentId == identifierFragment.getFragmentId()
+				&& identifierRepresentation.equals(identifierFragment.getIdentifier().getRepresentation());
 	}
 
 	public int getFragmentId() {

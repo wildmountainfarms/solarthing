@@ -84,7 +84,7 @@ public class PVOutputHandler {
 					if (!TemperaturePacket.POSSIBLE_BAD_VALUES.contains(temperatureCelsius)) {
 						addStatusParametersBuilder.setTemperatureCelsius(temperatureCelsius);
 					} else {
-						System.out.println("Not setting temperature: " + temperatureCelsius + " because it could be a bad reading");
+						LOGGER.info("Not setting temperature: " + temperatureCelsius + " because it could be a bad reading");
 					}
 				}
 			}
