@@ -1,0 +1,60 @@
+{
+  "type": "declaration",
+  "main": {
+    "type": "queue",
+    "actions": [
+      {
+        "type": "race",
+        "racers": [
+          [{ "type": "lock", "name": "send_commands"}, { "type": "call", "name": "run_commands"}],
+          [{ "type": "waitms", "wait": 5000}, { "type": "log", "message": "Something else had a lock on send_commands"}]
+        ]
+      },
+      { "type": "unlock", "name": "send_commands" }
+    ]
+  },
+  "force_aux_on": {
+    "type": "queue",
+    "actions": [
+      { "type": "matecommand", "command": "AUX ON" },
+      { "type": "matecommandwait" },
+      {
+        "type": "race",
+        "racers": [
+          [{ "type": "auxstate", "on": true}, { "type": "pass"}],
+          [{ "type": "waitms", "wait": 2300}, { "type": "call", "name": "force_aux_on"}]
+        ]
+      }
+    ]
+  },
+  "force_aux_off": {
+    "type": "queue",
+    "actions": [
+      { "type": "matecommand", "command": "AUX OFF" },
+      { "type": "matecommandwait" },
+      {
+        "type": "race",
+        "racers": [
+          [{ "type": "auxstate", "on": false}, { "type": "pass"}],
+          [{ "type": "waitms", "wait": 2300}, { "type": "call", "name": "force_aux_off"}]
+        ]
+      }
+    ]
+  },
+  "run_commands": {
+    "type": "queue",
+    "actions": [
+      { "type": "matecommand", "command": "USE"},
+      { "type": "matecommandwait" },
+      { "type": "waitms", "wait": 1000},
+      {
+        "type": "race",
+        "racers": [
+          [{ "type": "call", "name": "force_aux_on" }, { "type": "pass" }],
+          [{ "type": "waitms", "wait": 5300}, { "type": "pass" }]
+        ]
+      },
+      { "type": "log", "message": "Sent all commands for generator on!"}
+    ]
+  }
+}
