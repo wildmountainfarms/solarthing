@@ -45,17 +45,31 @@
   "run_commands": {
     "type": "queue",
     "actions": [
-      { "type": "matecommand", "command": "USE"},
+      { "type": "matecommand", "command": "DROP"},
       { "type": "matecommandwait" },
-      { "type": "waitms", "wait": 1000},
+      { "type": "matecommand", "command": "DROP"},
+      { "type": "matecommandwait" },
+      { "type": "waitms", "wait": 500},
       {
         "type": "race",
         "racers": [
           [{ "type": "call", "name": "force_aux_on" }, { "type": "pass" }],
-          [{ "type": "waitms", "wait": 5300}, { "type": "pass" }]
+          [{ "type": "waitms", "wait": 5300}, { "type": "log", "message": "Force aux on timed out!" }]
         ]
       },
-      { "type": "log", "message": "Sent all commands for generator on!"}
+      {
+        "type": "race",
+        "racers": [
+          [{ "type": "acmode", "mode": "NO AC", "not": true }, { "type": "pass" }],
+          [{ "type": "waitms", "wait": 30000}, { "type": "log", "message": "Timed out waiting for AC" }]
+        ]
+      },
+      { "type": "waitms", "wait": 120000},
+      { "type": "matecommand", "command": "USE"},
+      { "type": "matecommandwait" },
+      { "type": "matecommand", "command": "USE"},
+      { "type": "matecommandwait" },
+      { "type": "log", "message": "Sent all commands for generator on warm up!"}
     ]
   }
 }

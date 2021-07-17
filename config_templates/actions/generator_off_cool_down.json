@@ -6,7 +6,7 @@
       {
         "type": "race",
         "racers": [
-          [{ "type": "acmode", "mode": "AC USE" }, { "type": "log", "message": "Already using AC power!" }],
+          [{ "type": "acmode", "mode": "NO AC" }, { "type": "log", "message": "Generator is already off!" }],
           [{ "type": "lock", "name": "send_commands"}, { "type": "call", "name": "run_commands"}],
           [{ "type": "waitms", "wait": 5000}, { "type": "log", "message": "Something else had a lock on send_commands"}]
         ]
@@ -14,16 +14,16 @@
       { "type": "unlock", "name": "send_commands" }
     ]
   },
-  "force_aux_on": {
+  "force_drop": {
     "type": "queue",
     "actions": [
-      { "type": "matecommand", "command": "AUX ON" },
+      { "type": "matecommand", "command": "DROP" },
       { "type": "matecommandwait" },
       {
         "type": "race",
         "racers": [
-          [{ "type": "auxstate", "on": true}, { "type": "pass"}],
-          [{ "type": "waitms", "wait": 2300}, { "type": "call", "name": "force_aux_on"}]
+          [{ "type": "acmode", "mode": "AC USE", "not": true }, { "type": "pass"}],
+          [{ "type": "waitms", "wait": 2300}, { "type": "call", "name": "force_drop"}]
         ]
       }
     ]
@@ -45,17 +45,32 @@
   "run_commands": {
     "type": "queue",
     "actions": [
-      { "type": "matecommand", "command": "USE"},
-      { "type": "matecommandwait" },
-      { "type": "waitms", "wait": 1000},
       {
         "type": "race",
         "racers": [
-          [{ "type": "call", "name": "force_aux_on" }, { "type": "pass" }],
+          [{ "type": "call", "name": "force_drop" }, { "type": "pass" }],
+          [{ "type": "waitms", "wait": 5300}, { "type": "log", "message": "Force drop timed out!" }]
+        ]
+      },
+      { "type": "waitms", "wait": 120000},
+      {
+        "type": "race",
+        "racers": [
+          [{ "type": "call", "name": "force_aux_off" }, { "type": "pass" }],
           [{ "type": "waitms", "wait": 5300}, { "type": "pass" }]
         ]
       },
-      { "type": "log", "message": "Sent all commands for generator on!"}
+      {
+        "type": "race",
+        "racers": [
+          [{ "type": "acmode", "mode": "NO AC" }, { "type": "pass" }],
+          [{ "type": "waitms", "wait": 10000 }, { "type": "log", "message": "AC is still present!"}]
+        ]
+      },
+      { "type": "waitms", "wait": 2000},
+      { "type": "matecommand", "command": "USE"},
+      { "type": "matecommandwait" },
+      { "type": "log", "message": "Sent all commands for generator off!"}
     ]
   }
 }
