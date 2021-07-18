@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.actions;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import me.retrodaredevil.action.Action;
+import me.retrodaredevil.solarthing.actions.chatbot.SlackChatBotActionNode;
 import me.retrodaredevil.solarthing.actions.command.SendCommandActionNode;
 import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.actions.homeassistant.HomeAssistantActionNode;
@@ -44,6 +45,8 @@ import me.retrodaredevil.solarthing.actions.solcast.SolcastActionNode;
 		@JsonSubTypes.Type(SolcastActionNode.class),
 
 		@JsonSubTypes.Type(MessageSenderActionNode.class),
+
+		@JsonSubTypes.Type(SlackChatBotActionNode.class),
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
 public interface ActionNode {

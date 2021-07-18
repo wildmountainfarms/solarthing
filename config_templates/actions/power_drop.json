@@ -1,7 +1,16 @@
 {
-  "type": "race",
-  "racers": [
-    [{ "type": "lock", "name": "send_commands"}, { "type": "matecommand", "command": "DROP"}],
-    [{ "type": "waitms", "wait": 5000}, { "type": "log", "message": "Something else had a lock on send_commands"}]
+  "type": "queue",
+  "actions": [
+    {
+      "type": "race",
+      "racers": [
+        [{ "type": "lock", "name": "send_commands"}, { "type": "matecommand", "command": "DROP"}],
+        [{ "type": "waitms", "wait": 5000}, { "type": "log", "message": "Something else had a lock on send_commands"}]
+      ]
+    },
+    {
+      "type": "unlock", "name": "send_commands"
+    }
   ]
 }
+

@@ -18,7 +18,10 @@ dependencies {
     implementation 'com.github.retrodaredevil:action-lib:v1.3.1'
     implementation 'com.brsanthu:google-analytics-java:2.0.0'
 
-    implementation 'com.slack.api:slack-api-client:1.8.1'
+    def slackVersion = "1.9.0"
+    implementation "com.slack.api:slack-api-client:$slackVersion"
+    // https://mvnrepository.com/artifact/org.java-websocket/Java-WebSocket
+    implementation "org.java-websocket:Java-WebSocket:1.5.2"
 
     // https://mvnrepository.com/artifact/com.lexicalscope.jewelcli/jewelcli
     implementation group: 'com.lexicalscope.jewelcli', name: 'jewelcli', version: '0.8.9'

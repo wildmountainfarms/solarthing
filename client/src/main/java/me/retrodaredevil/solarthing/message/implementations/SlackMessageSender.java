@@ -31,18 +31,24 @@ public class SlackMessageSender implements MessageSender {
 	private final String channelId;
 	private final MethodsClient methodsClient;
 	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+	public SlackMessageSender(String authToken, String channelId, Slack slack) {
+		requireNonNull(authToken);
+		requireNonNull(this.channelId = channelId);
+		requireNonNull(slack);
+		methodsClient = slack.methods(authToken);
+	}
 
 	@JsonCreator
 	public SlackMessageSender(@JsonProperty("token") String authToken, @JsonProperty("channel_id") String channelId) {
-		requireNonNull(authToken);
-		requireNonNull(this.channelId = channelId);
-
-		Slack slack = Slack.getInstance(new SlackConfig(), new SlackHttpClient(new OkHttpClient.Builder()
-				.callTimeout(Duration.ofSeconds(10))
-				.connectTimeout(Duration.ofSeconds(4))
-//				.addInterceptor(new UserAgentInterceptor(Collections.emptyMap()))
-				.build()));
-		methodsClient = slack.methods(authToken);
+		this(
+				authToken,
+				channelId,
+				Slack.getInstance(new SlackConfig(), new SlackHttpClient(new OkHttpClient.Builder()
+						.callTimeout(Duration.ofSeconds(10))
+						.connectTimeout(Duration.ofSeconds(4))
+//						.addInterceptor(new UserAgentInterceptor(Collections.emptyMap()))
+						.build()))
+		);
 	}
 
 	@Override

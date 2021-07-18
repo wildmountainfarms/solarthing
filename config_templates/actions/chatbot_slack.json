@@ -1,0 +1,6 @@
+{
+  "type": "chatbot_slack",
+  "app_token": "xapp-1- your app token here",
+  "token": "xoxb- your auth token",
+  "channel_id": ":solarthing-commands"
+}
