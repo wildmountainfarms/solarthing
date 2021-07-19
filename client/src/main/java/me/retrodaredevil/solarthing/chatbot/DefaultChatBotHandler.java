@@ -1,7 +1,6 @@
 package me.retrodaredevil.solarthing.chatbot;
 
 import info.debatty.java.stringsimilarity.JaroWinkler;
-import info.debatty.java.stringsimilarity.Levenshtein;
 import me.retrodaredevil.solarthing.FragmentedPacketGroupProvider;
 import me.retrodaredevil.solarthing.commands.CommandInfo;
 import me.retrodaredevil.solarthing.commands.packets.status.AvailableCommandsPacket;

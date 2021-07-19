@@ -2,7 +2,6 @@ package me.retrodaredevil.solarthing.actions.chatbot;
 
 import com.google.gson.JsonObject;
 import com.slack.api.Slack;
-import com.slack.api.methods.response.users.UsersIdentityResponse;
 import com.slack.api.socket_mode.SocketModeClient;
 import com.slack.api.socket_mode.request.EventsApiEnvelope;
 import com.slack.api.socket_mode.response.AckResponse;
