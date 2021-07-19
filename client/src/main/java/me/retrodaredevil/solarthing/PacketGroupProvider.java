@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing.actions;
+package me.retrodaredevil.solarthing;
 
 import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 

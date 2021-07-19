@@ -1,6 +1,6 @@
 package me.retrodaredevil.solarthing.actions.environment;
 
-import me.retrodaredevil.solarthing.actions.PacketGroupProvider;
+import me.retrodaredevil.solarthing.PacketGroupProvider;
 
 public class LatestPacketGroupEnvironment {
 	private final PacketGroupProvider packetGroupProvider;

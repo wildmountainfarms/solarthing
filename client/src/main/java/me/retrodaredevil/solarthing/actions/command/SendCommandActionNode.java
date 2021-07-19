@@ -76,9 +76,9 @@ public class SendCommandActionNode implements ActionNode {
 	@JsonCreator
 	public SendCommandActionNode(
 			@JsonProperty(value = "directory", required = true) File keyDirectory,
-			@JsonProperty("targets") List<Integer> fragmentIdTargets,
-			@JsonProperty("command") String commandName,
-			@JsonProperty("sender") String sender) {
+			@JsonProperty(value = "targets", required = true) List<Integer> fragmentIdTargets,
+			@JsonProperty(value = "command", required = true) String commandName,
+			@JsonProperty(value = "sender", required = true) String sender) {
 		requireNonNull(this.keyDirectory = keyDirectory);
 		requireNonNull(this.fragmentIdTargets = fragmentIdTargets);
 		requestCommandPacket = new ImmutableRequestCommandPacket(commandName);

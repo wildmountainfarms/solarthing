@@ -5,7 +5,7 @@ import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 
 public class LatestPacketHandler implements PacketHandler {
 	private final boolean instantOnly;
-	private PacketCollection lastCollection = null;
+	private volatile PacketCollection lastCollection = null;
 
 	public LatestPacketHandler(boolean instantOnly) {
 		this.instantOnly = instantOnly;

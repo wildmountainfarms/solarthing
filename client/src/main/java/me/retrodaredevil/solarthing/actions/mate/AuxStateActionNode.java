@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.SimpleAction;
 import me.retrodaredevil.solarthing.actions.ActionNode;
-import me.retrodaredevil.solarthing.actions.PacketGroupProvider;
+import me.retrodaredevil.solarthing.PacketGroupProvider;
 import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnvironment;
 import me.retrodaredevil.solarthing.solar.outback.OutbackUtil;
