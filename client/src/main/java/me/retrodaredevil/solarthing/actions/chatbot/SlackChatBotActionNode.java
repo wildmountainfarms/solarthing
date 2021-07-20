@@ -9,7 +9,7 @@ import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.Actions;
 import me.retrodaredevil.solarthing.FragmentedPacketGroupProvider;
 import me.retrodaredevil.solarthing.actions.ActionNode;
-import me.retrodaredevil.solarthing.actions.command.SendCommandActionNode;
+import me.retrodaredevil.solarthing.actions.command.CommandManager;
 import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnvironment;
 import me.retrodaredevil.solarthing.chatbot.ChatBotHandlerMultiplexer;
@@ -31,7 +31,7 @@ public class SlackChatBotActionNode implements ActionNode {
 	private final Action action;
 
 	private volatile FragmentedPacketGroup latestPacketGroup = null;
-	private volatile SendCommandActionNode sendCommandActionNode = null;
+	private volatile ActionEnvironment actionEnvironment;
 
 	/*
 	The app level token should have connections:write permission
@@ -61,7 +61,7 @@ public class SlackChatBotActionNode implements ActionNode {
 				new SlackMessageSender(authToken, channelId, slack),
 				slack,
 				new ChatBotHandlerMultiplexer(Arrays.asList(
-						new CommandChatBotHandler(permissionMap, packetGroupProvider),
+						new CommandChatBotHandler(permissionMap, packetGroupProvider, new CommandManager(keyDirectory, sender), () -> actionEnvironment),
 						new StatusChatBotHandler(packetGroupProvider),
 						(message, messageSender) -> {
 							messageSender.sendMessage("Unknown command!");
@@ -79,6 +79,7 @@ public class SlackChatBotActionNode implements ActionNode {
 	@Override
 	public Action createAction(ActionEnvironment actionEnvironment) {
 		LatestPacketGroupEnvironment latestPacketGroupEnvironment = actionEnvironment.getInjectEnvironment().get(LatestPacketGroupEnvironment.class);
+		this.actionEnvironment = actionEnvironment;
 		return Actions.createRunOnce(() -> {
 			latestPacketGroup = (FragmentedPacketGroup) latestPacketGroupEnvironment.getPacketGroupProvider().getPacketGroup();
 			action.update();

@@ -1,27 +1,50 @@
 package me.retrodaredevil.solarthing.chatbot;
 
+import me.retrodaredevil.couchdb.CouchDbUtil;
+import me.retrodaredevil.couchdbjava.CouchDbInstance;
 import me.retrodaredevil.solarthing.FragmentedPacketGroupProvider;
+import me.retrodaredevil.solarthing.actions.command.CommandManager;
+import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.CouchDbEnvironment;
 import me.retrodaredevil.solarthing.commands.CommandInfo;
+import me.retrodaredevil.solarthing.commands.packets.open.ImmutableRequestCommandPacket;
 import me.retrodaredevil.solarthing.commands.packets.status.AvailableCommandsPacket;
+import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
+import me.retrodaredevil.solarthing.database.SolarThingDatabase;
+import me.retrodaredevil.solarthing.database.couchdb.CouchDbSolarThingDatabase;
+import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
 import me.retrodaredevil.solarthing.message.MessageSender;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
+import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
 public class CommandChatBotHandler implements ChatBotHandler {
+	private static final Logger LOGGER = LoggerFactory.getLogger(CommandChatBotHandler.class);
+
 	private final Map<String, List<String>> permissionMap;
 	private final FragmentedPacketGroupProvider packetGroupProvider;
+	private final CommandManager commandManager;
+	private final Supplier<ActionEnvironment> actionEnvironmentSupplier;
 
 	private final PermissionHandler permissionHandler = new PermissionHandler();
+	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-	public CommandChatBotHandler(Map<String, List<String>> permissionMap, FragmentedPacketGroupProvider packetGroupProvider) {
+	public CommandChatBotHandler(Map<String, List<String>> permissionMap, FragmentedPacketGroupProvider packetGroupProvider, CommandManager commandManager, Supplier<ActionEnvironment> actionEnvironmentSupplier) {
+		this.actionEnvironmentSupplier = actionEnvironmentSupplier;
 		requireNonNull(this.permissionMap = permissionMap);
 		requireNonNull(this.packetGroupProvider = packetGroupProvider);
+		requireNonNull(this.commandManager = commandManager);
 	}
 
 	private List<AvailableCommand> getCommands() {
@@ -49,7 +72,25 @@ public class CommandChatBotHandler implements ChatBotHandler {
 			return false;
 		}
 		CommandInfo info = best.getCommandInfo();
-		messageSender.sendMessage("You request command: " + info.getName() + " AKA: " + info.getDisplayName());
+		messageSender.sendMessage("Sending command: " + info.getDisplayName());
+		ActionEnvironment actionEnvironment = requireNonNull(actionEnvironmentSupplier.get(), "No ActionEnvironment!");
+		CouchDbDatabaseSettings databaseSettings = actionEnvironment.getInjectEnvironment().get(CouchDbEnvironment.class).getDatabaseSettings();
+		CouchDbInstance instance = CouchDbUtil.createInstance(databaseSettings.getCouchProperties(), databaseSettings.getOkHttpProperties());
+		SolarThingDatabase database = CouchDbSolarThingDatabase.create(instance);
+		PacketCollection packetCollection = commandManager.create(
+				actionEnvironment,
+				Collections.singleton(best.getFragmentId()),
+				new ImmutableRequestCommandPacket(info.getName())
+		);
+		executorService.execute(() -> {
+			try {
+				database.getOpenDatabase().uploadPacketCollection(packetCollection, null);
+				LOGGER.info("Uploaded command request document");
+			} catch (SolarThingDatabaseException e) {
+				LOGGER.error("Error while uploading document.", e);
+				messageSender.sendMessage("Failed to upload command: " + info.getDisplayName());
+			}
+		});
 		return true;
 	}
 }
