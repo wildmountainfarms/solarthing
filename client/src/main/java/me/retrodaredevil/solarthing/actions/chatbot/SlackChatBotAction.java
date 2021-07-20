@@ -31,10 +31,10 @@ public class SlackChatBotAction extends SimpleAction {
 
 	public SlackChatBotAction(String appToken, MessageSender messageSender, Slack slack, ChatBotHandler handler) {
 		super(false);
-		this.handler = handler;
 		requireNonNull(this.appToken = appToken);
 		requireNonNull(this.messageSender = messageSender);
 		requireNonNull(this.slack = slack);
+		requireNonNull(this.handler = handler);
 	}
 
 	@Override
@@ -57,9 +57,12 @@ public class SlackChatBotAction extends SimpleAction {
 		final SocketModeClient client;
 		try {
 			client = slack.socketMode(appToken, SocketModeClient.Backend.JavaWebSocket);
+			// This likely does some sort of blocking
 		} catch (IOException e) {
-			// slack.socketMode doesn't actually block at all. An IOException is thrown if the URI is invalid, but it doesn't actually try to connect
-			throw new RuntimeException(e);
+			// Relates to https://github.com/wildmountainfarms/solarthing/issues/40
+			// If this is an UnknownHostException, then there's likely a temporary failure in DNS resolution, or it just cannot connect
+			LOGGER.error("Error doing initial connect to slack", e);
+			return;
 		}
 		client.addEventsApiEnvelopeListener(eventsApiEnvelope -> {
 			SocketModeResponse ack = AckResponse.builder().envelopeId(eventsApiEnvelope.getEnvelopeId()).build();
@@ -80,7 +83,8 @@ public class SlackChatBotAction extends SimpleAction {
 			} catch (IOException ioException) {
 				e.addSuppressed(ioException);
 			}
-			throw new RuntimeException(e);
+			LOGGER.error("Error connecting", e);
+			return;
 		}
 		this.client = client;
 		LOGGER.debug("Connect successfully!");
