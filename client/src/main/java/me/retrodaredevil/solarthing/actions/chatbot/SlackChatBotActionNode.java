@@ -11,13 +11,16 @@ import me.retrodaredevil.solarthing.FragmentedPacketGroupProvider;
 import me.retrodaredevil.solarthing.actions.ActionNode;
 import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnvironment;
-import me.retrodaredevil.solarthing.chatbot.DefaultChatBotHandler;
+import me.retrodaredevil.solarthing.chatbot.ChatBotHandlerMultiplexer;
+import me.retrodaredevil.solarthing.chatbot.CommandChatBotHandler;
+import me.retrodaredevil.solarthing.chatbot.StatusChatBotHandler;
 import me.retrodaredevil.solarthing.message.implementations.SlackMessageSender;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import okhttp3.OkHttpClient;
 
 import java.io.File;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -51,7 +54,19 @@ public class SlackChatBotActionNode implements ActionNode {
 				.connectTimeout(Duration.ofSeconds(4))
 				.build()));
 		FragmentedPacketGroupProvider packetGroupProvider = () -> latestPacketGroup;
-		action = new SlackChatBotAction(appToken, new SlackMessageSender(authToken, channelId, slack), slack, new DefaultChatBotHandler(permissionMap, packetGroupProvider));
+		action = new SlackChatBotAction(
+				appToken,
+				new SlackMessageSender(authToken, channelId, slack),
+				slack,
+				new ChatBotHandlerMultiplexer(Arrays.asList(
+						new CommandChatBotHandler(permissionMap, packetGroupProvider),
+						new StatusChatBotHandler(packetGroupProvider),
+						(message, messageSender) -> {
+							messageSender.sendMessage("Unknown command!");
+							return true;
+						}
+				))
+		);
 	}
 
 	// This is designed to be handled by the automation program.

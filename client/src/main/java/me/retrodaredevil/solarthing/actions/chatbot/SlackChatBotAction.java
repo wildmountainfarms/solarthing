@@ -100,6 +100,10 @@ public class SlackChatBotAction extends SimpleAction {
 		if ("events_api".equals(eventsApiEnvelope.getType())) {
 			JsonObject payload = eventsApiEnvelope.getPayload().getAsJsonObject();
 			JsonObject message = payload.getAsJsonObject("event");
+			if (message.get("bot_id") != null) {
+				LOGGER.debug("Got a message from a bot! Ignoring.");
+				return;
+			}
 			if ("message".equals(message.get("type").getAsString()) && message.get("subtype") == null) {
 				String text = message.get("text").getAsString();
 				BigDecimal timestampBigDecimal = message.get("ts").getAsBigDecimal(); // in epoch seconds with microsecond resolution

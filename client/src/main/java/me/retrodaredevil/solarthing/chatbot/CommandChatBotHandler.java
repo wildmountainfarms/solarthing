@@ -14,13 +14,13 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
-public class DefaultChatBotHandler implements ChatBotHandler {
+public class CommandChatBotHandler implements ChatBotHandler {
 	private final Map<String, List<String>> permissionMap;
 	private final FragmentedPacketGroupProvider packetGroupProvider;
 
 	private final PermissionHandler permissionHandler = new PermissionHandler();
 
-	public DefaultChatBotHandler(Map<String, List<String>> permissionMap, FragmentedPacketGroupProvider packetGroupProvider) {
+	public CommandChatBotHandler(Map<String, List<String>> permissionMap, FragmentedPacketGroupProvider packetGroupProvider) {
 		requireNonNull(this.permissionMap = permissionMap);
 		requireNonNull(this.packetGroupProvider = packetGroupProvider);
 	}
@@ -39,31 +39,18 @@ public class DefaultChatBotHandler implements ChatBotHandler {
 	}
 
 	@Override
-	public void handleMessage(Message message, MessageSender messageSender) {
+	public boolean handleMessage(Message message, MessageSender messageSender) {
 		List<String> permissions = permissionMap.getOrDefault(message.getUserId(), Collections.emptyList());
 		List<AvailableCommand> availableCommands = getCommands()
 				.stream()
 				.filter(availableCommand -> permissions.stream().anyMatch(permission -> permissionHandler.permissionMatches(permission, availableCommand.getPermission())))
 				.collect(Collectors.toList());
-		JaroWinkler matcher = new JaroWinkler();
-		AvailableCommand best = null;
-		double bestSimilarity = 0;
-		for (AvailableCommand availableCommand : availableCommands) {
-			double similarity = matcher.similarity(message.getText(), availableCommand.getCommandInfo().getDisplayName());
-			if (similarity > 0.83 && similarity > bestSimilarity) {
-				best = availableCommand;
-				bestSimilarity = similarity;
-			}
+		AvailableCommand best = ChatBotUtil.findBest(availableCommands, availableCommand -> availableCommand.getCommandInfo().getDisplayName(), message.getText());
+		if (best == null) {
+			return false;
 		}
-		if (best != null) {
-			CommandInfo info = best.getCommandInfo();
-			String text = "You request command: " + info.getName() + " AKA: " + info.getDisplayName();
-			System.out.println(text);
-			System.out.println(bestSimilarity);
-			messageSender.sendMessage(text);
-		} else {
-			System.out.println("no command");
-			messageSender.sendMessage("Unknown command requested!");
-		}
+		CommandInfo info = best.getCommandInfo();
+		messageSender.sendMessage("You request command: " + info.getName() + " AKA: " + info.getDisplayName());
+		return true;
 	}
 }
