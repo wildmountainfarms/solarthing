@@ -10,26 +10,26 @@ import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.ZoneId;
 import java.util.List;
-import java.util.TimeZone;
 
 public class PacketHandlerPacketListReceiver implements PacketListReceiver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PacketHandlerPacketListReceiver.class);
 
 	private final PacketHandler packetHandler;
 	private final PacketCollectionIdGenerator idGenerator;
-	private final TimeZone timeZone;
+	private final ZoneId zoneId;
 
-	public PacketHandlerPacketListReceiver(PacketHandler packetHandler, PacketCollectionIdGenerator idGenerator, TimeZone timeZone) {
+	public PacketHandlerPacketListReceiver(PacketHandler packetHandler, PacketCollectionIdGenerator idGenerator, ZoneId zoneId) {
 		this.packetHandler = packetHandler;
 		this.idGenerator = idGenerator;
-		this.timeZone = timeZone;
+		this.zoneId = zoneId;
 	}
 
 	@Override
 	public void receive(List<Packet> packets, InstantType instantType) {
 		try {
-			packetHandler.handle(PacketCollections.createFromPackets(packets, idGenerator, timeZone), instantType);
+			packetHandler.handle(PacketCollections.createFromPackets(packets, idGenerator, zoneId), instantType);
 		} catch (PacketHandleException e) {
 			LOGGER.error("Was unable to handle " + packets.size() + " packet(s)!", e);
 		}

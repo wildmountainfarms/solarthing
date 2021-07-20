@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.actions.environment;
 
+import java.time.ZoneId;
 import java.util.TimeZone;
 
 public class TimeZoneEnvironment {
@@ -11,5 +12,8 @@ public class TimeZoneEnvironment {
 
 	public TimeZone getTimeZone() {
 		return timeZone;
+	}
+	public ZoneId getZoneId() {
+		return timeZone.toZoneId();
 	}
 }

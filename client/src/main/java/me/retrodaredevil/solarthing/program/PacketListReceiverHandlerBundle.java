@@ -64,7 +64,7 @@ public final class PacketListReceiverHandlerBundle {
 				),
 				eventPacketHandler,
 				PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR,
-				options.getTimeZone()
+				options.getZoneId()
 		);
 		PacketListReceiverHandler statusPacketListReceiverHandler = new PacketListReceiverHandler(
 				new PacketListReceiverMultiplexer(
@@ -80,7 +80,7 @@ public final class PacketListReceiverHandlerBundle {
 				),
 				new PacketHandlerMultiplexer(statusPacketHandlers),
 				SolarMain.createIdGenerator(options.getUniqueIdsInOneHour()),
-				options.getTimeZone()
+				options.getZoneId()
 		);
 		return new PacketListReceiverHandlerBundle(statusPacketListReceiverHandler, eventPacketListReceiverHandler);
 	}

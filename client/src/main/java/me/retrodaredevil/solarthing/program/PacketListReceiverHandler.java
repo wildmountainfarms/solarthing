@@ -11,16 +11,16 @@ import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TimeZone;
 
 public class PacketListReceiverHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PacketListReceiverHandler.class);
 	private final PacketListReceiver packetListReceiver;
 	private final PacketHandler packetHandler;
 	private final PacketCollectionIdGenerator idGenerator;
-	private final TimeZone timeZone;
+	private final ZoneId zoneId;
 
 	private final List<Packet> packetList = new ArrayList<>();
 	private final List<PacketCollection> packetCollectionList = new ArrayList<>();
@@ -30,13 +30,13 @@ public class PacketListReceiverHandler {
 	 * @param packetListReceiver The {@link PacketListReceiver} that is only used if the list of packets to pack is not empty
 	 * @param packetHandler Handles packed packets
 	 * @param idGenerator ID Generator for the packet collection
-	 * @param timeZone The timezone used when generating packet collection IDs
+	 * @param zoneId The timezone used when generating packet collection IDs
 	 */
-	public PacketListReceiverHandler(PacketListReceiver packetListReceiver, PacketHandler packetHandler, PacketCollectionIdGenerator idGenerator, TimeZone timeZone) {
+	public PacketListReceiverHandler(PacketListReceiver packetListReceiver, PacketHandler packetHandler, PacketCollectionIdGenerator idGenerator, ZoneId zoneId) {
 		this.packetListReceiver = packetListReceiver;
 		this.packetHandler = packetHandler;
 		this.idGenerator = idGenerator;
-		this.timeZone = timeZone;
+		this.zoneId = zoneId;
 	}
 
 	/**
@@ -71,7 +71,7 @@ public class PacketListReceiverHandler {
 			return;
 		}
 		packetListReceiver.receive(packetList, instantType);
-		PacketCollection packetCollection = PacketCollections.createFromPackets(packetList, idGenerator, timeZone);
+		PacketCollection packetCollection = PacketCollections.createFromPackets(packetList, idGenerator, zoneId);
 		packetList.clear();
 		packetCollectionList.add(packetCollection);
 	}

@@ -9,6 +9,7 @@ import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.Actions;
 import me.retrodaredevil.solarthing.FragmentedPacketGroupProvider;
 import me.retrodaredevil.solarthing.actions.ActionNode;
+import me.retrodaredevil.solarthing.actions.command.SendCommandActionNode;
 import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnvironment;
 import me.retrodaredevil.solarthing.chatbot.ChatBotHandlerMultiplexer;
@@ -30,6 +31,7 @@ public class SlackChatBotActionNode implements ActionNode {
 	private final Action action;
 
 	private volatile FragmentedPacketGroup latestPacketGroup = null;
+	private volatile SendCommandActionNode sendCommandActionNode = null;
 
 	/*
 	The app level token should have connections:write permission
