@@ -14,6 +14,7 @@ import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnvironment;
 import me.retrodaredevil.solarthing.chatbot.ChatBotHandlerMultiplexer;
 import me.retrodaredevil.solarthing.chatbot.CommandChatBotHandler;
+import me.retrodaredevil.solarthing.chatbot.HelpChatBotHandler;
 import me.retrodaredevil.solarthing.chatbot.StatusChatBotHandler;
 import me.retrodaredevil.solarthing.message.implementations.SlackMessageSender;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
@@ -60,14 +61,16 @@ public class SlackChatBotActionNode implements ActionNode {
 				appToken,
 				new SlackMessageSender(authToken, channelId, slack),
 				slack,
-				new ChatBotHandlerMultiplexer(Arrays.asList(
-						new CommandChatBotHandler(permissionMap, packetGroupProvider, new CommandManager(keyDirectory, sender), () -> actionEnvironment),
-						new StatusChatBotHandler(packetGroupProvider),
-						(message, messageSender) -> {
-							messageSender.sendMessage("Unknown command!");
-							return true;
-						}
-				))
+				new HelpChatBotHandler(
+						new ChatBotHandlerMultiplexer(Arrays.asList(
+								new CommandChatBotHandler(permissionMap, packetGroupProvider, new CommandManager(keyDirectory, sender), () -> actionEnvironment),
+								new StatusChatBotHandler(packetGroupProvider),
+								(message, messageSender) -> {
+									messageSender.sendMessage("Unknown command!");
+									return true;
+								}
+						))
+				)
 		);
 	}
 

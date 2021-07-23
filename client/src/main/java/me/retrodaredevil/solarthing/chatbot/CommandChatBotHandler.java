@@ -6,6 +6,7 @@ import me.retrodaredevil.solarthing.FragmentedPacketGroupProvider;
 import me.retrodaredevil.solarthing.actions.command.CommandManager;
 import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.CouchDbEnvironment;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.commands.CommandInfo;
 import me.retrodaredevil.solarthing.commands.packets.open.ImmutableRequestCommandPacket;
 import me.retrodaredevil.solarthing.commands.packets.status.AvailableCommandsPacket;
@@ -60,13 +61,17 @@ public class CommandChatBotHandler implements ChatBotHandler {
 				.collect(Collectors.toList());
 	}
 
-	@Override
-	public boolean handleMessage(Message message, MessageSender messageSender) {
+	private List<AvailableCommand> getAllowedCommands(Message message) {
 		List<String> permissions = permissionMap.getOrDefault(message.getUserId(), Collections.emptyList());
-		List<AvailableCommand> availableCommands = getCommands()
+		return getCommands()
 				.stream()
 				.filter(availableCommand -> permissions.stream().anyMatch(permission -> permissionHandler.permissionMatches(permission, availableCommand.getPermission())))
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public boolean handleMessage(Message message, MessageSender messageSender) {
+		List<AvailableCommand> availableCommands = getAllowedCommands(message);
 		AvailableCommand best = ChatBotUtil.findBest(availableCommands, availableCommand -> availableCommand.getCommandInfo().getDisplayName(), message.getText());
 		if (best == null) {
 			return false;
@@ -92,5 +97,13 @@ public class CommandChatBotHandler implements ChatBotHandler {
 			}
 		});
 		return true;
+	}
+
+	@Override
+	public @NotNull List<String> getHelpLines(Message helpMessage) {
+		List<AvailableCommand> availableCommands = getAllowedCommands(helpMessage);
+		return availableCommands.stream()
+				.map(availableCommand -> '"' + availableCommand.getCommandInfo().getDisplayName() + "\" (" + availableCommand.getFragmentId() + ") -- " + availableCommand.getCommandInfo().getDescription())
+				.collect(Collectors.toList());
 	}
 }
