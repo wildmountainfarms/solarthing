@@ -9,7 +9,7 @@ import java.util.function.Function;
 public final class ChatBotUtil {
 	private ChatBotUtil() { throw new UnsupportedOperationException(); }
 	private static final JaroWinkler MATCHER = new JaroWinkler();
-	private static final double SIMILARITY_CONSTANT = 0.83;
+	private static final double SIMILARITY_CONSTANT = 0.86;
 
 	public static double similarity(String s1, String s2) {
 		return MATCHER.similarity(s1.toLowerCase(), s2.toLowerCase());
