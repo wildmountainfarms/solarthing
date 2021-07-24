@@ -136,6 +136,9 @@ public interface TracerWriteTable {
 	void setChargingPercentage(int chargingPercentage);
 	void setBatteryManagementMode(@NotNull BatteryManagementMode batteryManagementMode);
 
+	/**
+	 * @param isManualLoadControlOn Turns the load on or off if this is in {@link LoadControlMode#MANUAL_CONTROL}
+	 */
 	@JsonProperty("isManualLoadControlOn")
 	void setManualLoadControlOn(boolean isManualLoadControlOn);
 	@JsonProperty("isLoadTestModeEnabled")

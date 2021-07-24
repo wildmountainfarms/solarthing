@@ -13,6 +13,7 @@ import me.retrodaredevil.solarthing.actions.rover.RoverBoostSetActionNode;
 import me.retrodaredevil.solarthing.actions.rover.RoverBoostVoltageActionNode;
 import me.retrodaredevil.solarthing.actions.rover.RoverLoadActionNode;
 import me.retrodaredevil.solarthing.actions.solcast.SolcastActionNode;
+import me.retrodaredevil.solarthing.actions.tracer.TracerLoadActionNode;
 
 @JsonSubTypes({
 		@JsonSubTypes.Type(QueueActionNode.class),
@@ -38,6 +39,8 @@ import me.retrodaredevil.solarthing.actions.solcast.SolcastActionNode;
 		@JsonSubTypes.Type(RoverLoadActionNode.class),
 		@JsonSubTypes.Type(RoverBoostSetActionNode.class),
 		@JsonSubTypes.Type(RoverBoostVoltageActionNode.class),
+
+		@JsonSubTypes.Type(TracerLoadActionNode.class),
 
 		@JsonSubTypes.Type(SendCommandActionNode.class),
 

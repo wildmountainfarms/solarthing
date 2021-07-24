@@ -221,6 +221,7 @@ public class SecurityPacketReceiver {
 		} else if (!targetPacketGroup.isTarget(fragmentId)) {
 			LOGGER.info("Received packet wasn't for fragmentId: " + fragmentId + ". It was for these: " + targetPacketGroup.getTargetFragmentIds());
 		} else {
+			LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Got packet targetting: " + targetPacketGroup.getTargetFragmentIds() + " " + targetSourceId + " with " + targetPacketGroup.getPackets().size() + " packets.");
 			packetGroupReceiver.receivePacketGroup(sender, targetPacketGroup);
 		}
 	}

@@ -114,6 +114,11 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 	@JsonProperty("loadPower")
 	float getLoadPower();
 
+	@GraphQLInclude("isLoadOn")
+	default boolean isLoadOn() {
+		return getLoadVoltage() > 0;
+	}
+
 	/**
 	 * If not connected, this will return 25.0f
 	 * @return The temperature reading of the remote temperature sensor (the sensor plugged into the controller)
