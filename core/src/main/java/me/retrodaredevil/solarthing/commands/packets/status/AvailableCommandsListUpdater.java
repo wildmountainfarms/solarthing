@@ -9,13 +9,17 @@ import java.util.List;
 
 public class AvailableCommandsListUpdater implements PacketListReceiver {
 	private final List<CommandInfo> commandInfoList;
+	private final boolean alwaysSend;
 
-	public AvailableCommandsListUpdater(List<CommandInfo> commandInfoList) {
+	public AvailableCommandsListUpdater(List<CommandInfo> commandInfoList, boolean alwaysSend) {
 		this.commandInfoList = commandInfoList;
+		this.alwaysSend = alwaysSend;
 	}
 
 	@Override
 	public void receive(List<Packet> packets, InstantType instantType) {
-		packets.add(new ImmutableAvailableCommandsPacket(commandInfoList));
+		if (alwaysSend || !packets.isEmpty()) {
+			packets.add(new ImmutableAvailableCommandsPacket(commandInfoList));
+		}
 	}
 }

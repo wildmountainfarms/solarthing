@@ -56,7 +56,7 @@ public class RequestMain {
 			environmentUpdaters.add(result.getEnvironmentUpdater());
 		}
 		if (options.hasCommands()) {
-			packetListReceiverList.add(new AvailableCommandsListUpdater(options.getCommandInfoList()));
+			packetListReceiverList.add(new AvailableCommandsListUpdater(options.getCommandInfoList(), false));
 		}
 		environmentUpdaterReference[0] = new EnvironmentUpdaterMultiplexer(environmentUpdaters);
 

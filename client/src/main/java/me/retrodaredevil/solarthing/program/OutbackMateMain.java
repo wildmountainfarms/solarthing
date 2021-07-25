@@ -76,7 +76,7 @@ public class OutbackMateMain {
 			}
 			final List<CommandProvider<MateCommand>> commandProviders;
 			if (options.hasCommands()) {
-				packetListReceiverList.add(new AvailableCommandsListUpdater(options.getCommandInfoList()));
+				packetListReceiverList.add(new AvailableCommandsListUpdater(options.getCommandInfoList(), false));
 
 				Queue<SourcedCommand<MateCommand>> queue = new LinkedList<>();
 				commandProviders = new ArrayList<>(); // if there are no commands, this should remain empty
