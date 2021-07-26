@@ -12,6 +12,7 @@ import java.util.TreeSet;
 
 public class EstimatedActualCache {
 	private static final Duration DURATION_7_DAYS = Duration.ofDays(7);
+	private static final Duration REQUEST_PERIOD = Duration.ofHours(6);
 
 	private final TreeSet<Node> simpleEstimatedActualSet = new TreeSet<>();
 	private final TreeSet<Node> forecastSet = new TreeSet<>();
@@ -26,6 +27,8 @@ public class EstimatedActualCache {
 	}
 
 	/**
+	 * Note: If {@code startPointMillis} is before now, a request to Solcast for past estimated actuals will be made.
+	 * Many times this is not ideal as you already know what you got, so there's usually little reason to request that data.
 	 *
 	 * @param startPointMillis Helps determine whether data needs to be requested
 	 * @param endPointMillis Helps determine whether data needs to be requested
@@ -43,14 +46,21 @@ public class EstimatedActualCache {
 		}
 
 		synchronized (this) {
+			boolean needsPast = startPointMillis + 5 * 60 * 1000 < now; // we need past data if the start point is more than 5 minutes in the past
 			if (isTimestampOld(now, lastRequest)) {
-				updatePastEstimatedActuals();
+				boolean newFreeToRequestPast = true;
+				if (needsPast) { // only request past data if the start point is in the past
+					updatePastEstimatedActuals();
+					newFreeToRequestPast = false;
+				}
 				updateFutureForecastsAndEstimatedActuals();
 				lastRequest = now;
-				freeToRequestPast = false;
+				freeToRequestPast = newFreeToRequestPast;
 			} else if (freeToRequestPast) {
-				freeToRequestPast = false;
-				updatePastEstimatedActuals();
+				if (needsPast) {
+					freeToRequestPast = false;
+					updatePastEstimatedActuals();
+				}
 			}
 			List<SimpleEstimatedActual> r = new ArrayList<>();
 			for (Node node : clamp ? simpleEstimatedActualSet.tailSet(new Node(startPointMillis), true).headSet(new Node(endPointMillis), true) : simpleEstimatedActualSet) {
@@ -84,7 +94,7 @@ public class EstimatedActualCache {
 		}
 	}
 	private static boolean isTimestampOld(long now, Long timestamp) {
-		return timestamp == null || timestamp + 1000 * 60 * 60 * 12 < now;
+		return timestamp == null || timestamp + REQUEST_PERIOD.toMillis() < now;
 	}
 	private void updateFutureForecastsAndEstimatedActuals() throws IOException {
 		System.out.println("Going to retrieve forecasts from solcast!");

@@ -15,6 +15,7 @@ import me.retrodaredevil.solarthing.meta.EmptyMetaDatabase;
 import me.retrodaredevil.solarthing.meta.MetaDatabase;
 import me.retrodaredevil.solarthing.packets.collection.*;
 import me.retrodaredevil.solarthing.packets.collection.parsing.PacketParsingErrorHandler;
+import me.retrodaredevil.solarthing.rest.exceptions.DatabaseException;
 
 import java.util.Collections;
 import java.util.List;
@@ -70,10 +71,13 @@ public class SimpleQueryHandler {
 					.build());
 			// TODO when we used Ektorp, it gave us a cacheOk option. We need to figure out how this ties to our new CouchDB API
 		} catch (SolarThingDatabaseException e) {
-			throw new RuntimeException(e);
+			throw new DatabaseException("Exception querying from " + from + " to " + to, e);
 		}
 		if(rawPacketGroups.isEmpty()){
-			System.out.println("No packets were queried between " + from + " and " + to);
+			if (to - from > 60 * 1000) {
+				// Only debug this message if the requester is actually asking for a decent chunk of data
+				System.out.println("No packets were queried between " + from + " and " + to);
+			}
 			return Collections.emptyList();
 		}
 		if (sourceId == null) {
@@ -98,6 +102,8 @@ public class SimpleQueryHandler {
 		try {
 			return new DefaultMetaDatabase(database.queryMetadata().getPacket());
 		} catch (SolarThingDatabaseException e) {
+			// TODO find a way to tell what kind of error this is. If it's a connection error, throw a DatabaseException
+			//   if it's a not found error, then just return empty
 			return EmptyMetaDatabase.getInstance();
 		}
 	}

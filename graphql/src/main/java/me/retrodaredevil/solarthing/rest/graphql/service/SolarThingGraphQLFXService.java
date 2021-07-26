@@ -11,6 +11,7 @@ import me.retrodaredevil.solarthing.packets.collection.FragmentUtil;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.InstancePacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
+import me.retrodaredevil.solarthing.rest.exceptions.UnexpectedResponseException;
 import me.retrodaredevil.solarthing.rest.graphql.SimpleQueryHandler;
 import me.retrodaredevil.solarthing.rest.graphql.packets.nodes.DataNode;
 import me.retrodaredevil.solarthing.solar.common.BatteryTemperature;
@@ -48,7 +49,7 @@ public class SolarThingGraphQLFXService {
 			}
 		}
 		if (fxChargingSettingsPacket == null) {
-			throw new RuntimeException("Could not find FX Charging settings in meta!");
+			throw new UnexpectedResponseException("Could not find FX Charging settings in meta!");
 		}
 
 		long startTime = from - 3 * 60 * 60 * 1000; // 3 hours back
@@ -67,7 +68,7 @@ public class SolarThingGraphQLFXService {
 			}
 		}
 		if (sortedPackets == null) {
-			throw new RuntimeException("Could not find fragment ID: " + fragmentId);
+			throw new UnexpectedResponseException("Could not find fragment ID: " + fragmentId);
 		}
 		FXChargingSettings settings = fxChargingSettingsPacket.getFXChargingSettings();
 		FXChargingStateHandler stateHandler = new FXChargingStateHandler(settings);
@@ -111,7 +112,7 @@ public class SolarThingGraphQLFXService {
 			r.add(new DataNode<>(fxChargingPacket, fx, packetGroup.getDateMillis(), packetGroup.getSourceId(fx), fragmentId));
 		}
 		if (r.isEmpty() && !sortedPackets.isEmpty()) {
-			throw new RuntimeException("There must have been no FX packets or no rover packets!");
+			throw new UnexpectedResponseException("There must have been no FX packets or no rover packets!");
 		}
 		return r;
 	}

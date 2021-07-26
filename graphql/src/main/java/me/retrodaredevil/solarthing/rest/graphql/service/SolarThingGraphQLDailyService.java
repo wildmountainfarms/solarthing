@@ -40,7 +40,6 @@ import static java.util.Objects.requireNonNull;
 import static me.retrodaredevil.solarthing.rest.graphql.service.SchemaConstants.*;
 
 public class SolarThingGraphQLDailyService {
-	private static final boolean USE_CACHE = true;
 	private final SimpleQueryHandler simpleQueryHandler;
 	private final ZoneId zoneId;
 	private final CacheController cacheController;

@@ -34,6 +34,8 @@ import me.retrodaredevil.solarthing.rest.cache.creators.CacheCreator;
 import me.retrodaredevil.solarthing.rest.cache.creators.ChargeControllerAccumulationCacheNodeCreator;
 import me.retrodaredevil.solarthing.rest.cache.creators.DefaultIdentificationCacheCreator;
 import me.retrodaredevil.solarthing.rest.cache.creators.FXAccumulationCacheNodeCreator;
+import me.retrodaredevil.solarthing.rest.exceptions.DatabaseException;
+import me.retrodaredevil.solarthing.rest.exceptions.UnexpectedResponseException;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -147,7 +149,7 @@ public class CacheHandler {
 		try {
 			response = cacheDatabase.getDocumentsBulk(request);
 		} catch (CouchDbException e) {
-			throw new RuntimeException("Couldn't get documents", e);
+			throw new DatabaseException("CouchDB exception | message: " + e.getMessage(), e);
 		}
 		Map<String, String> documentIdRevisionMapForUpdate = new HashMap<>(); // map for documents that need to be updated. The value represents the revision that needs to be used to update it
 		Map<Long, T> periodNumberPacketMap = new TreeMap<>(); // Map for period number -> cached data. This helps us make sure we only return a single piece of data for each period
@@ -156,7 +158,9 @@ public class CacheHandler {
 		Long queryEndPeriodNumber = null;
 		for (BulkGetResponse.Result result : response.getResults()) {
 			if (result.hasConflicts()) {
-				throw new IllegalStateException("There's a cache with a conflict! We don't know how to handle that! doc id: " + result.getDocumentId());
+				// This could theoretically happen, but it's extremely unlikely and can only happen if someone has some wacky
+				//   replication going on with their databases.
+				throw new UnexpectedResponseException("cache document with conflict! doc id: " + result.getDocumentId());
 			}
 			Long periodNumber = documentIdPeriodNumberMap.get(result.getDocumentId());
 			if (periodNumber == null) {
@@ -222,7 +226,7 @@ public class CacheHandler {
 			try {
 				postResponse = cacheDatabase.postDocumentsBulk(new BulkPostRequest(calculatedPacketsJsonDataList));
 			} catch (CouchDbException e) {
-				throw new RuntimeException(e);
+				throw new DatabaseException("Could not update cache", e);
 			}
 			int successCount = 0;
 			int failCount = 0;
@@ -271,7 +275,7 @@ public class CacheHandler {
 			packetGroups = database.getStatusDatabase().query(millisQuery);
 		} catch (SolarThingDatabaseException e) {
 			// TODO the consumers of this API may be ok if there are holes in the data rather than getting no data at all, so maybe change this later?
-			throw new RuntimeException("Couldn't query status packets", e);
+			throw new DatabaseException("Couldn't query status packets", e);
 		}
 		List<CacheDataPacket> r = new ArrayList<>();
 		Map<String, List<InstancePacketGroup>> sourceMap = PacketGroups.parsePackets(packetGroups, defaultInstanceOptions);

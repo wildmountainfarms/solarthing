@@ -5,6 +5,11 @@ import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLQuery;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
+import me.retrodaredevil.solarthing.cache.packets.IdentificationCacheDataPacket;
+import me.retrodaredevil.solarthing.cache.packets.IdentificationCacheNode;
+import me.retrodaredevil.solarthing.cache.packets.data.ChargeControllerAccumulationDataCache;
+import me.retrodaredevil.solarthing.rest.cache.CacheController;
+import me.retrodaredevil.solarthing.rest.exceptions.UnexpectedResponseException;
 import me.retrodaredevil.solarthing.rest.graphql.solcast.SolcastConfig;
 import me.retrodaredevil.solarthing.solcast.SolcastOkHttpUtil;
 import me.retrodaredevil.solarthing.solcast.SolcastRetrofitUtil;
@@ -34,9 +39,12 @@ public class SolarThingGraphQLSolcastService {
 
 	private final Map<String, SolcastHandler> sourceHandlerMap;
 	private final ZoneId zoneId;
+	private final @Nullable CacheController cacheController;
 
-	public SolarThingGraphQLSolcastService(SolcastConfig solcastConfig, ZoneId zoneId) {
+	public SolarThingGraphQLSolcastService(SolcastConfig solcastConfig, ZoneId zoneId, @Nullable CacheController cacheController) {
 		this.zoneId = zoneId;
+		this.cacheController = cacheController;
+
 		sourceHandlerMap = new HashMap<>();
 		for (String sourceId : solcastConfig.getSources()) {
 			SolcastConfig.Entry entry = requireNonNull(solcastConfig.getEntry(sourceId));
@@ -49,7 +57,8 @@ public class SolarThingGraphQLSolcastService {
 			SolcastService service = retrofit.create(SolcastService.class);
 			sourceHandlerMap.put(sourceId, new SolcastHandler(
 					service,
-					new EstimatedActualCache(EstimatedActualRetriever.createRooftop(service, entry.getResourceId()))
+					new EstimatedActualCache(EstimatedActualRetriever.createRooftop(service, entry.getResourceId())),
+					sourceId
 			));
 			System.out.println("For source: " + sourceId + " using solcast resource ID: " + entry.getResourceId());
 		}
@@ -74,7 +83,7 @@ public class SolarThingGraphQLSolcastService {
 		if (handler == null) {
 			return null;
 		}
-		return new SolarThingSolcastDayQuery(handler, to, zoneId);
+		return new SolarThingSolcastDayQuery(handler, to, zoneId, cacheController);
 	}
 	public static class SolarThingSolcastQuery {
 		private final SolcastHandler handler;
@@ -106,6 +115,7 @@ public class SolarThingGraphQLSolcastService {
 		public @NotNull List<@NotNull DailyEnergy> queryDailyEnergyEstimates() throws IOException {
 			LocalDate startDate = Instant.ofEpochMilli(from).atZone(zoneId).toLocalDate();
 			LocalDate endDate = Instant.ofEpochMilli(to).atZone(zoneId).toLocalDate();
+			// TODO don't use getEstimatedActuals here
 			List<SimpleEstimatedActual> simpleEstimatedActuals = handler.cache.getEstimatedActuals(
 					startDate.atStartOfDay(zoneId).toInstant().toEpochMilli(),
 					endDate.plusDays(1).atStartOfDay(zoneId).toInstant().toEpochMilli(),
@@ -145,36 +155,69 @@ public class SolarThingGraphQLSolcastService {
 		private final SolcastHandler handler;
 		private final long to;
 		private final ZoneId zoneId;
+		private final @Nullable CacheController cacheController;
 
-		public SolarThingSolcastDayQuery(SolcastHandler handler, long to, ZoneId zoneId) {
+		public SolarThingSolcastDayQuery(SolcastHandler handler, long to, ZoneId zoneId, @Nullable CacheController cacheController) {
 			requireNonNull(this.handler = handler);
 			this.to = to;
 			requireNonNull(this.zoneId = zoneId);
+			this.cacheController = cacheController;
 		}
 		@GraphQLQuery(description = "Queries the kWh generation estimate for a certain day. offset of 0 is today, 1 is tomorrow, -1 is yesterday")
 		public @NotNull DailyEnergy queryEnergyEstimate(@GraphQLArgument(name = "offset", defaultValue = "0") int offsetDays) throws IOException {
+			Instant now = Instant.now();
+			LocalDate today = now.atZone(zoneId).toLocalDate();
 			LocalDate date = Instant.ofEpochMilli(to).atZone(zoneId).toLocalDate().plusDays(offsetDays);
 			long start = date.atStartOfDay(zoneId).toInstant().toEpochMilli();
-			long end = date.plusDays(1).atStartOfDay(zoneId).toInstant().toEpochMilli() - 1;
-			List<SimpleEstimatedActual> estimatedActuals = handler.cache.getEstimatedActuals(start, end, true);
-			if (estimatedActuals.isEmpty()) {
-				throw new RuntimeException("Empty result for offset=" + offsetDays + "! This shouldn't happen!");
+			long end = date.plusDays(1).atStartOfDay(zoneId).toInstant().toEpochMilli(); // don't subtract 1 from this because these ranges are used against the end time millis
+			// TODO don't use getEstimatedActuals here // this is the query that WMF's Grafana uses frequently
+			final List<IdentificationCacheDataPacket<ChargeControllerAccumulationDataCache>> chargeControllerAccumulationCache;
+			final List<SimpleEstimatedActual> estimatedActuals;
+			if (cacheController == null || date.isAfter(today)) {
+				chargeControllerAccumulationCache = Collections.emptyList();
+				estimatedActuals = handler.cache.getEstimatedActuals(start, end, true);
+				if (estimatedActuals.isEmpty()) {
+					throw new UnexpectedResponseException("Empty result for offset=" + offsetDays + "! This shouldn't happen!");
+				}
+			} else {
+				chargeControllerAccumulationCache = cacheController.getChargeControllerAccumulation(handler.sourceId, start, now.toEpochMilli());
+				estimatedActuals = handler.cache.getEstimatedActuals(now.toEpochMilli(), end, true);
 			}
+
+			SimpleEstimatedActual lastEstimatedActual = estimatedActuals.isEmpty() ? null : estimatedActuals.get(estimatedActuals.size() - 1);
+
+			float actualDailyKWH = 0;
+			for (IdentificationCacheDataPacket<ChargeControllerAccumulationDataCache> cacheDataPacket : chargeControllerAccumulationCache) {
+				if (lastEstimatedActual != null && lastEstimatedActual.getPeriodStart().compareTo(cacheDataPacket.getPeriodEnd()) < 0) {
+					// If we have a forecast that starts before one of our actuals ends, then stop using the actuals and use the forecast.
+					// It might seem like we'd rather use the actual here, but this is advantageous if the forecast covers a larger range of time.
+					//   So it could be possible that we don't have the actual for the entire forecast
+					// Let's say we know what we got from 9:15-9:30 and 9:30-9:45.
+					//   If we have a forecast for 9:30-10:00, we shouldn't use the data from 9:30-9:45.
+					break;
+				}
+				for (IdentificationCacheNode<ChargeControllerAccumulationDataCache> node : cacheDataPacket.getNodes()) {
+					actualDailyKWH += node.getData().getGenerationKWH() + node.getData().getUnknownGenerationKWH();
+				}
+			}
+
 			float dailyKWH = 0;
 			for (SimpleEstimatedActual simpleEstimatedActual : estimatedActuals) {
 				dailyKWH += simpleEstimatedActual.getEnergyGenerationEstimate();
 			}
-			return new DailyEnergy(start, dailyKWH);
+			return new DailyEnergy(start, actualDailyKWH + dailyKWH);
 		}
 	}
 
 	private static class SolcastHandler {
 		private final SolcastService service;
 		private final EstimatedActualCache cache;
+		private final String sourceId;
 
-		private SolcastHandler(SolcastService service, EstimatedActualCache cache) {
+		private SolcastHandler(SolcastService service, EstimatedActualCache cache, String sourceId) {
 			this.service = service;
 			this.cache = cache;
+			this.sourceId = sourceId;
 		}
 	}
 
