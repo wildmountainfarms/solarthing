@@ -38,6 +38,7 @@ public class TracerModbusRequester implements ModbusRequester {
 	private final int number;
 	private final TracerClockOptions tracerClockOptions;
 	private final NetCatConfig configurationServerConfig;
+	private final boolean connectionHandlerHasFlushLogic;
 
 	@JsonCreator
 	public TracerModbusRequester(
@@ -46,13 +47,16 @@ public class TracerModbusRequester implements ModbusRequester {
 			@JsonProperty("commands") List<String> attachToCommands,
 			@JsonProperty("number") Integer number,
 			@JsonProperty("clock") TracerClockOptions tracerClockOptions,
-			@JsonProperty("server") NetCatConfig configurationServerConfig) {
+			@JsonProperty("server") NetCatConfig configurationServerConfig,
+			@JsonProperty("connectionHandlerHasFlushLogic") Boolean connectionHandlerHasFlushLogic
+	) {
 		this.sendErrorPackets = Boolean.TRUE.equals(sendErrorPackets); // default false
 		this.bulkRequest = !Boolean.FALSE.equals(bulkRequest); // default true
 		this.attachToCommands = attachToCommands == null ? Collections.emptyList() : attachToCommands;
 		this.number = number == null ? NumberedIdentifier.DEFAULT_NUMBER : number;
 		this.tracerClockOptions = tracerClockOptions;
 		this.configurationServerConfig = configurationServerConfig;
+		this.connectionHandlerHasFlushLogic = Boolean.TRUE.equals(connectionHandlerHasFlushLogic);
 		if (number != null) {
 			LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Hey! We noticed you are defining 'number' on this tracer modbus requester! Please don't do that unless you actually need to!!");
 		}
@@ -110,7 +114,7 @@ public class TracerModbusRequester implements ModbusRequester {
 			}
 		}
 		return new DataRequesterResult(
-				new ModbusListUpdaterWrapper(new TracerPacketListUpdater(number, read, write, tracerClockOptions, netCatServerHandler == null ? null : new ConnectionHandler(netCatServerHandler)), reloadCache, successReporter, sendErrorPackets, "tracer.error." + number),
+				new ModbusListUpdaterWrapper(new TracerPacketListUpdater(number, read, write, tracerClockOptions, netCatServerHandler == null ? null : new ConnectionHandler(netCatServerHandler), connectionHandlerHasFlushLogic), reloadCache, successReporter, sendErrorPackets, "tracer.error." + number),
 				(dataSource, injectEnvironmentBuilder) -> {
 					String commandName = dataSource.getData();
 					if (attachToCommands.contains(commandName)) {

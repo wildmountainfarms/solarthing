@@ -37,13 +37,16 @@ public class TracerPacketListUpdater implements PacketListReceiver {
 	private final TracerWriteTable write;
 	private final TracerClockOptions tracerClockOptions;
 	private final ConnectionHandler connectionHandler;
+	/** Set to true if we queue up {@link TracerBatteryConfigBuilder} fields before writing them */
+	private final boolean connectionHandlerHasFlushLogic;
 
-	public TracerPacketListUpdater(int number, TracerReadTable read, TracerWriteTable write, TracerClockOptions tracerClockOptions, ConnectionHandler connectionHandler) {
+	public TracerPacketListUpdater(int number, TracerReadTable read, TracerWriteTable write, TracerClockOptions tracerClockOptions, ConnectionHandler connectionHandler, boolean connectionHandlerHasFlushLogic) {
 		this.number = number;
 		requireNonNull(this.read = read);
 		requireNonNull(this.write = write);
 		this.tracerClockOptions = tracerClockOptions;
 		this.connectionHandler = connectionHandler;
+		this.connectionHandlerHasFlushLogic = connectionHandlerHasFlushLogic;
 	}
 
 	@Override
@@ -85,10 +88,12 @@ public class TracerPacketListUpdater implements PacketListReceiver {
 						return "flush success";
 					}
 				}
-				if (split.length > 1) {
+				if (connectionHandlerHasFlushLogic && split.length > 1) { // check if we're writing something
 					String fieldName = split[0];
 					String value = split[1];
 
+					// If we can successfully read from this reader, then that means that the input is a field in TracerBatteryConfigBuilder
+					//
 					ObjectReader reader = MAPPER.readerForUpdating(builder);
 					ObjectNode input = new ObjectNode(JsonNodeFactory.instance);
 					input.put(fieldName, value);
