@@ -9,6 +9,9 @@ These databases are automatically created:
 * `solarthing_events` Stores event-type packets
 * `solarthing_open` Commands are saved here then deleted to send commands to the Outback MATE. Commands in here are encrypted for integrity
 * `solarthing_closed` for readonly configuration data
+* `solarthing_cached` for cached info that is used by SolarThing GraphQL
+* `solarthing_alter` for data that expires and data that persists which alters how SolarThing works either temporarily,
+or as persistent configuration data
 
 ## Enabling CORS
 If you are using the web application, you should enable Cross Origin Reference Sharing.

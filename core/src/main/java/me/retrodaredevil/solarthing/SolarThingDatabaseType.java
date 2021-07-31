@@ -5,7 +5,8 @@ import static me.retrodaredevil.solarthing.SolarThingConstants.*;
 public enum SolarThingDatabaseType {
 	STATUS(STATUS_DATABASE, true), EVENT(EVENT_DATABASE, true),
 	CLOSED(CLOSED_DATABASE, false), OPEN(OPEN_DATABASE, true),
-	CACHE(CACHE_DATABASE, false)
+	CACHE(CACHE_DATABASE, false),
+//	ALTER(ALTER_DATABASE, false),
 	;
 	private final String name;
 	private final boolean needsMillisView;

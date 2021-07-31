@@ -1,0 +1,12 @@
+[Unit]
+Description=The service for monitoring other services ##name##
+
+[Service]
+TimeoutStartSec=1
+ExecStart=##solarthing_root##/other/systemd/monitorservice.py
+WorkingDirectory=##solarthing_root##/other/systemd
+User=solarthing
+Group=solarthing
+
+[Install]
+WantedBy=multi-user.target

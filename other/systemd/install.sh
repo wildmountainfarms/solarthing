@@ -14,6 +14,8 @@ fi
 
 if [ "$SERVICE" = "graphql" ]; then
   TEMPLATE_FILE="solarthing-graphql.service.template"
+elif [ "$SERVICE" = "monitor-service" ]; then
+  TEMPLATE_FILE="monitor-service.service.template"
 else
   TEMPLATE_FILE="solarthing.service.template"
 fi
