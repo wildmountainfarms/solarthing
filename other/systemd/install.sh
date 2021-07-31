@@ -7,7 +7,7 @@ DESTINATION_PATH="/etc/systemd/system/solarthing-$SERVICE.service"
 SOLARTHING_ROOT=$(cd ../.. && pwd)
 PROGRAM_DIRECTORY="$SOLARTHING_ROOT/program/$SERVICE"
 
-if [ ! -f "$PROGRAM_DIRECTORY/run.sh" ]; then
+if [ ! -f "$PROGRAM_DIRECTORY/run.sh" ] && [ "$SERVICE" != "monitor-service" ]; then
   echo "$SERVICE is not a valid service!"
   exit 1
 fi
