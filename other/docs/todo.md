@@ -6,7 +6,7 @@
 * Packet for disk usage
 * Send packet when mate serial port hasn't output data for 30 seconds
 * Create Dockerfile and example docker-compose file
-* Add event packets for rover devices (like we did for MXs and FXs)
+* Add event packets for rover and tracer devices (like we did for MXs and FXs)
 * Short term record packets for high/low battery voltage, FX inverter current, pv wattage, charging current, etc  
   * This would be very useful so that if packets are replaced there is still information on how
   high or low the battery voltage got or how high the load was
@@ -22,9 +22,20 @@
   * https://hub.docker.com/r/graylog/graylog
 * Look into implementing pymate like features into SolarThing: https://github.com/jorticus/pymate
   * https://github.com/jorticus/pymate/blob/master/doc/protocol/Protocol.md
-* More accurate solcast by using actual kWh data throughout the day
 * Add way to queue up commands in the automation program
   * The goal here is to be able to say "start generator at 5PM" and then also be able to cancel it
+* Make sure clients tolerate quick disconnects and reconnects from a device so that devices with unstable connections
+don't look like they're constantly disconnecting and reconnecting
+* Add action to store an informational message in the database
+  * This is good for feedback for a particular command that is running.
+* Add packet for rover write commands that ran - (we already have one for mate commands)
+* Possibly refactor PacketListReceiver
+  * Get rid of InstantType
+  * Have a way to tell if a packet included in the packets list is important enough to warrant storing in the database.
+    * Right now we do a bunch of packets.isEmpty() checks to see if we should continue adding packets, but there's probably a better way
+* Better way to update SNAPSHOT jar so that running SolarThing instances don't get mad
+  * We have a great setup for versioned SolarThing jar files, because running instances will still use
+  whatever jar solarthing.jar pointed them to originally, but this isn't the case when we actually change the jar it is pointing to
   
 ### Completed
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
@@ -65,6 +76,7 @@ easy displaying in Grafana
 * Add way to scan for rover modbus slave addresses
 * Have standard timings for grouping/sorting packets and increase time for GraphQL grouped queries so that
   all temperature readings show up even if one is from 10 minutes ago.
+* More accurate solcast by using actual kWh data throughout the day
 
 ### Look into
 * Look into supporting Elasticsearch, MongoDB, Graphite

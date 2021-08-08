@@ -8,6 +8,7 @@ import json
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 import traceback
+import urllib.error
 
 """
 sudo python3 -m pip install slack_sdk
@@ -24,7 +25,8 @@ class SlackSender:
         message = self.prefix + message + self.suffix
         try:
             self.web_client.chat_postMessage(channel=self.slack_channel, text=message)
-        except SlackApiError as e:
+        except (SlackApiError, URLError) as e:
+            # URLError usually occurs with a temporary failure in name resolution
             traceback.print_exc()
 
 
@@ -94,7 +96,7 @@ def main(args: List[str]):
     try:
         monitor(service_names, slack)
     except KeyboardInterrupt:
-        slack.send(f"Stopped monitoring {service_name}")
+        slack.send(f"Stopped monitoring {service_names}")
 
 
 

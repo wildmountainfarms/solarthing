@@ -31,6 +31,10 @@ dependencies {
     implementation group: 'org.apache.logging.log4j', name: 'log4j-jul', version: '2.14.1' // JUL Logging Bridge for mqtt library
 
     implementation 'info.debatty:java-string-similarity:2.0.0'
+
+    def lokiLog4j2AppenderVersion = "0.9.16"
+    implementation "pl.tkowalcz.tjahzi:log4j2-appender-nodep:$lokiLog4j2AppenderVersion"
+    implementation "pl.tkowalcz.tjahzi:log4j2-appender:$lokiLog4j2AppenderVersion"
 }
 
 shadowJar {
