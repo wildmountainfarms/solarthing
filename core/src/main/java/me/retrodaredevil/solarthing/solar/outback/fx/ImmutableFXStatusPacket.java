@@ -4,14 +4,16 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.NotNull;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 
-@JsonIgnoreProperties(value = {
+@JsonIgnoreProperties(value = { // ignore convenience fields that may sometimes be present (all of these fields were eventually removed)
 		"operatingModeName", "errors", "acModeName", "miscModes", "warnings",
 		"batteryVoltageString"
 }, allowGetters = true)
 final class ImmutableFXStatusPacket implements FXStatusPacket {
+	private final Integer packetVersion;
 	private final int address;
 
 	private final float inverterCurrent;
@@ -34,6 +36,7 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 	private final IdentityInfo identityInfo;
 
 	ImmutableFXStatusPacket(
+			Integer packetVersion,
 			int address,
 			float inverterCurrent, int inverterCurrentRaw,
 			float chargerCurrent, int chargerCurrentRaw,
@@ -45,6 +48,7 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 			float batteryVoltage,
 			int misc, int warningMode, int chksum
 	) {
+		this.packetVersion = packetVersion;
 		this.address = address;
 		this.inverterCurrent = inverterCurrent;
 		this.inverterCurrentRaw = inverterCurrentRaw;
@@ -72,6 +76,7 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 
 	@JsonCreator
 	private static ImmutableFXStatusPacket jacksonCreator(
+			@JsonProperty(value = "packetVersion") Integer packetVersion,
 			@JsonProperty(value = "address", required = true) int address,
 			@JsonProperty(value = "inverterCurrent", required = true) float inverterCurrent, @JsonProperty(value = "inverterCurrentRaw") Integer inverterCurrentRawNullable,
 			@JsonProperty(value = "chargerCurrent", required = true) float chargerCurrent, @JsonProperty(value = "chargerCurrentRaw") Integer chargerCurrentRawNullable,
@@ -96,7 +101,7 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 			outputVoltageRaw = outputVoltageRawNullable == null ? outputVoltage / number : outputVoltageRawNullable;
 		}
 		return new ImmutableFXStatusPacket(
-				address, inverterCurrent, inverterCurrentRaw,
+				packetVersion, address, inverterCurrent, inverterCurrentRaw,
 				chargerCurrent, chargerCurrentRaw, buyCurrent, buyCurrentRaw,
 				inputVoltage, inputVoltageRaw, outputVoltage, outputVoltageRaw,
 				sellCurrent, sellCurrentRaw, operatingMode, errorMode, acMode, batteryVoltage,
@@ -107,6 +112,11 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 	@Override
 	public @NotNull IdentityInfo getIdentityInfo() {
 		return identityInfo;
+	}
+
+	@Override
+	public @Nullable Integer getPacketVersion() {
+		return packetVersion;
 	}
 
 	@Override

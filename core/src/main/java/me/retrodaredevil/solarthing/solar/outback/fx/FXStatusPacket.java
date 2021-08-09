@@ -8,6 +8,7 @@ import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.Modes;
+import me.retrodaredevil.solarthing.packets.VersionedPacket;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
 import me.retrodaredevil.solarthing.solar.common.SolarDevice;
@@ -28,7 +29,11 @@ import java.util.Set;
 @JsonTypeName("FX_STATUS")
 @JsonExplicit
 @JsonClassDescription("Status packet for FX devices")
-public interface FXStatusPacket extends OutbackStatusPacket, BatteryVoltage, FXWarningReporter, FXMiscReporter, SolarDevice {
+public interface FXStatusPacket extends OutbackStatusPacket, BatteryVoltage, FXWarningReporter, FXMiscReporter, SolarDevice, VersionedPacket {
+
+	/** This version indicates that the packet no longer has convenience string fields. This indicates a different in serialization, not in underlying data. */
+	int VERSION_NO_MORE_CONVENIENCE_FIELDS = 2;
+
 	@DefaultFinal
 	@Override
 	default @NotNull SolarStatusPacketType getPacketType(){
@@ -182,44 +187,41 @@ public interface FXStatusPacket extends OutbackStatusPacket, BatteryVoltage, FXW
 	// endregion
 
 	// region Convenience Strings
-
 	/**
-	 * Should be serialized as "operatingModeName"
+	 * Serialized as "operatingModeName" in packets before {@link #VERSION_NO_MORE_CONVENIENCE_FIELDS}
 	 * @return The name of the operating mode
 	 */
-	@JsonProperty("operatingModeName")
+	@GraphQLInclude("operatingModeName")
 	default @NotNull String getOperatingModeName(){
 		return getOperationalMode().getModeName();
 	}
 
 	/**
-	 * Should be serialized as "errors"
+	 * Serialized as "errors" in packets before {@link #VERSION_NO_MORE_CONVENIENCE_FIELDS}
 	 * @return The errors represented as a string
 	 */
-	@JsonProperty("errors")
 	@GraphQLInclude("errorsString")
 	default @NotNull String getErrorsString() { return Modes.toString(FXErrorMode.class, getErrorModeValue()); }
 
 	/**
-	 * Should be serialized as "acModeName"
+	 * Serialized as "acModeName" in packets before {@link #VERSION_NO_MORE_CONVENIENCE_FIELDS}
 	 * @return The name of the ac mode
 	 */
-	@JsonProperty("acModeName")
+	@GraphQLInclude("acModeName")
 	default @NotNull String getACModeName() { return getACMode().getModeName(); }
 
 	/**
-	 * Should be serialized as "miscModes"
+	 * Serialized as "miscModes" in packets before {@link #VERSION_NO_MORE_CONVENIENCE_FIELDS}
 	 * @return The misc modes represented as a string
 	 */
-	@JsonProperty("miscModes")
 	@GraphQLInclude("miscModesString")
 	default @NotNull String getMiscModesString() { return Modes.toString(MiscMode.class, getMiscValue()); }
 
 	/**
-	 * Should be serialized as "warnings"
+	 * Serialized as "warnings" in packets before {@link #VERSION_NO_MORE_CONVENIENCE_FIELDS}
 	 * @return The warning modes represented as a string
 	 */
-	@JsonProperty("warnings")
+	@GraphQLInclude("warnings")
 	default @NotNull String getWarningsString() { return Modes.toString(WarningMode.class, getWarningModeValue()); }
 	// endregion
 

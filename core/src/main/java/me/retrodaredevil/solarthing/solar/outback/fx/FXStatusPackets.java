@@ -133,7 +133,7 @@ public final class FXStatusPackets {
 		}
 
 		return new ImmutableFXStatusPacket(
-				address, inverterCurrent, inverterCurrentRaw, chargerCurrent,
+                FXStatusPacket.VERSION_NO_MORE_CONVENIENCE_FIELDS, address, inverterCurrent, inverterCurrentRaw, chargerCurrent,
 				chargerCurrentRaw, buyCurrent, buyCurrentRaw, inputVoltage, inputVoltageRaw, outputVoltage,
 				outputVoltageRaw, sellCurrent, sellCurrentRaw, operatingMode, errorMode, acMode, batteryVoltage,
 				misc, warningMode, chksum

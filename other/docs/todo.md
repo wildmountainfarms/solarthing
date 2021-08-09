@@ -36,6 +36,9 @@ don't look like they're constantly disconnecting and reconnecting
 * Better way to update SNAPSHOT jar so that running SolarThing instances don't get mad
   * We have a great setup for versioned SolarThing jar files, because running instances will still use
   whatever jar solarthing.jar pointed them to originally, but this isn't the case when we actually change the jar it is pointing to
+* Backend Grafana plugin to allow commands to be sent
+* Have a CouchDB view that emits null so that the millis view can be more efficient and people can use include_docs=true
+  * https://www.dimagi.com/blog/what-every-developer-should-know-about-couchdb/
   
 ### Completed
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
