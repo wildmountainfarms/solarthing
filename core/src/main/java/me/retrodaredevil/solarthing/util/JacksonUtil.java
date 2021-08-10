@@ -4,6 +4,9 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
+import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
+import me.retrodaredevil.solarthing.annotations.ConvenienceField;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 
 @UtilityClass
@@ -51,5 +54,16 @@ public final class JacksonUtil {
 	}
 	public static ObjectMapper jsonLikeTolerantMapper(ObjectMapper mapper) {
 		return mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+	}
+	public static ObjectMapper includeConvenienceFields(ObjectMapper mapper) {
+		return mapper.setAnnotationIntrospector(new JacksonAnnotationIntrospector() {
+			@Override
+			public boolean hasIgnoreMarker(AnnotatedMember m) {
+				if (m.hasAnnotation(ConvenienceField.class)) {
+					return false;
+				}
+				return super.hasIgnoreMarker(m);
+			}
+		});
 	}
 }

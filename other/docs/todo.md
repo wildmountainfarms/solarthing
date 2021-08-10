@@ -39,6 +39,11 @@ don't look like they're constantly disconnecting and reconnecting
 * Backend Grafana plugin to allow commands to be sent
 * Have a CouchDB view that emits null so that the millis view can be more efficient and people can use include_docs=true
   * https://www.dimagi.com/blog/what-every-developer-should-know-about-couchdb/
+* Have option to use shorter document IDs
+  * CouchDB recommends shorter IDs: https://docs.couchdb.org/en/stable/maintenance/performance.html#document-s-id
+* GraphQL queries for getting the angle of the sun in the sky (current and highest point in the day)
+* Serialize convenience fields only if a certain condition is met (maybe a config option)
+  * Heck, maybe only serialize convenience fields in debug messages
   
 ### Completed
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
