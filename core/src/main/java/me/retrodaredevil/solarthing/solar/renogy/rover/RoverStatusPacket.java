@@ -32,6 +32,7 @@ public interface RoverStatusPacket extends RenogyPacket, RoverReadTable, Version
 	int VERSION_CORRECT_TWO_REGISTER = 2;
 	/** The version of rover status packets that may have a "number" attached to them. Represents packets from SolarThing 2021.5.0 an onwards */
 	int VERSION_NUMBERED_IDENTIFIER = 3;
+	int VERSION_REMOVED_CONVENIENCE_FIELDS = 4;
 
 	@DefaultFinal
 	@Override

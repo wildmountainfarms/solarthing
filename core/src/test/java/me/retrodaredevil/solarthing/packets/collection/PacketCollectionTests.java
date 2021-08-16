@@ -3,8 +3,6 @@ package me.retrodaredevil.solarthing.packets.collection;
 import org.junit.jupiter.api.Test;
 
 import java.time.*;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

@@ -111,6 +111,8 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 
 	/**
 	 * Should be serialized as "productModelString"
+	 * <p>
+	 * Note: Although this is essentially a convenience field, it will continue to be serialized.
 	 * @return The string representing the product model
 	 */
 	@JsonProperty("productModelString")
@@ -141,6 +143,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	 * If serialized, should be serialized as "softwareVersionString" using {@link Version#toString()}
 	 * @return The {@link Version} object representing the software version
 	 */
+	@ConvenienceField(sincePacketVersion = RoverStatusPacket.VERSION_REMOVED_CONVENIENCE_FIELDS)
 	@ValidSinceVersion(version = RoverStatusPacket.VERSION_CORRECT_TWO_REGISTER)
 	@GraphQLInclude("softwareVersion")
 	default Version getSoftwareVersion(){ return new Version(getSoftwareVersionValue()); }
@@ -163,6 +166,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	@ValidSinceVersion(version = RoverStatusPacket.VERSION_CORRECT_TWO_REGISTER)
 	@GraphQLInclude("hardwareVersion")
 	default Version getHardwareVersion() { return new Version(getHardwareVersionValue()); }
+	@ConvenienceField(sincePacketVersion = RoverStatusPacket.VERSION_REMOVED_CONVENIENCE_FIELDS)
 	@ValidSinceVersion(version = RoverStatusPacket.VERSION_CORRECT_TWO_REGISTER)
 	@JsonProperty("hardwareVersionString")
 	default String getHardwareVersionString() { return getHardwareVersion().toString(); }
@@ -432,9 +436,11 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	}
 	@RoverOnly
 	default StreetLight getStreetLightStatus(){ return Modes.getActiveMode(StreetLight.class, getStreetLightStatusValue()); }
+	@ConvenienceField(sincePacketVersion = RoverStatusPacket.VERSION_REMOVED_CONVENIENCE_FIELDS)
 	@JsonProperty("streetLightBrightness") // convenient
 	@RoverOnly
 	default int getStreetLightBrightnessPercent(){ return StreetLight.getBrightnessValue(getRawStreetLightValue()); }
+	@ConvenienceField(sincePacketVersion = RoverStatusPacket.VERSION_REMOVED_CONVENIENCE_FIELDS)
 	@JsonProperty("streetLightOn") // convenient
 	@RoverOnly
 	default boolean isStreetLightOn(){ return getStreetLightStatus() == StreetLight.ON; }
@@ -444,6 +450,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	@GraphQLInclude("chargingMode")
 	@Override
 	default @NotNull ChargingState getChargingMode(){ return Modes.getActiveMode(ChargingState.class, getChargingStateValue()); }
+	@ConvenienceField(sincePacketVersion = RoverStatusPacket.VERSION_REMOVED_CONVENIENCE_FIELDS)
 	@JsonProperty("chargingStateName") // convenient
 	default String getChargingStateName(){ return getChargingMode().getModeName(); }
 
@@ -459,6 +466,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 		}
 		return getRoverErrorModes();
 	}
+	@ConvenienceField(sincePacketVersion = RoverStatusPacket.VERSION_REMOVED_CONVENIENCE_FIELDS)
 	@ValidSinceVersion(version = RoverStatusPacket.VERSION_CORRECT_TWO_REGISTER)
 	@JsonProperty("errors")
 	default String getErrorsString(){
@@ -551,6 +559,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	int getBatteryTypeValue();
 	@GraphQLInclude("batteryType")
 	default RoverBatteryType getBatteryType(){ return Modes.getActiveMode(RoverBatteryType.class, getBatteryTypeValue()); }
+	@ConvenienceField(sincePacketVersion = RoverStatusPacket.VERSION_REMOVED_CONVENIENCE_FIELDS)
 	@JsonProperty("batteryTypeName") // convenient
 	default String getBatteryTypeName(){ return getBatteryType().getModeName(); }
 
@@ -629,6 +638,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	@JsonProperty("loadWorkingMode")
 	int getLoadWorkingModeValue();
 	default LoadWorkingMode getLoadWorkingMode() { return Modes.getActiveMode(LoadWorkingMode.class, getLoadWorkingModeValue()); }
+	@ConvenienceField
 	@JsonProperty("loadWorkingModeName") // convenient string
 	default String getLoadWorkingModeName() { return getLoadWorkingMode().getModeName(); }
 

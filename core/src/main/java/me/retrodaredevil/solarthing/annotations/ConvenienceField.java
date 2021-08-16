@@ -16,4 +16,6 @@ import java.lang.annotation.*;
 @JsonIgnore // ignore convenience fields by default
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ConvenienceField {
+	/** Used to document when a particular field became annotated with @ConvenienceField so that people know what version it was removed from the serialized packet */
+	int sincePacketVersion() default -1;
 }
