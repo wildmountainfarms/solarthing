@@ -6,7 +6,6 @@
       {
         "type": "race",
         "racers": [
-          [{ "type": "acmode", "mode": "NO AC" }, { "type": "log", "message": "Generator is already off!" }],
           [{ "type": "lock", "name": "send_commands"}, { "type": "call", "name": "run_commands"}],
           [{ "type": "waitms", "wait": 5000}, { "type": "log", "message": "Something else had a lock on send_commands"}]
         ]
@@ -45,6 +44,13 @@
   "run_commands": {
     "type": "queue",
     "actions": [
+      {
+        "type": "race",
+        "racers": [
+          [{ "type": "call", "name": "force_drop" }, { "type": "pass" }],
+          [{ "type": "waitms", "wait": 10000}, { "type": "pass" }]
+        ]
+      },
       {
         "type": "race",
         "racers": [

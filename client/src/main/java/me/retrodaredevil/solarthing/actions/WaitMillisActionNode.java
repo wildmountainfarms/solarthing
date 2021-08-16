@@ -8,10 +8,10 @@ import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
 import java.time.Duration;
 
 @JsonTypeName("waitms")
-public class WaitActionNode implements ActionNode {
+public class WaitMillisActionNode implements ActionNode {
 	private final long wait;
 
-	public WaitActionNode(@JsonProperty("wait") long wait) {
+	public WaitMillisActionNode(@JsonProperty("wait") long wait) {
 		this.wait = wait;
 	}
 

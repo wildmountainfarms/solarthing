@@ -17,7 +17,8 @@ import me.retrodaredevil.solarthing.actions.tracer.TracerLoadActionNode;
 
 @JsonSubTypes({
 		@JsonSubTypes.Type(QueueActionNode.class),
-		@JsonSubTypes.Type(WaitActionNode.class),
+		@JsonSubTypes.Type(WaitMillisActionNode.class),
+		@JsonSubTypes.Type(WaitIsoActionNode.class),
 		@JsonSubTypes.Type(CallActionNode.class),
 		@JsonSubTypes.Type(LogActionNode.class),
 		@JsonSubTypes.Type(PassActionNode.class),

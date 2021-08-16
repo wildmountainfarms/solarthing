@@ -42,6 +42,9 @@ don't look like they're constantly disconnecting and reconnecting
 * Have option to use shorter document IDs
   * CouchDB recommends shorter IDs: https://docs.couchdb.org/en/stable/maintenance/performance.html#document-s-id
 * GraphQL queries for getting the angle of the sun in the sky (current and highest point in the day)
+  * https://ipgeolocation.io/documentation/astronomy-api.html - unintuitive Java SDK with bad documentation
+  * https://github.com/caarmen/SunriseSunset - gross requirement to use java.util.Calendar
+  * https://github.com/mikereedell/sunrisesunsetlib-java - better, but still requires use of java.util.Calendar
 * Serialize convenience fields only if a certain condition is met (maybe a config option)
   * Heck, maybe only serialize convenience fields in debug messages
   
