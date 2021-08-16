@@ -61,7 +61,6 @@ final class PacketCollectionTests {
 				LocalDate.of(2019, 1, 1),
 				LocalTime.of(12, 0, 0)
 		).atZone(ZoneId.systemDefault());
-		Calendar cal = new GregorianCalendar();
 		assertEquals("2019,01,01,12,(01/60),[000000ff]", idGenerator.generateId(zonedDateTime));
 	}
 	@Test
@@ -72,5 +71,38 @@ final class PacketCollectionTests {
 				LocalTime.of(9, 0, 0)
 		).atZone(ZoneId.systemDefault());
 		assertEquals("2019,01,01,09,(1/9)", idGenerator.generateId(zonedDateTime));
+	}
+	@Test
+	void testHourIntervalShort(){
+		PacketCollectionIdGenerator idGenerator = new HourIntervalPacketCollectionIdGenerator(60, null, true);
+		assertEquals("190101,12,01/60", idGenerator.generateId(
+				LocalDateTime.of(
+						LocalDate.of(2019, 1, 1),
+						LocalTime.of(12, 0, 0)
+				).atZone(ZoneId.systemDefault())
+		));
+
+		assertEquals("190101,12,01/60", idGenerator.generateId(
+				LocalDateTime.of(
+						LocalDate.of(2019, 1, 1),
+						LocalTime.of(12, 0, 0, 999_999_999)
+				).atZone(ZoneId.systemDefault())
+		));
+
+		assertEquals("190101,12,02/60", idGenerator.generateId(
+				LocalDateTime.of(
+						LocalDate.of(2019, 1, 1),
+						LocalTime.of(12, 1, 0)
+				).atZone(ZoneId.systemDefault())
+		));
+	}
+	@Test
+	void testHourIntervalWithShortUniqueCode() {
+		PacketCollectionIdGenerator idGenerator = new HourIntervalPacketCollectionIdGenerator(60, 1173894740, true);
+		ZonedDateTime zonedDateTime = LocalDateTime.of(
+				LocalDate.of(2019, 1, 1),
+				LocalTime.of(12, 0, 0)
+		).atZone(ZoneId.systemDefault());
+		assertEquals("190101,12,01/60|Rfg2VA", idGenerator.generateId(zonedDateTime));
 	}
 }

@@ -23,6 +23,8 @@ abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements Pa
 	private int fragment;
 	@JsonProperty
 	private Integer unique = null;
+	@JsonProperty("short")
+	private boolean isShortId = false;
 
 	@JsonProperty("request")
 	private @Nullable List<DataRequester> dataRequesterList;
@@ -49,6 +51,11 @@ abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements Pa
 	@Override
 	public Integer getUniqueIdsInOneHour() {
 		return unique;
+	}
+
+	@Override
+	public boolean isDocumentIdShort() {
+		return isShortId;
 	}
 
 	@Override

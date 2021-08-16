@@ -15,6 +15,7 @@ public interface PacketHandlingOption extends TimeZoneOption {
 	int getFragmentId();
 
 	Integer getUniqueIdsInOneHour();
+	boolean isDocumentIdShort();
 
 	@NotNull List<DataRequester> getDataRequesterList();
 }
