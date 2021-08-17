@@ -8,7 +8,7 @@ import json
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 import traceback
-import urllib.error
+from urllib.error import URLError
 
 """
 sudo python3 -m pip install slack_sdk
