@@ -25,9 +25,9 @@
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingFile>
-        <ServerSocket name="logAllToLocalSocket" host="localhost" port="15400" ignoreExceptions="false">
-            <PatternLayout pattern="${LOG_PATTERN}"/>
-        </ServerSocket>
+<!--        <ServerSocket name="logAllToLocalSocket" host="localhost" port="15400" ignoreExceptions="false">-->
+<!--            <PatternLayout pattern="${LOG_PATTERN}"/>-->
+<!--        </ServerSocket>-->
 
         <RollingFile name="logInfo" fileName="${logPath}/log_info.log" filePattern="${logPath}/log_info_%d{yyyy.MM.dd}-%i.log.gz"
                      filePermissions="${filePermissions}">
@@ -64,7 +64,7 @@
     <Loggers>
         <Root level="DEBUG" >
             <AppenderRef ref="Console" level="DEBUG"/>
-            <AppenderRef ref="logAllToLocalSocket" level="DEBUG"/>
+<!--            <AppenderRef ref="logAllToLocalSocket" level="DEBUG"/>-->
         </Root>
         <Logger name="me.retrodaredevil.solarthing">
             <AppenderRef ref="logAll" level="DEBUG"/>

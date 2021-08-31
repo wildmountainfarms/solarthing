@@ -1,7 +1,6 @@
 package me.retrodaredevil.solarthing.pvoutput.service;
 
 import me.retrodaredevil.solarthing.pvoutput.data.AddBatchOutputParameters;
-import me.retrodaredevil.solarthing.pvoutput.data.DeprecatedAddBatchOutputParameters;
 import me.retrodaredevil.solarthing.pvoutput.data.AddOutputParameters;
 import me.retrodaredevil.solarthing.pvoutput.data.AddStatusParameters;
 import retrofit2.Call;
@@ -19,10 +18,6 @@ public interface PVOutputService {
 
 	@POST("addstatus.jsp") // or get
 	Call<String> addStatus(@Body AddStatusParameters parameters);
-
-	@Deprecated
-	@POST("addbatchoutput.jsp")
-	Call<String> addDeprecatedBatchOutput(@Body DeprecatedAddBatchOutputParameters parameters);
 
 	@GET("jointeam.jsp")
 	Call<String> joinTeam(@Query("tid") int teamId);

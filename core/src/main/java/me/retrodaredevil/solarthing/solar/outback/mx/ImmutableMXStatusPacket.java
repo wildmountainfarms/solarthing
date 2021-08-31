@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.NotNull;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.packets.support.Support;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
@@ -13,6 +14,7 @@ import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 		"batteryVoltageString", "dailyKWHString", "ampChargerCurrentString"
 }, allowGetters = true)
 final class ImmutableMXStatusPacket implements MXStatusPacket {
+	private final @Nullable Integer packetVersion;
 	private final int address;
 	private final int chargerCurrent, pvCurrent, inputVoltage;
 	private final float dailyKWH;
@@ -30,6 +32,7 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 
 	@JsonCreator
 	ImmutableMXStatusPacket(
+			@JsonProperty("packetVersion") Integer packetVersion,
 			@JsonProperty(value = "address", required = true) int address, @JsonProperty(value = "chargerCurrent", required = true) int chargerCurrent, @JsonProperty(value = "pvCurrent", required = true) int pvCurrent, @JsonProperty(value = "inputVoltage", required = true) int inputVoltage,
 			@JsonProperty(value = "dailyKWH", required = true) float dailyKWH,
 			@JsonProperty(value = "ampChargerCurrent", required = true) float ampChargerCurrent,
@@ -38,6 +41,7 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 			@JsonProperty(value = "dailyAH", required = true) int dailyAH, @JsonProperty(value = "dailyAHSupport") Support dailyAHSupport,
 			@JsonProperty(value = "chksum", required = true) int chksum
 	) {
+		this.packetVersion = packetVersion;
 		this.address = address;
 		this.chargerCurrent = chargerCurrent;
 		this.pvCurrent = pvCurrent;
@@ -54,6 +58,11 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 
 		this.identifier = new OutbackIdentifier(address);
 		this.identityInfo = new MXIdentityInfo(address);
+	}
+
+	@Override
+	public @Nullable Integer getPacketVersion() {
+		return packetVersion;
 	}
 
 	@Override

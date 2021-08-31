@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.*;
 import me.retrodaredevil.solarthing.packets.Modes;
+import me.retrodaredevil.solarthing.packets.VersionedPacket;
 import me.retrodaredevil.solarthing.packets.support.Support;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import me.retrodaredevil.solarthing.solar.common.BasicChargeController;
@@ -23,7 +24,11 @@ import java.util.Set;
 @JsonDeserialize(as = ImmutableMXStatusPacket.class)
 @JsonTypeName("MXFM_STATUS")
 @JsonExplicit
-public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeController, DailyChargeController, BatteryVoltage {
+public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeController, DailyChargeController, BatteryVoltage, VersionedPacket {
+
+	/** This version indicates that the packet no longer has convenience string fields. This indicates a different in serialization, not in underlying data. */
+	int VERSION_NO_MORE_CONVENIENCE_FIELDS = 2;
+
 	@DefaultFinal
 	@Override
 	default @NotNull SolarStatusPacketType getPacketType(){
@@ -186,10 +191,9 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 	 * Should be serialized as "dailyAHSupport". Should be serialized using {@link Support#toString()}
 	 * @return A {@link Support} enum constant indicating whether or not {@link #getDailyAH()} is supported
 	 */
-	@NotNull
 	@JsonProperty("dailyAHSupport")
 	@Override
-	Support getDailyAHSupport();
+	@NotNull Support getDailyAHSupport();
 
 	/**
 	 * Should be serialized as "chksum"
@@ -200,10 +204,13 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 	// endregion
 
 	// region Convenience Strings
+	@ConvenienceField
 	@JsonProperty("auxModeName")
 	default @NotNull String getAuxModeName(){ return getAuxMode().getModeName(); }
+	@ConvenienceField
 	@JsonProperty("errors")
 	default @NotNull String getErrorsString(){ return Modes.toString(MXErrorMode.class, getErrorModeValue()); }
+	@ConvenienceField
 	@JsonProperty("chargerModeName")
 	default @NotNull String getChargerModeName(){ return getChargingMode().getModeName(); }
 	// endregion
