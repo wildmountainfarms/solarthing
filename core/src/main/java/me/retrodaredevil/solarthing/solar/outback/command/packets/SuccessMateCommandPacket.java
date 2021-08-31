@@ -28,6 +28,14 @@ public interface SuccessMateCommandPacket extends MateCommandFeedbackPacket {
 
 	/**
 	 * Should be serialized as "source"
+	 * <p>
+	 * Note: Although not required, it is convention (and all existing packets as of 2021.08.31 are like this) that the string returned by this method
+	 * was generated using {@link me.retrodaredevil.solarthing.DataSource#toString()}. However, there are likely a few in WMF's database with a source
+	 * such as "NamedSource{command_input.txt}". There are likely very few of these, but they do exist in one database.
+	 * <p>
+	 * The fact that this is a string shows that this is very much legacy code. If I could redo it, I'd create a better way to communicate the data that
+	 * {@link me.retrodaredevil.solarthing.DataSource} tries to communicate, without having to store it in string form. If you need more history, feel free
+	 * to look around commit <a href="https://github.com/wildmountainfarms/solarthing/commit/44518ff8bdaa381739df8d3613f53808576ec6f7">44518ff8bdaa381739df8d3613f53808576ec6f7</a>
 	 *
 	 * @return The string representing the source of the command
 	 */
