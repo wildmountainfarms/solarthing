@@ -54,6 +54,7 @@ public class ActionNodeDataReceiver implements PacketGroupReceiver {
 	private void receiveData(String sender, long dateMillis, String commandName) {
 		ActionNode requested = actionNodeMap.get(commandName);
 		if(requested != null){
+			// TODO rather than using DataSource here, maybe come up with a better way to represent this kind of thing that is serialized to JSON rather than just a pipe delimited string
 			DataSource dataSource = new DataSource(sender, dateMillis, commandName);
 			InjectEnvironment.Builder injectEnvironmentBuilder = new InjectEnvironment.Builder();
 			environmentUpdater.updateInjectEnvironment(dataSource, injectEnvironmentBuilder);

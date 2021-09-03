@@ -20,6 +20,7 @@ import me.retrodaredevil.solarthing.solar.tracer.mode.ChargingStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -27,13 +28,16 @@ import java.util.Map;
 public class RequireFullOutputActionNode implements ActionNode {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RequireFullOutputActionNode.class);
 	private final Map<Integer, List<String>> requiredIdentifierMap;
+	private final Map<Integer, List<String>> ignoreReportedMXFloatMap;
 	private final boolean log;
 
 	@JsonCreator
 	public RequireFullOutputActionNode(
 			@JsonProperty(value = "required", required = true) Map<Integer, List<String>> requiredIdentifierMap,
+			@JsonProperty("mx_float_ignore") Map<Integer, List<String>> ignoreReportedMXFloatMap,
 			@JsonProperty(value = "log") Boolean log) {
 		this.requiredIdentifierMap = requiredIdentifierMap;
+		this.ignoreReportedMXFloatMap = ignoreReportedMXFloatMap == null ? Collections.emptyMap() : ignoreReportedMXFloatMap;
 		this.log = log == null || log;
 	}
 
@@ -55,7 +59,10 @@ public class RequireFullOutputActionNode implements ActionNode {
 							if (packet instanceof MXStatusPacket) {
 								MXStatusPacket mx = (MXStatusPacket) packet;
 								ChargerMode mode = mx.getChargingMode();
-								if (mode != ChargerMode.SILENT && mode != ChargerMode.BULK) {
+								// Some old MX firmwares consistently report being in float mode after a full absorb cycle even after the daily reset.
+								//   This configuration option allows us to treat float as full output for a given MX
+								boolean canIgnoreFloatMode = ignoreReportedMXFloatMap.getOrDefault(fragmentId, Collections.emptyList()).contains(desiredIdentifierRepresentation);
+								if (mode != ChargerMode.SILENT && mode != ChargerMode.BULK && (!canIgnoreFloatMode || mode != ChargerMode.FLOAT)) {
 									if (log) {
 										LOGGER.info(identifier.getRepresentation() + " on fragment " + fragmentId + " is in mode " + mode.getModeName());
 									}

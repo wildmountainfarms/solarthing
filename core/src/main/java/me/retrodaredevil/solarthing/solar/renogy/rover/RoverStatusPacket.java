@@ -32,7 +32,16 @@ public interface RoverStatusPacket extends RenogyPacket, RoverReadTable, Version
 	int VERSION_CORRECT_TWO_REGISTER = 2;
 	/** The version of rover status packets that may have a "number" attached to them. Represents packets from SolarThing 2021.5.0 an onwards */
 	int VERSION_NUMBERED_IDENTIFIER = 3;
-	int VERSION_REMOVED_CONVENIENCE_FIELDS = 4;
+	/** The version of rover status packets that no longer contain convenience fields. Note that the value of this is actually the same as {@link #VERSION_NUMBERED_IDENTIFIER}.
+	 * This means it is not possible to distinguish between {@link #VERSION_NUMBERED_IDENTIFIER} and this version packets only by looking at the packetVersion value. */
+	int VERSION_REMOVED_CONVENIENCE_FIELDS = 3;
+	/** Represents the value that {@link #VERSION_REMOVED_CONVENIENCE_FIELDS} had before being changed back to {@link #VERSION_NUMBERED_IDENTIFIER} because we never actually
+	 * saved the desired value in the packet */
+	@Deprecated
+	int VERSION_REMOVED_CONVENIENCE_FIELDS_BAD_VALUE_NEVER_USED = 4;
+	/** Removed softwareVersionString convenience field and it is guaranteed that all other convenience fields are gone.*/
+	int VERSION_REMOVED_CONVENIENCE_FIELDS_2 = 5;
+	int VERSION_LATEST = VERSION_REMOVED_CONVENIENCE_FIELDS_2;
 
 	@DefaultFinal
 	@Override

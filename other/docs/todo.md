@@ -48,6 +48,9 @@ don't look like they're constantly disconnecting and reconnecting
 * Serialize convenience fields only if a certain condition is met (maybe a config option)
   * Heck, maybe only serialize convenience fields in debug messages
 * Don't serialize available commands packet in every single packet collection
+* The Tracer doesn't have a way to tell if it's in absorb mode, but we could use the settings to tell if it has reached the setpoint
+and is not giving full available power.
+  * I'm not sure how we should indicate something like this on Grafana quite yet
   
 ### Completed
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)

@@ -147,6 +147,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	@ValidSinceVersion(version = RoverStatusPacket.VERSION_CORRECT_TWO_REGISTER)
 	@GraphQLInclude("softwareVersion")
 	default Version getSoftwareVersion(){ return new Version(getSoftwareVersionValue()); }
+	@ConvenienceField(sincePacketVersion = RoverStatusPacket.VERSION_REMOVED_CONVENIENCE_FIELDS_2)
 	@ValidSinceVersion(version = RoverStatusPacket.VERSION_CORRECT_TWO_REGISTER)
 	@JsonProperty("softwareVersionString")
 	default String getSoftwareVersionString() { return getSoftwareVersion().toString(); }

@@ -31,6 +31,8 @@ public interface FXStatusPacket extends OutbackStatusPacket, BatteryVoltage, FXW
 	/** This version indicates that the packet no longer has convenience string fields. This indicates a different in serialization, not in underlying data. */
 	int VERSION_NO_MORE_CONVENIENCE_FIELDS = 2;
 
+	int VERSION_LATEST = VERSION_NO_MORE_CONVENIENCE_FIELDS;
+
 	@DefaultFinal
 	@Override
 	default @NotNull SolarStatusPacketType getPacketType(){

@@ -134,7 +134,7 @@ public final class MXStatusPackets {
 		}
 
 		return new ImmutableMXStatusPacket(
-				MXStatusPacket.VERSION_NO_MORE_CONVENIENCE_FIELDS,
+				MXStatusPacket.VERSION_LATEST,
 				address, chargerCurrent, pvCurrent, inputVoltage, dailyKWH,
 				ampChargerCurrent, auxMode, errorMode, chargerMode,
 				batteryVoltage, dailyAH, dailyAHSupported, chksum
