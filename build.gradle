@@ -23,10 +23,12 @@ buildscript {
 plugins {
     id 'com.diffplug.spotless' version '5.14.0' // https://search.maven.org/search?q=a:spotless-plugin-gradle
     id 'maven-publish'
+    id 'java'
 }
 
 version "0.0.1-SNAPSHOT"
 description = """SolarThing"""
+group = "me.retrodaredevil.solarthing"
 
 spotless {
     // More info on ratchet https://github.com/diffplug/spotless/tree/master/plugin-gradle#ratchet
@@ -73,6 +75,19 @@ spotless {
         }
          */
 
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            // thanks https://stackoverflow.com/a/68515859/5434860
+            groupId = "${group}"
+            artifactId = 'solarthing'
+            version = "${version}"
+
+            from components.java
+        }
     }
 }
 
