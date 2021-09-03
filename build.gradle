@@ -22,6 +22,7 @@ buildscript {
 
 plugins {
     id 'com.diffplug.spotless' version '5.14.0' // https://search.maven.org/search?q=a:spotless-plugin-gradle
+    id 'maven-publish'
 }
 
 version "0.0.1-SNAPSHOT"

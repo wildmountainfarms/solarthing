@@ -1,2 +1,5 @@
 jdk:
   - openjdk11
+install:
+  - echo "Doing custom publishToMavenLocal gradle build to work with Gradle 7"
+  - ./gradlew build -x test publishToMavenLocal
