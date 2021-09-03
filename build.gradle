@@ -22,8 +22,6 @@ buildscript {
 
 plugins {
     id 'com.diffplug.spotless' version '5.14.0' // https://search.maven.org/search?q=a:spotless-plugin-gradle
-    id 'maven-publish'
-    id 'java'
 }
 
 version "0.0.1-SNAPSHOT"
@@ -78,19 +76,6 @@ spotless {
     }
 }
 
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            // thanks https://stackoverflow.com/a/68515859/5434860
-            groupId = "${group}"
-            artifactId = 'solarthing'
-            version = "${version}"
-
-            from components.java
-        }
-    }
-}
-
 allprojects {
     repositories {
         mavenLocal()
@@ -103,6 +88,7 @@ allprojects {
 
 subprojects {
     apply plugin: 'java-library'
+    apply plugin: 'maven-publish'
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
     repositories {
@@ -131,6 +117,18 @@ subprojects {
     gradle.projectsEvaluated {
         tasks.withType(JavaCompile){
             options.compilerArgs << "-Xlint:deprecation"
+        }
+    }
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                // thanks https://stackoverflow.com/a/68515859/5434860
+                groupId = "${group}"
+                artifactId = "${project.name}"
+                version = "${version}"
+
+                from project.components.java
+            }
         }
     }
 }
