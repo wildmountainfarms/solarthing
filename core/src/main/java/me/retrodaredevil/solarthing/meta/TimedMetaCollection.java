@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.util.TimeRange;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
