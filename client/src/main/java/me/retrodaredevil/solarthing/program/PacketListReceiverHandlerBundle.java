@@ -79,7 +79,7 @@ public final class PacketListReceiverHandlerBundle {
 						}
 				),
 				new PacketHandlerMultiplexer(statusPacketHandlers),
-				SolarMain.createIdGenerator(options.getUniqueIdsInOneHour()),
+				SolarMain.createIdGenerator(options.getUniqueIdsInOneHour(), options.isDocumentIdShort()),
 				options.getZoneId()
 		);
 		return new PacketListReceiverHandlerBundle(statusPacketListReceiverHandler, eventPacketListReceiverHandler);

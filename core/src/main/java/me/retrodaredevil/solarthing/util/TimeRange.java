@@ -1,5 +1,7 @@
 package me.retrodaredevil.solarthing.util;
 
+import java.time.Instant;
+
 public final class TimeRange {
 	public static final TimeRange ALWAYS = new TimeRange(null, null);
 
@@ -18,25 +20,43 @@ public final class TimeRange {
 	public static TimeRange create(long startTime, long endTime) {
 		return new TimeRange(startTime, endTime);
 	}
+	public static TimeRange create(Instant startTime, Instant endTime) {
+		return new TimeRange(startTime == null ? null : startTime.toEpochMilli(), endTime == null ? null : endTime.toEpochMilli());
+	}
 	public static TimeRange createAfter(long startTime) {
 		return new TimeRange(startTime, null);
 	}
 	public static TimeRange createBefore(long endTime) {
 		return new TimeRange(null, endTime);
 	}
-
-	public Long getStartTime() {
-		return startTime;
+	public static TimeRange createAfter(Instant startTime) {
+		return createAfter(startTime.toEpochMilli());
+	}
+	public static TimeRange createBefore(Instant endTime) {
+		return createBefore(endTime.toEpochMilli());
 	}
 
-	public Long getEndTime() {
+	public Long getStartTimeMillis() {
+		return startTime;
+	}
+	public Instant getStartTime() {
+		return startTime == null ? null : Instant.ofEpochMilli(startTime);
+	}
+
+	public Long getEndTimeMillis() {
 		return endTime;
+	}
+	public Instant getEndTime() {
+		return endTime == null ? null : Instant.ofEpochMilli(endTime);
 	}
 	public boolean isForever() {
 		return startTime == null && endTime == null;
 	}
 	public boolean contains(long timeMillis) {
 		return (startTime == null || timeMillis >= startTime) && (endTime == null || timeMillis < endTime);
+	}
+	public boolean contains(Instant time) {
+		return contains(time.toEpochMilli());
 	}
 
 	public boolean fullyContains(TimeRange timeRange) {

@@ -8,6 +8,8 @@ import me.retrodaredevil.solarthing.util.TimeRange;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
@@ -28,23 +30,22 @@ public class TimedMetaCollection {
 			@JsonProperty("end") Long endTime,
 			@JsonProperty(value = "packets", required = true) List<BasicMetaPacket> nullablePackets
 	) {
-		List<BasicMetaPacket> packets = new ArrayList<>();
-		for (BasicMetaPacket packet : nullablePackets) {
-			if (packet != null) {
-				packets.add(packet);
-			}
-		}
-		return new TimedMetaCollection(startTime, endTime, packets);
+		return new TimedMetaCollection(
+				startTime,
+				endTime,
+				nullablePackets.stream().filter(Objects::nonNull).collect(Collectors.toList())
+		);
 	}
+	// TODO these JSON properties are not consistent.
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	@JsonProperty("startTime")
 	public Long getStartTime() {
-		return timeRange.getStartTime();
+		return timeRange.getStartTimeMillis();
 	}
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	@JsonProperty("endTime")
 	public Long getEndTime() {
-		return timeRange.getEndTime();
+		return timeRange.getEndTimeMillis();
 	}
 	@JsonProperty("packets")
 	public @NotNull List<BasicMetaPacket> getPackets() {

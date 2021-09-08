@@ -21,19 +21,21 @@ If you don't have Java installed, [click here](installing_java.md).
 
 ## Edit Configurations
 Now SolarThing is installed, all you have to do is edit configurations in `/opt/solarthing/program/<mate|request|graphql|pvoutput>/config`.
+
+NOTE: If you are monitoring a rover or tracer, they both use the request program, so you should use the request directory
 ```shell script
 # Navigate to your program's directory
 cd /opt/solarthing/program/<mate|request|graphql|pvoutput>
 ```
 NOTE: In each program, paths are relative to their respective directory.<br/>
-For instance if you are running the `request` program (if you have a rover you should be using this), paths will be relative to [program/request](../../program/request).
+For instance if you are running the `request` program, paths will be relative to [program/request](../../program/request).
 
 ### Program Specific Configuration
 You will have to adjust the configuration to your needs and based on the type of program you want to run.
 
 * [**Rover Quickstart**](quickstart_rover.md) - Monitors Renogy Rover and other supported products
-  * ^^ This is probably the option you want!!
 * [**Mate Quickstart**](quickstart_mate.md) - Monitors Outback Mate1/2 devices
+* [**Tracer Quickstart**](quickstart_tracer.md) - Monitors an EPEver Tracer
 * [Request Quickstart](quickstart_request.md) - Upload temperature sensor data
 
 ## Configuration Continued

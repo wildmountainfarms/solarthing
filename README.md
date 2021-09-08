@@ -19,13 +19,13 @@ Stores solar data in a database to view on Android, Grafana, or PVOutput
 ## Supported Products
 * **Outback MATEs** (FX Inverter, MX/FM Charge Controller)
 * **Renogy Rover** (And other Renogy products) over modbus serial.
-  * Includes Rover, Rover Elite, Wanderer, Adventurer, Dual Input DCDC Charger, and possibly others
-    * Should include Rover Boost once released
+  * Includes Rover, Rover Elite, Wanderer, Adventurer, Dual Input DCDC Charger, Rover Boost and possibly others
   * Compatible with all [SRNE Solar](https://www.srnesolar.com) Charge Controllers (And rebranded products)
   * Compatible with **Zenith Grape** Solar Charge Controller, **PowMr** MPPT Charge Controller, **RICH** SOLAR MPPT, **WindyNations TrakMax** MPPT
+* **EPEver Tracer**
+  * Includes the AN series and the TRIRON N series
+  * Possibly includes the BN series (untested)
 * DS18B20 Temperature Sensors and PZEM-003 and PZEM-017 Shunts
-* Coming soon:
-  * EPEver Tracer support
 
 # Quickstart
 Ready to install? Use the [Quickstart](other/docs/quickstart.md)!

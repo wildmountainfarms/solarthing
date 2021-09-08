@@ -1,0 +1,49 @@
+[
+  {
+    "type": "POWER_SOURCE_DEFINITION",
+    "panels": [
+      {
+        "name": "main-panel",
+        "ratedWatts": 165
+      },
+      {
+        "name": "SP75-CPL",
+        "model": "SP75-CPL",
+        "ratedWatts": 75,
+        "data": {
+          "type": "solarpanel",
+          "currentRated": 4.4,
+          "voltageRated": 17.0,
+          "currentShortCircuit": 4.8,
+          "voltageOpenCircuit": 21.7
+        },
+        "url": "https://www.abcsolar.com/pdf/sp75.pdf"
+      }
+    ]
+  },
+  {
+    "type": "POWER_SOURCE_CONFIGURATION",
+    "sources": [
+      {
+        "name": "lower_main_array",
+        "displayRatedWatts": 1320,
+        "config": {
+          "type": "solar",
+          "panel": "main-panel",
+          "series": 8,
+          "parallel": 1
+        }
+      },
+      {
+        "name": "upper_main_array",
+        "displayRatedWatts": 990,
+        "config": {
+          "type": "solar",
+          "panel": "main-panel",
+          "series": 6,
+          "parallel": 1
+        }
+      }
+    ]
+  }
+]

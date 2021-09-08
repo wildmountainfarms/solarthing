@@ -80,14 +80,11 @@ public final class SolarMain {
 			list.add(fragmentPacket);
 		};
 	}
-	public static PacketCollectionIdGenerator createIdGenerator(Integer uniqueIdsInOneHour){
+	public static PacketCollectionIdGenerator createIdGenerator(Integer uniqueIdsInOneHour, boolean shortDocumentId){
 		if(uniqueIdsInOneHour == null){
 			return PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR;
 		}
-		if(uniqueIdsInOneHour <= 0){
-			throw new IllegalArgumentException("unique must be > 0 or not specified!");
-		}
-		return new HourIntervalPacketCollectionIdGenerator(uniqueIdsInOneHour, new Random().nextInt());
+		return new HourIntervalPacketCollectionIdGenerator(uniqueIdsInOneHour, new Random().nextInt(), shortDocumentId);
 	}
 
 	public static int doMainCommand(CommandOptions commandOptions, File baseConfigFile) {
