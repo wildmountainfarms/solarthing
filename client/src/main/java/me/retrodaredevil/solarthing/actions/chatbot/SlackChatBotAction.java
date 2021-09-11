@@ -28,6 +28,8 @@ public class SlackChatBotAction extends SimpleAction {
 	private final ChatBotHandler handler;
 
 	private SocketModeClient client = null;
+	/** For some reason we need this because {@link SocketModeClient#verifyConnection()} sometimes returns true after an error happens */
+	private volatile boolean needsReinitialize = false;
 
 	public SlackChatBotAction(String appToken, MessageSender messageSender, Slack slack, ChatBotHandler handler) {
 		super(false);
@@ -40,7 +42,7 @@ public class SlackChatBotAction extends SimpleAction {
 	@Override
 	protected void onUpdate() {
 		super.onUpdate();
-		if (client == null || !client.verifyConnection()) {
+		if (client == null || !client.verifyConnection() || needsReinitialize) {
 			initClient();
 		} else {
 			LOGGER.debug("We're good and connected!");
@@ -54,6 +56,16 @@ public class SlackChatBotAction extends SimpleAction {
 	}
 	private void initClient() {
 		LOGGER.debug("Initializing client!");
+		SocketModeClient currentClient = this.client;
+		if (currentClient != null) {
+			LOGGER.debug("Closing current client");
+			try {
+				currentClient.close();
+				LOGGER.debug("Closed without exception");
+			} catch (IOException e) {
+				LOGGER.error("Got error while current slack socket mode client. (This is probably to be expected)", e);
+			}
+		}
 		final SocketModeClient client;
 		try {
 			client = slack.socketMode(appToken, SocketModeClient.Backend.JavaWebSocket);
@@ -71,6 +83,7 @@ public class SlackChatBotAction extends SimpleAction {
 		});
 		client.addWebSocketErrorListener(throwable -> {
 			LOGGER.error("Got slack connection error", throwable);
+			needsReinitialize = true;
 		});
 		LOGGER.debug("Going to connect");
 		try {
@@ -87,11 +100,15 @@ public class SlackChatBotAction extends SimpleAction {
 			return;
 		}
 		this.client = client;
+		needsReinitialize = false;
 		LOGGER.debug("Connect successfully!");
 	}
 	private void closeClient() {
+		SocketModeClient client = this.client;
 		try {
-			client.close();
+			if (client != null) {
+				client.close();
+			}
 			slack.close();
 		} catch (IOException e) {
 			LOGGER.error("Error while closing client", e);
