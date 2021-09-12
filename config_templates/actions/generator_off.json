@@ -68,7 +68,13 @@
               "actions": [
                 { "type": "log", "message": "Was not able to drop power before, so waiting 2 seconds, then dropping again."},
                 { "type": "wait", "duration": "PT2S" },
-                { "type": "call", "name": "force_drop"}
+                {
+                  "type": "race",
+                  "racers": [
+                    [{ "type": "call", "name": "force_drop" }, { "type": "pass" }],
+                    [{ "type": "wait", "duration": "PT15S"}, { "type": "pass" }]
+                  ]
+                }
               ]
             }
           ],
