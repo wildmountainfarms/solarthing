@@ -58,6 +58,23 @@
           [{ "type": "waitms", "wait": 5300}, { "type": "pass" }]
         ]
       },
+      {
+        "type": "race",
+        "racers": [
+          [
+            { "type": "acmode", "mode": "AC USE" },
+            {
+              "type": "queue",
+              "actions": [
+                { "type": "log", "message": "Was not able to drop power before, so waiting 2 seconds, then dropping again."},
+                { "type": "wait", "duration": "PT2S" },
+                { "type": "call", "name": "force_drop"}
+              ]
+            }
+          ],
+          [{ "type": "pass" }, { "type": "log", "message": "The first 'force_drop' call was successful, so not dropping again." }]
+        ]
+      },
       { "type": "log", "message": "Sent all commands for generator off!"}
     ]
   }

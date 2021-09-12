@@ -13,7 +13,7 @@ If the `.gitignore` file needs something added to it, please add it **at the bot
 ---
 
 ### Conventions
-This project requires Java 8+. You can fully utilize Java 8 APIs as long as they are compatible with Android Core Desugaring.
+This project requires Java 8+. You can fully utilize Java 8 APIs.
 
 You can set your editor up with [Editor Config](https://www.editorconfig.org) to work with the [.editorconfig file](.editorconfig)
 * Use 1 tab for indentation
@@ -29,6 +29,17 @@ Exceptions:
 * There may be more exceptions already present
 
 Although I wish that some of these conventions could be changed, changing them would result in confusion and more inconsistencies.
+
+### Timer/Timeout Conventions
+The SolarThing codebase has to deal with timers and timeouts. If you just need a timeout (ex: do something after 5 seconds),
+use `System.nanoTime()`. `System.nanoTime()` will not jump around if the clock of the system is changed, so by using this
+obscure bugs can be prevented. In many cases, you need an absolute time that is consistent across systems. This is where it's
+OK to use `System.currentTimeMillis()` or `Instant.now()`.
+
+So:
+* Use `System.nanoTime()` for timeouts and timers that can work with relative time
+* Use `System.currentTimeMillis()` or `Instant.now()` if you need an absolute time
+* Suffix your variable names. So instead of `long lastRunTimestamp`, it should be `long lastRunTimestampMillis` (for an epoch millisecond value)
 
 ### Styling
 ```javascript
@@ -58,6 +69,7 @@ General rule of thumb:
 * But if something is commonly used (public api), then annotating with NotNull can be helpful.
 * Use `me.retrodaredevil.solarthing.annotations.Nullable` or `me.retrodaredevil.solarthing.annotations.NotNull`
   * Why the custom NotNull/Nullable? We want good Kotlin support, and we want to be able to annotate more than just methods.
+* If something is exposed through GraphQL and it is not null, always put a `@NotNull` on it.
 
 ### Customizing
 The different command line options give you may ways to receive data and export data. CouchDB and InfluxDB
