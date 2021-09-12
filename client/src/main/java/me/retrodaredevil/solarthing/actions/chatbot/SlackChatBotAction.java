@@ -127,11 +127,7 @@ public class SlackChatBotAction extends SimpleAction {
 			}
 			if ("message".equals(message.get("type").getAsString()) && message.get("subtype") == null) {
 				String text = message.get("text").getAsString();
-				BigDecimal timestampBigDecimal = message.get("ts").getAsBigDecimal(); // in epoch seconds with microsecond resolution
-				long nanos = timestampBigDecimal.multiply(new BigDecimal(1_000_000)).remainder(new BigDecimal(1000)).longValue() * 1000;
-				// convert epoch millis to milliseconds, then add additional nanoseconds
-				Instant timestamp = Instant.ofEpochMilli(timestampBigDecimal.multiply(new BigDecimal(1000)).longValue())
-						.plusNanos(nanos);
+				Instant timestamp = epochSecondsToInstant(message.get("ts").getAsBigDecimal());
 
 				String userId = message.get("user").getAsString();
 				LOGGER.debug("Message raw: " + message);
@@ -139,5 +135,11 @@ public class SlackChatBotAction extends SimpleAction {
 				handler.handleMessage(new Message(text, userId, timestamp), messageSender);
 			}
 		}
+	}
+	private static Instant epochSecondsToInstant(BigDecimal timestampBigDecimal) {
+		long nanos = timestampBigDecimal.multiply(new BigDecimal(1_000_000)).remainder(new BigDecimal(1000)).longValue() * 1000;
+		// convert epoch millis to milliseconds, then add additional nanoseconds
+		return Instant.ofEpochMilli(timestampBigDecimal.multiply(new BigDecimal(1000)).longValue())
+				.plusNanos(nanos);
 	}
 }

@@ -12,10 +12,7 @@ import me.retrodaredevil.solarthing.actions.ActionNode;
 import me.retrodaredevil.solarthing.actions.command.CommandManager;
 import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnvironment;
-import me.retrodaredevil.solarthing.chatbot.ChatBotHandlerMultiplexer;
-import me.retrodaredevil.solarthing.chatbot.CommandChatBotHandler;
-import me.retrodaredevil.solarthing.chatbot.HelpChatBotHandler;
-import me.retrodaredevil.solarthing.chatbot.StatusChatBotHandler;
+import me.retrodaredevil.solarthing.chatbot.*;
 import me.retrodaredevil.solarthing.message.implementations.SlackMessageSender;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import okhttp3.OkHttpClient;
@@ -63,6 +60,7 @@ public class SlackChatBotActionNode implements ActionNode {
 				slack,
 				new HelpChatBotHandler(
 						new ChatBotHandlerMultiplexer(Arrays.asList(
+								new StaleMessageHandler(),
 								new CommandChatBotHandler(permissionMap, packetGroupProvider, new CommandManager(keyDirectory, sender), () -> actionEnvironment),
 								new StatusChatBotHandler(packetGroupProvider),
 								(message, messageSender) -> {
