@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.Packet;
@@ -20,11 +21,16 @@ public final class OpenSource {
 	/** Corresponds to {@link DataSource#getData()}*/
 	private final String legacyData;
 
-	public OpenSource(String sender, long dateMillis, Packet packet, String legacyData) {
+	@JsonCreator
+	public OpenSource(
+			@JsonProperty("sender") String sender,
+			@JsonProperty("dateMillis") long dateMillis,
+			@JsonProperty("packet") Packet packet,
+			@JsonProperty("legacyData") String legacyData) {
 		requireNonNull(this.sender = sender);
 		this.dateMillis = dateMillis;
-		this.packet = packet;
-		this.legacyData = legacyData;
+		requireNonNull(this.packet = packet);
+		requireNonNull(this.legacyData = legacyData);
 	}
 
 	public DataSource toDataSource() {
@@ -43,5 +49,10 @@ public final class OpenSource {
 	@JsonProperty("packet")
 	public Packet getPacket() {
 		return packet;
+	}
+
+	@JsonProperty("legacyData")
+	public String getLegacyData() {
+		return legacyData;
 	}
 }

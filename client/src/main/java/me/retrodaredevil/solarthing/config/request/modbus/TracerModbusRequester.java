@@ -115,12 +115,7 @@ public class TracerModbusRequester implements ModbusRequester {
 		}
 		return new DataRequesterResult(
 				new ModbusListUpdaterWrapper(new TracerPacketListUpdater(number, read, write, tracerClockOptions, netCatServerHandler == null ? null : new ConnectionHandler(netCatServerHandler), connectionHandlerHasFlushLogic), reloadCache, successReporter, sendErrorPackets, "tracer.error." + number),
-				(source, injectEnvironmentBuilder) -> {
-					String commandName = source.toDataSource().getData(); // TODO use source.getPacket() instead
-					if (attachToCommands.contains(commandName)) {
-						injectEnvironmentBuilder.add(tracerModbusEnvironment);
-					}
-				}
+				new AttachToCommandEnvironmentUpdater(Collections.singletonList(tracerModbusEnvironment), attachToCommands::contains)
 		);
 
 	}

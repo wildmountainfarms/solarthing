@@ -97,12 +97,7 @@ public class RoverModbusRequester implements ModbusRequester {
 		}
 		return new DataRequesterResult(
 				new ModbusListUpdaterWrapper(new RoverPacketListUpdater(number, read, write, netCatServerHandler == null ? null : new ConnectionHandler(netCatServerHandler)), reloadCache, successReporter, sendErrorPackets, "rover.error." + number),
-				(source, injectEnvironmentBuilder) -> {
-					String commandName = source.toDataSource().getData(); // TODO use source.getPacket() instead
-					if (attachToCommands.contains(commandName)) {
-						injectEnvironmentBuilder.add(roverModbusEnvironment);
-					}
-				}
+				new AttachToCommandEnvironmentUpdater(Collections.singletonList(roverModbusEnvironment), attachToCommands::contains)
 		);
 	}
 }
