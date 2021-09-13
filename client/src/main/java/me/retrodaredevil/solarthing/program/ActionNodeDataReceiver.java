@@ -3,7 +3,7 @@ package me.retrodaredevil.solarthing.program;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.ActionMultiplexer;
 import me.retrodaredevil.action.Actions;
-import me.retrodaredevil.solarthing.DataSource;
+import me.retrodaredevil.solarthing.OpenSource;
 import me.retrodaredevil.solarthing.PacketGroupReceiver;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.actions.ActionNode;
@@ -45,24 +45,24 @@ public class ActionNodeDataReceiver implements PacketGroupReceiver {
 				CommandOpenPacket commandOpenPacket = (CommandOpenPacket) packet;
 				if (commandOpenPacket.getPacketType() == CommandOpenPacketType.REQUEST_COMMAND) {
 					RequestCommandPacket requestCommand = (RequestCommandPacket) commandOpenPacket;
-					receiveData(sender, packetGroup.getDateMillis(), requestCommand.getCommandName());
+
+					OpenSource source = new OpenSource(sender, packetGroup.getDateMillis(), requestCommand, requestCommand.getCommandName());
+					receiveData(source, requestCommand.getCommandName());
 				}
 			}
 		}
 	}
 
-	private void receiveData(String sender, long dateMillis, String commandName) {
+	private void receiveData(OpenSource source, String commandName) {
 		ActionNode requested = actionNodeMap.get(commandName);
 		if(requested != null){
-			// TODO rather than using DataSource here, maybe come up with a better way to represent this kind of thing that is serialized to JSON rather than just a pipe delimited string
-			DataSource dataSource = new DataSource(sender, dateMillis, commandName);
 			InjectEnvironment.Builder injectEnvironmentBuilder = new InjectEnvironment.Builder();
-			environmentUpdater.updateInjectEnvironment(dataSource, injectEnvironmentBuilder);
+			environmentUpdater.updateInjectEnvironment(source, injectEnvironmentBuilder);
 			Action action = requested.createAction(new ActionEnvironment(variableEnvironment, new VariableEnvironment(), injectEnvironmentBuilder.build()));
 			actionMultiplexer.add(action);
-			LOGGER.info(SolarThingConstants.SUMMARY_MARKER, sender + " has requested command sequence: " + commandName);
+			LOGGER.info(SolarThingConstants.SUMMARY_MARKER, source.getSender() + " has requested command sequence: " + commandName);
 		} else {
-			LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Sender: " + sender + " has requested unknown command: " + commandName);
+			LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Sender: " + source.getSender() + " has requested unknown command: " + commandName);
 		}
 	}
 

@@ -11,6 +11,7 @@ import traceback
 from urllib.error import URLError
 
 """
+sudo apt-get install -y python3-pip
 sudo python3 -m pip install slack_sdk
 """
 

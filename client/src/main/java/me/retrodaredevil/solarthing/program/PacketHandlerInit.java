@@ -7,6 +7,7 @@ import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.actions.ActionNode;
 import me.retrodaredevil.solarthing.actions.command.EnvironmentUpdater;
 import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.SourceEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.TimeZoneEnvironment;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.config.databases.IndividualSettings;
@@ -171,16 +172,17 @@ public class PacketHandlerInit {
 			Map<String, ActionNode> actionNodeMap = ActionUtil.getActionNodeMap(CONFIG_MAPPER, options);
 			ActionNodeDataReceiver commandReceiver = new ActionNodeDataReceiver(
 					actionNodeMap,
-					(dataSource, injectEnvironmentBuilder) -> {
+					(source, injectEnvironmentBuilder) -> {
 						injectEnvironmentBuilder
 								.add(new TimeZoneEnvironment(options.getTimeZone()))
 								.add(new LatestPacketGroupEnvironment(latestPacketHandler::getLatestPacketCollection))
+								.add(new SourceEnvironment(source))
 						;
 						EnvironmentUpdater environmentUpdater = environmentUpdaterSupplier.get();
 						if (environmentUpdater == null) {
 							throw new NullPointerException("The EnvironmentUpdater supplier gave a null value! (Fatal)");
 						}
-						environmentUpdater.updateInjectEnvironment(dataSource, injectEnvironmentBuilder);
+						environmentUpdater.updateInjectEnvironment(source, injectEnvironmentBuilder);
 					}
 			);
 

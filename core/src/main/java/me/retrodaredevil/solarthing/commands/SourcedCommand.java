@@ -1,19 +1,21 @@
 package me.retrodaredevil.solarthing.commands;
 
+import me.retrodaredevil.solarthing.OpenSource;
+
 import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 
 public final class SourcedCommand<T extends Command> {
-	private final String source;
+	private final OpenSource source;
 	private final T command;
 
-	public SourcedCommand(String source, T command) {
+	public SourcedCommand(OpenSource source, T command) {
 		this.source = requireNonNull(source);
 		this.command = requireNonNull(command);
 	}
 
-	public String getSource() {
+	public OpenSource getSource() {
 		return source;
 	}
 

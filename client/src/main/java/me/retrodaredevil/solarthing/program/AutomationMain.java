@@ -53,7 +53,8 @@ public final class AutomationMain {
 		FragmentedPacketGroup[] latestPacketGroupReference = new FragmentedPacketGroup[1];
 		InjectEnvironment injectEnvironment = new InjectEnvironment.Builder()
 				.add(new SourceIdEnvironment(options.getSourceId()))
-				.add(new CouchDbEnvironment(couchSettings))
+				.add(new CouchDbEnvironment(couchSettings)) // most of the time, it's better to use SolarThingDatabaseEnvironment instead, but this option is here in case it's needed
+				.add(new SolarThingDatabaseEnvironment(CouchDbSolarThingDatabase.create(CouchDbUtil.createInstance(couchSettings.getCouchProperties(), couchSettings.getOkHttpProperties()))))
 				.add(new TimeZoneEnvironment(options.getTimeZone()))
 				.add(new LatestPacketGroupEnvironment(() -> requireNonNull(latestPacketGroupReference[0])))
 				.build();

@@ -1,6 +1,6 @@
 package me.retrodaredevil.solarthing.actions.command;
 
-import me.retrodaredevil.solarthing.DataSource;
+import me.retrodaredevil.solarthing.OpenSource;
 import me.retrodaredevil.solarthing.actions.environment.InjectEnvironment;
 
 import java.util.*;
@@ -16,9 +16,9 @@ public class EnvironmentUpdaterMultiplexer implements EnvironmentUpdater {
 	}
 
 	@Override
-	public void updateInjectEnvironment(DataSource dataSource, InjectEnvironment.Builder injectEnvironmentBuilder) {
+	public void updateInjectEnvironment(OpenSource source, InjectEnvironment.Builder injectEnvironmentBuilder) {
 		for (EnvironmentUpdater environmentUpdater : environmentUpdaterList) {
-			environmentUpdater.updateInjectEnvironment(dataSource, injectEnvironmentBuilder);
+			environmentUpdater.updateInjectEnvironment(source, injectEnvironmentBuilder);
 		}
 	}
 }
