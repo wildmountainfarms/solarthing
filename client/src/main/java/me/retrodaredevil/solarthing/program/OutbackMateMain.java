@@ -87,7 +87,7 @@ public class OutbackMateMain {
 				commandProviders.add(commandProvider);
 
 				environmentUpdaters.add((source, injectEnvironmentBuilder) -> {
-					injectEnvironmentBuilder.add(new MateCommandEnvironment(source, queue));
+					injectEnvironmentBuilder.add(new MateCommandEnvironment(queue));
 				});
 			} else {
 				commandProviders = Collections.emptyList();

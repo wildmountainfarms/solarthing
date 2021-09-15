@@ -1,13 +1,15 @@
 package me.retrodaredevil.solarthing.solar.outback.command.packets;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
-
 import me.retrodaredevil.solarthing.annotations.NotNull;
+import me.retrodaredevil.solarthing.annotations.Nullable;
+import me.retrodaredevil.solarthing.reason.ExecutionReason;
+import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
 
 @JsonTypeName("MATE_COMMAND_SUCCESS")
 @JsonDeserialize(as = ImmutableSuccessMateCommandPacket.class)
@@ -41,4 +43,10 @@ public interface SuccessMateCommandPacket extends MateCommandFeedbackPacket {
 	 */
 	@JsonProperty("source")
 	@NotNull String getSource();
+
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	@JsonProperty("executionReason")
+	default @Nullable ExecutionReason getExecutionReason() {
+		return null;
+	}
 }

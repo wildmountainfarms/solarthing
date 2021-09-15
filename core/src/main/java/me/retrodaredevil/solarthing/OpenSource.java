@@ -23,10 +23,10 @@ public final class OpenSource {
 
 	@JsonCreator
 	public OpenSource(
-			@JsonProperty("sender") String sender,
-			@JsonProperty("dateMillis") long dateMillis,
-			@JsonProperty("packet") Packet packet,
-			@JsonProperty("legacyData") String legacyData) {
+			@JsonProperty(value = "sender", required = true) String sender,
+			@JsonProperty(value = "dateMillis", required = true) long dateMillis,
+			@JsonProperty(value = "packet", required = true) Packet packet,
+			@JsonProperty(value = "legacyData", required = true) String legacyData) {
 		requireNonNull(this.sender = sender);
 		this.dateMillis = dateMillis;
 		requireNonNull(this.packet = packet);
