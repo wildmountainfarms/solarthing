@@ -1,10 +1,12 @@
 package me.retrodaredevil.solarthing.commands.packets.open;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.alter.UniqueRequestIdContainer;
 import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 
+@JsonTypeName("SCHEDULE_COMMAND")
 public interface ScheduleCommandPacket extends CommandOpenPacket, UniqueRequestIdContainer {
 	@DefaultFinal
 	@Override
