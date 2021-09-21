@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.misc.device;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
+import me.retrodaredevil.solarthing.marker.StatusPacket;
 import me.retrodaredevil.solarthing.packets.TypedDocumentedPacket;
 
 /**
@@ -9,5 +10,5 @@ import me.retrodaredevil.solarthing.packets.TypedDocumentedPacket;
 @JsonSubTypes({
 		@JsonSubTypes.Type(CpuTemperaturePacket.class)
 })
-public interface DevicePacket extends TypedDocumentedPacket<DevicePacketType> {
+public interface DevicePacket extends TypedDocumentedPacket<DevicePacketType>, StatusPacket {
 }
