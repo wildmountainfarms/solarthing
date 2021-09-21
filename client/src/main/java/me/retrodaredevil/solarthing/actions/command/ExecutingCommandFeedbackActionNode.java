@@ -2,7 +2,7 @@ package me.retrodaredevil.solarthing.actions.command;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.action.Action;
-import me.retrodaredevil.solarthing.OpenSource;
+import me.retrodaredevil.solarthing.open.OpenSource;
 import me.retrodaredevil.solarthing.actions.ActionNode;
 import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.SolarThingDatabaseEnvironment;

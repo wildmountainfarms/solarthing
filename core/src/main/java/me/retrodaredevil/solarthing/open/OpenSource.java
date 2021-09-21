@@ -1,7 +1,10 @@
-package me.retrodaredevil.solarthing;
+package me.retrodaredevil.solarthing.open;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import me.retrodaredevil.solarthing.DataSource;
+import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.Packet;
 
@@ -25,6 +28,7 @@ public final class OpenSource {
 	public OpenSource(
 			@JsonProperty(value = "sender", required = true) String sender,
 			@JsonProperty(value = "dateMillis", required = true) long dateMillis,
+			@JsonDeserialize(as = OpenSourcePacket.class)
 			@JsonProperty(value = "packet", required = true) Packet packet,
 			@JsonProperty(value = "legacyData", required = true) String legacyData) {
 		requireNonNull(this.sender = sender);

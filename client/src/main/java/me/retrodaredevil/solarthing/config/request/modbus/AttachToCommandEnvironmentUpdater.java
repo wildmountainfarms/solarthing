@@ -1,6 +1,6 @@
 package me.retrodaredevil.solarthing.config.request.modbus;
 
-import me.retrodaredevil.solarthing.OpenSource;
+import me.retrodaredevil.solarthing.open.OpenSource;
 import me.retrodaredevil.solarthing.actions.command.EnvironmentUpdater;
 import me.retrodaredevil.solarthing.actions.environment.InjectEnvironment;
 import me.retrodaredevil.solarthing.commands.packets.open.RequestCommandPacket;
