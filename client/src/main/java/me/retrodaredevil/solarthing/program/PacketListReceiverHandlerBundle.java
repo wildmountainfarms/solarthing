@@ -14,6 +14,7 @@ import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.List;
 
@@ -46,11 +47,9 @@ public final class PacketListReceiverHandlerBundle {
 				getEventHandler().getPacketListReceiverHandler() // send the event PacketCollection off to the database
 		);
 	}
-
-	public static <T extends PacketHandlingOption & CommandOption> PacketListReceiverHandlerBundle createFrom(T options, PacketHandlerBundle packetHandlerBundle, List<PacketHandler> statusPacketHandlers) {
+	public static <T extends PacketHandlingOption & CommandOption> PacketListReceiverHandler createEventPacketListReceiverHandler(PacketListReceiver sourceAndFragmentUpdater, ZoneId zoneId, PacketHandlerBundle packetHandlerBundle) {
 		PacketHandler eventPacketHandler = new PacketHandlerMultiplexer(packetHandlerBundle.getEventPacketHandlers());
-		PacketListReceiver sourceAndFragmentUpdater = SolarMain.getSourceAndFragmentUpdater(options);
-		PacketListReceiverHandler eventPacketListReceiverHandler = new PacketListReceiverHandler(
+		return new PacketListReceiverHandler(
 				new PacketListReceiverMultiplexer(
 						sourceAndFragmentUpdater,
 						(packets, instantType) -> {
@@ -64,8 +63,13 @@ public final class PacketListReceiverHandlerBundle {
 				),
 				eventPacketHandler,
 				PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR,
-				options.getZoneId()
+				zoneId
 		);
+	}
+
+	public static <T extends PacketHandlingOption & CommandOption> PacketListReceiverHandlerBundle createFrom(T options, PacketHandlerBundle packetHandlerBundle, List<PacketHandler> statusPacketHandlers) {
+		PacketListReceiver sourceAndFragmentUpdater = SolarMain.getSourceAndFragmentUpdater(options);
+		PacketListReceiverHandler eventPacketListReceiverHandler = createEventPacketListReceiverHandler(sourceAndFragmentUpdater, options.getZoneId(), packetHandlerBundle);
 		PacketListReceiverHandler statusPacketListReceiverHandler = new PacketListReceiverHandler(
 				new PacketListReceiverMultiplexer(
 						sourceAndFragmentUpdater,

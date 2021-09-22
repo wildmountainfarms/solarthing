@@ -6,6 +6,7 @@ import me.retrodaredevil.couchdbjava.CouchDbInstance;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.actions.ActionNode;
 import me.retrodaredevil.solarthing.actions.command.EnvironmentUpdater;
+import me.retrodaredevil.solarthing.actions.environment.EventReceiverEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.SourceEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.TimeZoneEnvironment;
@@ -177,6 +178,7 @@ public class PacketHandlerInit {
 								.add(new TimeZoneEnvironment(options.getTimeZone()))
 								.add(new LatestPacketGroupEnvironment(latestPacketHandler::getLatestPacketCollection))
 								.add(new SourceEnvironment(source))
+								.add(new EventReceiverEnvironment(PacketListReceiverHandlerBundle.createEventPacketListReceiverHandler(SolarMain.getSourceAndFragmentUpdater(options), options.getZoneId(), packetHandlerBundle)))
 						;
 						EnvironmentUpdater environmentUpdater = environmentUpdaterSupplier.get();
 						if (environmentUpdater == null) {

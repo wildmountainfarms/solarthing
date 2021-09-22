@@ -23,12 +23,20 @@ import java.util.Map;
 
 public class ActionNodeDataReceiver implements PacketGroupReceiver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionNodeDataReceiver.class);
+	/*
+	Note: This class has comments about making sure things are thread safe because PacketGroupReceivers are almost always called from another thread
+	*/
+
 	private final VariableEnvironment variableEnvironment = new VariableEnvironment();
-	private final ActionMultiplexer actionMultiplexer = new Actions.ActionMultiplexerBuilder().build();
+	private final ActionMultiplexer actionMultiplexer = new Actions.ActionMultiplexerBuilder().build(); // action-lib is designed to be thread safe
 
-	private final Map<String, ActionNode> actionNodeMap;
-	private final EnvironmentUpdater environmentUpdater;
+	private final Map<String, ActionNode> actionNodeMap; // action nodes are not used directly, so thread safety is fine here. (Unless an ActionNode has weird state and isn't thread safe)
+	private final EnvironmentUpdater environmentUpdater; // supplied by the caller, assumed to be thread safe.
 
+	/**
+	 * @param environmentUpdater Called when a command has been requested and recognized. Note that this is called in a separate thread , so if you are
+	 *                           for some reason accessing mutating state, make sure your access is thread safe.
+	 */
 	public ActionNodeDataReceiver(Map<String, ActionNode> actionNodeMap, EnvironmentUpdater environmentUpdater) {
 		this.actionNodeMap = actionNodeMap;
 		this.environmentUpdater = environmentUpdater;
@@ -59,6 +67,8 @@ public class ActionNodeDataReceiver implements PacketGroupReceiver {
 			InjectEnvironment.Builder injectEnvironmentBuilder = new InjectEnvironment.Builder();
 			environmentUpdater.updateInjectEnvironment(source, injectEnvironmentBuilder);
 			Action action = requested.createAction(new ActionEnvironment(variableEnvironment, new VariableEnvironment(), injectEnvironmentBuilder.build()));
+			// Now that action has been created, add it to the action multiplexer. (Adding is thread safe).
+			//   The action has not been used by this thread, so when a different thread starts executing it, there will be no problems.
 			actionMultiplexer.add(action);
 			LOGGER.info(SolarThingConstants.SUMMARY_MARKER, source.getSender() + " has requested command sequence: " + commandName);
 		} else {

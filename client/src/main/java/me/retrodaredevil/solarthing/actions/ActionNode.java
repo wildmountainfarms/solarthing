@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.solarthing.actions.chatbot.SlackChatBotActionNode;
+import me.retrodaredevil.solarthing.actions.command.ExecutingCommandFeedbackActionNode;
 import me.retrodaredevil.solarthing.actions.command.SendCommandActionNode;
 import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.actions.homeassistant.HomeAssistantActionNode;
@@ -51,8 +52,18 @@ import me.retrodaredevil.solarthing.actions.tracer.TracerLoadActionNode;
 		@JsonSubTypes.Type(MessageSenderActionNode.class),
 
 		@JsonSubTypes.Type(SlackChatBotActionNode.class),
+
+		@JsonSubTypes.Type(ExecutingCommandFeedbackActionNode.class),
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
 public interface ActionNode {
+	/**
+	 * Creates an {@link Action} gives an {@link ActionEnvironment}.
+	 * <p>
+	 * Note: You are allowed to call this method from a separate thread, so make sure your implementation of this method is thread safe should it access
+	 * mutating state. Note that you DO NOT have to make the returned {@link Action} thread safe.
+	 * @param actionEnvironment The action environment to create the action
+	 * @return The action
+	 */
 	Action createAction(ActionEnvironment actionEnvironment);
 }
