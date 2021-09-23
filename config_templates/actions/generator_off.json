@@ -72,7 +72,14 @@
                   "type": "race",
                   "racers": [
                     [{ "type": "call", "name": "force_drop" }, { "type": "pass" }],
-                    [{ "type": "wait", "duration": "PT15S"}, { "type": "pass" }]
+                    [
+                      { "type": "wait", "duration": "PT15S"},
+                      {
+                        "type": "feedback",
+                        "message": "Could not drop power. Generator will not shut off cleanly.",
+                        "category": "technical.mate"
+                      }
+                    ]
                   ]
                 }
               ]
