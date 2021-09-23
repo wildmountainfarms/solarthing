@@ -1,9 +1,9 @@
 package me.retrodaredevil.solarthing.rest.cache.creators;
 
-import me.retrodaredevil.solarthing.cache.packets.DefaultIdentificationCacheDataPacket;
-import me.retrodaredevil.solarthing.cache.packets.IdentificationCacheDataPacket;
-import me.retrodaredevil.solarthing.cache.packets.IdentificationCacheNode;
-import me.retrodaredevil.solarthing.cache.packets.data.IdentificationCacheData;
+import me.retrodaredevil.solarthing.type.cache.packets.DefaultIdentificationCacheDataPacket;
+import me.retrodaredevil.solarthing.type.cache.packets.IdentificationCacheDataPacket;
+import me.retrodaredevil.solarthing.type.cache.packets.IdentificationCacheNode;
+import me.retrodaredevil.solarthing.type.cache.packets.data.IdentificationCacheData;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.TimestampedPacket;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;

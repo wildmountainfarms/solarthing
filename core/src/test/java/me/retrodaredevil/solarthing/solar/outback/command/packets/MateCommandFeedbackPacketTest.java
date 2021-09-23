@@ -1,7 +1,7 @@
 package me.retrodaredevil.solarthing.solar.outback.command.packets;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import me.retrodaredevil.solarthing.open.OpenSource;
+import me.retrodaredevil.solarthing.type.open.OpenSource;
 import me.retrodaredevil.solarthing.PacketTestUtil;
 import me.retrodaredevil.solarthing.commands.packets.open.ImmutableRequestCommandPacket;
 import me.retrodaredevil.solarthing.reason.OpenSourceExecutionReason;

@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.meta.TargetedMetaPacket;
-import me.retrodaredevil.solarthing.meta.TargetedMetaPacketType;
+import me.retrodaredevil.solarthing.type.closed.meta.TargetedMetaPacket;
+import me.retrodaredevil.solarthing.type.closed.meta.TargetedMetaPacketType;
 
 /**
  * Used to adjust the temperature of the sensor used to get the battery's temperature. This is only used if the temperature

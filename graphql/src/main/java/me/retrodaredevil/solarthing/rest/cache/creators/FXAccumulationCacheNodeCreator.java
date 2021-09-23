@@ -1,7 +1,7 @@
 package me.retrodaredevil.solarthing.rest.cache.creators;
 
-import me.retrodaredevil.solarthing.cache.packets.IdentificationCacheNode;
-import me.retrodaredevil.solarthing.cache.packets.data.FXAccumulationDataCache;
+import me.retrodaredevil.solarthing.type.cache.packets.IdentificationCacheNode;
+import me.retrodaredevil.solarthing.type.cache.packets.data.FXAccumulationDataCache;
 import me.retrodaredevil.solarthing.packets.TimestampedPacket;
 import me.retrodaredevil.solarthing.packets.identification.IdentifierFragment;
 import me.retrodaredevil.solarthing.rest.cache.CacheCalc;

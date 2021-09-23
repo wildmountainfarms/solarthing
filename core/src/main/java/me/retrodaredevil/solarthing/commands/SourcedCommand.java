@@ -1,6 +1,6 @@
 package me.retrodaredevil.solarthing.commands;
 
-import me.retrodaredevil.solarthing.open.OpenSource;
+import me.retrodaredevil.solarthing.type.open.OpenSource;
 
 import java.util.Objects;
 

@@ -1,8 +1,8 @@
 package me.retrodaredevil.solarthing.rest.cache;
 
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
-import me.retrodaredevil.solarthing.cache.packets.IdentificationCacheNode;
-import me.retrodaredevil.solarthing.cache.packets.data.IdentificationCacheData;
+import me.retrodaredevil.solarthing.type.cache.packets.IdentificationCacheNode;
+import me.retrodaredevil.solarthing.type.cache.packets.data.IdentificationCacheData;
 import me.retrodaredevil.solarthing.packets.TimestampedPacket;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.packets.identification.IdentifierFragment;

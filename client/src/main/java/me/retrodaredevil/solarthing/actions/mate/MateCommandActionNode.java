@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.Actions;
-import me.retrodaredevil.solarthing.open.OpenSource;
+import me.retrodaredevil.solarthing.type.open.OpenSource;
 import me.retrodaredevil.solarthing.actions.ActionNode;
 import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.MateCommandEnvironment;

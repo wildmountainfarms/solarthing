@@ -2,9 +2,9 @@ package me.retrodaredevil.solarthing.database;
 
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
-import me.retrodaredevil.solarthing.closed.authorization.AuthorizationPacket;
+import me.retrodaredevil.solarthing.type.closed.authorization.AuthorizationPacket;
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
-import me.retrodaredevil.solarthing.meta.RootMetaPacket;
+import me.retrodaredevil.solarthing.type.closed.meta.RootMetaPacket;
 
 import static java.util.Objects.requireNonNull;
 

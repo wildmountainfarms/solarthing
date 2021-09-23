@@ -9,7 +9,7 @@ import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.lang.ArchRule;
 import me.retrodaredevil.solarthing.annotations.SerializeNameDefinedInBase;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
-import me.retrodaredevil.solarthing.open.OpenSourcePacket;
+import me.retrodaredevil.solarthing.type.open.OpenSourcePacket;
 import me.retrodaredevil.solarthing.packets.DocumentedPacketType;
 import me.retrodaredevil.solarthing.packets.Mode;
 import me.retrodaredevil.solarthing.packets.Packet;

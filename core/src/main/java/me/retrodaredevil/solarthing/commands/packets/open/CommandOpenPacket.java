@@ -1,7 +1,7 @@
 package me.retrodaredevil.solarthing.commands.packets.open;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
-import me.retrodaredevil.solarthing.open.OpenSourcePacket;
+import me.retrodaredevil.solarthing.type.open.OpenSourcePacket;
 import me.retrodaredevil.solarthing.packets.TypedDocumentedPacket;
 
 /**

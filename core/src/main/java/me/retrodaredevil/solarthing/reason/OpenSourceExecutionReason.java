@@ -3,7 +3,7 @@ package me.retrodaredevil.solarthing.reason;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import me.retrodaredevil.solarthing.open.OpenSource;
+import me.retrodaredevil.solarthing.type.open.OpenSource;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 
 import java.util.Objects;

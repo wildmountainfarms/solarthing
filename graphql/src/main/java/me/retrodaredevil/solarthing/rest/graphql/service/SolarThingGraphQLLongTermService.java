@@ -4,8 +4,8 @@ import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLQuery;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
-import me.retrodaredevil.solarthing.cache.packets.IdentificationCacheDataPacket;
-import me.retrodaredevil.solarthing.cache.packets.data.ChargeControllerAccumulationDataCache;
+import me.retrodaredevil.solarthing.type.cache.packets.IdentificationCacheDataPacket;
+import me.retrodaredevil.solarthing.type.cache.packets.data.ChargeControllerAccumulationDataCache;
 import me.retrodaredevil.solarthing.rest.cache.CacheController;
 
 import java.time.LocalDate;

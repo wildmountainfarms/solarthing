@@ -44,7 +44,13 @@ public final class AutomationMain {
 	}
 	public static int startAutomation(List<ActionNode> actionNodes, DatabaseTimeZoneOptionBase options, long periodMillis) {
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Starting automation program.");
-		CouchDbDatabaseSettings couchSettings = ConfigUtil.expectCouchDbDatabaseSettings(options);
+		final CouchDbDatabaseSettings couchSettings;
+		try {
+			couchSettings = ConfigUtil.expectCouchDbDatabaseSettings(options);
+		} catch (IllegalArgumentException ex) {
+			LOGGER.error("(Fatal)", ex);
+			return SolarThingConstants.EXIT_CODE_INVALID_CONFIG;
+		}
 		SolarThingDatabase database = CouchDbSolarThingDatabase.create(CouchDbUtil.createInstance(couchSettings.getCouchProperties(), couchSettings.getOkHttpProperties()));
 
 		VariableEnvironment variableEnvironment = new VariableEnvironment();

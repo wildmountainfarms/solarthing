@@ -1,6 +1,6 @@
 package me.retrodaredevil.solarthing.actions.command;
 
-import me.retrodaredevil.solarthing.open.OpenSource;
+import me.retrodaredevil.solarthing.type.open.OpenSource;
 import me.retrodaredevil.solarthing.actions.environment.InjectEnvironment;
 
 import java.util.*;

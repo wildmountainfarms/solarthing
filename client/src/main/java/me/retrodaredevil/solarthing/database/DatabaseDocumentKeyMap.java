@@ -1,7 +1,7 @@
 package me.retrodaredevil.solarthing.database;
 
-import me.retrodaredevil.solarthing.closed.authorization.AuthorizationPacket;
-import me.retrodaredevil.solarthing.closed.authorization.PermissionObject;
+import me.retrodaredevil.solarthing.type.closed.authorization.AuthorizationPacket;
+import me.retrodaredevil.solarthing.type.closed.authorization.PermissionObject;
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
 import me.retrodaredevil.solarthing.packets.security.crypto.PublicKeyLookUp;
 import org.slf4j.Logger;

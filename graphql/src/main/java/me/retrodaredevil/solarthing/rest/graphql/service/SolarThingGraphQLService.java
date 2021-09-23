@@ -10,7 +10,7 @@ import me.retrodaredevil.solarthing.rest.graphql.packets.*;
 import me.retrodaredevil.solarthing.rest.graphql.packets.nodes.DataNode;
 import me.retrodaredevil.solarthing.rest.graphql.packets.nodes.PacketNode;
 import me.retrodaredevil.solarthing.rest.graphql.packets.nodes.SimpleNode;
-import me.retrodaredevil.solarthing.meta.*;
+import me.retrodaredevil.solarthing.type.closed.meta.*;
 import me.retrodaredevil.solarthing.misc.device.CpuTemperaturePacket;
 import me.retrodaredevil.solarthing.misc.weather.TemperaturePacket;
 import me.retrodaredevil.solarthing.packets.Packet;
