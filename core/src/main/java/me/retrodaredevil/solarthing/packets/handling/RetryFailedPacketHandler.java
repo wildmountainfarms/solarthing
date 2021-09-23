@@ -16,6 +16,12 @@ import java.util.List;
  */
 public class RetryFailedPacketHandler implements PacketHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RetryFailedPacketHandler.class);
+	/*
+	TODO consider moving away from this class and using something involving a separate thread. It would be better if the retrying of uploading
+	a PacketCollection didn't rely on a single PacketHandler being called twice. Ex: if a RetryFailedPacketHandler is called once and
+	the given packetHandler fails to upload for a particular PacketCollection, then it should try again at some later time, no matter
+	if RetryFailedPacketHandler is called again.
+	 */
 
 	private final PacketHandler packetHandler;
 	private final int packetCollectionsToKeepOnFail;

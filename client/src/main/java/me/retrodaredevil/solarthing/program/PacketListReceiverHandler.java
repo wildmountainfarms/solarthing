@@ -78,12 +78,32 @@ public class PacketListReceiverHandler {
 
 	public void handle(InstantType instantType) {
 		for (PacketCollection packetCollection : packetCollectionList) {
-			try {
-				packetHandler.handle(packetCollection, instantType);
-			} catch (PacketHandleException e) {
-				LOGGER.error("Couldn't handle packet collection. id: " + packetCollection.getDbId() + " dateMillis: " + packetCollection.getDateMillis() + ". Will NOT try again.", e);
-			}
+			handleSinglePacketCollection(packetCollection, instantType);
 		}
 		packetCollectionList.clear();
+	}
+	private void handleSinglePacketCollection(PacketCollection packetCollection, InstantType instantType) {
+		try {
+			packetHandler.handle(packetCollection, instantType);
+		} catch (PacketHandleException e) {
+			LOGGER.error("Couldn't handle packet collection. id: " + packetCollection.getDbId() + " dateMillis: " + packetCollection.getDateMillis() + ". Will NOT try again.", e);
+		}
+	}
+
+	/**
+	 * This method is used to be able to upload packets in a simple way without dealing with {@link PacketListReceiver}s.
+	 * <p>
+	 * If {@code packets} is empty, this method does nothing. If not empty, it may add additional packets, turn into a {@link PacketCollection},
+	 * then "handles" the {@link PacketCollection}, which usually means to persist the {@link PacketCollection} in a database.
+	 * @param packets The packets to upload
+	 */
+	public void uploadSimple(List<? extends Packet> packets) {
+		List<Packet> mutablePackets = new ArrayList<>(packets);
+		if (mutablePackets.isEmpty()) {
+			return;
+		}
+		packetListReceiver.receive(packetList, InstantType.INSTANT); // this call may mutate mutablePackets, which is why we need it in the first place
+		PacketCollection packetCollection = PacketCollections.createFromPackets(packetList, idGenerator, zoneId);
+		handleSinglePacketCollection(packetCollection, InstantType.INSTANT);
 	}
 }

@@ -18,6 +18,7 @@ import me.retrodaredevil.solarthing.database.SolarThingDatabase;
 import me.retrodaredevil.solarthing.database.UpdateToken;
 import me.retrodaredevil.solarthing.database.VersionedPacket;
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
+import me.retrodaredevil.solarthing.event.feedback.FeedbackPacket;
 import me.retrodaredevil.solarthing.meta.DeviceInfoPacket;
 import me.retrodaredevil.solarthing.meta.RootMetaPacket;
 import me.retrodaredevil.solarthing.meta.TargetMetaPacket;
@@ -64,7 +65,7 @@ public class CouchDbSolarThingDatabase implements SolarThingDatabase {
 		statusDatabase = new CouchDbMillisDatabase(instance.getDatabase(SolarThingConstants.STATUS_DATABASE), statusMapper, errorHandler);
 
 		ObjectMapper eventMapper = mapper.copy();
-		eventMapper.getSubtypeResolver().registerSubtypes(SolarEventPacket.class, MateCommandFeedbackPacket.class, InstancePacket.class, InstancePacket.class);
+		eventMapper.getSubtypeResolver().registerSubtypes(SolarEventPacket.class, MateCommandFeedbackPacket.class, FeedbackPacket.class, InstancePacket.class, InstancePacket.class);
 		eventDatabase = new CouchDbMillisDatabase(instance.getDatabase(SolarThingConstants.EVENT_DATABASE), eventMapper, errorHandler);
 
 		ObjectMapper openMapper = mapper.copy();

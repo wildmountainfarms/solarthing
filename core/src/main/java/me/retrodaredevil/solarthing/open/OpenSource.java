@@ -2,11 +2,13 @@ package me.retrodaredevil.solarthing.open;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.DataSource;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.packets.Packet;
+import me.retrodaredevil.solarthing.annotations.NotNull;
+import me.retrodaredevil.solarthing.util.UniqueStringRepresentation;
+
+import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 
@@ -17,10 +19,10 @@ import static java.util.Objects.requireNonNull;
  * the {@link SolarThingConstants#OPEN_DATABASE}, but they can be serialized in {@link SolarThingConstants#EVENT_DATABASE} to represent the cause/requester of some event
  */
 @JsonExplicit
-public final class OpenSource {
+public final class OpenSource implements UniqueStringRepresentation {
 	private final String sender;
 	private final long dateMillis;
-	private final Packet packet;
+	private final OpenSourcePacket packet;
 	/** Corresponds to {@link DataSource#getData()}*/
 	private final String legacyData;
 
@@ -28,8 +30,7 @@ public final class OpenSource {
 	public OpenSource(
 			@JsonProperty(value = "sender", required = true) String sender,
 			@JsonProperty(value = "dateMillis", required = true) long dateMillis,
-			@JsonDeserialize(as = OpenSourcePacket.class)
-			@JsonProperty(value = "packet", required = true) Packet packet,
+			@JsonProperty(value = "packet", required = true) OpenSourcePacket packet,
 			@JsonProperty(value = "legacyData", required = true) String legacyData) {
 		requireNonNull(this.sender = sender);
 		this.dateMillis = dateMillis;
@@ -42,7 +43,7 @@ public final class OpenSource {
 	}
 
 	@JsonProperty("sender")
-	public String getSender() {
+	public @NotNull String getSender() {
 		return sender;
 	}
 	@JsonProperty("dateMillis")
@@ -51,12 +52,40 @@ public final class OpenSource {
 	}
 
 	@JsonProperty("packet")
-	public Packet getPacket() {
+	public @NotNull OpenSourcePacket getPacket() {
 		return packet;
 	}
 
 	@JsonProperty("legacyData")
-	public String getLegacyData() {
+	public @NotNull String getLegacyData() {
 		return legacyData;
+	}
+
+	@Override
+	public @NotNull String getUniqueString() {
+		return "OpenSource(" +
+				"sender='" + sender + '\'' +
+				", dateMillis=" + dateMillis +
+				", packet=" + packet.getUniqueString() +
+				", legacyData='" + legacyData + '\'' +
+				')';
+	}
+
+	@Override
+	public String toString() {
+		return getUniqueString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		OpenSource that = (OpenSource) o;
+		return dateMillis == that.dateMillis && sender.equals(that.sender) && packet.equals(that.packet) && legacyData.equals(that.legacyData);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(sender, dateMillis, packet, legacyData);
 	}
 }

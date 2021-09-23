@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 
+import java.util.Objects;
+
 import static java.util.Objects.requireNonNull;
 
 public class ImmutableRequestCommandPacket implements RequestCommandPacket {
@@ -19,5 +21,23 @@ public class ImmutableRequestCommandPacket implements RequestCommandPacket {
 	@Override
 	public @NotNull String getCommandName() {
 		return commandName;
+	}
+
+	@Override
+	public @NotNull String getUniqueString() {
+		return "RequestCommandPacket(commandName=" + commandName + ")";
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		ImmutableRequestCommandPacket that = (ImmutableRequestCommandPacket) o;
+		return commandName.equals(that.commandName);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(commandName);
 	}
 }
