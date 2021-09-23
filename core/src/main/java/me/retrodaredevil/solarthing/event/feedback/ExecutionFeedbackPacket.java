@@ -2,11 +2,15 @@ package me.retrodaredevil.solarthing.event.feedback;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.reason.ExecutionReason;
 
+@JsonDeserialize(as = ImmutableExecutionFeedbackPacket.class)
 @JsonTypeName("EXECUTION_FEEDBACK")
 public interface ExecutionFeedbackPacket extends FeedbackPacket {
+	@DefaultFinal
 	@Override
 	default @NotNull FeedbackPacketType getPacketType() {
 		return FeedbackPacketType.EXECUTION_FEEDBACK;

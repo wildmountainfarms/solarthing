@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.domain.JavaModifier;
@@ -49,7 +50,9 @@ public class ArchTest {
 						.should().haveOnlyFinalFields(),
 				methods().that()
 						.haveNameMatching("equals").and().areDeclaredInClassesThat().areAssignableTo(OpenSourcePacket.class).should()
-						.notBeDeclaredIn(Object.class)
+						.notBeDeclaredIn(Object.class),
+				classes().that().areInterfaces().and().areAnnotatedWith(JsonTypeName.class) // If JsonTypeName is present, it is intended to be deserialized
+						.should().beAnnotatedWith(JsonDeserialize.class), // Jackson needs to know how to deserialize interfaces
 		}) {
 			rule.check(importedClasses);
 		}
