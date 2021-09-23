@@ -102,8 +102,8 @@ public class PacketListReceiverHandler {
 		if (mutablePackets.isEmpty()) {
 			return;
 		}
-		packetListReceiver.receive(packetList, InstantType.INSTANT); // this call may mutate mutablePackets, which is why we need it in the first place
-		PacketCollection packetCollection = PacketCollections.createFromPackets(packetList, idGenerator, zoneId);
+		packetListReceiver.receive(mutablePackets, InstantType.INSTANT); // this call may mutate mutablePackets, which is why we need it in the first place
+		PacketCollection packetCollection = PacketCollections.createFromPackets(mutablePackets, idGenerator, zoneId);
 		handleSinglePacketCollection(packetCollection, InstantType.INSTANT);
 	}
 }
