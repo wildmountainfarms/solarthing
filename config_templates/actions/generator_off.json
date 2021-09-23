@@ -88,7 +88,12 @@
           [{ "type": "pass" }, { "type": "log", "message": "The first 'force_drop' call was successful, so not dropping again." }]
         ]
       },
-      { "type": "log", "message": "Sent all commands for generator off!"}
+      { "type": "log", "message": "Sent all commands for generator off!"},
+      {
+        "type": "feedback",
+        "message": "Sent all commands for generator off",
+        "category": "informational.command.mate"
+      }
     ]
   }
 }
