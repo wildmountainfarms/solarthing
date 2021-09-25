@@ -47,8 +47,11 @@ public class SimpleDatabaseCache implements DatabaseCache {
 		this.volatileWindowDuration = volatileWindowDuration;
 		this.clock = clock;
 	}
+	public static SimpleDatabaseCache createDefault(Clock clock) {
+		return new SimpleDatabaseCache(DEFAULT_KEEP_MAX_DURATION, DEFAULT_KEEP_DURATION, DEFAULT_MINIMUM_DURATION, DEFAULT_VOLATILE_WINDOW_DURATION, clock);
+	}
 	public static SimpleDatabaseCache createDefault() {
-		return new SimpleDatabaseCache(DEFAULT_KEEP_MAX_DURATION, DEFAULT_KEEP_DURATION, DEFAULT_MINIMUM_DURATION, DEFAULT_VOLATILE_WINDOW_DURATION, Clock.systemUTC());
+		return createDefault(Clock.systemUTC());
 	}
 
 	@Override
