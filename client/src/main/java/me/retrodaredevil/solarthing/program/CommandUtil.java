@@ -49,7 +49,7 @@ public class CommandUtil {
 					);
 					@Override
 					public void handle(PacketCollection packetCollection, InstantType instantType) throws PacketHandleException {
-						final List<PacketGroup> packetGroups;
+						final List<? extends PacketGroup> packetGroups;
 						try {
 							packetGroups = database.getOpenDatabase().query(new MillisQueryBuilder().startKey(System.currentTimeMillis() - 5 * 60 * 1000).build());
 						} catch (SolarThingDatabaseException e) {

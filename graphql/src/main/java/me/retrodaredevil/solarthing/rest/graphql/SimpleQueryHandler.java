@@ -62,7 +62,7 @@ public class SimpleQueryHandler {
 	 * @return The resulting packets
 	 */
 	private List<? extends InstancePacketGroup> queryPackets(MillisDatabase database, long from, long to, String sourceId) {
-		final List<PacketGroup> rawPacketGroups;
+		final List<? extends PacketGroup> rawPacketGroups;
 		try {
 
 			rawPacketGroups = database.query(new MillisQueryBuilder()

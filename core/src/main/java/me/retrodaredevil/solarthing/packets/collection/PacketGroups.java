@@ -31,6 +31,12 @@ public final class PacketGroups {
 	public static FragmentedPacketGroup createFragmentedPacketGroup(Collection<? extends InstancePacketGroup> instancePackets, long dateMillis) {
 		return new ImmutableFragmentedPacketGroup(instancePackets, dateMillis);
 	}
+	public static StoredPacketGroup createStoredPacketGroup(Collection<? extends Packet> groups, long dateMillis, StoredIdentifier storedIdentifier) {
+		return new ImmutableStoredPacketGroup(groups, dateMillis, storedIdentifier);
+	}
+	public static StoredPacketGroup createStoredPacketGroup(PacketGroup packetGroup, StoredIdentifier storedIdentifier) {
+		return createStoredPacketGroup(packetGroup.getPackets(), packetGroup.getDateMillis(), storedIdentifier);
+	}
 	public static InstancePacketGroup parseToInstancePacketGroup(PacketGroup group, DefaultInstanceOptions defaultInstanceOptions){
 		if(group instanceof InstancePacketGroup){
 			return (InstancePacketGroup) group;

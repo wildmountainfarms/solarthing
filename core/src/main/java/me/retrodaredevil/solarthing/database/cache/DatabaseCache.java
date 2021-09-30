@@ -1,6 +1,6 @@
 package me.retrodaredevil.solarthing.database.cache;
 
-import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
+import me.retrodaredevil.solarthing.packets.collection.StoredPacketGroup;
 import me.retrodaredevil.solarthing.util.TimeRange;
 
 import java.util.List;
@@ -22,19 +22,19 @@ import java.util.stream.Stream;
  * TDLR; The implementation probably isn't thread safe.
  */
 public interface DatabaseCache {
-	Stream<PacketGroup> createCachedPacketsInRangeStream(TimeRange timeRange, boolean descending);
-	default Stream<PacketGroup> createAllCachedPacketsStream(boolean descending) {
+	Stream<StoredPacketGroup> createCachedPacketsInRangeStream(TimeRange timeRange, boolean descending);
+	default Stream<StoredPacketGroup> createAllCachedPacketsStream(boolean descending) {
 		return createCachedPacketsInRangeStream(TimeRange.ALWAYS, descending);
 	}
 
-	default List<PacketGroup> getCachedPacketsInRange(TimeRange timeRange, boolean descending) {
+	default List<StoredPacketGroup> getCachedPacketsInRange(TimeRange timeRange, boolean descending) {
 		return createCachedPacketsInRangeStream(timeRange, descending).collect(Collectors.toList());
 	}
 
-	default List<PacketGroup> getAllCachedPackets(boolean descending) {
+	default List<StoredPacketGroup> getAllCachedPackets(boolean descending) {
 		return getCachedPacketsInRange(TimeRange.ALWAYS, descending);
 	}
-	default List<PacketGroup> getAllCachedPackets() {
+	default List<StoredPacketGroup> getAllCachedPackets() {
 		return getAllCachedPackets(false);
 	}
 

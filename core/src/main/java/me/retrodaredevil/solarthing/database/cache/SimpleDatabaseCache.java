@@ -2,7 +2,7 @@ package me.retrodaredevil.solarthing.database.cache;
 
 import me.retrodaredevil.solarthing.database.MillisQuery;
 import me.retrodaredevil.solarthing.database.MillisQueryBuilder;
-import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
+import me.retrodaredevil.solarthing.packets.collection.StoredPacketGroup;
 import me.retrodaredevil.solarthing.util.TimeRange;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -55,7 +55,7 @@ public class SimpleDatabaseCache implements DatabaseCache {
 	}
 
 	@Override
-	public Stream<PacketGroup> createCachedPacketsInRangeStream(TimeRange timeRange, boolean descending) {
+	public Stream<StoredPacketGroup> createCachedPacketsInRangeStream(TimeRange timeRange, boolean descending) {
 		NavigableSet<Node> set = packetGroups;
 		if (timeRange.getStartTimeMillis() != null) {
 			set = set.tailSet(new Node(timeRange.getStartTimeMillis()), true);
@@ -89,7 +89,7 @@ public class SimpleDatabaseCache implements DatabaseCache {
 				.build();
 	}
 
-	public void feed(List<PacketGroup> queriedPacketGroups, long queryStartDateMillis, long queryEndDateMillis) {
+	public void feed(List<StoredPacketGroup> queriedPacketGroups, long queryStartDateMillis, long queryEndDateMillis) {
 		if (queryStartDateMillis > queryEndDateMillis) {
 			throw new IllegalArgumentException("start must be <= end! queryStartDateMillis: " + queryStartDateMillis + " queryEndDateMillis: " + queryEndDateMillis);
 		}
@@ -145,14 +145,14 @@ public class SimpleDatabaseCache implements DatabaseCache {
 	}
 	private static final class Node implements Comparable<Node> {
 		private final long dateMillis;
-		private final PacketGroup packetGroup;
+		private final StoredPacketGroup packetGroup;
 
 		private Node(long dateMillis) {
 			this.dateMillis = dateMillis;
 			packetGroup = null;
 		}
 
-		private Node(PacketGroup packetGroup) {
+		private Node(StoredPacketGroup packetGroup) {
 			dateMillis = packetGroup.getDateMillis();
 			this.packetGroup = packetGroup;
 		}

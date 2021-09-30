@@ -17,6 +17,8 @@ import me.retrodaredevil.solarthing.database.UpdateToken;
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
+import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
+import me.retrodaredevil.solarthing.packets.collection.StoredPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.parsing.PacketParseException;
 import me.retrodaredevil.solarthing.packets.collection.parsing.PacketParsingErrorHandler;
 import me.retrodaredevil.solarthing.packets.collection.parsing.SimplePacketGroupParser;
@@ -37,7 +39,7 @@ public class CouchDbMillisDatabase implements MillisDatabase {
 	}
 
 	@Override
-	public List<PacketGroup> query(MillisQuery query) throws SolarThingDatabaseException {
+	public List<StoredPacketGroup> query(MillisQuery query) throws SolarThingDatabaseException {
 		final ViewResponse response;
 		try {
 			response = database.queryView("packets", "millis", CouchDbQueryUtil.createParamsFrom(query));
@@ -45,7 +47,7 @@ public class CouchDbMillisDatabase implements MillisDatabase {
 			throw new SolarThingDatabaseException(e);
 		}
 		List<ViewResponse.DocumentEntry> rows = response.getRows();
-		List<PacketGroup> r = new ArrayList<>(rows.size());
+		List<StoredPacketGroup> r = new ArrayList<>(rows.size());
 		for (ViewResponse.DocumentEntry row : rows) {
 			JsonData jsonData = row.getValue();
 			final JsonNode jsonNode;
@@ -64,7 +66,10 @@ public class CouchDbMillisDatabase implements MillisDatabase {
 			} catch (PacketParseException e) {
 				throw new SolarThingDatabaseException(e);
 			}
-			r.add(packetGroup);
+			String documentId = objectNode.get("_id").asText();
+			String documentRevision = objectNode.get("_rev").asText();
+			StoredPacketGroup storedPacketGroup = PacketGroups.createStoredPacketGroup(packetGroup, new CouchDbStoredIdentifier(documentId, documentRevision));
+			r.add(storedPacketGroup);
 		}
 		return r;
 	}

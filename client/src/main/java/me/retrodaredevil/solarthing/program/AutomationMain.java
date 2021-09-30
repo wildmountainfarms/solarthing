@@ -19,7 +19,7 @@ import me.retrodaredevil.solarthing.database.cache.SimpleDatabaseCache;
 import me.retrodaredevil.solarthing.database.couchdb.CouchDbSolarThingDatabase;
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
-import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
+import me.retrodaredevil.solarthing.packets.collection.StoredPacketGroup;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +47,7 @@ public final class AutomationMain {
 
 	private static void queryAndFeed(MillisDatabase millisDatabase, SimpleDatabaseCache databaseCache) {
 		MillisQuery query = databaseCache.getRecommendedQuery();
-		List<PacketGroup> rawPacketGroups = null;
+		List<StoredPacketGroup> rawPacketGroups = null;
 		try {
 			rawPacketGroups = millisDatabase.query(query);
 			LOGGER.debug("Got packets from " + millisDatabase);
@@ -77,6 +77,8 @@ public final class AutomationMain {
 
 		FragmentedPacketGroup[] latestPacketGroupReference = new FragmentedPacketGroup[] { null };
 		FragmentedPacketGroupProvider fragmentedPacketGroupProvider = () -> latestPacketGroupReference[0]; // note this may return null, and that's OK
+		SimpleDatabaseCache statusDatabaseCache = SimpleDatabaseCache.createDefault();
+		SimpleDatabaseCache eventDatabaseCache = SimpleDatabaseCache.createDefault();
 		InjectEnvironment injectEnvironment = new InjectEnvironment.Builder()
 				.add(new SourceIdEnvironment(options.getSourceId()))
 				.add(new CouchDbEnvironment(couchSettings)) // most of the time, it's better to use SolarThingDatabaseEnvironment instead, but this option is here in case it's needed
@@ -84,11 +86,10 @@ public final class AutomationMain {
 				.add(new TimeZoneEnvironment(options.getTimeZone()))
 				.add(new LatestPacketGroupEnvironment(fragmentedPacketGroupProvider))
 				.add(new LatestFragmentedPacketGroupEnvironment(fragmentedPacketGroupProvider))
+				.add(new EventDatabaseCacheEnvironment(eventDatabaseCache))
 				.build();
 
 		ActionMultiplexer multiplexer = new Actions.ActionMultiplexerBuilder().build();
-		SimpleDatabaseCache statusDatabaseCache = SimpleDatabaseCache.createDefault();
-		SimpleDatabaseCache eventDatabaseCache = SimpleDatabaseCache.createDefault();
 		while (!Thread.currentThread().isInterrupted()) {
 			queryAndFeed(database.getStatusDatabase(), statusDatabaseCache);
 			queryAndFeed(database.getEventDatabase(), eventDatabaseCache);

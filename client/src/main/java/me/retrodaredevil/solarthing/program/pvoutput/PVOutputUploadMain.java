@@ -113,7 +113,7 @@ public class PVOutputUploadMain {
 			long dayStart = date.getDayStartDateMillis(timeZone);
 			long dayEnd = tomorrow.getDayStartDateMillis(timeZone);
 
-			List<PacketGroup> rawPacketGroups = null;
+			List<? extends PacketGroup> rawPacketGroups = null;
 			try {
 				rawPacketGroups = database.getStatusDatabase().query(new MillisQueryBuilder()
 						.startKey(dayStart)
@@ -266,7 +266,7 @@ public class PVOutputUploadMain {
 			long now = System.currentTimeMillis();
 			SimpleDate today = SimpleDate.fromDateMillis(now, timeZone);
 			long dayStartTimeMillis = today.getDayStartDateMillis(timeZone);
-			List<PacketGroup> rawPacketGroups = null;
+			List<? extends PacketGroup> rawPacketGroups = null;
 			try {
 				rawPacketGroups = database.getStatusDatabase().query(new MillisQueryBuilder()
 						.startKey(dayStartTimeMillis)

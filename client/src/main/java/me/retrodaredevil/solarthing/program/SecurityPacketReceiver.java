@@ -72,7 +72,7 @@ public class SecurityPacketReceiver {
 		listenStartTime = System.currentTimeMillis();
 	}
 
-	public void receivePacketGroups(List<PacketGroup> packetGroups) {
+	public void receivePacketGroups(List<? extends PacketGroup> packetGroups) {
 		LOGGER.debug("received packets! size: " + packetGroups.size());
 		List<TargetPacketGroup> packets = new ArrayList<>(packetGroups.size());
 		long minTime = System.currentTimeMillis() - 5 * 60 * 1000; // last 5 minutes allowed

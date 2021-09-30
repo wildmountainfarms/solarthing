@@ -270,7 +270,7 @@ public class CacheHandler {
 				.endKey(lastPeriodEnd.toEpochMilli())
 				.inclusiveEnd(false)
 				.build();
-		final List<PacketGroup> packetGroups;
+		final List<? extends PacketGroup> packetGroups;
 		try {
 			packetGroups = database.getStatusDatabase().query(millisQuery);
 		} catch (SolarThingDatabaseException e) {

@@ -8,6 +8,7 @@ import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.Actions;
 import me.retrodaredevil.solarthing.actions.ActionNode;
 import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.EventDatabaseCacheEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.LatestFragmentedPacketGroupEnvironment;
 import me.retrodaredevil.solarthing.config.FileMapper;
 import me.retrodaredevil.solarthing.config.message.MessageEventNode;
@@ -72,6 +73,7 @@ public class MessageSenderActionNode implements ActionNode {
 	@Override
 	public Action createAction(ActionEnvironment actionEnvironment) {
 		LatestFragmentedPacketGroupEnvironment latestPacketGroupEnvironment = actionEnvironment.getInjectEnvironment().get(LatestFragmentedPacketGroupEnvironment.class);
+		EventDatabaseCacheEnvironment eventDatabaseCacheEnvironment = actionEnvironment.getInjectEnvironment().get(EventDatabaseCacheEnvironment.class);
 		return Actions.createRunOnce(() -> {
 			FragmentedPacketGroup packetGroup = latestPacketGroupEnvironment.getFragmentedPacketGroupProvider().getPacketGroup();
 			FragmentedPacketGroup last = this.last;
