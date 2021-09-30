@@ -12,19 +12,22 @@ import me.retrodaredevil.solarthing.actions.environment.EventDatabaseCacheEnviro
 import me.retrodaredevil.solarthing.actions.environment.LatestFragmentedPacketGroupEnvironment;
 import me.retrodaredevil.solarthing.config.FileMapper;
 import me.retrodaredevil.solarthing.config.message.MessageEventNode;
+import me.retrodaredevil.solarthing.database.cache.ProcessedPacketTracker;
 import me.retrodaredevil.solarthing.message.MessageSender;
 import me.retrodaredevil.solarthing.message.MessageSenderMultiplexer;
-import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
+import me.retrodaredevil.solarthing.packets.collection.*;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
@@ -38,6 +41,7 @@ public class MessageSenderActionNode implements ActionNode {
 	private final List<MessageEventNode> messageEventNodes;
 
 	private FragmentedPacketGroup last = null;
+	private final ProcessedPacketTracker eventProcessedPacketTracker = new ProcessedPacketTracker();
 
 	public MessageSenderActionNode(Map<String, MessageSender> messageSenderMap, List<MessageEventNode> messageEventNodes) {
 		this.messageSenderMap = messageSenderMap;
@@ -70,6 +74,18 @@ public class MessageSenderActionNode implements ActionNode {
 		return senderMap;
 	}
 
+	private MessageSender getMessageSenderFrom(MessageEventNode messageEventNode) {
+		List<MessageSender> messageSenders = new ArrayList<>();
+		for (String senderName : messageEventNode.getSendTo()) {
+			MessageSender sender = messageSenderMap.get(senderName);
+			if (sender == null) {
+				throw new IllegalArgumentException("senderName: " + senderName + " is not defined!");
+			}
+			messageSenders.add(sender);
+		}
+		return new MessageSenderMultiplexer(messageSenders);
+	}
+
 	@Override
 	public Action createAction(ActionEnvironment actionEnvironment) {
 		LatestFragmentedPacketGroupEnvironment latestPacketGroupEnvironment = actionEnvironment.getInjectEnvironment().get(LatestFragmentedPacketGroupEnvironment.class);
@@ -81,22 +97,35 @@ public class MessageSenderActionNode implements ActionNode {
 			if (packetGroup == null) {
 				LOGGER.warn("packetGroup is null!");
 			}
+			final boolean statusRun;
 			if (packetGroup != null && last != null) {
 				if (packetGroup.getDateMillis() <= last.getDateMillis()) {
-					LOGGER.debug("No new packet group! Will not try to send any messages.");
-					return;
+					LOGGER.debug("No new packet group! Will not try to send any messages based on status packets.");
+					statusRun = false;
+				} else {
+					statusRun = true;
 				}
-				for (MessageEventNode messageEventNode : messageEventNodes) {
-					List<MessageSender> messageSenders = new ArrayList<>();
-					for (String senderName : messageEventNode.getSendTo()) {
-						MessageSender sender = messageSenderMap.get(senderName);
-						if (sender == null) {
-							throw new IllegalArgumentException("senderName: " + senderName + " is not defined!");
-						}
-						messageSenders.add(sender);
-					}
-					MessageSender sender = new MessageSenderMultiplexer(messageSenders);
+			} else {
+				LOGGER.debug("No last packet group yet (this is normal). Will not send any messages until next iteration.");
+				statusRun = false;
+			}
+
+			long afterDateMillis = Instant.now().minusSeconds(60).toEpochMilli(); // Only process stuff from the last minute
+			List<InstancePacketGroup> unhandledEventInstancePacketGroups = eventProcessedPacketTracker.getUnprocessedPackets(eventDatabaseCacheEnvironment.getEventDatabaseCache(), afterDateMillis).stream()
+					.map(storedPacketGroup -> {
+						InstancePacketGroup instancePacketGroup = PacketGroups.parseToInstancePacketGroup(storedPacketGroup, DefaultInstanceOptions.REQUIRE_NO_DEFAULTS);
+						DefaultInstanceOptions.requireNoDefaults(instancePacketGroup); // all new packets should have a source and fragment ID in them. (Most old ones too by now)
+						return instancePacketGroup;
+					})
+					.collect(Collectors.toList());
+
+			for (MessageEventNode messageEventNode : messageEventNodes) {
+				MessageSender sender = getMessageSenderFrom(messageEventNode);
+				if (statusRun) {
 					messageEventNode.getMessageEvent().run(sender, last, packetGroup);
+				}
+				for (InstancePacketGroup instancePacketGroup : unhandledEventInstancePacketGroups) {
+					messageEventNode.getMessageEvent().runForEvent(sender, instancePacketGroup);
 				}
 			}
 		});
