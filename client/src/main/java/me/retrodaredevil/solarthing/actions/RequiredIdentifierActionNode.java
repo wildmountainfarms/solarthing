@@ -7,7 +7,6 @@ import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.SimpleAction;
 import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.LatestFragmentedPacketGroupEnvironment;
-import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnvironment;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.util.IdentifierUtil;
 import org.slf4j.Logger;

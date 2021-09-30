@@ -12,7 +12,6 @@ import me.retrodaredevil.solarthing.actions.ActionNode;
 import me.retrodaredevil.solarthing.actions.command.CommandManager;
 import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.LatestFragmentedPacketGroupEnvironment;
-import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnvironment;
 import me.retrodaredevil.solarthing.chatbot.*;
 import me.retrodaredevil.solarthing.message.implementations.SlackMessageSender;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
