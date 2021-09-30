@@ -1,8 +1,8 @@
 package me.retrodaredevil.solarthing.database.cache;
 
 import me.retrodaredevil.solarthing.database.MillisQuery;
+import me.retrodaredevil.solarthing.packets.collection.DateMillisStoredIdentifier;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
-import me.retrodaredevil.solarthing.packets.collection.StoredIdentifier;
 import me.retrodaredevil.solarthing.packets.collection.StoredPacketGroup;
 import me.retrodaredevil.solarthing.util.TimeRange;
 import org.junit.jupiter.api.Test;
@@ -12,7 +12,6 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -107,33 +106,5 @@ class DatabaseCacheTest {
 		return PacketGroups.createStoredPacketGroup(Collections.emptyList(), dateMillis, new DateMillisStoredIdentifier(dateMillis));
 	}
 
-	private static class DateMillisStoredIdentifier implements StoredIdentifier {
-
-		private final long dateMillis;
-
-		private DateMillisStoredIdentifier(long dateMillis) {
-			this.dateMillis = dateMillis;
-		}
-
-		@Override
-		public boolean equals(Object o) {
-			if (this == o) return true;
-			if (o == null || getClass() != o.getClass()) return false;
-			DateMillisStoredIdentifier that = (DateMillisStoredIdentifier) o;
-			return dateMillis == that.dateMillis;
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hash(dateMillis);
-		}
-
-		@Override
-		public String toString() {
-			return "DateMillisStoredIdentifier(" +
-					"dateMillis=" + dateMillis +
-					')';
-		}
-	}
 
 }

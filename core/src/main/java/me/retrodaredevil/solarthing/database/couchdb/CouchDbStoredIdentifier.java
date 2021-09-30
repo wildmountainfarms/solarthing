@@ -4,11 +4,12 @@ import me.retrodaredevil.solarthing.packets.collection.StoredIdentifier;
 
 import java.util.Objects;
 
-public final class CouchDbStoredIdentifier implements StoredIdentifier {
+public final class CouchDbStoredIdentifier extends StoredIdentifier {
 	private final String id;
 	private final String revision;
 
-	public CouchDbStoredIdentifier(String id, String revision) {
+	public CouchDbStoredIdentifier(long dateMillis, String id, String revision) {
+		super(dateMillis);
 		this.id = id;
 		this.revision = revision;
 	}

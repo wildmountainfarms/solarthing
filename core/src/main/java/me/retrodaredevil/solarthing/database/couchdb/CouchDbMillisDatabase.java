@@ -68,7 +68,7 @@ public class CouchDbMillisDatabase implements MillisDatabase {
 			}
 			String documentId = objectNode.get("_id").asText();
 			String documentRevision = objectNode.get("_rev").asText();
-			StoredPacketGroup storedPacketGroup = PacketGroups.createStoredPacketGroup(packetGroup, new CouchDbStoredIdentifier(documentId, documentRevision));
+			StoredPacketGroup storedPacketGroup = PacketGroups.createStoredPacketGroup(packetGroup, new CouchDbStoredIdentifier(packetGroup.getDateMillis(), documentId, documentRevision));
 			r.add(storedPacketGroup);
 		}
 		return r;
