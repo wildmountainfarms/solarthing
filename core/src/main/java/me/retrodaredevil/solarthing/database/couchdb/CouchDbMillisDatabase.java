@@ -99,4 +99,9 @@ public class CouchDbMillisDatabase implements MillisDatabase {
 			throw new SolarThingDatabaseException("Couldn't get revision", e);
 		}
 	}
+
+	@Override
+	public String toString() {
+		return "CouchDbMillisDatabase(database name=" + database.getName() + ")";
+	}
 }

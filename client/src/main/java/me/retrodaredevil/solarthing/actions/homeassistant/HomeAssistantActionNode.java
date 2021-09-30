@@ -7,6 +7,7 @@ import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.Actions;
 import me.retrodaredevil.solarthing.actions.ActionNode;
 import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.LatestFragmentedPacketGroupEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnvironment;
 import me.retrodaredevil.solarthing.homeassistant.HomeAssistantOkHttpUtil;
 import me.retrodaredevil.solarthing.homeassistant.HomeAssistantRetrofitUtil;
@@ -61,10 +62,14 @@ public class HomeAssistantActionNode implements ActionNode {
 
 	@Override
 	public Action createAction(ActionEnvironment actionEnvironment) {
-		LatestPacketGroupEnvironment latestPacketGroupEnvironment = actionEnvironment.getInjectEnvironment().get(LatestPacketGroupEnvironment.class);
+		LatestFragmentedPacketGroupEnvironment latestFragmentedPacketGroupEnvironment = actionEnvironment.getInjectEnvironment().get(LatestFragmentedPacketGroupEnvironment.class);
 
 		return Actions.createRunOnce(() -> {
-			FragmentedPacketGroup packetGroup = (FragmentedPacketGroup) latestPacketGroupEnvironment.getPacketGroupProvider().getPacketGroup();
+			FragmentedPacketGroup packetGroup = latestFragmentedPacketGroupEnvironment.getFragmentedPacketGroupProvider().getPacketGroup();
+			if (packetGroup == null) {
+				LOGGER.warn("packetGroup is null!");
+				return;
+			}
 			List<Call<SensorInfo>> calls = new ArrayList<>();
 			for (Packet packet : packetGroup.getPackets()) {
 				int fragmentId = packetGroup.getFragmentId(packet);
@@ -89,6 +94,7 @@ public class HomeAssistantActionNode implements ActionNode {
 			}
 			for(Call<SensorInfo> call : calls) {
 				try {
+					// TODO move into a separate thread
 					Response<SensorInfo> response = call.execute();
 					if (!response.isSuccessful()) {
 						LOGGER.error("Unsuccessful response! " + requireNonNull(response.errorBody()).string());

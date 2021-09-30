@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.SimpleAction;
 import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.LatestFragmentedPacketGroupEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnvironment;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
@@ -98,14 +99,16 @@ public class RequireFullOutputActionNode implements ActionNode {
 
 	@Override
 	public Action createAction(ActionEnvironment actionEnvironment) {
-		LatestPacketGroupEnvironment latestPacketGroupEnvironment = actionEnvironment.getInjectEnvironment().get(LatestPacketGroupEnvironment.class);
+		LatestFragmentedPacketGroupEnvironment latestPacketGroupEnvironment = actionEnvironment.getInjectEnvironment().get(LatestFragmentedPacketGroupEnvironment.class);
 		return new SimpleAction(false) {
 			@Override
 			protected void onUpdate() {
 				super.onUpdate();
-				FragmentedPacketGroup latestPacketGroup = (FragmentedPacketGroup) latestPacketGroupEnvironment.getPacketGroupProvider().getPacketGroup();
+				FragmentedPacketGroup latestPacketGroup = latestPacketGroupEnvironment.getFragmentedPacketGroupProvider().getPacketGroup();
 
-				setDone(isFullOutput(latestPacketGroup));
+				if (latestPacketGroup != null) {
+					setDone(isFullOutput(latestPacketGroup));
+				}
 			}
 		};
 	}

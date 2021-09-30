@@ -25,6 +25,7 @@ public class RoverBoostVoltageActionNode implements ActionNode {
 	private final int boostVoltageRaw;
 	private final boolean not;
 	private final Integer fragmentId;
+	// TODO maybe also include a "number" field. (Multiple rovers can be on a single fragment)
 
 	@JsonCreator
 	public RoverBoostVoltageActionNode(
@@ -44,6 +45,11 @@ public class RoverBoostVoltageActionNode implements ActionNode {
 			protected void onUpdate() {
 				super.onUpdate();
 				PacketGroup packetGroup = packetGroupProvider.getPacketGroup();
+				if (packetGroup == null) {
+					LOGGER.warn("packetGroup is null!");
+					return;
+				}
+				// Really we should be using a LatestFragmentPacketGroupEnvironment for some cases, and not for others, but instead we just do two different things based on the info given. This seems to work...
 				final FragmentedPacketGroup fragmentedPacketGroup;
 				if (packetGroup instanceof FragmentedPacketGroup) {
 					fragmentedPacketGroup = (FragmentedPacketGroup) packetGroup;

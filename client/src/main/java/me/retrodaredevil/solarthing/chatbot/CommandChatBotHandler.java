@@ -38,14 +38,19 @@ public class CommandChatBotHandler implements ChatBotHandler {
 	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
 	public CommandChatBotHandler(Map<String, List<String>> permissionMap, FragmentedPacketGroupProvider packetGroupProvider, CommandManager commandManager, Supplier<ActionEnvironment> actionEnvironmentSupplier) {
-		this.actionEnvironmentSupplier = actionEnvironmentSupplier;
 		requireNonNull(this.permissionMap = permissionMap);
 		requireNonNull(this.packetGroupProvider = packetGroupProvider);
 		requireNonNull(this.commandManager = commandManager);
+		requireNonNull(this.actionEnvironmentSupplier = actionEnvironmentSupplier);
 	}
 
 	private List<AvailableCommand> getCommands() {
 		FragmentedPacketGroup packetGroup = packetGroupProvider.getPacketGroup();
+
+		if (packetGroup == null) {
+			LOGGER.warn("getCommands() was called, but the packetGroupProvider gave a null value!");
+			return Collections.emptyList();
+		}
 		return packetGroup.getPackets().stream()
 				.filter(packet -> packet instanceof AvailableCommandsPacket)
 				.map(packet -> (AvailableCommandsPacket) packet)

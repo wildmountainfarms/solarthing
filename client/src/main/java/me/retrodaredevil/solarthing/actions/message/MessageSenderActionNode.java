@@ -8,6 +8,7 @@ import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.Actions;
 import me.retrodaredevil.solarthing.actions.ActionNode;
 import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.LatestFragmentedPacketGroupEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnvironment;
 import me.retrodaredevil.solarthing.config.FileMapper;
 import me.retrodaredevil.solarthing.config.message.MessageEventNode;
@@ -15,6 +16,8 @@ import me.retrodaredevil.solarthing.message.MessageSender;
 import me.retrodaredevil.solarthing.message.MessageSenderMultiplexer;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,6 +30,7 @@ import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("message-sender")
 public class MessageSenderActionNode implements ActionNode {
+	private static final Logger LOGGER = LoggerFactory.getLogger(MessageSenderActionNode.class);
 
 	private static final ObjectMapper CONFIG_MAPPER = JacksonUtil.defaultMapper();
 
@@ -68,12 +72,15 @@ public class MessageSenderActionNode implements ActionNode {
 
 	@Override
 	public Action createAction(ActionEnvironment actionEnvironment) {
-		LatestPacketGroupEnvironment latestPacketGroupEnvironment = actionEnvironment.getInjectEnvironment().get(LatestPacketGroupEnvironment.class);
+		LatestFragmentedPacketGroupEnvironment latestPacketGroupEnvironment = actionEnvironment.getInjectEnvironment().get(LatestFragmentedPacketGroupEnvironment.class);
 		return Actions.createRunOnce(() -> {
-			FragmentedPacketGroup packetGroup = (FragmentedPacketGroup) latestPacketGroupEnvironment.getPacketGroupProvider().getPacketGroup();
+			FragmentedPacketGroup packetGroup = latestPacketGroupEnvironment.getFragmentedPacketGroupProvider().getPacketGroup();
 			FragmentedPacketGroup last = this.last;
 			this.last = packetGroup;
-			if (last != null) {
+			if (packetGroup == null) {
+				LOGGER.warn("packetGroup is null!");
+			}
+			if (packetGroup != null && last != null) {
 				for (MessageEventNode messageEventNode : messageEventNodes) {
 					List<MessageSender> messageSenders = new ArrayList<>();
 					for (String senderName : messageEventNode.getSendTo()) {

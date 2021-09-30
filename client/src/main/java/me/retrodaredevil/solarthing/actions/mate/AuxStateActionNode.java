@@ -9,6 +9,7 @@ import me.retrodaredevil.solarthing.actions.ActionNode;
 import me.retrodaredevil.solarthing.PacketGroupProvider;
 import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnvironment;
+import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 import me.retrodaredevil.solarthing.solar.outback.OutbackUtil;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 import org.slf4j.Logger;
@@ -35,7 +36,12 @@ public class AuxStateActionNode implements ActionNode {
 			@Override
 			protected void onUpdate() {
 				super.onUpdate();
-				FXStatusPacket fxStatusPacket = OutbackUtil.getMasterFX(packetGroupProvider.getPacketGroup());
+				PacketGroup packetGroup = packetGroupProvider.getPacketGroup();
+				if (packetGroup == null) {
+					LOGGER.warn("packetGroup is null!");
+					return;
+				}
+				FXStatusPacket fxStatusPacket = OutbackUtil.getMasterFX(packetGroup);
 				if (fxStatusPacket == null) {
 					LOGGER.warn("No master FX Status Packet!");
 				} else {
