@@ -88,9 +88,10 @@ public final class AutomationMain {
 
 		ActionMultiplexer multiplexer = new Actions.ActionMultiplexerBuilder().build();
 		SimpleDatabaseCache statusDatabaseCache = SimpleDatabaseCache.createDefault();
-//		SimpleDatabaseCache eventDatabaseCache = SimpleDatabaseCache.createDefault();
+		SimpleDatabaseCache eventDatabaseCache = SimpleDatabaseCache.createDefault();
 		while (!Thread.currentThread().isInterrupted()) {
 			queryAndFeed(database.getStatusDatabase(), statusDatabaseCache);
+			queryAndFeed(database.getEventDatabase(), eventDatabaseCache);
 
 			List<FragmentedPacketGroup> statusPacketGroups = PacketUtil.getPacketGroups(options.getSourceId(), options.getDefaultInstanceOptions(), statusDatabaseCache.getAllCachedPackets());
 			if (statusPacketGroups != null) {

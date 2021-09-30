@@ -80,6 +80,10 @@ public class MessageSenderActionNode implements ActionNode {
 				LOGGER.warn("packetGroup is null!");
 			}
 			if (packetGroup != null && last != null) {
+				if (packetGroup.getDateMillis() <= last.getDateMillis()) {
+					LOGGER.debug("No new packet group! Will not try to send any messages.");
+					return;
+				}
 				for (MessageEventNode messageEventNode : messageEventNodes) {
 					List<MessageSender> messageSenders = new ArrayList<>();
 					for (String senderName : messageEventNode.getSendTo()) {
