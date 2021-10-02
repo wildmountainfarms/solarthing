@@ -48,6 +48,9 @@ for the message-sender program and other general 'actions'
 * MQTT Support added
 * Switched from Ektorp to custom CouchDB library
 * Started to make some aspects of SolarThing use their own thread
+* The buried cable connecting the MATE2 failed. MATE was moved into the Battery Room. The RPi0 was set up
+to monitor it, but soon the RPi0 died for an unknown reason and was replaced by an RPi3. Now most monitoring runs off
+that RPi3.
 
 
 ### Moving from Gson to Jackson

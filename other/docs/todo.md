@@ -26,8 +26,6 @@
   * The goal here is to be able to say "start generator at 5PM" and then also be able to cancel it
 * Make sure clients tolerate quick disconnects and reconnects from a device so that devices with unstable connections
 don't look like they're constantly disconnecting and reconnecting
-* Add action to store an informational message in the database
-  * This is good for feedback for a particular command that is running.
 * Add packet for rover write commands that ran - (we already have one for mate commands)
 * Possibly refactor PacketListReceiver
   * Get rid of InstantType
@@ -39,8 +37,6 @@ don't look like they're constantly disconnecting and reconnecting
 * Backend Grafana plugin to allow commands to be sent
 * Have a CouchDB view that emits null so that the millis view can be more efficient and people can use include_docs=true
   * https://www.dimagi.com/blog/what-every-developer-should-know-about-couchdb/
-* Have option to use shorter document IDs
-  * CouchDB recommends shorter IDs: https://docs.couchdb.org/en/stable/maintenance/performance.html#document-s-id
 * GraphQL queries for getting the angle of the sun in the sky (current and highest point in the day)
   * https://ipgeolocation.io/documentation/astronomy-api.html - unintuitive Java SDK with bad documentation
   * https://github.com/caarmen/SunriseSunset - gross requirement to use java.util.Calendar
@@ -53,7 +49,6 @@ and is not giving full available power.
   * I'm not sure how we should indicate something like this on Grafana quite yet
 * Use https://github.com/tbroyer/gradle-errorprone-plugin
 * Metadata packet that describes the solar panels connected to a charge controller between a period of time
-* Automation program should have access to data since the beginning of the day and should query solarthing-events
   
 ### Completed
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
@@ -95,6 +90,10 @@ easy displaying in Grafana
 * Have standard timings for grouping/sorting packets and increase time for GraphQL grouped queries so that
   all temperature readings show up even if one is from 10 minutes ago.
 * More accurate solcast by using actual kWh data throughout the day
+* Have option to use shorter document IDs
+  * CouchDB recommends shorter IDs: https://docs.couchdb.org/en/stable/maintenance/performance.html#document-s-id
+* Add action to store an informational message in the database
+* Automation program should have access to data since the beginning of the day and should query solarthing-events
 
 ### Look into
 * Look into supporting Elasticsearch, MongoDB, Graphite

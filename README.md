@@ -104,12 +104,10 @@ but is easiest to set up on Linux systems running Debian with systemd (such as t
 The [quickstart](other/docs/quickstart.md) can help you get SolarThing up and running.
 
 ## Usage at Wild Mountain Farms
-We monitor an Outback MATE2 with a Raspberry Pi 1 and a Renogy Rover charge controller with a Raspberry Pi Zero W.
-Both SolarThing instances upload data to CouchDB, hosted on the computer also hosting Grafana and SolarThing Web.
-This computer also gets data from CouchDB and uploads it to PVOutput using the `pvoutput-upload` program.
-
-We used to also use InfluxDB for allowing easy displaying of data on Grafana, but we now use CouchDB and
-SolarThing GraphQL for that.
+We monitor an Outback MATE2, Renogy Rover PG 40A, EPEver Tracer2210AN (20A) using a Raspberry Pi 3.
+Each device has its own instance of SolarThing running. Each instance uploads data to CouchDB. CouchDB, Grafana,
+and SolarThing GraphQL run on a separate "NAS" computer. This NAS runs the automation and pvoutput programs.
+The automation program handles the sending of Slack messages for low battery notifications.
 
 ## Using the program
 You can see the [Outback/Renogy Rover](other/solar/README.md) README for using the program with outback or renogy products.
