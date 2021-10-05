@@ -7,4 +7,6 @@ public enum CommandOpenPacketType implements DocumentedPacketType {
 	REQUEST_COMMAND,
 	@WorkInProgress
 	SCHEDULE_COMMAND,
+	@WorkInProgress
+	REQUEST_FLAG,
 }

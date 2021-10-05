@@ -54,6 +54,7 @@ public class SlackChatBotActionNode implements ActionNode {
 				.connectTimeout(Duration.ofSeconds(4))
 				.build()));
 		FragmentedPacketGroupProvider packetGroupProvider = () -> latestPacketGroup;
+		// This will eventually be useful for parsing arguments better: https://stackoverflow.com/questions/1082953/shlex-alternative-for-java
 		action = new SlackChatBotAction(
 				appToken,
 				new SlackMessageSender(authToken, channelId, slack),

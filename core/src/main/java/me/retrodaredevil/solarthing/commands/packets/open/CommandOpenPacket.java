@@ -9,7 +9,9 @@ import me.retrodaredevil.solarthing.packets.TypedDocumentedPacket;
  * Usually encoded or encrypted for integrity.
  */
 @JsonSubTypes({
-		@JsonSubTypes.Type(RequestCommandPacket.class)
+		@JsonSubTypes.Type(RequestCommandPacket.class),
+		@JsonSubTypes.Type(ScheduleCommandPacket.class),
+		@JsonSubTypes.Type(RequestFlagPacket.class),
 })
 public interface CommandOpenPacket extends TypedDocumentedPacket<CommandOpenPacketType>, OpenSourcePacket {
 }
