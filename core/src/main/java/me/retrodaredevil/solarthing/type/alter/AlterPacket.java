@@ -1,11 +1,16 @@
 package me.retrodaredevil.solarthing.type.alter;
 
-import me.retrodaredevil.solarthing.annotations.WorkInProgress;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
 import me.retrodaredevil.solarthing.packets.TypedDocumentedPacket;
+import me.retrodaredevil.solarthing.type.alter.packets.FlagPacket;
+import me.retrodaredevil.solarthing.type.alter.packets.ScheduledCommandPacket;
 
 /**
  * Represents a packet that is directly stored in the alter database
  */
-@WorkInProgress // eventually this will have a JsonSubType annotation on it
+@JsonSubTypes({
+		@JsonSubTypes.Type(ScheduledCommandPacket.class),
+		@JsonSubTypes.Type(FlagPacket.class),
+})
 public interface AlterPacket extends TypedDocumentedPacket<AlterPacketType> {
 }

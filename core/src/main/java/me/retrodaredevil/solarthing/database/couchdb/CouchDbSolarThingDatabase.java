@@ -48,6 +48,8 @@ public class CouchDbSolarThingDatabase implements SolarThingDatabase {
 	private final CouchDbMillisDatabase eventDatabase;
 	private final CouchDbMillisDatabase openDatabase;
 
+	private final CouchDbAlterDatabase alterDatabase;
+
 	/**
 	 *
 	 * @param instance
@@ -71,6 +73,8 @@ public class CouchDbSolarThingDatabase implements SolarThingDatabase {
 		ObjectMapper openMapper = mapper.copy();
 		openMapper.getSubtypeResolver().registerSubtypes(SecurityPacket.class, InstancePacket.class);
 		openDatabase = new CouchDbMillisDatabase(instance.getDatabase(SolarThingConstants.OPEN_DATABASE), openMapper, errorHandler);
+
+		alterDatabase = new CouchDbAlterDatabase(instance.getDatabase(SolarThingConstants.ALTER_DATABASE), mapper); // we don't need to register any subtypes for the alter database because it's just that cool :)
 	}
 	public static CouchDbSolarThingDatabase create(CouchDbInstance instance) {
 		return new CouchDbSolarThingDatabase(instance, PacketParsingErrorHandler.DO_NOTHING, JacksonUtil.lenientMapper(JacksonUtil.defaultMapper()));
@@ -83,6 +87,11 @@ public class CouchDbSolarThingDatabase implements SolarThingDatabase {
 	public @NotNull MillisDatabase getEventDatabase() { return eventDatabase; }
 	@Override
 	public @NotNull MillisDatabase getOpenDatabase() { return openDatabase; }
+
+	@Override
+	public @NotNull CouchDbAlterDatabase getAlterDatabase() {
+		return alterDatabase;
+	}
 
 	@Override
 	public @Nullable VersionedPacket<RootMetaPacket> queryMetadata(UpdateToken updateToken) throws SolarThingDatabaseException {

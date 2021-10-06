@@ -2,7 +2,7 @@ package me.retrodaredevil.solarthing.database;
 
 import static java.util.Objects.requireNonNull;
 
-public class VersionedPacket<T> {
+public final class VersionedPacket<T> {
 	private final T packet;
 	private final UpdateToken updateToken;
 

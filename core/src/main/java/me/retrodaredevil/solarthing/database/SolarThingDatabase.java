@@ -13,6 +13,8 @@ public interface SolarThingDatabase {
 	@NotNull MillisDatabase getEventDatabase();
 	@NotNull MillisDatabase getOpenDatabase();
 
+	@NotNull AlterDatabase getAlterDatabase();
+
 	/**
 	 * @param updateToken The update token. null will be returned if the meta document has not been updated since this update token. If null, the returned packet will not be null
 	 * @return The packet or null if it has not been updated since {@code updateToken}
