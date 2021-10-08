@@ -5,6 +5,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+/**
+ * Once created, an {@link InjectEnvironment} is immutable and thread safe. Values returned by {@link #get(Class)} should be immutable and thread safe,
+ * but data within that data may not be thread safe.
+ */
 public class InjectEnvironment {
 	private final Map<Class<?>, Object> map;
 

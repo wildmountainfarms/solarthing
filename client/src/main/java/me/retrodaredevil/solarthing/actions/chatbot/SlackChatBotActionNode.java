@@ -54,7 +54,7 @@ public class SlackChatBotActionNode implements ActionNode {
 				.connectTimeout(Duration.ofSeconds(4))
 				.build()));
 		FragmentedPacketGroupProvider packetGroupProvider = () -> latestPacketGroup;
-		// This will eventually be useful for parsing arguments better: https://stackoverflow.com/questions/1082953/shlex-alternative-for-java
+		ChatBotCommandHelper commandHelper = new ChatBotCommandHelper(permissionMap, packetGroupProvider, new CommandManager(keyDirectory, sender));
 		action = new SlackChatBotAction(
 				appToken,
 				new SlackMessageSender(authToken, channelId, slack),
@@ -62,7 +62,8 @@ public class SlackChatBotActionNode implements ActionNode {
 				new HelpChatBotHandler(
 						new ChatBotHandlerMultiplexer(Arrays.asList(
 								new StaleMessageHandler(),
-								new CommandChatBotHandler(permissionMap, packetGroupProvider, new CommandManager(keyDirectory, sender), () -> actionEnvironment),
+								new ScheduleCommandChatBotHandler(commandHelper),
+								new CommandChatBotHandler(commandHelper, () -> actionEnvironment),
 								new StatusChatBotHandler(packetGroupProvider),
 								(message, messageSender) -> {
 									messageSender.sendMessage("Unknown command!");
