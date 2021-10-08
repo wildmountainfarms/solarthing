@@ -1,9 +1,12 @@
 package me.retrodaredevil.solarthing.util;
 
+import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 
 import java.text.DecimalFormat;
 import java.text.Format;
+import java.time.Duration;
+import java.time.format.DateTimeParseException;
 
 @UtilityClass
 public class TimeUtil {
@@ -28,5 +31,30 @@ public class TimeUtil {
 		}
 		long remainderSeconds = seconds % 60;
 		return minutes + " minutes " + remainderSeconds + " seconds";
+	}
+
+	public static String informalDurationToFormal(String informalDuration) {
+		String formalDuration = informalDuration.toUpperCase()
+				.replaceAll("SECONDS|SECOND", "S")
+				.replaceAll("MINUTES|MINUTE", "M")
+				.replaceAll("HOURS|HOUR", "H")
+				.replaceAll("DAYS|DAY", "D")
+				;
+		if (!informalDuration.startsWith("P")) { // Make the format of the string we send lenient
+			if (informalDuration.contains("T")) {
+				formalDuration = "P" + formalDuration;
+			} else {
+				formalDuration = "PT" + formalDuration;
+			}
+		}
+		formalDuration = formalDuration.replaceAll(" ", "");
+		return formalDuration;
+	}
+	public static @Nullable Duration lenientParseDurationOrNull(String informalDuration) {
+		String formalDuration = informalDurationToFormal(informalDuration);
+		try {
+			return Duration.parse(formalDuration);
+		} catch (DateTimeParseException ignored) {}
+		return null;
 	}
 }

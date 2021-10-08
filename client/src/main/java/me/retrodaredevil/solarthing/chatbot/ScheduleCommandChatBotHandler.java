@@ -1,10 +1,10 @@
 package me.retrodaredevil.solarthing.chatbot;
 
 import me.retrodaredevil.solarthing.message.MessageSender;
+import me.retrodaredevil.solarthing.util.TimeUtil;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.format.DateTimeParseException;
 
 import static java.util.Objects.requireNonNull;
 
@@ -41,22 +41,7 @@ public class ScheduleCommandChatBotHandler implements ChatBotHandler {
 				messageSender.sendMessage("Unknown command: " + command);
 				return true;
 			}
-//			boolean isAt = remaining.replace(command, "").trim().startsWith("at");
-			String formalDuration = time.toUpperCase()
-					.replaceAll("HOUR", "H")
-					.replaceAll("MINUTES", "M")
-					.replaceAll("MINUTE", "M");
-			if (!time.startsWith("P")) { // Make the format of the string we send lenient
-				if (time.contains("T")) {
-					formalDuration = "P" + formalDuration;
-				} else {
-					formalDuration = "PT" + formalDuration;
-				}
-			}
-			Duration timeInFutureToSchedule = null;
-			try {
-				timeInFutureToSchedule = Duration.parse(formalDuration);
-			} catch (DateTimeParseException ignored){}
+			Duration timeInFutureToSchedule = TimeUtil.lenientParseDurationOrNull(time);
 
 			if (timeInFutureToSchedule == null) {
 				// only support duration in future for now
@@ -79,6 +64,6 @@ public class ScheduleCommandChatBotHandler implements ChatBotHandler {
 			messageSender.sendMessage("Cannot schedule a command more than 72 hours from now.");
 			return;
 		}
-		messageSender.sendMessage("Scheduling " + availableCommand.getCommandInfo().getDisplayName() + " at " + targetTime);
+		messageSender.sendMessage("(Pretend) Scheduling " + availableCommand.getCommandInfo().getDisplayName() + " at " + targetTime);
 	}
 }

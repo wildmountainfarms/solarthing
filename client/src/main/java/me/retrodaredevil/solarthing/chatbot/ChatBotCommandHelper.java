@@ -55,10 +55,6 @@ public class ChatBotCommandHelper {
 				.collect(Collectors.toList());
 	}
 
-	public FragmentedPacketGroupProvider getPacketGroupProvider() {
-		return packetGroupProvider;
-	}
-
 	public CommandManager getCommandManager() {
 		return commandManager;
 	}
