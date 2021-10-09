@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.chatbot;
 import me.retrodaredevil.solarthing.actions.command.CommandManager;
 import me.retrodaredevil.solarthing.actions.environment.InjectEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.SolarThingDatabaseEnvironment;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.commands.packets.open.ImmutableScheduleCommandPacket;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
@@ -15,7 +16,9 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -25,7 +28,8 @@ import static java.util.Objects.requireNonNull;
 
 public class ScheduleCommandChatBotHandler implements ChatBotHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ScheduleCommandChatBotHandler.class);
-	private static final String USAGE = "Incorrect usage of schedule! Usage: \n\tschedule <command> <at <time>|in <duration>>";
+	private static final String SHORT_USAGE = "schedule <command> <at <time>|in <duration>>";
+	private static final String USAGE = "Incorrect usage of schedule! Usage:\n\t" + SHORT_USAGE;
 
 	private final ChatBotCommandHelper commandHelper;
 	private final Supplier<InjectEnvironment> injectEnvironmentSupplier;
@@ -37,6 +41,10 @@ public class ScheduleCommandChatBotHandler implements ChatBotHandler {
 		requireNonNull(this.injectEnvironmentSupplier = injectEnvironmentSupplier);
 	}
 
+	private boolean canScheduleAnyCommands(Message message) {
+		return commandHelper.hasPermission(message, "solarthing.schedule");
+	}
+
 	@Override
 	public boolean handleMessage(Message message, MessageSender messageSender) {
 		String text = message.getText().toLowerCase();
@@ -45,6 +53,11 @@ public class ScheduleCommandChatBotHandler implements ChatBotHandler {
 			return false;
 		}
 		if (split[0].equals("schedule")) {
+			// We only have to check for permissions here
+			if (!canScheduleAnyCommands(message)) {
+				messageSender.sendMessage("You do not have permission to schedule commands!");
+				return true;
+			}
 			if (split.length == 1) {
 				messageSender.sendMessage(USAGE);
 				return true;
@@ -116,5 +129,13 @@ public class ScheduleCommandChatBotHandler implements ChatBotHandler {
 				messageSender.sendMessage("Could not upload schedule command request.");
 			}
 		});
+	}
+
+	@Override
+	public @NotNull List<String> getHelpLines(Message helpMessage) {
+		if (canScheduleAnyCommands(helpMessage)) {
+			return Collections.singletonList(SHORT_USAGE);
+		}
+		return Collections.emptyList();
 	}
 }
