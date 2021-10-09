@@ -1,19 +1,31 @@
 package me.retrodaredevil.solarthing.chatbot;
 
+import me.retrodaredevil.solarthing.actions.command.CommandManager;
+import me.retrodaredevil.solarthing.actions.environment.InjectEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.SolarThingDatabaseEnvironment;
+import me.retrodaredevil.solarthing.commands.packets.open.ImmutableScheduleCommandPacket;
+import me.retrodaredevil.solarthing.database.SolarThingDatabase;
 import me.retrodaredevil.solarthing.message.MessageSender;
+import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
+import me.retrodaredevil.solarthing.type.alter.packets.ScheduledCommandData;
 import me.retrodaredevil.solarthing.util.TimeUtil;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Collections;
+import java.util.UUID;
+import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
 public class ScheduleCommandChatBotHandler implements ChatBotHandler {
 	private static final String USAGE = "Incorrect usage of schedule! Usage: \n\tschedule <command> <at <time>|in <duration>>";
 	private final ChatBotCommandHelper commandHelper;
+	private final Supplier<InjectEnvironment> injectEnvironmentSupplier;
 
-	public ScheduleCommandChatBotHandler(ChatBotCommandHelper commandHelper) {
+	public ScheduleCommandChatBotHandler(ChatBotCommandHelper commandHelper, Supplier<InjectEnvironment> injectEnvironmentSupplier) {
 		requireNonNull(this.commandHelper = commandHelper);
+		requireNonNull(this.injectEnvironmentSupplier = injectEnvironmentSupplier);
 	}
 
 	@Override
@@ -64,6 +76,20 @@ public class ScheduleCommandChatBotHandler implements ChatBotHandler {
 			messageSender.sendMessage("Cannot schedule a command more than 72 hours from now.");
 			return;
 		}
+		InjectEnvironment injectEnvironment = requireNonNull(injectEnvironmentSupplier.get(), "No InjectEnvironment!");
+		SolarThingDatabase database = injectEnvironment.get(SolarThingDatabaseEnvironment.class).getSolarThingDatabase();
+
+		CommandManager.Creator creator = commandHelper.getCommandManager().makeCreator(
+				injectEnvironment,
+				null, // We don't have an InstanceTargetPacket because scheduling commands is not handled by a program with a fragment ID
+				new ImmutableScheduleCommandPacket(new ScheduledCommandData(
+						targetTime.toEpochMilli(),
+						availableCommand.getCommandInfo().getName(),
+						Collections.singleton(availableCommand.getFragmentId())
+				), UUID.randomUUID()) // random UUID here for a random unique ID
+		);
+		PacketCollection packetCollection = creator.create(now);
+
 		messageSender.sendMessage("(Pretend) Scheduling " + availableCommand.getCommandInfo().getDisplayName() + " at " + targetTime);
 	}
 }

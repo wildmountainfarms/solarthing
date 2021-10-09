@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.chatbot;
 
-import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
+import me.retrodaredevil.solarthing.actions.command.CommandManager;
+import me.retrodaredevil.solarthing.actions.environment.InjectEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.SolarThingDatabaseEnvironment;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.commands.CommandInfo;
@@ -9,9 +10,11 @@ import me.retrodaredevil.solarthing.database.SolarThingDatabase;
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
 import me.retrodaredevil.solarthing.message.MessageSender;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
+import me.retrodaredevil.solarthing.packets.instance.InstanceTargetPackets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -25,12 +28,12 @@ public class CommandChatBotHandler implements ChatBotHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CommandChatBotHandler.class);
 
 	private final ChatBotCommandHelper commandHelper;
-	private final Supplier<ActionEnvironment> actionEnvironmentSupplier;
+	private final Supplier<InjectEnvironment> injectEnvironmentSupplier;
 	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-	public CommandChatBotHandler(ChatBotCommandHelper commandHelper, Supplier<ActionEnvironment> actionEnvironmentSupplier) {
+	public CommandChatBotHandler(ChatBotCommandHelper commandHelper, Supplier<InjectEnvironment> injectEnvironmentSupplier) {
 		requireNonNull(this.commandHelper = commandHelper);
-		requireNonNull(this.actionEnvironmentSupplier = actionEnvironmentSupplier);
+		requireNonNull(this.injectEnvironmentSupplier = injectEnvironmentSupplier);
 	}
 
 	@Override
@@ -41,13 +44,15 @@ public class CommandChatBotHandler implements ChatBotHandler {
 		}
 		CommandInfo info = best.getCommandInfo();
 		messageSender.sendMessage("Sending command: " + info.getDisplayName());
-		ActionEnvironment actionEnvironment = requireNonNull(actionEnvironmentSupplier.get(), "No ActionEnvironment!");
-		SolarThingDatabase database = actionEnvironment.getInjectEnvironment().get(SolarThingDatabaseEnvironment.class).getSolarThingDatabase();
-		PacketCollection packetCollection = commandHelper.getCommandManager().create(
-				actionEnvironment,
-				Collections.singleton(best.getFragmentId()),
+		InjectEnvironment injectEnvironment = requireNonNull(injectEnvironmentSupplier.get(), "No InjectEnvironment!");
+		SolarThingDatabase database = injectEnvironment.get(SolarThingDatabaseEnvironment.class).getSolarThingDatabase();
+		CommandManager.Creator creator = commandHelper.getCommandManager().makeCreator(
+				injectEnvironment,
+				InstanceTargetPackets.create(Collections.singleton(best.getFragmentId())),
 				new ImmutableRequestCommandPacket(info.getName())
 		);
+		Instant now = Instant.now();
+		PacketCollection packetCollection = creator.create(now);
 		executorService.execute(() -> {
 			try {
 				database.getOpenDatabase().uploadPacketCollection(packetCollection, null);

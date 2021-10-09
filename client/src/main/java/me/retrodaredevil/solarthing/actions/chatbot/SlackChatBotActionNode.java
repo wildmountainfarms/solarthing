@@ -11,6 +11,7 @@ import me.retrodaredevil.solarthing.FragmentedPacketGroupProvider;
 import me.retrodaredevil.solarthing.actions.ActionNode;
 import me.retrodaredevil.solarthing.actions.command.CommandManager;
 import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.InjectEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.LatestFragmentedPacketGroupEnvironment;
 import me.retrodaredevil.solarthing.chatbot.*;
 import me.retrodaredevil.solarthing.message.implementations.SlackMessageSender;
@@ -22,6 +23,7 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 @JsonTypeName("chatbot_slack")
 public class SlackChatBotActionNode implements ActionNode {
@@ -55,6 +57,8 @@ public class SlackChatBotActionNode implements ActionNode {
 				.build()));
 		FragmentedPacketGroupProvider packetGroupProvider = () -> latestPacketGroup;
 		ChatBotCommandHelper commandHelper = new ChatBotCommandHelper(permissionMap, packetGroupProvider, new CommandManager(keyDirectory, sender));
+
+		Supplier<InjectEnvironment> injectEnvironmentSupplier = () -> actionEnvironment.getInjectEnvironment();
 		action = new SlackChatBotAction(
 				appToken,
 				new SlackMessageSender(authToken, channelId, slack),
@@ -62,8 +66,8 @@ public class SlackChatBotActionNode implements ActionNode {
 				new HelpChatBotHandler(
 						new ChatBotHandlerMultiplexer(Arrays.asList(
 								new StaleMessageHandler(),
-								new ScheduleCommandChatBotHandler(commandHelper),
-								new CommandChatBotHandler(commandHelper, () -> actionEnvironment),
+								new ScheduleCommandChatBotHandler(commandHelper, injectEnvironmentSupplier),
+								new CommandChatBotHandler(commandHelper, injectEnvironmentSupplier),
 								new StatusChatBotHandler(packetGroupProvider),
 								(message, messageSender) -> {
 									messageSender.sendMessage("Unknown command!");

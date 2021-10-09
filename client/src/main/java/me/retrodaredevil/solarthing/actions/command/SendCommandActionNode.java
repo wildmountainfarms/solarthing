@@ -13,10 +13,12 @@ import me.retrodaredevil.solarthing.commands.packets.open.RequestCommandPacket;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
+import me.retrodaredevil.solarthing.packets.instance.InstanceTargetPackets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -48,8 +50,10 @@ public class SendCommandActionNode implements ActionNode {
 	@Override
 	public Action createAction(ActionEnvironment actionEnvironment) {
 		SolarThingDatabase database = actionEnvironment.getInjectEnvironment().get(SolarThingDatabaseEnvironment.class).getSolarThingDatabase();
-		PacketCollection packetCollection = commandManager.create(actionEnvironment, fragmentIdTargets, requestCommandPacket);
+		CommandManager.Creator creator = commandManager.makeCreator(actionEnvironment.getInjectEnvironment(), InstanceTargetPackets.create(fragmentIdTargets), requestCommandPacket);
 		return Actions.createRunOnce(() -> {
+			Instant now = Instant.now();
+			PacketCollection packetCollection = creator.create(now);
 			executorService.execute(() -> {
 				try {
 					database.getOpenDatabase().uploadPacketCollection(packetCollection, null);

@@ -2,9 +2,10 @@ package me.retrodaredevil.solarthing.actions.command;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.InjectEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.SourceIdEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.TimeZoneEnvironment;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.commands.packets.open.CommandOpenPacket;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
@@ -12,7 +13,6 @@ import me.retrodaredevil.solarthing.packets.collection.PacketCollections;
 import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePacket;
 import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePackets;
 import me.retrodaredevil.solarthing.packets.instance.InstanceTargetPacket;
-import me.retrodaredevil.solarthing.packets.instance.InstanceTargetPackets;
 import me.retrodaredevil.solarthing.packets.security.ImmutableLargeIntegrityPacket;
 import me.retrodaredevil.solarthing.packets.security.crypto.*;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
@@ -30,9 +30,9 @@ import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Arrays;
-import java.util.Collection;
 
 import static java.util.Objects.requireNonNull;
 
@@ -84,42 +84,62 @@ public class CommandManager {
 		return requireNonNull(keyPair);
 	}
 
-	public PacketCollection create(ActionEnvironment actionEnvironment, Collection<Integer> fragmentIdTargets, CommandOpenPacket commandOpenPacket) {
-		KeyPair keyPair = getKeyPair();
-		String sourceId = actionEnvironment.getInjectEnvironment().get(SourceIdEnvironment.class).getSourceId();
-		InstanceSourcePacket instanceSourcePacket = InstanceSourcePackets.create(sourceId);
-		InstanceTargetPacket instanceTargetPacket = InstanceTargetPackets.create(fragmentIdTargets);
+	/**
+	 *
+	 * @param injectEnvironment The InjectEnvironment to use. {@link InjectEnvironment#get(Class)} is called before the making of {@link Creator}, so {@link Creator#create(Instant)}
+	 *                          will not call {@link InjectEnvironment#get(Class)}
+	 * @param instanceTargetPacket The {@link InstanceTargetPacket} to indicate which fragments to target or null. If null, it is not added to the packet collection
+	 * @param commandOpenPacket The command packet
+	 * @return A creator to make a packet collection. When supplied with an {@link Instant} representing now, a packet collection is created.
+	 */
+	public Creator makeCreator(InjectEnvironment injectEnvironment, @Nullable InstanceTargetPacket instanceTargetPacket, CommandOpenPacket commandOpenPacket) {
+		requireNonNull(injectEnvironment);
+		// instanceTargetPacket may be null
+		requireNonNull(commandOpenPacket);
 
-		ZoneId zoneId = actionEnvironment.getInjectEnvironment().get(TimeZoneEnvironment.class).getZoneId();
+		KeyPair keyPair = getKeyPair();
+		String sourceId = injectEnvironment.get(SourceIdEnvironment.class).getSourceId();
+		InstanceSourcePacket instanceSourcePacket = InstanceSourcePackets.create(sourceId);
+
+		ZoneId zoneId = injectEnvironment.get(TimeZoneEnvironment.class).getZoneId();
 
 		// ----
+		return now -> {
+			PacketCollection packetCollectionToNestAndEncrypt = PacketCollections.createFromPackets(
+					now,
+					instanceTargetPacket == null
+							? Arrays.asList(commandOpenPacket, instanceSourcePacket)
+							: Arrays.asList(commandOpenPacket, instanceSourcePacket, instanceTargetPacket),
+					PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR, zoneId
+			);
+			final String payload;
+			try {
+				payload = MAPPER.writeValueAsString(packetCollectionToNestAndEncrypt);
+			} catch (JsonProcessingException e) {
+				throw new RuntimeException(e);
+			}
+			String hashString = Long.toHexString(now.toEpochMilli()) + "," + HashUtil.encodedHash(payload);
+			final String encrypted;
+			try {
+				synchronized (CIPHER) { // It's possible we could be in a multi-threaded environment, and you cannot have multiple threads using a single cipher at once
+					encrypted = Encrypt.encrypt(CIPHER, keyPair.getPrivate(), hashString);
+				}
+			} catch (InvalidKeyException | EncryptException e) {
+				throw new RuntimeException(e);
+			}
+			return PacketCollections.createFromPackets(
+					now,
+					Arrays.asList(
+							new ImmutableLargeIntegrityPacket(sender, encrypted, payload),
+							instanceSourcePacket, instanceTargetPacket
+					),
+					PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR, zoneId
+			);
+		};
 
-		PacketCollection encryptedCollection = PacketCollections.createFromPackets(
-				Arrays.asList(commandOpenPacket, instanceSourcePacket, instanceTargetPacket),
-				PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR, zoneId
-		);
-		final String payload;
-		try {
-			payload = MAPPER.writeValueAsString(encryptedCollection);
-		} catch (JsonProcessingException e) {
-			throw new RuntimeException(e);
-		}
-		String hashString = Long.toHexString(System.currentTimeMillis()) + "," + HashUtil.encodedHash(payload);
-		final String encrypted;
-		try {
-			encrypted = Encrypt.encrypt(CIPHER, keyPair.getPrivate(), hashString);
-		} catch (InvalidKeyException | EncryptException e) {
-			throw new RuntimeException(e);
-		}
-		PacketCollection packetCollection = PacketCollections.createFromPackets(
-				Arrays.asList(
-						new ImmutableLargeIntegrityPacket(sender, encrypted, payload),
-						instanceSourcePacket, instanceTargetPacket
-				),
-				PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR, zoneId
-		);
-
-		return packetCollection;
 	}
 
+	public interface Creator {
+		PacketCollection create(Instant now);
+	}
 }
