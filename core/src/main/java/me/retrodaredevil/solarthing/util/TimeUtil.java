@@ -6,6 +6,7 @@ import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import java.text.DecimalFormat;
 import java.text.Format;
 import java.time.Duration;
+import java.time.Instant;
 import java.time.format.DateTimeParseException;
 
 @UtilityClass
@@ -56,5 +57,14 @@ public class TimeUtil {
 			return Duration.parse(formalDuration);
 		} catch (DateTimeParseException ignored) {}
 		return null;
+	}
+
+	public static String instantToSlackDateSeconds(Instant instant) {
+		return instantToSlackDateSeconds(instant, instant.toString());
+	}
+	public static String instantToSlackDateSeconds(Instant instant, String fallback) {
+		// https://api.slack.com/reference/surfaces/formatting#date-formatting
+		long seconds = instant.getEpochSecond();
+		return "<!date^" + seconds + "^{date_num} {time_secs}|" + fallback + ">";
 	}
 }

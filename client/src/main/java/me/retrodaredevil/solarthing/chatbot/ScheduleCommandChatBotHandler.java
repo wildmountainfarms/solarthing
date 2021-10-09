@@ -100,7 +100,7 @@ public class ScheduleCommandChatBotHandler implements ChatBotHandler {
 		);
 		PacketCollection packetCollection = creator.create(now);
 
-		messageSender.sendMessage("Scheduling " + availableCommand.getCommandInfo().getDisplayName() + " at " + targetTime);
+		messageSender.sendMessage("Scheduling " + availableCommand.getCommandInfo().getDisplayName() + " at " + TimeUtil.instantToSlackDateSeconds(targetTime));
 
 		executorService.execute(() -> {
 			boolean success = false;
