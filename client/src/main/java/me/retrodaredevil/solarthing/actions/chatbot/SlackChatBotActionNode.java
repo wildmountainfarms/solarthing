@@ -65,7 +65,7 @@ public class SlackChatBotActionNode implements ActionNode {
 				slack,
 				new HelpChatBotHandler(
 						new ChatBotHandlerMultiplexer(Arrays.asList(
-								new StaleMessageHandler(),
+								new StaleMessageHandler(), // note: this isn't applied to "help" commands
 								new ScheduleCommandChatBotHandler(commandHelper, injectEnvironmentSupplier),
 								new CommandChatBotHandler(commandHelper, injectEnvironmentSupplier),
 								new StatusChatBotHandler(packetGroupProvider),

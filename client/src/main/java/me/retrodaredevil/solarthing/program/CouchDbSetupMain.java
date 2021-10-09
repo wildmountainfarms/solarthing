@@ -114,18 +114,18 @@ public class CouchDbSetupMain {
 			createUserIfNotExists(uploaderUser);
 		}
 
-		out.println("You can also enter the name of the user to manage the solarthing_cache database.");
+		out.println("You can also enter the name of the user to manage the solarthing_cache and solarthing_alter databases.");
 		out.println("This user is commonly named 'manager'. (Leave blank to not configure)" + (uploaderUser == null ? "" : " (Use '" + uploaderUser + "' to use same user to manage the cache database)"));
-		String cacheManagerUser = scanner.nextLine();
-		if (cacheManagerUser.isEmpty()) {
-			cacheManagerUser = null;
-			out.println("No user will be configured to manage the solarthing_cache database. (Enter to confirm)");
+		String managerUser = scanner.nextLine();
+		if (managerUser.isEmpty()) {
+			managerUser = null;
+			out.println("No user will be configured to manage the solarthing_cache and solarthing_alter database. (Enter to confirm)");
 		} else {
-			out.println("User: " + cacheManagerUser + " will be used to manage solarthing_cache. (Enter to confirm)");
+			out.println("User: " + managerUser + " will be used to manage solarthing_cache and solarthing_alter. (Enter to confirm)");
 		}
 		scanner.nextLine();
-		if (cacheManagerUser != null && !cacheManagerUser.equals(uploaderUser)) {
-			createUserIfNotExists(cacheManagerUser);
+		if (managerUser != null && !managerUser.equals(uploaderUser)) {
+			createUserIfNotExists(managerUser);
 		}
 
 		out.println();
@@ -152,7 +152,9 @@ public class CouchDbSetupMain {
 				try {
 					database.putDocument("_design/packets", jsonData);
 				} catch (CouchDbUpdateConflictException e) {
-					out.println("_design/packets document already on database: " + databaseType.getName() + ". We will not try to update it. Hopefully it is correct.");
+					String revision = database.getCurrentRevision("_design/packets");
+					database.updateDocument("_design/packets", revision, jsonData);
+					out.println("updated _design/packets document on database: " + databaseType.getName());
 				}
 			}
 			out.println("Configuring security for database " + databaseType.getName());
@@ -161,12 +163,11 @@ public class CouchDbSetupMain {
 			final SecurityGroup newAdmins;
 			if (databaseType.isReadonlyByAll()) {
 				newAdmins = oldAdmins; // only true admins can edit stuff in CLOSED database
-			} else if (databaseType == SolarThingDatabaseType.CACHE) {
-				newAdmins = oldAdmins.withName(cacheManagerUser);
+			} else if (databaseType == SolarThingDatabaseType.CACHE || databaseType == SolarThingDatabaseType.ALTER) {
+				newAdmins = oldAdmins.withName(managerUser);
 			} else {
 				newAdmins = oldAdmins.withName(uploaderUser);
 			}
-			// This database's security has no members (public database)
 			database.setSecurity(new DatabaseSecurity(
 					newAdmins, // update the list of admins
 					databaseType.isPublic() ? SecurityGroup.BLANK : oldSecurity.getMembers() // if database is public, this has no members, if private, keep old members which should include an _admin role

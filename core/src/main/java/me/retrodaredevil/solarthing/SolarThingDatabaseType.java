@@ -3,10 +3,54 @@ package me.retrodaredevil.solarthing;
 import static me.retrodaredevil.solarthing.SolarThingConstants.*;
 
 public enum SolarThingDatabaseType {
-	STATUS(STATUS_DATABASE, true), EVENT(EVENT_DATABASE, true),
-	CLOSED(CLOSED_DATABASE, false), OPEN(OPEN_DATABASE, true),
+	/**
+	 * The status database
+	 * <p>
+	 * Write Access: uploader user
+	 * <p>
+	 * Read Access: public
+	 */
+	STATUS(STATUS_DATABASE, true),
+	/**
+	 * The event database
+	 * <p>
+	 * Write Access: uploader user
+	 * <p>
+	 * Read Access: public
+	 */
+	EVENT(EVENT_DATABASE, true),
+	/**
+	 * The closed database
+	 * <p>
+	 * Write Access: super admins (no user)
+	 * <p>
+	 * Read Access: public
+	 */
+	CLOSED(CLOSED_DATABASE, false),
+	/**
+	 * The open database
+	 * <p>
+	 * Write Access: public
+	 * <p>
+	 * Read Access: public
+	 */
+	OPEN(OPEN_DATABASE, true),
+	/**
+	 * The cache database
+	 * <p>
+	 * Write Access: manager user
+	 * <p>
+	 * Read Access: manager user
+	 */
 	CACHE(CACHE_DATABASE, false),
-//	ALTER(ALTER_DATABASE, false),
+	/**
+	 * The alter database
+	 * <p>
+	 * Write Access: manager user
+	 * <p>
+	 * Read Access: public
+	 */
+	ALTER(ALTER_DATABASE, false),
 	;
 	private final String name;
 	private final boolean needsMillisView;
