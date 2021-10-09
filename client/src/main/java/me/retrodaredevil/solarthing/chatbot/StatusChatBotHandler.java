@@ -1,5 +1,7 @@
 package me.retrodaredevil.solarthing.chatbot;
 
+import jdk.internal.joptsimple.internal.Strings;
+import me.retrodaredevil.solarthing.AlterPacketsProvider;
 import me.retrodaredevil.solarthing.FragmentedPacketGroupProvider;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.message.MessageSender;
@@ -9,16 +11,24 @@ import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.solar.BatteryUtil;
 import me.retrodaredevil.solarthing.solar.common.BatteryTemperature;
+import me.retrodaredevil.solarthing.type.alter.AlterPacket;
+import me.retrodaredevil.solarthing.type.alter.StoredAlterPacket;
+import me.retrodaredevil.solarthing.type.alter.packets.ScheduledCommandData;
+import me.retrodaredevil.solarthing.type.alter.packets.ScheduledCommandPacket;
+import me.retrodaredevil.solarthing.util.TimeUtil;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class StatusChatBotHandler implements ChatBotHandler {
 	private final FragmentedPacketGroupProvider packetGroupProvider;
+	private final AlterPacketsProvider alterPacketsProvider;
 
-	public StatusChatBotHandler(FragmentedPacketGroupProvider packetGroupProvider) {
+	public StatusChatBotHandler(FragmentedPacketGroupProvider packetGroupProvider, AlterPacketsProvider alterPacketsProvider) {
 		this.packetGroupProvider = packetGroupProvider;
+		this.alterPacketsProvider = alterPacketsProvider;
 	}
 
 	@Override
@@ -47,6 +57,28 @@ public class StatusChatBotHandler implements ChatBotHandler {
 				messageSender.sendMessage("No devices to read temperature!");
 			} else {
 				messageSender.sendMessage(String.join("\n", lines));
+			}
+			return true;
+		} else if (ChatBotUtil.isSimilar("alter", message.getText())) {
+			List<StoredAlterPacket> alterPackets = alterPacketsProvider.getPackets();
+			if (alterPackets == null) {
+				messageSender.sendMessage("Error - Must have failed to query alter database");
+			} else {
+				List<String> scheduledCommandLines = new ArrayList<>();
+				for (StoredAlterPacket storedAlterPacket : alterPackets) {
+					AlterPacket alterPacket = storedAlterPacket.getPacket();
+					if (alterPacket instanceof ScheduledCommandPacket) {
+						ScheduledCommandData data = ((ScheduledCommandPacket) alterPacket).getData();
+//						ExecutionReason executionReason = ((ScheduledCommandPacket) alterPacket).getExecutionReason();
+						String timeString = TimeUtil.instantToSlackDateSeconds(Instant.ofEpochMilli(data.getScheduledTimeMillis()));
+						scheduledCommandLines.add(data.getCommandName() + " - " + timeString);
+					}
+				}
+				if (scheduledCommandLines.isEmpty()) {
+					messageSender.sendMessage("No scheduled commands (from " + alterPackets.size() + " alter packets)");
+				} else {
+					messageSender.sendMessage("Scheduled commands:\n\t" + Strings.join(scheduledCommandLines, "\n\t"));
+				}
 			}
 			return true;
 		}

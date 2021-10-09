@@ -25,6 +25,12 @@ public class InjectEnvironment {
 		return r;
 	}
 
+	public void require(Class<?> clazz) {
+		if (!map.containsKey(clazz)) {
+			throw new NoSuchElementException("There was no element with the class: " + clazz);
+		}
+	}
+
 	public Builder newBuilder() {
 		return new Builder(new HashMap<>(map));
 	}

@@ -14,6 +14,7 @@ import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
 import me.retrodaredevil.solarthing.packets.collection.TargetPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.parsing.*;
 import me.retrodaredevil.solarthing.packets.instance.InstancePacket;
+import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePacket;
 import me.retrodaredevil.solarthing.packets.security.IntegrityPacket;
 import me.retrodaredevil.solarthing.packets.security.LargeIntegrityPacket;
 import me.retrodaredevil.solarthing.packets.security.SecurityPacket;
@@ -85,6 +86,9 @@ public class SecurityPacketReceiver {
 			String packetSourceId = targetPacketGroup.getSourceId();
 			if (!packetSourceId.equals(sourceId)) {
 				LOGGER.debug("Received packet was for source: " + packetSourceId);
+				if (packetSourceId.equals(InstanceSourcePacket.UNUSED_SOURCE_ID)) {
+					LOGGER.warn("Parsed to a target packet group with an unused source ID! dateMillis: " + packetGroup.getDateMillis());
+				}
 			} else if(!targetPacketGroup.isTarget(fragmentId)) {
 				LOGGER.debug("Received packet wasn't for fragmentId: " + fragmentId + ". It was for these: " + targetPacketGroup.getTargetFragmentIds());
 			} else {

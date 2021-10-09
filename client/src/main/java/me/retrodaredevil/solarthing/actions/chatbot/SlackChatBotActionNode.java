@@ -7,10 +7,12 @@ import com.slack.api.SlackConfig;
 import com.slack.api.util.http.SlackHttpClient;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.Actions;
+import me.retrodaredevil.solarthing.AlterPacketsProvider;
 import me.retrodaredevil.solarthing.FragmentedPacketGroupProvider;
 import me.retrodaredevil.solarthing.actions.ActionNode;
 import me.retrodaredevil.solarthing.actions.command.CommandManager;
 import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.AlterPacketsEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.InjectEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.LatestFragmentedPacketGroupEnvironment;
 import me.retrodaredevil.solarthing.chatbot.*;
@@ -31,7 +33,7 @@ public class SlackChatBotActionNode implements ActionNode {
 	private final Action action;
 
 	private volatile FragmentedPacketGroup latestPacketGroup = null;
-	private volatile ActionEnvironment actionEnvironment;
+	private volatile InjectEnvironment injectEnvironment;
 
 	/*
 	The app level token should have connections:write permission
@@ -58,7 +60,8 @@ public class SlackChatBotActionNode implements ActionNode {
 		FragmentedPacketGroupProvider packetGroupProvider = () -> latestPacketGroup;
 		ChatBotCommandHelper commandHelper = new ChatBotCommandHelper(permissionMap, packetGroupProvider, new CommandManager(keyDirectory, sender));
 
-		Supplier<InjectEnvironment> injectEnvironmentSupplier = () -> actionEnvironment.getInjectEnvironment();
+		Supplier<InjectEnvironment> injectEnvironmentSupplier = () -> injectEnvironment;
+		AlterPacketsProvider alterPacketsProvider = () -> injectEnvironment.get(AlterPacketsEnvironment.class).getAlterPacketsProvider().getPackets();
 		action = new SlackChatBotAction(
 				appToken,
 				new SlackMessageSender(authToken, channelId, slack),
@@ -68,7 +71,7 @@ public class SlackChatBotActionNode implements ActionNode {
 								new StaleMessageHandler(), // note: this isn't applied to "help" commands
 								new ScheduleCommandChatBotHandler(commandHelper, injectEnvironmentSupplier),
 								new CommandChatBotHandler(commandHelper, injectEnvironmentSupplier),
-								new StatusChatBotHandler(packetGroupProvider),
+								new StatusChatBotHandler(packetGroupProvider, alterPacketsProvider),
 								(message, messageSender) -> {
 									messageSender.sendMessage("Unknown command!");
 									return true;
@@ -86,7 +89,8 @@ public class SlackChatBotActionNode implements ActionNode {
 	@Override
 	public Action createAction(ActionEnvironment actionEnvironment) {
 		LatestFragmentedPacketGroupEnvironment latestPacketGroupEnvironment = actionEnvironment.getInjectEnvironment().get(LatestFragmentedPacketGroupEnvironment.class);
-		this.actionEnvironment = actionEnvironment;
+		actionEnvironment.getInjectEnvironment().require(AlterPacketsEnvironment.class); // used elsewhere, so let's assert that we have it
+		this.injectEnvironment = actionEnvironment.getInjectEnvironment();
 		return Actions.createRunOnce(() -> {
 			latestPacketGroup = latestPacketGroupEnvironment.getFragmentedPacketGroupProvider().getPacketGroup();
 			action.update();

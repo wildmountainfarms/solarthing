@@ -103,7 +103,7 @@ public class ScheduleCommandChatBotHandler implements ChatBotHandler {
 		UUID uniqueId = UUID.randomUUID();
 		CommandManager.Creator creator = commandHelper.getCommandManager().makeCreator(
 				injectEnvironment,
-				null, // We don't have an InstanceTargetPacket because scheduling commands is not handled by a program with a fragment ID
+				null, // We don't have an InstanceTargetPacket because scheduling commands is not handled by a program with a fragment ID // also look at PacketGroups.parseToTargetPacketGroup() for interpretation without a TargetInstancePacket
 				new ImmutableScheduleCommandPacket(new ScheduledCommandData(
 						targetTime.toEpochMilli(),
 						availableCommand.getCommandInfo().getName(),
