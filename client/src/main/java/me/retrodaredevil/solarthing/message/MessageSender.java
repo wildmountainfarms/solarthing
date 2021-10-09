@@ -13,6 +13,8 @@ import me.retrodaredevil.solarthing.message.implementations.SlackMessageSender;
 public interface MessageSender {
 	/**
 	 * Sends the given message. Note that this method may block, but it is encouraged that it doesn't block.
+	 * <p>
+	 * All implementations should be thread safe
 	 * @param message The message to send
 	 */
 	void sendMessage(String message);

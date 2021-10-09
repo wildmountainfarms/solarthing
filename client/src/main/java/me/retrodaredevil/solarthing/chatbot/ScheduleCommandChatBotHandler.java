@@ -5,23 +5,32 @@ import me.retrodaredevil.solarthing.actions.environment.InjectEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.SolarThingDatabaseEnvironment;
 import me.retrodaredevil.solarthing.commands.packets.open.ImmutableScheduleCommandPacket;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
+import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
 import me.retrodaredevil.solarthing.message.MessageSender;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.type.alter.packets.ScheduledCommandData;
 import me.retrodaredevil.solarthing.util.TimeUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
 public class ScheduleCommandChatBotHandler implements ChatBotHandler {
+	private static final Logger LOGGER = LoggerFactory.getLogger(ScheduleCommandChatBotHandler.class);
 	private static final String USAGE = "Incorrect usage of schedule! Usage: \n\tschedule <command> <at <time>|in <duration>>";
+
 	private final ChatBotCommandHelper commandHelper;
 	private final Supplier<InjectEnvironment> injectEnvironmentSupplier;
+
+	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
 	public ScheduleCommandChatBotHandler(ChatBotCommandHelper commandHelper, Supplier<InjectEnvironment> injectEnvironmentSupplier) {
 		requireNonNull(this.commandHelper = commandHelper);
@@ -79,6 +88,7 @@ public class ScheduleCommandChatBotHandler implements ChatBotHandler {
 		InjectEnvironment injectEnvironment = requireNonNull(injectEnvironmentSupplier.get(), "No InjectEnvironment!");
 		SolarThingDatabase database = injectEnvironment.get(SolarThingDatabaseEnvironment.class).getSolarThingDatabase();
 
+		UUID uniqueId = UUID.randomUUID();
 		CommandManager.Creator creator = commandHelper.getCommandManager().makeCreator(
 				injectEnvironment,
 				null, // We don't have an InstanceTargetPacket because scheduling commands is not handled by a program with a fragment ID
@@ -86,10 +96,25 @@ public class ScheduleCommandChatBotHandler implements ChatBotHandler {
 						targetTime.toEpochMilli(),
 						availableCommand.getCommandInfo().getName(),
 						Collections.singleton(availableCommand.getFragmentId())
-				), UUID.randomUUID()) // random UUID here for a random unique ID
+				), uniqueId)
 		);
 		PacketCollection packetCollection = creator.create(now);
 
-		messageSender.sendMessage("(Pretend) Scheduling " + availableCommand.getCommandInfo().getDisplayName() + " at " + targetTime);
+		messageSender.sendMessage("Scheduling " + availableCommand.getCommandInfo().getDisplayName() + " at " + targetTime);
+
+		executorService.execute(() -> {
+			boolean success = false;
+			try {
+				database.getOpenDatabase().uploadPacketCollection(packetCollection, null);
+				success = true;
+			} catch (SolarThingDatabaseException e) {
+				LOGGER.error("Could not upload schedule command packet collection", e);
+			}
+			if (success) {
+				messageSender.sendMessage("Successfully requested schedule. ID: " + uniqueId);
+			} else {
+				messageSender.sendMessage("Could not upload schedule command request.");
+			}
+		});
 	}
 }
