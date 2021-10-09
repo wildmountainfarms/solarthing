@@ -7,6 +7,7 @@ import me.retrodaredevil.solarthing.actions.environment.SourceIdEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.TimeZoneEnvironment;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.commands.packets.open.CommandOpenPacket;
+import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollections;
@@ -32,7 +33,9 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
@@ -127,14 +130,14 @@ public class CommandManager {
 			} catch (InvalidKeyException | EncryptException e) {
 				throw new RuntimeException(e);
 			}
-			return PacketCollections.createFromPackets(
-					now,
-					Arrays.asList(
-							new ImmutableLargeIntegrityPacket(sender, encrypted, payload),
-							instanceSourcePacket, instanceTargetPacket
-					),
-					PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR, zoneId
-			);
+			List<Packet> packets = new ArrayList<>(Arrays.asList(
+					new ImmutableLargeIntegrityPacket(sender, encrypted, payload),
+					instanceSourcePacket
+			));
+			if (instanceTargetPacket != null) {
+				packets.add(instanceTargetPacket);
+			}
+			return PacketCollections.createFromPackets(now, packets, PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR, zoneId);
 		};
 
 	}
