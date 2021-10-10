@@ -19,16 +19,16 @@ import static java.util.Objects.requireNonNull;
 public final class PermissionObject {
 	private final String publicKey;
 	private final PublicKey publicKeyObject;
-	private final List<Integer> fragments;
+	private final @Nullable List<Integer> fragments;
 	private final Map<String, List<String>> unmodifiablePermissions;
 
 	@JsonCreator
 	public PermissionObject(
 			@JsonProperty(value = "publicKey", required = true) String publicKey,
-			@JsonProperty(value = "fragments", required = true) List<Integer> fragments,
+			@JsonProperty(value = "fragments", required = true) @Nullable List<Integer> fragments,
 			@JsonProperty("permissions") Map<String, List<String>> permissions
 	) throws InvalidKeyException {
-		this.publicKey = publicKey;
+		requireNonNull(this.publicKey = publicKey);
 		this.fragments = fragments;
 
 		publicKeyObject = KeyUtil.decodePublicKey(publicKey);

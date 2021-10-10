@@ -15,6 +15,14 @@ public interface TargetPacket extends Packet {
 		Collection<Integer> targets = getTargetFragmentIds();
 		return targets == null || targets.size() > 1;
 	}
+	default boolean isTargetingExactlyOne() {
+		Collection<Integer> targets = getTargetFragmentIds();
+		return targets != null && targets.size() == 1;
+	}
+	default boolean isTargetingNone() {
+		Collection<Integer> targets = getTargetFragmentIds();
+		return targets != null && targets.isEmpty();
+	}
 	default boolean isTarget(int fragmentId) {
 		Collection<Integer> targets = getTargetFragmentIds();
 		return targets == null || targets.contains(fragmentId);

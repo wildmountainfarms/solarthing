@@ -12,16 +12,15 @@ import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.config.options.AutomationProgramOptions;
 import me.retrodaredevil.solarthing.config.options.DatabaseTimeZoneOptionBase;
-import me.retrodaredevil.solarthing.database.MillisDatabase;
-import me.retrodaredevil.solarthing.database.MillisQuery;
-import me.retrodaredevil.solarthing.database.SolarThingDatabase;
-import me.retrodaredevil.solarthing.database.VersionedPacket;
+import me.retrodaredevil.solarthing.database.*;
 import me.retrodaredevil.solarthing.database.cache.SimpleDatabaseCache;
+import me.retrodaredevil.solarthing.database.cache.SimplePacketCache;
 import me.retrodaredevil.solarthing.database.couchdb.CouchDbSolarThingDatabase;
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.StoredPacketGroup;
 import me.retrodaredevil.solarthing.type.alter.StoredAlterPacket;
+import me.retrodaredevil.solarthing.type.closed.authorization.AuthorizationPacket;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,6 +92,7 @@ public final class AutomationMain {
 		SimpleDatabaseCache statusDatabaseCache = SimpleDatabaseCache.createDefault(clock);
 		SimpleDatabaseCache eventDatabaseCache = SimpleDatabaseCache.createDefault(clock);
 		SimpleDatabaseCache openDatabaseCache = new SimpleDatabaseCache(Duration.ofMinutes(60), Duration.ofMinutes(40), Duration.ofMinutes(20), Duration.ofMinutes(15), clock);
+		SimplePacketCache<AuthorizationPacket> authorizationPacketCache = new SimplePacketCache<>(Duration.ofSeconds(20), DatabaseDocumentKeyMap.createPacketSourceFromDatabase(database), false);
 		String sourceId = options.getSourceId();
 		InjectEnvironment injectEnvironment = new InjectEnvironment.Builder()
 				.add(new SourceIdEnvironment(sourceId))
@@ -104,6 +104,7 @@ public final class AutomationMain {
 				.add(new EventDatabaseCacheEnvironment(eventDatabaseCache))
 				.add(new OpenDatabaseCacheEnvironment(openDatabaseCache))
 				.add(new AlterPacketsEnvironment(() -> alterPacketsReference[0]))
+				.add(new AuthorizationEnvironment(new DatabaseDocumentKeyMap(authorizationPacketCache)))
 				.build();
 
 		ActionMultiplexer multiplexer = new Actions.ActionMultiplexerBuilder().build();
@@ -122,6 +123,7 @@ public final class AutomationMain {
 				}
 				alterPacketsReference[0] = alterPackets;
 			}
+			authorizationPacketCache.updateIfNeeded(); // we have auto update turned off, so we have to call this
 
 			List<FragmentedPacketGroup> statusPacketGroups = PacketUtil.getPacketGroups(options.getSourceId(), options.getDefaultInstanceOptions(), statusDatabaseCache.getAllCachedPackets());
 			if (statusPacketGroups != null) {

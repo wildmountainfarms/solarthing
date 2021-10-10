@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.solarthing.actions.chatbot.SlackChatBotActionNode;
+import me.retrodaredevil.solarthing.actions.command.AlterManagerActionNode;
 import me.retrodaredevil.solarthing.actions.command.ExecutingCommandFeedbackActionNode;
 import me.retrodaredevil.solarthing.actions.command.SendCommandActionNode;
 import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
@@ -54,6 +55,8 @@ import me.retrodaredevil.solarthing.actions.tracer.TracerLoadActionNode;
 		@JsonSubTypes.Type(SlackChatBotActionNode.class),
 
 		@JsonSubTypes.Type(ExecutingCommandFeedbackActionNode.class),
+
+		@JsonSubTypes.Type(AlterManagerActionNode.class),
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
 public interface ActionNode {
