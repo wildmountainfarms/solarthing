@@ -41,8 +41,8 @@ public class TimeUtil {
 				.replaceAll("HOURS|HOUR", "H")
 				.replaceAll("DAYS|DAY", "D")
 				;
-		if (!informalDuration.startsWith("P")) { // Make the format of the string we send lenient
-			if (informalDuration.contains("T")) {
+		if (!formalDuration.startsWith("P")) { // Make the format of the string we send lenient
+			if (formalDuration.contains("T")) {
 				formalDuration = "P" + formalDuration;
 			} else {
 				formalDuration = "PT" + formalDuration;
