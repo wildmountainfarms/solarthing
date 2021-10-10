@@ -44,7 +44,7 @@ public class CommandUtil {
 					private final SecurityPacketReceiver securityPacketReceiver = new SecurityPacketReceiver(
 							new DatabaseDocumentKeyMap(database),
 							packetGroupReceiver,
-							options.getSourceId(), options.getFragmentId(),
+							new SecurityPacketReceiver.InstanceTargetPredicate(options.getSourceId(), options.getFragmentId()),
 							Collections.singleton(CommandOpenPacket.class)
 					);
 					@Override

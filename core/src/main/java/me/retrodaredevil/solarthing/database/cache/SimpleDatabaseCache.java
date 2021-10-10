@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.database.cache;
 
+import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.database.MillisQuery;
 import me.retrodaredevil.solarthing.database.MillisQueryBuilder;
 import me.retrodaredevil.solarthing.packets.collection.StoredPacketGroup;
@@ -69,8 +70,11 @@ public class SimpleDatabaseCache implements DatabaseCache {
 		return set.stream()
 				.map(node -> node.packetGroup);
 	}
-
 	public MillisQuery getRecommendedQuery() {
+		return createRecommendedQueryBuilder().build();
+	}
+
+	public MillisQueryBuilder createRecommendedQueryBuilder() {
 		Data data = this.data;
 		Instant now = clock.instant();
 		long minimumStart = now.minus(minimumDuration).toEpochMilli();
@@ -86,32 +90,33 @@ public class SimpleDatabaseCache implements DatabaseCache {
 				.startKey(start)
 				.endKey(end)
 				.inclusiveEnd(true)
-				.build();
+				;
 	}
 
-	public void feed(List<StoredPacketGroup> queriedPacketGroups, long queryStartDateMillis, long queryEndDateMillis) {
-		if (queryStartDateMillis > queryEndDateMillis) {
+	public void feed(List<StoredPacketGroup> queriedPacketGroups, long queryStartDateMillis, @Nullable Long queryEndDateMillis) {
+		if (queryEndDateMillis != null && queryStartDateMillis > queryEndDateMillis) {
 			throw new IllegalArgumentException("start must be <= end! queryStartDateMillis: " + queryStartDateMillis + " queryEndDateMillis: " + queryEndDateMillis);
 		}
-		if (!packetGroups.isEmpty() && packetGroups.last().dateMillis > queryEndDateMillis) {
+		if (queryEndDateMillis != null && !packetGroups.isEmpty() && packetGroups.last().dateMillis > queryEndDateMillis) {
 			throw new IllegalArgumentException("The query end date must never decrease! We have a packet group with a date millis after the passed queryEndDateMillis=" + queryEndDateMillis);
 		}
 		Instant now = clock.instant();
-		if (queryEndDateMillis > now.toEpochMilli()) {
-			throw new IllegalArgumentException("Cannot have an queryEndDateMillis in the future! queryEndDateMillis: " + queryEndDateMillis + " now: " + now);
-		}
 		packetGroups.tailSet(new Node(queryStartDateMillis), true).clear();
 		queriedPacketGroups.stream().map(Node::new).collect(Collectors.toCollection(() -> packetGroups));
 
+		long lowestPossibleVolatileAfterDateMillis = now.minus(volatileWindowDuration).toEpochMilli();
+		if (queryEndDateMillis != null && queryEndDateMillis < lowestPossibleVolatileAfterDateMillis) {
+			lowestPossibleVolatileAfterDateMillis = queryEndDateMillis;
+		}
 		if (data == null) {
 			data = new Data();
 			data.firstQueryStartDateMillis = queryStartDateMillis;
-			data.volatileAfterDateMillis = Math.min(queryEndDateMillis, now.minus(volatileWindowDuration).toEpochMilli());
+			data.volatileAfterDateMillis = lowestPossibleVolatileAfterDateMillis;
 		} else {
 			if (queryStartDateMillis <= data.volatileAfterDateMillis) {
 				data.volatileAfterDateMillis = Math.max(
 						data.volatileAfterDateMillis, // this currently should never be chosen, but put it here in case we change something in the future
-						Math.min(queryEndDateMillis, now.minus(volatileWindowDuration).toEpochMilli())
+						lowestPossibleVolatileAfterDateMillis
 				);
 			} else {
 				LOGGER.warn("The start date for the queried packets is AFTER the volatileAfterDateMillis timestamp. queryStartDateMillis: " + queryStartDateMillis + " volatileAfterDateMillis: " + data.volatileAfterDateMillis);

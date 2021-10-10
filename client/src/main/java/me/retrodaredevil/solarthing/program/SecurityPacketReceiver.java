@@ -36,8 +36,7 @@ public class SecurityPacketReceiver {
 
 	private final PublicKeyLookUp publicKeyLookUp;
 	private final PacketGroupReceiver packetGroupReceiver;
-	private final String sourceId;
-	private final int fragmentId;
+	private final TargetPredicate targetPredicate;
 
 	private final SimplePacketGroupParser integrityParser;
 
@@ -50,14 +49,11 @@ public class SecurityPacketReceiver {
 	/**
 	 * @param publicKeyLookUp The {@link PublicKeyLookUp} to get the PublicKey for a received {@link IntegrityPacket}
 	 * @param packetGroupReceiver Receives successfully decrypted messages
-	 * @param sourceId The source ID being used. Only accept from this source ID
-	 * @param fragmentId The fragment ID being used. Only accept from this fragment ID
 	 */
-	public SecurityPacketReceiver(PublicKeyLookUp publicKeyLookUp, PacketGroupReceiver packetGroupReceiver, String sourceId, int fragmentId, Collection<? extends Class<? extends DocumentedPacket>> packetClasses) {
+	public SecurityPacketReceiver(PublicKeyLookUp publicKeyLookUp, PacketGroupReceiver packetGroupReceiver, TargetPredicate targetPredicate, Collection<? extends Class<? extends DocumentedPacket>> packetClasses) {
 		this.publicKeyLookUp = publicKeyLookUp;
 		this.packetGroupReceiver = packetGroupReceiver;
-		this.sourceId = sourceId;
-		this.fragmentId = fragmentId;
+		this.targetPredicate = targetPredicate;
 
 		List<Class<? extends DocumentedPacket>> classList = new ArrayList<>(packetClasses);
 		classList.add(InstancePacket.class);
@@ -83,15 +79,7 @@ public class SecurityPacketReceiver {
 				continue;
 			}
 			TargetPacketGroup targetPacketGroup = PacketGroups.parseToTargetPacketGroup(packetGroup);
-			String packetSourceId = targetPacketGroup.getSourceId();
-			if (!packetSourceId.equals(sourceId)) {
-				LOGGER.debug("Received packet was for source: " + packetSourceId);
-				if (packetSourceId.equals(InstanceSourcePacket.UNUSED_SOURCE_ID)) {
-					LOGGER.warn("Parsed to a target packet group with an unused source ID! dateMillis: " + packetGroup.getDateMillis());
-				}
-			} else if(!targetPacketGroup.isTarget(fragmentId)) {
-				LOGGER.debug("Received packet wasn't for fragmentId: " + fragmentId + ". It was for these: " + targetPacketGroup.getTargetFragmentIds());
-			} else {
+			if (targetPredicate.targets(targetPacketGroup, false)) {
 				packets.add(targetPacketGroup);
 			}
 		}
@@ -220,13 +208,52 @@ public class SecurityPacketReceiver {
 		String targetSourceId = targetPacketGroup.getSourceId();
 		// We do the same checks as above just to double check. We already trust the sender here,
 		//   but double checks never hurt.
-		if (!targetSourceId.equals(sourceId)) {
-			LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "This packet is for sourceId: " + targetSourceId);
-		} else if (!targetPacketGroup.isTarget(fragmentId)) {
-			LOGGER.info("Received packet wasn't for fragmentId: " + fragmentId + ". It was for these: " + targetPacketGroup.getTargetFragmentIds());
-		} else {
-			LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Got packet targetting: " + targetPacketGroup.getTargetFragmentIds() + " " + targetSourceId + " with " + targetPacketGroup.getPackets().size() + " packets.");
+		if (targetPredicate.targets(targetPacketGroup, true)) {
+			LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Got packet targeting: " + targetPacketGroup.getTargetFragmentIds() + " " + targetSourceId + " with " + targetPacketGroup.getPackets().size() + " packets.");
 			packetGroupReceiver.receivePacketGroup(sender, targetPacketGroup);
+		} else {
+			LOGGER.info("After second target check, the payload with integrity is not targeting us. More info may be available if logged.");
+		}
+	}
+
+	public interface TargetPredicate {
+		boolean targets(TargetPacketGroup packetGroup, boolean isFromPayloadWithIntegrity);
+	}
+	public static class InstanceTargetPredicate implements TargetPredicate {
+		private final String sourceId;
+		private final int fragmentId;
+
+		public InstanceTargetPredicate(String sourceId, int fragmentId) {
+			this.sourceId = sourceId;
+			this.fragmentId = fragmentId;
+		}
+
+		@Override
+		public boolean targets(TargetPacketGroup packetGroup, boolean isFromPayloadWithIntegrity) {
+			String packetSourceId = packetGroup.getSourceId();
+			if (!packetSourceId.equals(sourceId)) {
+				String message = "Received packet was for source: " + packetSourceId;
+				if (isFromPayloadWithIntegrity) {
+					LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, message);
+				} else {
+					LOGGER.debug(message);
+				}
+				if (packetSourceId.equals(InstanceSourcePacket.UNUSED_SOURCE_ID)) {
+					LOGGER.warn("Parsed to a target packet group with an unused source ID! dateMillis: " + packetGroup.getDateMillis());
+				}
+				return false;
+			}
+			if(!packetGroup.isTarget(fragmentId)) {
+				String message = "Received packet wasn't for fragmentId: " + fragmentId + ". It was for these: " + packetGroup.getTargetFragmentIds();
+				if (isFromPayloadWithIntegrity) {
+					LOGGER.info(message);
+				} else {
+					LOGGER.debug(message);
+				}
+				return false;
+			}
+
+			return true;
 		}
 	}
 }

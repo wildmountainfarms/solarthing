@@ -28,6 +28,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Clock;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,8 +50,13 @@ public final class AutomationMain {
 		return startAutomation(actionNodes, options, options.getPeriodMillis());
 	}
 
-	private static void queryAndFeed(MillisDatabase millisDatabase, SimpleDatabaseCache databaseCache) {
-		MillisQuery query = databaseCache.getRecommendedQuery();
+	private static void queryAndFeed(MillisDatabase millisDatabase, SimpleDatabaseCache databaseCache, boolean useEndDate) {
+		final MillisQuery query;
+		if (useEndDate) {
+			query =  databaseCache.getRecommendedQuery();
+		} else {
+			query = databaseCache.createRecommendedQueryBuilder().endKey(null).build();
+		}
 		List<StoredPacketGroup> rawPacketGroups = null;
 		try {
 			rawPacketGroups = millisDatabase.query(query);
@@ -82,8 +89,10 @@ public final class AutomationMain {
 		@SuppressWarnings("unchecked")
 		List<StoredAlterPacket>[] alterPacketsReference = new List[] { null };
 		FragmentedPacketGroupProvider fragmentedPacketGroupProvider = () -> latestPacketGroupReference[0]; // note this may return null, and that's OK
-		SimpleDatabaseCache statusDatabaseCache = SimpleDatabaseCache.createDefault();
-		SimpleDatabaseCache eventDatabaseCache = SimpleDatabaseCache.createDefault();
+		Clock clock = Clock.systemUTC();
+		SimpleDatabaseCache statusDatabaseCache = SimpleDatabaseCache.createDefault(clock);
+		SimpleDatabaseCache eventDatabaseCache = SimpleDatabaseCache.createDefault(clock);
+		SimpleDatabaseCache openDatabaseCache = new SimpleDatabaseCache(Duration.ofMinutes(60), Duration.ofMinutes(40), Duration.ofMinutes(20), Duration.ofMinutes(15), clock);
 		String sourceId = options.getSourceId();
 		InjectEnvironment injectEnvironment = new InjectEnvironment.Builder()
 				.add(new SourceIdEnvironment(sourceId))
@@ -93,14 +102,17 @@ public final class AutomationMain {
 				.add(new LatestPacketGroupEnvironment(fragmentedPacketGroupProvider))
 				.add(new LatestFragmentedPacketGroupEnvironment(fragmentedPacketGroupProvider))
 				.add(new EventDatabaseCacheEnvironment(eventDatabaseCache))
+				.add(new OpenDatabaseCacheEnvironment(openDatabaseCache))
 				.add(new AlterPacketsEnvironment(() -> alterPacketsReference[0]))
 				.build();
 
 		ActionMultiplexer multiplexer = new Actions.ActionMultiplexerBuilder().build();
 		while (!Thread.currentThread().isInterrupted()) {
-			queryAndFeed(database.getStatusDatabase(), statusDatabaseCache);
-			queryAndFeed(database.getEventDatabase(), eventDatabaseCache);
+			queryAndFeed(database.getStatusDatabase(), statusDatabaseCache, true);
+			queryAndFeed(database.getEventDatabase(), eventDatabaseCache, true);
+			queryAndFeed(database.getOpenDatabase(), openDatabaseCache, false);
 			{
+				// Never cache alter packets, because it's always important that we have up-to-date data, or no data at all.
 				List<StoredAlterPacket> alterPackets = null;
 				try {
 					alterPackets = database.getAlterDatabase().queryAll(sourceId).stream().map(VersionedPacket::getPacket).collect(Collectors.toList());
