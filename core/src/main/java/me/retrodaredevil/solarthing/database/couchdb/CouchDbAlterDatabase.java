@@ -77,7 +77,7 @@ public class CouchDbAlterDatabase implements AlterDatabase {
 			try {
 				storedAlterPacket = mapper.treeToValue(objectNode, StoredAlterPacket.class);;
 			} catch (JsonProcessingException e) {
-				throw new SolarThingDatabaseException("Could not parse", e);
+				throw new SolarThingDatabaseException("Could not parse. JsonData: " + jsonData.getJson(), e);
 			}
 //			String documentId = objectNode.get("_id").asText();
 			String documentRevision = objectNode.get("_rev").asText();
