@@ -41,19 +41,20 @@ public class SecurityPacketReceiver {
 	private final SimplePacketGroupParser integrityParser;
 
 	private final Cipher cipher;
-
-	private final Map<String, Long> senderLastCommandMap = new HashMap<>();
-
 	private final long listenStartTime;
+
+	private final State state;
 
 	/**
 	 * @param publicKeyLookUp The {@link PublicKeyLookUp} to get the PublicKey for a received {@link IntegrityPacket}
 	 * @param packetGroupReceiver Receives successfully decrypted messages
 	 */
-	public SecurityPacketReceiver(PublicKeyLookUp publicKeyLookUp, PacketGroupReceiver packetGroupReceiver, TargetPredicate targetPredicate, Collection<? extends Class<? extends DocumentedPacket>> packetClasses) {
+	public SecurityPacketReceiver(PublicKeyLookUp publicKeyLookUp, PacketGroupReceiver packetGroupReceiver, TargetPredicate targetPredicate, Collection<? extends Class<? extends DocumentedPacket>> packetClasses, long listenStartTime, State state) {
 		this.publicKeyLookUp = publicKeyLookUp;
 		this.packetGroupReceiver = packetGroupReceiver;
 		this.targetPredicate = targetPredicate;
+		this.listenStartTime = listenStartTime;
+		this.state = state;
 
 		List<Class<? extends DocumentedPacket>> classList = new ArrayList<>(packetClasses);
 		classList.add(InstancePacket.class);
@@ -66,7 +67,6 @@ public class SecurityPacketReceiver {
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
 			throw new RuntimeException(e);
 		}
-		listenStartTime = System.currentTimeMillis();
 	}
 
 	public void receivePacketGroups(List<? extends PacketGroup> packetGroups) {
@@ -132,7 +132,7 @@ public class SecurityPacketReceiver {
 				}
 			}
 		}
-		senderLastCommandMap.putAll(lastCommands);
+		state.senderLastCommandMap.putAll(lastCommands);
 	}
 
 	private String decryptData(long minTime, Map<String, Long> lastCommands, String sender, String base64EncodedData) {
@@ -152,7 +152,7 @@ public class SecurityPacketReceiver {
 					LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "Error parsing hex date millis", e);
 				}
 				if(dateMillis != null){
-					Long lastCommand = senderLastCommandMap.get(sender);
+					Long lastCommand = state.senderLastCommandMap.get(sender);
 					long currentTime = System.currentTimeMillis();
 					if(dateMillis > currentTime + 5000) { // there's a 5 second grace period in case the clock is slightly off
 						LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Message from " + sender + " is from the future??? dateMillis: " + dateMillis + " currentTime: " + currentTime);
@@ -255,5 +255,9 @@ public class SecurityPacketReceiver {
 
 			return true;
 		}
+	}
+	public static class State {
+		private final Map<String, Long> senderLastCommandMap = new HashMap<>();
+
 	}
 }

@@ -45,7 +45,9 @@ public class CommandUtil {
 							DatabaseDocumentKeyMap.createFromDatabase(database),
 							packetGroupReceiver,
 							new SecurityPacketReceiver.InstanceTargetPredicate(options.getSourceId(), options.getFragmentId()),
-							Collections.singleton(CommandOpenPacket.class)
+							Collections.singleton(CommandOpenPacket.class),
+							System.currentTimeMillis(),
+							new SecurityPacketReceiver.State()
 					);
 					@Override
 					public void handle(PacketCollection packetCollection, InstantType instantType) throws PacketHandleException {

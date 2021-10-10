@@ -16,7 +16,6 @@ import me.retrodaredevil.solarthing.packets.collection.StoredPacketGroup;
 import me.retrodaredevil.solarthing.program.SecurityPacketReceiver;
 import me.retrodaredevil.solarthing.reason.ExecutionReason;
 import me.retrodaredevil.solarthing.reason.OpenSourceExecutionReason;
-import me.retrodaredevil.solarthing.type.alter.AlterPacket;
 import me.retrodaredevil.solarthing.type.alter.ImmutableStoredAlterPacket;
 import me.retrodaredevil.solarthing.type.alter.StoredAlterPacket;
 import me.retrodaredevil.solarthing.type.alter.packets.ScheduledCommandData;
@@ -36,6 +35,8 @@ public class AlterManagerActionNode implements ActionNode {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AlterManagerActionNode.class);
 
 	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+	private final SecurityPacketReceiver.State state = new SecurityPacketReceiver.State();
+	private final long listenStartTime = System.currentTimeMillis();
 
 	@Override
 	public Action createAction(ActionEnvironment actionEnvironment) {
@@ -92,7 +93,9 @@ public class AlterManagerActionNode implements ActionNode {
 					}
 					return false;
 				},
-				Collections.singleton(CommandOpenPacket.class)
+				Collections.singleton(CommandOpenPacket.class),
+				listenStartTime,
+				state
 		);
 
 		// This action is designed to be used in the automation program, which will create a new action each iteration. That's why this only runs once
