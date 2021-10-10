@@ -11,6 +11,7 @@ import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Instant;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +72,8 @@ public class PacketListReceiverHandler {
 			return;
 		}
 		packetListReceiver.receive(packetList, instantType);
-		PacketCollection packetCollection = PacketCollections.createFromPackets(packetList, idGenerator, zoneId);
+		Instant now = Instant.now();
+		PacketCollection packetCollection = PacketCollections.createFromPackets(now, packetList, idGenerator, zoneId);
 		packetList.clear();
 		packetCollectionList.add(packetCollection);
 	}
@@ -97,13 +99,13 @@ public class PacketListReceiverHandler {
 	 * then "handles" the {@link PacketCollection}, which usually means to persist the {@link PacketCollection} in a database.
 	 * @param packets The packets to upload
 	 */
-	public void uploadSimple(List<? extends Packet> packets) {
+	public void uploadSimple(Instant now, List<? extends Packet> packets) {
 		List<Packet> mutablePackets = new ArrayList<>(packets);
 		if (mutablePackets.isEmpty()) {
 			return;
 		}
 		packetListReceiver.receive(mutablePackets, InstantType.INSTANT); // this call may mutate mutablePackets, which is why we need it in the first place
-		PacketCollection packetCollection = PacketCollections.createFromPackets(mutablePackets, idGenerator, zoneId);
+		PacketCollection packetCollection = PacketCollections.createFromPackets(now, mutablePackets, idGenerator, zoneId);
 		handleSinglePacketCollection(packetCollection, InstantType.INSTANT);
 	}
 }

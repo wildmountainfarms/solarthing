@@ -17,6 +17,7 @@ import me.retrodaredevil.solarthing.reason.OpenSourceExecutionReason;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
@@ -46,7 +47,8 @@ public class ExecutingCommandFeedbackActionNode implements ActionNode {
 		List<Packet> packets = Arrays.asList(new ImmutableExecutionFeedbackPacket(message, category, new OpenSourceExecutionReason(source)));
 		return Actions.createRunOnce(() -> {
 			LOGGER.debug("Going to upload an execution feedback packet.");
-			packetListReceiverHandler.uploadSimple(packets);
+			Instant now = Instant.now();
+			packetListReceiverHandler.uploadSimple(now, packets);
 		});
 	}
 }
