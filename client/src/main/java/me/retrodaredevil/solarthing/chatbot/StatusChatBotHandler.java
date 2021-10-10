@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.chatbot;
 
-import jdk.internal.joptsimple.internal.Strings;
 import me.retrodaredevil.solarthing.AlterPacketsProvider;
 import me.retrodaredevil.solarthing.FragmentedPacketGroupProvider;
 import me.retrodaredevil.solarthing.annotations.NotNull;
@@ -77,7 +76,7 @@ public class StatusChatBotHandler implements ChatBotHandler {
 				if (scheduledCommandLines.isEmpty()) {
 					messageSender.sendMessage("No scheduled commands (from " + alterPackets.size() + " alter packets)");
 				} else {
-					messageSender.sendMessage("Scheduled commands:\n\t" + Strings.join(scheduledCommandLines, "\n\t"));
+					messageSender.sendMessage("Scheduled commands:\n\t" + String.join("\n\t", scheduledCommandLines));
 				}
 			}
 			return true;
