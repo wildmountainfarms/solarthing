@@ -136,12 +136,16 @@ public class CouchDbSetupMain {
 				out.println("Adding packets design to database " + databaseType.getName());
 				MutablePacketsDesign design = new MutablePacketsDesign();
 				if (databaseType.needsMillisView()) {
-					out.println("This database will have the millis view");
-					design.addMillisView();
+					out.println("This database will have the millis and millisNull view");
+					design.addMillisView().addMillisNullView();
+				}
+				if (databaseType.needsSimpleAllDocsView()) {
+					out.println("This database will have the simpleAllDocs view");
+					design.addSimpleAllDocsView();
 				}
 				if (databaseType.needsReadonlyView()) {
 					out.println("This database will be readonly");
-					design.addReadonlyAuth();
+					design.setReadonlyAuth();
 				}
 				final JsonData jsonData;
 				try {

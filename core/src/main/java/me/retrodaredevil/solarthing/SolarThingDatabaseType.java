@@ -61,7 +61,7 @@ public enum SolarThingDatabaseType {
 	}
 
 	public boolean needsAnyViews() {
-		return needsMillisView() || needsReadonlyView();
+		return needsMillisView() || needsReadonlyView() || needsSimpleAllDocsView();
 	}
 
 	public boolean needsMillisView() {
@@ -72,6 +72,9 @@ public enum SolarThingDatabaseType {
 		// open database is only database where anyone can add documents to it even if they're unauthorized
 		// cache doesn't need to be readonly because it is not public
 		return this != OPEN && this != CACHE;
+	}
+	public boolean needsSimpleAllDocsView() {
+		return this == ALTER;
 	}
 
 	/**
