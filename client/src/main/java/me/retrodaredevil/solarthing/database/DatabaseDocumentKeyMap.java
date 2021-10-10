@@ -1,5 +1,7 @@
 package me.retrodaredevil.solarthing.database;
 
+import me.retrodaredevil.solarthing.database.cache.PacketCache;
+import me.retrodaredevil.solarthing.database.cache.SimplePacketCache;
 import me.retrodaredevil.solarthing.type.closed.authorization.AuthorizationPacket;
 import me.retrodaredevil.solarthing.type.closed.authorization.PermissionObject;
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
@@ -12,42 +14,28 @@ import java.time.Duration;
 
 public class DatabaseDocumentKeyMap implements PublicKeyLookUp {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseDocumentKeyMap.class);
-	private static final long UPDATE_PERIOD_NANOS = Duration.ofSeconds(30).toNanos();
 
-	private final SolarThingDatabase database;
+	private final PacketCache<AuthorizationPacket> packetCache;
 
-	private AuthorizationPacket authorizationPacket = null;
-	private UpdateToken updateToken = null;
-	private Long lastUpdateNanos = null;
-
-	public DatabaseDocumentKeyMap(SolarThingDatabase database) {
-		this.database = database;
+	public DatabaseDocumentKeyMap(PacketCache<AuthorizationPacket> packetCache) {
+		this.packetCache = packetCache;
 	}
-
-	private void updatePacket() {
-		lastUpdateNanos = System.nanoTime();
-		final VersionedPacket<AuthorizationPacket> versionedPacket;
-		try {
-			versionedPacket = database.queryAuthorized(updateToken);
-		} catch (SolarThingDatabaseException e) {
-			LOGGER.error("Error getting authorization packet", e);
-			return;
-		}
-		if (versionedPacket == null) {
-			LOGGER.debug("Packet is the same since the last request");
-			return;
-		}
-		updateToken = versionedPacket.getUpdateToken();
-		authorizationPacket = versionedPacket.getPacket();
+	public static DatabaseDocumentKeyMap createFromDatabase(SolarThingDatabase database) {
+		return new DatabaseDocumentKeyMap(new SimplePacketCache<>(Duration.ofSeconds(30), createPacketSourceFromDatabase(database), true));
+	}
+	public static SimplePacketCache.PacketSource<AuthorizationPacket> createPacketSourceFromDatabase(SolarThingDatabase database) {
+		return updateToken -> {
+			try {
+				return database.queryAuthorized(updateToken);
+			} catch (SolarThingDatabaseException e) {
+				throw new SimplePacketCache.QueryException(e);
+			}
+		};
 	}
 
 	@Override
 	public PublicKey getKey(String sender) {
-		Long lastUpdateNanos = this.lastUpdateNanos;
-		if (lastUpdateNanos == null || System.nanoTime() - lastUpdateNanos >= UPDATE_PERIOD_NANOS) {
-			updatePacket();
-		}
-		AuthorizationPacket authorizationPacket = this.authorizationPacket;
+		AuthorizationPacket authorizationPacket = packetCache.getPacket();
 		if (authorizationPacket == null) {
 			LOGGER.debug("authorizationPacket is null");
 			return null;

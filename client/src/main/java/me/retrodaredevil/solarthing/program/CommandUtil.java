@@ -42,7 +42,7 @@ public class CommandUtil {
 				FrequencySettings frequencySettings = individualSettings != null ? individualSettings.getFrequencySettings() : FrequencySettings.NORMAL_SETTINGS;
 				PacketHandler packetHandler = new PacketHandler() {
 					private final SecurityPacketReceiver securityPacketReceiver = new SecurityPacketReceiver(
-							new DatabaseDocumentKeyMap(database),
+							DatabaseDocumentKeyMap.createFromDatabase(database),
 							packetGroupReceiver,
 							new SecurityPacketReceiver.InstanceTargetPredicate(options.getSourceId(), options.getFragmentId()),
 							Collections.singleton(CommandOpenPacket.class)
