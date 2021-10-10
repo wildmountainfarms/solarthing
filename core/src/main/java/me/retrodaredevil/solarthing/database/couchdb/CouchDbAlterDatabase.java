@@ -51,7 +51,7 @@ public class CouchDbAlterDatabase implements AlterDatabase {
 	public @NotNull List<VersionedPacket<StoredAlterPacket>> queryAll(String sourceId) throws SolarThingDatabaseException {
 		final ViewResponse allDocs;
 		try {
-			allDocs = database.allDocs(new ViewQueryParamsBuilder().build());
+			allDocs = database.allDocs(new ViewQueryParamsBuilder().includeDocs(true).build());
 		} catch (CouchDbException e) {
 			throw new SolarThingDatabaseException("Could not query", e);
 		}
@@ -62,7 +62,7 @@ public class CouchDbAlterDatabase implements AlterDatabase {
 			if (row.getId().startsWith("_")) { // ignore design documents
 				continue;
 			}
-			JsonData jsonData = row.getValue();
+			JsonData jsonData = row.getDoc(); // Since we're using _all_docs with include_docs=true, we have to use the doc, since the value is just the ID for _all_docs
 			final JsonNode jsonNode;
 			try {
 				jsonNode = CouchDbJacksonUtil.getNodeFrom(jsonData);
