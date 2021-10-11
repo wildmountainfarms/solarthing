@@ -137,10 +137,8 @@ public class AlterManagerActionNode implements ActionNode {
 		String documentId = "scheduled-request-" + versionedPacket.getPacket().getDbId();
 		CommandManager.Creator creator = commandManager.makeCreator(injectEnvironment, InstanceTargetPackets.create(data.getTargetFragmentIds()), requestCommandPacket, zonedDateTime -> documentId);
 		executorService.execute(() -> {
-			// The time that is stored in the packet collection should be as close as possible to the actual. Since we are in a different thread
-			//   and don't really know how long this Runnable has been waiting to run, we call Instant.now() to get a more reliable time.
 			Instant uploadingNow = Instant.now();
-			PacketCollection packetCollection = creator.create(Instant.now());
+			PacketCollection packetCollection = creator.create(uploadingNow);
 			boolean shouldDeleteAlter = false;
 			try {
 				database.getOpenDatabase().uploadPacketCollection(packetCollection, null);
