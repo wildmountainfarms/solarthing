@@ -88,14 +88,14 @@ public class CommandManager {
 	}
 
 	/**
-	 *
+	 * The timezone used comes from {@link TimeZoneEnvironment}. Source used comes from {@link SourceIdEnvironment}.
 	 * @param injectEnvironment The InjectEnvironment to use. {@link InjectEnvironment#get(Class)} is called before the making of {@link Creator}, so {@link Creator#create(Instant)}
 	 *                          will not call {@link InjectEnvironment#get(Class)}
 	 * @param instanceTargetPacket The {@link InstanceTargetPacket} to indicate which fragments to target or null. If null, it is not added to the packet collection
 	 * @param commandOpenPacket The command packet
 	 * @return A creator to make a packet collection. When supplied with an {@link Instant} representing now, a packet collection is created.
 	 */
-	public Creator makeCreator(InjectEnvironment injectEnvironment, @Nullable InstanceTargetPacket instanceTargetPacket, CommandOpenPacket commandOpenPacket) {
+	public Creator makeCreator(InjectEnvironment injectEnvironment, @Nullable InstanceTargetPacket instanceTargetPacket, CommandOpenPacket commandOpenPacket, PacketCollectionIdGenerator packetCollectionIdGenerator) {
 		requireNonNull(injectEnvironment);
 		// instanceTargetPacket may be null
 		requireNonNull(commandOpenPacket);
@@ -108,13 +108,14 @@ public class CommandManager {
 
 		// ----
 		return now -> {
-			PacketCollection packetCollectionToNestAndEncrypt = PacketCollections.createFromPackets(
+			PacketCollection packetCollectionToNestAndEncrypt = PacketCollections.create(
 					now,
 					instanceTargetPacket == null
 							? Arrays.asList(commandOpenPacket, instanceSourcePacket)
 							: Arrays.asList(commandOpenPacket, instanceSourcePacket, instanceTargetPacket),
-					PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR, zoneId
+					"unused document ID that does not get serialized"
 			);
+			// Note, on packetCollectionToNestAndEncrypt, _id is not serialized, so the generator and zoneId used above do NOT affect anything
 			final String payload;
 			try {
 				payload = MAPPER.writeValueAsString(packetCollectionToNestAndEncrypt);
@@ -137,7 +138,7 @@ public class CommandManager {
 			if (instanceTargetPacket != null) {
 				packets.add(instanceTargetPacket);
 			}
-			return PacketCollections.createFromPackets(now, packets, PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR, zoneId);
+			return PacketCollections.createFromPackets(now, packets, packetCollectionIdGenerator, zoneId);
 		};
 
 	}

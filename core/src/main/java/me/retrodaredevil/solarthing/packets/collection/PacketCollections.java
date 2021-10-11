@@ -11,15 +11,11 @@ import java.util.Collection;
 public final class PacketCollections {
 	private PacketCollections(){ throw new UnsupportedOperationException(); }
 
-	@Deprecated
-	public static PacketCollection createFromPackets(Collection<? extends Packet> packets, PacketCollectionIdGenerator idGenerator, ZoneId zoneId){
-		Instant now = Instant.now();
-		return createFromPackets(now, packets, idGenerator, zoneId);
-	}
 	public static PacketCollection createFromPackets(Instant now, Collection<? extends Packet> packets, PacketCollectionIdGenerator idGenerator, ZoneId zoneId){
-		Instant instant = Instant.now();
-		long dateMillis = instant.toEpochMilli();
-		String id = idGenerator.generateId(instant.atZone(zoneId));
-		return new ImmutablePacketCollection(packets, dateMillis, id);
+		String id = idGenerator.generateId(now.atZone(zoneId));
+		return create(now, packets, id);
+	}
+	public static PacketCollection create(Instant now, Collection<? extends Packet> packets, String id){
+		return new ImmutablePacketCollection(packets, now.toEpochMilli(), id);
 	}
 }

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import me.retrodaredevil.couchdbjava.CouchDbDatabase;
 import me.retrodaredevil.couchdbjava.exception.CouchDbException;
+import me.retrodaredevil.couchdbjava.exception.CouchDbUpdateConflictException;
 import me.retrodaredevil.couchdbjava.json.JsonData;
 import me.retrodaredevil.couchdbjava.json.StringJsonData;
 import me.retrodaredevil.couchdbjava.json.jackson.CouchDbJacksonUtil;
@@ -17,6 +18,7 @@ import me.retrodaredevil.solarthing.database.AlterDatabase;
 import me.retrodaredevil.solarthing.database.UpdateToken;
 import me.retrodaredevil.solarthing.database.VersionedPacket;
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
+import me.retrodaredevil.solarthing.database.exception.UpdateConflictSolarThingDatabaseException;
 import me.retrodaredevil.solarthing.type.alter.StoredAlterPacket;
 
 import java.util.ArrayList;
@@ -40,8 +42,11 @@ public class CouchDbAlterDatabase implements AlterDatabase {
 			throw new RuntimeException("Couldn't serialize the packet collection", e);
 		}
 		try {
+			// as of right now, we don't support updating existing alter packets
 			DocumentResponse response = database.putDocument(storedAlterPacket.getDbId(), jsonData);
 			return new RevisionUpdateToken(response.getRev());
+		} catch (CouchDbUpdateConflictException e) { // this may be thrown if someone tries to upload a document with the same document ID
+			throw new UpdateConflictSolarThingDatabaseException(e);
 		} catch (CouchDbException e) {
 			throw new SolarThingDatabaseException(e);
 		}

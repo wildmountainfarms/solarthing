@@ -14,6 +14,9 @@ public interface Design {
 	@JsonProperty("views")
 	Map<String, View> getViews();
 
+	/**
+	 * @see <a href="https://docs.couchdb.org/en/latest/ddocs/ddocs.html#validate-document-update-functions">validate-document-update-functions</a>
+	 */
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	@JsonProperty("validate_doc_update")
 	String getValidateDocUpdate();

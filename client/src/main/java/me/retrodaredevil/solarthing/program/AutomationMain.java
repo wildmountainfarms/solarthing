@@ -31,7 +31,6 @@ import java.time.Clock;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @UtilityClass
@@ -86,7 +85,7 @@ public final class AutomationMain {
 
 		FragmentedPacketGroup[] latestPacketGroupReference = new FragmentedPacketGroup[] { null };
 		@SuppressWarnings("unchecked")
-		List<StoredAlterPacket>[] alterPacketsReference = new List[] { null };
+		List<VersionedPacket<StoredAlterPacket>>[] alterPacketsReference = new List[] { null };
 		FragmentedPacketGroupProvider fragmentedPacketGroupProvider = () -> latestPacketGroupReference[0]; // note this may return null, and that's OK
 		Clock clock = Clock.systemUTC();
 		SimpleDatabaseCache statusDatabaseCache = SimpleDatabaseCache.createDefault(clock);
@@ -114,9 +113,9 @@ public final class AutomationMain {
 			queryAndFeed(database.getOpenDatabase(), openDatabaseCache, false);
 			{
 				// Never cache alter packets, because it's always important that we have up-to-date data, or no data at all.
-				List<StoredAlterPacket> alterPackets = null;
+				List<VersionedPacket<StoredAlterPacket>> alterPackets = null;
 				try {
-					alterPackets = database.getAlterDatabase().queryAll(sourceId).stream().map(VersionedPacket::getPacket).collect(Collectors.toList());
+					alterPackets = database.getAlterDatabase().queryAll(sourceId);
 					LOGGER.debug("Got " + alterPackets.size() + " alter packets");
 				} catch (SolarThingDatabaseException e) {
 					LOGGER.error("Could not get alter packets", e);

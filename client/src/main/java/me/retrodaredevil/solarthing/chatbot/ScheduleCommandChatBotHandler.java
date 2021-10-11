@@ -9,6 +9,7 @@ import me.retrodaredevil.solarthing.database.SolarThingDatabase;
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
 import me.retrodaredevil.solarthing.message.MessageSender;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
+import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.type.alter.packets.ScheduledCommandData;
 import me.retrodaredevil.solarthing.util.TimeUtil;
 import org.slf4j.Logger;
@@ -108,7 +109,8 @@ public class ScheduleCommandChatBotHandler implements ChatBotHandler {
 						targetTime.toEpochMilli(),
 						availableCommand.getCommandInfo().getName(),
 						Collections.singleton(availableCommand.getFragmentId())
-				), uniqueId)
+				), uniqueId),
+				PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR
 		);
 		PacketCollection packetCollection = creator.create(now);
 

@@ -10,6 +10,7 @@ import me.retrodaredevil.solarthing.database.SolarThingDatabase;
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
 import me.retrodaredevil.solarthing.message.MessageSender;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
+import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.instance.InstanceTargetPackets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +50,8 @@ public class CommandChatBotHandler implements ChatBotHandler {
 		CommandManager.Creator creator = commandHelper.getCommandManager().makeCreator(
 				injectEnvironment,
 				InstanceTargetPackets.create(Collections.singleton(best.getFragmentId())),
-				new ImmutableRequestCommandPacket(info.getName())
+				new ImmutableRequestCommandPacket(info.getName()),
+				PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR
 		);
 		Instant now = Instant.now();
 		PacketCollection packetCollection = creator.create(now);
