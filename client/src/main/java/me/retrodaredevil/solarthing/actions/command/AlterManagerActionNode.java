@@ -95,7 +95,9 @@ public class AlterManagerActionNode implements ActionNode {
 		String encryptedHash = largeIntegrityPacket.getEncryptedHash();
 		String data;
 		try {
-			data = Decrypt.decrypt(CIPHER, commandManager.getKeyPair().getPublic(), encryptedHash);
+			synchronized (CIPHER) {
+				data = Decrypt.decrypt(CIPHER, commandManager.getKeyPair().getPublic(), encryptedHash);
+			}
 		} catch (InvalidKeyException e) {
 			throw new RuntimeException("Should be a valid key!", e);
 		} catch (DecryptException e) {

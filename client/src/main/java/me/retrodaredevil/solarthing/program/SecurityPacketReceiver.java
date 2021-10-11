@@ -75,7 +75,7 @@ public class SecurityPacketReceiver {
 		long minTime = System.currentTimeMillis() - 5 * 60 * 1000; // last 5 minutes allowed
 		for(PacketGroup packetGroup : packetGroups){
 			if(packetGroup.getDateMillis() < minTime){
-				LOGGER.info("Ignoring old packet");
+				LOGGER.debug("Ignoring old packet");
 				continue;
 			}
 			TargetPacketGroup targetPacketGroup = PacketGroups.parseToTargetPacketGroup(packetGroup);

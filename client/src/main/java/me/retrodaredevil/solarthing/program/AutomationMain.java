@@ -65,7 +65,8 @@ public final class AutomationMain {
 		if (rawPacketGroups != null) {
 			databaseCache.feed(rawPacketGroups, query.getStartKey(), query.getEndKey());
 			if (rawPacketGroups.isEmpty()) {
-				LOGGER.info("packetGroups is empty! (Maybe there were no packets in the database?) millisDatabase=" + millisDatabase);
+				// This message is commonly printed for solarthing_open database, which is fine.
+				LOGGER.debug("packetGroups is empty! millisDatabase=" + millisDatabase);
 			}
 		}
 	}
