@@ -144,25 +144,27 @@ public class AlterManagerActionNode implements ActionNode {
 			boolean shouldDeleteAlter = false;
 			try {
 				database.getOpenDatabase().uploadPacketCollection(packetCollection, null);
+				LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Successfully uploaded packet collection that schedules command from data: " + scheduledCommandPacket.getData() + " document ID: " + documentId);
 				shouldDeleteAlter = true;
 			} catch (UpdateConflictSolarThingDatabaseException e) {
+				LOGGER.error("Got update conflict exception while uploading document ID: " + documentId + ". Will inspect existing document and overwrite if it's a malicious actor...", e);
 				VersionedPacket<StoredPacketGroup> existingDocument = null;
 				try {
 					existingDocument = database.getOpenDatabase().getPacketCollection(documentId);
 				} catch (SolarThingDatabaseException ex) {
 					LOGGER.error("Could not retrieve document with document ID: " + documentId, ex);
-					LOGGER.error("We tried getting the document above because of an update conflict exception. info here:", e);
 				}
 				if (existingDocument != null) {
 					if (isDocumentMadeByUs(uploadingNow, data, existingDocument.getPacket())) {
-						LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "False alarm everyone. The packet in the database was made by us and its timestamp is reasonable.");
+						LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "False alarm everyone. The packet in the database was made by us and its timestamp is reasonable. document ID: " + documentId);
+						shouldDeleteAlter = true;
 					} else {
 						LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "The packet in the database with document ID: " + documentId + " was not made by us. Could be a malicious actor. We will overwrite that packet.");
 						try {
 							database.getOpenDatabase().uploadPacketCollection(packetCollection, existingDocument.getUpdateToken());
 							shouldDeleteAlter = true;
 						} catch (SolarThingDatabaseException ex) {
-							LOGGER.error("Could not overwrite malicious packet. Will likely try again", ex);
+							LOGGER.error("Could not overwrite malicious packet. Will likely try again. document ID: " + documentId, ex);
 						}
 					}
 				}
@@ -173,7 +175,7 @@ public class AlterManagerActionNode implements ActionNode {
 				try {
 					database.getAlterDatabase().delete(versionedPacket);
 				} catch (SolarThingDatabaseException e) {
-					LOGGER.error("Error while deleting an alter document", e);
+					LOGGER.error("Error while deleting an alter document. document ID: " + versionedPacket.getPacket().getDbId() + " update token: " + versionedPacket.getUpdateToken(), e);
 				}
 			}
 		});

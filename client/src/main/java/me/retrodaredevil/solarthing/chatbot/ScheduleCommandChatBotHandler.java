@@ -63,7 +63,7 @@ public class ScheduleCommandChatBotHandler implements ChatBotHandler {
 				return true;
 			}
 			String remaining = text.replace("schedule", "").trim();
-			String[] result = remaining.split(" at | in ", 2);
+			String[] result = remaining.split(" at | in | for ", 2);
 			if (result.length != 2) {
 				messageSender.sendMessage(USAGE);
 				return true;
