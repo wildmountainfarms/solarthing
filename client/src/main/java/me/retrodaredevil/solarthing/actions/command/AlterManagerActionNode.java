@@ -42,6 +42,7 @@ import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import java.io.File;
 import java.security.NoSuchAlgorithmException;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -128,6 +129,7 @@ public class AlterManagerActionNode implements ActionNode {
 	}
 
 	private void doSendCommand(InjectEnvironment injectEnvironment, SolarThingDatabase database, VersionedPacket<StoredAlterPacket> versionedPacket, ScheduledCommandPacket scheduledCommandPacket) {
+		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Sending command from data: " + scheduledCommandPacket.getData());
 		ScheduledCommandData data = scheduledCommandPacket.getData();
 		RequestCommandPacket requestCommandPacket = new ImmutableRequestCommandPacket(data.getCommandName());
 		// Having a document ID based off of the StoredAlterPacket's _id helps make sure we don't process it twice in case we are unable to delete it.
@@ -261,7 +263,11 @@ public class AlterManagerActionNode implements ActionNode {
 
 						ScheduledCommandData data = scheduledCommandPacket.getData();
 						if (data.getScheduledTimeMillis() <= now.toEpochMilli()) {
-							doSendCommand(actionEnvironment.getInjectEnvironment(), database, versionedPacket, scheduledCommandPacket);
+							if (now.toEpochMilli() - data.getScheduledTimeMillis() > Duration.ofMinutes(5).toMillis()) {
+								LOGGER.warn("Not going to send a command scheduled for more than 5 minutes ago! data: " + data);
+							} else {
+								doSendCommand(actionEnvironment.getInjectEnvironment(), database, versionedPacket, scheduledCommandPacket);
+							}
 						}
 					}
 				}
