@@ -21,6 +21,11 @@ import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.collection.StoredPacketGroup;
 import me.retrodaredevil.solarthing.packets.instance.InstanceTargetPackets;
+import me.retrodaredevil.solarthing.packets.security.LargeIntegrityPacket;
+import me.retrodaredevil.solarthing.packets.security.crypto.Decrypt;
+import me.retrodaredevil.solarthing.packets.security.crypto.DecryptException;
+import me.retrodaredevil.solarthing.packets.security.crypto.InvalidKeyException;
+import me.retrodaredevil.solarthing.packets.security.crypto.KeyUtil;
 import me.retrodaredevil.solarthing.program.SecurityPacketReceiver;
 import me.retrodaredevil.solarthing.reason.ExecutionReason;
 import me.retrodaredevil.solarthing.reason.OpenSourceExecutionReason;
@@ -33,9 +38,13 @@ import me.retrodaredevil.solarthing.type.open.OpenSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
 import java.io.File;
+import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -44,18 +53,128 @@ import java.util.concurrent.Executors;
 @JsonTypeName("alter_manager")
 public class AlterManagerActionNode implements ActionNode {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AlterManagerActionNode.class);
+	private static final Cipher CIPHER;
+
+	static {
+		try {
+			CIPHER = Cipher.getInstance(KeyUtil.CIPHER_TRANSFORMATION);
+		} catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 	private final SecurityPacketReceiver.State state = new SecurityPacketReceiver.State();
 	private final long listenStartTime = System.currentTimeMillis();
 
+	private final String sender;
 	private final CommandManager commandManager;
 
 	public AlterManagerActionNode(
 			@JsonProperty(value = "sender", required = true) String sender,
 			@JsonProperty(value = "key_directory", required = true) File keyDirectory
 	) {
+		this.sender = sender;
 		commandManager = new CommandManager(keyDirectory, sender);
+	}
+
+	private boolean isDocumentMadeByUs(Instant now, ScheduledCommandData scheduledCommandData, StoredPacketGroup existingDocument) {
+		LargeIntegrityPacket largeIntegrityPacket = (LargeIntegrityPacket) existingDocument.getPackets().stream()
+				.filter(p -> p instanceof LargeIntegrityPacket)
+				.findAny().orElse(null);
+		if (largeIntegrityPacket == null) {
+			LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "The stored document did not have a LargeIntegrity packet. Someone must be trying to stop a scheduled command!");
+			return false;
+		}
+		String sender = largeIntegrityPacket.getSender();
+		if (!this.sender.equals(sender)) {
+			LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "The sender of the large integrity packet we are inspecting is not us (" + this.sender + "). It is " + sender + ". Might be a malicious actor, might be a bad setup.");
+			return false;
+		}
+		String encryptedHash = largeIntegrityPacket.getEncryptedHash();
+		String data;
+		try {
+			data = Decrypt.decrypt(CIPHER, commandManager.getKeyPair().getPublic(), encryptedHash);
+		} catch (InvalidKeyException e) {
+			throw new RuntimeException("Should be a valid key!", e);
+		} catch (DecryptException e) {
+			LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "The document we are inspecting had a large integrity packet with the sender: " + sender + ", but that's us and we couldn't decrypt their payload. Likely a malicious actor", e);
+			return false;
+		}
+		final String[] split = data.split(",", 2);
+		LOGGER.debug("decrypted data: " + data);
+		if (split.length != 2) {
+			LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "split.length: " + split.length + " split: " + Arrays.asList(split));
+			return false;
+		}
+		String hexMillis = split[0];
+		//String message = split[1]; We don't care what the message is. We don't even care enough to check if it matches the payload's hash
+		long dateMillis;
+		try {
+			dateMillis = Long.parseLong(hexMillis, 16);
+		} catch (NumberFormatException e) {
+			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "Error parsing hex date millis", e);
+			return false;
+		}
+		if (dateMillis < scheduledCommandData.getScheduledTimeMillis()) {
+			LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "The dateMillis for this is less than the command's scheduled execution time! This must be a malicious actor!");
+			return false;
+		}
+		if (dateMillis > now.toEpochMilli()) {
+			LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "The dateMillis for this is greater than now! This should never ever happen.");
+			return false;
+		}
+		return true;
+	}
+
+	private void doSendCommand(InjectEnvironment injectEnvironment, SolarThingDatabase database, VersionedPacket<StoredAlterPacket> versionedPacket, ScheduledCommandPacket scheduledCommandPacket) {
+		ScheduledCommandData data = scheduledCommandPacket.getData();
+		RequestCommandPacket requestCommandPacket = new ImmutableRequestCommandPacket(data.getCommandName());
+		// Having a document ID based off of the StoredAlterPacket's _id helps make sure we don't process it twice in case we are unable to delete it.
+		//   -- if there's an update conflict while uploading, we know we already processed it
+		String documentId = "scheduled-request-" + versionedPacket.getPacket().getDbId();
+		CommandManager.Creator creator = commandManager.makeCreator(injectEnvironment, InstanceTargetPackets.create(data.getTargetFragmentIds()), requestCommandPacket, zonedDateTime -> documentId);
+		executorService.execute(() -> {
+			// The time that is stored in the packet collection should be as close as possible to the actual. Since we are in a different thread
+			//   and don't really know how long this Runnable has been waiting to run, we call Instant.now() to get a more reliable time.
+			Instant uploadingNow = Instant.now();
+			PacketCollection packetCollection = creator.create(Instant.now());
+			boolean shouldDeleteAlter = false;
+			try {
+				database.getOpenDatabase().uploadPacketCollection(packetCollection, null);
+				shouldDeleteAlter = true;
+			} catch (UpdateConflictSolarThingDatabaseException e) {
+				VersionedPacket<StoredPacketGroup> existingDocument = null;
+				try {
+					existingDocument = database.getOpenDatabase().getPacketCollection(documentId);
+				} catch (SolarThingDatabaseException ex) {
+					LOGGER.error("Could not retrieve document with document ID: " + documentId, ex);
+					LOGGER.error("We tried getting the document above because of an update conflict exception. info here:", e);
+				}
+				if (existingDocument != null) {
+					if (isDocumentMadeByUs(uploadingNow, data, existingDocument.getPacket())) {
+						LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "False alarm everyone. The packet in the database was made by us and its timestamp is reasonable.");
+					} else {
+						LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "The packet in the database with document ID: " + documentId + " was not made by us. Could be a malicious actor. We will overwrite that packet.");
+						try {
+							database.getOpenDatabase().uploadPacketCollection(packetCollection, existingDocument.getUpdateToken());
+							shouldDeleteAlter = true;
+						} catch (SolarThingDatabaseException ex) {
+							LOGGER.error("Could not overwrite malicious packet. Will likely try again", ex);
+						}
+					}
+				}
+			} catch (SolarThingDatabaseException e) {
+				LOGGER.error("Failed to upload our request command packet. documentId: " + documentId, e);
+			}
+			if (shouldDeleteAlter) {
+				try {
+					database.getAlterDatabase().delete(versionedPacket);
+				} catch (SolarThingDatabaseException e) {
+					LOGGER.error("Error while deleting an alter document", e);
+				}
+			}
+		});
 	}
 
 	@Override
@@ -110,7 +229,7 @@ public class AlterManagerActionNode implements ActionNode {
 						return true;
 					}
 					if (isFromPayloadWithIntegrity) {
-						LOGGER.warn("isFromPayloadWithIntegrity=true and we are not targeting none! dateMillis: " + packetGroup.getDateMillis());
+						LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "isFromPayloadWithIntegrity=true and we are not targeting none! dateMillis: " + packetGroup.getDateMillis());
 					}
 					return false;
 				},
@@ -139,41 +258,10 @@ public class AlterManagerActionNode implements ActionNode {
 					AlterPacket packet = versionedPacket.getPacket().getPacket();
 					if (packet instanceof ScheduledCommandPacket) {
 						ScheduledCommandPacket scheduledCommandPacket = (ScheduledCommandPacket) packet;
+
 						ScheduledCommandData data = scheduledCommandPacket.getData();
 						if (data.getScheduledTimeMillis() <= now.toEpochMilli()) {
-							RequestCommandPacket requestCommandPacket = new ImmutableRequestCommandPacket(data.getCommandName());
-							// Having a document ID based off of the StoredAlterPacket's _id helps make sure we don't process it twice in case we are unable to delete it.
-							//   -- if there's an update conflict while uploading, we know we already processed it
-							String documentId = "scheduled-request-" + versionedPacket.getPacket().getDbId();
-							CommandManager.Creator creator = commandManager.makeCreator(actionEnvironment.getInjectEnvironment(), InstanceTargetPackets.create(data.getTargetFragmentIds()), requestCommandPacket, zonedDateTime -> documentId);
-							executorService.execute(() -> {
-								// The time that is stored in the packet collection should be as close as possible to the actual. Since we are in a different thread
-								//   and don't really know how long this Runnable has been waiting to run, we call Instant.now() to get a more reliable time.
-								PacketCollection packetCollection = creator.create(Instant.now());
-								boolean shouldDeleteAlter = true;
-								try {
-									database.getOpenDatabase().uploadPacketCollection(packetCollection, null);
-								} catch (UpdateConflictSolarThingDatabaseException e) {
-									// TODO SERIOUSLY, ACTUALLY GET TO THIS: The solarthing_open database can be modified by anyone. Almost all packets in it
-									//   are encrypted for integrity. As of now, the code assumes that an update conflict exception is the result of us already handling
-									//   a given alter packet and us being unable to delete it for whatever reason. This is a reasonable assumption, but since the data
-									//   in solarthing_alter is public, someone could easily figure out what the document ID will be for some given scheduled command,
-									//   then upload *any* document under that document ID. This makes us assume that we have processed a given scheduled command,
-									//   when we actually haven't.
-									//   --Someone basically just cancelled a scheduled command without any authorization whatsoever.
-									LOGGER.debug("We already uploaded packet with documentId: " + documentId + ". We will assume there is no malicious actor preventing this packet from uploading and delete the alter packet so no further processing is attempted..", e);
-								} catch (SolarThingDatabaseException e) {
-									LOGGER.error("Failed to upload our request command packet. documentId: " + documentId, e);
-									shouldDeleteAlter = false;
-								}
-								if (shouldDeleteAlter) {
-									try {
-										database.getAlterDatabase().delete(versionedPacket);
-									} catch (SolarThingDatabaseException e) {
-										LOGGER.error("Error while deleting an alter document", e);
-									}
-								}
-							});
+							doSendCommand(actionEnvironment.getInjectEnvironment(), database, versionedPacket, scheduledCommandPacket);
 						}
 					}
 				}

@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.chatbot;
 import me.retrodaredevil.solarthing.AlterPacketsProvider;
 import me.retrodaredevil.solarthing.FragmentedPacketGroupProvider;
 import me.retrodaredevil.solarthing.annotations.NotNull;
+import me.retrodaredevil.solarthing.database.VersionedPacket;
 import me.retrodaredevil.solarthing.message.MessageSender;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
@@ -59,12 +60,13 @@ public class StatusChatBotHandler implements ChatBotHandler {
 			}
 			return true;
 		} else if (ChatBotUtil.isSimilar("alter", message.getText())) {
-			List<StoredAlterPacket> alterPackets = alterPacketsProvider.getPackets();
+			List<VersionedPacket<StoredAlterPacket>> alterPackets = alterPacketsProvider.getPackets();
 			if (alterPackets == null) {
 				messageSender.sendMessage("Error - Must have failed to query alter database");
 			} else {
 				List<String> scheduledCommandLines = new ArrayList<>();
-				for (StoredAlterPacket storedAlterPacket : alterPackets) {
+				for (VersionedPacket<StoredAlterPacket> versionedPacket : alterPackets) {
+					StoredAlterPacket storedAlterPacket = versionedPacket.getPacket();
 					AlterPacket alterPacket = storedAlterPacket.getPacket();
 					if (alterPacket instanceof ScheduledCommandPacket) {
 						ScheduledCommandData data = ((ScheduledCommandPacket) alterPacket).getData();

@@ -10,11 +10,13 @@ import me.retrodaredevil.couchdbjava.exception.CouchDbUpdateConflictException;
 import me.retrodaredevil.couchdbjava.json.JsonData;
 import me.retrodaredevil.couchdbjava.json.StringJsonData;
 import me.retrodaredevil.couchdbjava.json.jackson.CouchDbJacksonUtil;
+import me.retrodaredevil.couchdbjava.response.DocumentData;
 import me.retrodaredevil.couchdbjava.response.DocumentResponse;
 import me.retrodaredevil.couchdbjava.response.ViewResponse;
 import me.retrodaredevil.solarthing.database.MillisDatabase;
 import me.retrodaredevil.solarthing.database.MillisQuery;
 import me.retrodaredevil.solarthing.database.UpdateToken;
+import me.retrodaredevil.solarthing.database.VersionedPacket;
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
 import me.retrodaredevil.solarthing.database.exception.UpdateConflictSolarThingDatabaseException;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
@@ -40,6 +42,29 @@ public class CouchDbMillisDatabase implements MillisDatabase {
 		this.parser = new SimplePacketGroupParser(mapper, errorHandler);
 	}
 
+	private VersionedPacket<StoredPacketGroup> jsonDataToStoredPacketGroup(JsonData jsonData) throws SolarThingDatabaseException {
+		final JsonNode jsonNode;
+		try {
+			jsonNode = CouchDbJacksonUtil.getNodeFrom(jsonData);
+		} catch (JsonProcessingException e) {
+			throw new SolarThingDatabaseException("We couldn't parse some of the data into JSON. This should never happen", e);
+		}
+		if (!jsonNode.isObject()) {
+			throw new SolarThingDatabaseException("Something must be wrong with the packet millis view because we got this jsonNode: " + jsonNode);
+		}
+		ObjectNode objectNode = (ObjectNode) jsonNode;
+		final PacketGroup packetGroup;
+		try {
+			packetGroup = parser.parse(objectNode);
+		} catch (PacketParseException e) {
+			throw new SolarThingDatabaseException(e);
+		}
+		String documentId = objectNode.get("_id").asText();
+		String documentRevision = objectNode.get("_rev").asText();
+		StoredPacketGroup storedPacketGroup = PacketGroups.createStoredPacketGroup(packetGroup, new CouchDbStoredIdentifier(packetGroup.getDateMillis(), documentId, documentRevision));
+		return new VersionedPacket<>(storedPacketGroup, new RevisionUpdateToken(documentRevision));
+	}
+
 	@Override
 	public List<StoredPacketGroup> query(MillisQuery query) throws SolarThingDatabaseException {
 		final ViewResponse response;
@@ -52,25 +77,7 @@ public class CouchDbMillisDatabase implements MillisDatabase {
 		List<StoredPacketGroup> r = new ArrayList<>(rows.size());
 		for (ViewResponse.DocumentEntry row : rows) {
 			JsonData jsonData = row.getValue();
-			final JsonNode jsonNode;
-			try {
-				jsonNode = CouchDbJacksonUtil.getNodeFrom(jsonData);
-			} catch (JsonProcessingException e) {
-				throw new SolarThingDatabaseException("We couldn't parse some of the data into JSON. This should never happen", e);
-			}
-			if (!jsonNode.isObject()) {
-				throw new SolarThingDatabaseException("Something must be wrong with the packet millis view because we got this jsonNode: " + jsonNode);
-			}
-			ObjectNode objectNode = (ObjectNode) jsonNode;
-			final PacketGroup packetGroup;
-			try {
-				packetGroup = parser.parse(objectNode);
-			} catch (PacketParseException e) {
-				throw new SolarThingDatabaseException(e);
-			}
-			String documentId = objectNode.get("_id").asText();
-			String documentRevision = objectNode.get("_rev").asText();
-			StoredPacketGroup storedPacketGroup = PacketGroups.createStoredPacketGroup(packetGroup, new CouchDbStoredIdentifier(packetGroup.getDateMillis(), documentId, documentRevision));
+			StoredPacketGroup storedPacketGroup = jsonDataToStoredPacketGroup(jsonData).getPacket();
 			r.add(storedPacketGroup);
 		}
 		return r;
@@ -98,6 +105,18 @@ public class CouchDbMillisDatabase implements MillisDatabase {
 		} catch (CouchDbException e) {
 			throw new SolarThingDatabaseException(e);
 		}
+	}
+
+	@Override
+	public VersionedPacket<StoredPacketGroup> getPacketCollection(String documentId) throws SolarThingDatabaseException {
+		final DocumentData documentData;
+		try {
+			documentData = database.getDocument(documentId);
+		} catch (CouchDbException e) {
+			throw new SolarThingDatabaseException("Could not get packet collection with document ID: " + documentId, e);
+		}
+		JsonData jsonData = documentData.getJsonData();
+		return jsonDataToStoredPacketGroup(jsonData);
 	}
 
 	@Override
