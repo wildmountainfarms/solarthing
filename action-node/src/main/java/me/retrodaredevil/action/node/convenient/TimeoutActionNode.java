@@ -1,9 +1,10 @@
-package me.retrodaredevil.action.node;
+package me.retrodaredevil.action.node.convenient;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.Actions;
+import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 
 import java.time.Duration;

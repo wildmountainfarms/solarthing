@@ -22,8 +22,6 @@
   * https://hub.docker.com/r/graylog/graylog
 * Look into implementing pymate like features into SolarThing: https://github.com/jorticus/pymate
   * https://github.com/jorticus/pymate/blob/master/doc/protocol/Protocol.md
-* Add way to queue up commands in the automation program
-  * The goal here is to be able to say "start generator at 5PM" and then also be able to cancel it
 * Make sure clients tolerate quick disconnects and reconnects from a device so that devices with unstable connections
 don't look like they're constantly disconnecting and reconnecting
 * Add packet for rover write commands that ran - (we already have one for mate commands)
@@ -35,8 +33,6 @@ don't look like they're constantly disconnecting and reconnecting
   * We have a great setup for versioned SolarThing jar files, because running instances will still use
   whatever jar solarthing.jar pointed them to originally, but this isn't the case when we actually change the jar it is pointing to
 * Backend Grafana plugin to allow commands to be sent
-* Have a CouchDB view that emits null so that the millis view can be more efficient and people can use include_docs=true
-  * https://www.dimagi.com/blog/what-every-developer-should-know-about-couchdb/
 * GraphQL queries for getting the angle of the sun in the sky (current and highest point in the day)
   * https://ipgeolocation.io/documentation/astronomy-api.html - unintuitive Java SDK with bad documentation
   * https://github.com/caarmen/SunriseSunset - gross requirement to use java.util.Calendar
@@ -94,6 +90,11 @@ easy displaying in Grafana
   * CouchDB recommends shorter IDs: https://docs.couchdb.org/en/stable/maintenance/performance.html#document-s-id
 * Add action to store an informational message in the database
 * Automation program should have access to data since the beginning of the day and should query solarthing-events
+* Add way to queue up commands in the automation program
+  * The goal here is to be able to say "start generator at 5PM" and then also be able to cancel it
+* Have a CouchDB view that emits null so that the millis view can be more efficient and people can use include_docs=true
+  * https://www.dimagi.com/blog/what-every-developer-should-know-about-couchdb/
+* Separate ActionNode code into its own action-node module
 
 ### Look into
 * Look into supporting Elasticsearch, MongoDB, Graphite

@@ -3,6 +3,8 @@ package me.retrodaredevil.action.node;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import me.retrodaredevil.action.Action;
+import me.retrodaredevil.action.node.convenient.SingleActionNode;
+import me.retrodaredevil.action.node.convenient.TimeoutActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 
 @JsonSubTypes({
@@ -16,6 +18,7 @@ import me.retrodaredevil.action.node.environment.ActionEnvironment;
 		@JsonSubTypes.Type(DeclarationActionNode.class),
 		@JsonSubTypes.Type(RaceActionNode.class),
 		@JsonSubTypes.Type(TimeoutActionNode.class),
+		@JsonSubTypes.Type(SingleActionNode.class),
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
 public interface ActionNode {
