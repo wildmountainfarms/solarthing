@@ -4,7 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.Actions;
-import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
+import me.retrodaredevil.action.node.ActionNode;
+import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

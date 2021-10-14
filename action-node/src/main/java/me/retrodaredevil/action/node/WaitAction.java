@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing.actions;
+package me.retrodaredevil.action.node;
 
 import me.retrodaredevil.action.SimpleAction;
 

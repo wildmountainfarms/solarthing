@@ -3,9 +3,9 @@ package me.retrodaredevil.solarthing.actions.mate;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.SimpleAction;
-import me.retrodaredevil.solarthing.actions.ActionNode;
-import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
-import me.retrodaredevil.solarthing.actions.environment.MateCommandEnvironment;
+import me.retrodaredevil.action.node.ActionNode;
+import me.retrodaredevil.action.node.environment.ActionEnvironment;
+import me.retrodaredevil.action.node.environment.MateCommandEnvironment;
 
 import java.util.Queue;
 

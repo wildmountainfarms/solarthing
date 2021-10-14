@@ -150,6 +150,7 @@ project(":client"){
         api project(":core")
         api project(":common")
         api project(":serviceapi")
+        api project(":action-node")
         annotationProcessor project(":process-annotations")
     }
 }

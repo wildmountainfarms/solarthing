@@ -4,13 +4,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.io.serial.SerialConfigBuilder;
-import me.retrodaredevil.solarthing.actions.ActionNode;
+import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettingsUtil;
 import me.retrodaredevil.solarthing.config.databases.implementations.InfluxDbDatabaseSettings;
 import me.retrodaredevil.solarthing.config.io.IOConfig;
 import me.retrodaredevil.solarthing.config.io.SerialIOConfig;
 import me.retrodaredevil.solarthing.config.options.ProgramOptions;
+import me.retrodaredevil.solarthing.program.ActionUtil;
 import me.retrodaredevil.solarthing.program.DatabaseConfig;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.junit.jupiter.api.Test;
@@ -31,7 +32,7 @@ public class DeserializeTest {
 
 	private static final FileFilter JSON_FILTER = file -> file.getName().endsWith(".json");
 
-	private static final ObjectMapper MAPPER = DatabaseSettingsUtil.registerDatabaseSettings(JacksonUtil.defaultMapper());
+	private static final ObjectMapper MAPPER = ActionUtil.registerActionNodes(DatabaseSettingsUtil.registerDatabaseSettings(JacksonUtil.defaultMapper()));
 
 	@Test
 	void testInfluxDb1() throws JsonProcessingException {

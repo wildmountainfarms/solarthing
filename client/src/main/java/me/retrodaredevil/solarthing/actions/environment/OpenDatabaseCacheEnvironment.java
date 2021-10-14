@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing.actions.environment;
+package me.retrodaredevil.action.node.environment;
 
 import me.retrodaredevil.solarthing.database.cache.DatabaseCache;
 

@@ -3,15 +3,19 @@ package me.retrodaredevil.solarthing.actions;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.action.Action;
-import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
-import me.retrodaredevil.solarthing.actions.environment.InjectEnvironment;
-import me.retrodaredevil.solarthing.actions.environment.VariableEnvironment;
+import me.retrodaredevil.action.node.ActionNode;
+import me.retrodaredevil.action.node.CallActionNode;
+import me.retrodaredevil.action.node.environment.ActionEnvironment;
+import me.retrodaredevil.action.node.environment.InjectEnvironment;
+import me.retrodaredevil.action.node.environment.VariableEnvironment;
+import me.retrodaredevil.solarthing.program.ActionUtil;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ActionNodeTest {
+	private static final ObjectMapper MAPPER = ActionUtil.registerActionNodes(JacksonUtil.defaultMapper());
 
 	private ActionEnvironment createEnvironment() {
 		return new ActionEnvironment(new VariableEnvironment(), new VariableEnvironment(), new InjectEnvironment.Builder().build());
@@ -20,8 +24,7 @@ class ActionNodeTest {
 	@Test
 	void testParse() throws JsonProcessingException {
 		String json = "{ \"type\": \"call\", \"name\": \"asdf\" }";
-		ObjectMapper mapper = JacksonUtil.defaultMapper();
-		assertTrue(mapper.readValue(json, ActionNode.class) instanceof CallActionNode);
+		assertTrue(MAPPER.readValue(json, ActionNode.class) instanceof CallActionNode);
 	}
 	@Test
 	void testDeclaration() throws JsonProcessingException {
@@ -33,8 +36,7 @@ class ActionNodeTest {
 				"    [{ \"type\": \"waitms\", \"wait\": 1000}, { \"type\": \"log\", \"message\": \"1000ms finished first!\"}]\n" +
 				"  ]\n" +
 				"}";
-		ObjectMapper mapper = JacksonUtil.defaultMapper();
-		ActionNode actionNode = mapper.readValue(json, ActionNode.class);
+		ActionNode actionNode = MAPPER.readValue(json, ActionNode.class);
 		Action action = actionNode.createAction(createEnvironment());
 		do {
 			action.update();

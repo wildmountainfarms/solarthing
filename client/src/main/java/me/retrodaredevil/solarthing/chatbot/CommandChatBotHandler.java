@@ -1,8 +1,8 @@
 package me.retrodaredevil.solarthing.chatbot;
 
 import me.retrodaredevil.solarthing.actions.command.CommandManager;
-import me.retrodaredevil.solarthing.actions.environment.InjectEnvironment;
-import me.retrodaredevil.solarthing.actions.environment.SolarThingDatabaseEnvironment;
+import me.retrodaredevil.action.node.environment.InjectEnvironment;
+import me.retrodaredevil.action.node.environment.SolarThingDatabaseEnvironment;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.commands.CommandInfo;
 import me.retrodaredevil.solarthing.commands.packets.open.ImmutableRequestCommandPacket;

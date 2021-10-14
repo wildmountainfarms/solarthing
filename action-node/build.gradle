@@ -1,0 +1,11 @@
+plugins {
+    id 'java'
+}
+
+version = '0.0.1-SNAPSHOT'
+
+dependencies {
+    api 'com.github.retrodaredevil:action-lib:v1.3.1'
+    api "com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion"
+    api "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+}

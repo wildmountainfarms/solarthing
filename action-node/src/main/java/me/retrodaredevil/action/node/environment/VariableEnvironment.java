@@ -1,6 +1,6 @@
-package me.retrodaredevil.solarthing.actions.environment;
+package me.retrodaredevil.action.node.environment;
 
-import me.retrodaredevil.solarthing.actions.ActionNode;
+import me.retrodaredevil.action.node.ActionNode;
 
 import java.util.*;
 

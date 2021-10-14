@@ -1,10 +1,10 @@
-package me.retrodaredevil.solarthing.actions;
+package me.retrodaredevil.action.node;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.Actions;
-import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
+import me.retrodaredevil.action.node.environment.ActionEnvironment;
 
 @JsonTypeName("call")
 public class CallActionNode implements ActionNode {

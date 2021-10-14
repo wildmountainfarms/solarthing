@@ -3,11 +3,14 @@ package me.retrodaredevil.solarthing.program;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.action.ActionMultiplexer;
 import me.retrodaredevil.action.Actions;
+import me.retrodaredevil.action.node.environment.ActionEnvironment;
+import me.retrodaredevil.action.node.environment.InjectEnvironment;
+import me.retrodaredevil.action.node.environment.VariableEnvironment;
 import me.retrodaredevil.couchdb.CouchDbUtil;
 import me.retrodaredevil.solarthing.FragmentedPacketGroupProvider;
 import me.retrodaredevil.solarthing.SolarThingConstants;
-import me.retrodaredevil.solarthing.actions.ActionNode;
-import me.retrodaredevil.solarthing.actions.environment.*;
+import me.retrodaredevil.action.node.ActionNode;
+import me.retrodaredevil.action.node.environment.*;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.config.options.AutomationProgramOptions;
@@ -38,7 +41,7 @@ public final class AutomationMain {
 	private AutomationMain() { throw new UnsupportedOperationException(); }
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AutomationMain.class);
-	private static final ObjectMapper CONFIG_MAPPER = JacksonUtil.defaultMapper();
+	private static final ObjectMapper CONFIG_MAPPER = ActionUtil.registerActionNodes(JacksonUtil.defaultMapper());
 
 	public static int startAutomation(AutomationProgramOptions options) throws IOException {
 		List<ActionNode> actionNodes = new ArrayList<>();

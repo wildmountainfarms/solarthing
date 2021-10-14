@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing.actions.environment;
+package me.retrodaredevil.action.node.environment;
 
 public class ActionEnvironment {
 	private final VariableEnvironment globalEnvironment;

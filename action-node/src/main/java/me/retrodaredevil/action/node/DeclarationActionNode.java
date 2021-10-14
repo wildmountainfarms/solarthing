@@ -1,10 +1,10 @@
-package me.retrodaredevil.solarthing.actions;
+package me.retrodaredevil.action.node;
 
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.Actions;
-import me.retrodaredevil.solarthing.actions.environment.ActionEnvironment;
+import me.retrodaredevil.action.node.environment.ActionEnvironment;
 
 import java.util.HashMap;
 import java.util.Map;

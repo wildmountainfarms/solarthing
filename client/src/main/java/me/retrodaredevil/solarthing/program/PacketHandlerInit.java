@@ -4,12 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.couchdb.CouchDbUtil;
 import me.retrodaredevil.couchdbjava.CouchDbInstance;
 import me.retrodaredevil.solarthing.SolarThingConstants;
-import me.retrodaredevil.solarthing.actions.ActionNode;
+import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.solarthing.actions.command.EnvironmentUpdater;
-import me.retrodaredevil.solarthing.actions.environment.EventReceiverEnvironment;
-import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnvironment;
-import me.retrodaredevil.solarthing.actions.environment.SourceEnvironment;
-import me.retrodaredevil.solarthing.actions.environment.TimeZoneEnvironment;
+import me.retrodaredevil.action.node.environment.EventReceiverEnvironment;
+import me.retrodaredevil.action.node.environment.LatestPacketGroupEnvironment;
+import me.retrodaredevil.action.node.environment.SourceEnvironment;
+import me.retrodaredevil.action.node.environment.TimeZoneEnvironment;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.config.databases.IndividualSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.*;
@@ -48,7 +48,7 @@ public class PacketHandlerInit {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PacketHandlerInit.class);
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
-	private static final ObjectMapper CONFIG_MAPPER = JacksonUtil.defaultMapper();
+	private static final ObjectMapper CONFIG_MAPPER = ActionUtil.registerActionNodes(JacksonUtil.defaultMapper());
 
 	public static PacketHandlerBundle getPacketHandlerBundle(List<DatabaseConfig> configs, String uniqueStatusName, String uniqueEventName, String sourceId, int fragmentId){
 		List<PacketHandler> statusPacketHandlers = new ArrayList<>();
