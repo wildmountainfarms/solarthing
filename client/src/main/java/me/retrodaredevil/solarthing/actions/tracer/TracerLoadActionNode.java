@@ -9,7 +9,7 @@ import me.retrodaredevil.io.modbus.ModbusRuntimeException;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
-import me.retrodaredevil.action.node.environment.TracerModbusEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.TracerModbusEnvironment;
 import me.retrodaredevil.solarthing.solar.tracer.TracerWriteTable;
 import me.retrodaredevil.solarthing.solar.tracer.mode.LoadControlMode;
 import org.slf4j.Logger;

@@ -6,18 +6,16 @@ import com.slack.api.Slack;
 import com.slack.api.SlackConfig;
 import com.slack.api.util.http.SlackHttpClient;
 import me.retrodaredevil.action.Action;
-import me.retrodaredevil.action.Actions;
+import me.retrodaredevil.action.node.ActionNode;
+import me.retrodaredevil.action.node.convenient.SingleActionNode;
+import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.AlterPacketsProvider;
 import me.retrodaredevil.solarthing.FragmentedPacketGroupProvider;
-import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.solarthing.actions.command.CommandManager;
-import me.retrodaredevil.action.node.environment.ActionEnvironment;
-import me.retrodaredevil.action.node.environment.AlterPacketsEnvironment;
-import me.retrodaredevil.action.node.environment.InjectEnvironment;
-import me.retrodaredevil.action.node.environment.LatestFragmentedPacketGroupEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.AlterPacketsEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.LatestFragmentedPacketGroupEnvironment;
 import me.retrodaredevil.solarthing.chatbot.*;
 import me.retrodaredevil.solarthing.message.implementations.SlackMessageSender;
-import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import okhttp3.OkHttpClient;
 
 import java.io.File;
@@ -25,15 +23,11 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 
 @JsonTypeName("chatbot_slack")
 public class SlackChatBotActionNode implements ActionNode {
 
-	private final Action action;
-
-	private volatile FragmentedPacketGroup latestPacketGroup = null;
-	private volatile InjectEnvironment injectEnvironment;
+	private final SingleActionNode actionNode;
 
 	/*
 	The app level token should have connections:write permission
@@ -53,47 +47,72 @@ public class SlackChatBotActionNode implements ActionNode {
 			@JsonProperty(value = "sender", required = true) String sender,
 			@JsonProperty(value = "key_directory", required = true) File keyDirectory
 	) {
-		Slack slack = Slack.getInstance(new SlackConfig(), new SlackHttpClient(new OkHttpClient.Builder()
-				.callTimeout(Duration.ofSeconds(10))
-				.connectTimeout(Duration.ofSeconds(4))
-				.build()));
-		FragmentedPacketGroupProvider packetGroupProvider = () -> latestPacketGroup;
-		ChatBotCommandHelper commandHelper = new ChatBotCommandHelper(permissionMap, packetGroupProvider, new CommandManager(keyDirectory, sender));
-
-		Supplier<InjectEnvironment> injectEnvironmentSupplier = () -> injectEnvironment;
-		AlterPacketsProvider alterPacketsProvider = () -> injectEnvironment.get(AlterPacketsEnvironment.class).getAlterPacketsProvider().getPackets();
-		action = new SlackChatBotAction(
-				appToken,
-				new SlackMessageSender(authToken, channelId, slack),
-				slack,
-				new HelpChatBotHandler(
-						new ChatBotHandlerMultiplexer(Arrays.asList(
-								new StaleMessageHandler(), // note: this isn't applied to "help" commands
-								new ScheduleCommandChatBotHandler(commandHelper, injectEnvironmentSupplier),
-								new CommandChatBotHandler(commandHelper, injectEnvironmentSupplier),
-								new StatusChatBotHandler(packetGroupProvider, alterPacketsProvider),
-								(message, messageSender) -> {
-									messageSender.sendMessage("Unknown command!");
-									return true;
-								}
-						))
-				)
-		);
+		// Wrap the RawActionNode in a SingleActionNode so that only one is active at a time -- the first one created and executed will be the one that is used
+		actionNode = SingleActionNode.create(new RawActionNode(appToken, authToken, channelId, permissionMap, sender, keyDirectory));
 	}
-
-	// This is designed to be handled by the automation program.
-	// The automation program creates a new action each iteration,
-	//   so we update a single action each iteration instead of creating a new
-	//   one a bunch of times.
 
 	@Override
 	public Action createAction(ActionEnvironment actionEnvironment) {
-		LatestFragmentedPacketGroupEnvironment latestPacketGroupEnvironment = actionEnvironment.getInjectEnvironment().get(LatestFragmentedPacketGroupEnvironment.class);
-		actionEnvironment.getInjectEnvironment().require(AlterPacketsEnvironment.class); // used elsewhere, so let's assert that we have it
-		this.injectEnvironment = actionEnvironment.getInjectEnvironment();
-		return Actions.createRunOnce(() -> {
-			latestPacketGroup = latestPacketGroupEnvironment.getFragmentedPacketGroupProvider().getPacketGroup();
-			action.update();
-		});
+		return actionNode.createAction(actionEnvironment);
+	}
+
+	public static class RawActionNode implements ActionNode {
+		private final String appToken;
+		private final String authToken;
+		private final String channelId;
+		private final Map<String, List<String>> permissionMap;
+		private final String sender;
+		private final File keyDirectory;
+
+		public RawActionNode(
+				String appToken,
+				String authToken,
+				String channelId,
+				Map<String, List<String>> permissionMap,
+				String sender,
+				File keyDirectory
+		) {
+			this.appToken = appToken;
+			this.authToken = authToken;
+			this.channelId = channelId;
+			this.permissionMap = permissionMap;
+			this.sender = sender;
+			this.keyDirectory = keyDirectory;
+		}
+
+		@Override
+		public Action createAction(ActionEnvironment actionEnvironment) {
+			LatestFragmentedPacketGroupEnvironment latestPacketGroupEnvironment = actionEnvironment.getInjectEnvironment().get(LatestFragmentedPacketGroupEnvironment.class);
+			AlterPacketsEnvironment alterPacketsEnvironment = actionEnvironment.getInjectEnvironment().get(AlterPacketsEnvironment.class);
+
+			FragmentedPacketGroupProvider packetGroupProvider = latestPacketGroupEnvironment.getFragmentedPacketGroupProvider();
+			AlterPacketsProvider alterPacketsProvider = alterPacketsEnvironment.getAlterPacketsProvider();
+
+
+			Slack slack = Slack.getInstance(new SlackConfig(), new SlackHttpClient(new OkHttpClient.Builder()
+					.callTimeout(Duration.ofSeconds(10))
+					.connectTimeout(Duration.ofSeconds(4))
+					.build()));
+
+			ChatBotCommandHelper commandHelper = new ChatBotCommandHelper(permissionMap, packetGroupProvider, new CommandManager(keyDirectory, sender));
+
+			return new SlackChatBotAction(
+					appToken,
+					new SlackMessageSender(authToken, channelId, slack),
+					slack,
+					new HelpChatBotHandler(
+							new ChatBotHandlerMultiplexer(Arrays.asList(
+									new StaleMessageHandler(), // note: this isn't applied to "help" commands
+									new ScheduleCommandChatBotHandler(commandHelper, actionEnvironment.getInjectEnvironment()),
+									new CommandChatBotHandler(commandHelper, actionEnvironment.getInjectEnvironment()),
+									new StatusChatBotHandler(packetGroupProvider, alterPacketsProvider),
+									(message, messageSender) -> {
+										messageSender.sendMessage("Unknown command!");
+										return true;
+									}
+							))
+					)
+			);
+		}
 	}
 }

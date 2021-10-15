@@ -1,4 +1,4 @@
-package me.retrodaredevil.action.node.environment;
+package me.retrodaredevil.solarthing.actions.environment;
 
 import me.retrodaredevil.solarthing.commands.SourcedCommand;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;

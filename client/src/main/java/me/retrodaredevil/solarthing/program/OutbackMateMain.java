@@ -3,7 +3,7 @@ package me.retrodaredevil.solarthing.program;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.actions.command.EnvironmentUpdater;
 import me.retrodaredevil.solarthing.actions.command.EnvironmentUpdaterMultiplexer;
-import me.retrodaredevil.action.node.environment.MateCommandEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.MateCommandEnvironment;
 import me.retrodaredevil.solarthing.analytics.AnalyticsManager;
 import me.retrodaredevil.solarthing.analytics.MateAnalyticsHandler;
 import me.retrodaredevil.solarthing.commands.CommandProvider;

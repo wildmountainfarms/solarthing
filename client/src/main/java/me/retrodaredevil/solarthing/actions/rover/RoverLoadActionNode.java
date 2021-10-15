@@ -9,7 +9,7 @@ import me.retrodaredevil.io.modbus.ModbusRuntimeException;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
-import me.retrodaredevil.action.node.environment.RoverModbusEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.RoverModbusEnvironment;
 import me.retrodaredevil.solarthing.solar.renogy.rover.LoadWorkingMode;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverWriteTable;
 import me.retrodaredevil.solarthing.solar.renogy.rover.StreetLight;

@@ -7,7 +7,7 @@ import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.SimpleAction;
 import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
-import me.retrodaredevil.action.node.environment.LatestFragmentedPacketGroupEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.LatestFragmentedPacketGroupEnvironment;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;

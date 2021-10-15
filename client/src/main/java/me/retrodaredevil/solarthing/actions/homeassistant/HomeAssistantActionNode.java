@@ -7,7 +7,7 @@ import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.Actions;
 import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
-import me.retrodaredevil.action.node.environment.LatestFragmentedPacketGroupEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.LatestFragmentedPacketGroupEnvironment;
 import me.retrodaredevil.solarthing.homeassistant.HomeAssistantOkHttpUtil;
 import me.retrodaredevil.solarthing.homeassistant.HomeAssistantRetrofitUtil;
 import me.retrodaredevil.solarthing.homeassistant.HomeAssistantService;

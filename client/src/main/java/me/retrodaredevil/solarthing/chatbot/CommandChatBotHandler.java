@@ -1,8 +1,8 @@
 package me.retrodaredevil.solarthing.chatbot;
 
-import me.retrodaredevil.solarthing.actions.command.CommandManager;
 import me.retrodaredevil.action.node.environment.InjectEnvironment;
-import me.retrodaredevil.action.node.environment.SolarThingDatabaseEnvironment;
+import me.retrodaredevil.solarthing.actions.command.CommandManager;
+import me.retrodaredevil.solarthing.actions.environment.SolarThingDatabaseEnvironment;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.commands.CommandInfo;
 import me.retrodaredevil.solarthing.commands.packets.open.ImmutableRequestCommandPacket;
@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
@@ -29,12 +28,12 @@ public class CommandChatBotHandler implements ChatBotHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CommandChatBotHandler.class);
 
 	private final ChatBotCommandHelper commandHelper;
-	private final Supplier<InjectEnvironment> injectEnvironmentSupplier;
+	private final InjectEnvironment injectEnvironment;
 	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-	public CommandChatBotHandler(ChatBotCommandHelper commandHelper, Supplier<InjectEnvironment> injectEnvironmentSupplier) {
+	public CommandChatBotHandler(ChatBotCommandHelper commandHelper, InjectEnvironment injectEnvironment) {
 		requireNonNull(this.commandHelper = commandHelper);
-		requireNonNull(this.injectEnvironmentSupplier = injectEnvironmentSupplier);
+		requireNonNull(this.injectEnvironment = injectEnvironment);
 	}
 
 	@Override
@@ -45,7 +44,6 @@ public class CommandChatBotHandler implements ChatBotHandler {
 		}
 		CommandInfo info = best.getCommandInfo();
 		messageSender.sendMessage("Sending command: " + info.getDisplayName());
-		InjectEnvironment injectEnvironment = requireNonNull(injectEnvironmentSupplier.get(), "No InjectEnvironment!");
 		SolarThingDatabase database = injectEnvironment.get(SolarThingDatabaseEnvironment.class).getSolarThingDatabase();
 		CommandManager.Creator creator = commandHelper.getCommandManager().makeCreator(
 				injectEnvironment,

@@ -7,7 +7,7 @@ import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.Actions;
 import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
-import me.retrodaredevil.action.node.environment.SolarThingDatabaseEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.SolarThingDatabaseEnvironment;
 import me.retrodaredevil.solarthing.commands.packets.open.ImmutableRequestCommandPacket;
 import me.retrodaredevil.solarthing.commands.packets.open.RequestCommandPacket;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;

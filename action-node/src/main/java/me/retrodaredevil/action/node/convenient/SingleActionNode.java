@@ -37,6 +37,9 @@ public class SingleActionNode implements ActionNode {
 		}
 		return new SingleActionNode(actionNode, lockName);
 	}
+	public static SingleActionNode create(ActionNode actionNode) {
+		return create(actionNode, null);
+	}
 
 	@Override
 	public Action createAction(ActionEnvironment actionEnvironment) {

@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.io.modbus.ModbusSlave;
 import me.retrodaredevil.io.serial.SerialConfig;
 import me.retrodaredevil.solarthing.SolarThingConstants;
-import me.retrodaredevil.action.node.environment.TracerModbusEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.TracerModbusEnvironment;
 import me.retrodaredevil.solarthing.config.netcat.NetCatConfig;
 import me.retrodaredevil.solarthing.config.request.DataRequesterResult;
 import me.retrodaredevil.solarthing.config.request.RequestObject;

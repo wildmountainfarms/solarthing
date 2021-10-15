@@ -1,4 +1,4 @@
-package me.retrodaredevil.action.node.environment;
+package me.retrodaredevil.solarthing.actions.environment;
 
 import java.time.ZoneId;
 import java.util.TimeZone;

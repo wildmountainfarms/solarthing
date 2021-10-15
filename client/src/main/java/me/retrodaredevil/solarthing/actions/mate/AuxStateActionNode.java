@@ -8,7 +8,7 @@ import me.retrodaredevil.action.SimpleAction;
 import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.solarthing.PacketGroupProvider;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
-import me.retrodaredevil.action.node.environment.LatestPacketGroupEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnvironment;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 import me.retrodaredevil.solarthing.solar.outback.OutbackUtil;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;

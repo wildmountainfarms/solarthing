@@ -1,8 +1,8 @@
 package me.retrodaredevil.solarthing.chatbot;
 
-import me.retrodaredevil.solarthing.actions.command.CommandManager;
 import me.retrodaredevil.action.node.environment.InjectEnvironment;
-import me.retrodaredevil.action.node.environment.SolarThingDatabaseEnvironment;
+import me.retrodaredevil.solarthing.actions.command.CommandManager;
+import me.retrodaredevil.solarthing.actions.environment.SolarThingDatabaseEnvironment;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.commands.packets.open.ImmutableScheduleCommandPacket;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
@@ -32,13 +31,13 @@ public class ScheduleCommandChatBotHandler implements ChatBotHandler {
 	private static final String USAGE = "Incorrect usage of schedule! Usage:\n\t" + SHORT_USAGE;
 
 	private final ChatBotCommandHelper commandHelper;
-	private final Supplier<InjectEnvironment> injectEnvironmentSupplier;
+	private final InjectEnvironment injectEnvironment;
 
 	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-	public ScheduleCommandChatBotHandler(ChatBotCommandHelper commandHelper, Supplier<InjectEnvironment> injectEnvironmentSupplier) {
+	public ScheduleCommandChatBotHandler(ChatBotCommandHelper commandHelper, InjectEnvironment injectEnvironment) {
 		requireNonNull(this.commandHelper = commandHelper);
-		requireNonNull(this.injectEnvironmentSupplier = injectEnvironmentSupplier);
+		requireNonNull(this.injectEnvironment = injectEnvironment);
 	}
 
 	private boolean canScheduleAnyCommands(Message message) {
@@ -98,7 +97,6 @@ public class ScheduleCommandChatBotHandler implements ChatBotHandler {
 			messageSender.sendMessage("Cannot schedule a command more than 72 hours from now.");
 			return;
 		}
-		InjectEnvironment injectEnvironment = requireNonNull(injectEnvironmentSupplier.get(), "No InjectEnvironment!");
 		SolarThingDatabase database = injectEnvironment.get(SolarThingDatabaseEnvironment.class).getSolarThingDatabase();
 
 		UUID uniqueId = UUID.randomUUID();
