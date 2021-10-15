@@ -5,8 +5,8 @@ import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.solarthing.actions.LogActionNode;
 import me.retrodaredevil.solarthing.actions.RequireFullOutputActionNode;
 import me.retrodaredevil.solarthing.actions.RequiredIdentifierActionNode;
-import me.retrodaredevil.solarthing.actions.chatbot.SlackChatBotActionNode;
-import me.retrodaredevil.solarthing.actions.command.AlterManagerActionNode;
+import me.retrodaredevil.solarthing.actions.chatbot.WrappedSlackChatBotActionNode;
+import me.retrodaredevil.solarthing.actions.command.WrappedAlterManagerActionNode;
 import me.retrodaredevil.solarthing.actions.command.ExecutingCommandFeedbackActionNode;
 import me.retrodaredevil.solarthing.actions.command.SendCommandActionNode;
 import me.retrodaredevil.solarthing.actions.homeassistant.HomeAssistantActionNode;
@@ -57,11 +57,11 @@ public final class ActionUtil {
 
 				MessageSenderActionNode.class,
 
-				SlackChatBotActionNode.class,
+				WrappedSlackChatBotActionNode.class,
 
 				ExecutingCommandFeedbackActionNode.class,
 
-				AlterManagerActionNode.class
+				WrappedAlterManagerActionNode.class
 		);
 		return objectMapper;
 	}

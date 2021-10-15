@@ -60,6 +60,10 @@ public class CommandManager {
 		requireNonNull(this.sender = sender);
 	}
 
+	public String getSender() {
+		return sender;
+	}
+
 	public KeyPair getKeyPair() {
 		File publicKeyFile = new File(keyDirectory, ".publickey");
 		File privateKeyFile = new File(keyDirectory, ".privatekey");
@@ -88,23 +92,28 @@ public class CommandManager {
 	}
 
 	/**
-	 * The timezone used comes from {@link TimeZoneEnvironment}. Source used comes from {@link SourceIdEnvironment}.
 	 * @param injectEnvironment The InjectEnvironment to use. {@link InjectEnvironment#get(Class)} is called before the making of {@link Creator}, so {@link Creator#create(Instant)}
 	 *                          will not call {@link InjectEnvironment#get(Class)}
+	 */
+	public Creator makeCreator(InjectEnvironment injectEnvironment, @Nullable InstanceTargetPacket instanceTargetPacket, CommandOpenPacket commandOpenPacket, PacketCollectionIdGenerator packetCollectionIdGenerator) {
+		requireNonNull(injectEnvironment);
+
+		String sourceId = injectEnvironment.get(SourceIdEnvironment.class).getSourceId();
+		ZoneId zoneId = injectEnvironment.get(TimeZoneEnvironment.class).getZoneId();
+		return makeCreator(sourceId, zoneId, instanceTargetPacket, commandOpenPacket, packetCollectionIdGenerator);
+	}
+	/**
+	 * The timezone used comes from {@link TimeZoneEnvironment}. Source used comes from {@link SourceIdEnvironment}.
 	 * @param instanceTargetPacket The {@link InstanceTargetPacket} to indicate which fragments to target or null. If null, it is not added to the packet collection
 	 * @param commandOpenPacket The command packet
 	 * @return A creator to make a packet collection. When supplied with an {@link Instant} representing now, a packet collection is created.
 	 */
-	public Creator makeCreator(InjectEnvironment injectEnvironment, @Nullable InstanceTargetPacket instanceTargetPacket, CommandOpenPacket commandOpenPacket, PacketCollectionIdGenerator packetCollectionIdGenerator) {
-		requireNonNull(injectEnvironment);
+	public Creator makeCreator(String sourceId, ZoneId zoneId, @Nullable InstanceTargetPacket instanceTargetPacket, CommandOpenPacket commandOpenPacket, PacketCollectionIdGenerator packetCollectionIdGenerator) {
 		// instanceTargetPacket may be null
-		requireNonNull(commandOpenPacket);
 
 		KeyPair keyPair = getKeyPair();
-		String sourceId = injectEnvironment.get(SourceIdEnvironment.class).getSourceId();
 		InstanceSourcePacket instanceSourcePacket = InstanceSourcePackets.create(sourceId);
 
-		ZoneId zoneId = injectEnvironment.get(TimeZoneEnvironment.class).getZoneId();
 
 		// ----
 		return now -> {
