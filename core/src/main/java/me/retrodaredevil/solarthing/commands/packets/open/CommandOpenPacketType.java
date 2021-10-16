@@ -5,8 +5,10 @@ import me.retrodaredevil.solarthing.packets.DocumentedPacketType;
 
 public enum CommandOpenPacketType implements DocumentedPacketType {
 	REQUEST_COMMAND,
-	@WorkInProgress
 	SCHEDULE_COMMAND,
 	@WorkInProgress
 	REQUEST_FLAG,
+	@WorkInProgress
+	DELETE_SCHEDULED_COMMAND,
+	DELETE_ALTER_PACKET,
 }

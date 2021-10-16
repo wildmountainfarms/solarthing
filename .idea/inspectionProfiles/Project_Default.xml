@@ -1,6 +1,7 @@
 <component name="InspectionProjectProfileManager">
   <profile version="1.0">
     <option name="myName" value="Project Default" />
+    <inspection_tool class="ArraysAsListWithZeroOrOneArgument" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="AssertMessageNotString" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="BoundedWildcard" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="BusyWait" enabled="false" level="WARNING" enabled_by_default="false" />

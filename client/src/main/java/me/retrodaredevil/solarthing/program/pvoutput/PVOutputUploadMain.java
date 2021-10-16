@@ -50,6 +50,8 @@ public class PVOutputUploadMain {
 	private static final ObjectMapper MAPPER = JacksonUtil.lenientMapper(JacksonUtil.defaultMapper());
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
+	// TODO Make this an action for the automation program
+
 
 	@SuppressWarnings("SameReturnValue")
 	public static int startPVOutputUpload(PVOutputUploadProgramOptions options, CommandOptions commandOptions, File dataDirectory){

@@ -9,6 +9,9 @@ import me.retrodaredevil.action.node.environment.ActionEnvironment;
 
 import java.time.Duration;
 
+/**
+ * Only executes the given action every given duration. This {@link ActionNode} has state.
+ */
 @JsonTypeName("timeout")
 public class TimeoutActionNode implements ActionNode {
 
