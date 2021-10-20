@@ -9,14 +9,15 @@ import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.AlterPacketsProvider;
 import me.retrodaredevil.solarthing.FragmentedPacketGroupProvider;
 import me.retrodaredevil.solarthing.actions.command.CommandManager;
-import me.retrodaredevil.solarthing.actions.environment.AlterPacketsEnvironment;
-import me.retrodaredevil.solarthing.actions.environment.LatestFragmentedPacketGroupEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.*;
 import me.retrodaredevil.solarthing.chatbot.*;
+import me.retrodaredevil.solarthing.database.SolarThingDatabase;
 import me.retrodaredevil.solarthing.message.implementations.SlackMessageSender;
 import okhttp3.OkHttpClient;
 
 import java.io.File;
 import java.time.Duration;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -65,9 +66,15 @@ public class SlackChatBotActionNode implements ActionNode {
 	public Action createAction(ActionEnvironment actionEnvironment) {
 		LatestFragmentedPacketGroupEnvironment latestPacketGroupEnvironment = actionEnvironment.getInjectEnvironment().get(LatestFragmentedPacketGroupEnvironment.class);
 		AlterPacketsEnvironment alterPacketsEnvironment = actionEnvironment.getInjectEnvironment().get(AlterPacketsEnvironment.class);
+		SolarThingDatabaseEnvironment solarThingDatabaseEnvironment = actionEnvironment.getInjectEnvironment().get(SolarThingDatabaseEnvironment.class);
+		SourceIdEnvironment sourceIdEnvironment = actionEnvironment.getInjectEnvironment().get(SourceIdEnvironment.class);
+		TimeZoneEnvironment timeZoneEnvironment = actionEnvironment.getInjectEnvironment().get(TimeZoneEnvironment.class);
 
 		FragmentedPacketGroupProvider packetGroupProvider = latestPacketGroupEnvironment.getFragmentedPacketGroupProvider();
 		AlterPacketsProvider alterPacketsProvider = alterPacketsEnvironment.getAlterPacketsProvider();
+		SolarThingDatabase database = solarThingDatabaseEnvironment.getSolarThingDatabase();
+		String sourceId = sourceIdEnvironment.getSourceId();
+		ZoneId zoneId = timeZoneEnvironment.getZoneId();
 
 
 		Slack slack = Slack.getInstance(new SlackConfig(), new SlackHttpClient(new OkHttpClient.Builder()
@@ -84,8 +91,9 @@ public class SlackChatBotActionNode implements ActionNode {
 				new HelpChatBotHandler(
 						new ChatBotHandlerMultiplexer(Arrays.asList(
 								new StaleMessageHandler(), // note: this isn't applied to "help" commands
-								new ScheduleCommandChatBotHandler(commandHelper, actionEnvironment.getInjectEnvironment()),
-								new CommandChatBotHandler(commandHelper, actionEnvironment.getInjectEnvironment()),
+								new ScheduleCommandChatBotHandler(commandHelper, database, sourceId, zoneId),
+								new CancelCommandChatBotHandler(commandHelper, alterPacketsProvider),
+								new CommandChatBotHandler(commandHelper, database, sourceId, zoneId),
 								new StatusChatBotHandler(packetGroupProvider, alterPacketsProvider),
 								(message, messageSender) -> {
 									messageSender.sendMessage("Unknown command!");

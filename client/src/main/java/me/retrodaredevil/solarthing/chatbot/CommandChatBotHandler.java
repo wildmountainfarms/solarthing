@@ -1,8 +1,6 @@
 package me.retrodaredevil.solarthing.chatbot;
 
-import me.retrodaredevil.action.node.environment.InjectEnvironment;
 import me.retrodaredevil.solarthing.actions.command.CommandManager;
-import me.retrodaredevil.solarthing.actions.environment.SolarThingDatabaseEnvironment;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.commands.CommandInfo;
 import me.retrodaredevil.solarthing.commands.packets.open.ImmutableRequestCommandPacket;
@@ -16,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
+import java.time.ZoneId;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -28,12 +27,16 @@ public class CommandChatBotHandler implements ChatBotHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CommandChatBotHandler.class);
 
 	private final ChatBotCommandHelper commandHelper;
-	private final InjectEnvironment injectEnvironment;
+	private final SolarThingDatabase database;
+	private final String sourceId;
+	private final ZoneId zoneId;
 	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-	public CommandChatBotHandler(ChatBotCommandHelper commandHelper, InjectEnvironment injectEnvironment) {
+	public CommandChatBotHandler(ChatBotCommandHelper commandHelper, SolarThingDatabase database, String sourceId, ZoneId zoneId) {
 		requireNonNull(this.commandHelper = commandHelper);
-		requireNonNull(this.injectEnvironment = injectEnvironment);
+		requireNonNull(this.database = database);
+		requireNonNull(this.sourceId = sourceId);
+		requireNonNull(this.zoneId = zoneId);
 	}
 
 	@Override
@@ -44,9 +47,9 @@ public class CommandChatBotHandler implements ChatBotHandler {
 		}
 		CommandInfo info = best.getCommandInfo();
 		messageSender.sendMessage("Sending command: " + info.getDisplayName());
-		SolarThingDatabase database = injectEnvironment.get(SolarThingDatabaseEnvironment.class).getSolarThingDatabase();
 		CommandManager.Creator creator = commandHelper.getCommandManager().makeCreator(
-				injectEnvironment,
+				sourceId,
+				zoneId,
 				InstanceTargetPackets.create(Collections.singleton(best.getFragmentId())),
 				new ImmutableRequestCommandPacket(info.getName()),
 				PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR

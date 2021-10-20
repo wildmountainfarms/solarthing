@@ -1,8 +1,6 @@
 package me.retrodaredevil.solarthing.chatbot;
 
-import me.retrodaredevil.action.node.environment.InjectEnvironment;
 import me.retrodaredevil.solarthing.actions.command.CommandManager;
-import me.retrodaredevil.solarthing.actions.environment.SolarThingDatabaseEnvironment;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.commands.packets.open.ImmutableScheduleCommandPacket;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
@@ -17,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.ZoneId;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -31,13 +30,18 @@ public class ScheduleCommandChatBotHandler implements ChatBotHandler {
 	private static final String USAGE = "Incorrect usage of schedule! Usage:\n\t" + SHORT_USAGE;
 
 	private final ChatBotCommandHelper commandHelper;
-	private final InjectEnvironment injectEnvironment;
+	private final SolarThingDatabase database;
+	private final String sourceId;
+	private final ZoneId zoneId;
+
 
 	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-	public ScheduleCommandChatBotHandler(ChatBotCommandHelper commandHelper, InjectEnvironment injectEnvironment) {
+	public ScheduleCommandChatBotHandler(ChatBotCommandHelper commandHelper, SolarThingDatabase database, String sourceId, ZoneId zoneId) {
 		requireNonNull(this.commandHelper = commandHelper);
-		requireNonNull(this.injectEnvironment = injectEnvironment);
+		requireNonNull(this.database = database);
+		requireNonNull(this.sourceId = sourceId);
+		requireNonNull(this.zoneId = zoneId);
 	}
 
 	private boolean canScheduleAnyCommands(Message message) {
@@ -97,11 +101,11 @@ public class ScheduleCommandChatBotHandler implements ChatBotHandler {
 			messageSender.sendMessage("Cannot schedule a command more than 72 hours from now.");
 			return;
 		}
-		SolarThingDatabase database = injectEnvironment.get(SolarThingDatabaseEnvironment.class).getSolarThingDatabase();
 
 		UUID uniqueId = UUID.randomUUID();
 		CommandManager.Creator creator = commandHelper.getCommandManager().makeCreator(
-				injectEnvironment,
+				sourceId,
+				zoneId,
 				null, // We don't have an InstanceTargetPacket because scheduling commands is not handled by a program with a fragment ID // also look at PacketGroups.parseToTargetPacketGroup() for interpretation without a TargetInstancePacket
 				new ImmutableScheduleCommandPacket(new ScheduledCommandData(
 						targetTime.toEpochMilli(),
