@@ -8,7 +8,5 @@ public enum CommandOpenPacketType implements DocumentedPacketType {
 	SCHEDULE_COMMAND,
 	@WorkInProgress
 	REQUEST_FLAG,
-	@WorkInProgress
-	DELETE_SCHEDULED_COMMAND,
-	DELETE_ALTER_PACKET,
+	DELETE_ALTER,
 }

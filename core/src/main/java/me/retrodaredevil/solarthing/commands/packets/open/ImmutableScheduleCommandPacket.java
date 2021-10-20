@@ -8,16 +8,18 @@ import me.retrodaredevil.solarthing.type.alter.packets.ScheduledCommandData;
 import java.util.Objects;
 import java.util.UUID;
 
+import static java.util.Objects.requireNonNull;
+
 public class ImmutableScheduleCommandPacket implements ScheduleCommandPacket {
 	private final ScheduledCommandData data;
 	private final UUID uniqueRequestId;
 
 	@JsonCreator
 	public ImmutableScheduleCommandPacket(
-			@JsonProperty("data") ScheduledCommandData data,
-			@JsonProperty("uniqueRequestId") UUID uniqueRequestId) {
-		this.data = data;
-		this.uniqueRequestId = uniqueRequestId;
+			@JsonProperty(value = "data", required = true) ScheduledCommandData data,
+			@JsonProperty(value = "uniqueRequestId", required = true) UUID uniqueRequestId) {
+		requireNonNull(this.data = data);
+		requireNonNull(this.uniqueRequestId = uniqueRequestId);
 	}
 
 	@Override

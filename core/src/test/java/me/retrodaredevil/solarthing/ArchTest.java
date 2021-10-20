@@ -9,6 +9,7 @@ import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.lang.ArchRule;
 import me.retrodaredevil.solarthing.annotations.SerializeNameDefinedInBase;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
+import me.retrodaredevil.solarthing.database.UpdateToken;
 import me.retrodaredevil.solarthing.type.alter.flag.ActivePeriod;
 import me.retrodaredevil.solarthing.type.open.OpenSourcePacket;
 import me.retrodaredevil.solarthing.packets.DocumentedPacketType;
@@ -67,6 +68,7 @@ public class ArchTest {
 		classesToCheck.addAll(importedClasses.get(ExecutionReason.class).getAllSubclasses()); // we want to be able to compare all execution reasons
 		classesToCheck.addAll(importedClasses.get(OpenSourcePacket.class).getAllSubclasses()); // required for OpenSourceExecutionReason
 		classesToCheck.addAll(importedClasses.get(ActivePeriod.class).getAllSubclasses());
+		classesToCheck.addAll(importedClasses.get(UpdateToken.class).getAllSubclasses()); // DeleteAlterPacket uses this, and DeleteAlterPacket must implement equals correctly
 
 		for (JavaClass javaClass : classesToCheck) {
 			if (javaClass.isInterface()) {
