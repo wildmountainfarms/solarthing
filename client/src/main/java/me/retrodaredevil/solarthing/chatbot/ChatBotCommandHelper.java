@@ -1,7 +1,7 @@
 package me.retrodaredevil.solarthing.chatbot;
 
 import me.retrodaredevil.solarthing.FragmentedPacketGroupProvider;
-import me.retrodaredevil.solarthing.actions.command.CommandManager;
+import me.retrodaredevil.solarthing.commands.util.CommandManager;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.commands.packets.status.AvailableCommandsPacket;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;

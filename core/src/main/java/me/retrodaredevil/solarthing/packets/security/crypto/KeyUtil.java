@@ -3,6 +3,8 @@ package me.retrodaredevil.solarthing.packets.security.crypto;
 import com.fasterxml.jackson.core.Base64Variants;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -31,6 +33,14 @@ public final class KeyUtil {
 			throw new RuntimeException("RSA algorithm doesn't exist???", e);
 		}
 		KEY_PAIR_GENERATOR.initialize(KEY_SIZE);
+	}
+
+	public static Cipher createCipher() {
+		try {
+			return Cipher.getInstance(CIPHER_TRANSFORMATION);
+		} catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	public static KeyPair generateKeyPair(){

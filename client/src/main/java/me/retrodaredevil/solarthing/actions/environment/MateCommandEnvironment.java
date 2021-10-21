@@ -1,6 +1,6 @@
 package me.retrodaredevil.solarthing.actions.environment;
 
-import me.retrodaredevil.solarthing.commands.SourcedCommand;
+import me.retrodaredevil.solarthing.commands.command.SourcedCommand;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
 
 import java.util.Queue;

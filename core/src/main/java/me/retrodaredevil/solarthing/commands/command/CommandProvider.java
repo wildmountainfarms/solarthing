@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing.commands;
+package me.retrodaredevil.solarthing.commands.command;
 
 
 public interface CommandProvider<T extends Command> {

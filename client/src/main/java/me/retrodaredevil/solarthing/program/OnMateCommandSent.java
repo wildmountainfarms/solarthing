@@ -2,8 +2,8 @@ package me.retrodaredevil.solarthing.program;
 
 import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.type.open.OpenSource;
-import me.retrodaredevil.solarthing.commands.OnCommandExecute;
-import me.retrodaredevil.solarthing.commands.SourcedCommand;
+import me.retrodaredevil.solarthing.commands.command.OnCommandExecute;
+import me.retrodaredevil.solarthing.commands.command.SourcedCommand;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.reason.ExecutionReason;

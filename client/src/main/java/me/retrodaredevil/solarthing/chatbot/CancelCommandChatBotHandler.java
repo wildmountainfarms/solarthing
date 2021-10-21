@@ -1,7 +1,7 @@
 package me.retrodaredevil.solarthing.chatbot;
 
 import me.retrodaredevil.solarthing.AlterPacketsProvider;
-import me.retrodaredevil.solarthing.actions.command.CommandManager;
+import me.retrodaredevil.solarthing.commands.util.CommandManager;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.commands.packets.open.CommandOpenPacket;
 import me.retrodaredevil.solarthing.commands.packets.open.ImmutableDeleteAlterPacket;

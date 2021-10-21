@@ -6,9 +6,9 @@ import me.retrodaredevil.solarthing.actions.command.EnvironmentUpdaterMultiplexe
 import me.retrodaredevil.solarthing.actions.environment.MateCommandEnvironment;
 import me.retrodaredevil.solarthing.analytics.AnalyticsManager;
 import me.retrodaredevil.solarthing.analytics.MateAnalyticsHandler;
-import me.retrodaredevil.solarthing.commands.CommandProvider;
-import me.retrodaredevil.solarthing.commands.CommandProviderMultiplexer;
-import me.retrodaredevil.solarthing.commands.SourcedCommand;
+import me.retrodaredevil.solarthing.commands.command.CommandProvider;
+import me.retrodaredevil.solarthing.commands.command.CommandProviderMultiplexer;
+import me.retrodaredevil.solarthing.commands.command.SourcedCommand;
 import me.retrodaredevil.solarthing.commands.packets.status.AvailableCommandsListUpdater;
 import me.retrodaredevil.solarthing.config.io.IOConfig;
 import me.retrodaredevil.solarthing.config.options.MateProgramOptions;

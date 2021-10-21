@@ -8,7 +8,7 @@ import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.AlterPacketsProvider;
 import me.retrodaredevil.solarthing.FragmentedPacketGroupProvider;
-import me.retrodaredevil.solarthing.actions.command.CommandManager;
+import me.retrodaredevil.solarthing.commands.util.CommandManager;
 import me.retrodaredevil.solarthing.actions.environment.*;
 import me.retrodaredevil.solarthing.chatbot.*;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;

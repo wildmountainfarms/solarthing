@@ -8,8 +8,11 @@ import me.retrodaredevil.action.Actions;
 import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.SolarThingDatabaseEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.SourceIdEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.TimeZoneEnvironment;
 import me.retrodaredevil.solarthing.commands.packets.open.ImmutableRequestCommandPacket;
 import me.retrodaredevil.solarthing.commands.packets.open.RequestCommandPacket;
+import me.retrodaredevil.solarthing.commands.util.CommandManager;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
@@ -20,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.time.Instant;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -51,8 +55,11 @@ public class SendCommandActionNode implements ActionNode {
 	@Override
 	public Action createAction(ActionEnvironment actionEnvironment) {
 		SolarThingDatabase database = actionEnvironment.getInjectEnvironment().get(SolarThingDatabaseEnvironment.class).getSolarThingDatabase();
+		String sourceId = actionEnvironment.getInjectEnvironment().get(SourceIdEnvironment.class).getSourceId();
+		ZoneId zoneId = actionEnvironment.getInjectEnvironment().get(TimeZoneEnvironment.class).getZoneId();
 		CommandManager.Creator creator = commandManager.makeCreator(
-				actionEnvironment.getInjectEnvironment(),
+				sourceId,
+				zoneId,
 				InstanceTargetPackets.create(fragmentIdTargets),
 				requestCommandPacket,
 				PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR

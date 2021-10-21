@@ -1,10 +1,7 @@
-package me.retrodaredevil.solarthing.actions.command;
+package me.retrodaredevil.solarthing.commands.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import me.retrodaredevil.action.node.environment.InjectEnvironment;
-import me.retrodaredevil.solarthing.actions.environment.SourceIdEnvironment;
-import me.retrodaredevil.solarthing.actions.environment.TimeZoneEnvironment;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.commands.packets.open.CommandOpenPacket;
 import me.retrodaredevil.solarthing.packets.Packet;
@@ -21,14 +18,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.crypto.Cipher;
-import javax.crypto.NoSuchPaddingException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.StandardOpenOption;
 import java.security.KeyPair;
-import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.time.Instant;
@@ -42,15 +37,7 @@ import static java.util.Objects.requireNonNull;
 public class CommandManager {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CommandManager.class);
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
-	private static final Cipher CIPHER;
-
-	static {
-		try {
-			CIPHER = Cipher.getInstance(KeyUtil.CIPHER_TRANSFORMATION);
-		} catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	private static final Cipher CIPHER = KeyUtil.createCipher();
 
 	private final File keyDirectory;
 	private final String sender;
@@ -92,18 +79,6 @@ public class CommandManager {
 	}
 
 	/**
-	 * @param injectEnvironment The InjectEnvironment to use. {@link InjectEnvironment#get(Class)} is called before the making of {@link Creator}, so {@link Creator#create(Instant)}
-	 *                          will not call {@link InjectEnvironment#get(Class)}
-	 */
-	public Creator makeCreator(InjectEnvironment injectEnvironment, @Nullable InstanceTargetPacket instanceTargetPacket, CommandOpenPacket commandOpenPacket, PacketCollectionIdGenerator packetCollectionIdGenerator) {
-		requireNonNull(injectEnvironment);
-
-		String sourceId = injectEnvironment.get(SourceIdEnvironment.class).getSourceId();
-		ZoneId zoneId = injectEnvironment.get(TimeZoneEnvironment.class).getZoneId();
-		return makeCreator(sourceId, zoneId, instanceTargetPacket, commandOpenPacket, packetCollectionIdGenerator);
-	}
-	/**
-	 * The timezone used comes from {@link TimeZoneEnvironment}. Source used comes from {@link SourceIdEnvironment}.
 	 * @param instanceTargetPacket The {@link InstanceTargetPacket} to indicate which fragments to target or null. If null, it is not added to the packet collection
 	 * @param commandOpenPacket The command packet
 	 * @return A creator to make a packet collection. When supplied with an {@link Instant} representing now, a packet collection is created.

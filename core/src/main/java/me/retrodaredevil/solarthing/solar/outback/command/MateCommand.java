@@ -2,7 +2,7 @@ package me.retrodaredevil.solarthing.solar.outback.command;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import me.retrodaredevil.solarthing.commands.Command;
+import me.retrodaredevil.solarthing.commands.command.Command;
 
 import java.io.IOException;
 import java.io.OutputStream;

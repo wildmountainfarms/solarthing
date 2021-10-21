@@ -9,7 +9,7 @@ import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.MateCommandEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.SourceEnvironment;
-import me.retrodaredevil.solarthing.commands.SourcedCommand;
+import me.retrodaredevil.solarthing.commands.command.SourcedCommand;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
 
 import java.util.Queue;
