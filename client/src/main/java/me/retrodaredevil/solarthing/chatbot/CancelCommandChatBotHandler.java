@@ -1,9 +1,16 @@
 package me.retrodaredevil.solarthing.chatbot;
 
 import me.retrodaredevil.solarthing.AlterPacketsProvider;
+import me.retrodaredevil.solarthing.actions.command.CommandManager;
 import me.retrodaredevil.solarthing.annotations.NotNull;
+import me.retrodaredevil.solarthing.commands.packets.open.CommandOpenPacket;
+import me.retrodaredevil.solarthing.commands.packets.open.ImmutableDeleteAlterPacket;
+import me.retrodaredevil.solarthing.database.SolarThingDatabase;
 import me.retrodaredevil.solarthing.database.VersionedPacket;
+import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
 import me.retrodaredevil.solarthing.message.MessageSender;
+import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
+import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.reason.ExecutionReason;
 import me.retrodaredevil.solarthing.reason.OpenSourceExecutionReason;
 import me.retrodaredevil.solarthing.type.alter.AlterPacket;
@@ -11,24 +18,39 @@ import me.retrodaredevil.solarthing.type.alter.StoredAlterPacket;
 import me.retrodaredevil.solarthing.type.alter.UniqueRequestIdContainer;
 import me.retrodaredevil.solarthing.type.alter.packets.ScheduledCommandPacket;
 import me.retrodaredevil.solarthing.type.open.OpenSourcePacket;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
 public class CancelCommandChatBotHandler implements ChatBotHandler {
+	private static final Logger LOGGER = LoggerFactory.getLogger(CancelCommandChatBotHandler.class);
 	private static final String SHORT_USAGE = "cancel <scheduling ID>";
 	private static final String USAGE = "Incorrect usage of cancel! Usage:\n\t" + SHORT_USAGE;
 
 	private final ChatBotCommandHelper commandHelper;
+	private final SolarThingDatabase database;
+	private final String sourceId;
+	private final ZoneId zoneId;
 	private final AlterPacketsProvider alterPacketsProvider;
 
-	public CancelCommandChatBotHandler(ChatBotCommandHelper commandHelper, AlterPacketsProvider alterPacketsProvider) {
+	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+	public CancelCommandChatBotHandler(ChatBotCommandHelper commandHelper, SolarThingDatabase database, String sourceId, ZoneId zoneId, AlterPacketsProvider alterPacketsProvider) {
 		this.commandHelper = commandHelper;
+		this.database = database;
+		this.sourceId = sourceId;
+		this.zoneId = zoneId;
 		this.alterPacketsProvider = alterPacketsProvider;
 	}
 
@@ -71,6 +93,24 @@ public class CancelCommandChatBotHandler implements ChatBotHandler {
 		} else {
 			VersionedPacket<StoredAlterPacket> target = targets.get(0);
 			messageSender.sendMessage("Let's pretend we just cancelled: " + target.getPacket().getDbId());
+			CommandOpenPacket packet = new ImmutableDeleteAlterPacket(target.getPacket().getDbId(), target.getUpdateToken());
+			CommandManager.Creator creator = commandHelper.getCommandManager().makeCreator(sourceId, zoneId, null, packet, PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR);
+			executorService.execute(() -> {
+				Instant now = Instant.now();
+				PacketCollection packetCollection = creator.create(now);
+				boolean success = true;
+				try {
+					database.getOpenDatabase().uploadPacketCollection(packetCollection, null);
+				} catch (SolarThingDatabaseException e) {
+					LOGGER.error("Could not upload alter delete request", e);
+					success = false;
+				}
+				if (success) {
+					messageSender.sendMessage("Sent request to delete the scheduled command");
+				} else {
+					messageSender.sendMessage("Could not upload request to delete scheduled command. You can try again.");
+				}
+			});
 		}
 	}
 

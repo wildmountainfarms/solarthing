@@ -11,6 +11,8 @@ public final class ProductModelUtil {
 	RNG-CTRL-RVRPG40 - Renogy Rover 40A Positive Ground
 	RCC20RVRE-G1     - Rover Elite 20A
 	ML2440           - SRNE 40 AMP
+	RNG-CTRL-ADV30   - Renogy Adventurer 30A (I believe this is only available in the Lithium model)
+	RNG-CTRL-WND10   - Renogy Wanderer 10A (but apparently getRatedChargingCurrentValue() returns 20)
 	 */
 
 	public static boolean isRoverElite(String productModel){

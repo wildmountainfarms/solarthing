@@ -3,10 +3,7 @@ package me.retrodaredevil.solarthing.actions.command;
 import me.retrodaredevil.action.SimpleAction;
 import me.retrodaredevil.solarthing.AlterPacketsProvider;
 import me.retrodaredevil.solarthing.SolarThingConstants;
-import me.retrodaredevil.solarthing.commands.packets.open.CommandOpenPacket;
-import me.retrodaredevil.solarthing.commands.packets.open.ImmutableRequestCommandPacket;
-import me.retrodaredevil.solarthing.commands.packets.open.RequestCommandPacket;
-import me.retrodaredevil.solarthing.commands.packets.open.ScheduleCommandPacket;
+import me.retrodaredevil.solarthing.commands.packets.open.*;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
 import me.retrodaredevil.solarthing.database.VersionedPacket;
 import me.retrodaredevil.solarthing.database.cache.DatabaseCache;
@@ -147,6 +144,7 @@ public class AlterManagerAction extends SimpleAction {
 		LOGGER.debug("Sender: " + sender + " is authorized and sent a packet targeting no fragments, so we will see if we want to handle anything from it.");
 		long now = System.currentTimeMillis();
 		List<StoredAlterPacket> storedAlterPacketsToUpload = new ArrayList<>();
+		List<DeleteAlterPacket> deleteAlterPackets = new ArrayList<>();
 		for (Packet packet : packetGroup.getPackets()) {
 			if (packet instanceof ScheduleCommandPacket) {
 				ScheduleCommandPacket scheduleCommandPacket = (ScheduleCommandPacket) packet;
@@ -162,7 +160,13 @@ public class AlterManagerAction extends SimpleAction {
 				String databaseId = "alter-scheduled-command-" + data.getCommandName() + "-" + Long.toHexString(data.getScheduledTimeMillis()) + "-" + sender + "-" + Math.random();
 				StoredAlterPacket storedAlterPacket = new ImmutableStoredAlterPacket(databaseId, now, scheduledCommandPacket, this.sourceId);
 				storedAlterPacketsToUpload.add(storedAlterPacket);
+			} else if (packet instanceof DeleteAlterPacket) {
+				DeleteAlterPacket deleteAlterPacket = (DeleteAlterPacket) packet;
+				deleteAlterPackets.add(deleteAlterPacket);
 			}
+		}
+		if (storedAlterPacketsToUpload.isEmpty() && deleteAlterPackets.isEmpty()) {
+			return; // Nothing for us to do, so no need to schedule a runnable
 		}
 		executorService.execute(() -> {
 			int uploadCount = 0;
@@ -174,6 +178,15 @@ public class AlterManagerAction extends SimpleAction {
 			} catch (SolarThingDatabaseException e) {
 				// TODO in future we should try multiple times to upload
 				LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "Could not upload a stored alter packet! uploaded: " + uploadCount + " / " + storedAlterPacketsToUpload.size(), e);
+			}
+			int deleteCount = 0;
+			try {
+				for (DeleteAlterPacket deleteAlterPacket : deleteAlterPackets) {
+					this.database.getAlterDatabase().delete(deleteAlterPacket.getDocumentIdToDelete(), deleteAlterPacket.getUpdateToken());
+					deleteCount++;
+				}
+			} catch (SolarThingDatabaseException e) {
+				LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "Could not delete alter packets! deleted: " + deleteCount + " / " + deleteAlterPackets.size(), e);
 			}
 		});
 	}

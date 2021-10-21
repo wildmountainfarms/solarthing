@@ -92,7 +92,7 @@ public class SlackChatBotActionNode implements ActionNode {
 						new ChatBotHandlerMultiplexer(Arrays.asList(
 								new StaleMessageHandler(), // note: this isn't applied to "help" commands
 								new ScheduleCommandChatBotHandler(commandHelper, database, sourceId, zoneId),
-								new CancelCommandChatBotHandler(commandHelper, alterPacketsProvider),
+								new CancelCommandChatBotHandler(commandHelper, database, sourceId, zoneId, alterPacketsProvider),
 								new CommandChatBotHandler(commandHelper, database, sourceId, zoneId),
 								new StatusChatBotHandler(packetGroupProvider, alterPacketsProvider),
 								(message, messageSender) -> {
