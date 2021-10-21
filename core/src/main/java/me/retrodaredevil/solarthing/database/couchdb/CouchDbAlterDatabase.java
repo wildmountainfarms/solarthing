@@ -95,7 +95,7 @@ public class CouchDbAlterDatabase implements AlterDatabase {
 
 	@Override
 	public void delete(String documentId, UpdateToken updateToken) throws SolarThingDatabaseException {
-		RevisionUpdateToken revisionUpdateToken = (RevisionUpdateToken) updateToken;
+		RevisionUpdateToken revisionUpdateToken = CouchDbSolarThingDatabase.checkUpdateToken(updateToken);
 		String revision = revisionUpdateToken.getRevision();
 		try {
 			database.deleteDocument(documentId, revision);

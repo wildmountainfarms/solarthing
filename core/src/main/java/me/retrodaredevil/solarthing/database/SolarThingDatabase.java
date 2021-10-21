@@ -5,10 +5,20 @@ import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.type.closed.authorization.AuthorizationPacket;
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
 import me.retrodaredevil.solarthing.type.closed.meta.RootMetaPacket;
+import org.jetbrains.annotations.Contract;
 
 import static java.util.Objects.requireNonNull;
 
 public interface SolarThingDatabase {
+
+	/**
+	 *
+	 * @param updateToken The update token to validate
+	 * @return
+	 */
+	@Contract("_ -> param1")
+	@NotNull UpdateToken validateUpdateToken(@NotNull UpdateToken updateToken);
+
 	@NotNull MillisDatabase getStatusDatabase();
 	@NotNull MillisDatabase getEventDatabase();
 	@NotNull MillisDatabase getOpenDatabase();

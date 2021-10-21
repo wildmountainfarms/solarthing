@@ -11,6 +11,8 @@ import me.retrodaredevil.couchdbjava.json.jackson.CouchDbJacksonUtil;
 import me.retrodaredevil.couchdbjava.response.DocumentData;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.Nullable;
+import me.retrodaredevil.solarthing.annotations.NotNull;
+import me.retrodaredevil.solarthing.database.exception.IncompatibleUpdateTokenException;
 import me.retrodaredevil.solarthing.type.closed.authorization.AuthorizationPacket;
 import me.retrodaredevil.solarthing.commands.packets.status.CommandStatusPacket;
 import me.retrodaredevil.solarthing.database.MillisDatabase;
@@ -36,7 +38,8 @@ import me.retrodaredevil.solarthing.solar.outback.command.packets.MateCommandFee
 import me.retrodaredevil.solarthing.solar.outback.fx.meta.FXChargingSettingsPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.meta.FXChargingTemperatureAdjustPacket;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
-import org.jetbrains.annotations.NotNull;
+
+import static java.util.Objects.requireNonNull;
 
 public class CouchDbSolarThingDatabase implements SolarThingDatabase {
 
@@ -80,6 +83,19 @@ public class CouchDbSolarThingDatabase implements SolarThingDatabase {
 		return new CouchDbSolarThingDatabase(instance, PacketParsingErrorHandler.DO_NOTHING, JacksonUtil.lenientMapper(JacksonUtil.defaultMapper()));
 	}
 
+	public static @NotNull RevisionUpdateToken checkUpdateToken(@NotNull UpdateToken updateToken) {
+		requireNonNull(updateToken);
+		try {
+			return (RevisionUpdateToken) updateToken;
+		} catch (ClassCastException ex) {
+			throw new IncompatibleUpdateTokenException(ex);
+		}
+	}
+
+	@Override
+	public @NotNull RevisionUpdateToken validateUpdateToken(@NotNull UpdateToken updateToken) {
+		return checkUpdateToken(updateToken);
+	}
 
 	@Override
 	public @NotNull MillisDatabase getStatusDatabase() { return statusDatabase; }
@@ -128,7 +144,7 @@ public class CouchDbSolarThingDatabase implements SolarThingDatabase {
 		if (updateToken == null) {
 			revision = null;
 		} else {
-			revision = ((RevisionUpdateToken) updateToken).getRevision();
+			revision = checkUpdateToken(updateToken).getRevision();
 		}
 		try {
 			return database.getDocumentIfUpdated(name, revision);

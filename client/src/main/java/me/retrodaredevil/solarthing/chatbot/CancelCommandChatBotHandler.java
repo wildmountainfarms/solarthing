@@ -92,7 +92,7 @@ public class CancelCommandChatBotHandler implements ChatBotHandler {
 			messageSender.sendMessage("Multiple packets corresponded to ID: " + schedulingId + ". Please report this error.");
 		} else {
 			VersionedPacket<StoredAlterPacket> target = targets.get(0);
-			messageSender.sendMessage("Let's pretend we just cancelled: " + target.getPacket().getDbId());
+			messageSender.sendMessage("Going request cancel of " + target.getPacket().getDbId());
 			CommandOpenPacket packet = new ImmutableDeleteAlterPacket(target.getPacket().getDbId(), target.getUpdateToken());
 			CommandManager.Creator creator = commandHelper.getCommandManager().makeCreator(sourceId, zoneId, null, packet, PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR);
 			executorService.execute(() -> {

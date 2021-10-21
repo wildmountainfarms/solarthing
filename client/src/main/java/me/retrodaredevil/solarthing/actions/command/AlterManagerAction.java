@@ -7,6 +7,7 @@ import me.retrodaredevil.solarthing.commands.packets.open.*;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
 import me.retrodaredevil.solarthing.database.VersionedPacket;
 import me.retrodaredevil.solarthing.database.cache.DatabaseCache;
+import me.retrodaredevil.solarthing.database.exception.IncompatibleUpdateTokenException;
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
 import me.retrodaredevil.solarthing.database.exception.UpdateConflictSolarThingDatabaseException;
 import me.retrodaredevil.solarthing.packets.Packet;
@@ -162,7 +163,12 @@ public class AlterManagerAction extends SimpleAction {
 				storedAlterPacketsToUpload.add(storedAlterPacket);
 			} else if (packet instanceof DeleteAlterPacket) {
 				DeleteAlterPacket deleteAlterPacket = (DeleteAlterPacket) packet;
-				deleteAlterPackets.add(deleteAlterPacket);
+				try {
+					database.validateUpdateToken(deleteAlterPacket.getUpdateToken());
+					deleteAlterPackets.add(deleteAlterPacket);
+				} catch (IncompatibleUpdateTokenException ex) {
+					LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "For some reason we have an incompatible update token!", ex);
+				}
 			}
 		}
 		if (storedAlterPacketsToUpload.isEmpty() && deleteAlterPackets.isEmpty()) {

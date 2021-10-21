@@ -96,7 +96,7 @@ public class CouchDbMillisDatabase implements MillisDatabase {
 			if (updateToken == null) {
 				response = database.putDocument(packetCollection.getDbId(), jsonData);
 			} else {
-				RevisionUpdateToken revisionUpdateToken = (RevisionUpdateToken) updateToken;
+				RevisionUpdateToken revisionUpdateToken = CouchDbSolarThingDatabase.checkUpdateToken(updateToken);
 				response = database.updateDocument(packetCollection.getDbId(), revisionUpdateToken.getRevision(), jsonData);
 			}
 			return new RevisionUpdateToken(response.getRev());
