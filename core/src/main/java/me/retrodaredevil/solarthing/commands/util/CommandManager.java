@@ -31,6 +31,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
@@ -39,19 +40,25 @@ public class CommandManager {
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
 	private static final Cipher CIPHER = KeyUtil.createCipher();
 
-	private final File keyDirectory;
+	private final Supplier<KeyPair> keyPairSupplier;
 	private final String sender;
 
 	public CommandManager(File keyDirectory, String sender) {
-		requireNonNull(this.keyDirectory = keyDirectory);
+		this(() -> getKeyPairFromDirectory(keyDirectory), sender);
+	}
+	public CommandManager(Supplier<KeyPair> keyPairSupplier, String sender) {
+		requireNonNull(this.keyPairSupplier = keyPairSupplier);
 		requireNonNull(this.sender = sender);
 	}
 
 	public String getSender() {
 		return sender;
 	}
-
 	public KeyPair getKeyPair() {
+		return keyPairSupplier.get();
+	}
+
+	public static KeyPair getKeyPairFromDirectory(File keyDirectory) {
 		File publicKeyFile = new File(keyDirectory, ".publickey");
 		File privateKeyFile = new File(keyDirectory, ".privatekey");
 		KeyPair keyPair;
