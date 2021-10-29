@@ -143,56 +143,58 @@ public class SecurityPacketReceiver {
 	}
 
 	private String decryptData(long minTime, Map<String, Long> lastCommands, String sender, String base64EncodedData, long expectedDateMillis) {
+		final String data;
 		try {
-			String data = Decrypt.decrypt(cipher, publicKeyLookUp, sender, base64EncodedData);
-			final String[] split = data.split(",", 2);
-			LOGGER.debug("decrypted data: " + data);
-			if(split.length != 2){
-				LOGGER.warn("split.length: " + split.length + " split: " + Arrays.asList(split));
-			} else {
-				String hexMillis = split[0];
-				String message = split[1];
-				Long dateMillis = null;
-				try {
-					dateMillis = Long.parseLong(hexMillis, 16);
-				} catch (NumberFormatException e){
-					LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "Error parsing hex date millis", e);
-				}
-				if (dateMillis == null) {
-					return null;
-				}
-				if (dateMillis != expectedDateMillis) {
-					// Although we trust clients that are authenticated, we want to make sure that the
-					//   dateMillis they said, is actually what is encrypted for integrity.
-					// Also note that this may stop old, old clients from being able to send commands. As of a few versions ago (few versions ago as of 2021.10.29)
-					//   this may have stopped the commands from being processed because the encrypted dateMillis and expected dateMillis may have been generated/gotten at different times
-					//   but that is not the case now.
-					LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Encrypted dateMillis is not the same as the expected dateMillis. dateMillis (decrypted): " + dateMillis + ", expected dateMillis: " + expectedDateMillis);
-					return null;
-				}
-				Long lastCommand = state.senderLastCommandMap.get(sender);
-				long currentTime = System.currentTimeMillis();
-				if(dateMillis > currentTime + 5000) { // there's a 5 second grace period in case the clock is slightly off
-					LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Message from " + sender + " is from the future??? dateMillis: " + dateMillis + " currentTime: " + currentTime);
-					lastCommands.put(sender, dateMillis); // put this here anyway so it can't be used later
-				} else if(dateMillis < minTime){
-					LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Message from " + sender + " was parsed, but it too old! dateMillis: " + dateMillis + " minTime: " + minTime);
-				} else if(lastCommand != null && dateMillis <= lastCommand) { // if this command is old or if someone is trying to send the exact same command twice
-					LOGGER.debug("Message from " + sender + " was parsed, but was older than the last command they sent! dateMillis: " + dateMillis + " lastCommand: " + lastCommand);
-				} else if(dateMillis < listenStartTime){
-					LOGGER.debug(SolarThingConstants.SUMMARY_MARKER, "Message from " + sender + " was parsed, but it was sent before we started listening! dateMillis: " + dateMillis + " listenStartTime: " + listenStartTime);
-				} else {
-					lastCommands.put(sender, dateMillis);
-					return message;
-				}
-			}
+			data = Decrypt.decrypt(cipher, publicKeyLookUp, sender, base64EncodedData);
 		} catch (DecryptException e) {
-			// TODO This spams the summary log, which we don't want
+			// TODO This spams the summary log, which we don't want.
+			//   Maybe we need to use VersionedPacket<T>s to make sure that we don't process packets twice, even if (especially if) they were not authenticated properly
 			LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Someone tried to impersonate " + sender + "! Or that person has a new public key.", e);
+			return null;
 		} catch (InvalidKeyException e) {
 			throw new RuntimeException("If there is a saved key, it should be valid! sender: " + sender, e);
 		} catch (NotAuthorizedException e) {
 			LOGGER.info(SolarThingConstants.SUMMARY_MARKER, sender + " is not authorized!", e);
+			return null;
+		}
+		final String[] split = data.split(",", 2);
+		LOGGER.debug("decrypted data: " + data);
+		if(split.length != 2){
+			LOGGER.warn("split.length: " + split.length + " split: " + Arrays.asList(split));
+			return null;
+		}
+		String hexMillis = split[0];
+		String message = split[1];
+		final long dateMillis;
+		try {
+			dateMillis = Long.parseLong(hexMillis, 16);
+		} catch (NumberFormatException e){
+			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "Error parsing hex date millis", e);
+			return null;
+		}
+		if (dateMillis != expectedDateMillis) {
+			// Although we trust clients that are authenticated, we want to make sure that the
+			//   dateMillis they said, is actually what is encrypted for integrity.
+			// Also note that this may stop old, old clients from being able to send commands. As of a few versions ago (few versions ago as of 2021.10.29)
+			//   this may have stopped the commands from being processed because the encrypted dateMillis and expected dateMillis may have been generated/gotten at different times
+			//   but that is not the case now.
+			LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Encrypted dateMillis is not the same as the expected dateMillis. dateMillis (decrypted): " + dateMillis + ", expected dateMillis: " + expectedDateMillis);
+			return null;
+		}
+		Long lastCommand = state.senderLastCommandMap.get(sender);
+		long currentTime = System.currentTimeMillis();
+		if(dateMillis > currentTime + 5000) { // there's a 5 second grace period in case the clock is slightly off
+			LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Message from " + sender + " is from the future??? dateMillis: " + dateMillis + " currentTime: " + currentTime);
+			lastCommands.put(sender, dateMillis); // put this here anyway so it can't be used later
+		} else if(dateMillis < minTime){
+			LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Message from " + sender + " was parsed, but it too old! dateMillis: " + dateMillis + " minTime: " + minTime);
+		} else if(lastCommand != null && dateMillis <= lastCommand) { // if this command is old or if someone is trying to send the exact same command twice
+			LOGGER.debug("Message from " + sender + " was parsed, but was older than the last command they sent! dateMillis: " + dateMillis + " lastCommand: " + lastCommand);
+		} else if(dateMillis < listenStartTime){
+			LOGGER.debug(SolarThingConstants.SUMMARY_MARKER, "Message from " + sender + " was parsed, but it was sent before we started listening! dateMillis: " + dateMillis + " listenStartTime: " + listenStartTime);
+		} else {
+			lastCommands.put(sender, dateMillis);
+			return message;
 		}
 		return null;
 	}
