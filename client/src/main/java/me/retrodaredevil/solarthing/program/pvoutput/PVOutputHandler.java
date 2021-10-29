@@ -27,18 +27,21 @@ import me.retrodaredevil.solarthing.util.IdentifierUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 public class PVOutputHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PVOutputHandler.class);
 
-	private final TimeZone timeZone;
+	private final ZoneId zoneId;
 	private final Map<Integer, List<String>> requiredIdentifierMap;
 	private final IdentifierFragmentMatcher voltageIdentifierFragmentMatcher;
 	private final IdentifierFragmentMatcher temperatureIdentifierFragmentMatcher;
 
-	public PVOutputHandler(TimeZone timeZone, Map<Integer, List<String>> requiredIdentifierMap, IdentifierFragmentMatcher voltageIdentifierFragmentMatcher, IdentifierFragmentMatcher temperatureIdentifierFragmentMatcher) {
-		this.timeZone = timeZone;
+	public PVOutputHandler(ZoneId zoneId, Map<Integer, List<String>> requiredIdentifierMap, IdentifierFragmentMatcher voltageIdentifierFragmentMatcher, IdentifierFragmentMatcher temperatureIdentifierFragmentMatcher) {
+		this.zoneId = zoneId;
 		this.requiredIdentifierMap = requiredIdentifierMap;
 		this.voltageIdentifierFragmentMatcher = voltageIdentifierFragmentMatcher;
 		this.temperatureIdentifierFragmentMatcher = temperatureIdentifierFragmentMatcher;
@@ -59,7 +62,7 @@ public class PVOutputHandler {
 	public AddStatusParameters getStatus(long dayStartTimeMillis, List<FragmentedPacketGroup> packetGroupList) {
 		FragmentedPacketGroup latestPacketGroup = packetGroupList.get(packetGroupList.size() - 1);
 		LOGGER.debug("Continuing with the latest packet group. Day start: " + dayStartTimeMillis);
-		AddStatusParametersBuilder addStatusParametersBuilder = createStatusBuilder(timeZone, latestPacketGroup.getDateMillis());
+		AddStatusParametersBuilder addStatusParametersBuilder = createStatusBuilder(zoneId, latestPacketGroup.getDateMillis());
 		setStatusPowerValues(addStatusParametersBuilder, latestPacketGroup);
 		setStatusEnergyValues(
 				addStatusParametersBuilder,
@@ -91,11 +94,10 @@ public class PVOutputHandler {
 		}
 		return addStatusParametersBuilder.build();
 	}
-	private static AddStatusParametersBuilder createStatusBuilder(TimeZone timeZone, long dateMillis) {
-		Calendar calendar = new GregorianCalendar(timeZone);
-		calendar.setTimeInMillis(dateMillis);
-		SimpleDate date = SimpleDate.fromCalendar(calendar);
-		SimpleTime time = SimpleTime.fromCalendar(calendar);
+	private static AddStatusParametersBuilder createStatusBuilder(ZoneId zoneId, long dateMillis) {
+		LocalDateTime localDateTime = Instant.ofEpochMilli(dateMillis).atZone(zoneId).toLocalDateTime();
+		SimpleDate date = SimpleDate.fromTemporal(localDateTime);
+		SimpleTime time = SimpleTime.fromTemporal(localDateTime);
 		return new AddStatusParametersBuilder(date, time);
 	}
 	private static AddStatusParametersBuilder setStatusPowerValues(AddStatusParametersBuilder builder, PacketGroup latestPacketGroup){

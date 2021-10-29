@@ -101,7 +101,7 @@ public final class AutomationMain {
 				.add(new SourceIdEnvironment(sourceId))
 				.add(new CouchDbEnvironment(couchSettings)) // most of the time, it's better to use SolarThingDatabaseEnvironment instead, but this option is here in case it's needed
 				.add(new SolarThingDatabaseEnvironment(CouchDbSolarThingDatabase.create(CouchDbUtil.createInstance(couchSettings.getCouchProperties(), couchSettings.getOkHttpProperties()))))
-				.add(new TimeZoneEnvironment(options.getTimeZone()))
+				.add(new TimeZoneEnvironment(options.getZoneId()))
 				.add(new LatestPacketGroupEnvironment(fragmentedPacketGroupProvider))
 				.add(new LatestFragmentedPacketGroupEnvironment(fragmentedPacketGroupProvider))
 				.add(new EventDatabaseCacheEnvironment(eventDatabaseCache))

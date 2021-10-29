@@ -175,7 +175,7 @@ public class PacketHandlerInit {
 					actionNodeMap,
 					(source, injectEnvironmentBuilder) -> {
 						injectEnvironmentBuilder
-								.add(new TimeZoneEnvironment(options.getTimeZone()))
+								.add(new TimeZoneEnvironment(options.getZoneId()))
 								.add(new LatestPacketGroupEnvironment(latestPacketHandler::getLatestPacketCollection))
 								.add(new SourceEnvironment(source))
 								.add(new EventReceiverEnvironment(PacketListReceiverHandlerBundle.createEventPacketListReceiverHandler(SolarMain.getSourceAndFragmentUpdater(options), options.getZoneId(), packetHandlerBundle)))

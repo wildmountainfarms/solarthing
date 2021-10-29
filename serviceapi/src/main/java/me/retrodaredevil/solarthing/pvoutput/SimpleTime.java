@@ -9,8 +9,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 
 import java.io.IOException;
-import java.time.Instant;
 import java.time.temporal.ChronoField;
+import java.time.temporal.Temporal;
 import java.util.Calendar;
 
 @JsonDeserialize(using = SimpleTime.Deserializer.class)
@@ -25,8 +25,8 @@ public final class SimpleTime implements PVOutputString {
 	public static SimpleTime fromCalendar(Calendar calendar){
 		return new SimpleTime(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
 	}
-	public static SimpleTime fromInstant(Instant instant){
-		return new SimpleTime(instant.get(ChronoField.HOUR_OF_DAY), instant.get(ChronoField.MINUTE_OF_HOUR));
+	public static SimpleTime fromTemporal(Temporal temporal){
+		return new SimpleTime(temporal.get(ChronoField.HOUR_OF_DAY), temporal.get(ChronoField.MINUTE_OF_HOUR));
 	}
 
 	public int getHour() {

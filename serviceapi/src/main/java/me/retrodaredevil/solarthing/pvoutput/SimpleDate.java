@@ -9,9 +9,17 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoField;
 import java.time.temporal.Temporal;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
+import java.util.Objects;
 
 /**
  * Represents a date with a year, month, and day. Both month and day are 1 based.
@@ -33,22 +41,24 @@ public final class SimpleDate implements Comparable<SimpleDate>, PVOutputString 
 			throw new IllegalArgumentException("Day is out of range! day=" + day);
 		}
 	}
+	@Deprecated
 	public static SimpleDate fromCalendar(Calendar calendar){
 		return new SimpleDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));
 	}
 	public static SimpleDate fromTemporal(Temporal instant){
 		return new SimpleDate(instant.get(ChronoField.YEAR), instant.get(ChronoField.MONTH_OF_YEAR), instant.get(ChronoField.DAY_OF_MONTH));
 	}
+	@Deprecated
 	public static SimpleDate fromDate(Date date) {
 		Calendar calendar = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
 		calendar.setTime(date);
 		return fromCalendar(calendar);
 	}
-	public static SimpleDate fromDateMillis(long dateMillis, TimeZone timeZone) {
-		Calendar calendar = new GregorianCalendar(timeZone);
-		calendar.setTimeInMillis(dateMillis);
-		return fromCalendar(calendar);
+	public static SimpleDate fromDateMillis(long dateMillis, ZoneId zoneId) {
+		LocalDateTime localDateTime = Instant.ofEpochMilli(dateMillis).atZone(zoneId).toLocalDateTime();
+		return fromTemporal(localDateTime);
 	}
+	@Deprecated
 	public Calendar toCalendar(TimeZone timeZone) {
 		Calendar calendar = new GregorianCalendar(timeZone);
 		// Java Calender stuff is between 0 and 11 for months
@@ -57,22 +67,18 @@ public final class SimpleDate implements Comparable<SimpleDate>, PVOutputString 
 		calendar.set(Calendar.MILLISECOND, 0);
 		return calendar;
 	}
-	public Date toDate(TimeZone timeZone) {
-		return new Date(toCalendar(timeZone).getTimeInMillis());
+	public LocalDate toLocalDate() {
+		return LocalDate.of(year, month, day);
 	}
 
-	public long getDayStartDateMillis(TimeZone timeZone) {
-		return toCalendar(timeZone).getTimeInMillis();
+	public long getDayStartDateMillis(ZoneId zoneId) {
+		return toLocalDate().atStartOfDay(zoneId).toInstant().toEpochMilli();
 	}
 	public SimpleDate tomorrow() {
-		Calendar calendar = toCalendar(TimeZone.getTimeZone("UTC"));
-		calendar.add(Calendar.DAY_OF_YEAR, 1);
-		return fromCalendar(calendar);
+		return fromTemporal(toLocalDate().plusDays(1));
 	}
 	public SimpleDate yesterday() {
-		Calendar calendar = toCalendar(TimeZone.getTimeZone("UTC"));
-		calendar.add(Calendar.DAY_OF_YEAR, -1);
-		return fromCalendar(calendar);
+		return fromTemporal(toLocalDate().minusDays(1));
 	}
 
 	public int getYear() {

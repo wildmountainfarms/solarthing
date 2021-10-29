@@ -1,22 +1,20 @@
 package me.retrodaredevil.solarthing.util.time;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 public class DailyIdentifier implements TimeIdentifier {
-	private final Calendar calendar;
+	private final ZoneId zoneId;
 
 
-	public DailyIdentifier(TimeZone timeZone) {
-		calendar = new GregorianCalendar(timeZone);
+	public DailyIdentifier(ZoneId zoneId) {
+		this.zoneId = zoneId;
 	}
 
 	@Override
 	public long getTimeId(long timeMillis) {
-		synchronized (calendar) {
-			calendar.setTimeInMillis(timeMillis);
-			return 400L * calendar.get(Calendar.YEAR) + calendar.get(Calendar.DAY_OF_YEAR); // this is arbitrary, so using 400 is fine
-		}
+		LocalDateTime date = Instant.ofEpochMilli(timeMillis).atZone(zoneId).toLocalDateTime();
+		return 400L * date.getYear() + date.getDayOfYear(); // this is arbitrary, so using 400 is fine
 	}
 }

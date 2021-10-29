@@ -40,10 +40,9 @@ import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.TimeZone;
+import java.time.ZoneId;
+import java.time.format.TextStyle;
+import java.util.*;
 
 public class PVOutputUploadMain {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PVOutputUploadMain.class);
@@ -53,11 +52,11 @@ public class PVOutputUploadMain {
 	// TODO Make this an action for the automation program
 
 
-	@SuppressWarnings("SameReturnValue")
+	@SuppressWarnings({"SameReturnValue", "deprecation"})
 	public static int startPVOutputUpload(PVOutputUploadProgramOptions options, CommandOptions commandOptions, File dataDirectory){
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Starting PV Output upload program");
-		TimeZone timeZone = options.getTimeZone();
-		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Using time zone: {}", timeZone.getDisplayName());
+		ZoneId zoneId = options.getZoneId();
+		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Using time zone: {}", zoneId.getDisplayName(TextStyle.FULL, Locale.US)); // Use US local since I (retrodaredevil) am the one debugging
 		LOGGER.info("Using default instance options: " + options.getDefaultInstanceOptions());
 		DatabaseConfig databaseConfig = ConfigUtil.getDatabaseConfig(options.getDatabase());
 		DatabaseType databaseType = databaseConfig.getType();
@@ -73,7 +72,7 @@ public class PVOutputUploadMain {
 				.build();
 		Retrofit retrofit = PVOutputRetrofitUtil.defaultBuilder().client(client).build();
 		PVOutputService service = retrofit.create(PVOutputService.class);
-		PVOutputHandler handler = new PVOutputHandler(timeZone, options.getRequiredIdentifierMap(), options.getVoltageIdentifierFragmentMatcher(), options.getTemperatureIdentifierFragmentMatcher());
+		PVOutputHandler handler = new PVOutputHandler(zoneId, options.getRequiredIdentifierMap(), options.getVoltageIdentifierFragmentMatcher(), options.getTemperatureIdentifierFragmentMatcher());
 
 		String fromDateString = commandOptions.getPVOutputFromDate();
 		String toDateString = commandOptions.getPVOutputToDate();
@@ -82,6 +81,7 @@ public class PVOutputUploadMain {
 			final SimpleDate fromDate;
 			final SimpleDate toDate;
 			try {
+				// TODO Don't use SimpleDateFormat anymore and remove supress warnings for deprecation
 				fromDate = SimpleDate.fromDate(DATE_FORMAT.parse(fromDateString));
 				toDate = SimpleDate.fromDate(DATE_FORMAT.parse(toDateString));
 			} catch (ParseException e) {
@@ -91,7 +91,7 @@ public class PVOutputUploadMain {
 			}
 			return startRangeUpload(
 					fromDate, toDate,
-					options, database, handler, service, options.getTimeZone()
+					options, database, handler, service, options.getZoneId()
 			);
 		} else if ((fromDateString == null) != (toDateString == null)) {
 			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)You need to define both from and to, or define neither to do the normal PVOutput program!");
@@ -100,20 +100,20 @@ public class PVOutputUploadMain {
 		AnalyticsManager analyticsManager = new AnalyticsManager(options.isAnalyticsEnabled(), dataDirectory);
 		analyticsManager.sendStartUp(ProgramType.PVOUTPUT_UPLOAD);
 
-		return startRealTimeProgram(options, database, handler, service, options.getTimeZone());
+		return startRealTimeProgram(options, database, handler, service, options.getZoneId());
 	}
 	private static int startRangeUpload(
 			SimpleDate fromDate, SimpleDate toDate,
 			PVOutputUploadProgramOptions options, SolarThingDatabase database,
-			PVOutputHandler handler, PVOutputService service, TimeZone timeZone
+			PVOutputHandler handler, PVOutputService service, ZoneId zoneId
 	) {
 		List<AddOutputParameters> addOutputParameters = new ArrayList<>();
 		SimpleDate date = fromDate;
 		while(date.compareTo(toDate) <= 0) {
 			System.out.println("Doing " + date);
 			SimpleDate tomorrow = date.tomorrow();
-			long dayStart = date.getDayStartDateMillis(timeZone);
-			long dayEnd = tomorrow.getDayStartDateMillis(timeZone);
+			long dayStart = date.getDayStartDateMillis(zoneId);
+			long dayEnd = tomorrow.getDayStartDateMillis(zoneId);
 
 			List<? extends PacketGroup> rawPacketGroups = null;
 			try {
@@ -222,7 +222,7 @@ public class PVOutputUploadMain {
 
 	private static int startRealTimeProgram(
 			PVOutputUploadProgramOptions options, SolarThingDatabase database,
-			PVOutputHandler handler, PVOutputService service, TimeZone timeZone
+			PVOutputHandler handler, PVOutputService service, ZoneId zoneId
 	) {
 		if (options.isJoinTeams()) {
 			LOGGER.info("Going to join SolarThing team...");
@@ -266,8 +266,8 @@ public class PVOutputUploadMain {
 		while(!Thread.currentThread().isInterrupted()){
 			LOGGER.debug("Going to do stuff now.");
 			long now = System.currentTimeMillis();
-			SimpleDate today = SimpleDate.fromDateMillis(now, timeZone);
-			long dayStartTimeMillis = today.getDayStartDateMillis(timeZone);
+			SimpleDate today = SimpleDate.fromDateMillis(now, zoneId);
+			long dayStartTimeMillis = today.getDayStartDateMillis(zoneId);
 			List<? extends PacketGroup> rawPacketGroups = null;
 			try {
 				rawPacketGroups = database.getStatusDatabase().query(new MillisQueryBuilder()

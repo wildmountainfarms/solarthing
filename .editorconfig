@@ -14,6 +14,7 @@ max_line_length = 180
 indent_size = 4 # Although I wish I could leave this undefined, I define it so continuation_indent_size is correct
 ij_continuation_indent_size = 8 # twice as much as indent_size
 trim_trailing_whitespace = true
+ij_java_class_count_to_use_import_on_demand = 8
 
 [{*.json,*.md}]
 indent_style = space
