@@ -222,7 +222,7 @@ public class RoverModbusSlaveWrite extends AbstractModbusWrite implements RoverW
 
 	@Override
 	public void setLEDLoadCurrentSettingRaw(int value) {
-		// TODO figure out allowed range
+		// Note: Not sure if this range check is completely correct. For now, it just makes sure `value` uses no more than 16-bits
 		checkRange(0, (1 << 16) - 1, value);
 		write(0xE020, value);
 	}
@@ -259,7 +259,7 @@ public class RoverModbusSlaveWrite extends AbstractModbusWrite implements RoverW
 
 	@Override
 	public void setLEDLoadCurrentRaw(int value) {
-		// TODO figure out allowed range
+		// Note: Not sure if this range check is completely correct. For now, it just makes sure `value` uses no more than 16-bits
 		checkRange(0, 1 << 16, value);
 		write(0xE02C, value);
 	}

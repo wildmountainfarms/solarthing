@@ -545,13 +545,13 @@ public class TracerModbusSlaveRead extends AbstractModbusRead implements TracerR
 	private static final MessageHandler<int[]> DISCHARGING_PERCENTAGE = new ReadHoldingRegisters(0x906D, 1);
 	@Override
 	public int getDischargingPercentage() {
-		return oneRegister(DISCHARGING_PERCENTAGE); // TODO do we have to divide by 100 here?
+		return oneRegister(DISCHARGING_PERCENTAGE);
 	}
 
 	private static final MessageHandler<int[]> CHARGING_PERCENTAGE = new ReadHoldingRegisters(0x906E, 1);
 	@Override
 	public int getChargingPercentage() {
-		return oneRegister(CHARGING_PERCENTAGE); // TODO do we have to divide by 100 here?
+		return oneRegister(CHARGING_PERCENTAGE);
 	}
 
 	private static final MessageHandler<int[]> BATTERY_MANAGEMENT_MODE = new ReadHoldingRegisters(0x9070, 1);

@@ -31,7 +31,7 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 
 	@Override
 	default @NotNull ChargingStatus getChargingMode() {
-		// TODO, if we figure out if there's a way to tell if the tracer is actually in one of these modes rather than just in Bulk, we may
+		// In the future, if we figure out if there's a way to tell if the tracer is actually in one of these modes rather than just in Bulk, we may
 		//   consider creating another enum representing that possibility
 		return getChargingStatus();
 	}
@@ -349,8 +349,10 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 	int getEqualizeDurationMinutes();
 	@JsonProperty("boostDurationMinutes")
 	int getBoostDurationMinutes();
+	/** @return A value from 0 to 100 representing the discharging percentage */
 	@JsonProperty("dischargingPercentage")
 	int getDischargingPercentage();
+	/** @return A value from 0 to 100 representing the charging percentage */
 	@JsonProperty("chargingPercentage")
 	int getChargingPercentage();
 	@JsonProperty("batteryManagementModeValue")

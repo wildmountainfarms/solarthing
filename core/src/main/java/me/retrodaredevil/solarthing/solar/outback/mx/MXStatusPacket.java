@@ -82,7 +82,8 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 	@Override
 	default @NotNull Number getChargingCurrent(){
 		/*
-		TODO In the future, if we decide to detect and store if we are on old firmware or a non-FM device, we may want to
+		(Once TO-DO, not anymore)
+		In the future, if we decide to detect and store if we are on old firmware or a non-FM device, we may want to
 		explicitly return either an Integer or Float so the caller can decide how they want to display the number.
 		(They may display the number differently if it is a Integer rather than a Float)
 
@@ -217,11 +218,10 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 	// endregion
 
 	/**
-	 *
+	 * Note: It is unknown if this means old MX firmware or old mate firmware
 	 * @return true if the Mate's firmware is pre 4.01, false otherwise
 	 */
 	default boolean isOldMateFirmware(){
-		// TODO Does this mean an old MX firmware, or does this mean an old MATE firmware?
 		int dailyAH = getDailyAH();
 		if(dailyAH == 9999){
 			return false; // new MX

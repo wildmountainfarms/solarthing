@@ -62,9 +62,13 @@ public class TracerModbusSlaveWrite extends AbstractModbusWrite implements Trace
 		));
 	}
 
-	// TODO NOTE for voltage setpoints, they must be set using a multiple register write command from registers 0x9000 to 0x900E
-	// also note that the equalize and boost duration (0x906B and 0x906C) are normally set together, but it is not required
-	// also note that NTTV, startup delay, DTTV, turn off delay (0x901E to 0x9021) are normally set together, but it is not required
+	// 2021.10.29: The comment below here says that the tracer app commands the charge controller to set all the values at once.
+	//   Initially, I thought that it was required because it wasn't working on my tracer, but now I don't know why it won't work.
+	//   I think the deprecations here were premature, and could probably be removed. That's not to say that you shouldn't
+	//   set them in bulk with setBatteryConfig, but there are just a lot of unknowns with these set methods.
+	// Note for voltage setpoints, they *can* be set using a multiple register write command from registers 0x9000 to 0x900E
+	//   also note that the equalize and boost duration (0x906B and 0x906C) are normally set together, but it is not required
+	//   also note that NTTV, startup delay, DTTV, turn off delay (0x901E to 0x9021) are normally set together, but it is not required
 	@Deprecated
 	@Override
 	public void setHighVoltageDisconnect(float highVoltageDisconnect) {

@@ -274,7 +274,8 @@ public class CacheHandler {
 		try {
 			packetGroups = database.getStatusDatabase().query(millisQuery);
 		} catch (SolarThingDatabaseException e) {
-			// TODO the consumers of this API may be ok if there are holes in the data rather than getting no data at all, so maybe change this later?
+			// (Was TO-DO)
+			// The consumers of this API may be ok if there are holes in the data rather than getting no data at all, so maybe change this later?
 			throw new DatabaseException("Couldn't query status packets", e);
 		}
 		List<CacheDataPacket> r = new ArrayList<>();
