@@ -1,12 +1,9 @@
 package me.retrodaredevil.solarthing.config.options;
 
+import me.retrodaredevil.solarthing.annotations.NotNull;
+
 import java.time.ZoneId;
-import java.util.TimeZone;
 
 public interface TimeZoneOption extends ProgramOptions {
-	TimeZone getTimeZone(); // TODO change to just zone id
-
-	default ZoneId getZoneId() {
-		return getTimeZone().toZoneId();
-	}
+	@NotNull ZoneId getZoneId();
 }
