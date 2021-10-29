@@ -60,6 +60,9 @@ public class SecurityPacketReceiver {
 		classList.add(InstancePacket.class);
 		ObjectMapper integrityMapper = MAPPER.copy();
 		integrityMapper.getSubtypeResolver().registerSubtypes(Collections.unmodifiableList(classList));
+
+		// Use a DO_NOTHING error handler, because many instances of SecurityPacketReceiver will only have one or a few packetClasses.
+		//   So it's actually very likely that parsing a packet will fail often
 		integrityParser = new SimplePacketGroupParser(integrityMapper, PacketParsingErrorHandler.DO_NOTHING);
 
 		try {
@@ -103,7 +106,7 @@ public class SecurityPacketReceiver {
 					if(invalidSenderReason != null){
 						LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, invalidSenderReason);
 					} else {
-						String data = decryptData(minTime, lastCommands, sender, integrityPacket.getEncryptedData());
+						String data = decryptData(minTime, lastCommands, sender, integrityPacket.getEncryptedData(), packetGroupDateMillis);
 						handleMessage(data, sender);
 					}
 				} else if (packetType == SecurityPacketType.LARGE_INTEGRITY_PACKET) {
@@ -113,7 +116,7 @@ public class SecurityPacketReceiver {
 					if(invalidSenderReason != null){
 						LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, invalidSenderReason);
 					} else {
-						String encodedHash = decryptData(minTime, lastCommands, sender, largeIntegrityPacket.getEncryptedHash());
+						String encodedHash = decryptData(minTime, lastCommands, sender, largeIntegrityPacket.getEncryptedHash(), packetGroupDateMillis);
 						if (encodedHash != null) {
 							byte[] decodedHash = null;
 							try {
@@ -139,7 +142,7 @@ public class SecurityPacketReceiver {
 		state.senderLastCommandMap.putAll(lastCommands);
 	}
 
-	private String decryptData(long minTime, Map<String, Long> lastCommands, String sender, String base64EncodedData) {
+	private String decryptData(long minTime, Map<String, Long> lastCommands, String sender, String base64EncodedData, long expectedDateMillis) {
 		try {
 			String data = Decrypt.decrypt(cipher, publicKeyLookUp, sender, base64EncodedData);
 			final String[] split = data.split(",", 2);
@@ -155,22 +158,32 @@ public class SecurityPacketReceiver {
 				} catch (NumberFormatException e){
 					LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "Error parsing hex date millis", e);
 				}
-				if(dateMillis != null){
-					Long lastCommand = state.senderLastCommandMap.get(sender);
-					long currentTime = System.currentTimeMillis();
-					if(dateMillis > currentTime + 5000) { // there's a 5 second grace period in case the clock is slightly off
-						LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Message from " + sender + " is from the future??? dateMillis: " + dateMillis + " currentTime: " + currentTime);
-						lastCommands.put(sender, dateMillis); // put this here anyway so it can't be used later
-					} else if(dateMillis < minTime){
-						LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Message from " + sender + " was parsed, but it too old! dateMillis: " + dateMillis + " minTime: " + minTime);
-					} else if(lastCommand != null && dateMillis <= lastCommand) { // if this command is old or if someone is trying to send the exact same command twice
-						LOGGER.debug("Message from " + sender + " was parsed, but was older than the last command they sent! dateMillis: " + dateMillis + " lastCommand: " + lastCommand);
-					} else if(dateMillis < listenStartTime){
-						LOGGER.debug(SolarThingConstants.SUMMARY_MARKER, "Message from " + sender + " was parsed, but it was sent before we started listening! dateMillis: " + dateMillis + " listenStartTime: " + listenStartTime);
-					} else {
-						lastCommands.put(sender, dateMillis);
-						return message;
-					}
+				if (dateMillis == null) {
+					return null;
+				}
+				if (dateMillis != expectedDateMillis) {
+					// Although we trust clients that are authenticated, we want to make sure that the
+					//   dateMillis they said, is actually what is encrypted for integrity.
+					// Also note that this may stop old, old clients from being able to send commands. As of a few versions ago (few versions ago as of 2021.10.29)
+					//   this may have stopped the commands from being processed because the encrypted dateMillis and expected dateMillis may have been generated/gotten at different times
+					//   but that is not the case now.
+					LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Encrypted dateMillis is not the same as the expected dateMillis. dateMillis (decrypted): " + dateMillis + ", expected dateMillis: " + expectedDateMillis);
+					return null;
+				}
+				Long lastCommand = state.senderLastCommandMap.get(sender);
+				long currentTime = System.currentTimeMillis();
+				if(dateMillis > currentTime + 5000) { // there's a 5 second grace period in case the clock is slightly off
+					LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Message from " + sender + " is from the future??? dateMillis: " + dateMillis + " currentTime: " + currentTime);
+					lastCommands.put(sender, dateMillis); // put this here anyway so it can't be used later
+				} else if(dateMillis < minTime){
+					LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Message from " + sender + " was parsed, but it too old! dateMillis: " + dateMillis + " minTime: " + minTime);
+				} else if(lastCommand != null && dateMillis <= lastCommand) { // if this command is old or if someone is trying to send the exact same command twice
+					LOGGER.debug("Message from " + sender + " was parsed, but was older than the last command they sent! dateMillis: " + dateMillis + " lastCommand: " + lastCommand);
+				} else if(dateMillis < listenStartTime){
+					LOGGER.debug(SolarThingConstants.SUMMARY_MARKER, "Message from " + sender + " was parsed, but it was sent before we started listening! dateMillis: " + dateMillis + " listenStartTime: " + listenStartTime);
+				} else {
+					lastCommands.put(sender, dateMillis);
+					return message;
 				}
 			}
 		} catch (DecryptException e) {
