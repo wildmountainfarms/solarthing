@@ -42,6 +42,9 @@ public class CommonProvider {
 	private int getDefaultFragmentId() {
 		Integer r = defaultFragmentId;
 		if (r == null) {
+			// The fact that we use the default DefaultInstanceOptions is not a big deal here. All new data should always have instance data,
+			//   and it's unlikely that someone (WMF) will go back far enough to find data that doesn't have instance data. (The only database this can happen on
+			//   is the WMF one, and I already configured this on its GraphQL program, so it's good)
 			return DefaultInstanceOptions.DEFAULT_DEFAULT_INSTANCE_OPTIONS.getDefaultFragmentId();
 		}
 		return r;

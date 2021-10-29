@@ -26,8 +26,10 @@ class GraphQLProviderTest {
 				new OkHttpPropertiesBuilder().build()
 		);
 		ObjectMapper mapper = JacksonUtil.defaultMapper();
-		CacheController cacheController = new CacheController(new CacheHandler(mapper, DefaultInstanceOptions.DEFAULT_DEFAULT_INSTANCE_OPTIONS, CouchDbUtil.createInstance(couchDbDatabaseSettings.getCouchProperties(), couchDbDatabaseSettings.getOkHttpProperties())));
-		GraphQLSchema schema = GraphQLProvider.createGraphQLSchemaGenerator(JacksonUtil.defaultMapper(), couchDbDatabaseSettings, DefaultInstanceOptions.DEFAULT_DEFAULT_INSTANCE_OPTIONS, new SolcastConfig(Collections.emptyMap()), cacheController).generate();
+		// Use DefaultInstanceOptions.REQUIRE_NO_DEFAULTS while testing because first, we don't actually query any data,
+		//   and second, we're trying to get rid of usages of DefaultInstanceOptions.DEFAULT_DEFAULT_INSTANCE_OPTIONS
+		CacheController cacheController = new CacheController(new CacheHandler(mapper, DefaultInstanceOptions.REQUIRE_NO_DEFAULTS, CouchDbUtil.createInstance(couchDbDatabaseSettings.getCouchProperties(), couchDbDatabaseSettings.getOkHttpProperties())));
+		GraphQLSchema schema = GraphQLProvider.createGraphQLSchemaGenerator(JacksonUtil.defaultMapper(), couchDbDatabaseSettings, DefaultInstanceOptions.REQUIRE_NO_DEFAULTS, new SolcastConfig(Collections.emptyMap()), cacheController).generate();
 		GraphQL.newGraphQL(schema).build();
 	}
 }

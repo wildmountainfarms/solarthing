@@ -16,9 +16,12 @@ public class InjectEnvironment {
 		this.map = Collections.unmodifiableMap(new HashMap<>(map));
 	}
 
-	@SuppressWarnings("unchecked")
+	public <T> T getOrNull(Class<T> clazz) {
+		return clazz.cast(map.get(clazz));
+	}
+
 	public <T> T get(Class<T> clazz) {
-		T r = (T) map.get(clazz);
+		T r = getOrNull(clazz);
 		if (r == null) {
 			throw new NoSuchElementException("There was no element with the class: " + clazz);
 		}

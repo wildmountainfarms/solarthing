@@ -17,6 +17,7 @@ public abstract class DatabaseTimeZoneOptionBase extends TimeZoneOptionBase impl
 
 	@JsonProperty("include_undefined_sources")
 	private Boolean includeUndefinedSources = null;
+	// The fact that we use DEFAULT_DEFAULT_INSTANCE_OPTIONS here is fine. The only database this matters on is the WMF database, which I have it configured correctly on
 	@JsonProperty("default_fragment")
 	private int defaultFragment = DefaultInstanceOptions.DEFAULT_DEFAULT_INSTANCE_OPTIONS.getDefaultFragmentId();
 	@Override

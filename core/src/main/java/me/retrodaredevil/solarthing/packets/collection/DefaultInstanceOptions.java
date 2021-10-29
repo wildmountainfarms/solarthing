@@ -6,7 +6,9 @@ import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePacket;
 import static java.util.Objects.requireNonNull;
 
 public final class DefaultInstanceOptions {
-	public static final DefaultInstanceOptions DEFAULT_DEFAULT_INSTANCE_OPTIONS = DefaultInstanceOptions.create(InstanceSourcePacket.DEFAULT_SOURCE_ID, 0); // TODO
+	/** Using this should be avoided whenever possible. It it usually better to have someone configure the defaults themselves, or have an error be thrown when
+	 * default instance options have to be used */
+	public static final DefaultInstanceOptions DEFAULT_DEFAULT_INSTANCE_OPTIONS = DefaultInstanceOptions.create(InstanceSourcePacket.DEFAULT_SOURCE_ID, 0);
 	/** Magic values that should be used to make sure they were not used */
 	public static final DefaultInstanceOptions REQUIRE_NO_DEFAULTS = DefaultInstanceOptions.create(InstanceSourcePacket.UNUSED_SOURCE_ID, Integer.MIN_VALUE);
 
