@@ -23,10 +23,7 @@ public final class PacketGroups {
 		return new ImmutablePacketGroup(groups, dateMillis, dateMillisPacketMap);
 	}
 	public static InstancePacketGroup createInstancePacketGroup(Collection<? extends Packet> groups, long dateMillis, String sourceId, int fragmentId){
-		return createInstancePacketGroup(groups, dateMillis, sourceId, fragmentId, Collections.emptyMap());
-	}
-	public static InstancePacketGroup createInstancePacketGroup(Collection<? extends Packet> groups, long dateMillis, String sourceId, int fragmentId, Map<? extends Packet, Long> dateMillisPacketMap){
-		return new ImmutableInstancePacketGroup(groups, dateMillis, dateMillisPacketMap, sourceId, fragmentId);
+		return new ImmutableInstancePacketGroup(groups, dateMillis, sourceId, fragmentId);
 	}
 	public static FragmentedPacketGroup createFragmentedPacketGroup(Collection<? extends InstancePacketGroup> instancePackets, long dateMillis) {
 		return new ImmutableFragmentedPacketGroup(instancePackets, dateMillis);

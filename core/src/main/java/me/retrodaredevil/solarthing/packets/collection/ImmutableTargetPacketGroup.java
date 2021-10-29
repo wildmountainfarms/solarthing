@@ -4,21 +4,32 @@ import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.Packet;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashSet;
+import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 
-class ImmutableTargetPacketGroup extends ImmutablePacketGroup implements TargetPacketGroup {
+class ImmutableTargetPacketGroup implements TargetPacketGroup {
 
+	private final List<Packet> packets;
+	private final long dateMillis;
 	private final String sourceId;
 	private final Collection<Integer> targetFragmentIds;
 
 	ImmutableTargetPacketGroup(Collection<? extends Packet> packets, long dateMillis, String sourceId, Collection<Integer> targetFragmentIds) {
-		super(packets, dateMillis, Collections.emptyMap());
+		this.packets = Collections.unmodifiableList(new ArrayList<>(packets));
+		this.dateMillis = dateMillis;
 		requireNonNull(this.sourceId = sourceId);
 		this.targetFragmentIds = targetFragmentIds == null ? null : new LinkedHashSet<>(targetFragmentIds);
+	}
+
+	@Override
+	public List<Packet> getPackets() {
+		return packets;
+	}
+
+	@Override
+	public long getDateMillis() {
+		return dateMillis;
 	}
 
 	@Override

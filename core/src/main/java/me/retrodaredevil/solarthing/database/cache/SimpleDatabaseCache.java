@@ -74,6 +74,14 @@ public class SimpleDatabaseCache implements DatabaseCache {
 		return createRecommendedQueryBuilder().build();
 	}
 
+	/**
+	 * Note that the end key will not be null, and will always be set to now. Many times, this is not ideal, and you should set it to null yourself.
+	 * <p>
+	 * One of the main reasons that an end key is not always ideal is because a fragment will overwrite its most recent content with data from "now".
+	 * Many times, that "now" actually ends up being after the end key that is returned here. That can be because of clocks that are slightly off, or because
+	 * this builder was created too long before actually querying data.
+	 * @return A builder for the recommended query
+	 */
 	public MillisQueryBuilder createRecommendedQueryBuilder() {
 		Data data = this.data;
 		Instant now = clock.instant();

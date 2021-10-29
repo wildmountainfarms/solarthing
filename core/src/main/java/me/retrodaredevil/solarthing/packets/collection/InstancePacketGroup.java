@@ -6,9 +6,9 @@ import me.retrodaredevil.solarthing.packets.Packet;
 /**
  * Represents a {@link FragmentedPacketGroup} where each packet has the same fragment id.
  * <p>
- * Usually, this also means that each packet has the same timestamp which means that {@link #getDateMillis(Packet)} should return null
+ * This also implements {@link BasicPacketGroup} indicating that {@link #getDateMillis(Packet)} returns null
  */
-public interface InstancePacketGroup extends FragmentedPacketGroup, SourcedPacketGroup {
+public interface InstancePacketGroup extends FragmentedPacketGroup, SourcedPacketGroup, BasicPacketGroup {
 
 	/**
 	 * @return The fragmentId, which is the same for each packet
@@ -30,6 +30,11 @@ public interface InstancePacketGroup extends FragmentedPacketGroup, SourcedPacke
 	@Override
 	default @NotNull String getSourceId(Packet packet) {
 		return getSourceId();
+	}
+
+	@Override
+	default boolean hasSourceId(String sourceId) {
+		return sourceId.equals(getSourceId());
 	}
 
 	@Override

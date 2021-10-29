@@ -73,6 +73,9 @@ public class SecurityPacketReceiver {
 		LOGGER.debug("received packets! size: " + packetGroups.size());
 		List<TargetPacketGroup> packets = new ArrayList<>(packetGroups.size());
 		long minTime = System.currentTimeMillis() - 5 * 60 * 1000; // last 5 minutes allowed
+		// We don't have a max time. If someone uploads a packet with a future date millis, then it will get handled immediately, then never again.
+		//   The only downside to this is that if the program restarts, there's the possibility of that command being processed again because it might be picked up by a query.
+		//   We won't worry about that, because we trust authenticated clients to not do that.
 		for(PacketGroup packetGroup : packetGroups){
 			if(packetGroup.getDateMillis() < minTime){
 				LOGGER.debug("Ignoring old packet");
@@ -89,6 +92,7 @@ public class SecurityPacketReceiver {
 		 */
 		Map<String, Long> lastCommands = new HashMap<>();
 		for(TargetPacketGroup packetGroup : packets){
+			long packetGroupDateMillis = packetGroup.getDateMillis();
 			for(Packet packet : packetGroup.getPackets()){
 				SecurityPacket securityPacket = (SecurityPacket) packet;
 				SecurityPacketType packetType = securityPacket.getPacketType();
@@ -170,6 +174,7 @@ public class SecurityPacketReceiver {
 				}
 			}
 		} catch (DecryptException e) {
+			// TODO This spams the summary log, which we don't want
 			LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Someone tried to impersonate " + sender + "! Or that person has a new public key.", e);
 		} catch (InvalidKeyException e) {
 			throw new RuntimeException("If there is a saved key, it should be valid! sender: " + sender, e);

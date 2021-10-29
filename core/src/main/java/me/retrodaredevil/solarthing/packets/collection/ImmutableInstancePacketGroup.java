@@ -3,18 +3,30 @@ package me.retrodaredevil.solarthing.packets.collection;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.Packet;
 
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 
-class ImmutableInstancePacketGroup extends ImmutablePacketGroup implements InstancePacketGroup {
+class ImmutableInstancePacketGroup implements InstancePacketGroup {
+	private final List<Packet> packets;
+	private final long dateMillis;
 	private final String sourceId;
 	private final int fragmentId;
-	ImmutableInstancePacketGroup(Collection<? extends Packet> packets, long dateMillis, Map<? extends Packet, Long> dateMillisPacketMap, String sourceId, int fragmentId) {
-		super(packets, dateMillis, dateMillisPacketMap);
+	ImmutableInstancePacketGroup(Collection<? extends Packet> packets, long dateMillis, String sourceId, int fragmentId) {
+		this.packets = Collections.unmodifiableList(new ArrayList<>(packets));
+		this.dateMillis = dateMillis;
 		requireNonNull(this.sourceId = sourceId);
 		this.fragmentId = fragmentId;
+	}
+
+	@Override
+	public List<Packet> getPackets() {
+		return packets;
+	}
+
+	@Override
+	public long getDateMillis() {
+		return dateMillis;
 	}
 
 	@Override

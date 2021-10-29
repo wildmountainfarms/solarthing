@@ -37,11 +37,8 @@ class ImmutableFragmentedPacketGroup extends ImmutablePacketGroup implements Fra
 	private static Map<? extends Packet, Long> dateMillisHelper(Collection<? extends InstancePacketGroup> instancePackets){
 		Map<Packet, Long> dateMillisPacketMap = new HashMap<>();
 		for(InstancePacketGroup instancePacketGroup : instancePackets){
+			long dateMillis = instancePacketGroup.getDateMillis();
 			for(Packet packet : instancePacketGroup.getPackets()){
-				Long dateMillis = instancePacketGroup.getDateMillis(packet);
-				if(dateMillis == null){
-					dateMillis = instancePacketGroup.getDateMillis();
-				}
 				dateMillisPacketMap.put(packet, dateMillis);
 			}
 		}
