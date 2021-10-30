@@ -48,6 +48,10 @@ and is not giving full available power.
 * Program that uploads malicious data to solarthing_open to better understand how SolarThing reacts to malicious data
 * Make validation function that prevents people from adding packets to CouchDB that are super far in the future.
   * Especially solarthing_open
+* In tests that check the template automation configurations, we should try to create the actions instead of just validating
+the creation of an ActionNode. This would require the creation of a dummy ActionEnvironment, but could be useful for checking the validity
+of different configurations, where some configurations are designed for the automation program and others are designed to be
+run in the request program, each with different environments.
   
 ### Completed
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)

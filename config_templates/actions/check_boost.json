@@ -25,16 +25,16 @@
   "set_normal": {
     "type": "race",
     "racers": [
-      [{ "type": "roverboostvoltage", "voltageraw": "147", "not": true}, { "type": "call", "name": "set_normal_command"}],
-      [{ "type": "roverboostvoltage", "voltageraw": "147" }, { "type": "log", "message": "Boost voltage is normal!", "debug": true}],
+      [{ "type": "roverboostvoltage", "voltageraw": "147", "fragment": 2, "not": true}, { "type": "call", "name": "set_normal_command"}],
+      [{ "type": "roverboostvoltage", "voltageraw": "147", "fragment": 2}, { "type": "log", "message": "Boost voltage is normal!", "debug": true}],
       [{ "type": "pass" }, { "type": "log", "message": "Rover not found!"}]
     ]
   },
   "set_equalize": {
     "type": "race",
     "racers": [
-      [{ "type": "roverboostvoltage", "voltageraw": "147", "not": true}, { "type": "log", "message": "Already equalizing", "debug": true }],
-      [{ "type": "roverboostvoltage", "voltageraw": "147" }, { "type": "call", "name": "set_equalize_command"}],
+      [{ "type": "roverboostvoltage", "voltageraw": "147", "fragment": 2, "not": true}, { "type": "log", "message": "Already equalizing", "debug": true }],
+      [{ "type": "roverboostvoltage", "voltageraw": "147", "fragment": 2}, { "type": "call", "name": "set_equalize_command"}],
       [{ "type": "pass" }, { "type": "log", "message": "Rover not found!"}]
     ]
   },
