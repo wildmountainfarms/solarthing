@@ -14,7 +14,7 @@ import me.retrodaredevil.solarthing.database.SolarThingDatabase;
 import me.retrodaredevil.solarthing.database.couchdb.CouchDbSolarThingDatabase;
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
-import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
+import me.retrodaredevil.solarthing.packets.collection.StoredPacketGroup;
 import me.retrodaredevil.solarthing.packets.handling.*;
 
 import java.util.ArrayList;
@@ -51,7 +51,7 @@ public class CommandUtil {
 					);
 					@Override
 					public void handle(PacketCollection packetCollection, InstantType instantType) throws PacketHandleException {
-						final List<? extends PacketGroup> packetGroups;
+						final List<StoredPacketGroup> packetGroups;
 						try {
 							packetGroups = database.getOpenDatabase().query(new MillisQueryBuilder().startKey(System.currentTimeMillis() - 5 * 60 * 1000).build());
 						} catch (SolarThingDatabaseException e) {

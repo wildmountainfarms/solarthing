@@ -11,6 +11,8 @@ import me.retrodaredevil.solarthing.packets.DocumentedPacket;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
+import me.retrodaredevil.solarthing.packets.collection.StoredIdentifier;
+import me.retrodaredevil.solarthing.packets.collection.StoredPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.TargetPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.parsing.*;
 import me.retrodaredevil.solarthing.packets.instance.InstancePacket;
@@ -19,6 +21,7 @@ import me.retrodaredevil.solarthing.packets.security.IntegrityPacket;
 import me.retrodaredevil.solarthing.packets.security.LargeIntegrityPacket;
 import me.retrodaredevil.solarthing.packets.security.SecurityPacket;
 import me.retrodaredevil.solarthing.packets.security.SecurityPacketType;
+import me.retrodaredevil.solarthing.packets.security.SenderPacket;
 import me.retrodaredevil.solarthing.packets.security.crypto.*;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.slf4j.Logger;
@@ -72,21 +75,26 @@ public class SecurityPacketReceiver {
 		}
 	}
 
-	public void receivePacketGroups(List<? extends PacketGroup> packetGroups) {
+	public void receivePacketGroups(List<StoredPacketGroup> packetGroups) {
 		LOGGER.debug("received packets! size: " + packetGroups.size());
-		List<TargetPacketGroup> packets = new ArrayList<>(packetGroups.size());
+		List<TargetPacketGroup> packets = new ArrayList<>();
 		long minTime = System.currentTimeMillis() - 5 * 60 * 1000; // last 5 minutes allowed
 		// We don't have a max time. If someone uploads a packet with a future date millis, then it will get handled immediately, then never again.
 		//   The only downside to this is that if the program restarts, there's the possibility of that command being processed again because it might be picked up by a query.
 		//   We won't worry about that, because we trust authenticated clients to not do that.
-		for(PacketGroup packetGroup : packetGroups){
+		for(StoredPacketGroup packetGroup : packetGroups){
 			if(packetGroup.getDateMillis() < minTime){
-				LOGGER.debug("Ignoring old packet");
+				LOGGER.debug("Ignoring old packet: " + packetGroup.getStoredIdentifier());
+				continue;
+			}
+			if (state.processed.contains(packetGroup.getStoredIdentifier())) {
+				LOGGER.debug("Ignoring already processed packet: " + packetGroup.getStoredIdentifier());
 				continue;
 			}
 			TargetPacketGroup targetPacketGroup = PacketGroups.parseToTargetPacketGroup(packetGroup);
 			if (targetPredicate.targets(targetPacketGroup, false)) {
 				packets.add(targetPacketGroup);
+				state.processed.add(packetGroup.getStoredIdentifier());
 			}
 		}
 		/*
@@ -99,39 +107,39 @@ public class SecurityPacketReceiver {
 			for(Packet packet : packetGroup.getPackets()){
 				SecurityPacket securityPacket = (SecurityPacket) packet;
 				SecurityPacketType packetType = securityPacket.getPacketType();
-				if(packetType == SecurityPacketType.INTEGRITY_PACKET){
-					IntegrityPacket integrityPacket = (IntegrityPacket) packet;
-					String sender = integrityPacket.getSender();
+				if (packet instanceof SenderPacket) {
+					String sender = ((SenderPacket) packet).getSender();
 					final String invalidSenderReason = sender == null ? "sender is null!" : SenderUtil.getInvalidSenderNameReason(sender);
-					if(invalidSenderReason != null){
-						LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, invalidSenderReason);
-					} else {
-						String data = decryptData(minTime, lastCommands, sender, integrityPacket.getEncryptedData(), packetGroupDateMillis);
-						handleMessage(data, sender);
-					}
-				} else if (packetType == SecurityPacketType.LARGE_INTEGRITY_PACKET) {
-					LargeIntegrityPacket largeIntegrityPacket = (LargeIntegrityPacket) packet;
-					String sender = largeIntegrityPacket.getSender();
-					final String invalidSenderReason = sender == null ? "sender is null!" : SenderUtil.getInvalidSenderNameReason(sender);
-					if(invalidSenderReason != null){
-						LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, invalidSenderReason);
-					} else {
-						String encodedHash = decryptData(minTime, lastCommands, sender, largeIntegrityPacket.getEncryptedHash(), packetGroupDateMillis);
-						if (encodedHash != null) {
-							byte[] decodedHash = null;
-							try {
-								decodedHash = Base64Variants.getDefaultVariant().decode(encodedHash);
-							} catch (IllegalArgumentException e) {
-								LOGGER.error("Not base64 data!", e);
-							}
-							if (decodedHash != null) {
-								String payload = largeIntegrityPacket.getPayload();
-								byte[] payloadHash = HashUtil.hash(payload);
-								if (Arrays.equals(decodedHash, payloadHash)) {
-									LOGGER.debug("Successfully compared hashes!");
-									handleMessage(payload, sender);
-								} else {
-									LOGGER.warn("Unsuccessfully compared hashes! The data may have been tampered with!");
+					if(packetType == SecurityPacketType.INTEGRITY_PACKET){
+						IntegrityPacket integrityPacket = (IntegrityPacket) packet;
+						if(invalidSenderReason != null){
+							LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, invalidSenderReason);
+						} else {
+							String data = decryptData(minTime, lastCommands, sender, integrityPacket.getEncryptedData(), packetGroupDateMillis);
+							handleMessage(data, sender);
+						}
+					} else if (packetType == SecurityPacketType.LARGE_INTEGRITY_PACKET) {
+						LargeIntegrityPacket largeIntegrityPacket = (LargeIntegrityPacket) packet;
+						if(invalidSenderReason != null){
+							LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, invalidSenderReason);
+						} else {
+							String encodedHash = decryptData(minTime, lastCommands, sender, largeIntegrityPacket.getEncryptedHash(), packetGroupDateMillis);
+							if (encodedHash != null) {
+								byte[] decodedHash = null;
+								try {
+									decodedHash = Base64Variants.getDefaultVariant().decode(encodedHash);
+								} catch (IllegalArgumentException e) {
+									LOGGER.error("Not base64 data!", e);
+								}
+								if (decodedHash != null) {
+									String payload = largeIntegrityPacket.getPayload();
+									byte[] payloadHash = HashUtil.hash(payload);
+									if (Arrays.equals(decodedHash, payloadHash)) {
+										LOGGER.debug("Successfully compared hashes!");
+										handleMessage(payload, sender);
+									} else {
+										LOGGER.warn("Unsuccessfully compared hashes! The data may have been tampered with!");
+									}
 								}
 							}
 						}
@@ -147,8 +155,6 @@ public class SecurityPacketReceiver {
 		try {
 			data = Decrypt.decrypt(cipher, publicKeyLookUp, sender, base64EncodedData);
 		} catch (DecryptException e) {
-			// TODO This spams the summary log, which we don't want.
-			//   Maybe we need to use VersionedPacket<T>s to make sure that we don't process packets twice, even if (especially if) they were not authenticated properly
 			LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Someone tried to impersonate " + sender + "! Or that person has a new public key.", e);
 			return null;
 		} catch (InvalidKeyException e) {
@@ -278,6 +284,7 @@ public class SecurityPacketReceiver {
 	}
 	public static class State {
 		private final Map<String, Long> senderLastCommandMap = new HashMap<>();
+		private final Set<StoredIdentifier> processed = new HashSet<>();
 
 	}
 }

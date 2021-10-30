@@ -46,6 +46,8 @@ and is not giving full available power.
 * Use https://github.com/tbroyer/gradle-errorprone-plugin
 * Metadata packet that describes the solar panels connected to a charge controller between a period of time
 * Program that uploads malicious data to solarthing_open to better understand how SolarThing reacts to malicious data
+* Make validation function that prevents people from adding packets to CouchDB that are super far in the future.
+  * Especially solarthing_open
   
 ### Completed
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
