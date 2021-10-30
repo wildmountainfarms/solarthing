@@ -15,10 +15,14 @@ apply plugin: 'java'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
 version = '0.0.1-SNAPSHOT'
 //project.ext.mainClass = "me.retrodaredevil.solarthing.graphql.SolarThingApplication" // This isn't doing anything?
 
 compileJava {
+    // TODO We don't need the -parameters compiler argument (I don't think), plus now that Java 11 is required for GraphQL, what does it do/is it needed if we did need it?
     options.compilerArgs << '-parameters' // we don't want to use have to put @GraphQLArgument everywhere
 }
 
