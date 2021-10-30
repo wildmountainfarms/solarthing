@@ -11,13 +11,27 @@ import me.retrodaredevil.okhttp3.OkHttpProperties;
 import me.retrodaredevil.okhttp3.OkHttpUtil;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 
 @UtilityClass
 public final class CouchDbUtil {
 	private CouchDbUtil() { throw new UnsupportedOperationException(); }
-
 	public static CouchDbInstance createInstance(CouchProperties couchProperties, OkHttpProperties okHttpProperties) {
+		return createInstance(couchProperties, okHttpProperties, false);
+	}
+
+	public static CouchDbInstance createInstance(CouchProperties couchProperties, OkHttpProperties okHttpProperties, boolean debug) {
 		OkHttpClient.Builder builder = OkHttpUtil.createBuilder(okHttpProperties);
+		if (debug) {
+			builder.addInterceptor(new HttpLoggingInterceptor(System.out::println).setLevel(HttpLoggingInterceptor.Level.BODY));
+		}
+		return createInstance(
+				couchProperties,
+				builder
+						.build()
+		);
+	}
+	public static CouchDbInstance createInstance(CouchProperties couchProperties, OkHttpClient okHttpClient) {
 
 		final OkHttpAuthHandler authHandler;
 		String username = couchProperties.getUsername();
@@ -39,9 +53,7 @@ public final class CouchDbUtil {
 		}
 
 		return new OkHttpCouchDbInstance(
-				builder
-//						.addInterceptor(new HttpLoggingInterceptor(System.out::println).setLevel(HttpLoggingInterceptor.Level.BODY))
-						.build(),
+				okHttpClient,
 				couchProperties.getHttpUrl(),
 				authHandler
 		);
