@@ -27,6 +27,8 @@ you should see either one (on Windows/Mac) or two (on Linux) external drives sho
 named "boot". In this folder, there should be a bunch of files. Now, create a file named `ssh` with NO file extension. This
 enables SSH. If you are using Ethernet, you're done. If you're using WiFi, take a look at the next section.
 
+RetroPie has great documentation for this sort of thing: https://retropie.org.uk/docs/SSH/
+
 #### Connecting to WiFi (headless)
 If you want to install a Python program to help you with this, go [here](https://github.com/retrodaredevil/headless-setup).
 Otherwise, follow these manual instructions. On your drive, create a file named `wpa_supplicant.conf` and put this in it:
