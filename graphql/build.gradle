@@ -2,7 +2,7 @@ buildscript {
     ext {
         // https://github.com/spring-projects/spring-boot/wiki#release-notes
         // https://github.com/spring-projects/spring-boot/releases
-        springBootVersion = '2.5.1'
+        springBootVersion = '2.5.5'
     }
     repositories {
         mavenCentral()
@@ -37,6 +37,11 @@ dependencies {
 
     // Although we don't need this dependency, we need to bump the version so that couchdb has the version it needs
     api group: 'com.squareup.okhttp3', name: 'okhttp', version: "$okhttpVersion"
+
+    // This is necessary to bump the jackson version to whatever SolarThing is using
+    api "com.fasterxml.jackson.core:jackson-core:$jacksonVersion"
+    api "com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion"
+    api "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
 }
 jar {
     enabled = true
