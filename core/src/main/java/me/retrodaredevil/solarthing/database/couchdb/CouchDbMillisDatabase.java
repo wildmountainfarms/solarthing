@@ -13,6 +13,7 @@ import me.retrodaredevil.couchdbjava.json.jackson.CouchDbJacksonUtil;
 import me.retrodaredevil.couchdbjava.response.DocumentData;
 import me.retrodaredevil.couchdbjava.response.DocumentResponse;
 import me.retrodaredevil.couchdbjava.response.ViewResponse;
+import me.retrodaredevil.solarthing.couchdb.SolarThingCouchDb;
 import me.retrodaredevil.solarthing.database.MillisDatabase;
 import me.retrodaredevil.solarthing.database.MillisQuery;
 import me.retrodaredevil.solarthing.database.UpdateToken;
@@ -69,14 +70,14 @@ public class CouchDbMillisDatabase implements MillisDatabase {
 	public List<StoredPacketGroup> query(MillisQuery query) throws SolarThingDatabaseException {
 		final ViewResponse response;
 		try {
-			response = database.queryView("packets", "millis", CouchDbQueryUtil.createParamsFrom(query));
+			response = database.queryView(SolarThingCouchDb.createMillisNullView(CouchDbQueryUtil.createMillisNullParams(query)));
 		} catch (CouchDbException e) {
 			throw new SolarThingDatabaseException(e);
 		}
 		List<ViewResponse.DocumentEntry> rows = response.getRows();
 		List<StoredPacketGroup> r = new ArrayList<>(rows.size());
 		for (ViewResponse.DocumentEntry row : rows) {
-			JsonData jsonData = row.getValue();
+			JsonData jsonData = row.getDoc(); // When using includeDocs=true, we want to use the doc, not its value (which is null with millisNull)
 			StoredPacketGroup storedPacketGroup = jsonDataToStoredPacketGroup(jsonData).getPacket();
 			r.add(storedPacketGroup);
 		}

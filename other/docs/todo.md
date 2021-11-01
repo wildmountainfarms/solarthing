@@ -52,6 +52,10 @@ and is not giving full available power.
 the creation of an ActionNode. This would require the creation of a dummy ActionEnvironment, but could be useful for checking the validity
 of different configurations, where some configurations are designed for the automation program and others are designed to be
 run in the request program, each with different environments.
+* Integration tests
+* Be able to reference actions defined in other files. We have the "declaration" action, but that only allows
+the definition of callable actions in the same file.
+* Add something in couchdb-setup to allow for easy setup of replication between CouchDB instances
   
 ### Completed
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
@@ -102,6 +106,7 @@ easy displaying in Grafana
 * Have a CouchDB view that emits null so that the millis view can be more efficient and people can use include_docs=true
   * https://www.dimagi.com/blog/what-every-developer-should-know-about-couchdb/
 * Separate ActionNode code into its own action-node module
+* Use `millisNull` view instead of `millis` view
 
 ### Look into
 * Look into supporting Elasticsearch, MongoDB, Graphite

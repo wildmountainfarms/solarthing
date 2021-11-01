@@ -7,8 +7,9 @@ import me.retrodaredevil.solarthing.database.MillisQuery;
 public final class CouchDbQueryUtil {
 	private CouchDbQueryUtil() { throw new UnsupportedOperationException(); }
 
-	public static ViewQueryParams createParamsFrom(MillisQuery millisQuery) {
-		ViewQueryParamsBuilder builder = new ViewQueryParamsBuilder();
+	public static ViewQueryParams createMillisNullParams(MillisQuery millisQuery) {
+		ViewQueryParamsBuilder builder = new ViewQueryParamsBuilder()
+				.includeDocs(true);
 		if (millisQuery.getStartKey() != null) {
 			builder.startKey(millisQuery.getStartKey());
 		}
