@@ -1,0 +1,10 @@
+version: '3.7'
+
+services:
+  couchdb:
+    image: 'apache/couchdb:3'
+    environment: # first time username and password values
+      - 'COUCHDB_USER=admin'
+      - 'COUCHDB_PASSWORD=password'
+    ports:
+      - '5984:5984'

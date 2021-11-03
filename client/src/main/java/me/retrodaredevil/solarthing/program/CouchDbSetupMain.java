@@ -19,6 +19,8 @@ import me.retrodaredevil.couchdbjava.response.DocumentData;
 import me.retrodaredevil.couchdbjava.security.DatabaseSecurity;
 import me.retrodaredevil.couchdbjava.security.SecurityGroup;
 import me.retrodaredevil.solarthing.SolarThingDatabaseType;
+import me.retrodaredevil.solarthing.annotations.NotNull;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 
@@ -26,24 +28,25 @@ import java.io.PrintStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 public class CouchDbSetupMain {
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
 
 	private final CouchDbInstance instance;
-	private final Scanner scanner;
 	private final PrintStream out;
+	private final Prompt prompt;
 
-	public CouchDbSetupMain(CouchDbInstance instance, Scanner scanner, PrintStream out) {
+	public CouchDbSetupMain(CouchDbInstance instance, PrintStream out, Prompt prompt) {
 		this.instance = instance;
-		this.scanner = scanner;
 		this.out = out;
+		this.prompt = prompt;
 	}
 	public static CouchDbSetupMain createFrom(CouchDbDatabaseSettings settings) {
 		CouchDbInstance instance = CouchDbUtil.createInstance(settings.getCouchProperties(), settings.getOkHttpProperties());
 		Scanner scanner = new Scanner(System.in);
 		PrintStream out = System.out;
-		return new CouchDbSetupMain(instance, scanner, out);
+		return new CouchDbSetupMain(instance, out, new ScannerPrompt(scanner));
 	}
 
 	private void createDatabase(String database) throws CouchDbException {
@@ -54,7 +57,7 @@ public class CouchDbSetupMain {
 		}
 	}
 
-	private void createUserIfNotExists(String username) throws CouchDbException {
+	private void createUserIfNotExists(String username, SolarThingDatabaseType.UserType userType) throws CouchDbException {
 		CouchDbDatabase usersDatabase = instance.getUsersDatabase();
 		String documentId = "org.couchdb.user:" + username;
 
@@ -77,7 +80,7 @@ public class CouchDbSetupMain {
 			out.println("User: " + username + " exists! Continuing.");
 		} else {
 			out.println("Please enter a password for '" + username + "'.");
-			String password = scanner.nextLine();
+			String password = prompt.promptUserPassword(userType);
 			final JsonData jsonData;
 			try {
 				jsonData = new StringJsonData(MAPPER.writeValueAsString(new UserEntry(username, password)));
@@ -92,7 +95,7 @@ public class CouchDbSetupMain {
 
 	public int doCouchDbSetupMain() throws CouchDbException {
 		out.println("You will now setup your CouchDB instance! Some databases will be automatically created (enter)");
-		scanner.nextLine();
+		prompt.promptContinue();
 
 		for (SolarThingDatabaseType databaseType : SolarThingDatabaseType.values()) {
 			createDatabase(databaseType.getName());
@@ -102,30 +105,28 @@ public class CouchDbSetupMain {
 		out.println("Now views and security will be configured for each database. Please enter the name of the user to be added as an admin to each database.");
 		out.println("This user is commonly named 'uploader'. (Leave blank to not configure)");
 		out.print("Name of user: ");
-		String uploaderUser = scanner.nextLine();
-		if (uploaderUser.isEmpty()) {
-			uploaderUser = null;
+		String uploaderUser = prompt.promptUserName(SolarThingDatabaseType.UserType.UPLOADER);
+		if (uploaderUser == null) {
 			out.println("No user will be added as an admin, but members will still be cleared. (Enter to confirm)");
 		} else {
 			out.println("User: " + uploaderUser + " will be used. (Enter to confirm)");
 		}
-		scanner.nextLine();
+		prompt.promptContinue();
 		if (uploaderUser != null) {
-			createUserIfNotExists(uploaderUser);
+			createUserIfNotExists(uploaderUser, SolarThingDatabaseType.UserType.UPLOADER);
 		}
 
 		out.println("You can also enter the name of the user to manage the solarthing_cache and solarthing_alter databases.");
 		out.println("This user is commonly named 'manager'. (Leave blank to not configure)" + (uploaderUser == null ? "" : " (Use '" + uploaderUser + "' to use same user to manage the cache database)"));
-		String managerUser = scanner.nextLine();
-		if (managerUser.isEmpty()) {
-			managerUser = null;
+		String managerUser = prompt.promptUserName(SolarThingDatabaseType.UserType.MANAGER);
+		if (managerUser == null) {
 			out.println("No user will be configured to manage the solarthing_cache and solarthing_alter database. (Enter to confirm)");
 		} else {
 			out.println("User: " + managerUser + " will be used to manage solarthing_cache and solarthing_alter. (Enter to confirm)");
 		}
-		scanner.nextLine();
+		prompt.promptContinue();
 		if (managerUser != null && !managerUser.equals(uploaderUser)) {
-			createUserIfNotExists(managerUser);
+			createUserIfNotExists(managerUser, SolarThingDatabaseType.UserType.MANAGER);
 		}
 
 		out.println();
@@ -163,14 +164,13 @@ public class CouchDbSetupMain {
 			}
 			out.println("Configuring security for database " + databaseType.getName());
 			DatabaseSecurity oldSecurity = database.getSecurity();
-			SecurityGroup oldAdmins = oldSecurity.getAdminsOrBlank();
-			final SecurityGroup newAdmins;
-			if (databaseType.isReadonlyByAll()) {
-				newAdmins = oldAdmins; // only true admins can edit stuff in CLOSED database
-			} else if (databaseType == SolarThingDatabaseType.CACHE || databaseType == SolarThingDatabaseType.ALTER) {
-				newAdmins = oldAdmins.withName(managerUser);
-			} else {
-				newAdmins = oldAdmins.withName(uploaderUser);
+			SecurityGroup newAdmins = oldSecurity.getAdminsOrBlank(); // First initialize newAdmins to the old admins
+			Set<SolarThingDatabaseType.UserType> usersWithWritePermission = databaseType.getUsersWithWritePermission();
+			if (usersWithWritePermission.contains(SolarThingDatabaseType.UserType.MANAGER)) {
+				newAdmins = newAdmins.withName(managerUser);
+			}
+			if (usersWithWritePermission.contains(SolarThingDatabaseType.UserType.UPLOADER)) {
+				newAdmins = newAdmins.withName(uploaderUser);
 			}
 			database.setSecurity(new DatabaseSecurity(
 					newAdmins, // update the list of admins
@@ -201,6 +201,38 @@ public class CouchDbSetupMain {
 		private UserEntry(String name, String password) {
 			this.name = name;
 			this.password = password;
+		}
+	}
+	public interface Prompt {
+		void promptContinue();
+		@Nullable String promptUserName(SolarThingDatabaseType.UserType userType);
+		@NotNull String promptUserPassword(SolarThingDatabaseType.UserType userType);
+	}
+	public static class ScannerPrompt implements Prompt {
+
+		private final Scanner scanner;
+
+		public ScannerPrompt(Scanner scanner) {
+			this.scanner = scanner;
+		}
+
+		@Override
+		public void promptContinue() {
+			scanner.nextLine();
+		}
+
+		@Override
+		public @Nullable String promptUserName(SolarThingDatabaseType.UserType userType) {
+			String r = scanner.nextLine();
+			if (r.isEmpty()) {
+				return null;
+			}
+			return r;
+		}
+
+		@Override
+		public @NotNull String promptUserPassword(SolarThingDatabaseType.UserType userType) {
+			return scanner.nextLine();
 		}
 	}
 }

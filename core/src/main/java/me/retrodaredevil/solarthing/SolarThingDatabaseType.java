@@ -1,5 +1,10 @@
 package me.retrodaredevil.solarthing;
 
+import me.retrodaredevil.solarthing.annotations.NotNull;
+
+import java.util.Collections;
+import java.util.Set;
+
 import static me.retrodaredevil.solarthing.SolarThingConstants.*;
 
 public enum SolarThingDatabaseType {
@@ -83,6 +88,15 @@ public enum SolarThingDatabaseType {
 	public boolean isReadonlyByAll() {
 		return this == CLOSED;
 	}
+	public @NotNull Set<UserType> getUsersWithWritePermission() {
+		if (this == CLOSED) { // This database is readonly by all
+			return Collections.emptySet();
+		}
+		if (this == SolarThingDatabaseType.CACHE || this == SolarThingDatabaseType.ALTER) {
+			return Collections.singleton(UserType.MANAGER);
+		}
+		return Collections.singleton(UserType.UPLOADER);
+	}
 	public boolean isPublic() {
 		// all except CACHE need to be public because for all the other databases, we want to allow anyone to read them.
 		// status, event -> anyone can read data
@@ -94,5 +108,19 @@ public enum SolarThingDatabaseType {
 
 	public String getName() {
 		return name;
+	}
+
+	public enum UserType {
+		UPLOADER("uploader"),
+		MANAGER("manager"),
+		;
+		private final String recommendedName;
+		UserType(String recommendedName) {
+			this.recommendedName = recommendedName;
+		}
+
+		public String getRecommendedName() {
+			return recommendedName;
+		}
 	}
 }
