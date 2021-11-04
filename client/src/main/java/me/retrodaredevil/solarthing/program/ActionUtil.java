@@ -6,6 +6,7 @@ import me.retrodaredevil.solarthing.actions.LogActionNode;
 import me.retrodaredevil.solarthing.actions.RequireFullOutputActionNode;
 import me.retrodaredevil.solarthing.actions.RequiredIdentifierActionNode;
 import me.retrodaredevil.solarthing.actions.chatbot.WrappedSlackChatBotActionNode;
+import me.retrodaredevil.solarthing.actions.command.FlagActionNode;
 import me.retrodaredevil.solarthing.actions.command.WrappedAlterManagerActionNode;
 import me.retrodaredevil.solarthing.actions.command.ExecutingCommandFeedbackActionNode;
 import me.retrodaredevil.solarthing.actions.command.SendCommandActionNode;
@@ -60,6 +61,7 @@ public final class ActionUtil {
 				WrappedSlackChatBotActionNode.class,
 
 				ExecutingCommandFeedbackActionNode.class,
+				FlagActionNode.class,
 
 				WrappedAlterManagerActionNode.class
 		);

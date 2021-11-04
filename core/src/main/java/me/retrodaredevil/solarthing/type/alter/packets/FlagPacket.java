@@ -12,6 +12,11 @@ import me.retrodaredevil.solarthing.type.alter.flag.FlagData;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Represents data for a flag stored in the alter database. A flag only has a name, and data associated with it to
+ * denote when the flag is active. Flags that will be inactive for the rest of time should be removed, but they may not be removed
+ * immediately, so you should always check {@link me.retrodaredevil.solarthing.type.alter.flag.ActivePeriod#isActive(long)} before assuming a flag is active
+ */
 @JsonTypeName("FLAG")
 @JsonExplicit
 public class FlagPacket implements AlterPacket {

@@ -1,0 +1,47 @@
+{
+  "type": "declaration",
+  "main": {
+    "type": "queue",
+    "actions": [
+      {
+        "type": "race",
+        "racers": [
+          [{ "type": "lock", "name": "auto_generator_shut_off"}, { "type": "call", "name": "check"}],
+          [{ "type": "pass" }, { "type": "log", "message": "Something else had a lock on auto_generator_shut_off"}]
+        ]
+      },
+      { "type": "log", "message": "Unlocking auto_generator_shut_off...", "debug": true},
+      { "type": "unlock", "name": "check_auto_generator_shut_off" }
+    ]
+  },
+  "check": {
+    "type": "race",
+    "racers": [
+      [{ "type": "fxoperational", "mode": "silent"}, { "type": "call", "name": "generator_off_if_enabled"}],
+      [{ "type": "fxoperational", "mode": "silent", "not": true}, { "type": "pass" }],
+      [{ "type": "pass" }, { "type": "log", "message": "There must be no FX devices!"}]
+    ]
+  },
+  "generator_off_if_enabled": {
+    "type": "race",
+    "racers": [
+      [{ "type": "flag", "name": "disable_auto_generator_shut_off", "not": true}, { "type": "call", "name": "generator_off_sequence" }],
+      [{ "type": "flag", "name": "disable_auto_generator_shut_off" }, { "type": "log", "message": "Auto generator shut off is currently disabled", "debug": true }],
+      [{ "type": "pass" }, { "type": "log", "message": "Could not get flag status"}]
+    ]
+  },
+  "generator_off_sequence": {
+    "type": "queue",
+    "actions": [
+      { "type": "call", "name": "generator_off_command"},
+      { "type": "wait", "duration": "PT30S"}
+    ]
+  },
+  "generator_off_command": {
+    "type": "sendcommand",
+    "directory": ".data/keys",
+    "targets": [1],
+    "command": "GEN OFF",
+    "sender": "nasplex"
+  }
+}
