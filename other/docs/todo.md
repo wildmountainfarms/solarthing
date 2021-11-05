@@ -55,6 +55,12 @@ run in the request program, each with different environments.
 * Be able to reference actions defined in other files. We have the "declaration" action, but that only allows
 the definition of callable actions in the same file.
 * Add something in couchdb-setup to allow for easy setup of replication between CouchDB instances
+* Add an execution reason that will be deserialized from unknown execution reasons
+  * This execution reason cannot be serialized
+  * We need this because we will likely add more ExecutionReasons in the future and want to make sure that clients
+  can deserialize these ExecutionReasons no matter what -- execution reasons are just metadata
+* Make an action similar to the command execution feedback action that can be used in the automation program
+for basic logging.
   
 ### Completed
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)

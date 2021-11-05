@@ -24,9 +24,14 @@ import me.retrodaredevil.solarthing.reason.OpenSourceExecutionReason;
 import me.retrodaredevil.solarthing.type.alter.AlterPacket;
 import me.retrodaredevil.solarthing.type.alter.ImmutableStoredAlterPacket;
 import me.retrodaredevil.solarthing.type.alter.StoredAlterPacket;
+import me.retrodaredevil.solarthing.type.alter.flag.ActivePeriod;
+import me.retrodaredevil.solarthing.type.alter.flag.FlagData;
+import me.retrodaredevil.solarthing.type.alter.flag.TimeRangeActivePeriod;
+import me.retrodaredevil.solarthing.type.alter.packets.FlagPacket;
 import me.retrodaredevil.solarthing.type.alter.packets.ScheduledCommandData;
 import me.retrodaredevil.solarthing.type.alter.packets.ScheduledCommandPacket;
 import me.retrodaredevil.solarthing.type.open.OpenSource;
+import me.retrodaredevil.solarthing.util.TimeRange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,6 +59,10 @@ public class AlterManagerAction extends SimpleAction {
 			throw new RuntimeException(e);
 		}
 	}
+	/*
+	I imagine this class is going to get pretty big. A refactor in the future is probably something that will be needed.
+	For now, we will happily add code to this class until we decide something needs to change.
+	 */
 
 	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
@@ -129,6 +138,26 @@ public class AlterManagerAction extends SimpleAction {
 							LOGGER.warn("Not going to send a command scheduled for more than 5 minutes ago! data: " + data);
 						} else {
 							doSendCommand(versionedPacket, scheduledCommandPacket);
+						}
+					}
+				} else if (packet instanceof FlagPacket) {
+					FlagPacket flagPacket = (FlagPacket) packet;
+					FlagData data = flagPacket.getFlagData();
+					ActivePeriod activePeriod = data.getActivePeriod();
+					if (activePeriod instanceof TimeRangeActivePeriod) { // We only try to "manage" flags that use this type of ActivePeriod
+						TimeRangeActivePeriod period = (TimeRangeActivePeriod) activePeriod;
+						TimeRange timeRange = period.getTimeRange();
+						Instant endTime = timeRange.getEndTime();
+						if (endTime != null && endTime.compareTo(now) < 0) {
+							// If there is an end time, and it is in the past, then we should remove the flag
+							executorService.execute(() -> {
+								try {
+									database.getAlterDatabase().delete(versionedPacket);
+								} catch (SolarThingDatabaseException e) {
+									LOGGER.error("Could not delete a FlagPacket with an expired time", e);
+									// If we cannot delete it, no need to try again, it'll still be here next time around
+								}
+							});
 						}
 					}
 				}

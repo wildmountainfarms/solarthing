@@ -24,7 +24,7 @@ import static java.util.Objects.requireNonNull;
  */
 @JsonTypeName("FLAG")
 @JsonExplicit
-public class FlagPacket implements AlterPacket {
+public final class FlagPacket implements AlterPacket {
 	private final FlagData flagData;
 	private final ExecutionReason executionReason;
 
