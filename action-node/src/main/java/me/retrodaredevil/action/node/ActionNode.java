@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.node.convenient.SingleActionNode;
 import me.retrodaredevil.action.node.convenient.TimeoutActionNode;
+import me.retrodaredevil.action.node.convenient.WithLockActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 
 @JsonSubTypes({
@@ -13,12 +14,14 @@ import me.retrodaredevil.action.node.environment.ActionEnvironment;
 		@JsonSubTypes.Type(WaitIsoActionNode.class),
 		@JsonSubTypes.Type(CallActionNode.class),
 		@JsonSubTypes.Type(PassActionNode.class),
+		@JsonSubTypes.Type(ForeverActionNode.class),
 		@JsonSubTypes.Type(LockActionNode.class),
 		@JsonSubTypes.Type(UnlockActionNode.class),
 		@JsonSubTypes.Type(DeclarationActionNode.class),
 		@JsonSubTypes.Type(RaceActionNode.class),
 		@JsonSubTypes.Type(TimeoutActionNode.class),
 		@JsonSubTypes.Type(SingleActionNode.class),
+		@JsonSubTypes.Type(WithLockActionNode.class),
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
 public interface ActionNode {

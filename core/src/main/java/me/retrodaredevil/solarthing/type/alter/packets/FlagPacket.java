@@ -15,7 +15,12 @@ import static java.util.Objects.requireNonNull;
 /**
  * Represents data for a flag stored in the alter database. A flag only has a name, and data associated with it to
  * denote when the flag is active. Flags that will be inactive for the rest of time should be removed, but they may not be removed
- * immediately, so you should always check {@link me.retrodaredevil.solarthing.type.alter.flag.ActivePeriod#isActive(long)} before assuming a flag is active
+ * immediately, so you should always check {@link me.retrodaredevil.solarthing.type.alter.flag.ActivePeriod#isActive(long) ActivePeriod.isActive()} before assuming a flag is active
+ * <p>
+ * In the future, it may be beneficial to display some flag packets (e.g. as notifications in solarthing-android). It is likely that
+ * some flags will persist in solarthing_alter as some sort of configuration. Because of this it might be beneficial to know which packets
+ * are volatile. This packet does not have any metadata except for {@link #getExecutionReason()}, which can be used along with flagPacket.{@link #getFlagData() getFlagData()}.{@link FlagData#getActivePeriod() getActivePeriod()}
+ * to determine if this given flag is volatile and worth displaying
  */
 @JsonTypeName("FLAG")
 @JsonExplicit

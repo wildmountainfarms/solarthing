@@ -27,7 +27,7 @@ public class RaceActionNode implements ActionNode {
 		private final ActionNode actionNode;
 
 		@JsonCreator
-		private RaceNode(List<ActionNode> actionNodeList) {
+		public RaceNode(List<ActionNode> actionNodeList) {
 			if (actionNodeList.size() != 2) {
 				throw new IllegalArgumentException("The size of the array must be 2! The first element is the condition, the second is the action");
 			}

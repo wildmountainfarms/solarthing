@@ -6,16 +6,19 @@ import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.Actions;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 
-@JsonTypeName("pass")
-public class PassActionNode implements ActionNode {
-	private static final PassActionNode INSTANCE = new PassActionNode();
+@JsonTypeName("forever")
+public class ForeverActionNode implements ActionNode {
+	private static final ForeverActionNode INSTANCE = new ForeverActionNode();
+
+	private ForeverActionNode() {}
+
 	@JsonCreator
-	public static PassActionNode getInstance() {
+	public static ForeverActionNode getInstance() {
 		return INSTANCE;
 	}
 
 	@Override
 	public Action createAction(ActionEnvironment actionEnvironment) {
-		return Actions.createRunOnce(() -> {});
+		return Actions.createRunForever(() -> {});
 	}
 }
