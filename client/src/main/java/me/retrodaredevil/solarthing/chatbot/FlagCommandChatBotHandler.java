@@ -2,7 +2,6 @@ package me.retrodaredevil.solarthing.chatbot;
 
 import me.retrodaredevil.solarthing.AlterPacketsProvider;
 import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
 import me.retrodaredevil.solarthing.database.VersionedPacket;
 import me.retrodaredevil.solarthing.message.MessageSender;
