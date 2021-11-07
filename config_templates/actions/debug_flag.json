@@ -1,0 +1,8 @@
+{
+  "type": "race",
+  "racers": [
+    [{ "type": "flag", "name": "disable_auto_generator_shut_off", "not": true}, { "type": "log", "message": "The disable flag is NOT set", "debug": true }],
+    [{ "type": "flag", "name": "disable_auto_generator_shut_off" }, { "type": "log", "message": "Auto generator shut off is currently disabled", "debug": true }],
+    [{ "type": "pass" }, { "type": "log", "message": "Could not get flag status"}]
+  ]
+}
