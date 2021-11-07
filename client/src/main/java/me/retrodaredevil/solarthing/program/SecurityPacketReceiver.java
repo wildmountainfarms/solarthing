@@ -9,6 +9,7 @@ import me.retrodaredevil.solarthing.PacketGroupReceiver;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.packets.DocumentedPacket;
 import me.retrodaredevil.solarthing.packets.Packet;
+import me.retrodaredevil.solarthing.packets.collection.DateMillisStoredIdentifier;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
 import me.retrodaredevil.solarthing.packets.collection.StoredIdentifier;
@@ -79,6 +80,7 @@ public class SecurityPacketReceiver {
 		LOGGER.debug("received packets! size: " + packetGroups.size());
 		List<TargetPacketGroup> packets = new ArrayList<>();
 		long minTime = System.currentTimeMillis() - 5 * 60 * 1000; // last 5 minutes allowed
+		state.processed.headSet(new DateMillisStoredIdentifier(minTime), false).clear(); // Remove data that we don't need to look at anymore
 		// We don't have a max time. If someone uploads a packet with a future date millis, then it will get handled immediately, then never again.
 		//   The only downside to this is that if the program restarts, there's the possibility of that command being processed again because it might be picked up by a query.
 		//   We won't worry about that, because we trust authenticated clients to not do that.
@@ -284,7 +286,7 @@ public class SecurityPacketReceiver {
 	}
 	public static class State {
 		private final Map<String, Long> senderLastCommandMap = new HashMap<>();
-		private final Set<StoredIdentifier> processed = new HashSet<>();
+		private final NavigableSet<StoredIdentifier> processed = new TreeSet<>(); // Uses StoredIdentifier's compareTo
 
 	}
 }

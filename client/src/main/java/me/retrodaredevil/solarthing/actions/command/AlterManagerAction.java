@@ -199,6 +199,22 @@ public class AlterManagerAction extends SimpleAction {
 				} catch (IncompatibleUpdateTokenException ex) {
 					LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "For some reason we have an incompatible update token!", ex);
 				}
+			} else if (packet instanceof RequestFlagPacket) {
+				RequestFlagPacket requestFlagPacket = (RequestFlagPacket) packet;
+				// Originally I was going to not upload a FlagPacket if an existing FlagPacket's
+				//   time range fully encapsulated the newly requested one, but that adds some complexity
+				//   that is not needed at the moment
+				FlagData flagData = requestFlagPacket.getFlagData();
+				ExecutionReason executionReason = new OpenSourceExecutionReason(new OpenSource(
+						sender,
+						packetGroup.getDateMillis(),
+						requestFlagPacket,
+						requestFlagPacket.getUniqueString() // this is legacy data and shouldn't be used anywhere, so it doesn't matter what we put here
+				));
+				FlagPacket flagPacket = new FlagPacket(flagData, executionReason);
+				String databaseId = "alter-flag-" + flagData.getFlagName() + "-" + sender + "-" + Math.random();
+				StoredAlterPacket storedAlterPacket = new ImmutableStoredAlterPacket(databaseId, now, flagPacket, sourceId);
+				storedAlterPacketsToUpload.add(storedAlterPacket);
 			}
 		}
 		if (storedAlterPacketsToUpload.isEmpty() && deleteAlterPackets.isEmpty()) {

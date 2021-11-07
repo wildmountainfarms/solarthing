@@ -13,4 +13,10 @@ public interface ActivePeriod extends TypedDocumentedPacket<ActivePeriodType>, U
 
 	boolean isActive(long dateMillis);
 	boolean isActive(Instant instant);
+
+	/**
+	 * @param activePeriod The other active period to check to see if this fully encapsulates
+	 * @return true if {@code this.}{@link #isActive(long)} returns true for every timestamp that {@code activePeriod.}{@link #isActive(long)} returns true
+	 */
+	boolean encapsulatesAllOf(ActivePeriod activePeriod);
 }

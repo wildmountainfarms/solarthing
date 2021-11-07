@@ -55,6 +55,15 @@ public class TimeRangeActivePeriod implements ActivePeriod {
 	}
 
 	@Override
+	public boolean encapsulatesAllOf(ActivePeriod activePeriod) {
+		if (activePeriod instanceof TimeRangeActivePeriod) {
+			TimeRange other = ((TimeRangeActivePeriod) activePeriod).timeRange;
+			return timeRange.fullyContains(other);
+		}
+		return false;
+	}
+
+	@Override
 	public @NotNull String getUniqueString() {
 		return "TimeRangeActivePeriod(" +
 				"timeRange=" + timeRange +

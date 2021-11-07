@@ -10,6 +10,10 @@ import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Represents a flag's name and the period it is active during. A flag's name should not have whitespace in it, and should consist of ascii characters.
+ * Although there is no strict enforcement of what the flag's name should be, it is recommended to make it something that could be a valid variable name.
+ */
 @JsonExplicit
 public final class FlagData implements UniqueStringRepresentation {
 	private final String flagName;
