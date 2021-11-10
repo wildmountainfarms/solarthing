@@ -71,7 +71,7 @@ public class FlagCommandChatBotHandler implements ChatBotHandler {
 					.map(packet -> ((FlagPacket) packet).getFlagData())
 					.collect(Collectors.toList());
 			if (flagDataList.isEmpty()) {
-				messageSender.sendMessage("No flag data");
+				messageSender.sendMessage("There are no flags set.");
 			} else {
 				messageSender.sendMessage(
 						"Flags:\n" + flagDataList.stream().map(flagData -> flagData.getFlagName() + " " + flagData.getActivePeriod())
@@ -110,8 +110,6 @@ public class FlagCommandChatBotHandler implements ChatBotHandler {
 		PacketCollection packetCollection = creator.create(now);
 
 		// TODO We should check if the flag being requested is already active.
-		// If the flag is already active, the alter manager will not upload a new FlagPacket unless
-		//   it expands the ActivePeriod at all
 		boolean success = false;
 		try {
 			database.getOpenDatabase().uploadPacketCollection(packetCollection, null);

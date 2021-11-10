@@ -33,6 +33,9 @@ don't look like they're constantly disconnecting and reconnecting
   * We have a great setup for versioned SolarThing jar files, because running instances will still use
   whatever jar solarthing.jar pointed them to originally, but this isn't the case when we actually change the jar it is pointing to
 * Backend Grafana plugin to allow commands to be sent
+  * Might not actually need a backend plugin if we can just use the proxy instead
+  * https://github.com/grafana/grafana/issues/12556
+  * https://grafana.com/docs/grafana/latest/developers/plugins/add-authentication-for-data-source-plugins/
 * GraphQL queries for getting the angle of the sun in the sky (current and highest point in the day)
   * https://ipgeolocation.io/documentation/astronomy-api.html - unintuitive Java SDK with bad documentation
   * https://github.com/caarmen/SunriseSunset - gross requirement to use java.util.Calendar
@@ -61,6 +64,10 @@ the definition of callable actions in the same file.
   can deserialize these ExecutionReasons no matter what -- execution reasons are just metadata
 * Make an action similar to the command execution feedback action that can be used in the automation program
 for basic logging.
+* Have the Slack chat bot react to messages that were processed, successfully requested,
+and also react to messages that have been fully processed (request successfully performed).
+  * This will require some sort of scheduling logic that makes SolarThing check to see if something was completed
+  e.g.: an alter packet was successfully deleted
   
 ### Completed
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
