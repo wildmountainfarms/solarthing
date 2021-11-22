@@ -1,0 +1,15 @@
+{
+  "keys": [
+    "0f5c1855-3a51-4fa9-b810-1d2b604fb154"
+  ],
+  "commands": {
+    "GEN ON": {
+      "action_file": "config/actions/send_generator_on.json",
+      "source": "default"
+    },
+    "GEN OFF": {
+      "action_file": "config/actions/send_generator_off.json",
+      "source": "default"
+    }
+  }
+}

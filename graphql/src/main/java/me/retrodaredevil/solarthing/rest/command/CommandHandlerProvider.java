@@ -1,27 +1,28 @@
 package me.retrodaredevil.solarthing.rest.command;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.couchdb.CouchDbUtil;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
 import me.retrodaredevil.solarthing.database.couchdb.CouchDbSolarThingDatabase;
+import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
+import java.io.IOException;
 import java.time.ZoneId;
 import java.util.Collections;
-import java.util.Map;
 
 @Component
 public class CommandHandlerProvider {
+	private static final ObjectMapper SIMPLE_OBJECT_MAPPER = JacksonUtil.defaultMapper();
 
-	@Value("${solarthing.config.command.api_key:#{null}}")
-	private @Nullable String commandApiKey;
-	@Value("#{${solarthing.config.command.commands}}") // We have to have it like this in order to be able to define maps of data
-	private @Nullable Map<String, File> commandNameToActionFileMap;
+	@Value("${solarthing.config.command_file:#{null}}")
+	private @Nullable File commandConfigurationFile;
 
 	private final SolarThingDatabase solarThingDatabase;
 
@@ -37,9 +38,20 @@ public class CommandHandlerProvider {
 
 	@PostConstruct
 	public void init() {
+		final RestCommandConfig config;
+		if (commandConfigurationFile == null) {
+			config = new RestCommandConfig(Collections.emptyList(), Collections.emptyMap());
+			System.out.println("No command configuration file. No one will be authorized to send commands.");
+		} else {
+			try {
+				config = SIMPLE_OBJECT_MAPPER.readValue(commandConfigurationFile, RestCommandConfig.class);
+			} catch (IOException e) {
+				throw new RuntimeException("Could not read command configuration file", e);
+			}
+			System.out.println("Configured to accept commands from authorized API keys.");
+		}
 		commandHandler = new CommandHandler(
-				commandApiKey == null ? Collections.emptySet() : Collections.singleton(commandApiKey),
-				commandNameToActionFileMap,
+				config,
 				solarThingDatabase,
 				ZoneId.systemDefault() // graphql program doesn't have a way to configure time zone *yet*
 		);

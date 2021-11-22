@@ -18,6 +18,10 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 @RequestMapping("/command")
 public class CommandController {
+	/*
+	For testing this, go to this URL:
+	http://localhost:8080/command/run?apiKey=0f5c1855-3a51-4fa9-b810-1d2b604fb154&commandName=GEN%20ON
+	 */
 
 	private final CommandHandler commandHandler;
 
@@ -36,16 +40,13 @@ public class CommandController {
 			path = "/run",
 			produces = "application/json"
 	)
-	public CommandRequestResponse runCommand(String apiKey, String commandName, String sourceId) {
+	public CommandRequestResponse runCommand(String apiKey, String commandName) {
 		// Also consider using this way instead of exceptions: https://stackoverflow.com/a/60079942
 		if (apiKey == null) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "apiKey is required!");
 		}
 		if (commandName == null) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "commandName is required!");
-		}
-		if (sourceId == null) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "sourceId is required!");
 		}
 		if (!commandHandler.isAuthorized(apiKey)) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not authorized with the given api key!");
@@ -54,7 +55,7 @@ public class CommandController {
 		if (actionNode == null) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No corresponding command with commandName: " + commandName);
 		}
-		InjectEnvironment injectEnvironment = commandHandler.createInjectEnvironment(sourceId);
+		InjectEnvironment injectEnvironment = commandHandler.createInjectEnvironment(commandName);
 		// We don't know or care what thread this is running on, so we won't have a shared global variable environment.
 		//   We could make a shared global environment a feature of this down the line, but for now let's keep this simple
 		ActionEnvironment actionEnvironment = new ActionEnvironment(new VariableEnvironment(), new VariableEnvironment(), injectEnvironment);

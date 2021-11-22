@@ -22,14 +22,12 @@ import static java.util.Objects.requireNonNull;
 public class CommandHandler {
 	private static final ObjectMapper CONFIG_MAPPER = CommonActionUtil.registerActionNodes(JacksonUtil.defaultMapper());
 
-	private final Set<String> authorizedApiKeys;
-	private final Map<String, File> commandToActionFileMap;
+	private final RestCommandConfig restCommandConfig;
 	private final SolarThingDatabase solarThingDatabase;
 	private final ZoneId zoneId;
 
-	public CommandHandler(Set<String> authorizedApiKeys, Map<String, File> commandToActionFileMap, SolarThingDatabase solarThingDatabase, ZoneId zoneId) {
-		this.authorizedApiKeys = authorizedApiKeys;
-		this.commandToActionFileMap = commandToActionFileMap;
+	public CommandHandler(RestCommandConfig restCommandConfig, SolarThingDatabase solarThingDatabase, ZoneId zoneId) {
+		this.restCommandConfig = restCommandConfig;
 		this.solarThingDatabase = solarThingDatabase;
 		this.zoneId = zoneId;
 	}
@@ -37,24 +35,32 @@ public class CommandHandler {
 
 	public boolean isAuthorized(String apiKey) {
 		requireNonNull(apiKey);
-		return authorizedApiKeys.contains(apiKey);
+		return restCommandConfig.getApiKeys().contains(apiKey);
 	}
 	public @Nullable ActionNode getActionNode(String commandName) {
-		File file = commandToActionFileMap.get(commandName);
-		if (file == null) {
+		RestCommandConfig.Command command = restCommandConfig.getCommandToActionFileMap().get(commandName);
+		if (command == null) {
 			return null;
 		}
 		try {
-			return CONFIG_MAPPER.readValue(file, ActionNode.class);
+			return CONFIG_MAPPER.readValue(command.getActionFile(), ActionNode.class);
 		} catch (IOException e) {
-			throw new RuntimeException("Could not json from file: " + file, e);
+			throw new RuntimeException("Could not json from file: " + command.getActionFile(), e);
 		}
 	}
-	public InjectEnvironment createInjectEnvironment(String sourceId) {
-		return new InjectEnvironment.Builder()
+	public InjectEnvironment createInjectEnvironment(String commandName) {
+		var builder = new InjectEnvironment.Builder()
 				.add(new SolarThingDatabaseEnvironment(solarThingDatabase))
-				.add(new SourceIdEnvironment(sourceId))
 				.add(new TimeZoneEnvironment(zoneId))
-				.build();
+				;
+		RestCommandConfig.Command command = restCommandConfig.getCommandToActionFileMap().get(commandName);
+		if (command == null) {
+			throw new IllegalStateException("You should not be calling createInjectEnvironment if the command doesn't exist for commandName: " + commandName);
+		}
+		String sourceId = command.getSourceId();
+		if (sourceId != null) {
+			builder.add(new SourceIdEnvironment(sourceId));
+		}
+		return builder.build();
 	}
 }
