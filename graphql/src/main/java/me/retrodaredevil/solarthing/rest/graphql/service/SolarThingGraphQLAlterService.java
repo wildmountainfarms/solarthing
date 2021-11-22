@@ -9,6 +9,7 @@ import me.retrodaredevil.solarthing.rest.graphql.SimpleQueryHandler;
 import me.retrodaredevil.solarthing.type.alter.AlterPacket;
 import me.retrodaredevil.solarthing.type.alter.StoredAlterPacket;
 import me.retrodaredevil.solarthing.type.alter.flag.FlagUtil;
+import me.retrodaredevil.solarthing.type.alter.packets.FlagPacket;
 import me.retrodaredevil.solarthing.type.alter.packets.ScheduledCommandPacket;
 
 import java.time.Instant;
@@ -59,10 +60,26 @@ public class SolarThingGraphQLAlterService {
 		}
 
 		@GraphQLQuery
-		public @NotNull List<@NotNull String> activeFlags() {
+		public @NotNull List<@NotNull String> activeFlagStrings() {
 			Instant now = Instant.now();
 			return FlagUtil.filterActivePackets(now, FlagUtil.mapToFlagPackets(storedAlterPacketStream()))
 					.map(flagPacket -> flagPacket.getFlagData().getFlagName())
+					.collect(Collectors.toList());
+		}
+		@GraphQLQuery
+		public @NotNull List<@NotNull FlagPacket> flags(@GraphQLArgument(name = "mustBeActive", defaultValue = "true") boolean mustBeActive) {
+			if (mustBeActive) {
+				Instant now = Instant.now();
+				return FlagUtil.filterActivePackets(now, FlagUtil.mapToFlagPackets(storedAlterPacketStream()))
+						.collect(Collectors.toList());
+			}
+			return FlagUtil.mapToFlagPackets(storedAlterPacketStream())
+					.collect(Collectors.toList());
+		}
+		@GraphQLQuery
+		public @NotNull List<@NotNull FlagPacket> activeFlags(@GraphQLArgument(name = "dateMillis") long dateMillis) {
+			Instant date = Instant.ofEpochMilli(dateMillis);
+			return FlagUtil.filterActivePackets(date, FlagUtil.mapToFlagPackets(storedAlterPacketStream()))
 					.collect(Collectors.toList());
 		}
 	}

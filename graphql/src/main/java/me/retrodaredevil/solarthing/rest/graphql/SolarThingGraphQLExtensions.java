@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.rest.graphql;
 
+import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLContext;
 import io.leangen.graphql.annotations.GraphQLQuery;
 import me.retrodaredevil.solarthing.annotations.NotNull;
@@ -14,6 +15,9 @@ import me.retrodaredevil.solarthing.solar.outback.mx.ChargerMode;
 import me.retrodaredevil.solarthing.solar.outback.mx.event.MXChargerModeChangePacket;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
 import me.retrodaredevil.solarthing.solar.tracer.TracerStatusPacket;
+import me.retrodaredevil.solarthing.type.alter.flag.ActivePeriod;
+
+import java.time.Instant;
 
 public class SolarThingGraphQLExtensions {
 	@GraphQLQuery(name = "batteryTemperatureFahrenheit")
@@ -62,5 +66,13 @@ public class SolarThingGraphQLExtensions {
 	@GraphQLQuery(name = "dataIdString")
 	public @NotNull String getDataIdString(@GraphQLContext DataIdentifiable identifiable) {
 		return "" + identifiable.getDataId();
+	}
+	@GraphQLQuery
+	public @NotNull boolean isActive(@GraphQLContext ActivePeriod activePeriod, @GraphQLArgument(name = "dateMillis") long dateMillis) {
+		return activePeriod.isActive(dateMillis);
+	}
+	@GraphQLQuery
+	public @NotNull boolean isActiveNow(@GraphQLContext ActivePeriod activePeriod) {
+		return activePeriod.isActive(Instant.now());
 	}
 }
