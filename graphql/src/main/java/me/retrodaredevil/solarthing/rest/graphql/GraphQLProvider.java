@@ -106,6 +106,7 @@ public class GraphQLProvider {
 				.withOperationsFromSingleton(new SolarThingGraphQLExtensions())
 				.withOperationsFromSingleton(new SolarThingGraphQLFXService(simpleQueryHandler))
 				.withOperationsFromSingleton(new SolarThingGraphQLSolcastService(solcastConfig, zoneId, cacheController))
+				.withOperationsFromSingleton(new SolarThingGraphQLAlterService(simpleQueryHandler))
 				.withTypeInfoGenerator(new SolarThingTypeInfoGenerator())
 				.withValueMapperFactory(jacksonValueMapperFactory)
 				.withResolverBuilders(resolverBuilder)

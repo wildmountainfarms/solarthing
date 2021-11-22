@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import me.retrodaredevil.couchdbjava.CouchDbDatabase;
 import me.retrodaredevil.couchdbjava.exception.CouchDbException;
+import me.retrodaredevil.couchdbjava.exception.CouchDbNotFoundException;
 import me.retrodaredevil.couchdbjava.exception.CouchDbUpdateConflictException;
 import me.retrodaredevil.couchdbjava.json.JsonData;
 import me.retrodaredevil.couchdbjava.json.StringJsonData;
@@ -17,6 +18,7 @@ import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.database.AlterDatabase;
 import me.retrodaredevil.solarthing.database.UpdateToken;
 import me.retrodaredevil.solarthing.database.VersionedPacket;
+import me.retrodaredevil.solarthing.database.exception.NotFoundSolarThingDatabaseException;
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
 import me.retrodaredevil.solarthing.database.exception.UpdateConflictSolarThingDatabaseException;
 import me.retrodaredevil.solarthing.type.alter.StoredAlterPacket;
@@ -57,6 +59,8 @@ public class CouchDbAlterDatabase implements AlterDatabase {
 		final ViewResponse allDocs;
 		try {
 			allDocs = database.allDocs(new ViewQueryParamsBuilder().includeDocs(true).build());
+		} catch (CouchDbNotFoundException e) {
+			throw new NotFoundSolarThingDatabaseException("Got not found exception", e);
 		} catch (CouchDbException e) {
 			throw new SolarThingDatabaseException("Could not query", e);
 		}
@@ -99,6 +103,8 @@ public class CouchDbAlterDatabase implements AlterDatabase {
 		String revision = revisionUpdateToken.getRevision();
 		try {
 			database.deleteDocument(documentId, revision);
+		} catch (CouchDbNotFoundException e) {
+			throw new NotFoundSolarThingDatabaseException("(Not found) Could not delete documentId: " + documentId + " revision: " + revision, e);
 		} catch (CouchDbException e) {
 			throw new SolarThingDatabaseException("Could not delete documentId: " + documentId + " revision: " + revision, e);
 		}

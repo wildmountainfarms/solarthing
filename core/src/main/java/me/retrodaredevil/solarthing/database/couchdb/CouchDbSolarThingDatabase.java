@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.couchdbjava.CouchDbDatabase;
 import me.retrodaredevil.couchdbjava.CouchDbInstance;
 import me.retrodaredevil.couchdbjava.exception.CouchDbException;
+import me.retrodaredevil.couchdbjava.exception.CouchDbNotFoundException;
 import me.retrodaredevil.couchdbjava.exception.CouchDbNotModifiedException;
 import me.retrodaredevil.couchdbjava.json.JsonData;
 import me.retrodaredevil.couchdbjava.json.jackson.CouchDbJacksonUtil;
@@ -13,6 +14,7 @@ import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.database.exception.IncompatibleUpdateTokenException;
+import me.retrodaredevil.solarthing.database.exception.NotFoundSolarThingDatabaseException;
 import me.retrodaredevil.solarthing.type.closed.authorization.AuthorizationPacket;
 import me.retrodaredevil.solarthing.commands.packets.status.CommandStatusPacket;
 import me.retrodaredevil.solarthing.database.MillisDatabase;
@@ -150,6 +152,8 @@ public class CouchDbSolarThingDatabase implements SolarThingDatabase {
 			return database.getDocumentIfUpdated(name, revision);
 		} catch (CouchDbNotModifiedException e) {
 			return null;
+		} catch (CouchDbNotFoundException e) {
+			throw new NotFoundSolarThingDatabaseException(e);
 		} catch (CouchDbException e) {
 			throw new SolarThingDatabaseException(e);
 		}

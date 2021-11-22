@@ -4,12 +4,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.couchdb.CouchDbUtil;
 import me.retrodaredevil.couchdbjava.CouchDbInstance;
 import me.retrodaredevil.solarthing.SolarThingConstants;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.database.MillisDatabase;
 import me.retrodaredevil.solarthing.database.MillisQueryBuilder;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
+import me.retrodaredevil.solarthing.database.VersionedPacket;
 import me.retrodaredevil.solarthing.database.couchdb.CouchDbSolarThingDatabase;
+import me.retrodaredevil.solarthing.database.exception.NotFoundSolarThingDatabaseException;
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
+import me.retrodaredevil.solarthing.type.alter.StoredAlterPacket;
 import me.retrodaredevil.solarthing.type.closed.meta.DefaultMetaDatabase;
 import me.retrodaredevil.solarthing.type.closed.meta.EmptyMetaDatabase;
 import me.retrodaredevil.solarthing.type.closed.meta.MetaDatabase;
@@ -21,6 +25,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+
+import static java.util.Objects.requireNonNull;
 
 public class SimpleQueryHandler {
 
@@ -101,10 +107,20 @@ public class SimpleQueryHandler {
 		// TODO We can have a better caching mechanism for this
 		try {
 			return new DefaultMetaDatabase(database.queryMetadata().getPacket());
-		} catch (SolarThingDatabaseException e) {
-			// TODO find a way to tell what kind of error this is. If it's a connection error, throw a DatabaseException
-			//   if it's a not found error, then just return empty
+		} catch (NotFoundSolarThingDatabaseException e) {
+			// If we have not defined metadata, then we return an "empty" instance
 			return EmptyMetaDatabase.getInstance();
+		} catch (SolarThingDatabaseException e) {
+			throw new DatabaseException("Could not query meta", e);
+		}
+	}
+
+	public List<VersionedPacket<StoredAlterPacket>> queryAlter(@NotNull String sourceId) {
+		requireNonNull(sourceId);
+		try {
+			return database.getAlterDatabase().queryAll(sourceId);
+		} catch (SolarThingDatabaseException e) {
+			throw new DatabaseException("Could not query alter packets", e);
 		}
 	}
 
