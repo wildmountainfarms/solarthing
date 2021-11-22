@@ -6,6 +6,7 @@ import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.action.node.environment.InjectEnvironment;
 import me.retrodaredevil.action.node.environment.VariableEnvironment;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
  * While this deal with commands in the general SolarThing sense, this is a new concept. REST commands are
  * requested with some API key and if authorized, an action will be run.
  */
+@CrossOrigin // This endpoint is consumed by client-side Grafana code, so we need this
 @RestController
 @RequestMapping("/command")
 public class CommandController {
