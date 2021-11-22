@@ -2,16 +2,14 @@ package me.retrodaredevil.solarthing.program;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.action.node.ActionNode;
-import me.retrodaredevil.solarthing.actions.LogActionNode;
-import me.retrodaredevil.solarthing.actions.RequireFullOutputActionNode;
-import me.retrodaredevil.solarthing.actions.RequiredIdentifierActionNode;
+import me.retrodaredevil.solarthing.actions.CommonActionUtil;
 import me.retrodaredevil.solarthing.actions.chatbot.WrappedSlackChatBotActionNode;
+import me.retrodaredevil.solarthing.actions.command.ExecutingCommandFeedbackActionNode;
 import me.retrodaredevil.solarthing.actions.command.FlagActionNode;
 import me.retrodaredevil.solarthing.actions.command.WrappedAlterManagerActionNode;
-import me.retrodaredevil.solarthing.actions.command.ExecutingCommandFeedbackActionNode;
-import me.retrodaredevil.solarthing.actions.command.SendCommandActionNode;
 import me.retrodaredevil.solarthing.actions.homeassistant.HomeAssistantActionNode;
-import me.retrodaredevil.solarthing.actions.mate.*;
+import me.retrodaredevil.solarthing.actions.mate.MateCommandActionNode;
+import me.retrodaredevil.solarthing.actions.mate.MateCommandWaitActionNode;
 import me.retrodaredevil.solarthing.actions.message.MessageSenderActionNode;
 import me.retrodaredevil.solarthing.actions.rover.RoverBoostSetActionNode;
 import me.retrodaredevil.solarthing.actions.rover.RoverBoostVoltageActionNode;
@@ -32,16 +30,6 @@ public final class ActionUtil {
 
 	public static ObjectMapper registerActionNodes(ObjectMapper objectMapper) {
 		objectMapper.registerSubtypes(
-				ActionNode.class,
-
-				LogActionNode.class,
-
-				RequiredIdentifierActionNode.class,
-				RequireFullOutputActionNode.class,
-
-				ACModeActionNode.class,
-				AuxStateActionNode.class,
-				FXOperationalModeActionNode.class,
 				MateCommandActionNode.class,
 				MateCommandWaitActionNode.class,
 
@@ -50,8 +38,6 @@ public final class ActionUtil {
 				RoverBoostVoltageActionNode.class,
 
 				TracerLoadActionNode.class,
-
-				SendCommandActionNode.class,
 
 				HomeAssistantActionNode.class,
 				SolcastActionNode.class,
@@ -65,7 +51,7 @@ public final class ActionUtil {
 
 				WrappedAlterManagerActionNode.class
 		);
-		return objectMapper;
+		return CommonActionUtil.registerActionNodes(objectMapper);
 	}
 
 	public static Map<String, ActionNode> getActionNodeMap(ObjectMapper objectMapper, CommandOption options) throws IOException {
