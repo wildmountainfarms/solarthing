@@ -16,7 +16,8 @@ import org.springframework.web.server.ResponseStatusException;
  * While this deal with commands in the general SolarThing sense, this is a new concept. REST commands are
  * requested with some API key and if authorized, an action will be run.
  */
-@CrossOrigin(origins = "*", allowCredentials = "true") // This endpoint is consumed by client-side Grafana code, so we need this
+// Caused by: java.lang.IllegalArgumentException: When allowCredentials is true, allowedOrigins cannot contain the special value "*" since that cannot be set on the "Access-Control-Allow-Origin" response header. To allow credentials to a set of origins, list them explicitly or consider using "allowedOriginPatterns" instead.
+@CrossOrigin(originPatterns = { "http://*:[*]", "https://*:[*]" }, allowCredentials = "true") // This endpoint is consumed by client-side Grafana code, so we need this
 @RestController
 @RequestMapping("/command")
 public class CommandController {
