@@ -11,11 +11,8 @@ import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.ZoneId;
-import java.util.Map;
-import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 
