@@ -72,6 +72,7 @@ and also react to messages that have been fully processed (request successfully 
 * Create abstraction for sending custom formatted messages. Right now some calls to `MessageSender` pass strings specific to slack
 * Actually start using SLF4J in graphql program
 * Possibly rename graphql program to rest program
+* Make monitor-service only start after WiFi has kicked in
   
 ### Completed
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
