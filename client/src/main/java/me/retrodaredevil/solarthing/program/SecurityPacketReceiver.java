@@ -31,11 +31,14 @@ import org.slf4j.LoggerFactory;
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import java.security.NoSuchAlgorithmException;
+import java.time.Duration;
 import java.util.*;
 
 public class SecurityPacketReceiver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SecurityPacketReceiver.class);
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
+	/** The amount of time into the future that a request is allowed to be made. */
+	private static final Duration FUTURE_GRACE_PERIOD = Duration.ofSeconds(60);
 
 
 	private final PublicKeyLookUp publicKeyLookUp;
@@ -191,7 +194,7 @@ public class SecurityPacketReceiver {
 		}
 		Long lastCommand = state.senderLastCommandMap.get(sender);
 		long currentTime = System.currentTimeMillis();
-		if(dateMillis > currentTime + 5000) { // there's a 5 second grace period in case the clock is slightly off
+		if(dateMillis > currentTime + FUTURE_GRACE_PERIOD.toMillis()) {
 			LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Message from " + sender + " is from the future??? dateMillis: " + dateMillis + " currentTime: " + currentTime);
 			lastCommands.put(sender, dateMillis); // put this here anyway so it can't be used later
 		} else if(dateMillis < minTime){

@@ -2,7 +2,6 @@
 * Create Arduino or Java program to simulate MATE or Rover
 * Create a calendar program to be able to view daily kWh on a calendar interface
   * If we do something with a calendar, we could use Google calendar https://developers.google.com/calendar/create-events/
-* Create button/widget on Grafana that sends an encrypted command to shut off the generator
 * Packet for disk usage
 * Send packet when mate serial port hasn't output data for 30 seconds
 * Create Dockerfile and example docker-compose file
@@ -36,6 +35,8 @@ don't look like they're constantly disconnecting and reconnecting
   * Might not actually need a backend plugin if we can just use the proxy instead
   * https://github.com/grafana/grafana/issues/12556
   * https://grafana.com/docs/grafana/latest/developers/plugins/add-authentication-for-data-source-plugins/
+  * This is not necessarily completed, but has been overcome with the /command/run endpoint.
+    * Not completely ideal as the dashboard the call is made on must be private to avoid exposing private API key
 * GraphQL queries for getting the angle of the sun in the sky (current and highest point in the day)
   * https://ipgeolocation.io/documentation/astronomy-api.html - unintuitive Java SDK with bad documentation
   * https://github.com/caarmen/SunriseSunset - gross requirement to use java.util.Calendar
@@ -68,6 +69,9 @@ for basic logging.
 and also react to messages that have been fully processed (request successfully performed).
   * This will require some sort of scheduling logic that makes SolarThing check to see if something was completed
   e.g.: an alter packet was successfully deleted
+* Create abstraction for sending custom formatted messages. Right now some calls to `MessageSender` pass strings specific to slack
+* Actually start using SLF4J in graphql program
+* Possibly rename graphql program to rest program
   
 ### Completed
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
@@ -120,6 +124,9 @@ easy displaying in Grafana
 * Separate ActionNode code into its own action-node module
 * Use `millisNull` view instead of `millis` view
 * Integration tests
+* Create button/widget on Grafana that sends an encrypted command to shut off the generator
+  * Did this by creating the `/command/run` endpoint and using [cloudspout-button-panel](https://github.com/cloudspout/cloudspout-button-panel/)
+  * Not perfect: Requires making a dashboard private to avoid exposing API key to users that are not logged in
 
 ### Look into
 * Look into supporting Elasticsearch, MongoDB, Graphite
