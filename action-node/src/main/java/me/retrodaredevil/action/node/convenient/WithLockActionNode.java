@@ -15,6 +15,15 @@ import java.util.Arrays;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Simplifies getting a lock on something.
+ * <p>
+ * A lockName and an action are required to create a {@link WithLockActionNode}. A timeout action can optionally be provided along
+ * with an on timeout and finally actions.
+ * <p>
+ * By default if a timeout action is not provided, a "pass" action is used. This means that if a lock is not
+ * acquired, it will time out immediately.
+ */
 @JsonTypeName("withlock")
 public class WithLockActionNode implements ActionNode {
 	private final String lockName;

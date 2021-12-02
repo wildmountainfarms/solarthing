@@ -6,6 +6,8 @@ import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.Actions;
 import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
+import me.retrodaredevil.action.node.environment.NanoTimeProviderEnvironment;
+import me.retrodaredevil.action.node.util.NanoTimeProvider;
 
 import java.time.Duration;
 
@@ -30,9 +32,11 @@ public class TimeoutActionNode implements ActionNode {
 
 	@Override
 	public Action createAction(ActionEnvironment actionEnvironment) {
+		NanoTimeProviderEnvironment nanoTimeProviderEnvironment = actionEnvironment.getInjectEnvironment().get(NanoTimeProviderEnvironment.class);
+		NanoTimeProvider nanoTimeProvider = nanoTimeProviderEnvironment.getNanoTimeProvider();
 		return Actions.createDynamicActionRunner(() -> {
 			final Long lastFireNanos = this.lastFireNanos;
-			long nowNanos = System.nanoTime();
+			long nowNanos = nanoTimeProvider.getNanos();
 			if (lastFireNanos == null || nowNanos - lastFireNanos > timeoutNanos) {
 				this.lastFireNanos = nowNanos;
 				return actionNode.createAction(actionEnvironment);

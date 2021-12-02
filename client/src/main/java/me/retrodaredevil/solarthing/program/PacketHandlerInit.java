@@ -1,6 +1,8 @@
 package me.retrodaredevil.solarthing.program;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import me.retrodaredevil.action.node.environment.NanoTimeProviderEnvironment;
+import me.retrodaredevil.action.node.util.NanoTimeProvider;
 import me.retrodaredevil.couchdb.CouchDbUtil;
 import me.retrodaredevil.couchdbjava.CouchDbInstance;
 import me.retrodaredevil.solarthing.SolarThingConstants;
@@ -175,6 +177,7 @@ public class PacketHandlerInit {
 					actionNodeMap,
 					(source, injectEnvironmentBuilder) -> {
 						injectEnvironmentBuilder
+								.add(new NanoTimeProviderEnvironment(NanoTimeProvider.SYSTEM_NANO_TIME))
 								.add(new TimeZoneEnvironment(options.getZoneId()))
 								.add(new LatestPacketGroupEnvironment(latestPacketHandler::getLatestPacketCollection))
 								.add(new SourceEnvironment(source))

@@ -3,6 +3,8 @@ package me.retrodaredevil.solarthing.rest.command;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.environment.InjectEnvironment;
+import me.retrodaredevil.action.node.environment.NanoTimeProviderEnvironment;
+import me.retrodaredevil.action.node.util.NanoTimeProvider;
 import me.retrodaredevil.solarthing.actions.CommonActionUtil;
 import me.retrodaredevil.solarthing.actions.environment.SolarThingDatabaseEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.SourceIdEnvironment;
@@ -47,6 +49,7 @@ public class CommandHandler {
 	}
 	public InjectEnvironment createInjectEnvironment(String commandName) {
 		var builder = new InjectEnvironment.Builder()
+				.add(new NanoTimeProviderEnvironment(NanoTimeProvider.SYSTEM_NANO_TIME))
 				.add(new SolarThingDatabaseEnvironment(solarThingDatabase))
 				.add(new TimeZoneEnvironment(zoneId))
 				;

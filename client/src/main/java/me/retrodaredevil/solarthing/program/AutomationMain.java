@@ -5,7 +5,9 @@ import me.retrodaredevil.action.ActionMultiplexer;
 import me.retrodaredevil.action.Actions;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.action.node.environment.InjectEnvironment;
+import me.retrodaredevil.action.node.environment.NanoTimeProviderEnvironment;
 import me.retrodaredevil.action.node.environment.VariableEnvironment;
+import me.retrodaredevil.action.node.util.NanoTimeProvider;
 import me.retrodaredevil.couchdb.CouchDbUtil;
 import me.retrodaredevil.solarthing.FragmentedPacketGroupProvider;
 import me.retrodaredevil.solarthing.SolarThingConstants;
@@ -98,6 +100,7 @@ public final class AutomationMain {
 		SimplePacketCache<AuthorizationPacket> authorizationPacketCache = new SimplePacketCache<>(Duration.ofSeconds(20), DatabaseDocumentKeyMap.createPacketSourceFromDatabase(database), false);
 		String sourceId = options.getSourceId();
 		InjectEnvironment injectEnvironment = new InjectEnvironment.Builder()
+				.add(new NanoTimeProviderEnvironment(NanoTimeProvider.SYSTEM_NANO_TIME))
 				.add(new SourceIdEnvironment(sourceId))
 				.add(new CouchDbEnvironment(couchSettings)) // most of the time, it's better to use SolarThingDatabaseEnvironment instead, but this option is here in case it's needed
 				.add(new SolarThingDatabaseEnvironment(CouchDbSolarThingDatabase.create(CouchDbUtil.createInstance(couchSettings.getCouchProperties(), couchSettings.getOkHttpProperties()))))

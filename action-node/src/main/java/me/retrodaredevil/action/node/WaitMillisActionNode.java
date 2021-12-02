@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
+import me.retrodaredevil.action.node.environment.NanoTimeProviderEnvironment;
 
 import java.time.Duration;
 
@@ -17,6 +18,7 @@ public class WaitMillisActionNode implements ActionNode {
 
 	@Override
 	public Action createAction(ActionEnvironment actionEnvironment) {
-		return new WaitAction(Duration.ofMillis(wait));
+		NanoTimeProviderEnvironment nanoTimeProviderEnvironment = actionEnvironment.getInjectEnvironment().get(NanoTimeProviderEnvironment.class);
+		return new WaitAction(nanoTimeProviderEnvironment.getNanoTimeProvider(), Duration.ofMillis(wait));
 	}
 }

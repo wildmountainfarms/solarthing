@@ -1,0 +1,49 @@
+{
+  "type": "declaration",
+  "main": {
+    "type": "race",
+    "racers": [
+      [ { "type": "call", "name": "is_aux_on_and_generator_off" }, { "type": "call", "name": "continuous_check" } ],
+      [ { "type": "pass" }, { "type": "pass" } ]
+    ]
+  },
+  "is_aux_on": { "type": "auxstate", "on": true },
+  "is_generator_off": { "type": "acmode", "mode": "No AC" },
+  "is_aux_off": { "type": "auxstate", "on": false },
+  "is_generator_on": { "type": "acmode", "mode": "No AC", "not": true },
+  "is_aux_on_and_generator_off": {
+    "type": "queue",
+    "actions": [
+      { "type": "call", "name": "is_aux_on"},
+      { "type": "call", "name": "is_generator_off" }
+    ]
+  },
+  "is_aux_off_or_generator_on": {
+    "type": "race",
+    "racers": [
+      [ { "type": "call", "name": "is_aux_off"}, { "type": "pass" } ],
+      [ { "type": "call", "name": "is_generator_on" }, { "type": "pass" } ]
+    ]
+  },
+  "continuous_check": {
+    "type": "withlock",
+    "name": "generator off while aux is on alert",
+    "action": {
+      "type": "race",
+      "racers": [
+        [ { "type": "call", "name": "is_aux_off_or_generator_on" }, { "type": "pass" }],
+        [ { "type": "wait", "duration": "PT30S" }, { "type": "call", "name": "send_alert"}]
+      ]
+    }
+  },
+  "send_alert": {
+    "type": "queue",
+    "actions": [
+      {
+        "type": "log",
+        "message": "Aux is ON, but generator is not. Manually check generator for more info. (Note this message is usually sent to slack - feel free to change the type to \"sendmessage\")"
+      },
+      { "type": "wait", "duration": "PT300S" }
+    ]
+  }
+}

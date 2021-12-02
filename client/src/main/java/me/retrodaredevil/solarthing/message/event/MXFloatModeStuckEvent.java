@@ -75,7 +75,7 @@ public class MXFloatModeStuckEvent implements MessageEvent {
 	}
 	private void doAlert(MessageSender sender, KnownIdentifierFragment<OutbackIdentifier> identifierFragment) {
 		Long lastNotifyNanos = lastNotifyMap.get(identifierFragment);
-		long nowNanos = System.nanoTime();
+		long nowNanos = System.nanoTime(); // TODO use NanoTimeProvider
 		if (lastNotifyNanos != null && nowNanos - lastNotifyNanos < timeout.toNanos()) {
 			return; // timeout has not passed
 		}

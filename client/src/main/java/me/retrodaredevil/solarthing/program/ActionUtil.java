@@ -11,6 +11,7 @@ import me.retrodaredevil.solarthing.actions.homeassistant.HomeAssistantActionNod
 import me.retrodaredevil.solarthing.actions.mate.MateCommandActionNode;
 import me.retrodaredevil.solarthing.actions.mate.MateCommandWaitActionNode;
 import me.retrodaredevil.solarthing.actions.message.MessageSenderActionNode;
+import me.retrodaredevil.solarthing.actions.message.SendMessageActionNode;
 import me.retrodaredevil.solarthing.actions.rover.RoverBoostSetActionNode;
 import me.retrodaredevil.solarthing.actions.rover.RoverBoostVoltageActionNode;
 import me.retrodaredevil.solarthing.actions.rover.RoverLoadActionNode;
@@ -43,6 +44,7 @@ public final class ActionUtil {
 				SolcastActionNode.class,
 
 				MessageSenderActionNode.class,
+				SendMessageActionNode.class,
 
 				WrappedSlackChatBotActionNode.class,
 

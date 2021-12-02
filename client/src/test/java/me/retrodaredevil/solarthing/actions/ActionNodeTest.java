@@ -7,7 +7,9 @@ import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.CallActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.action.node.environment.InjectEnvironment;
+import me.retrodaredevil.action.node.environment.NanoTimeProviderEnvironment;
 import me.retrodaredevil.action.node.environment.VariableEnvironment;
+import me.retrodaredevil.action.node.util.NanoTimeProvider;
 import me.retrodaredevil.solarthing.program.ActionUtil;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.junit.jupiter.api.Test;
@@ -18,7 +20,13 @@ class ActionNodeTest {
 	private static final ObjectMapper MAPPER = ActionUtil.registerActionNodes(JacksonUtil.defaultMapper());
 
 	private ActionEnvironment createEnvironment() {
-		return new ActionEnvironment(new VariableEnvironment(), new VariableEnvironment(), new InjectEnvironment.Builder().build());
+		return new ActionEnvironment(
+				new VariableEnvironment(),
+				new VariableEnvironment(),
+				new InjectEnvironment.Builder()
+						.add(new NanoTimeProviderEnvironment(NanoTimeProvider.SYSTEM_NANO_TIME))
+						.build()
+		);
 	}
 
 	@Test

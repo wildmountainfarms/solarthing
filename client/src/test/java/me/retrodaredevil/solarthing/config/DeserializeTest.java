@@ -3,25 +3,42 @@ package me.retrodaredevil.solarthing.config;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import me.retrodaredevil.io.serial.SerialConfigBuilder;
+import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.node.ActionNode;
+import me.retrodaredevil.action.node.environment.ActionEnvironment;
+import me.retrodaredevil.action.node.environment.InjectEnvironment;
+import me.retrodaredevil.action.node.environment.NanoTimeProviderEnvironment;
+import me.retrodaredevil.action.node.environment.VariableEnvironment;
+import me.retrodaredevil.io.serial.SerialConfigBuilder;
+import me.retrodaredevil.solarthing.FragmentedPacketGroupProvider;
+import me.retrodaredevil.solarthing.actions.environment.LatestFragmentedPacketGroupEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnvironment;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettingsUtil;
 import me.retrodaredevil.solarthing.config.databases.implementations.InfluxDbDatabaseSettings;
 import me.retrodaredevil.solarthing.config.io.IOConfig;
 import me.retrodaredevil.solarthing.config.io.SerialIOConfig;
 import me.retrodaredevil.solarthing.config.options.ProgramOptions;
+import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
+import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
 import me.retrodaredevil.solarthing.program.ActionUtil;
 import me.retrodaredevil.solarthing.program.DatabaseConfig;
+import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
+import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPackets;
+import me.retrodaredevil.solarthing.util.CheckSumException;
+import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
+import me.retrodaredevil.solarthing.util.ParsePacketAsciiDecimalDigitException;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.time.Duration;
+import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static java.util.Objects.requireNonNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DeserializeTest {
 	private static final File SOLARTHING_ROOT = new File(".."); // Working directory for tests are the /client folder
@@ -138,6 +155,70 @@ public class DeserializeTest {
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
+		}
+	}
+
+	@Test
+	void testRunAlertGeneratorOffWhileAuxOn() throws IOException, ParsePacketAsciiDecimalDigitException, CheckSumException {
+		File file = new File(ACTION_CONFIG_DIRECTORY, "alert_generator_off_while_aux_on.json");
+		ActionNode actionNode = MAPPER.readValue(file, ActionNode.class);
+		// We need to simulate an automation program environment to run this action
+		Duration[] timeReference = new Duration [] { Duration.ZERO };
+		FragmentedPacketGroup[] packetGroupReference = new FragmentedPacketGroup[] { null };
+
+		FragmentedPacketGroupProvider fragmentedPacketGroupProvider = () -> requireNonNull(packetGroupReference[0]);
+
+		InjectEnvironment injectEnvironment = new InjectEnvironment.Builder()
+				.add(new NanoTimeProviderEnvironment(() -> timeReference[0].toNanos()))
+				.add(new LatestPacketGroupEnvironment(fragmentedPacketGroupProvider))
+				.add(new LatestFragmentedPacketGroupEnvironment(fragmentedPacketGroupProvider))
+				.build();
+		FXStatusPacket auxOnNoAC = FXStatusPackets.createFromChars("\n1,00,00,02,123,123,00,10,000,00,252,136,000,999\r".toCharArray(), IgnoreCheckSum.IGNORE);
+		FXStatusPacket auxOffNoAC = FXStatusPackets.createFromChars("\n1,00,00,02,123,123,00,10,000,00,252,008,000,999\r".toCharArray(), IgnoreCheckSum.IGNORE);
+		FXStatusPacket auxOnACUse = FXStatusPackets.createFromChars("\n1,00,00,02,123,123,00,10,000,02,252,136,000,999\r".toCharArray(), IgnoreCheckSum.IGNORE);
+		FXStatusPacket auxOffACUse = FXStatusPackets.createFromChars("\n1,00,00,02,123,123,00,10,000,02,252,008,000,999\r".toCharArray(), IgnoreCheckSum.IGNORE);
+
+		for (FXStatusPacket packet : new FXStatusPacket[] { auxOffNoAC, auxOnACUse, auxOffACUse }) {
+			// for these three cases, the action should end immediately
+			packetGroupReference[0] = PacketGroups.createInstancePacketGroup(Collections.singleton(packet), 0L, "my_source_id", 999);
+			Action action = actionNode.createAction(new ActionEnvironment(new VariableEnvironment(), new VariableEnvironment(), injectEnvironment));
+			action.update();
+			assertTrue(action.isDone());
+		}
+
+		{ // Test that no alert is sent unless the aux is on, and it's in No AC for 30 seconds
+			packetGroupReference[0] = PacketGroups.createInstancePacketGroup(Collections.singleton(auxOnNoAC), 0L, "my_source_id", 999);
+			Action action = actionNode.createAction(new ActionEnvironment(new VariableEnvironment(), new VariableEnvironment(), injectEnvironment));
+			action.update();
+			assertFalse(action.isDone());
+			timeReference[0] = timeReference[0].plus(Duration.ofSeconds(29));
+			action.update();
+			assertFalse(action.isDone());
+
+			packetGroupReference[0] = PacketGroups.createInstancePacketGroup(Collections.singleton(auxOnACUse), 0L, "my_source_id", 999);
+			action.update();
+			assertTrue(action.isDone()); // No alert has been sent, since it started to AC Use before the 30 second period completed.
+		}
+		{ // Test that the alert gets sent and the action doesn't end until the 300-second timeout completes
+			packetGroupReference[0] = PacketGroups.createInstancePacketGroup(Collections.singleton(auxOnNoAC), 0L, "my_source_id", 999);
+			Action action = actionNode.createAction(new ActionEnvironment(new VariableEnvironment(), new VariableEnvironment(), injectEnvironment));
+			action.update();
+			assertFalse(action.isDone());
+			timeReference[0] = timeReference[0].plus(Duration.ofSeconds(30));
+			action.update();
+			assertFalse(action.isDone());
+
+			packetGroupReference[0] = PacketGroups.createInstancePacketGroup(Collections.singleton(auxOnACUse), 0L, "my_source_id", 999);
+			action.update();
+			assertFalse(action.isDone()); // Alert has been sent, so the action isn't going to end
+
+			timeReference[0] = timeReference[0].plus(Duration.ofSeconds(299));
+			action.update();
+			assertFalse(action.isDone());
+
+			timeReference[0] = timeReference[0].plus(Duration.ofSeconds(1));
+			action.update();
+			assertTrue(action.isDone()); // the 300-second timeout has completed, so the action will end
 		}
 	}
 }
