@@ -7,7 +7,9 @@ import me.retrodaredevil.solarthing.type.open.OpenSource;
 import me.retrodaredevil.solarthing.reason.OpenSourceExecutionReason;
 import org.junit.jupiter.api.Test;
 
-class ExecutionFeedbackPacketTest {
+import java.time.Duration;
+
+class FeedbackPacketTest {
 
 	@Test
 	void test() throws JsonProcessingException {
@@ -17,7 +19,11 @@ class ExecutionFeedbackPacketTest {
 						"important.informational",
 						new OpenSourceExecutionReason(new OpenSource("josh", 1632366551290L, new ImmutableRequestCommandPacket("GEN OFF"), "GEN OFF"))
 				),
-				ExecutionFeedbackPacket.class
+				FeedbackPacket.class
+		);
+		PacketTestUtil.testJson(
+				new ImmutableHeartbeatPacket(new HeartbeatData("hello", "hello.category", Duration.ofHours(1), Duration.ofMinutes(5)), new OpenSourceExecutionReason(new OpenSource("josh", 1632366551290L, new ImmutableRequestCommandPacket("GEN OFF"), "GEN OFF"))),
+				FeedbackPacket.class
 		);
 	}
 

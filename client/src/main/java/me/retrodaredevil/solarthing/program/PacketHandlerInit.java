@@ -5,6 +5,8 @@ import me.retrodaredevil.action.node.environment.NanoTimeProviderEnvironment;
 import me.retrodaredevil.action.node.util.NanoTimeProvider;
 import me.retrodaredevil.couchdb.CouchDbUtil;
 import me.retrodaredevil.couchdbjava.CouchDbInstance;
+import me.retrodaredevil.solarthing.PacketGroupReceiver;
+import me.retrodaredevil.solarthing.PacketGroupReceiverMultiplexer;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.solarthing.actions.command.EnvironmentUpdater;
@@ -39,6 +41,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -190,10 +193,14 @@ public class PacketHandlerInit {
 						environmentUpdater.updateInjectEnvironment(source, injectEnvironmentBuilder);
 					}
 			);
+			PacketGroupReceiver mainPacketGroupReceiver = new PacketGroupReceiverMultiplexer(Arrays.asList(
+					commandReceiver,
+					new RequestHeartbeatReceiver(PacketListReceiverHandlerBundle.createEventPacketListReceiverHandler(SolarMain.getSourceAndFragmentUpdater(options), options.getZoneId(), packetHandlerBundle))
+			));
 
 			statusPacketHandlers.add((packetCollection, instantType) -> commandReceiver.getActionUpdater().update());
 
-			List<PacketHandler> commandPacketHandlers = CommandUtil.getCommandRequesterHandlerList(databaseConfigs, commandReceiver, options);
+			List<PacketHandler> commandPacketHandlers = CommandUtil.getCommandRequesterHandlerList(databaseConfigs, mainPacketGroupReceiver, options);
 			statusPacketHandlers.add(new PacketHandlerMultiplexer(commandPacketHandlers));
 			updateCommandActions = () -> commandReceiver.getActionUpdater().update();
 		} else {

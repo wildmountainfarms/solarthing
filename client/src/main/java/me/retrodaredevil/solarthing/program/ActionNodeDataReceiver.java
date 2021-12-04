@@ -21,6 +21,10 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
+/**
+ * A {@link PacketGroupReceiver} that receives {@link CommandOpenPacketType#REQUEST_COMMAND} packets and then starts the execution
+ * of an action based on {@link RequestCommandPacket#getCommandName()}.
+ */
 public class ActionNodeDataReceiver implements PacketGroupReceiver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionNodeDataReceiver.class);
 	/*

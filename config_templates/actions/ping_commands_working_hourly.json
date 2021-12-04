@@ -1,0 +1,29 @@
+{
+  "type": "declaration",
+  "main": {
+    "type": "withlock",
+    "name": "ping_command_on_mate",
+    "action": { "type": "call", "name": "send_ping_and_wait"}
+  },
+  "send_ping_and_wait": {
+    "type": "queue",
+    "actions": [
+      {
+        "type": "sendrequestheartbeat",
+        "directory": ".data/keys",
+        "targets": [1],
+        "sender": "nasplex",
+        "heartbeat": {
+          "displayName": "Commands to Mate Program",
+          "identifier": "ping.commands.program.mate",
+          "expectedDurationToNextHeartbeat": "PT1H",
+          "bufferDuration": "PT3M"
+        }
+      },
+      {
+        "type": "wait",
+        "duration": "PT1H"
+      }
+    ]
+  }
+}

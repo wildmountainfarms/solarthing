@@ -21,6 +21,8 @@ dependencies {
     api "com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion"
     api "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
 
+    api "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion" // heartbeat data uses java time stuff and serviceapi uses this
+
 //    api 'org.ektorp:org.ektorp:1.5.0'
 }
 

@@ -7,4 +7,5 @@ public enum CommandOpenPacketType implements DocumentedPacketType {
 	SCHEDULE_COMMAND,
 	REQUEST_FLAG,
 	DELETE_ALTER,
+	REQUEST_HEARTBEAT,
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.solarthing.actions.command.FlagActionNode;
 import me.retrodaredevil.solarthing.actions.command.SendCommandActionNode;
+import me.retrodaredevil.solarthing.actions.command.SendRequestHeartbeatActionNode;
 import me.retrodaredevil.solarthing.actions.mate.ACModeActionNode;
 import me.retrodaredevil.solarthing.actions.mate.AuxStateActionNode;
 import me.retrodaredevil.solarthing.actions.mate.FXOperationalModeActionNode;
@@ -27,6 +28,7 @@ public final class CommonActionUtil {
 				FXOperationalModeActionNode.class,
 
 				SendCommandActionNode.class,
+				SendRequestHeartbeatActionNode.class,
 				FlagActionNode.class
 		);
 		return objectMapper;

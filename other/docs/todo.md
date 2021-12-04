@@ -73,6 +73,10 @@ and also react to messages that have been fully processed (request successfully 
 * Actually start using SLF4J in graphql program
 * Possibly rename graphql program to rest program
 * Make monitor-service only start after WiFi has kicked in
+* Have a request node be able to upload packets if the clock on the device is off by a decent margin
+* Automation that sends a command to each program that accepts commands.
+  * When processed, these commands will upload an informational message to CouchDB (solarthing-events)
+  * Automation will send an alert if no informational message was found after 15 seconds of sending the command
   
 ### Completed
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)

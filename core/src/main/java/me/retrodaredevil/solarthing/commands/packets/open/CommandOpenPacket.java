@@ -13,6 +13,7 @@ import me.retrodaredevil.solarthing.packets.TypedDocumentedPacket;
 		@JsonSubTypes.Type(ScheduleCommandPacket.class),
 		@JsonSubTypes.Type(RequestFlagPacket.class),
 		@JsonSubTypes.Type(DeleteAlterPacket.class),
+		@JsonSubTypes.Type(RequestHeartbeatPacket.class),
 })
 public interface CommandOpenPacket extends TypedDocumentedPacket<CommandOpenPacketType>, OpenSourcePacket {
 }
