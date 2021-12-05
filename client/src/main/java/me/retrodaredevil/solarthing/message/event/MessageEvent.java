@@ -17,6 +17,7 @@ import me.retrodaredevil.solarthing.packets.collection.InstancePacketGroup;
 		@JsonSubTypes.Type(GeneratorStateEvent.class),
 		@JsonSubTypes.Type(GeneratorUnusedAlertEvent.class),
 		@JsonSubTypes.Type(ExecutionFeedbackEvent.class),
+		@JsonSubTypes.Type(NoHeartbeatEvent.class),
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
 public interface MessageEvent {
