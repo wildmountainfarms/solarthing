@@ -100,11 +100,11 @@ subprojects {
         testImplementation "org.junit.jupiter:junit-jupiter-params:$junit5Version"
         testImplementation "org.junit.platform:junit-platform-commons:$junit5PlatformVersion"
         testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: junit5Version
-        testImplementation 'com.tngtech.archunit:archunit:0.21.0' // https://github.com/TNG/ArchUnit/releases
+        testImplementation 'com.tngtech.archunit:archunit:0.22.0' // https://github.com/TNG/ArchUnit/releases
 
         // https://mvnrepository.com/artifact/com.google.code.findbugs/jsr305
         implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
-        implementation 'org.jetbrains:annotations:21.0.1' // https://search.maven.org/search?q=g:org.jetbrains%20AND%20a:annotations
+        implementation 'org.jetbrains:annotations:23.0.1' // https://search.maven.org/search?q=g:org.jetbrains%20AND%20a:annotations
     }
     test {
         useJUnitPlatform()
@@ -162,6 +162,7 @@ project(":client"){
         }
     }
     task integration(type: Test) {
+        // In the future, we can use the Test Suite feature rather than doing this manually: https://docs.gradle.org/7.3.1/userguide/jvm_test_suite_plugin.html
         useJUnitPlatform {
             includeTags 'integration'
         }
@@ -194,6 +195,6 @@ project(":graphql"){
 }
 
 wrapper {
-    gradleVersion = '7.2'
+    gradleVersion = '7.3.2'
     distributionType = Wrapper.DistributionType.ALL
 }
