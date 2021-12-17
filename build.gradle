@@ -5,17 +5,16 @@ buildscript {
         junit5PlatformVersion = '1.8.2'
 
         slf4jVersion = '1.7.32' // http://www.slf4j.org/download.html
-        log4jVersion = '2.15.0' // https://logging.apache.org/log4j/2.x/javadoc.html
+        log4jVersion = '2.16.0' // https://logging.apache.org/log4j/2.x/javadoc.html
         // https://github.com/FasterXML/jackson/wiki/Jackson-Releases
         jacksonVersion = '2.13.0' // https://github.com/FasterXML/jackson-databind/releases
         // retrofit is why we need allow-opens. context: https://stackoverflow.com/questions/60915381/retrofit2-maven-project-illegal-reflective-access-warning // https://github.com/square/retrofit/issues/3341
         retrofitVersion = "2.9.0" // https://github.com/square/retrofit/releases
-        shadowVersion = '7.1.0' // https://github.com/johnrengelman/shadow/releases // only works on gradle 7
-//        ioLibVersion = '2.1.0' // https://github.com/retrodaredevil/io-lib/releases
-        ioLibVersion = 'cc13e29d6d'
+        shadowVersion = '7.1.1' // https://github.com/johnrengelman/shadow/releases // only works on gradle 7
+        ioLibVersion = '2.3.0' // https://github.com/retrodaredevil/io-lib/releases
         okhttpVersion = "4.9.3" // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
-        couchdbJavaVersion = 'c109c8ead8'
-        dockerComposePluginVersion = "0.14.3"
+        couchdbJavaVersion = '1.0.0'
+        dockerComposePluginVersion = "0.14.12" // https://github.com/avast/gradle-docker-compose-plugin/releases
     }
     dependencies {
         classpath "com.avast.gradle:gradle-docker-compose-plugin:$dockerComposePluginVersion"
@@ -24,7 +23,7 @@ buildscript {
 
 
 plugins {
-    id 'com.diffplug.spotless' version '5.14.0' // https://search.maven.org/search?q=a:spotless-plugin-gradle
+    id 'com.diffplug.spotless' version '6.0.4' // https://search.maven.org/search?q=a:spotless-plugin-gradle
 }
 
 version "0.0.1-SNAPSHOT"

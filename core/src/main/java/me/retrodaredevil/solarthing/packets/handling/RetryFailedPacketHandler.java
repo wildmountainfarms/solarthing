@@ -22,6 +22,13 @@ public class RetryFailedPacketHandler implements PacketHandler {
 	the given packetHandler fails to upload for a particular PacketCollection, then it should try again at some later time, no matter
 	if RetryFailedPacketHandler is called again.
 	 */
+	/*
+	TODO consider making sure that old, old packets don't get uploaded.
+	For instance, if we are without internet for an hour, we may not want to upload old event packets when we come back online because
+	then some clients of SolarThing may have bad caches for data. Yeah, caches aren't that great of an excuse not to upload data we have,
+	but you have to draw the line somewhere. It could be packets that are over 5 minutes old, or it could be packets over 2 hours old we don't upload.
+	We'll cross that bridge when we come there. The above comment says we should stop using this class anyway. It's almost ready to be deprecated
+	 */
 
 	private final PacketHandler packetHandler;
 	private final int packetCollectionsToKeepOnFail;
@@ -44,7 +51,7 @@ public class RetryFailedPacketHandler implements PacketHandler {
 				packetHandler.handle(element, instantType);
 				iterator.remove();
 			} catch (PacketHandleException e) {
-				LOGGER.error("Couldn't packet collection id: " + packetCollection.getDbId() + " dateMillis: " + packetCollection.getDateMillis(), ". Might try again later.", e);
+				LOGGER.error("Couldn't packet collection id: " + packetCollection.getDbId() + " dateMillis: " + packetCollection.getDateMillis(), e);
 			}
 		}
 		while(packetCollectionList.size() > packetCollectionsToKeepOnFail){
