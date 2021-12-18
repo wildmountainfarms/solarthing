@@ -128,3 +128,8 @@ implement Comparable<Identifier> so Identifiers have a defined order which is th
 SolarThing doesn't support Outback Mate3 devices, but there's lots of other software you can use
 * http://www.jeperez.com/monitor-solar-outback/
 * http://outbackpower.com/forum/viewtopic.php?f=1&t=13225
+
+### Random Useful Forum Links
+These links document people talking about SolarThing or creating cables
+* https://diysolarforum.com/threads/renogy-devices-and-raspberry-pi-bluetooth-wifi.30235
+* http://renogy.boards.net/thread/535/using-rj11-cable-connect-raspberry

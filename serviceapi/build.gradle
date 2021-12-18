@@ -9,7 +9,7 @@ version "0.0.1-SNAPSHOT"
 
 dependencies {
     // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
-    api group: 'com.squareup.okhttp3', name: 'okhttp', version: "$okhttpVersion"
+    api "com.squareup.okhttp3:okhttp:$okhttpVersion"
     api "com.squareup.retrofit2:retrofit:$retrofitVersion"
     api "com.squareup.retrofit2:converter-jackson:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-scalars:$retrofitVersion"

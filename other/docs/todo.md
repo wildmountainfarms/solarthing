@@ -82,6 +82,9 @@ and also react to messages that have been fully processed (request successfully 
   * Active flags
   * AC Use/Drop status
 * Make an alternative for RetryFailedPacketHandler. Details in comments in class.
+* Create cli Python program that can be ran like: `solarcheck /dev/ttyUSB0`. It will detect whether the port can be opened.
+It will then listen for data to see if it is a MATE device. If it is not, it will send Modbus data to see if it is a
+Rover or Tracer
   
 ### Completed
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
