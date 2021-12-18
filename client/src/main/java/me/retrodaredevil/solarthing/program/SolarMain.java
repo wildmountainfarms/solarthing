@@ -193,8 +193,8 @@ public final class SolarMain {
 				throw new RuntimeException(e);
 			}
 		}
-		List<String> legacyArguments = commandOptions.getLegacyOptions();
-		if (legacyArguments.isEmpty()) {
+		List<String> legacyArguments = commandOptions.getLegacyOptionsRaw();
+		if (legacyArguments == null || legacyArguments.isEmpty()) {
 			System.err.println(cli.getHelpMessage());
 			return SolarThingConstants.EXIT_CODE_INVALID_OPTIONS;
 		}

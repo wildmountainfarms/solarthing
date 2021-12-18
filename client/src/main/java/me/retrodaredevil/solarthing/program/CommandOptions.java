@@ -24,11 +24,5 @@ public interface CommandOptions {
 	@Unparsed(name = "LEGACY ARGUMENTS")
 	List<String> getLegacyOptionsRaw();
 
-	default List<String> getLegacyOptions() {
-		List<String> r = getLegacyOptionsRaw();
-		if (r == null) {
-			return Collections.emptyList();
-		}
-		return r;
-	}
+	// Note that we cannot use default methods here as jewelcli does not like them
 }

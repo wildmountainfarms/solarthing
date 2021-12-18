@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+
+BASEDIR=$(dirname "$0")
+
+if java --add-opens 2>&1 | grep 'requires modules' >/dev/null; then
+  java --add-opens=java.base/java.lang.invoke=ALL-UNNAMED -jar "$BASEDIR/../solarthing.jar" "$@"
+else
+  java -jar "$BASEDIR/../solarthing.jar" "$@"
+fi
+# It is important that we do not have any more commands after this because we want the exit code
+#   to be the same as the exit code of the java command
