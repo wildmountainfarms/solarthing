@@ -23,6 +23,9 @@ dependencies {
 
     api "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion" // heartbeat data uses java time stuff and serviceapi uses this
 
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-text
+    implementation group: 'org.apache.commons', name: 'commons-text', version: '1.9'
+
 //    api 'org.ektorp:org.ektorp:1.5.0'
 }
 

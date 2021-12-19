@@ -4,7 +4,6 @@ import com.lexicalscope.jewel.cli.Option;
 import com.lexicalscope.jewel.cli.Unparsed;
 
 import java.io.File;
-import java.util.Collections;
 import java.util.List;
 
 public interface CommandOptions {

@@ -21,12 +21,14 @@ import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.packets.handling.RawPacketReceiver;
 import me.retrodaredevil.solarthing.packets.instance.InstanceFragmentIndicatorPackets;
 import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePackets;
+import me.retrodaredevil.solarthing.program.check.CheckMain;
 import me.retrodaredevil.solarthing.program.pvoutput.PVOutputUploadMain;
 import org.apache.logging.log4j.LogManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.time.Instant;
 import java.util.List;
 import java.util.Random;
 
@@ -87,6 +89,14 @@ public final class SolarMain {
 		return new HourIntervalPacketCollectionIdGenerator(uniqueIdsInOneHour, new Random().nextInt(), shortDocumentId);
 	}
 
+	private static String getJarInfo() {
+		JarUtil.Data data = JarUtil.getData();
+		Instant lastModified = data.getLastModifiedInstantOrNull();
+		return "Jar: " + JarUtil.getJarFileName()
+				+ " Last Modified: " + (lastModified == null ? "unknown" : lastModified.toString())
+				+ " Java version: " + System.getProperty("java.version");
+	}
+
 	public static int doMainCommand(CommandOptions commandOptions, File baseConfigFile) {
 		LOGGER.info("Using base configuration file: " + baseConfigFile);
 		final FileReader fileReader;
@@ -132,7 +142,7 @@ public final class SolarMain {
 			if (invalidJar) {
 				LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "We're about to give you an error with some technical stuff, but this error is likely caused by you switching out jar files while SolarThing is running. If it isn't, please report this error.");
 			}
-			String logMessage = "Ending SolarThing. Jar: " + JarUtil.getJarFileName() + " Java version: " + System.getProperty("java.version");
+			String logMessage = "Ending SolarThing. " + getJarInfo();
 			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "[LOG] " + logMessage);
 			System.out.println("[stdout] " + logMessage);
 			System.err.println("[stderr] " + logMessage);
@@ -145,8 +155,8 @@ public final class SolarMain {
 		}
 	}
 
-	public static int doMain(String[] args){
-		String logMessage = "Beginning main. Jar: " + JarUtil.getJarFileName() + " Java version: " + System.getProperty("java.version");
+	private static int doMain(String[] args){
+		String logMessage = "Beginning main. Jar: " + getJarInfo();
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "[LOG] " + logMessage);
 		System.out.println("[stdout] " + logMessage);
 		System.err.println("[stderr] " + logMessage);
@@ -198,11 +208,37 @@ public final class SolarMain {
 			System.err.println(cli.getHelpMessage());
 			return SolarThingConstants.EXIT_CODE_INVALID_OPTIONS;
 		}
-		System.out.println("Using legacy arguments! Please use --base instead! (If you are running this using ./run.sh, this will be automatically fixed in a future update) (ignore this).");
-		return doMainCommand(commandOptions, new File(legacyArguments.get(0)));
+		System.err.println("Invalid sub command: " + legacyArguments.get(0));
+		return SolarThingConstants.EXIT_CODE_INVALID_OPTIONS;
+	}
+	private static int outputVersion() {
+		JarUtil.Data data = JarUtil.getData();
+		Instant lastModified = data.getLastModifiedInstantOrNull();
+		System.out.println("SolarThing made by Joshua Shannon\n" +
+				"Jar: " + data.getJarFileName() + "\n" +
+				"Jar last modified: " + (lastModified == null ? "unknown" : lastModified.toString()) + "\n" +
+				"Java version: " + System.getProperty("java.version"));
+		return 0;
+	}
+	private static int determineMainSubprogram(String[] args) {
+		if (args.length == 0) {
+			System.err.println("Usage: solarthing <command>\n\nCommands:\n  run [options]\n  version");
+			return SolarThingConstants.EXIT_CODE_INVALID_OPTIONS;
+		}
+		String firstArg = args[0];
+		String[] subArgs = new String[args.length - 1];
+		System.arraycopy(args, 1, subArgs, 0, args.length - 1);
+		if (firstArg.equals("run")) {
+			return doMain(subArgs);
+		} else if (firstArg.equals("version")) {
+			return outputVersion();
+		} else if (firstArg.equals("check")) {
+			return CheckMain.doCheck(subArgs);
+		}
+		return doMain(args);
 	}
 
 	public static void main(String[] args) {
-		System.exit(doMain(args));
+		System.exit(determineMainSubprogram(args));
 	}
 }

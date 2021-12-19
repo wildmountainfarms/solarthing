@@ -7,6 +7,7 @@ import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacket;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
+import org.apache.commons.text.StringEscapeUtils;
 import org.jetbrains.annotations.Contract;
 
 import java.util.Collection;
@@ -42,5 +43,9 @@ public final class OutbackUtil {
 	@Contract(pure = true)
 	public static @Nullable FXStatusPacket getMasterFX(PacketGroup packetGroup){
 		return getMasterFX(packetGroup.getPackets());
+	}
+
+	public static String escapeOutputtedMateData(String data) {
+		return StringEscapeUtils.escapeJava(data);
 	}
 }
