@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-export SOLARTHING_VERSION="2021.7.1"
+export SOLARTHING_VERSION="2021.7.2"
 
 if [ -n "${SOLARTHING_VERSION_OVERRIDE+x}" ]; then
   echo Using override
