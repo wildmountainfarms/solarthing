@@ -1,12 +1,9 @@
 #!/usr/bin/env sh
+# This version of the solarthing command can be used while debugging and while running programs that don't need logs
 
 BASEDIR=$(dirname "$0")
 
 "$BASEDIR/../.scripts/download_if_needed.sh" || exit 1
 
-if ls log4j2.xml 1>/dev/null 2>&1; then
-  export LOG4J_log4j2_configurationFile=log4j2.xml
-  echo Using log4j2.xml file!
-fi
-
+export LOG4J_log4j2_configurationFile="$BASEDIR"/../../config_templates/log/console_only_and_no_debug_log4j2.xml
 "$BASEDIR/../.bin/raw_solarthing" "$@"

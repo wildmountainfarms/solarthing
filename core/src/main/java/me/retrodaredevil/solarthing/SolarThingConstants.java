@@ -50,6 +50,7 @@ public final class SolarThingConstants {
 	public static final int EXIT_CODE_CRASH = 197;
 	public static final int EXIT_CODE_INTERRUPTED = 198;
 	public static final int EXIT_CODE_FAIL = 199;
+	public static final int EXIT_CODE_NOT_IMPLEMENTED = 200;
 
 	// https://www.freedesktop.org/software/systemd/man/systemd.service.html#RestartForceExitStatus=
 

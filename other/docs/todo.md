@@ -82,9 +82,6 @@ and also react to messages that have been fully processed (request successfully 
   * Active flags
   * AC Use/Drop status
 * Make an alternative for RetryFailedPacketHandler. Details in comments in class.
-* Create cli Python program that can be ran like: `solarcheck /dev/ttyUSB0`. It will detect whether the port can be opened.
-It will then listen for data to see if it is a MATE device. If it is not, it will send Modbus data to see if it is a
-Rover or Tracer
   
 ### Completed
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
@@ -144,6 +141,9 @@ easy displaying in Grafana
   * Done using heartbeats
   * Alerting could be faster if we had the automation program monitor for a heartbeat request that didn't go through
   but for now just a heartbeat being absent after its expected duration is good enough
+* Create cli Python program that can be ran like: `solarcheck /dev/ttyUSB0`. It will detect whether the port can be opened.
+  It will then listen for data to see if it is a MATE device. If it is not, it will send Modbus data to see if it is a
+  Rover or Tracer
 
 ### Look into
 * Look into supporting Elasticsearch, MongoDB, Graphite

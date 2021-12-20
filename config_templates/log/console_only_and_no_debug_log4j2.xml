@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" packages="me.retrodaredevil.solarthing.log">
+    <Properties>
+        <Property name="LOG_PATTERN">%d{HH:mm:ss.SSS} [%t] %-5level %C{1.} - %msg%n</Property>
+    </Properties>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <MarkerFilter marker="NO_CONSOLE" onMatch="DENY" onMismatch="NEUTRAL"/>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Root level="INFO" >
+            <AppenderRef ref="Console" level="INFO"/>
+        </Root>
+    </Loggers>
+</Configuration>
