@@ -98,6 +98,16 @@ public final class SolarMain {
 	}
 
 	public static int doMainCommand(CommandOptions commandOptions, File baseConfigFile) {
+		String user = System.getProperty("user.name");
+		if (!user.equals("solarthing")) {
+			if (user.equals("root")) {
+				LOGGER.warn("Running as root user!");
+				System.out.println("\n\nHey! We noticed you are running as root! Instead of\n  sudo ./run.sh\nPlease do\n  sudo -u solarthing ./run.sh\n instead.\n");
+			} else {
+				LOGGER.info("Running as " + user);
+			}
+		}
+
 		LOGGER.info("Using base configuration file: " + baseConfigFile);
 		final FileReader fileReader;
 		try {

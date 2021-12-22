@@ -82,6 +82,8 @@ and also react to messages that have been fully processed (request successfully 
   * Active flags
   * AC Use/Drop status
 * Make an alternative for RetryFailedPacketHandler. Details in comments in class.
+* Allow io configurations to be specified in-line rather than in a separate file.
+* Add solarthing subcommand that checks whether the configuration has any errors in it
   
 ### Completed
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)

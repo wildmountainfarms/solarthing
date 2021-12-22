@@ -1,3 +1,5 @@
+NEW DOCUMENTATION HERE: https://solarthing.readthedocs.io/en/latest/config/rpi-cpu-temp.html
+
 # Raspberry Pi CPU Temperature
 For all the programs that upload to databases, they support the ability to add the Raspberry Pi's CPU temperature
 as a packet. You just have to add this json to your `base.json`:

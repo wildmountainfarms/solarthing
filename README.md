@@ -10,7 +10,7 @@ Stores solar data in a database to view on Android, Grafana, or PVOutput
 
 <p align="center">
     <a href="#supported-products">Supported Products</a> &bull;
-    <a href="other/docs/quickstart.md">Quickstart</a> &bull;
+    <a href="https://solarthing.readthedocs.io/">Documentation</a> &bull;
     <a href="#features">Features</a> &bull;
     <a href="#supported-databases">Supported Databases</a> &bull;
     <a href="#examples">Examples</a>
@@ -28,16 +28,7 @@ Stores solar data in a database to view on Android, Grafana, or PVOutput
 * DS18B20 Temperature Sensors and PZEM-003 and PZEM-017 Shunts
 
 # Quickstart
-Ready to install? Use the [Quickstart](other/docs/quickstart.md)!
-
-## Post installation optinos
-Do any or all of these after following the quickstart. (If you haven't already click on the quickstart link above)
-* [GraphQL Quickstart](other/docs/quickstart_graphql.md) - Expose CouchDB as a GraphQL API (used for Grafana)
-  * This is the option I recommend most. Most people install SolarThing so they can get Grafana working
-* [PVOutput Quickstart](other/docs/quickstart_pvoutput.md) - uploads to PVOutput
-  * If you are interested in a nice way to view your daily kWh historical data, this is good
-* [Message Quickstart (Automation program)](other/docs/quickstart_message.md) - Slack or Mattermost bot for notifications
-  * Paranoid your system is gonna explode? This is a great way to monitor your system and get push notifications
+Ready to install? Use the [Quickstart](https://solarthing.readthedocs.io/en/latest/installation.html)!
 
 
 # Features
@@ -92,27 +83,13 @@ Grafana is very customizable. Rearrange graphs and make it how you want!
 
 [SolarThing Web](https://github.com/wildmountainfarms/solarthing-web) (Mostly abandon at this point)
 
-SolarThing web uses CouchDB as its database.
-![alt text](other/docs/solarthing-web-screenshot-1.png "SolarThing Web")
-
 ---
-
-### Can I run this?
-Of course! This runs on Java 8+ and has been tested to work with Java 8 and Java 11. This runs on Linux, Windows and Mac,
-but is easiest to set up on Linux systems running Debian with systemd (such as the default Raspberry Pi OS or Ubuntu).
-
-The [quickstart](other/docs/quickstart.md) can help you get SolarThing up and running.
 
 ## Usage at Wild Mountain Farms
 We monitor an Outback MATE2, Renogy Rover PG 40A, EPEver Tracer2210AN (20A) using a Raspberry Pi 3.
 Each device has its own instance of SolarThing running. Each instance uploads data to CouchDB. CouchDB, Grafana,
 and SolarThing GraphQL run on a separate "NAS" computer. This NAS runs the automation and pvoutput programs.
 The automation program handles the sending of Slack messages for low battery notifications.
-
-## Using the program
-You can see the [Outback/Renogy Rover](other/solar/README.md) README for using the program with outback or renogy products.
-
-The [input and output](other/docs/input_and_outputs.md) README is documentation for the `io` JSON property option used in the rover and mate programs.
 
 ### Database Setup
 * [CouchDB setup](other/docs/couchdb_setup.md)<br/>

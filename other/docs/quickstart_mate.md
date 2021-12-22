@@ -1,3 +1,5 @@
+NEW DOCUMENTATION HERE: https://solarthing.readthedocs.io/en/latest/mate/config.html
+
 # Quick Start With Outback MATE
 If you haven't already, [click here](quickstart.md) to view how to clone this repo and install the service.
 
@@ -56,8 +58,3 @@ You can run `solar/virtual_mate.sh | ./run.sh`
 
 ### I'm ready to use this for real!
 Once your configuration is how you want it, you can go back to the [quickstart](quickstart.md#configuration-continued) to enable and start the service.
-
-### In the future
-If you use a CouchDB database for this, you can send commands to it and this will execute them. Currently
-only one command is able to be sent (Don't worry, this is disabled by default). In the future I plan to add the ability
-to configure sending commands. Right now the documentation for this isn't complete.

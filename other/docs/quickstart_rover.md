@@ -1,3 +1,5 @@
+NEW DOCUMENTATION HERE: https://solarthing.readthedocs.io/en/latest/rover/config.html
+
 # Quick Start Renogy Charge Controller or other SRNE (re)branded charge controllers
 * If you haven't already, [click here](quickstart.md) to view how to clone this repo and install the service.
 * If you don't have a cable to connect to your device, [click here](../solar/README.md#connecting-to-renogy-rover)
