@@ -33,6 +33,11 @@ public class HeartbeatCommandChatBotHandler implements ChatBotHandler {
 	}
 
 
+	private static String buildLineForHeartbeat(int fragmentId, HeartbeatData data, Instant lastHeartbeat) {
+		return data.getDisplayName() + " from fragment " + fragmentId + " last heartbeat at " + TimeUtil.instantToSlackDateSeconds(lastHeartbeat);
+	}
+
+	@SuppressWarnings("DuplicatedCode") // I really don't care at the moment. Extracting a method will make this less readable IMO
 	private void displayHeartbeats(MessageSender messageSender) {
 		Map<HeartbeatIdentifier, HeartbeatNode> map = new HashMap<>();
 		eventDatabaseCacheManager.access(eventDatabaseCache -> {
@@ -77,8 +82,8 @@ public class HeartbeatCommandChatBotHandler implements ChatBotHandler {
 			activeHeartbeats.forEach(entry -> {
 				int fragmentId = entry.getKey().getFragmentId();
 				HeartbeatData data = entry.getValue().getHeartbeatPacket().getData();
-				builder.append("  ").append(data.getDisplayName()).append(" from fragment ").append(fragmentId)
-						.append('\n');
+				Instant lastHeartbeat = Instant.ofEpochMilli(entry.getValue().getDateMillis());
+				builder.append("  ").append(buildLineForHeartbeat(fragmentId, data, lastHeartbeat)).append('\n');
 			});
 		}
 		if (!expectedHeartbeats.isEmpty()) {
@@ -86,8 +91,8 @@ public class HeartbeatCommandChatBotHandler implements ChatBotHandler {
 			expectedHeartbeats.forEach(entry -> {
 				int fragmentId = entry.getKey().getFragmentId();
 				HeartbeatData data = entry.getValue().getHeartbeatPacket().getData();
-				builder.append("  ").append(data.getDisplayName()).append(" from fragment ").append(fragmentId)
-						.append('\n');
+				Instant lastHeartbeat = Instant.ofEpochMilli(entry.getValue().getDateMillis());
+				builder.append("  ").append(buildLineForHeartbeat(fragmentId, data, lastHeartbeat)).append('\n');
 			});
 		}
 		if (!deadHeartbeats.isEmpty()) {
@@ -96,8 +101,7 @@ public class HeartbeatCommandChatBotHandler implements ChatBotHandler {
 				int fragmentId = entry.getKey().getFragmentId();
 				HeartbeatData data = entry.getValue().getHeartbeatPacket().getData();
 				Instant lastHeartbeat = Instant.ofEpochMilli(entry.getValue().getDateMillis());
-				builder.append("  ").append(data.getDisplayName()).append(" from fragment ").append(fragmentId)
-						.append(" last heartbeat at ").append(TimeUtil.instantToSlackDateSeconds(lastHeartbeat)).append('\n');
+				builder.append("  ").append(buildLineForHeartbeat(fragmentId, data, lastHeartbeat)).append('\n');
 			});
 		}
 
