@@ -65,6 +65,14 @@ public class TimeUtil {
 	public static String instantToSlackDateSeconds(Instant instant, String fallback) {
 		// https://api.slack.com/reference/surfaces/formatting#date-formatting
 		long seconds = instant.getEpochSecond();
-		return "<!date^" + seconds + "^{date_num} {time_secs}|" + fallback + ">";
+		return "<!date^" + seconds + "^{date_num} {time_secs}|" + slackEscape(fallback) + ">";
+	}
+	public static String slackEscape(String messageToEscape) {
+		// https://api.slack.com/reference/surfaces/formatting#escaping
+		return messageToEscape
+				.replaceAll("&", "&amp;")
+				.replaceAll("<", "&lt;")
+				.replaceAll(">", "&gt;")
+				;
 	}
 }

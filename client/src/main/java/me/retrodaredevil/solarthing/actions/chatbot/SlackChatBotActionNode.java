@@ -8,11 +8,18 @@ import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.AlterPacketsProvider;
 import me.retrodaredevil.solarthing.FragmentedPacketGroupProvider;
-import me.retrodaredevil.solarthing.commands.util.CommandManager;
-import me.retrodaredevil.solarthing.actions.environment.*;
+import me.retrodaredevil.solarthing.actions.environment.AlterPacketsEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.EventDatabaseCacheEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.LatestFragmentedPacketGroupEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.SolarThingDatabaseEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.SourceIdEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.TimeZoneEnvironment;
 import me.retrodaredevil.solarthing.chatbot.*;
+import me.retrodaredevil.solarthing.commands.util.CommandManager;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
+import me.retrodaredevil.solarthing.database.cache.DatabaseCache;
 import me.retrodaredevil.solarthing.message.implementations.SlackMessageSender;
+import me.retrodaredevil.solarthing.util.sync.ResourceManager;
 import okhttp3.OkHttpClient;
 
 import java.io.File;
@@ -69,12 +76,15 @@ public class SlackChatBotActionNode implements ActionNode {
 		SolarThingDatabaseEnvironment solarThingDatabaseEnvironment = actionEnvironment.getInjectEnvironment().get(SolarThingDatabaseEnvironment.class);
 		SourceIdEnvironment sourceIdEnvironment = actionEnvironment.getInjectEnvironment().get(SourceIdEnvironment.class);
 		TimeZoneEnvironment timeZoneEnvironment = actionEnvironment.getInjectEnvironment().get(TimeZoneEnvironment.class);
+		EventDatabaseCacheEnvironment eventDatabaseCacheEnvironment = actionEnvironment.getInjectEnvironment().get(EventDatabaseCacheEnvironment.class);
 
+		// Note that all objects listed here must be thread safe, as data will be accessed from them on a separate thread
 		FragmentedPacketGroupProvider packetGroupProvider = latestPacketGroupEnvironment.getFragmentedPacketGroupProvider();
 		AlterPacketsProvider alterPacketsProvider = alterPacketsEnvironment.getAlterPacketsProvider();
 		SolarThingDatabase database = solarThingDatabaseEnvironment.getSolarThingDatabase();
 		String sourceId = sourceIdEnvironment.getSourceId();
 		ZoneId zoneId = timeZoneEnvironment.getZoneId();
+		ResourceManager<? extends DatabaseCache> eventDatabaseCacheManager = eventDatabaseCacheEnvironment.getEventDatabaseCacheManager();
 
 
 		Slack slack = Slack.getInstance(new SlackConfig(), new SlackHttpClient(new OkHttpClient.Builder()
@@ -96,6 +106,7 @@ public class SlackChatBotActionNode implements ActionNode {
 								new FlagCommandChatBotHandler(commandHelper, database, sourceId, zoneId, alterPacketsProvider),
 								new CommandChatBotHandler(commandHelper, database, sourceId, zoneId),
 								new StatusChatBotHandler(packetGroupProvider, alterPacketsProvider),
+								new HeartbeatCommandChatBotHandler(eventDatabaseCacheManager),
 								(message, messageSender) -> {
 									messageSender.sendMessage("Unknown command!");
 									return true;

@@ -101,27 +101,28 @@ public class FlagCommandChatBotHandler implements ChatBotHandler {
 				.collect(Collectors.toList());
 	}
 	private void setFlag(MessageSender messageSender, String flagName) {
-		Instant now = Instant.now();
-		TimeRange timeRange = TimeRange.createAfter(now);
+		TimeRange timeRange = TimeRange.createAfter(Instant.now());
 		FlagData data = new FlagData(flagName, new TimeRangeActivePeriod(timeRange));
 		RequestFlagPacket requestFlagPacket = new ImmutableRequestFlagPacket(data);
 
 		CommandManager.Creator creator = commandHelper.getCommandManager().makeCreator(sourceId, zoneId, null, requestFlagPacket, PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR);
-		PacketCollection packetCollection = creator.create(now);
 
 		// TODO We should check if the flag being requested is already active.
-		boolean success = false;
-		try {
-			database.getOpenDatabase().uploadPacketCollection(packetCollection, null);
-			success = true;
-		} catch (SolarThingDatabaseException e) {
-			LOGGER.error("Could not upload request flag packet", e);
-		}
-		if (success) {
-			messageSender.sendMessage("Successfully requested flag: '" + flagName + "' to be set.");
-		} else {
-			messageSender.sendMessage("Was unable to request flag set. See logs for details or try again.");
-		}
+		executorService.execute(() -> {
+			PacketCollection packetCollection = creator.create(Instant.now());
+			boolean success = false;
+			try {
+				database.getOpenDatabase().uploadPacketCollection(packetCollection, null);
+				success = true;
+			} catch (SolarThingDatabaseException e) {
+				LOGGER.error("Could not upload request flag packet", e);
+			}
+			if (success) {
+				messageSender.sendMessage("Successfully requested flag: '" + flagName + "' to be set.");
+			} else {
+				messageSender.sendMessage("Was unable to request flag set. See logs for details or try again.");
+			}
+		});
 	}
 	private void clearFlag(MessageSender messageSender, String flagName) {
 		List<VersionedPacket<StoredAlterPacket>> packets = getPacketsWithFlagName(flagName);

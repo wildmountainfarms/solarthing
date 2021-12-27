@@ -7,11 +7,12 @@ import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.InstancePacketGroup;
 import me.retrodaredevil.solarthing.type.event.feedback.HeartbeatData;
 import me.retrodaredevil.solarthing.type.event.feedback.HeartbeatPacket;
+import me.retrodaredevil.solarthing.util.heartbeat.HeartbeatIdentifier;
+import me.retrodaredevil.solarthing.util.heartbeat.HeartbeatNode;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Objects;
 
 @JsonTypeName("noheartbeat")
 public class NoHeartbeatEvent implements MessageEvent {
@@ -40,15 +41,15 @@ public class NoHeartbeatEvent implements MessageEvent {
 	}
 
 	private void alertFor(MessageSender messageSender, HeartbeatNode heartbeatNode) {
-		messageSender.sendMessage("No heartbeat for: " + heartbeatNode.heartbeatPacket.getData().getDisplayName());
+		messageSender.sendMessage("No heartbeat for: " + heartbeatNode.getHeartbeatPacket().getData().getDisplayName());
 	}
 
 	private void checkForAlerts(MessageSender messageSender) {
 		long now = System.currentTimeMillis();
 		for (Iterator<Map.Entry<HeartbeatIdentifier, HeartbeatNode>> it = map.entrySet().iterator(); it.hasNext(); ) {
 			Map.Entry<HeartbeatIdentifier, HeartbeatNode> entry = it.next();
-			HeartbeatData data = entry.getValue().heartbeatPacket.getData();
-			long latestNextHeartbeat = entry.getValue().dateMillis + data.getExpectedDurationToNextHeartbeat().toMillis() + data.getBufferDuration().toMillis();
+			HeartbeatData data = entry.getValue().getHeartbeatPacket().getData();
+			long latestNextHeartbeat = entry.getValue().getDateMillis() + data.getExpectedDurationToNextHeartbeat().toMillis() + data.getBufferDuration().toMillis();
 			if (now > latestNextHeartbeat) {
 				it.remove();
 				alertFor(messageSender, entry.getValue());
@@ -56,35 +57,4 @@ public class NoHeartbeatEvent implements MessageEvent {
 		}
 	}
 
-	private static class HeartbeatIdentifier {
-		private final String identifier;
-		private final int fragmentId;
-
-		private HeartbeatIdentifier(String identifier, int fragmentId) {
-			this.identifier = identifier;
-			this.fragmentId = fragmentId;
-		}
-
-		@Override
-		public boolean equals(Object o) {
-			if (this == o) return true;
-			if (o == null || getClass() != o.getClass()) return false;
-			HeartbeatIdentifier that = (HeartbeatIdentifier) o;
-			return fragmentId == that.fragmentId && identifier.equals(that.identifier);
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hash(identifier, fragmentId);
-		}
-	}
-	private static class HeartbeatNode {
-		private final long dateMillis;
-		private final HeartbeatPacket heartbeatPacket;
-
-		private HeartbeatNode(long dateMillis, HeartbeatPacket heartbeatPacket) {
-			this.dateMillis = dateMillis;
-			this.heartbeatPacket = heartbeatPacket;
-		}
-	}
 }

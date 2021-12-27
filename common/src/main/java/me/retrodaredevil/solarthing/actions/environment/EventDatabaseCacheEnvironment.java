@@ -1,15 +1,16 @@
 package me.retrodaredevil.solarthing.actions.environment;
 
 import me.retrodaredevil.solarthing.database.cache.DatabaseCache;
+import me.retrodaredevil.solarthing.util.sync.ResourceManager;
 
 public class EventDatabaseCacheEnvironment {
-	private final DatabaseCache eventDatabaseCache;
+	private final ResourceManager<? extends DatabaseCache> eventDatabaseCacheManager;
 
-	public EventDatabaseCacheEnvironment(DatabaseCache eventDatabaseCache) {
-		this.eventDatabaseCache = eventDatabaseCache;
+	public EventDatabaseCacheEnvironment(ResourceManager<? extends DatabaseCache> eventDatabaseCacheManager) {
+		this.eventDatabaseCacheManager = eventDatabaseCacheManager;
 	}
 
-	public DatabaseCache getEventDatabaseCache() {
-		return eventDatabaseCache;
+	public ResourceManager<? extends DatabaseCache> getEventDatabaseCacheManager() {
+		return eventDatabaseCacheManager;
 	}
 }

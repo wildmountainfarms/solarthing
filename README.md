@@ -81,10 +81,6 @@ Grafana is very customizable. Rearrange graphs and make it how you want!
 
 ---
 
-[SolarThing Web](https://github.com/wildmountainfarms/solarthing-web) (Mostly abandon at this point)
-
----
-
 ## Usage at Wild Mountain Farms
 We monitor an Outback MATE2, Renogy Rover PG 40A, EPEver Tracer2210AN (20A) using a Raspberry Pi 3.
 Each device has its own instance of SolarThing running. Each instance uploads data to CouchDB. CouchDB, Grafana,

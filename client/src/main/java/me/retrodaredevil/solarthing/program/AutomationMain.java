@@ -27,6 +27,9 @@ import me.retrodaredevil.solarthing.packets.collection.StoredPacketGroup;
 import me.retrodaredevil.solarthing.type.alter.StoredAlterPacket;
 import me.retrodaredevil.solarthing.type.closed.authorization.AuthorizationPacket;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
+import me.retrodaredevil.solarthing.util.sync.BasicResourceManager;
+import me.retrodaredevil.solarthing.util.sync.ResourceManager;
+import me.retrodaredevil.solarthing.util.sync.SynchronizedResourceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +39,7 @@ import java.time.Clock;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 @UtilityClass
@@ -53,26 +57,30 @@ public final class AutomationMain {
 		return startAutomation(actionNodes, options, options.getPeriodMillis());
 	}
 
-	private static void queryAndFeed(MillisDatabase millisDatabase, SimpleDatabaseCache databaseCache, boolean useEndDate) {
-		final MillisQuery query;
-		if (useEndDate) {
-			query =  databaseCache.getRecommendedQuery();
-		} else {
-			query = databaseCache.createRecommendedQueryBuilder().endKey(null).build();
-		}
-		List<StoredPacketGroup> rawPacketGroups = null;
+	private static void queryAndFeed(MillisDatabase millisDatabase, ResourceManager<SimpleDatabaseCache> databaseCacheManager, boolean useEndDate) {
+		final MillisQuery query = databaseCacheManager.access(databaseCache -> {
+			if (useEndDate) {
+				return databaseCache.getRecommendedQuery();
+			} else {
+				return databaseCache.createRecommendedQueryBuilder().endKey(null).build();
+			}
+		});
+
+		final List<StoredPacketGroup> rawPacketGroups;
 		try {
 			rawPacketGroups = millisDatabase.query(query);
 			LOGGER.debug("Got packets from " + millisDatabase);
 		} catch (SolarThingDatabaseException e) {
 			LOGGER.error("Couldn't get status packets from " + millisDatabase, e);
+			return;
 		}
-		if (rawPacketGroups != null) {
+
+		databaseCacheManager.update(databaseCache -> {
 			databaseCache.feed(rawPacketGroups, query.getStartKey(), query.getEndKey());
-			if (rawPacketGroups.isEmpty()) {
-				// This message is commonly printed for solarthing_open database, which is fine.
-				LOGGER.debug("packetGroups is empty! millisDatabase=" + millisDatabase);
-			}
+		});
+		if (rawPacketGroups.isEmpty()) {
+			// This message is commonly printed for solarthing_open database, which is fine.
+			LOGGER.debug("packetGroups is empty! millisDatabase=" + millisDatabase);
 		}
 	}
 
@@ -89,14 +97,18 @@ public final class AutomationMain {
 
 		VariableEnvironment variableEnvironment = new VariableEnvironment();
 
-		FragmentedPacketGroup[] latestPacketGroupReference = new FragmentedPacketGroup[] { null };
-		@SuppressWarnings("unchecked")
-		List<VersionedPacket<StoredAlterPacket>>[] alterPacketsReference = new List[] { null };
-		FragmentedPacketGroupProvider fragmentedPacketGroupProvider = () -> latestPacketGroupReference[0]; // note this may return null, and that's OK
+		AtomicReference<FragmentedPacketGroup> latestPacketGroupReference = new AtomicReference<>(null); // Use atomic reference so that access is thread safe
+		AtomicReference<List<VersionedPacket<StoredAlterPacket>>> alterPacketsReference = new AtomicReference<>(null); // Use atomic reference so that access is thread safe
+		FragmentedPacketGroupProvider fragmentedPacketGroupProvider = latestPacketGroupReference::get; // note this may return null, and that's OK // This is thread safe if needed
 		Clock clock = Clock.systemUTC();
+
 		SimpleDatabaseCache statusDatabaseCache = SimpleDatabaseCache.createDefault(clock);
+		ResourceManager<SimpleDatabaseCache> statusDatabaseCacheManager = new BasicResourceManager<>(statusDatabaseCache); // not thread safe
 		SimpleDatabaseCache eventDatabaseCache = SimpleDatabaseCache.createDefault(clock);
+		ResourceManager<SimpleDatabaseCache> eventDatabaseCacheManager = new SynchronizedResourceManager<>(eventDatabaseCache);
 		SimpleDatabaseCache openDatabaseCache = new SimpleDatabaseCache(Duration.ofMinutes(60), Duration.ofMinutes(40), Duration.ofMinutes(20), Duration.ofMinutes(15), clock);
+		ResourceManager<SimpleDatabaseCache> openDatabaseCacheManager = new BasicResourceManager<>(openDatabaseCache); // not thread safe
+
 		SimplePacketCache<AuthorizationPacket> authorizationPacketCache = new SimplePacketCache<>(Duration.ofSeconds(20), DatabaseDocumentKeyMap.createPacketSourceFromDatabase(database), false);
 		String sourceId = options.getSourceId();
 		InjectEnvironment injectEnvironment = new InjectEnvironment.Builder()
@@ -105,19 +117,19 @@ public final class AutomationMain {
 				.add(new CouchDbEnvironment(couchSettings)) // most of the time, it's better to use SolarThingDatabaseEnvironment instead, but this option is here in case it's needed
 				.add(new SolarThingDatabaseEnvironment(CouchDbSolarThingDatabase.create(CouchDbUtil.createInstance(couchSettings.getCouchProperties(), couchSettings.getOkHttpProperties()))))
 				.add(new TimeZoneEnvironment(options.getZoneId()))
-				.add(new LatestPacketGroupEnvironment(fragmentedPacketGroupProvider))
-				.add(new LatestFragmentedPacketGroupEnvironment(fragmentedPacketGroupProvider))
-				.add(new EventDatabaseCacheEnvironment(eventDatabaseCache))
+				.add(new LatestPacketGroupEnvironment(fragmentedPacketGroupProvider)) // access is thread safe if needed
+				.add(new LatestFragmentedPacketGroupEnvironment(fragmentedPacketGroupProvider)) // access is thread safe if needed
+				.add(new EventDatabaseCacheEnvironment(eventDatabaseCacheManager))
 				.add(new OpenDatabaseCacheEnvironment(openDatabaseCache))
-				.add(new AlterPacketsEnvironment(() -> alterPacketsReference[0]))
+				.add(new AlterPacketsEnvironment(alterPacketsReference::get)) // access is thread safe if needed
 				.add(new AuthorizationEnvironment(new DatabaseDocumentKeyMap(authorizationPacketCache)))
 				.build();
 
 		ActionMultiplexer multiplexer = new Actions.ActionMultiplexerBuilder().build();
 		while (!Thread.currentThread().isInterrupted()) {
-			queryAndFeed(database.getStatusDatabase(), statusDatabaseCache, true);
-			queryAndFeed(database.getEventDatabase(), eventDatabaseCache, true);
-			queryAndFeed(database.getOpenDatabase(), openDatabaseCache, false);
+			queryAndFeed(database.getStatusDatabase(), statusDatabaseCacheManager, true);
+			queryAndFeed(database.getEventDatabase(), eventDatabaseCacheManager, true);
+			queryAndFeed(database.getOpenDatabase(), openDatabaseCacheManager, false);
 			{
 				// Never cache alter packets, because it's always important that we have up-to-date data, or no data at all.
 				List<VersionedPacket<StoredAlterPacket>> alterPackets = null;
@@ -127,14 +139,14 @@ public final class AutomationMain {
 				} catch (SolarThingDatabaseException e) {
 					LOGGER.error("Could not get alter packets", e);
 				}
-				alterPacketsReference[0] = alterPackets;
+				alterPacketsReference.set(alterPackets);
 			}
 			authorizationPacketCache.updateIfNeeded(); // we have auto update turned off, so we have to call this
 
 			List<FragmentedPacketGroup> statusPacketGroups = PacketUtil.getPacketGroups(options.getSourceId(), options.getDefaultInstanceOptions(), statusDatabaseCache.getAllCachedPackets());
 			if (statusPacketGroups != null) {
 				FragmentedPacketGroup statusPacketGroup = statusPacketGroups.get(statusPacketGroups.size() - 1);
-				latestPacketGroupReference[0] = statusPacketGroup;
+				latestPacketGroupReference.set(statusPacketGroup);
 			}
 			for (ActionNode actionNode : actionNodes) {
 				multiplexer.add(actionNode.createAction(new ActionEnvironment(variableEnvironment, new VariableEnvironment(), injectEnvironment)));

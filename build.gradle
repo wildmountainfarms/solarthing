@@ -7,7 +7,7 @@ buildscript {
         slf4jVersion = '1.7.32' // http://www.slf4j.org/download.html
         log4jVersion = '2.17.0' // https://logging.apache.org/log4j/2.x/javadoc.html
         // https://github.com/FasterXML/jackson/wiki/Jackson-Releases
-        jacksonVersion = '2.13.0' // https://github.com/FasterXML/jackson-databind/releases
+        jacksonVersion = '2.13.1' // https://github.com/FasterXML/jackson-databind/releases
         // retrofit is why we need allow-opens. context: https://stackoverflow.com/questions/60915381/retrofit2-maven-project-illegal-reflective-access-warning // https://github.com/square/retrofit/issues/3341
         retrofitVersion = "2.9.0" // https://github.com/square/retrofit/releases
         shadowVersion = '7.1.1' // https://github.com/johnrengelman/shadow/releases // only works on gradle 7

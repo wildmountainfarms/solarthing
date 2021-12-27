@@ -85,6 +85,16 @@ public final class PacketGroups {
 	}
 
 	/**
+	 * Uses {@link #parseToInstancePacketGroup(PacketGroup, DefaultInstanceOptions)} and asserts that the given {@code group} has both fragment ID and source ID present
+	 */
+	@Contract(pure = true)
+	public static InstancePacketGroup parseToInstancePacketGroupRequireNoDefaults(PacketGroup group){
+		InstancePacketGroup r = parseToInstancePacketGroup(group, DefaultInstanceOptions.REQUIRE_NO_DEFAULTS);
+		DefaultInstanceOptions.requireNoDefaults(r);
+		return r;
+	}
+
+	/**
 	 * Parses to a list of {@link InstancePacketGroup}s without organizing them based on their source ID
 	 * @param groups The PacketGroup list to parse
 	 * @param defaultInstanceOptions The default instance options

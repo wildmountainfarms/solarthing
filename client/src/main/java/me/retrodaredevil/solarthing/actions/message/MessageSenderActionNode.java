@@ -111,12 +111,8 @@ public class MessageSenderActionNode implements ActionNode {
 			}
 
 			long afterDateMillis = Instant.now().minusSeconds(60).toEpochMilli(); // Only process stuff from the last minute
-			List<InstancePacketGroup> unhandledEventInstancePacketGroups = eventProcessedPacketTracker.getUnprocessedPackets(eventDatabaseCacheEnvironment.getEventDatabaseCache(), afterDateMillis).stream()
-					.map(storedPacketGroup -> {
-						InstancePacketGroup instancePacketGroup = PacketGroups.parseToInstancePacketGroup(storedPacketGroup, DefaultInstanceOptions.REQUIRE_NO_DEFAULTS);
-						DefaultInstanceOptions.requireNoDefaults(instancePacketGroup); // all new packets should have a source and fragment ID in them. (Most old ones too by now)
-						return instancePacketGroup;
-					})
+			List<InstancePacketGroup> unhandledEventInstancePacketGroups = eventProcessedPacketTracker.getUnprocessedPackets(eventDatabaseCacheEnvironment.getEventDatabaseCacheManager(), afterDateMillis).stream()
+					.map(PacketGroups::parseToInstancePacketGroupRequireNoDefaults)
 					.collect(Collectors.toList());
 
 			for (MessageEventNode messageEventNode : messageEventNodes) {

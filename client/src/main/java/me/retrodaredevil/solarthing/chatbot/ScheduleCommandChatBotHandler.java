@@ -26,7 +26,7 @@ import static java.util.Objects.requireNonNull;
 
 public class ScheduleCommandChatBotHandler implements ChatBotHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ScheduleCommandChatBotHandler.class);
-	private static final String SHORT_USAGE = "schedule <command> <at <time>|in <duration>>";
+	private static final String SHORT_USAGE = "schedule <command> <in|at|for> <duration>";
 	private static final String USAGE = "Incorrect usage of schedule! Usage:\n\t" + SHORT_USAGE;
 
 	private final ChatBotCommandHelper commandHelper;

@@ -10,6 +10,6 @@ targetCompatibility = JavaVersion.VERSION_11
 version '0.0.1-SNAPSHOT'
 
 dependencies {
-    annotationProcessor 'com.google.auto.service:auto-service:1.0'
-    implementation 'com.google.auto.service:auto-service:1.0'
+    annotationProcessor 'com.google.auto.service:auto-service:1.0.1'
+    implementation 'com.google.auto.service:auto-service:1.0.1'
 }
