@@ -61,24 +61,16 @@ public class PacketHandlerInit {
 		for(DatabaseConfig config : configs) {
 			IndividualSettings statusIndividualSettings = config.getIndividualSettingsOrDefault(Constants.DATABASE_UPLOAD_ID, null);
 			FrequencySettings statusFrequencySettings = statusIndividualSettings != null ? statusIndividualSettings.getFrequencySettings() : FrequencySettings.NORMAL_SETTINGS;
-			IndividualSettings eventIndividualSettings = config.getIndividualSettingsOrDefault(Constants.DATABASE_UPLOAD_EVENT_ID, null);
-//			FrequencySettings eventFrequencySettings = eventIndividualSettings != null ? eventIndividualSettings.getFrequencySettings() : FrequencySettings.NORMAL_SETTINGS;
-			if(eventIndividualSettings != null){
-				LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Individual settings were declared for " + Constants.DATABASE_UPLOAD_EVENT_ID + "! These will not be used in this version! config=" + config);
-			}
 
 			if (CouchDbDatabaseSettings.TYPE.equals(config.getType())) {
 				CouchDbDatabaseSettings settings = (CouchDbDatabaseSettings) config.getSettings();
 				CouchDbInstance instance = CouchDbUtil.createInstance(settings.getCouchProperties(), settings.getOkHttpProperties());
 				statusPacketHandlers.add(new ThrottleFactorPacketHandler(
-						new AsyncPacketHandlerWrapper(new PrintPacketHandleExceptionWrapper(new CouchDbPacketSaver(instance.getDatabase(uniqueStatusName)))),
+						new AsyncPacketHandlerWrapper(new PrintPacketHandleExceptionWrapper(new CouchDbPacketSaver(instance.getDatabase(uniqueStatusName), false))),
 						statusFrequencySettings,
 						true
 				));
-				// TODO We should use Constants.DATABASE_UPLOAD_EVENT_ID and its FrequencySettings to stop this from doing stuff too frequently.
-				// The reason we aren't going to use a ThrottleFactorPacketHandler is all "event" packets are important. We do not want to
-				// miss adding a single event packet to a database
-				eventPacketHandlers.add(new AsyncPacketHandlerWrapper(new RetryFailedPacketHandler(new CouchDbPacketSaver(instance.getDatabase(uniqueEventName)), 7)));
+				eventPacketHandlers.add(new AsyncRetryingPacketHandler(new CouchDbPacketSaver(instance.getDatabase(uniqueEventName), true)));
 			} else if(InfluxDbDatabaseSettings.TYPE.equals(config.getType())) {
 				LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "You are using InfluxDB 1.X! It is recommended that you switch to 2.0, but is not required.");
 				InfluxDbDatabaseSettings settings = (InfluxDbDatabaseSettings) config.getSettings();
@@ -100,7 +92,7 @@ public class PacketHandlerInit {
 						statusFrequencySettings,
 						true
 				));
-				eventPacketHandlers.add(new AsyncPacketHandlerWrapper(new RetryFailedPacketHandler(new InfluxDbPacketSaver(
+				eventPacketHandlers.add(new AsyncRetryingPacketHandler(new InfluxDbPacketSaver(
 						settings.getInfluxProperties(),
 						settings.getOkHttpProperties(),
 						new ConstantNameGetter(databaseName != null ? databaseName : uniqueEventName),
@@ -111,7 +103,7 @@ public class PacketHandlerInit {
 										: DocumentedMeasurementPacketPointCreator.INSTANCE
 								),
 						new ConstantRetentionPolicyGetter(settings.getEventRetentionPolicy())
-				), 5)));
+				)));
 			} else if(InfluxDb2DatabaseSettings.TYPE.equals(config.getType())) {
 				InfluxDb2DatabaseSettings settings = (InfluxDb2DatabaseSettings) config.getSettings();
 				statusPacketHandlers.add(new ThrottleFactorPacketHandler(
@@ -124,12 +116,12 @@ public class PacketHandlerInit {
 						statusFrequencySettings,
 						true
 				));
-				eventPacketHandlers.add(new AsyncPacketHandlerWrapper(new RetryFailedPacketHandler(new InfluxDb2PacketSaver(
+				eventPacketHandlers.add(new AsyncRetryingPacketHandler(new InfluxDb2PacketSaver(
 						settings.getInfluxDbProperties(),
 						settings.getOkHttpProperties(),
 						new ConstantNameGetter(uniqueEventName),
 						DocumentedMeasurementPacketPoint2Creator.INSTANCE
-				), 5)));
+				)));
 			} else if (LatestFileDatabaseSettings.TYPE.equals(config.getType())){
 				LatestFileDatabaseSettings settings = (LatestFileDatabaseSettings) config.getSettings();
 				LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Adding latest file 'database'. This currently only saves 'status' packets");

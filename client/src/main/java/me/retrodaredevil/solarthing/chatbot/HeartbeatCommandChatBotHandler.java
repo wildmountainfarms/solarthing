@@ -73,7 +73,7 @@ public class HeartbeatCommandChatBotHandler implements ChatBotHandler {
 		StringBuilder builder = new StringBuilder();
 
 		if (!activeHeartbeats.isEmpty()) {
-			builder.append("Active:");
+			builder.append("Active:\n");
 			activeHeartbeats.forEach(entry -> {
 				int fragmentId = entry.getKey().getFragmentId();
 				HeartbeatData data = entry.getValue().getHeartbeatPacket().getData();
@@ -82,7 +82,7 @@ public class HeartbeatCommandChatBotHandler implements ChatBotHandler {
 			});
 		}
 		if (!expectedHeartbeats.isEmpty()) {
-			builder.append("Expected:");
+			builder.append("Expected:\n");
 			expectedHeartbeats.forEach(entry -> {
 				int fragmentId = entry.getKey().getFragmentId();
 				HeartbeatData data = entry.getValue().getHeartbeatPacket().getData();
@@ -91,7 +91,7 @@ public class HeartbeatCommandChatBotHandler implements ChatBotHandler {
 			});
 		}
 		if (!deadHeartbeats.isEmpty()) {
-			builder.append("Dead:");
+			builder.append("Dead:\n");
 			deadHeartbeats.forEach(entry -> {
 				int fragmentId = entry.getKey().getFragmentId();
 				HeartbeatData data = entry.getValue().getHeartbeatPacket().getData();

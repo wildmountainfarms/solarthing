@@ -25,12 +25,23 @@ public class CouchDbPacketSaver implements PacketHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CouchDbPacketSaver.class);
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
 
-	/** A map of document IDs to the current revision of that document */
-	private final Map<String, String> idMap = new HashMap<>();
+	/** A map of document IDs to the current revision of that document or null if we ignore conflicts */
+	private final Map<String, String> idMap;
 	private final CouchDbDatabase database;
 
-	public CouchDbPacketSaver(CouchDbDatabase database){
+	/**
+	 * If {@code ignoreConflicts} is true, then when a conflict is found, no exception will be thrown.
+	 * You should ignore conflicts if you are retrying the uploading of a given unique packet, because if there is a conflict, then
+	 * it must have gotten uploaded correctly without you knowing about it.
+	 * <p>
+	 * Note: If ignoreConflicts=false, this implementation is not thread safe for parallel uploading
+	 *
+	 * @param database The database to upload to
+	 * @param ignoreConflicts true to ignore conflicts, false otherwise.
+	 */
+	public CouchDbPacketSaver(CouchDbDatabase database, boolean ignoreConflicts){
 		this.database = database;
+		idMap = ignoreConflicts ? null : new HashMap<>();
 	}
 
 	@Override
@@ -38,7 +49,7 @@ public class CouchDbPacketSaver implements PacketHandler {
 		// Normally we would try and create the database, but that doesn't work with non-admin cookie authenticated users
 
 		String id = packetCollection.getDbId();
-		String revision = idMap.get(id);
+		String revision = idMap == null ? null : idMap.get(id);
 		final JsonData jsonData;
 		try {
 			jsonData = new StringJsonData(MAPPER.writeValueAsString(packetCollection));
@@ -53,11 +64,17 @@ public class CouchDbPacketSaver implements PacketHandler {
 				response = database.updateDocument(id, revision, jsonData);
 			}
 			LOGGER.debug("Now revision is: " + response.getRev() + ". It was: " + revision);
-			idMap.clear(); // Currently, if we have a new document ID, we never, ever, need to worry about using an older document ID, so we can clear the map to avoid keeping unnecessary memory
-			idMap.put(id, response.getRev());
+			if (idMap != null) {
+				idMap.clear(); // Currently, if we have a new document ID, we never, ever, need to worry about using an older document ID, so we can clear the map to avoid keeping unnecessary memory
+				idMap.put(id, response.getRev());
+			}
 		} catch (CouchDbNotFoundException ex) {
 			throw new PacketHandleException("Got 'not found'. Does the database exist? Make sure to run the couchdb-setup!", ex);
 		} catch(CouchDbUpdateConflictException ex){
+			if (idMap == null) { // we are ignoring conflicts
+				LOGGER.debug("Got update conflict exception. Ignoring...");
+				return;
+			}
 			try {
 				String actualRev = database.getCurrentRevision(id);
 				idMap.put(id, actualRev);

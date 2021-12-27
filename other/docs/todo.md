@@ -74,14 +74,12 @@ and also react to messages that have been fully processed (request successfully 
 * Possibly rename graphql program to rest program
 * Make monitor-service only start after WiFi has kicked in
 * Have a request node be able to upload packets if the clock on the device is off by a decent margin
-* Chat bot command to see the current heartbeats
 * Might be good for the `noheartbeat` message sender event to alert when heartbeats come back or if a particular heartbeat is still not present
 * A GraphQL query that can return a list of errors/warnings/statuses.
   * Recent device disconnects
   * Scheduled commands
   * Active flags
   * AC Use/Drop status
-* Make an alternative for RetryFailedPacketHandler. Details in comments in class.
 * Allow io configurations to be specified in-line rather than in a separate file.
 * Add solarthing subcommand that checks whether the configuration has any errors in it
   
@@ -146,6 +144,8 @@ easy displaying in Grafana
 * Create cli Python program that can be ran like: `solarcheck /dev/ttyUSB0`. It will detect whether the port can be opened.
   It will then listen for data to see if it is a MATE device. If it is not, it will send Modbus data to see if it is a
   Rover or Tracer
+* Chat bot command to see the current heartbeats
+* Make an alternative for RetryFailedPacketHandler. Details in comments in class.
 
 ### Look into
 * Look into supporting Elasticsearch, MongoDB, Graphite
