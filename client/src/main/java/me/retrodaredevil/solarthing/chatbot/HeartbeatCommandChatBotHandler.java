@@ -118,7 +118,7 @@ public class HeartbeatCommandChatBotHandler implements ChatBotHandler {
 		if (split.length == 0) {
 			return false;
 		}
-		if (split[0].equals("flag")) {
+		if (split[0].equals("heartbeat")) {
 			displayHeartbeats(messageSender);
 			return true;
 		}
