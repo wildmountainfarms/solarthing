@@ -22,6 +22,7 @@ public final class RoverSetupProgram {
 	private RoverSetupProgram(){ throw new UnsupportedOperationException(); }
 
 	public static int startRoverSetup(@Nullable MutableAddressModbusSlave slave, RoverReadTable read, RoverWriteTable write, Runnable reloadCache, Runnable reloadIO){
+		System.out.println("Starting rover setup! This is deprecated and will be removed in a future version!.");
 		Scanner scanner = new Scanner(System.in);
 		while (scanner.hasNextLine()) {
 			String command = scanner.nextLine();

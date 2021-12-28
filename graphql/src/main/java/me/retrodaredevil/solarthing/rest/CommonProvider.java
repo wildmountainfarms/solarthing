@@ -8,6 +8,8 @@ import me.retrodaredevil.solarthing.packets.collection.DefaultInstanceOptions;
 import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePacket;
 import me.retrodaredevil.solarthing.program.DatabaseConfig;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -21,6 +23,8 @@ import java.util.Objects;
 
 @Component
 public class CommonProvider {
+	private static final Logger LOGGER = LoggerFactory.getLogger(CommonProvider.class);
+
 	@Value("${solarthing.config.database}")
 	private File databaseFile;
 	@Value("${solarthing.config.default_source:#{null}}")
@@ -50,10 +54,9 @@ public class CommonProvider {
 	@PostConstruct
 	public void init() {
 		defaultInstanceOptions = DefaultInstanceOptions.create(getDefaultSourceId(), getDefaultFragmentId());
-		System.out.println("Using defaultInstanceOptions=" + defaultInstanceOptions);
-
-		System.out.println(new File(".").getAbsolutePath());
-		System.out.println(databaseFile.getAbsolutePath());
+		LOGGER.debug("Using defaultInstanceOptions=" + defaultInstanceOptions);
+		LOGGER.debug("Database file: " + databaseFile.getAbsolutePath());
+		LOGGER.debug("Working directory: " + new File(".").getAbsolutePath());
 
 		ObjectMapper objectMapper = JacksonUtil.defaultMapper();
 		objectMapper.getSubtypeResolver().registerSubtypes(

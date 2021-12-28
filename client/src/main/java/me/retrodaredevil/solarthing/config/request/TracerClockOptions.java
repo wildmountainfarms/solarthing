@@ -17,7 +17,7 @@ public class TracerClockOptions {
 
 	@JsonCreator
 	public TracerClockOptions(
-			@JsonProperty("threshold") Duration durationThreshold,
+			@JsonProperty(value = "threshold", required = true) Duration durationThreshold,
 			@JsonProperty("offset") ZoneOffset zoneOffset,
 			@JsonProperty("zone") ZoneId zoneId) {
 		requireNonNull(this.durationThreshold = durationThreshold);

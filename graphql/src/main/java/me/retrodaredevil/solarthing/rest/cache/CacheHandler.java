@@ -36,6 +36,8 @@ import me.retrodaredevil.solarthing.rest.cache.creators.DefaultIdentificationCac
 import me.retrodaredevil.solarthing.rest.cache.creators.FXAccumulationCacheNodeCreator;
 import me.retrodaredevil.solarthing.rest.exceptions.DatabaseException;
 import me.retrodaredevil.solarthing.rest.exceptions.UnexpectedResponseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -44,6 +46,7 @@ import java.util.*;
 import static java.util.Objects.requireNonNull;
 
 public class CacheHandler {
+	private final Logger LOGGER = LoggerFactory.getLogger(CacheHandler.class);
 	private static final int QUERY_PERIOD_COUNT = 4 * 24; // we can request data a day at a time, but we won't do more than that
 	/** This duration represents the amount of time to go "backwards" for calculating data for a single given period. If this is 4 and the period is from 10:00 to 11:00, then
 	 * that period actually requires data from 6:00 to 11:00 */
@@ -235,10 +238,10 @@ public class CacheHandler {
 					successCount++;
 				} else {
 					failCount++;
-					System.err.println("Error: " + documentResponse.getError() + " reason: " + documentResponse.getReason() + " on id: " + documentResponse.getId());
+					LOGGER.info("Error: " + documentResponse.getError() + " reason: " + documentResponse.getReason() + " on id: " + documentResponse.getId());
 				}
 			}
-			System.out.println("Success: " + successCount + " fail: " + failCount + ". Tried to update: " + updateAttemptCount);
+			LOGGER.debug("Success: " + successCount + " fail: " + failCount + ". Tried to update: " + updateAttemptCount);
 
 			int numberOfWantedType = 0;
 			for (CacheDataPacket cacheDataPacket : calculatedPackets) {
@@ -253,9 +256,9 @@ public class CacheHandler {
 					numberOfWantedType++;
 				}
 			}
-			System.out.println("Calculated " + calculatedPackets.size() + " and " + numberOfWantedType + " were of type " + cacheName);
+			LOGGER.debug("Calculated " + calculatedPackets.size() + " and " + numberOfWantedType + " were of type " + cacheName);
 		} else {
-			System.out.println("Didn't have to get any data");
+			LOGGER.debug("Didn't have to get any data");
 		}
 
 		return new ArrayList<>(periodNumberPacketMap.values());

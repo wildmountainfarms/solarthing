@@ -16,6 +16,8 @@ import me.retrodaredevil.solarthing.rest.graphql.service.*;
 import me.retrodaredevil.solarthing.rest.graphql.solcast.SolcastConfig;
 import me.retrodaredevil.solarthing.packets.collection.DefaultInstanceOptions;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -31,6 +33,7 @@ import java.util.Collections;
 
 @Component
 public class GraphQLProvider {
+	private static final Logger LOGGER = LoggerFactory.getLogger(GraphQLProvider.class);
 
 	private final CouchDbDatabaseSettings couchDbDatabaseSettings;
 	private final DefaultInstanceOptions defaultInstanceOptions;
@@ -78,7 +81,7 @@ public class GraphQLProvider {
 		} catch (JsonParseException | JsonMappingException e) {
 			throw new RuntimeException("Bad solcast JSON!", e);
 		} catch (IOException e) {
-			System.out.println("No solcast config! Not using solcast!");
+			LOGGER.debug("No solcast config! Not using solcast!");
 		}
 		if (solcastConfig == null) {
 			solcastConfig = new SolcastConfig(Collections.emptyMap());
@@ -96,7 +99,7 @@ public class GraphQLProvider {
 		ResolverBuilder resolverBuilder = new SolarThingAnnotatedResolverBuilder();
 		SimpleQueryHandler simpleQueryHandler = new SimpleQueryHandler(defaultInstanceOptions, couchDbDatabaseSettings, objectMapper);
 		ZoneId zoneId = ZoneId.systemDefault(); // In the future, we could make this customizable, but like, bro just make sure your system time is correct
-		System.out.println("Using timezone: " + zoneId);
+		LOGGER.debug("Using timezone: " + zoneId);
 		return new GraphQLSchemaGenerator()
 				.withBasePackages("me.retrodaredevil.solarthing")
 				.withOperationsFromSingleton(new SolarThingGraphQLService(simpleQueryHandler))

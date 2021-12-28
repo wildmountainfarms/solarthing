@@ -20,6 +20,8 @@ import me.retrodaredevil.solarthing.type.closed.meta.MetaDatabase;
 import me.retrodaredevil.solarthing.packets.collection.*;
 import me.retrodaredevil.solarthing.packets.collection.parsing.PacketParsingErrorHandler;
 import me.retrodaredevil.solarthing.rest.exceptions.DatabaseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.List;
@@ -29,6 +31,7 @@ import java.util.NoSuchElementException;
 import static java.util.Objects.requireNonNull;
 
 public class SimpleQueryHandler {
+	private static final Logger LOGGER = LoggerFactory.getLogger(SimpleQueryHandler.class);
 
 	private final DefaultInstanceOptions defaultInstanceOptions;
 
@@ -82,7 +85,7 @@ public class SimpleQueryHandler {
 		if(rawPacketGroups.isEmpty()){
 			if (to - from > 60 * 1000) {
 				// Only debug this message if the requester is actually asking for a decent chunk of data
-				System.out.println("No packets were queried between " + from + " and " + to);
+				LOGGER.debug("No packets were queried between " + from + " and " + to);
 			}
 			return Collections.emptyList();
 		}

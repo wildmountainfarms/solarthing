@@ -70,7 +70,6 @@ and also react to messages that have been fully processed (request successfully 
   * This will require some sort of scheduling logic that makes SolarThing check to see if something was completed
   e.g.: an alter packet was successfully deleted
 * Create abstraction for sending custom formatted messages. Right now some calls to `MessageSender` pass strings specific to slack
-* Actually start using SLF4J in graphql program
 * Possibly rename graphql program to rest program
 * Make monitor-service only start after WiFi has kicked in
 * Have a request node be able to upload packets if the clock on the device is off by a decent margin
@@ -82,6 +81,7 @@ and also react to messages that have been fully processed (request successfully 
   * AC Use/Drop status
 * Allow io configurations to be specified in-line rather than in a separate file.
 * Add solarthing subcommand that checks whether the configuration has any errors in it
+* Remove rover-setup program
   
 ### Completed
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
@@ -146,6 +146,7 @@ easy displaying in Grafana
   Rover or Tracer
 * Chat bot command to see the current heartbeats
 * Make an alternative for RetryFailedPacketHandler. Details in comments in class.
+* Actually start using SLF4J in graphql program
 
 ### Look into
 * Look into supporting Elasticsearch, MongoDB, Graphite

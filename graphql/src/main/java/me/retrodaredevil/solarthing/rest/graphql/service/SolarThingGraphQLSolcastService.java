@@ -19,6 +19,8 @@ import me.retrodaredevil.solarthing.solcast.common.SimpleEstimatedActual;
 import me.retrodaredevil.solarthing.solcast.rooftop.EstimatedActualCache;
 import me.retrodaredevil.solarthing.solcast.rooftop.EstimatedActualRetriever;
 import okhttp3.OkHttpClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import retrofit2.Retrofit;
 
 import java.io.IOException;
@@ -32,6 +34,7 @@ import static me.retrodaredevil.solarthing.rest.graphql.service.SchemaConstants.
 import static me.retrodaredevil.solarthing.rest.graphql.service.SchemaConstants.DESCRIPTION_TO;
 
 public class SolarThingGraphQLSolcastService {
+	private static final Logger LOGGER = LoggerFactory.getLogger(SolarThingGraphQLSolcastService.class);
 	/*
 	Inspiration for this: https://forums.solcast.com.au/t/using-the-api-with-node-red-and-influxdb-grafana/221
 	Also discussed here: https://discourse.nodered.org/t/power-forecasts-and-data-tuning-for-solar-installations-node-red-solcast-api-influxdb-grafana/28037/2
@@ -60,7 +63,7 @@ public class SolarThingGraphQLSolcastService {
 					new EstimatedActualCache(EstimatedActualRetriever.createRooftop(service, entry.getResourceId())),
 					sourceId
 			));
-			System.out.println("For source: " + sourceId + " using solcast resource ID: " + entry.getResourceId());
+			LOGGER.debug("For source: " + sourceId + " using solcast resource ID: " + entry.getResourceId());
 		}
 	}
 

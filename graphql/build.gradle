@@ -2,7 +2,7 @@ buildscript {
     ext {
         // https://github.com/spring-projects/spring-boot/wiki#release-notes
         // https://github.com/spring-projects/spring-boot/releases
-        springBootVersion = '2.5.5'
+        springBootVersion = '2.6.2'
     }
     repositories {
         mavenCentral()
@@ -28,7 +28,10 @@ compileJava {
 
 dependencies {
 //    implementation "com.fasterxml.jackson.module:jackson-module-jsonSchema:$jacksonVersion" // I don't remember why we needed this
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation('org.springframework.boot:spring-boot-starter-web') {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
+    implementation 'org.springframework.boot:spring-boot-starter-log4j2'
     // https://mvnrepository.com/artifact/com.graphql-java/graphql-java-spring-boot-starter-webmvc
     implementation 'com.graphql-java:graphql-java-spring-boot-starter-webmvc:2.0'
 
