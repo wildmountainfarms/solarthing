@@ -57,7 +57,7 @@ public class CheckMain {
 			boolean[] gotAnyData = new boolean[] { false };
 			boolean[] parsedData = new boolean[] { false };
 
-			PacketListReceiver receiver = (packets, instantType) -> {
+			PacketListReceiver receiver = (packets) -> {
 				System.out.println("Got " + packets.size() + " packets");
 				parsedData[0] = true;
 			};

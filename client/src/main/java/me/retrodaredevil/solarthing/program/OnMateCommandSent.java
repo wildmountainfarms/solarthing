@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.program;
 
-import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.type.open.OpenSource;
 import me.retrodaredevil.solarthing.commands.command.OnCommandExecute;
 import me.retrodaredevil.solarthing.commands.command.SourcedCommand;
@@ -33,6 +32,6 @@ public class OnMateCommandSent implements OnCommandExecute<MateCommand> {
 				source.toDataSource().toString(), // for legacy reasons, include the data source converted to a string
 				reason
 		);
-		packetListReceiver.receive(Collections.singletonList(packet), InstantType.INSTANT);
+		packetListReceiver.receive(Collections.singletonList(packet));
 	}
 }

@@ -5,7 +5,6 @@ import me.retrodaredevil.io.modbus.ModbusRuntimeException;
 import me.retrodaredevil.io.modbus.ModbusTimeoutException;
 import me.retrodaredevil.io.modbus.handling.ParsedResponseException;
 import me.retrodaredevil.io.modbus.handling.RawResponseException;
-import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.config.request.modbus.SuccessReporter;
 import me.retrodaredevil.solarthing.io.NotInitializedIOException;
 import me.retrodaredevil.solarthing.misc.error.ImmutableExceptionErrorPacket;
@@ -52,11 +51,11 @@ public class ModbusListUpdaterWrapper implements PacketListReceiver {
 	}
 
 	@Override
-	public void receive(List<Packet> packets, InstantType instantType) {
+	public void receive(List<Packet> packets) {
 		final long startTimeNanos = System.nanoTime();
 		try {
 			reloadCache.run();
-			packetListReceiver.receive(packets, instantType);
+			packetListReceiver.receive(packets);
 		} catch(ModbusRuntimeException e){
 			LOGGER.error("Modbus exception", e);
 

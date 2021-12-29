@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.misc.common;
 
-import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 
@@ -13,7 +12,7 @@ import java.util.Set;
  */
 public class DataIdentifiablePacketListChecker implements PacketListReceiver {
 	@Override
-	public void receive(List<Packet> packets, InstantType instantType) {
+	public void receive(List<Packet> packets) {
 		Set<Integer> takenIds = new HashSet<>();
 		for (Packet packet : packets) {
 			if (packet instanceof DataIdentifiable) {

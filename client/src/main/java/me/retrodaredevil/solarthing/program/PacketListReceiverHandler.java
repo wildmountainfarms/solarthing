@@ -47,46 +47,46 @@ public class PacketListReceiverHandler {
 	public PacketListReceiver getPacketListReceiverAccepter(){
 		return receiver;
 	}
-	private final PacketListReceiver receiver = (packets, instantType) -> packetList.addAll(packets);
+	private final PacketListReceiver receiver = (packets) -> packetList.addAll(packets);
 
 	/**
-	 * NOTE: This does not do anything with the packets passed to {@link PacketListReceiver#receive(List, InstantType)}.
+	 * NOTE: This does not do anything with the packets passed to {@link PacketListReceiver#receive(List)}.
 	 * @return The {@link PacketListReceiver} that uses the packets currently stored to create a {@link PacketCollection} that can be handled with returned value from {@link #getPacketListReceiverHandler()}
 	 */
 	public PacketListReceiver getPacketListReceiverPacker(){
 		return packer;
 	}
-	private final PacketListReceiver packer = (packets, instantType) -> pack(instantType);
+	private final PacketListReceiver packer = (packets) -> pack();
 
 	/**
-	 * NOTE: This does not do anything with the packets passed to {@link PacketListReceiver#receive(List, InstantType)}.
+	 * NOTE: This does not do anything with the packets passed to {@link PacketListReceiver#receive(List)}.
 	 * @return A {@link PacketListReceiver} that handles the {@link PacketCollection}s that are currently stored
 	 */
 	public PacketListReceiver getPacketListReceiverHandler(){
 		return handler;
 	}
-	private final PacketListReceiver handler = (packets, instantType) -> handle(instantType);
+	private final PacketListReceiver handler = (packets) -> handle();
 
-	public void pack(InstantType instantType){
+	public void pack(){
 		if(packetList.isEmpty()){
 			return;
 		}
-		packetListReceiver.receive(packetList, instantType);
+		packetListReceiver.receive(packetList);
 		Instant now = Instant.now();
 		PacketCollection packetCollection = PacketCollections.createFromPackets(now, packetList, idGenerator, zoneId);
 		packetList.clear();
 		packetCollectionList.add(packetCollection);
 	}
 
-	public void handle(InstantType instantType) {
+	public void handle() {
 		for (PacketCollection packetCollection : packetCollectionList) {
-			handleSinglePacketCollection(packetCollection, instantType);
+			handleSinglePacketCollection(packetCollection);
 		}
 		packetCollectionList.clear();
 	}
-	private void handleSinglePacketCollection(PacketCollection packetCollection, InstantType instantType) {
+	private void handleSinglePacketCollection(PacketCollection packetCollection) {
 		try {
-			packetHandler.handle(packetCollection, instantType);
+			packetHandler.handle(packetCollection, InstantType.INSTANT);
 		} catch (PacketHandleException e) {
 			LOGGER.error("Couldn't handle packet collection. id: " + packetCollection.getDbId() + " dateMillis: " + packetCollection.getDateMillis() + ". Will NOT try again.", e);
 		}
@@ -104,8 +104,8 @@ public class PacketListReceiverHandler {
 		if (mutablePackets.isEmpty()) {
 			return;
 		}
-		packetListReceiver.receive(mutablePackets, InstantType.INSTANT); // this call may mutate mutablePackets, which is why we need it in the first place
+		packetListReceiver.receive(mutablePackets); // this call may mutate mutablePackets, which is why we need it in the first place
 		PacketCollection packetCollection = PacketCollections.createFromPackets(now, mutablePackets, idGenerator, zoneId);
-		handleSinglePacketCollection(packetCollection, InstantType.INSTANT);
+		handleSinglePacketCollection(packetCollection);
 	}
 }

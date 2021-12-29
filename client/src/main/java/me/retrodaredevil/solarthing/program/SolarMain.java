@@ -77,7 +77,7 @@ public final class SolarMain {
 		requireNonNull(source);
 		Packet sourcePacket = InstanceSourcePackets.create(source);
 		Packet fragmentPacket = InstanceFragmentIndicatorPackets.create(fragment);
-		return (list, instantType) -> {
+		return (list) -> {
 			list.add(sourcePacket);
 			list.add(fragmentPacket);
 		};

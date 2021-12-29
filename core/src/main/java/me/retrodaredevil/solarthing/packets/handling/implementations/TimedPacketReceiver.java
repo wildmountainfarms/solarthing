@@ -68,7 +68,7 @@ public class TimedPacketReceiver implements RawPacketReceiver {
 				instant = false;
 				try {
 					if (wasInstant) {
-						packetListReceiver.receive(packetList, InstantType.INSTANT);
+						packetListReceiver.receive(packetList);
 					} else {
 						// In the future, we will remove the summary marker, but this has never had logging around it before,
 						//   so we want to understand it better, hence the summary importance.

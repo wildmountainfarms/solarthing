@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.program.receiver;
 
-import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.netcat.ConnectionHandler;
 import me.retrodaredevil.solarthing.packets.Packet;
@@ -34,7 +33,7 @@ public class RoverPacketListUpdater implements PacketListReceiver {
 	}
 
 	@Override
-	public void receive(List<Packet> packets, InstantType instantType) {
+	public void receive(List<Packet> packets) {
 		RoverStatusPacket packet = RoverStatusPackets.createFromReadTable(number, read);
 		SpecialPowerControl_E02D specialPower2 = packet.getSpecialPowerControlE02D();
 		LOGGER.debug(SolarThingConstants.NO_CONSOLE, "Debugging special power control values: (Will debug all packets later)\n" +

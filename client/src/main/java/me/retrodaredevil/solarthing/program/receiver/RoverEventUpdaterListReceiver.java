@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.program.receiver;
 
-import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.Packet;
@@ -25,7 +24,7 @@ public class RoverEventUpdaterListReceiver implements PacketListReceiver {
 	}
 
 	@Override
-	public void receive(List<Packet> packets, InstantType instantType) {
+	public void receive(List<Packet> packets) {
 		for (Packet packet : packets) {
 			if (packet instanceof RoverStatusPacket) {
 				RoverStatusPacket rover = (RoverStatusPacket) packet;
@@ -49,7 +48,7 @@ public class RoverEventUpdaterListReceiver implements PacketListReceiver {
 			packets.add(new ImmutableRoverChargingStateChangePacket(rover.getIdentifier(), currentChargingStateValue, lastChargingStateValue));
 		}
 		if (!packets.isEmpty()) {
-			eventReceiver.receive(packets, InstantType.INSTANT); // TODO remove instant type // doesn't apply to rovers
+			eventReceiver.receive(packets); // TODO remove instant type // doesn't apply to rovers
 		}
 	}
 }

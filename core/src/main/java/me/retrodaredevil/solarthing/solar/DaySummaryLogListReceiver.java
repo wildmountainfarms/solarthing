@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.solar;
 
-import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
@@ -23,7 +22,7 @@ public class DaySummaryLogListReceiver implements PacketListReceiver {
 	private final Map<Identifier, DailyChargeController> controllerMap = new HashMap<>();
 
 	@Override
-	public void receive(List<Packet> packets, InstantType instantType) {
+	public void receive(List<Packet> packets) {
 		for (Packet packet : packets) {
 			if (packet instanceof DailyChargeController) {
 				DailyChargeController controller = (DailyChargeController) packet;

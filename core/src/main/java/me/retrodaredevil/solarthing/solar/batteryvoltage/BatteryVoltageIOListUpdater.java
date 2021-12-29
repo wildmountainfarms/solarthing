@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.solar.batteryvoltage;
 
-import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import org.slf4j.Logger;
@@ -29,7 +28,7 @@ public class BatteryVoltageIOListUpdater implements PacketListReceiver {
 	}
 
 	@Override
-	public void receive(List<Packet> packets, InstantType instantType) {
+	public void receive(List<Packet> packets) {
 		try {
 			BatteryVoltageOnlyPacket packet = run();
 			if (packet != null) {

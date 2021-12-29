@@ -52,7 +52,7 @@ public final class PacketListReceiverHandlerBundle {
 		return new PacketListReceiverHandler(
 				new PacketListReceiverMultiplexer(
 						sourceAndFragmentUpdater,
-						(packets, instantType) -> {
+						(packets) -> {
 							LOGGER.debug(SolarThingConstants.NO_CONSOLE, "Debugging event packets");
 							try {
 								LOGGER.debug(SolarThingConstants.NO_CONSOLE, MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(packets));
@@ -73,7 +73,7 @@ public final class PacketListReceiverHandlerBundle {
 		PacketListReceiverHandler statusPacketListReceiverHandler = new PacketListReceiverHandler(
 				new PacketListReceiverMultiplexer(
 						sourceAndFragmentUpdater,
-						(packets, instantType) -> {
+						(packets) -> {
 							LOGGER.debug("Debugging all packets");
 							try {
 								LOGGER.debug(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(packets));

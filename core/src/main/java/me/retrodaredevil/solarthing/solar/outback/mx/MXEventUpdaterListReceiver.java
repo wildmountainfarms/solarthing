@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.solar.outback.mx;
 
-import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
@@ -23,17 +22,17 @@ public class MXEventUpdaterListReceiver implements PacketListReceiver {
 	}
 
 	@Override
-	public void receive(List<Packet> packets, InstantType instantType) {
+	public void receive(List<Packet> packets) {
 		for(Packet packet : packets){
 			if(packet instanceof MXStatusPacket){
 				MXStatusPacket mx = (MXStatusPacket) packet;
 				MXStatusPacket previous = previousPacketMap.get(mx.getIdentifier());
 				previousPacketMap.put(mx.getIdentifier(), mx);
-				useData(mx, previous, instantType);
+				useData(mx, previous);
 			}
 		}
 	}
-	private void useData(MXStatusPacket mx, MXStatusPacket last, InstantType instantType){
+	private void useData(MXStatusPacket mx, MXStatusPacket last){
 		final Integer previousChargerModeValue;
 		final Integer previousRawAuxModeValue;
 		final Integer previousErrorModeValue;
@@ -63,7 +62,7 @@ public class MXEventUpdaterListReceiver implements PacketListReceiver {
 			eventPackets.add(new ImmutableMXRawDayEndPacket(mx.getAddress(), mx.getDailyKWH(), mx.getDailyAH(), mx.getDailyAHSupport()));
 		}
 		if (!eventPackets.isEmpty()) {
-			eventReceiver.receive(eventPackets, instantType);
+			eventReceiver.receive(eventPackets);
 		}
 	}
 }

@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import me.retrodaredevil.io.modbus.ModbusRuntimeException;
 import me.retrodaredevil.io.modbus.handling.FunctionCodeException;
-import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.config.request.TracerClockOptions;
 import me.retrodaredevil.solarthing.netcat.ConnectionHandler;
@@ -51,7 +50,7 @@ public class TracerPacketListUpdater implements PacketListReceiver {
 	}
 
 	@Override
-	public void receive(List<Packet> packets, InstantType instantType) {
+	public void receive(List<Packet> packets) {
 		TracerStatusPacket packet = TracerStatusPackets.createFromReadTable(number, read);
 		packets.add(packet);
 		if (tracerClockOptions != null) {

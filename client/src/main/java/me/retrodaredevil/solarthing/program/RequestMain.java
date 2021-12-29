@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.program;
 
-import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.actions.command.EnvironmentUpdater;
 import me.retrodaredevil.solarthing.actions.command.EnvironmentUpdaterMultiplexer;
@@ -70,7 +69,7 @@ public class RequestMain {
 		while (!Thread.currentThread().isInterrupted()) {
 			long startTimeNanos = System.nanoTime();
 			List<Packet> packets = new ArrayList<>();
-			packetListReceiver.receive(packets, InstantType.INSTANT);
+			packetListReceiver.receive(packets);
 			long timeTakenNanos = System.nanoTime() - startTimeNanos;
 
 			long sleepTimeNanos = Math.max(minimumWait.toNanos(), period.toNanos() - timeTakenNanos);

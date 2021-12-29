@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.solar.outback;
 
-import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.packets.BitmaskMode;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
@@ -18,37 +17,37 @@ class OutbackDuplicatePacketRemoverTest {
 	@Test
 	void test1(){
 		List<Packet> list = toPackets(1, 2, 3, 1, 2, 3, 4, 2, 3);
-		OutbackDuplicatePacketRemover.INSTANCE.receive(list, InstantType.INSTANT);
+		OutbackDuplicatePacketRemover.INSTANCE.receive(list);
 		assertEquals(4, list.size());
 	}
 	@Test
 	void test2(){
 		List<Packet> list = toPackets(1, 2, 3);
-		OutbackDuplicatePacketRemover.INSTANCE.receive(list, InstantType.INSTANT);
+		OutbackDuplicatePacketRemover.INSTANCE.receive(list);
 		assertEquals(3, list.size());
 	}
 	@Test
 	void test3(){
 		List<Packet> list = toPackets(1, 2, 3, 3);
-		OutbackDuplicatePacketRemover.INSTANCE.receive(list, InstantType.INSTANT);
+		OutbackDuplicatePacketRemover.INSTANCE.receive(list);
 		assertEquals(3, list.size());
 	}
 	@Test
 	void test4(){
 		List<Packet> list = toPackets(1, 2, 3, 1, 2);
-		OutbackDuplicatePacketRemover.INSTANCE.receive(list, InstantType.INSTANT);
+		OutbackDuplicatePacketRemover.INSTANCE.receive(list);
 		assertEquals(3, list.size());
 	}
 	@Test
 	void test5(){
 		List<Packet> list = toPackets(1, 2, 3, 1, 2, 1, 2, 3, 4);
-		OutbackDuplicatePacketRemover.INSTANCE.receive(list, InstantType.INSTANT);
+		OutbackDuplicatePacketRemover.INSTANCE.receive(list);
 		assertEquals(4, list.size());
 	}
 	@Test
 	void test6(){
 		List<Packet> list = toPackets(1, 2, 3, 4, 1, 2, 1, 2, 3);
-		OutbackDuplicatePacketRemover.INSTANCE.receive(list, InstantType.INSTANT);
+		OutbackDuplicatePacketRemover.INSTANCE.receive(list);
 		assertEquals(4, list.size());
 	}
 	private List<Packet> toPackets(int... addresses){

@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.solar.outback;
 
-import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.packets.DocumentedPacket;
 import me.retrodaredevil.solarthing.packets.DocumentedPacketType;
 import me.retrodaredevil.solarthing.packets.Packet;
@@ -40,7 +39,7 @@ public class FXStatusListUpdater implements PacketListReceiver {
 	}
 
 	@Override
-	public void receive(List<Packet> packets, InstantType instantType) {
+	public void receive(List<Packet> packets) {
 		long now = System.currentTimeMillis();
 
 		long timeId = timeIdentifier.getTimeId(now);
@@ -61,7 +60,7 @@ public class FXStatusListUpdater implements PacketListReceiver {
 						updater = new FXListUpdater();
 						fxMap.put(identifier, updater);
 					}
-					updater.update(now, packets, fx, instantType);
+					updater.update(now, packets, fx);
 				}
 			}
 		}
@@ -85,7 +84,7 @@ public class FXStatusListUpdater implements PacketListReceiver {
 		private int misc = 0;
 		private final Set<Integer> acModeValues = new HashSet<>();
 
-		private void update(long currentTimeMillis, List<? super Packet> packets, FXStatusPacket fx, InstantType instantType){
+		private void update(long currentTimeMillis, List<? super Packet> packets, FXStatusPacket fx){
 			Long startDateMillis = this.startDateMillis;
 			if(startDateMillis == null){
 				startDateMillis = currentTimeMillis;

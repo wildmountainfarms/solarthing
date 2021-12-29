@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.packets.handling;
 
-import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.packets.Packet;
 
 import java.util.*;
@@ -16,9 +15,9 @@ public class PacketListReceiverMultiplexer implements PacketListReceiver {
 	}
 
 	@Override
-	public void receive(List<Packet> packets, InstantType instantType) {
+	public void receive(List<Packet> packets) {
 		for(PacketListReceiver provider : packetProviderList){
-			provider.receive(packets, instantType);
+			provider.receive(packets);
 		}
 	}
 

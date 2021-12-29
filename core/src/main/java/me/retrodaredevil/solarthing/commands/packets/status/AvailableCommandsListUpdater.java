@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.commands.packets.status;
 
-import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.commands.CommandInfo;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
@@ -17,7 +16,7 @@ public class AvailableCommandsListUpdater implements PacketListReceiver {
 	}
 
 	@Override
-	public void receive(List<Packet> packets, InstantType instantType) {
+	public void receive(List<Packet> packets) {
 		if (alwaysSend || !packets.isEmpty()) {
 			packets.add(new ImmutableAvailableCommandsPacket(commandInfoList));
 		}

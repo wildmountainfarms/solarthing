@@ -1,7 +1,6 @@
 package me.retrodaredevil.solarthing.program.receiver;
 
 import me.retrodaredevil.io.modbus.ModbusRuntimeException;
-import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.solar.pzem.ImmutablePzemShuntStatusPacket;
@@ -25,7 +24,7 @@ public class PzemShuntPacketListUpdater implements PacketListReceiver {
 	}
 
 	@Override
-	public void receive(List<Packet> packets, InstantType instantType) {
+	public void receive(List<Packet> packets) {
 		final PzemShuntStatusPacket packet;
 		try {
 			packet = ImmutablePzemShuntStatusPacket.createFromReadTable(dataId, modbusAddress, read);

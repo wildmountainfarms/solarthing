@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.solar.outback.fx;
 
-import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
@@ -25,18 +24,18 @@ public class FXEventUpdaterListReceiver implements PacketListReceiver {
 	}
 
 	@Override
-	public void receive(List<Packet> packets, InstantType instantType) {
+	public void receive(List<Packet> packets) {
 		for(Packet packet : packets){
 			if(packet instanceof FXStatusPacket){
 				FXStatusPacket fx = (FXStatusPacket) packet;
 				FXStatusPacket previous = previousPacketMap.get(fx.getIdentifier());
 				previousPacketMap.put(fx.getIdentifier(), fx);
 				Integer warningIgnoreValue = fxWarningIgnoreMap.get(fx.getAddress());
-				useData(fx, previous, warningIgnoreValue == null ? FXWarningModeChangePacket.DEFAULT_IGNORED_WARNING_MODE_VALUE_CONSTANT : warningIgnoreValue, instantType);
+				useData(fx, previous, warningIgnoreValue == null ? FXWarningModeChangePacket.DEFAULT_IGNORED_WARNING_MODE_VALUE_CONSTANT : warningIgnoreValue);
 			}
 		}
 	}
-	private void useData(FXStatusPacket fx, FXStatusPacket previous, int ignoredWarningModeValueConstant, InstantType instantType){
+	private void useData(FXStatusPacket fx, FXStatusPacket previous, int ignoredWarningModeValueConstant){
 		final Integer lastACMode;
 		final Boolean wasAuxActive;
 		final Integer previousOperationalModeValue;
@@ -77,7 +76,7 @@ public class FXEventUpdaterListReceiver implements PacketListReceiver {
 			packets.add(new ImmutableFXWarningModeChangePacket(fx.getIdentifier(), warningModeValue, previousWarningModeValue, ignoredWarningModeValueConstant));
 		}
 		if(!packets.isEmpty()){
-			eventReceiver.receive(packets, instantType);
+			eventReceiver.receive(packets);
 		}
 	}
 }
