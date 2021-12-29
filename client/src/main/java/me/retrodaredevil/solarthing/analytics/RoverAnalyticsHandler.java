@@ -16,9 +16,6 @@ public class RoverAnalyticsHandler implements PacketHandler {
 
 	@Override
 	public void handle(PacketCollection packetCollection, InstantType instantType) {
-		if (!instantType.isInstant()) {
-			return;
-		}
 		if (timer.shouldSend()) {
 			timer.onSend();
 			send(packetCollection);

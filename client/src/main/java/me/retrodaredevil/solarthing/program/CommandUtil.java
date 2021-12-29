@@ -62,7 +62,7 @@ public class CommandUtil {
 				};
 				commandRequesterHandlerList.add(new ThrottleFactorPacketHandler(new AsyncPacketHandlerWrapper(new PrintPacketHandleExceptionWrapper(
 						packetHandler
-				)), frequencySettings, true));
+				)), frequencySettings));
 			}
 		}
 		return commandRequesterHandlerList;

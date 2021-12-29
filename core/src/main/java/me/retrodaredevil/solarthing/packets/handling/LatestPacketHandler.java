@@ -4,18 +4,14 @@ import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 
 public class LatestPacketHandler implements PacketHandler {
-	private final boolean instantOnly;
 	private volatile PacketCollection lastCollection = null;
 
-	public LatestPacketHandler(boolean instantOnly) {
-		this.instantOnly = instantOnly;
+	public LatestPacketHandler() {
 	}
 
 	@Override
 	public void handle(PacketCollection packetCollection, InstantType instantType) {
-		if(!instantOnly || instantType.isInstant()){
-			lastCollection = packetCollection;
-		}
+		lastCollection = packetCollection;
 	}
 	public PacketCollection getLatestPacketCollection(){
 		return lastCollection;

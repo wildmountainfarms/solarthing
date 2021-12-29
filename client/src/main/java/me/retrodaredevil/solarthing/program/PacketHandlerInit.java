@@ -69,8 +69,7 @@ public class PacketHandlerInit {
 				CouchDbInstance instance = CouchDbUtil.createInstance(settings.getCouchProperties(), settings.getOkHttpProperties());
 				statusPacketHandlers.add(new ThrottleFactorPacketHandler(
 						new AsyncPacketHandlerWrapper(new PrintPacketHandleExceptionWrapper(new CouchDbPacketSaver(instance.getDatabase(uniqueStatusName), false))),
-						statusFrequencySettings,
-						true
+						statusFrequencySettings
 				));
 				eventPacketHandlers.add(new AsyncRetryingPacketHandler(new CouchDbPacketSaver(instance.getDatabase(uniqueEventName), true)));
 			} else if(InfluxDbDatabaseSettings.TYPE.equals(config.getType())) {
@@ -91,8 +90,7 @@ public class PacketHandlerInit {
 										),
 								new FrequentRetentionPolicyGetter(new FrequentHandler<>(settings.getFrequentStatusRetentionPolicyList()))
 						))),
-						statusFrequencySettings,
-						true
+						statusFrequencySettings
 				));
 				eventPacketHandlers.add(new AsyncRetryingPacketHandler(new InfluxDbPacketSaver(
 						settings.getInfluxProperties(),
@@ -115,8 +113,7 @@ public class PacketHandlerInit {
 								new ConstantNameGetter(uniqueStatusName),
 								DocumentedMeasurementPacketPoint2Creator.INSTANCE
 						))),
-						statusFrequencySettings,
-						true
+						statusFrequencySettings
 				));
 				eventPacketHandlers.add(new AsyncRetryingPacketHandler(new InfluxDb2PacketSaver(
 						settings.getInfluxDbProperties(),
@@ -129,16 +126,14 @@ public class PacketHandlerInit {
 				LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Adding latest file 'database'. This currently only saves 'status' packets");
 				statusPacketHandlers.add(new ThrottleFactorPacketHandler(
 						new FileWritePacketHandler(settings.getFile(), new JacksonStringPacketHandler(MAPPER), false),
-						statusFrequencySettings,
-						false
+						statusFrequencySettings
 				));
 			} else if (PostDatabaseSettings.TYPE.equals(config.getType())) {
 				PostDatabaseSettings settings = (PostDatabaseSettings) config.getSettings();
 
 				statusPacketHandlers.add(new ThrottleFactorPacketHandler(
 						new AsyncPacketHandlerWrapper(new PostPacketHandler(settings.getUrl(), new JacksonStringPacketHandler(MAPPER), MediaType.get("application/json"))),
-						statusFrequencySettings,
-						false
+						statusFrequencySettings
 				));
 			} else if (MqttDatabaseSettings.TYPE.equals(config.getType())) {
 				MqttDatabaseSettings settings = (MqttDatabaseSettings) config.getSettings();
@@ -150,8 +145,7 @@ public class PacketHandlerInit {
 
 				statusPacketHandlers.add(new ThrottleFactorPacketHandler(
 						new AsyncPacketHandlerWrapper(new MqttPacketSaver(settings.getBroker(), client, settings.getUsername(), settings.getPassword(), settings.getTopicFormat(), settings.isRetain(), sourceId, fragmentId)),
-						statusFrequencySettings,
-						true
+						statusFrequencySettings
 				));
 			}
 		}
@@ -166,7 +160,7 @@ public class PacketHandlerInit {
 		final Runnable updateCommandActions;
 		if (options.hasCommands()) {
 			LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Command are enabled!");
-			LatestPacketHandler latestPacketHandler = new LatestPacketHandler(false); // this is used to determine the state of the system when a command is requested
+			LatestPacketHandler latestPacketHandler = new LatestPacketHandler(); // this is used to determine the state of the system when a command is requested
 			statusPacketHandlers.add(latestPacketHandler);
 
 			Map<String, ActionNode> actionNodeMap = ActionUtil.getActionNodeMap(CONFIG_MAPPER, options);
