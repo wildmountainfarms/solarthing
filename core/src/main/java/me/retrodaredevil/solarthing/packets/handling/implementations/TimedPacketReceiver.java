@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.packets.handling.implementations;
 
-import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.OnDataReceive;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.packets.Packet;
@@ -27,7 +26,7 @@ public class TimedPacketReceiver implements RawPacketReceiver {
 
 	/** A list that piles up packets and handles when needed. May be cleared */
 	private final List<Packet> packetList = new ArrayList<>(); //
-	private boolean instant = false;
+	private boolean stale = true;
 
 	/**
 	 * @param samePacketTimeDuration The maximum amount of time allowed between packets that will be grouped together in a {@link me.retrodaredevil.solarthing.packets.collection.PacketCollection}
@@ -42,7 +41,7 @@ public class TimedPacketReceiver implements RawPacketReceiver {
 
 	@Override
 	public void updateGarbledData() {
-		instant = false;
+		stale = true;
 		packetList.clear();
 	}
 
@@ -53,7 +52,7 @@ public class TimedPacketReceiver implements RawPacketReceiver {
 		if (isFirstData) {
 			lastFirstReceivedDataNanos = nowNanos; // set this to the first time we get bytes
 		}
-		onDataReceive.onDataReceive(isFirstData, instant ? InstantType.INSTANT : InstantType.NOT_INSTANT);
+		onDataReceive.onDataReceive(isFirstData, stale);
 		packetList.addAll(newPackets);
 	}
 
@@ -62,17 +61,17 @@ public class TimedPacketReceiver implements RawPacketReceiver {
 		long nowNanos = System.nanoTime();
 		if (lastFirstReceivedDataNanos == null || nowNanos - lastFirstReceivedDataNanos > samePacketTimeDuration.toNanos()) { // if there's no new packets coming any time soon
 			if (packetList.isEmpty()) {
-				instant = true;
+				stale = false;
 			} else {
-				final boolean wasInstant = instant;
-				instant = false;
+				final boolean wasStale = stale;
+				stale = true;
 				try {
-					if (wasInstant) {
+					if (!wasStale) {
 						packetListReceiver.receive(packetList);
 					} else {
 						// In the future, we will remove the summary marker, but this has never had logging around it before,
 						//   so we want to understand it better, hence the summary importance.
-						LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Was going to send off " + packetList.size() + " packets to packetListReceiver, but instant=false!");
+						LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Was going to send off " + packetList.size() + " packets to packetListReceiver, but stale=true!");
 					}
 				} finally {
 					packetList.clear();

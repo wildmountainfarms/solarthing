@@ -9,8 +9,8 @@ public interface OnDataReceive {
 	 *
 	 * @param firstData true if the data being received is the first data of a set of data to come in the future. false otherwise
 	 */
-	void onDataReceive(boolean firstData, InstantType instantType);
+	void onDataReceive(boolean firstData, boolean stale);
 	class Defaults {
-		public static final OnDataReceive NOTHING = (firstData, instantType) -> {};
+		public static final OnDataReceive NOTHING = (firstData, stale) -> {};
 	}
 }

@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.program;
 
-import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.OnDataReceive;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.commands.command.CommandProvider;
@@ -30,8 +29,8 @@ public class MateCommandSender implements OnDataReceive {
 		this.onCommandExecute = requireNonNull(onCommandExecute);
 	}
 
-	public void onDataReceive(boolean firstData, InstantType instantType) {
-		if(firstData && instantType.isInstant()){
+	public void onDataReceive(boolean firstData, boolean stale) {
+		if(firstData && !stale){
 			SourcedCommand<MateCommand> sourcedCommand = commandProvider.pollCommand();
 			if(sourcedCommand != null){
 				MateCommand command = sourcedCommand.getCommand();
@@ -60,6 +59,8 @@ public class MateCommandSender implements OnDataReceive {
 				LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Sent command: " + command + " at " + System.currentTimeMillis());
 				onCommandExecute.onCommandExecute(sourcedCommand);
 			}
+		} else if (firstData) {
+			LOGGER.info("Not going to (possibly) send commands now because stale=true!");
 		}
 	}
 }

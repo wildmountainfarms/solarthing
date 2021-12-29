@@ -65,7 +65,7 @@ public class CheckMain {
 			SolarReader solarReader = new SolarReader(
 					ioBundle.getInputStream(),
 					new MatePacketCreator49(IgnoreCheckSum.IGNORE_AND_USE_CALCULATED), // we are testing a lot, so we don't care if the checksum is wrong
-					new TimedPacketReceiver(Duration.ofMillis(250), receiver, (firstData, instantType) -> gotAnyData[0] = true)
+					new TimedPacketReceiver(Duration.ofMillis(250), receiver, (firstData, stale) -> gotAnyData[0] = true)
 			);
 			try {
 				for (int i = 0; i < 40; i++) { // do this for about 4 seconds
