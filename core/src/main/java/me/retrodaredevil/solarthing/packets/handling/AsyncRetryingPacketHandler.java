@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.packets.handling;
 
-import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.util.PacketGroupNode;
 import org.slf4j.Logger;
@@ -27,7 +26,7 @@ public class AsyncRetryingPacketHandler implements PacketHandler {
 	private final NavigableSet<PacketGroupNode<PacketCollection>> packetCollections = new TreeSet<>();
 
 	/**
-	 * @param packetHandler The {@link PacketHandler} to use. Note: This should be thread safe, as {@link PacketHandler#handle(PacketCollection, InstantType)} may be called in parallel
+	 * @param packetHandler The {@link PacketHandler} to use. Note: This should be thread safe, as {@link PacketHandler#handle(PacketCollection)} may be called in parallel
 	 */
 	public AsyncRetryingPacketHandler(PacketHandler packetHandler) {
 		this.packetHandler = packetHandler;
@@ -56,7 +55,7 @@ public class AsyncRetryingPacketHandler implements PacketHandler {
 						try {
 							for (PacketGroupNode<PacketCollection> node : toReupload) {
 								PacketCollection packetCollection = node.getPacketGroup();
-								packetHandler.handle(packetCollection, InstantType.NOT_INSTANT); // TODO InstantType really doesn't have a purpose here, but I felt like setting it to NOT_INSTANT even though the data is perfectly valid
+								packetHandler.handle(packetCollection); // TODO InstantType really doesn't have a purpose here, but I felt like setting it to NOT_INSTANT even though the data is perfectly valid
 								successfullyUploaded.add(node);
 							}
 							LOGGER.debug("Successfully reuploaded all " + toReupload.size() + " packets.");
@@ -75,10 +74,10 @@ public class AsyncRetryingPacketHandler implements PacketHandler {
 	}
 
 	@Override
-	public void handle(PacketCollection packetCollection, InstantType instantType) {
+	public void handle(PacketCollection packetCollection) {
 		mainExecutorService.execute(() -> {
 			try {
-				packetHandler.handle(packetCollection, instantType);
+				packetHandler.handle(packetCollection);
 			} catch (PacketHandleException e) {
 				LOGGER.error("Error while uploading packet collection. ID: " + packetCollection.getDbId() + " dateMillis: " + packetCollection.getDateMillis() + ". Will retry using " + packetHandler);
 				synchronized (packetCollection) {

@@ -2,7 +2,6 @@ package me.retrodaredevil.solarthing.program;
 
 import me.retrodaredevil.couchdb.CouchDbUtil;
 import me.retrodaredevil.couchdbjava.CouchDbInstance;
-import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.PacketGroupReceiver;
 import me.retrodaredevil.solarthing.commands.packets.open.CommandOpenPacket;
 import me.retrodaredevil.solarthing.config.databases.IndividualSettings;
@@ -50,7 +49,7 @@ public class CommandUtil {
 							new SecurityPacketReceiver.State()
 					);
 					@Override
-					public void handle(PacketCollection packetCollection, InstantType instantType) throws PacketHandleException {
+					public void handle(PacketCollection packetCollection) throws PacketHandleException {
 						final List<StoredPacketGroup> packetGroups;
 						try {
 							packetGroups = database.getOpenDatabase().query(new MillisQueryBuilder().startKey(System.currentTimeMillis() - 5 * 60 * 1000).build());

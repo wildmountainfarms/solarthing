@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.program;
 
-import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
@@ -86,7 +85,7 @@ public class PacketListReceiverHandler {
 	}
 	private void handleSinglePacketCollection(PacketCollection packetCollection) {
 		try {
-			packetHandler.handle(packetCollection, InstantType.INSTANT);
+			packetHandler.handle(packetCollection);
 		} catch (PacketHandleException e) {
 			LOGGER.error("Couldn't handle packet collection. id: " + packetCollection.getDbId() + " dateMillis: " + packetCollection.getDateMillis() + ". Will NOT try again.", e);
 		}

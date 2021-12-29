@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.packets.handling;
 
-import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 
 import static java.util.Objects.requireNonNull;
@@ -22,13 +21,13 @@ public class ThrottleFactorPacketHandler implements PacketHandler {
 	}
 
 	@Override
-	public void handle(PacketCollection packetCollection, InstantType instantType) throws PacketHandleException {
+	public void handle(PacketCollection packetCollection) throws PacketHandleException {
 		if(initialCounter < frequencySettings.getInitialSkipFactor()){
 			initialCounter++;
 			return;
 		}
 		if(counter++ % frequencySettings.getThrottleFactor() == 0){
-			packetHandler.handle(packetCollection, instantType);
+			packetHandler.handle(packetCollection);
 		}
 	}
 }

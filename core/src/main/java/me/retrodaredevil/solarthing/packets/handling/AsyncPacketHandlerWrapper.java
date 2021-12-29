@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.packets.handling;
 
-import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,10 +21,10 @@ public class AsyncPacketHandlerWrapper implements PacketHandler {
 	}
 
 	@Override
-	public void handle(PacketCollection packetCollection, InstantType instantType) throws PacketHandleException {
+	public void handle(PacketCollection packetCollection) throws PacketHandleException {
 		executorService.execute(() -> {
 			try {
-				packetHandler.handle(packetCollection, instantType);
+				packetHandler.handle(packetCollection);
 			} catch (PacketHandleException e) {
 				LOGGER.error("Got PacketHandleException while executing in separate thread.", e);
 			}

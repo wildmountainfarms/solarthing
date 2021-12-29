@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ValueNode;
-import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.influxdb.PointUtil;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.*;
@@ -66,7 +65,7 @@ public class MqttPacketSaver implements PacketHandler {
 	}
 
 	@Override
-	public void handle(PacketCollection packetCollection, InstantType instantType) throws PacketHandleException {
+	public void handle(PacketCollection packetCollection) throws PacketHandleException {
 		InstancePacketGroup instancePacketGroup = PacketGroups.parseToInstancePacketGroup(packetCollection, DefaultInstanceOptions.REQUIRE_NO_DEFAULTS);
 		try {
 			handle(instancePacketGroup, packetCollection);

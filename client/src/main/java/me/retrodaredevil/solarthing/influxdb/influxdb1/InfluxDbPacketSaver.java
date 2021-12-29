@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.node.ValueNode;
 import me.retrodaredevil.influxdb.influxdb1.InfluxProperties;
 import me.retrodaredevil.okhttp3.OkHttpProperties;
 import me.retrodaredevil.okhttp3.OkHttpUtil;
-import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.influxdb.NameGetter;
 import me.retrodaredevil.solarthing.influxdb.PointUtil;
@@ -69,7 +68,7 @@ public class InfluxDbPacketSaver implements PacketHandler {
 	}
 
 	@Override
-	public void handle(PacketCollection packetCollection, InstantType instantType) throws PacketHandleException {
+	public void handle(PacketCollection packetCollection) throws PacketHandleException {
 		try(InfluxDB db = createDatabase()) {
 			final InstancePacketGroup packetGroup = PacketGroups.parseToInstancePacketGroup(packetCollection, DefaultInstanceOptions.REQUIRE_NO_DEFAULTS);
 			DefaultInstanceOptions.requireNoDefaults(packetGroup);

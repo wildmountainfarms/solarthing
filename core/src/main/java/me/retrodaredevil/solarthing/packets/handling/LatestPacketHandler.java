@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.packets.handling;
 
-import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 
 public class LatestPacketHandler implements PacketHandler {
@@ -10,7 +9,7 @@ public class LatestPacketHandler implements PacketHandler {
 	}
 
 	@Override
-	public void handle(PacketCollection packetCollection, InstantType instantType) {
+	public void handle(PacketCollection packetCollection) {
 		lastCollection = packetCollection;
 	}
 	public PacketCollection getLatestPacketCollection(){

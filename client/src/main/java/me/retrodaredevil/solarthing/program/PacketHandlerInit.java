@@ -186,7 +186,7 @@ public class PacketHandlerInit {
 					new RequestHeartbeatReceiver(PacketListReceiverHandlerBundle.createEventPacketListReceiverHandler(SolarMain.getSourceAndFragmentUpdater(options), options.getZoneId(), packetHandlerBundle))
 			));
 
-			statusPacketHandlers.add((packetCollection, instantType) -> commandReceiver.getActionUpdater().update());
+			statusPacketHandlers.add((packetCollection) -> commandReceiver.getActionUpdater().update());
 
 			List<PacketHandler> commandPacketHandlers = CommandUtil.getCommandRequesterHandlerList(databaseConfigs, mainPacketGroupReceiver, options);
 			statusPacketHandlers.add(new PacketHandlerMultiplexer(commandPacketHandlers));

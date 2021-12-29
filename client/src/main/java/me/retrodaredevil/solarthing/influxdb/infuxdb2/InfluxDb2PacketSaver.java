@@ -16,7 +16,6 @@ import com.influxdb.exceptions.InfluxException;
 import me.retrodaredevil.influxdb.influxdb2.InfluxDb2Properties;
 import me.retrodaredevil.okhttp3.OkHttpProperties;
 import me.retrodaredevil.okhttp3.OkHttpUtil;
-import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.influxdb.NameGetter;
 import me.retrodaredevil.solarthing.influxdb.PointUtil;
 import me.retrodaredevil.solarthing.packets.Packet;
@@ -111,7 +110,7 @@ public class InfluxDb2PacketSaver implements PacketHandler {
 	}
 
 	@Override
-	public void handle(PacketCollection packetCollection, InstantType instantType) throws PacketHandleException {
+	public void handle(PacketCollection packetCollection) throws PacketHandleException {
 		final InstancePacketGroup packetGroup = PacketGroups.parseToInstancePacketGroup(packetCollection, DefaultInstanceOptions.REQUIRE_NO_DEFAULTS);
 		DefaultInstanceOptions.requireNoDefaults(packetGroup);
 		Organization organization = findOrCreateOrg();

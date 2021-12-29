@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.packets.handling.implementations;
 
-import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
@@ -24,7 +23,7 @@ public class PostPacketHandler implements PacketHandler {
 	}
 
 	@Override
-	public void handle(PacketCollection packetCollection, InstantType instantType) throws PacketHandleException {
+	public void handle(PacketCollection packetCollection) throws PacketHandleException {
 		String string = stringPacketHandler.getString(packetCollection);
 		Call call = client.newCall(
 				new Request.Builder()
