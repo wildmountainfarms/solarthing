@@ -5,7 +5,7 @@
         <Property name="LOG_EXCEPTION_CONVERSION_WORD">%xwEx</Property>
         <Property name="LOG_LEVEL_PATTERN">%highlight{%5p}</Property>
         <Property name="LOG_DATEFORMAT_PATTERN">yyyy-MM-dd HH:mm:ss.SSS</Property>
-        <Property name="LOG_PATTERN">%clr{%d{${sys:LOG_DATEFORMAT_PATTERN}}}{faint} %clr{${sys:LOG_LEVEL_PATTERN}} %clr{[%15.15t]}{faint} %clr{%-40.40c{1.}}{cyan} %clr{:}{faint} %m%n${sys:LOG_EXCEPTION_CONVERSION_WORD}</Property>
+        <Property name="LOG_PATTERN">%style{%d{${sys:LOG_DATEFORMAT_PATTERN}}}{dim} %style{${sys:LOG_LEVEL_PATTERN}} %style{[%15.15t]}{dim} %style{%-40.40c{1.}}{cyan} %style{:}{dim} %m%n${sys:LOG_EXCEPTION_CONVERSION_WORD}</Property>
 
         <Property name="logPath">logs</Property>
         <Property name="filePermissions">rw-rw-r--</Property>

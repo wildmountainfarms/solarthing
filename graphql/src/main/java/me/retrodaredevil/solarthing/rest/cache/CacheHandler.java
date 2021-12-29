@@ -258,7 +258,7 @@ public class CacheHandler {
 			}
 			LOGGER.debug("Calculated " + calculatedPackets.size() + " and " + numberOfWantedType + " were of type " + cacheName);
 		} else {
-			LOGGER.debug("Didn't have to get any data");
+			LOGGER.trace("Didn't have to get any data");
 		}
 
 		return new ArrayList<>(periodNumberPacketMap.values());
