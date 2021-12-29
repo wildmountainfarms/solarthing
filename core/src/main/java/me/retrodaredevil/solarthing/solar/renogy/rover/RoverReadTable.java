@@ -491,7 +491,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	@ValidSinceVersion(version = RoverStatusPacket.VERSION_CORRECT_TWO_REGISTER)
 	@GraphQLInclude("dcdcErrorModesOrEmpty")
 	@JsonPropertyDescription("The DcdcErrorMode or an empty list if this is not a DCDC charge controller")
-	default Collection<DcdcErrorMode> getDcdcErrorModesOrEmtpy() {
+	default Collection<DcdcErrorMode> getDcdErrorModesOrEmpty() {
 		if (isDcdc()) {
 			return getDcdcErrorModes();
 		}
@@ -500,7 +500,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	@ValidSinceVersion(version = RoverStatusPacket.VERSION_CORRECT_TWO_REGISTER)
 	@GraphQLInclude("roverErrorModesOrEmpty")
 	@JsonPropertyDescription("The RoverErrorModes or an empty list if this is a DCDC charge controller")
-	default Collection<RoverErrorMode> getRoverErrorModesOrEmtpy() {
+	default Collection<RoverErrorMode> getRoverErrorModesOrEmpty() {
 		if (!isDcdc()) {
 			return getRoverErrorModes();
 		}

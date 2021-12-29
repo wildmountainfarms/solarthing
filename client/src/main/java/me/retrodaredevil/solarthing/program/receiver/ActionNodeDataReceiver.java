@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing.program;
+package me.retrodaredevil.solarthing.program.receiver;
 
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.ActionMultiplexer;

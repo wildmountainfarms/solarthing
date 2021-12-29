@@ -82,6 +82,8 @@ and also react to messages that have been fully processed (request successfully 
 * Allow io configurations to be specified in-line rather than in a separate file.
 * Add solarthing subcommand that checks whether the configuration has any errors in it
 * Remove rover-setup program
+* Make the cryptography utils more object-oriented so that we can swap out implementations more easily
+  * KeyUtil contains a cipher transformation that is not as secure as it could be. Everything else can stay the same
   
 ### Completed
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)

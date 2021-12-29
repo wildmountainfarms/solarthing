@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing.program;
+package me.retrodaredevil.solarthing.program.receiver;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
@@ -12,6 +12,7 @@ import me.retrodaredevil.solarthing.config.request.TracerClockOptions;
 import me.retrodaredevil.solarthing.netcat.ConnectionHandler;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
+import me.retrodaredevil.solarthing.program.receiver.util.NetCatUtil;
 import me.retrodaredevil.solarthing.solar.tracer.TracerReadTable;
 import me.retrodaredevil.solarthing.solar.tracer.TracerStatusPacket;
 import me.retrodaredevil.solarthing.solar.tracer.TracerStatusPackets;

@@ -22,4 +22,6 @@ public interface TracerStatusPacket extends TracerReadTable, SolarStatusPacket, 
 
 	@Override
 	@NotNull TracerIdentifier getIdentifier();
+
+	// TODO implement NumberedIdentifiable (ImmutableTracerStatusPacket already handles this fine)
 }

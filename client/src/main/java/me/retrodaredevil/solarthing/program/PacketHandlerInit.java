@@ -33,6 +33,8 @@ import me.retrodaredevil.solarthing.packets.handling.*;
 import me.retrodaredevil.solarthing.packets.handling.implementations.FileWritePacketHandler;
 import me.retrodaredevil.solarthing.packets.handling.implementations.JacksonStringPacketHandler;
 import me.retrodaredevil.solarthing.packets.handling.implementations.PostPacketHandler;
+import me.retrodaredevil.solarthing.program.receiver.ActionNodeDataReceiver;
+import me.retrodaredevil.solarthing.program.receiver.RequestHeartbeatReceiver;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import me.retrodaredevil.solarthing.util.frequency.FrequentHandler;
 import okhttp3.MediaType;

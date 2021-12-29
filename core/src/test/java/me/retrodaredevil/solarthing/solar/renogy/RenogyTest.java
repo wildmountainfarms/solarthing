@@ -2,7 +2,10 @@ package me.retrodaredevil.solarthing.solar.renogy;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import me.retrodaredevil.solarthing.PacketTestUtil;
+import me.retrodaredevil.solarthing.solar.event.SolarEventPacket;
 import me.retrodaredevil.solarthing.solar.renogy.rover.*;
+import me.retrodaredevil.solarthing.solar.renogy.rover.event.ImmutableRoverChargingStateChangePacket;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.MutableSpecialPowerControl_E021;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.MutableSpecialPowerControl_E02D;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
@@ -147,5 +150,11 @@ final class RenogyTest {
 		assertTrue(ProductModelUtil.isPositiveGround("RNG-CTRL-RVRPG40"));
 		assertTrue(ProductModelUtil.isRover("RNG-CTRL-RVRPG40"));
 		assertFalse(ProductModelUtil.isWanderer("RNG-CTRL-RVRPG40"));
+	}
+
+	@Test
+	void testEventPackets() throws JsonProcessingException {
+		PacketTestUtil.testJson(new ImmutableRoverChargingStateChangePacket(RoverIdentifier.getFromNumber(0), ChargingState.MPPT.getValueCode(), null), SolarEventPacket.class);
+		PacketTestUtil.testJson(new ImmutableRoverChargingStateChangePacket(RoverIdentifier.getFromNumber(0), ChargingState.BOOST.getValueCode(), ChargingState.MPPT.getValueCode()), SolarEventPacket.class);
 	}
 }

@@ -16,5 +16,7 @@ public enum SolarEventPacketType implements DocumentedPacketType {
 	@Deprecated
 	MXFM_DAILY_DAY_END,
 	MXFM_RAW_DAY_END,
-	MXFM_ERROR_MODE_CHANGE
+	MXFM_ERROR_MODE_CHANGE,
+
+	ROVER_CHARGING_STATE_CHANGE,
 }

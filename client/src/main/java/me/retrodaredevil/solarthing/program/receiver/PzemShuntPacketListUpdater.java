@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing.program;
+package me.retrodaredevil.solarthing.program.receiver;
 
 import me.retrodaredevil.io.modbus.ModbusRuntimeException;
 import me.retrodaredevil.solarthing.InstantType;

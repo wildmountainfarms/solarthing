@@ -1,10 +1,11 @@
-package me.retrodaredevil.solarthing.program;
+package me.retrodaredevil.solarthing.program.receiver;
 
 import me.retrodaredevil.solarthing.InstantType;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.netcat.ConnectionHandler;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
+import me.retrodaredevil.solarthing.program.receiver.util.NetCatUtil;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverReadTable;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPackets;

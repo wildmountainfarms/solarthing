@@ -12,9 +12,11 @@ import me.retrodaredevil.solarthing.config.request.DataRequesterResult;
 import me.retrodaredevil.solarthing.config.request.RequestObject;
 import me.retrodaredevil.solarthing.netcat.ConnectionHandler;
 import me.retrodaredevil.solarthing.netcat.NetCatServerHandler;
+import me.retrodaredevil.solarthing.packets.handling.PacketListReceiverMultiplexer;
 import me.retrodaredevil.solarthing.packets.identification.NumberedIdentifier;
-import me.retrodaredevil.solarthing.program.ModbusListUpdaterWrapper;
-import me.retrodaredevil.solarthing.program.RoverPacketListUpdater;
+import me.retrodaredevil.solarthing.program.receiver.ModbusListUpdaterWrapper;
+import me.retrodaredevil.solarthing.program.receiver.RoverEventUpdaterListReceiver;
+import me.retrodaredevil.solarthing.program.receiver.RoverPacketListUpdater;
 import me.retrodaredevil.solarthing.program.modbus.ModbusCacheSlave;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverReadTable;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverWriteTable;
@@ -96,7 +98,10 @@ public class RoverModbusRequester implements ModbusRequester {
 			}
 		}
 		return new DataRequesterResult(
-				new ModbusListUpdaterWrapper(new RoverPacketListUpdater(number, read, write, netCatServerHandler == null ? null : new ConnectionHandler(netCatServerHandler)), reloadCache, successReporter, sendErrorPackets, "rover.error." + number),
+				new PacketListReceiverMultiplexer(
+						new ModbusListUpdaterWrapper(new RoverPacketListUpdater(number, read, write, netCatServerHandler == null ? null : new ConnectionHandler(netCatServerHandler)), reloadCache, successReporter, sendErrorPackets, "rover.error." + number),
+						new RoverEventUpdaterListReceiver(requestObject.getEventPacketReceiver())
+				),
 				new AttachToCommandEnvironmentUpdater(Collections.singletonList(roverModbusEnvironment), attachToCommands::contains)
 		);
 	}
