@@ -168,23 +168,31 @@ public class SolarThingGraphQLSolcastService {
 		}
 		@GraphQLQuery(description = "Queries the kWh generation estimate for a certain day. offset of 0 is today, 1 is tomorrow, -1 is yesterday")
 		public @NotNull DailyEnergy queryEnergyEstimate(@GraphQLArgument(name = "offset", defaultValue = "0") int offsetDays) throws IOException {
+			/*
+			This is the query the WMF's Grafana uses frequently.
+			If the cacheController is not null, past data will be retrieved from the cache, rather than from Solcast.
+			 */
 			Instant now = Instant.now();
 			LocalDate today = now.atZone(zoneId).toLocalDate();
 			LocalDate date = Instant.ofEpochMilli(to).atZone(zoneId).toLocalDate().plusDays(offsetDays);
 			long start = date.atStartOfDay(zoneId).toInstant().toEpochMilli();
 			long end = date.plusDays(1).atStartOfDay(zoneId).toInstant().toEpochMilli(); // don't subtract 1 from this because these ranges are used against the end time millis
-			// TODO don't use getEstimatedActuals here // this is the query that WMF's Grafana uses frequently
 			final List<IdentificationCacheDataPacket<ChargeControllerAccumulationDataCache>> chargeControllerAccumulationCache;
 			final List<SimpleEstimatedActual> estimatedActuals;
 			if (cacheController == null || date.isAfter(today)) {
-				chargeControllerAccumulationCache = Collections.emptyList();
+				chargeControllerAccumulationCache = Collections.emptyList(); // we have no data for a future date
 				estimatedActuals = handler.cache.getEstimatedActuals(start, end, true);
 				if (estimatedActuals.isEmpty()) {
 					throw new UnexpectedResponseException("Empty result for offset=" + offsetDays + "! This shouldn't happen!");
 				}
 			} else {
 				chargeControllerAccumulationCache = cacheController.getChargeControllerAccumulation(handler.sourceId, start, now.toEpochMilli());
-				estimatedActuals = handler.cache.getEstimatedActuals(now.toEpochMilli(), end, true);
+				if (date.isBefore(today)) {
+					estimatedActuals = Collections.emptyList(); // We don't need solcast data for past data
+				} else {
+					// If we are here, then date is today, and we want to get data from now until the end of the day
+					estimatedActuals = handler.cache.getEstimatedActuals(now.toEpochMilli(), end, true);
+				}
 			}
 
 			SimpleEstimatedActual lastEstimatedActual = estimatedActuals.isEmpty() ? null : estimatedActuals.get(estimatedActuals.size() - 1);

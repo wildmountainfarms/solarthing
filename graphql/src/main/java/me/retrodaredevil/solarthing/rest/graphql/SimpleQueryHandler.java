@@ -78,7 +78,6 @@ public class SimpleQueryHandler {
 					.startKey(from)
 					.endKey(to)
 					.build());
-			// TODO when we used Ektorp, it gave us a cacheOk option. We need to figure out how this ties to our new CouchDB API
 		} catch (SolarThingDatabaseException e) {
 			throw new DatabaseException("Exception querying from " + from + " to " + to, e);
 		}

@@ -2,6 +2,8 @@ package me.retrodaredevil.solarthing.solcast.rooftop;
 
 import me.retrodaredevil.solarthing.solcast.common.*;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -11,6 +13,7 @@ import java.util.List;
 import java.util.TreeSet;
 
 public class EstimatedActualCache {
+	private static final Logger LOGGER = LoggerFactory.getLogger(EstimatedActualCache.class);
 	private static final Duration DURATION_7_DAYS = Duration.ofDays(7);
 	private static final Duration REQUEST_PERIOD = Duration.ofHours(6);
 
@@ -37,6 +40,9 @@ public class EstimatedActualCache {
 	 * @throws IOException thrown if there's an error while making a request
 	 */
 	public List<SimpleEstimatedActual> getEstimatedActuals(long startPointMillis, long endPointMillis, boolean clamp) throws IOException {
+		if (startPointMillis > endPointMillis) {
+			throw new IllegalArgumentException("start > end!! startPointMillis: " + startPointMillis + " endPointMillis: " + endPointMillis);
+		}
 		long now = System.currentTimeMillis();
 		if (now - DURATION_7_DAYS.toMillis() > endPointMillis) { // we can't get data more than 7 days in the past
 			return Collections.emptyList();
@@ -97,7 +103,7 @@ public class EstimatedActualCache {
 		return timestamp == null || timestamp + REQUEST_PERIOD.toMillis() < now;
 	}
 	private void updateFutureForecastsAndEstimatedActuals() throws IOException {
-		System.out.println("Going to retrieve forecasts from solcast!");
+		LOGGER.info("Going to retrieve forecasts from solcast!");
 		ForecastResult result = retriever.retrieveForecast();
 		List<Forecast> forecasts = result.getForecasts();
 		List<Node> nodes = new ArrayList<>();
@@ -111,7 +117,7 @@ public class EstimatedActualCache {
 		simpleEstimatedActualSet.addAll(nodes);
 	}
 	private void updatePastEstimatedActuals() throws IOException {
-		System.out.println("Going to retrieve estimated actuals from solcast!");
+		LOGGER.warn("Going to retrieve PAST estimated actuals from solcast! This is not ideal. Using a cache for past data is recommended instead.");
 		EstimatedActualResult result = retriever.retrievePast();
 		List<EstimatedActual> estimatedActuals = result.getEstimatedActuals();
 		List<Node> nodes = new ArrayList<>();
