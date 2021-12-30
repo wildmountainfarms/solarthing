@@ -25,7 +25,6 @@
 don't look like they're constantly disconnecting and reconnecting
 * Add packet for rover write commands that ran - (we already have one for mate commands)
 * Possibly refactor PacketListReceiver
-  * Get rid of InstantType
   * Have a way to tell if a packet included in the packets list is important enough to warrant storing in the database.
     * Right now we do a bunch of packets.isEmpty() checks to see if we should continue adding packets, but there's probably a better way
 * Better way to update SNAPSHOT jar so that running SolarThing instances don't get mad
@@ -150,6 +149,7 @@ easy displaying in Grafana
 * Chat bot command to see the current heartbeats
 * Make an alternative for RetryFailedPacketHandler. Details in comments in class.
 * Actually start using SLF4J in graphql program
+* Get rid of InstantType
 
 ### Look into
 * Look into supporting Elasticsearch, MongoDB, Graphite

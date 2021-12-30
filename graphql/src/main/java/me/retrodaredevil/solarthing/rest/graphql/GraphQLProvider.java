@@ -11,10 +11,15 @@ import io.leangen.graphql.metadata.strategy.query.ResolverBuilder;
 import io.leangen.graphql.metadata.strategy.value.jackson.JacksonValueMapperFactory;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
-import me.retrodaredevil.solarthing.rest.cache.CacheController;
-import me.retrodaredevil.solarthing.rest.graphql.service.*;
-import me.retrodaredevil.solarthing.rest.graphql.solcast.SolcastConfig;
 import me.retrodaredevil.solarthing.packets.collection.DefaultInstanceOptions;
+import me.retrodaredevil.solarthing.rest.cache.CacheController;
+import me.retrodaredevil.solarthing.rest.graphql.service.SolarThingGraphQLAlterService;
+import me.retrodaredevil.solarthing.rest.graphql.service.SolarThingGraphQLDailyService;
+import me.retrodaredevil.solarthing.rest.graphql.service.SolarThingGraphQLFXService;
+import me.retrodaredevil.solarthing.rest.graphql.service.SolarThingGraphQLLongTermService;
+import me.retrodaredevil.solarthing.rest.graphql.service.SolarThingGraphQLService;
+import me.retrodaredevil.solarthing.rest.graphql.service.SolarThingGraphQLSolcastService;
+import me.retrodaredevil.solarthing.rest.graphql.solcast.SolcastConfig;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,7 +94,9 @@ public class GraphQLProvider {
 
 		GraphQLSchema schema = createGraphQLSchemaGenerator(objectMapper, couchDbDatabaseSettings, defaultInstanceOptions, solcastConfig, cacheController).generate();
 
-		this.graphQL = GraphQL.newGraphQL(schema).build();
+		this.graphQL = GraphQL.newGraphQL(schema)
+				.defaultDataFetcherExceptionHandler(new SolarThingExceptionHandler())
+				.build();
 	}
 
 	static GraphQLSchemaGenerator createGraphQLSchemaGenerator(ObjectMapper objectMapper, CouchDbDatabaseSettings couchDbDatabaseSettings, DefaultInstanceOptions defaultInstanceOptions, @NotNull SolcastConfig solcastConfig, CacheController cacheController) {

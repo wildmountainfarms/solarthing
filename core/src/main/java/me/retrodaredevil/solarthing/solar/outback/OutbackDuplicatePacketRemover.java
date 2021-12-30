@@ -46,7 +46,7 @@ public class OutbackDuplicatePacketRemover implements PacketListReceiver {
 				lastIndex = index;
 			}
 			requireNonNull(start);
-			LOGGER.debug("There were duplicate packets! packets: {}. We are shortening it to indexes: start=" + start + " end=" + end, packets);
+			LOGGER.info("There were duplicate packets! packets: {}. We are shortening it to indexes: start=" + start + " end=" + end, packets);
 			int i = 0;
 			for(Iterator<Packet> it = packets.listIterator(); it.hasNext(); i++){
 				if (it.next() instanceof OutbackStatusPacket) {

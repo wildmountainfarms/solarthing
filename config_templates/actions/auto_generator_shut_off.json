@@ -35,7 +35,7 @@
     "actions": [
       { "type": "log", "message": "Sending generator off because FXs went to silent" },
       { "type": "call", "name": "generator_off_command"},
-      { "type": "wait", "duration": "PT30S"},
+      { "type": "wait", "duration": "PT3M"},
       { "type": "log", "message": "Finished waiting. Should unlock now." }
     ]
   },
