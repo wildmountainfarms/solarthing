@@ -18,7 +18,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.MonthDay;
-import java.util.Set;
 
 @JsonExplicit
 public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeController, DailyAdvancedChargeController, DualTemperature, TracerBatteryConfig, TracerChargingEquipmentStatus {
