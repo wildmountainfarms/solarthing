@@ -7,6 +7,7 @@ import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
 import me.retrodaredevil.solarthing.solar.renogy.rover.event.ImmutableRoverChargingStateChangePacket;
+import me.retrodaredevil.solarthing.solar.renogy.rover.event.ImmutableRoverErrorModeChangePacket;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,19 +37,26 @@ public class RoverEventUpdaterListReceiver implements PacketListReceiver {
 	}
 	private void useData(@NotNull RoverStatusPacket rover, @Nullable RoverStatusPacket previous) {
 		final Integer lastChargingStateValue;
+		final Integer lastErrorModeValue;
 		if (previous == null) {
 			lastChargingStateValue = null;
+			lastErrorModeValue = null;
 		} else {
 			lastChargingStateValue = previous.getChargingStateValue();
+			lastErrorModeValue = previous.getErrorModeValue();
 		}
 		int currentChargingStateValue = rover.getChargingStateValue();
+		int currentErrorModeValue = rover.getErrorModeValue();
 
 		List<Packet> packets = new ArrayList<>();
 		if (lastChargingStateValue == null || lastChargingStateValue != currentChargingStateValue) {
 			packets.add(new ImmutableRoverChargingStateChangePacket(rover.getIdentifier(), currentChargingStateValue, lastChargingStateValue));
 		}
+		if (lastErrorModeValue == null || lastErrorModeValue != currentErrorModeValue) {
+			packets.add(new ImmutableRoverErrorModeChangePacket(rover.getIdentifier(), currentErrorModeValue, lastErrorModeValue));
+		}
 		if (!packets.isEmpty()) {
-			eventReceiver.receive(packets); // TODO remove instant type // doesn't apply to rovers
+			eventReceiver.receive(packets);
 		}
 	}
 }

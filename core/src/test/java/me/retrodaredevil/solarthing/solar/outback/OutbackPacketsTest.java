@@ -32,9 +32,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class OutbackPacketsTest {
-	private static final File SOLARTHING_ROOT = new File("..");
-	private static final File DIRECTORY_FX = new File(SOLARTHING_ROOT, "testing/packets/fx");
-	private static final File DIRECTORY_MX = new File(SOLARTHING_ROOT, "testing/packets/mx");
+	private static final File DIRECTORY_FX = new File(PacketTestUtil.SOLARTHING_ROOT, "testing/packets/fx");
+	private static final File DIRECTORY_MX = new File(PacketTestUtil.SOLARTHING_ROOT, "testing/packets/mx");
 
 	@Test
 	void test() throws JsonProcessingException, ParsePacketAsciiDecimalDigitException, CheckSumException {

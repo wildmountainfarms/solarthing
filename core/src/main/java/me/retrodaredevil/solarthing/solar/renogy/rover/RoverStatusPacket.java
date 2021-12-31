@@ -41,9 +41,10 @@ public interface RoverStatusPacket extends RenogyPacket, RoverReadTable, Version
 	int VERSION_REMOVED_CONVENIENCE_FIELDS_BAD_VALUE_NEVER_USED = 4;
 	/** Removed softwareVersionString convenience field and it is guaranteed that all other convenience fields are gone.*/
 	int VERSION_REMOVED_CONVENIENCE_FIELDS_2 = 5;
-	/** Version to indicate that there may also be charging state change events in the events database.*/
+	/** Version to indicate that there may also be charging state change events in the events database. Should only be present for a short period of time on WMF's database*/
 	int VERSION_ADDED_CHARGING_STATE_EVENT = 6;
-	int VERSION_LATEST = VERSION_ADDED_CHARGING_STATE_EVENT;
+	int VERSION_ADDED_ERROR_MODE_EVENT = 7;
+	int VERSION_LATEST = VERSION_ADDED_ERROR_MODE_EVENT;
 
 	@DefaultFinal
 	@Override

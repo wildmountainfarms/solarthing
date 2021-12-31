@@ -2,16 +2,27 @@ package me.retrodaredevil.solarthing.solar.tracer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import me.retrodaredevil.solarthing.PacketTestUtil;
+import me.retrodaredevil.solarthing.solar.SolarStatusPacket;
+import me.retrodaredevil.solarthing.solar.event.SolarEventPacket;
+import me.retrodaredevil.solarthing.solar.tracer.event.ImmutableTracerChargingEquipmentStatusChangePacket;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
+import java.io.IOException;
+
+import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TracerTest {
+	private static final File DIRECTORY_TRACER = new File(PacketTestUtil.SOLARTHING_ROOT, "testing/packets/tracer");
+
 	@Test
 	void test() throws JsonProcessingException {
 		TracerStatusPacket packet = new ImmutableTracerStatusPacket(
-				TracerStatusPacket.CHARGING_EQUIPMENT_FIX_VERSION, null,
+				TracerStatusPacket.Version.LATEST, null,
 				100, 20, 200, 24, 20, 200,
 				1, 20, 0.0f, 0.0f, 0.0f,
 				12.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 25.0f, 26.0f, 26.0f,
@@ -51,5 +62,25 @@ public class TracerTest {
 		TracerStatusPacket readPacket = TracerStatusPackets.createFromReadTable(parsed.getIdentifier().getNumber(), parsed);
 		String json3 = mapper.writeValueAsString(readPacket);
 		assertEquals(json, json3, "TracerStatusPackets.createFromReadTable is not correct!");
+	}
+
+	@Test
+	void testTracerEvents() throws JsonProcessingException {
+		// 1 is off
+		// 15 is something that is not off idk what tho
+		PacketTestUtil.testJson(new ImmutableTracerChargingEquipmentStatusChangePacket(TracerIdentifier.getFromNumber(0), 1, 15), SolarEventPacket.class);
+		PacketTestUtil.testJson(new ImmutableTracerChargingEquipmentStatusChangePacket(TracerIdentifier.getFromNumber(1), 15, null), SolarEventPacket.class);
+	}
+
+	@Test
+	void testTracerExisting() throws IOException {
+		assertTrue(DIRECTORY_TRACER.isDirectory());
+
+		ObjectMapper mapper = JacksonUtil.defaultMapper();
+
+		for (File file : requireNonNull(DIRECTORY_TRACER.listFiles())) {
+			SolarStatusPacket packet = mapper.readValue(file, SolarStatusPacket.class);
+			assertTrue(packet instanceof TracerStatusPacket, "Got packet: " + packet);
+		}
 	}
 }

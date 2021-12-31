@@ -7,10 +7,14 @@ import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.solar.common.DualTemperature;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.time.Duration;
 
 @JsonTypeName("temperature")
 public class TemperatureEvent implements MessageEvent {
+	private static final NumberFormat NUMBER_FORMAT = new DecimalFormat("0.0#");
+
 	private final boolean low;
 	private final boolean displayFahrenheit;
 	private final float thresholdCelsius;
@@ -73,9 +77,9 @@ public class TemperatureEvent implements MessageEvent {
 	private String temperatureToString(float temperatureCelsius) {
 		// these character escapes are for the fahrenheit and celsius degree symbols
 		if (displayFahrenheit) {
-			return (temperatureCelsius * 1.8 + 32) + "\u2109";
+			return NUMBER_FORMAT.format(temperatureCelsius * 1.8 + 32) + "\u2109";
 		}
-		return temperatureCelsius + "\u2103";
+		return NUMBER_FORMAT.format(temperatureCelsius) + "\u2103";
 	}
 	private boolean check(MessageSender sender, float temperatureCelsius) {
 		if (low) {

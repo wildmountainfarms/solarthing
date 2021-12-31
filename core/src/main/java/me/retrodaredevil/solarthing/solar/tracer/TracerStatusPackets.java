@@ -8,7 +8,7 @@ public class TracerStatusPackets {
 
 	public static TracerStatusPacket createFromReadTable(int number, TracerReadTable read) {
 		return new ImmutableTracerStatusPacket(
-				TracerStatusPacket.CHARGING_EQUIPMENT_FIX_VERSION, number,
+				TracerStatusPacket.Version.LATEST, number,
 				read.getRatedInputVoltage(), read.getRatedInputCurrent(), read.getRatedInputPower(),
 				read.getRatedOutputVoltage(), read.getRatedOutputCurrent(), read.getRatedOutputPower(),
 				read.getChargingTypeValue(), read.getRatedLoadOutputCurrent(),

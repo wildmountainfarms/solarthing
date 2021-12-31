@@ -21,7 +21,7 @@ import java.time.MonthDay;
 import java.util.Set;
 
 @JsonExplicit
-public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeController, DailyAdvancedChargeController, ErrorReporter, DualTemperature, TracerBatteryConfig {
+public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeController, DailyAdvancedChargeController, DualTemperature, TracerBatteryConfig, TracerChargingEquipmentStatus {
 
 	SerialConfig SERIAL_CONFIG = new SerialConfigBuilder(115200)
 			.setDataBits(8)
@@ -174,27 +174,7 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 	@GraphQLInclude("batteryTemperatureStatus")
 	default @NotNull TracerBatteryTemperatureStatus getBatteryTemperatureStatus() { return Modes.getActiveMode(TracerBatteryTemperatureStatus.class, getBatteryTemperatureStatusValue()); }
 
-	@JsonProperty("chargingEquipmentStatusValue")
-	int getChargingEquipmentStatus();
-	default int getInputVoltageStatusValue() { return getChargingEquipmentStatus() >> 14; }
-	default int getChargingStatusValue() { return (getChargingEquipmentStatus() >> 2) & 0b11; }
-	@Override
-	default @NotNull Set<ChargingEquipmentError> getErrorModes() { return Modes.getActiveModes(ChargingEquipmentError.class, getChargingEquipmentStatus()); }
-	/**
-	 * @deprecated Use {@link #getChargingEquipmentStatus()} instead
-	 * @return {@link #getChargingEquipmentStatus()}
-	 */
-	@Deprecated
-	@Override
-	default int getErrorModeValue() { return getChargingEquipmentStatus(); }
-	@GraphQLInclude("isRunning")
-	default boolean isRunning() { return (getChargingEquipmentStatus() & 1) == 1; }
-	@GraphQLInclude("inputVoltageStatus")
-	default @NotNull InputVoltageStatus getInputVoltageStatus() { return Modes.getActiveMode(InputVoltageStatus.class, getInputVoltageStatusValue()); }
-	@GraphQLInclude("chargingStatus")
-	default @NotNull ChargingStatus getChargingStatus() { return Modes.getActiveMode(ChargingStatus.class, getChargingStatusValue()); }
-	@GraphQLInclude("chargingStatusName")
-	default @NotNull String getChargingStatusName() { return getChargingStatus().getModeName(); }
+	// **charging equipment status stuff**
 
 	// Page 3
 	// region Read Only Accumulators + Extra

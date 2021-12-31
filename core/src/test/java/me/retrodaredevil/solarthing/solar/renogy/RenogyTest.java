@@ -3,19 +3,26 @@ package me.retrodaredevil.solarthing.solar.renogy;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.solarthing.PacketTestUtil;
+import me.retrodaredevil.solarthing.solar.SolarStatusPacket;
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacket;
 import me.retrodaredevil.solarthing.solar.renogy.rover.*;
 import me.retrodaredevil.solarthing.solar.renogy.rover.event.ImmutableRoverChargingStateChangePacket;
+import me.retrodaredevil.solarthing.solar.renogy.rover.event.ImmutableRoverErrorModeChangePacket;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.MutableSpecialPowerControl_E021;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.MutableSpecialPowerControl_E02D;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.*;
 
 final class RenogyTest {
+	private static final File DIRECTORY_ROVER = new File(PacketTestUtil.SOLARTHING_ROOT, "testing/packets/rover");
+
 	@Test
 	void temperatureConvertTest(){
 		assertEquals(2, RoverReadTable.convertRawTemperature(2));
@@ -156,5 +163,30 @@ final class RenogyTest {
 	void testEventPackets() throws JsonProcessingException {
 		PacketTestUtil.testJson(new ImmutableRoverChargingStateChangePacket(RoverIdentifier.getFromNumber(0), ChargingState.MPPT.getValueCode(), null), SolarEventPacket.class);
 		PacketTestUtil.testJson(new ImmutableRoverChargingStateChangePacket(RoverIdentifier.getFromNumber(0), ChargingState.BOOST.getValueCode(), ChargingState.MPPT.getValueCode()), SolarEventPacket.class);
+
+		PacketTestUtil.testJson(new ImmutableRoverErrorModeChangePacket(
+				RoverIdentifier.getFromNumber(0),
+				RoverErrorMode.BATTERY_OVER_DISCHARGE.getMaskValue() | RoverErrorMode.AMBIENT_TEMP_HIGH.getMaskValue(),
+				null
+		), SolarEventPacket.class);
+		PacketTestUtil.testJson(new ImmutableRoverErrorModeChangePacket(
+				RoverIdentifier.getFromNumber(0),
+				0,
+				RoverErrorMode.BATTERY_OVER_DISCHARGE.getMaskValue() | RoverErrorMode.AMBIENT_TEMP_HIGH.getMaskValue()
+		), SolarEventPacket.class);
 	}
+
+
+	@Test
+	void testRoverExisting() throws IOException {
+		assertTrue(DIRECTORY_ROVER.isDirectory());
+
+		ObjectMapper mapper = JacksonUtil.defaultMapper();
+
+		for (File file : requireNonNull(DIRECTORY_ROVER.listFiles())) {
+			SolarStatusPacket packet = mapper.readValue(file, SolarStatusPacket.class);
+			assertTrue(packet instanceof RoverStatusPacket, "Got packet: " + packet);
+		}
+	}
+
 }

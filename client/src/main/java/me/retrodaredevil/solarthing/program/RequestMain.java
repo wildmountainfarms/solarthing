@@ -17,6 +17,8 @@ import me.retrodaredevil.solarthing.misc.common.DataIdentifiablePacketListChecke
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiverMultiplexer;
+import me.retrodaredevil.solarthing.program.receiver.RoverEventUpdaterListReceiver;
+import me.retrodaredevil.solarthing.program.receiver.TracerEventUpdaterListReceiver;
 import me.retrodaredevil.solarthing.solar.DaySummaryLogListReceiver;
 import me.retrodaredevil.solarthing.util.TimeUtil;
 import org.slf4j.Logger;
@@ -54,6 +56,8 @@ public class RequestMain {
 			packetListReceiverList.add(result.getStatusPacketListReceiver());
 			environmentUpdaters.add(result.getEnvironmentUpdater());
 		}
+		packetListReceiverList.add(new RoverEventUpdaterListReceiver(bundle.getEventHandler().getPacketListReceiverAccepter())); // will add events for each rover packet if there are any to add
+		packetListReceiverList.add(new TracerEventUpdaterListReceiver(bundle.getEventHandler().getPacketListReceiverAccepter())); // will add events for each tracer packet if there are any to add
 		if (options.hasCommands()) {
 			packetListReceiverList.add(new AvailableCommandsListUpdater(options.getCommandInfoList(), false));
 		}

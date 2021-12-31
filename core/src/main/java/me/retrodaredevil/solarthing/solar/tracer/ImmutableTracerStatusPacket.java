@@ -221,6 +221,10 @@ public class ImmutableTracerStatusPacket implements TracerStatusPacket {
 	}
 	@Override public @NotNull TracerIdentifier getIdentifier() { return identifier; }
 	@Override public @NotNull IdentityInfo getIdentityInfo() { return identityInfo; }
+	@Override
+	public int getNumber() {
+		return identifier.getNumber();
+	}
 
 	@Override public int getRatedInputVoltage() { return ratedInputVoltage; }
 	@Override public int getRatedInputCurrent() { return ratedInputCurrent; }

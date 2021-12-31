@@ -10,6 +10,7 @@ import me.retrodaredevil.solarthing.rest.graphql.packets.*;
 import me.retrodaredevil.solarthing.rest.graphql.packets.nodes.DataNode;
 import me.retrodaredevil.solarthing.rest.graphql.packets.nodes.PacketNode;
 import me.retrodaredevil.solarthing.rest.graphql.packets.nodes.SimpleNode;
+import me.retrodaredevil.solarthing.solar.renogy.rover.event.RoverChargingStateChangePacket;
 import me.retrodaredevil.solarthing.type.closed.meta.*;
 import me.retrodaredevil.solarthing.misc.device.CpuTemperaturePacket;
 import me.retrodaredevil.solarthing.misc.weather.TemperaturePacket;
@@ -166,6 +167,10 @@ public class SolarThingGraphQLService {
 		public @NotNull List<@NotNull PacketNode<PzemShuntStatusPacket>> pzemShuntStatus() {
 			return packetGetter.getPackets(PzemShuntStatusPacket.class);
 		}
+		@GraphQLQuery
+		public @NotNull List<@NotNull PacketNode<DualTemperature>> dualTemperature() {
+			return packetGetter.getPackets(DualTemperature.class);
+		}
 
 
 		@GraphQLQuery
@@ -274,6 +279,10 @@ public class SolarThingGraphQLService {
 		@GraphQLQuery
 		public @NotNull List<@NotNull PacketNode<MXChargerModeChangePacket>> mxChargerModeChange() {
 			return packetGetter.getPackets(MXChargerModeChangePacket.class);
+		}
+		@GraphQLQuery
+		public @NotNull List<@NotNull PacketNode<RoverChargingStateChangePacket>> roverChargingStateChange() {
+			return packetGetter.getPackets(RoverChargingStateChangePacket.class);
 		}
 		@GraphQLQuery
 		public @NotNull List<@NotNull PacketNode<SuccessMateCommandPacket>> mateCommand(
