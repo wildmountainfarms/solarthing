@@ -17,9 +17,6 @@ import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 @JsonDeserialize(as = ImmutableTracerStatusPacket.class)
 public interface TracerStatusPacket extends TracerReadTable, SolarStatusPacket, VersionedPacket, NumberedIdentifiable {
 
-	@Deprecated
-	int CHARGING_EQUIPMENT_FIX_VERSION = Version.CHARGING_EQUIPMENT_FIX;
-
 	@UtilityClass
 	class Version {
 		private Version() { throw new UnsupportedOperationException(); }

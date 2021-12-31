@@ -9,7 +9,7 @@ public final class RoverStatusPackets {
 	public static RoverStatusPacket createFromReadTable(int number, RoverReadTable read){
 		// it has to be read 76 different times
 		return new ImmutableRoverStatusPacket(
-				RoverStatusPacket.VERSION_LATEST,
+				RoverStatusPacket.Version.LATEST,
 				number,
 				read.getMaxVoltageValue(), read.getRatedChargingCurrentValue(),
 				read.getRatedDischargingCurrentValue(), read.getProductTypeValue(),

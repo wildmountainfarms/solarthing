@@ -135,7 +135,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	 * Should be serialized as "softwareVersion"
 	 * @return The int value representing the software version
 	 */
-	@ValidSinceVersion(version = RoverStatusPacket.VERSION_CORRECT_TWO_REGISTER)
+	@ValidSinceVersion(version = RoverStatusPacket.Version.CORRECT_TWO_REGISTER)
 	@GraphQLInclude("softwareVersionValue")
 	@JsonProperty("softwareVersion")
 	int getSoftwareVersionValue();
@@ -143,12 +143,12 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	 * If serialized, should be serialized as "softwareVersionString" using {@link Version#toString()}
 	 * @return The {@link Version} object representing the software version
 	 */
-	@ConvenienceField(sincePacketVersion = RoverStatusPacket.VERSION_REMOVED_CONVENIENCE_FIELDS)
-	@ValidSinceVersion(version = RoverStatusPacket.VERSION_CORRECT_TWO_REGISTER)
+	@ConvenienceField(sincePacketVersion = RoverStatusPacket.Version.REMOVED_CONVENIENCE_FIELDS)
+	@ValidSinceVersion(version = RoverStatusPacket.Version.CORRECT_TWO_REGISTER)
 	@GraphQLInclude("softwareVersion")
 	default Version getSoftwareVersion(){ return new Version(getSoftwareVersionValue()); }
-	@ConvenienceField(sincePacketVersion = RoverStatusPacket.VERSION_REMOVED_CONVENIENCE_FIELDS_2)
-	@ValidSinceVersion(version = RoverStatusPacket.VERSION_CORRECT_TWO_REGISTER)
+	@ConvenienceField(sincePacketVersion = RoverStatusPacket.Version.REMOVED_CONVENIENCE_FIELDS_2)
+	@ValidSinceVersion(version = RoverStatusPacket.Version.CORRECT_TWO_REGISTER)
 	@JsonProperty("softwareVersionString")
 	default String getSoftwareVersionString() { return getSoftwareVersion().toString(); }
 
@@ -156,7 +156,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	 * Should be serialized as "hardwareVersion"
 	 * @return The int value representing the hardware version
 	 */
-	@ValidSinceVersion(version = RoverStatusPacket.VERSION_CORRECT_TWO_REGISTER)
+	@ValidSinceVersion(version = RoverStatusPacket.Version.CORRECT_TWO_REGISTER)
 	@GraphQLInclude("hardwareVersionValue")
 	@JsonProperty("hardwareVersion")
 	int getHardwareVersionValue();
@@ -164,11 +164,11 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	 * If serialized, should be serialized as "hardwareVersionString" using {@link Version#toString()}
 	 * @return The {@link Version} object representing the hardware version
 	 */
-	@ValidSinceVersion(version = RoverStatusPacket.VERSION_CORRECT_TWO_REGISTER)
+	@ValidSinceVersion(version = RoverStatusPacket.Version.CORRECT_TWO_REGISTER)
 	@GraphQLInclude("hardwareVersion")
 	default Version getHardwareVersion() { return new Version(getHardwareVersionValue()); }
-	@ConvenienceField(sincePacketVersion = RoverStatusPacket.VERSION_REMOVED_CONVENIENCE_FIELDS)
-	@ValidSinceVersion(version = RoverStatusPacket.VERSION_CORRECT_TWO_REGISTER)
+	@ConvenienceField(sincePacketVersion = RoverStatusPacket.Version.REMOVED_CONVENIENCE_FIELDS)
+	@ValidSinceVersion(version = RoverStatusPacket.Version.CORRECT_TWO_REGISTER)
 	@JsonProperty("hardwareVersionString")
 	default String getHardwareVersionString() { return getHardwareVersion().toString(); }
 
@@ -176,7 +176,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	 * Should be serialized as "productSerialNumber"
 	 * @return The serial number
 	 */
-	@ValidSinceVersion(version = RoverStatusPacket.VERSION_CORRECT_TWO_REGISTER)
+	@ValidSinceVersion(version = RoverStatusPacket.Version.CORRECT_TWO_REGISTER)
 	@JsonProperty("productSerialNumber")
 	@JsonPropertyDescription("The product serial number. Note that is not always unique as devices' serial numbers can accidentally be reset.")
 	int getProductSerialNumber();
@@ -412,16 +412,16 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	int getBatteryOverDischargesCount();
 	@JsonProperty("batteryFullChargesCount")
 	int getBatteryFullChargesCount();
-	@ValidSinceVersion(version = RoverStatusPacket.VERSION_CORRECT_TWO_REGISTER, probablyValidAnyway = true)
+	@ValidSinceVersion(version = RoverStatusPacket.Version.CORRECT_TWO_REGISTER, probablyValidAnyway = true)
 	@JsonProperty("chargingAmpHoursOfBatteryCount")
 	int getChargingAmpHoursOfBatteryCount();
-	@ValidSinceVersion(version = RoverStatusPacket.VERSION_CORRECT_TWO_REGISTER, probablyValidAnyway = true)
+	@ValidSinceVersion(version = RoverStatusPacket.Version.CORRECT_TWO_REGISTER, probablyValidAnyway = true)
 	@JsonProperty("dischargingAmpHoursOfBatteryCount")
 	int getDischargingAmpHoursOfBatteryCount();
-	@ValidSinceVersion(version = RoverStatusPacket.VERSION_CORRECT_TWO_REGISTER)
+	@ValidSinceVersion(version = RoverStatusPacket.Version.CORRECT_TWO_REGISTER)
 	@Override
 	float getCumulativeKWH();
-	@ValidSinceVersion(version = RoverStatusPacket.VERSION_CORRECT_TWO_REGISTER, probablyValidAnyway = true)
+	@ValidSinceVersion(version = RoverStatusPacket.Version.CORRECT_TWO_REGISTER, probablyValidAnyway = true)
 	@Override
 	float getCumulativeKWHConsumption();
 
@@ -437,11 +437,11 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	}
 	@RoverOnly
 	default StreetLight getStreetLightStatus(){ return Modes.getActiveMode(StreetLight.class, getStreetLightStatusValue()); }
-	@ConvenienceField(sincePacketVersion = RoverStatusPacket.VERSION_REMOVED_CONVENIENCE_FIELDS)
+	@ConvenienceField(sincePacketVersion = RoverStatusPacket.Version.REMOVED_CONVENIENCE_FIELDS)
 	@JsonProperty("streetLightBrightness") // convenient
 	@RoverOnly
 	default int getStreetLightBrightnessPercent(){ return StreetLight.getBrightnessValue(getRawStreetLightValue()); }
-	@ConvenienceField(sincePacketVersion = RoverStatusPacket.VERSION_REMOVED_CONVENIENCE_FIELDS)
+	@ConvenienceField(sincePacketVersion = RoverStatusPacket.Version.REMOVED_CONVENIENCE_FIELDS)
 	@JsonProperty("streetLightOn") // convenient
 	@RoverOnly
 	default boolean isStreetLightOn(){ return getStreetLightStatus() == StreetLight.ON; }
@@ -451,15 +451,15 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	@GraphQLInclude("chargingMode")
 	@Override
 	default @NotNull ChargingState getChargingMode(){ return Modes.getActiveMode(ChargingState.class, getChargingStateValue()); }
-	@ConvenienceField(sincePacketVersion = RoverStatusPacket.VERSION_REMOVED_CONVENIENCE_FIELDS)
+	@ConvenienceField(sincePacketVersion = RoverStatusPacket.Version.REMOVED_CONVENIENCE_FIELDS)
 	@JsonProperty("chargingStateName") // convenient
 	default String getChargingStateName(){ return getChargingMode().getModeName(); }
 
-	@ValidSinceVersion(version = RoverStatusPacket.VERSION_CORRECT_TWO_REGISTER)
+	@ValidSinceVersion(version = RoverStatusPacket.Version.CORRECT_TWO_REGISTER)
 	@JsonProperty("errorMode")
 	@Override
 	int getErrorModeValue();
-	@ValidSinceVersion(version = RoverStatusPacket.VERSION_CORRECT_TWO_REGISTER)
+	@ValidSinceVersion(version = RoverStatusPacket.Version.CORRECT_TWO_REGISTER)
 	@Override
 	default Collection<? extends SimpleRoverErrorMode> getErrorModes(){
 		if (isDcdc()) {
@@ -467,8 +467,8 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 		}
 		return getRoverErrorModes();
 	}
-	@ConvenienceField(sincePacketVersion = RoverStatusPacket.VERSION_REMOVED_CONVENIENCE_FIELDS)
-	@ValidSinceVersion(version = RoverStatusPacket.VERSION_CORRECT_TWO_REGISTER)
+	@ConvenienceField(sincePacketVersion = RoverStatusPacket.Version.REMOVED_CONVENIENCE_FIELDS)
+	@ValidSinceVersion(version = RoverStatusPacket.Version.CORRECT_TWO_REGISTER)
 	@JsonProperty("errors")
 	default String getErrorsString(){
 		if (isDcdc()) {
@@ -476,19 +476,19 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 		}
 		return Modes.toString(RoverErrorMode.class, getErrorModeValue());
 	}
-	@ValidSinceVersion(version = RoverStatusPacket.VERSION_CORRECT_TWO_REGISTER)
+	@ValidSinceVersion(version = RoverStatusPacket.Version.CORRECT_TWO_REGISTER)
 	@GraphQLInclude("dcdcErrorModes")
 	@DcdcOnly
 	default Collection<DcdcErrorMode> getDcdcErrorModes() {
 		return Modes.getActiveModes(DcdcErrorMode.class, getErrorModeValue());
 	}
-	@ValidSinceVersion(version = RoverStatusPacket.VERSION_CORRECT_TWO_REGISTER)
+	@ValidSinceVersion(version = RoverStatusPacket.Version.CORRECT_TWO_REGISTER)
 	@GraphQLInclude("roverErrorModes")
 	@RoverOnly
 	default Collection<RoverErrorMode> getRoverErrorModes() {
 		return Modes.getActiveModes(RoverErrorMode.class, getErrorModeValue());
 	}
-	@ValidSinceVersion(version = RoverStatusPacket.VERSION_CORRECT_TWO_REGISTER)
+	@ValidSinceVersion(version = RoverStatusPacket.Version.CORRECT_TWO_REGISTER)
 	@GraphQLInclude("dcdcErrorModesOrEmpty")
 	@JsonPropertyDescription("The DcdcErrorMode or an empty list if this is not a DCDC charge controller")
 	default Collection<DcdcErrorMode> getDcdErrorModesOrEmpty() {
@@ -497,7 +497,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 		}
 		return Collections.emptyList();
 	}
-	@ValidSinceVersion(version = RoverStatusPacket.VERSION_CORRECT_TWO_REGISTER)
+	@ValidSinceVersion(version = RoverStatusPacket.Version.CORRECT_TWO_REGISTER)
 	@GraphQLInclude("roverErrorModesOrEmpty")
 	@JsonPropertyDescription("The RoverErrorModes or an empty list if this is a DCDC charge controller")
 	default Collection<RoverErrorMode> getRoverErrorModesOrEmpty() {
@@ -560,7 +560,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	int getBatteryTypeValue();
 	@GraphQLInclude("batteryType")
 	default RoverBatteryType getBatteryType(){ return Modes.getActiveMode(RoverBatteryType.class, getBatteryTypeValue()); }
-	@ConvenienceField(sincePacketVersion = RoverStatusPacket.VERSION_REMOVED_CONVENIENCE_FIELDS)
+	@ConvenienceField(sincePacketVersion = RoverStatusPacket.Version.REMOVED_CONVENIENCE_FIELDS)
 	@JsonProperty("batteryTypeName") // convenient
 	default String getBatteryTypeName(){ return getBatteryType().getModeName(); }
 
