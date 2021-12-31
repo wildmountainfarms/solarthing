@@ -19,7 +19,7 @@ public interface TracerChargingEquipmentStatus extends ErrorReporter {
 	default int getInputVoltageStatusValue() { return getChargingEquipmentStatus() >> 14; }
 	default int getChargingStatusValue() { return (getChargingEquipmentStatus() >> 2) & 0b11; }
 	@Override
-	default @NotNull Set<ChargingEquipmentError> getErrorModes() { return Modes.getActiveModes(ChargingEquipmentError.class, getChargingEquipmentStatus()); }
+	default @NotNull Set<@NotNull ChargingEquipmentError> getErrorModes() { return Modes.getActiveModes(ChargingEquipmentError.class, getChargingEquipmentStatus()); }
 	/**
 	 * @deprecated Use {@link #getChargingEquipmentStatus()} instead
 	 * @return {@link #getChargingEquipmentStatus()}
@@ -35,4 +35,15 @@ public interface TracerChargingEquipmentStatus extends ErrorReporter {
 	default @NotNull ChargingStatus getChargingStatus() { return Modes.getActiveMode(ChargingStatus.class, getChargingStatusValue()); }
 	@GraphQLInclude("chargingStatusName")
 	default @NotNull String getChargingStatusName() { return getChargingStatus().getModeName(); }
+
+	@Override
+	default boolean hasError() {
+		Set<ChargingEquipmentError> errors = getErrorModes();
+		if (errors.contains(ChargingEquipmentError.FAULT)) {
+			// fault seems to always be present, so we'll ignore it for now.
+			//   Consider removing fault or something.
+			return errors.size() > 1;
+		}
+		return !errors.isEmpty();
+	}
 }

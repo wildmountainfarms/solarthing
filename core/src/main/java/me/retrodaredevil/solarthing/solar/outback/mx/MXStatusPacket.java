@@ -156,7 +156,7 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 	@Override
 	int getErrorModeValue();
 	@Override
-	default Set<@NotNull MXErrorMode> getErrorModes(){
+	default @NotNull Set<@NotNull MXErrorMode> getErrorModes(){
 		return Modes.getActiveModes(MXErrorMode.class, getErrorModeValue());
 	}
 

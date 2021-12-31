@@ -35,7 +35,7 @@ public interface MXErrorModeChangePacket extends SupplementarySolarEventPacket, 
 	@Nullable Integer getPreviousErrorModeValue();
 
 	@Override
-	default Set<@NotNull MXErrorMode> getErrorModes(){
+	default @NotNull Set<@NotNull MXErrorMode> getErrorModes(){
 		return Modes.getActiveModes(MXErrorMode.class, getErrorModeValue());
 	}
 	default @Nullable Set<MXErrorMode> getPreviousErrorModes(){

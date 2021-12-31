@@ -5,7 +5,6 @@
 * Packet for disk usage
 * Send packet when mate serial port hasn't output data for 30 seconds
 * Create Dockerfile and example docker-compose file
-* Add event packets for rover and tracer devices (like we did for MXs and FXs)
 * Short term record packets for high/low battery voltage, FX inverter current, pv wattage, charging current, etc  
   * This would be very useful so that if packets are replaced there is still information on how
   high or low the battery voltage got or how high the load was
@@ -150,6 +149,7 @@ easy displaying in Grafana
 * Make an alternative for RetryFailedPacketHandler. Details in comments in class.
 * Actually start using SLF4J in graphql program
 * Get rid of InstantType
+* Add event packets for rover and tracer devices (like we did for MXs and FXs)
 
 ### Look into
 * Look into supporting Elasticsearch, MongoDB, Graphite

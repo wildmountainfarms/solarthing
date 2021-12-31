@@ -20,6 +20,7 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerContr
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 
@@ -461,7 +462,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	int getErrorModeValue();
 	@ValidSinceVersion(version = RoverStatusPacket.Version.CORRECT_TWO_REGISTER)
 	@Override
-	default Collection<? extends SimpleRoverErrorMode> getErrorModes(){
+	default @NotNull Collection<@NotNull ? extends SimpleRoverErrorMode> getErrorModes(){
 		if (isDcdc()) {
 			return getDcdcErrorModes();
 		}
@@ -479,13 +480,13 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	@ValidSinceVersion(version = RoverStatusPacket.Version.CORRECT_TWO_REGISTER)
 	@GraphQLInclude("dcdcErrorModes")
 	@DcdcOnly
-	default Collection<DcdcErrorMode> getDcdcErrorModes() {
+	default @NotNull Set<@NotNull DcdcErrorMode> getDcdcErrorModes() {
 		return Modes.getActiveModes(DcdcErrorMode.class, getErrorModeValue());
 	}
 	@ValidSinceVersion(version = RoverStatusPacket.Version.CORRECT_TWO_REGISTER)
 	@GraphQLInclude("roverErrorModes")
 	@RoverOnly
-	default Collection<RoverErrorMode> getRoverErrorModes() {
+	default @NotNull Set<@NotNull RoverErrorMode> getRoverErrorModes() {
 		return Modes.getActiveModes(RoverErrorMode.class, getErrorModeValue());
 	}
 	@ValidSinceVersion(version = RoverStatusPacket.Version.CORRECT_TWO_REGISTER)
