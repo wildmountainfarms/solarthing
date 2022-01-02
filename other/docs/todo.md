@@ -83,6 +83,7 @@ and also react to messages that have been fully processed (request successfully 
 * Make the cryptography utils more object-oriented so that we can swap out implementations more easily
   * KeyUtil contains a cipher transformation that is not as secure as it could be. Everything else can stay the same
 * GraphQL query to display a log of all the times the generator was run, including details on if it was an EQ or not
+* Make chatbot interpret "cancel generator off at 5pm" or provide better way for cancelling commands than ID
   
 ### Completed
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
