@@ -4,4 +4,9 @@
 # source other/linux/path_update.sh
 
 # This file is being sourced, so we have to use $BASH_SOURCE, not $0
-PATH="$(cd "$(dirname "$BASH_SOURCE")"/../.. && pwd)/program/.bin:$PATH"
+if [ -n "${BASH_SOURCE+1}" ]; then
+  PATH="$(cd "$(dirname "$BASH_SOURCE")"/../.. && pwd)/program/.bin:$PATH"
+else
+  # If BASH_SOURCE is not set (maybe we are in zsh or similar, then just assume installed in /opt/solarthing
+  PATH="/opt/solarthing/program/.bin:$PATH"
+fi
