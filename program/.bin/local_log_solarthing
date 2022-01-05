@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 # This version of the solarthing command will use log4j2.xml if it is present in the working directory
 
 BASEDIR=$(dirname "$0")
@@ -9,5 +9,8 @@ if ls log4j2.xml 1>/dev/null 2>&1; then
   export LOG4J_log4j2_configurationFile=log4j2.xml
   echo Using log4j2.xml file!
 fi
+
+export SOLARTHING_ROOT="$BASEDIR/../.."
+source "$BASEDIR/../.scripts/use_sdkman_if_available.sh" # requires bash
 
 "$BASEDIR/../.bin/raw_solarthing" "$@"

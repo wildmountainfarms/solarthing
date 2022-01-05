@@ -48,3 +48,12 @@ sudo update-alternatives --config javac
 Note that using since we didn't use `update-java-alternatives` we only have `java` and `javac` changed, which is enough
 for most people's use cases.
 
+### Using Sdkman to install to solarthing user
+This is work in progress, please do not attempt this:
+
+```shell
+(echo 'export SDKMAN_DIR="/opt/solarthing/program/.downloads/sdkman"' && curl -s "https://get.sdkman.io?rcupdate=false") | sudo -u solarthing bash
+
+echo 'export SDKMAN_DIR="/opt/solarthing/program/.downloads/sdkman";source "/opt/solarthing/program/.downloads/sdkman/bin/sdkman-init.sh";sdk version' | sudo -u solarthing bash
+```
+

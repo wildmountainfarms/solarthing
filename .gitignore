@@ -39,6 +39,8 @@ other/linux/.downloads/
 /program/custom*
 !/program/create_custom.sh
 
+/program/.downloads/*
+!/program/.downloads/README.md
 
 */__pycache__/*
 
