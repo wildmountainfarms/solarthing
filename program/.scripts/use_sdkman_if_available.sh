@@ -12,14 +12,11 @@ if [ -z "${BASH_VERSION+1}" ]; then
 fi
 
 
-if [ -z "${SDKMAN_DIR+1}" ] || [ -n "${USE_SOLARTHING_SDKMAN+1}" ]; then
-  # Only set SDKMAN_DIR if it is not already set
-  # This allows people to use their own directory, or set it to blank to manually disable
-  export SDKMAN_DIR=$(cd "$SOLARTHING_ROOT/program/.downloads/sdkman" && pwd)
+if [ -z "${NO_SOLARTHING_SDKMAN+1}" ]; then
+  SDKMAN_DIR=$(cd "$SOLARTHING_ROOT/program/.downloads/sdkman" && pwd)
+  if [ -f "$SDKMAN_DIR/bin/sdkman-init.sh" ]; then
+    echo "Using sdkman installation with SDKMAN_DIR=$SDKMAN_DIR"
+    export SDKMAN_DIR
+    source "$SDKMAN_DIR/bin/sdkman-init.sh"
+  fi
 fi
-
-if [ -f "$SDKMAN_DIR/bin/sdkman-init.sh" ]; then
-  echo "Using sdkman installation with SDKMAN_DIR=$SDKMAN_DIR"
-  source "$SDKMAN_DIR/bin/sdkman-init.sh"
-fi
-
