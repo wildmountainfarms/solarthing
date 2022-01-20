@@ -16,8 +16,10 @@ class TimeUtilTest {
 		assertEquals("PT2H5M", TimeUtil.informalDurationToFormal("2hours 5 minutes"));
 		assertEquals("PT2H5M", TimeUtil.informalDurationToFormal("T2hours 5 minutes"));
 		assertEquals("PT2H5M", TimeUtil.informalDurationToFormal("PT2hours 5 minutes"));
+		assertEquals("PT2H5M", TimeUtil.informalDurationToFormal("PT2hours and 5 minutes"));
 
 		assertEquals("PT5S", TimeUtil.informalDurationToFormal("pt5s"));
+		assertEquals("PT2H5M", TimeUtil.informalDurationToFormal("PT2H5M"));
 
 		assertEquals(Duration.ofHours(2), TimeUtil.lenientParseDurationOrNull("2 hours"));
 		assertNull(TimeUtil.lenientParseDurationOrNull("hours"));

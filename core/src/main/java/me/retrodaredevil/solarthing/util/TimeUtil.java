@@ -40,6 +40,7 @@ public class TimeUtil {
 				.replaceAll("MINUTES|MINUTE", "M")
 				.replaceAll("HOURS|HOUR", "H")
 				.replaceAll("DAYS|DAY", "D")
+				.replaceAll("AND", "")
 				;
 		if (!formalDuration.startsWith("P")) { // Make the format of the string we send lenient
 			if (formalDuration.contains("T")) {
