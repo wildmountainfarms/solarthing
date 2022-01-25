@@ -7,12 +7,12 @@ import me.retrodaredevil.solarthing.commands.packets.open.DeleteAlterPacket;
 import me.retrodaredevil.solarthing.commands.packets.open.ImmutableDeleteAlterPacket;
 import me.retrodaredevil.solarthing.commands.packets.open.ImmutableRequestFlagPacket;
 import me.retrodaredevil.solarthing.commands.packets.open.RequestFlagPacket;
-import me.retrodaredevil.solarthing.commands.util.CommandManager;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
 import me.retrodaredevil.solarthing.database.VersionedPacket;
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
 import me.retrodaredevil.solarthing.message.MessageSender;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
+import me.retrodaredevil.solarthing.packets.collection.PacketCollectionCreator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.type.alter.AlterPacket;
 import me.retrodaredevil.solarthing.type.alter.StoredAlterPacket;
@@ -105,7 +105,7 @@ public class FlagCommandChatBotHandler implements ChatBotHandler {
 		FlagData data = new FlagData(flagName, new TimeRangeActivePeriod(timeRange));
 		RequestFlagPacket requestFlagPacket = new ImmutableRequestFlagPacket(data);
 
-		CommandManager.Creator creator = commandHelper.getCommandManager().makeCreator(sourceId, zoneId, null, requestFlagPacket, PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR);
+		PacketCollectionCreator creator = commandHelper.getCommandManager().makeCreator(sourceId, zoneId, null, requestFlagPacket, PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR);
 
 		// TODO We should check if the flag being requested is already active.
 		executorService.execute(() -> {
@@ -149,7 +149,7 @@ public class FlagCommandChatBotHandler implements ChatBotHandler {
 		// We know that the user wants this flag cleared, so let's delete all the packets that are active.
 		for (VersionedPacket<StoredAlterPacket> packetToRequestDeleteFor : activePackets) {
 			DeleteAlterPacket deleteAlterPacket = new ImmutableDeleteAlterPacket(packetToRequestDeleteFor.getPacket().getDbId(), packetToRequestDeleteFor.getUpdateToken());
-			CommandManager.Creator creator = commandHelper.getCommandManager().makeCreator(sourceId, zoneId, null, deleteAlterPacket, PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR);
+			PacketCollectionCreator creator = commandHelper.getCommandManager().makeCreator(sourceId, zoneId, null, deleteAlterPacket, PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR);
 			PacketCollection packetCollection = creator.create(now);
 			boolean success = false;
 			try {

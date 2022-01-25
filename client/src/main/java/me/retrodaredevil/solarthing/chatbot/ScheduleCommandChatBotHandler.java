@@ -1,12 +1,12 @@
 package me.retrodaredevil.solarthing.chatbot;
 
-import me.retrodaredevil.solarthing.commands.util.CommandManager;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.commands.packets.open.ImmutableScheduleCommandPacket;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
 import me.retrodaredevil.solarthing.message.MessageSender;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
+import me.retrodaredevil.solarthing.packets.collection.PacketCollectionCreator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.type.alter.packets.ScheduledCommandData;
 import me.retrodaredevil.solarthing.util.TimeUtil;
@@ -103,7 +103,7 @@ public class ScheduleCommandChatBotHandler implements ChatBotHandler {
 		}
 
 		UUID uniqueId = UUID.randomUUID();
-		CommandManager.Creator creator = commandHelper.getCommandManager().makeCreator(
+		PacketCollectionCreator creator = commandHelper.getCommandManager().makeCreator(
 				sourceId,
 				zoneId,
 				null, // We don't have an InstanceTargetPacket because scheduling commands is not handled by a program with a fragment ID // also look at PacketGroups.parseToTargetPacketGroup() for interpretation without a TargetInstancePacket

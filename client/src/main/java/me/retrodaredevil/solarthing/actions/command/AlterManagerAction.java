@@ -3,7 +3,12 @@ package me.retrodaredevil.solarthing.actions.command;
 import me.retrodaredevil.action.SimpleAction;
 import me.retrodaredevil.solarthing.AlterPacketsProvider;
 import me.retrodaredevil.solarthing.SolarThingConstants;
-import me.retrodaredevil.solarthing.commands.packets.open.*;
+import me.retrodaredevil.solarthing.commands.packets.open.CommandOpenPacket;
+import me.retrodaredevil.solarthing.commands.packets.open.DeleteAlterPacket;
+import me.retrodaredevil.solarthing.commands.packets.open.ImmutableRequestCommandPacket;
+import me.retrodaredevil.solarthing.commands.packets.open.RequestCommandPacket;
+import me.retrodaredevil.solarthing.commands.packets.open.RequestFlagPacket;
+import me.retrodaredevil.solarthing.commands.packets.open.ScheduleCommandPacket;
 import me.retrodaredevil.solarthing.commands.util.CommandManager;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
 import me.retrodaredevil.solarthing.database.VersionedPacket;
@@ -13,11 +18,16 @@ import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseExcepti
 import me.retrodaredevil.solarthing.database.exception.UpdateConflictSolarThingDatabaseException;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
+import me.retrodaredevil.solarthing.packets.collection.PacketCollectionCreator;
 import me.retrodaredevil.solarthing.packets.collection.StoredPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.TargetPacketGroup;
 import me.retrodaredevil.solarthing.packets.instance.InstanceTargetPackets;
 import me.retrodaredevil.solarthing.packets.security.LargeIntegrityPacket;
-import me.retrodaredevil.solarthing.packets.security.crypto.*;
+import me.retrodaredevil.solarthing.packets.security.crypto.Decrypt;
+import me.retrodaredevil.solarthing.packets.security.crypto.DecryptException;
+import me.retrodaredevil.solarthing.packets.security.crypto.InvalidKeyException;
+import me.retrodaredevil.solarthing.packets.security.crypto.KeyUtil;
+import me.retrodaredevil.solarthing.packets.security.crypto.PublicKeyLookUp;
 import me.retrodaredevil.solarthing.program.SecurityPacketReceiver;
 import me.retrodaredevil.solarthing.reason.ExecutionReason;
 import me.retrodaredevil.solarthing.reason.OpenSourceExecutionReason;
@@ -302,7 +312,7 @@ public class AlterManagerAction extends SimpleAction {
 		// Having a document ID based off of the StoredAlterPacket's _id helps make sure we don't process it twice in case we are unable to delete it.
 		//   -- if there's an update conflict while uploading, we know we already processed it
 		String documentId = "scheduled-request-" + versionedPacket.getPacket().getDbId();
-		CommandManager.Creator creator = commandManager.makeCreator(sourceId, zoneId, InstanceTargetPackets.create(data.getTargetFragmentIds()), requestCommandPacket, zonedDateTime -> documentId);
+		PacketCollectionCreator creator = commandManager.makeCreator(sourceId, zoneId, InstanceTargetPackets.create(data.getTargetFragmentIds()), requestCommandPacket, zonedDateTime -> documentId);
 		executorService.execute(() -> {
 			Instant uploadingNow = Instant.now();
 			PacketCollection packetCollection = creator.create(uploadingNow);

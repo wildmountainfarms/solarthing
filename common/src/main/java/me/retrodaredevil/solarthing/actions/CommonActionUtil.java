@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.solarthing.actions.command.FlagActionNode;
 import me.retrodaredevil.solarthing.actions.command.SendCommandActionNode;
+import me.retrodaredevil.solarthing.actions.command.SendEncryptedActionNode;
 import me.retrodaredevil.solarthing.actions.command.SendRequestHeartbeatActionNode;
 import me.retrodaredevil.solarthing.actions.mate.ACModeActionNode;
 import me.retrodaredevil.solarthing.actions.mate.AuxStateActionNode;
@@ -29,6 +30,7 @@ public final class CommonActionUtil {
 
 				SendCommandActionNode.class,
 				SendRequestHeartbeatActionNode.class,
+				SendEncryptedActionNode.class,
 				FlagActionNode.class
 		);
 		return objectMapper;

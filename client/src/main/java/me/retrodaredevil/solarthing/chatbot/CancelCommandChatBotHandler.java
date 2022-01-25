@@ -1,7 +1,6 @@
 package me.retrodaredevil.solarthing.chatbot;
 
 import me.retrodaredevil.solarthing.AlterPacketsProvider;
-import me.retrodaredevil.solarthing.commands.util.CommandManager;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.commands.packets.open.CommandOpenPacket;
 import me.retrodaredevil.solarthing.commands.packets.open.ImmutableDeleteAlterPacket;
@@ -10,6 +9,7 @@ import me.retrodaredevil.solarthing.database.VersionedPacket;
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
 import me.retrodaredevil.solarthing.message.MessageSender;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
+import me.retrodaredevil.solarthing.packets.collection.PacketCollectionCreator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.reason.ExecutionReason;
 import me.retrodaredevil.solarthing.reason.OpenSourceExecutionReason;
@@ -94,7 +94,7 @@ public class CancelCommandChatBotHandler implements ChatBotHandler {
 			VersionedPacket<StoredAlterPacket> target = targets.get(0);
 			messageSender.sendMessage("Going request cancel of " + target.getPacket().getDbId());
 			CommandOpenPacket packet = new ImmutableDeleteAlterPacket(target.getPacket().getDbId(), target.getUpdateToken());
-			CommandManager.Creator creator = commandHelper.getCommandManager().makeCreator(sourceId, zoneId, null, packet, PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR);
+			PacketCollectionCreator creator = commandHelper.getCommandManager().makeCreator(sourceId, zoneId, null, packet, PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR);
 			executorService.execute(() -> {
 				Instant now = Instant.now();
 				PacketCollection packetCollection = creator.create(now);

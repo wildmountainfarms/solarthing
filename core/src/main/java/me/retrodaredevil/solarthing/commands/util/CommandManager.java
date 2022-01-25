@@ -6,6 +6,7 @@ import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.commands.packets.open.CommandOpenPacket;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
+import me.retrodaredevil.solarthing.packets.collection.PacketCollectionCreator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollections;
 import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePacket;
@@ -90,7 +91,7 @@ public class CommandManager {
 	 * @param commandOpenPacket The command packet
 	 * @return A creator to make a packet collection. When supplied with an {@link Instant} representing now, a packet collection is created.
 	 */
-	public Creator makeCreator(String sourceId, ZoneId zoneId, @Nullable InstanceTargetPacket instanceTargetPacket, CommandOpenPacket commandOpenPacket, PacketCollectionIdGenerator packetCollectionIdGenerator) {
+	public PacketCollectionCreator makeCreator(String sourceId, ZoneId zoneId, @Nullable InstanceTargetPacket instanceTargetPacket, CommandOpenPacket commandOpenPacket, PacketCollectionIdGenerator packetCollectionIdGenerator) {
 		// instanceTargetPacket may be null
 
 		KeyPair keyPair = getKeyPair();
@@ -134,7 +135,4 @@ public class CommandManager {
 
 	}
 
-	public interface Creator {
-		PacketCollection create(Instant now);
-	}
 }
