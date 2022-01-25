@@ -40,10 +40,13 @@
     ]
   },
   "generator_off_command": {
-    "type": "sendcommand",
+    "type": "sendopen",
     "directory": ".data/keys",
     "targets": [1],
-    "command": "GEN OFF",
-    "sender": "nasplex"
+    "sender": "nasplex",
+    "data": {
+      "type": "requestcommand",
+      "command": "GEN OFF"
+    }
   }
 }

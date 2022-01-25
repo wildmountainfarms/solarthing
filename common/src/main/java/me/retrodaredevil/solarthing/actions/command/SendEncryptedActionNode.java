@@ -23,6 +23,8 @@ import me.retrodaredevil.solarthing.packets.instance.InstanceTargetPackets;
 import java.io.File;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 import static java.util.Objects.requireNonNull;
 
@@ -36,6 +38,8 @@ public class SendEncryptedActionNode implements ActionNode {
 	private final CommandManager commandManager;
 	private final List<Integer> fragmentIdTargets;
 	private final CommandOpenProvider packetProvider;
+
+	private final ThreadFactory threadFactory = Executors.defaultThreadFactory();
 
 	public SendEncryptedActionNode(
 			CommandManager commandManager,
@@ -76,6 +80,7 @@ public class SendEncryptedActionNode implements ActionNode {
 		);
 		return Actions.createLinkedActionRunner(
 				new SendPacketAction(
+						threadFactory,
 						database::getOpenDatabase,
 						creator, 100, 10,
 						PassActionNode.getInstance().createAction(actionEnvironment), // TODO allow actions to be passed in for these

@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.time.Instant;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
@@ -39,10 +40,11 @@ public class SendPacketAction extends SimpleAction implements LinkedAction {
 
 	private volatile Action nextAction = null;
 
-	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+	private final ExecutorService executorService;
 
-	public SendPacketAction(Supplier<MillisDatabase> millisDatabaseSupplier, PacketCollectionCreator packetCollectionCreator, long retryWaitMillis, int maxRetries, Action onSuccessAction, Action onMaxRetriesAction) {
+	public SendPacketAction(ThreadFactory threadFactory, Supplier<MillisDatabase> millisDatabaseSupplier, PacketCollectionCreator packetCollectionCreator, long retryWaitMillis, int maxRetries, Action onSuccessAction, Action onMaxRetriesAction) {
 		super(false);
+		executorService = Executors.newSingleThreadExecutor(threadFactory);
 		requireNonNull(this.millisDatabaseSupplier = millisDatabaseSupplier);
 		requireNonNull(this.packetCollectionCreator = packetCollectionCreator);
 		this.retryWaitMillis = retryWaitMillis;

@@ -39,17 +39,23 @@
     ]
   },
   "set_normal_command": {
-    "type": "sendcommand",
+    "type": "sendopen",
     "directory": ".data/keys",
     "targets": [2],
-    "command": "SET BOOST NORMAL",
-    "sender": "nasplex"
+    "sender": "nasplex",
+    "data": {
+      "type": "requestcommand",
+      "command": "SET BOOST NORMAL"
+    }
   },
   "set_equalize_command": {
-    "type": "sendcommand",
+    "type": "sendopen",
     "directory": ".data/keys",
     "targets": [2],
-    "command": "SET BOOST EQUALIZE",
-    "sender": "nasplex"
+    "sender": "nasplex",
+    "data": {
+      "type": "requestcommand",
+      "command": "SET BOOST EQUALIZE"
+    }
   }
 }

@@ -9,15 +9,18 @@
     "type": "queue",
     "actions": [
       {
-        "type": "sendrequestheartbeat",
+        "type": "sendopen",
         "directory": ".data/keys",
         "targets": [1],
         "sender": "nasplex",
-        "heartbeat": {
-          "displayName": "Commands to Mate Program",
-          "identifier": "ping.commands.program.mate",
-          "expectedDurationToNextHeartbeat": "PT1H",
-          "bufferDuration": "PT3M"
+        "data": {
+          "type": "requestheartbeat",
+          "heartbeat": {
+            "displayName": "Commands to Mate Program",
+            "identifier": "ping.commands.program.mate",
+            "expectedDurationToNextHeartbeat": "PT1H",
+            "bufferDuration": "PT3M"
+          }
         }
       },
       {

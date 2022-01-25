@@ -17,7 +17,7 @@ public class RequestHeartbeatPacketProvider implements CommandOpenProvider {
 	private final HeartbeatData heartbeatData;
 
 	@JsonCreator
-	public RequestHeartbeatPacketProvider(@JsonProperty(value = "data", required = true) HeartbeatData heartbeatData) {
+	public RequestHeartbeatPacketProvider(@JsonProperty(value = "heartbeat", required = true) HeartbeatData heartbeatData) {
 		requireNonNull(this.heartbeatData = heartbeatData);
 	}
 
