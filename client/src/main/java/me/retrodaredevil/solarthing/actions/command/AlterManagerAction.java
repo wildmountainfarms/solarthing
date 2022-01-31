@@ -197,7 +197,7 @@ public class AlterManagerAction extends SimpleAction {
 						scheduleCommandPacket.getUniqueString() // this is legacy data and shouldn't be used anywhere, so it doesn't matter what we put here
 				));
 				ScheduledCommandPacket scheduledCommandPacket = new ScheduledCommandPacket(data, executionReason);
-				// TODO is this how we want to generate the ID?
+				// This databaseId is basically an arbitrary way to generate a unique ID. It contains some stuff such as the command name to debug more easily
 				String databaseId = "alter-scheduled-command-" + data.getCommandName() + "-" + Long.toHexString(data.getScheduledTimeMillis()) + "-" + sender + "-" + Math.random();
 				StoredAlterPacket storedAlterPacket = new ImmutableStoredAlterPacket(databaseId, now, scheduledCommandPacket, this.sourceId);
 				storedAlterPacketsToUpload.add(storedAlterPacket);

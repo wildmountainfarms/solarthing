@@ -71,7 +71,7 @@ public final class AutomationMain {
 			rawPacketGroups = millisDatabase.query(query);
 			LOGGER.debug("Got packets from " + millisDatabase);
 		} catch (SolarThingDatabaseException e) {
-			LOGGER.error("Couldn't get status packets from " + millisDatabase, e);
+			LOGGER.error("Couldn't get packets from " + millisDatabase, e);
 			return;
 		}
 

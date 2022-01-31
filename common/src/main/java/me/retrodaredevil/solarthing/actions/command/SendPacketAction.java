@@ -44,6 +44,10 @@ public class SendPacketAction extends SimpleAction implements LinkedAction {
 
 	public SendPacketAction(ThreadFactory threadFactory, Supplier<MillisDatabase> millisDatabaseSupplier, PacketCollectionCreator packetCollectionCreator, long retryWaitMillis, int maxRetries, Action onSuccessAction, Action onMaxRetriesAction) {
 		super(false);
+		// TODO it is not ideal that we are creating a new ExecutorService here because it will create a new thread no matter what
+		//  using threadFactory. Ideally we could just pass an ExecutorService through the constructor, but
+		//  then cancelling tasks belonging to this action only would also cancel tasks belonging to other actions using
+		//  the same ExecutorService.
 		executorService = Executors.newSingleThreadExecutor(threadFactory);
 		requireNonNull(this.millisDatabaseSupplier = millisDatabaseSupplier);
 		requireNonNull(this.packetCollectionCreator = packetCollectionCreator);

@@ -23,6 +23,8 @@ import retrofit2.Retrofit;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @JsonTypeName("solcast")
 public class SolcastActionNode implements ActionNode {
@@ -30,6 +32,8 @@ public class SolcastActionNode implements ActionNode {
 
 	private final String resourceId;
 	private final SolcastService service;
+
+	private final ExecutorService executorService = Executors.newFixedThreadPool(3);
 
 	@JsonCreator
 	public SolcastActionNode(@JsonProperty(value = "resource", required = true) String resourceId, @JsonProperty(value = "key", required = true) String apiKey) {
@@ -57,7 +61,7 @@ public class SolcastActionNode implements ActionNode {
 			PowerUtil.Data data = PowerUtil.getPowerData(packetGroup, PowerUtil.GeneratingType.PV_ONLY);
 			Integer watts = data.getGeneratingWatts();
 			if (watts != null) {
-				LOGGER.info("Total " + watts + " watts will be uploaded to Solcast");
+				LOGGER.debug("Total " + watts + " watts will be uploaded to Solcast");
 				Call<?> call = service.postMeasurement(resourceId, MeasurementData.createSingle(
 						new Measurement(
 								Instant.ofEpochMilli(packetGroup.getDateMillis()),
@@ -65,14 +69,16 @@ public class SolcastActionNode implements ActionNode {
 								watts / 1000.0f
 						)
 				));
-				try {
-					Response<?> response = call.execute();
-					if (!response.isSuccessful()) {
-						LOGGER.error("Unsuccessful solcast response! Code: " + response.code());
+				executorService.execute(() -> {
+					try {
+						Response<?> response = call.execute();
+						if (!response.isSuccessful()) {
+							LOGGER.error("Unsuccessful solcast response! Code: " + response.code());
+						}
+					} catch (IOException e) {
+						LOGGER.error("Solcast error", e);
 					}
-				} catch (IOException e) {
-					LOGGER.error("Solcast error", e);
-				}
+				});
 			}
 		});
 	}

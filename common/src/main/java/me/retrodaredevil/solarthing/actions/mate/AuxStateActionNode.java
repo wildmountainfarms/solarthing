@@ -43,6 +43,7 @@ public class AuxStateActionNode implements ActionNode {
 				}
 				FXStatusPacket fxStatusPacket = OutbackUtil.getMasterFX(packetGroup);
 				if (fxStatusPacket == null) {
+					// TODO This spams the log file when this condition is met. Maybe we should figure out a way to stop the spamming of the log file so much
 					LOGGER.warn("No master FX Status Packet!");
 				} else {
 					setDone(fxStatusPacket.isAuxOn() == on);

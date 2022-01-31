@@ -134,6 +134,7 @@ public class SecurityPacketReceiver {
 								try {
 									decodedHash = Base64Variants.getDefaultVariant().decode(encodedHash);
 								} catch (IllegalArgumentException e) {
+									// INVALID_DATA
 									LOGGER.error("Not base64 data!", e);
 								}
 								if (decodedHash != null) {
@@ -143,6 +144,7 @@ public class SecurityPacketReceiver {
 										LOGGER.debug("Successfully compared hashes!");
 										handleMessage(payload, sender);
 									} else {
+										// DIFFERENT_DATA
 										LOGGER.warn("Unsuccessfully compared hashes! The data may have been tampered with!");
 									}
 								}
@@ -160,17 +162,20 @@ public class SecurityPacketReceiver {
 		try {
 			data = Decrypt.decrypt(cipher, publicKeyLookUp, sender, base64EncodedData);
 		} catch (DecryptException e) {
+			// DECRYPT_ERROR
 			LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Someone tried to impersonate " + sender + "! Or that person has a new public key.", e);
 			return null;
 		} catch (InvalidKeyException e) {
 			throw new RuntimeException("If there is a saved key, it should be valid! sender: " + sender, e);
 		} catch (NotAuthorizedException e) {
+			// UNAUTHORIZED
 			LOGGER.info(SolarThingConstants.SUMMARY_MARKER, sender + " is not authorized!", e);
 			return null;
 		}
 		final String[] split = data.split(",", 2);
 		LOGGER.debug("decrypted data: " + data);
 		if(split.length != 2){
+			// INVALID_DATA
 			LOGGER.warn("split.length: " + split.length + " split: " + Arrays.asList(split));
 			return null;
 		}
@@ -180,6 +185,7 @@ public class SecurityPacketReceiver {
 		try {
 			dateMillis = Long.parseLong(hexMillis, 16);
 		} catch (NumberFormatException e){
+			// INVALID_DATA
 			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "Error parsing hex date millis", e);
 			return null;
 		}
@@ -189,6 +195,7 @@ public class SecurityPacketReceiver {
 			// Also note that this may stop old, old clients from being able to send commands. As of a few versions ago (few versions ago as of 2021.10.29)
 			//   this may have stopped the commands from being processed because the encrypted dateMillis and expected dateMillis may have been generated/gotten at different times
 			//   but that is not the case now.
+			// DIFFERENT_PAYLOAD
 			LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Encrypted dateMillis is not the same as the expected dateMillis. dateMillis (decrypted): " + dateMillis + ", expected dateMillis: " + expectedDateMillis);
 			return null;
 		}
@@ -198,6 +205,7 @@ public class SecurityPacketReceiver {
 			LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Message from " + sender + " is from the future??? dateMillis: " + dateMillis + " currentTime: " + currentTime);
 			lastCommands.put(sender, dateMillis); // put this here anyway so it can't be used later
 		} else if(dateMillis < minTime){
+			// NOTE: This case should never happen, since we already filter old packets out and we already checked to amke
 			LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Message from " + sender + " was parsed, but it too old! dateMillis: " + dateMillis + " minTime: " + minTime);
 		} else if(lastCommand != null && dateMillis <= lastCommand) { // if this command is old or if someone is trying to send the exact same command twice
 			LOGGER.debug("Message from " + sender + " was parsed, but was older than the last command they sent! dateMillis: " + dateMillis + " lastCommand: " + lastCommand);
@@ -207,6 +215,7 @@ public class SecurityPacketReceiver {
 			lastCommands.put(sender, dateMillis);
 			return message;
 		}
+		// CLOCK_VARIANCE
 		return null;
 	}
 	private void handleMessage(String message, String sender) {
@@ -214,6 +223,7 @@ public class SecurityPacketReceiver {
 		try {
 			node = MAPPER.readTree(message);
 		} catch (JsonProcessingException e) {
+			// INVALID_DATA
 			LOGGER.warn("Couldn't parse message to JSON. message=" + message);
 		}
 		if (node != null) {
@@ -221,6 +231,7 @@ public class SecurityPacketReceiver {
 				ObjectNode objectNode = (ObjectNode) node;
 				handleObjectNode(sender, objectNode);
 			} else {
+				// INVALID_DATA
 				LOGGER.warn("node is not an object! node: " + node);
 			}
 		}
@@ -243,6 +254,7 @@ public class SecurityPacketReceiver {
 			LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Got packet targeting: " + targetPacketGroup.getTargetFragmentIds() + " " + targetSourceId + " with " + targetPacketGroup.getPackets().size() + " packets.");
 			packetGroupReceiver.receivePacketGroup(sender, targetPacketGroup);
 		} else {
+			// DIFFERENT_PAYLOAD
 			LOGGER.info("After second target check, the payload with integrity is not targeting us. More info may be available if logged.");
 		}
 	}
