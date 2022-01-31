@@ -9,7 +9,7 @@ import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
-import me.retrodaredevil.solarthing.packets.VersionedPacket;
+import me.retrodaredevil.solarthing.packets.PacketWithVersion;
 import me.retrodaredevil.solarthing.packets.identification.NumberedIdentifiable;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import me.retrodaredevil.solarthing.solar.renogy.RenogyPacket;
@@ -27,7 +27,7 @@ import me.retrodaredevil.solarthing.solar.renogy.RenogyPacket;
 @JsonTypeName("RENOGY_ROVER_STATUS")
 @JsonExplicit
 @JsonClassDescription("Status packet for Rover and Rover-like devices")
-public interface RoverStatusPacket extends RenogyPacket, RoverReadTable, VersionedPacket, NumberedIdentifiable {
+public interface RoverStatusPacket extends RenogyPacket, RoverReadTable, PacketWithVersion, NumberedIdentifiable {
 
 
 	@UtilityClass

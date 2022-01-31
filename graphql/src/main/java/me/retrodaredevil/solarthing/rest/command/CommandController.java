@@ -5,6 +5,8 @@ import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.action.node.environment.InjectEnvironment;
 import me.retrodaredevil.action.node.environment.VariableEnvironment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +23,7 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 @RequestMapping("/command")
 public class CommandController {
+	private static final Logger LOGGER = LoggerFactory.getLogger(CommandController.class);
 	/*
 	For testing this, go to this URL:
 	http://localhost:8080/command/run?apiKey=0f5c1855-3a51-4fa9-b810-1d2b604fb154&commandName=GEN%20ON
@@ -69,7 +72,7 @@ public class CommandController {
 				Thread.sleep(5); // This is here to make sure our CPU doesn't go to 100% for no reason
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
-				e.printStackTrace(); // TODO eventually we'll get better logging, right?
+				LOGGER.error("Interrupted while action was being performed.", e);
 				action.end();
 				return new CommandRequestResponse(false);
 			}

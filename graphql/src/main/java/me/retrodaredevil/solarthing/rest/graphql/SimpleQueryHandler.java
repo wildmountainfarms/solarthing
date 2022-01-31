@@ -9,6 +9,7 @@ import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbData
 import me.retrodaredevil.solarthing.database.MillisDatabase;
 import me.retrodaredevil.solarthing.database.MillisQueryBuilder;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
+import me.retrodaredevil.solarthing.database.UpdateToken;
 import me.retrodaredevil.solarthing.database.VersionedPacket;
 import me.retrodaredevil.solarthing.database.couchdb.CouchDbSolarThingDatabase;
 import me.retrodaredevil.solarthing.database.exception.NotFoundSolarThingDatabaseException;
@@ -20,9 +21,11 @@ import me.retrodaredevil.solarthing.type.closed.meta.MetaDatabase;
 import me.retrodaredevil.solarthing.packets.collection.*;
 import me.retrodaredevil.solarthing.packets.collection.parsing.PacketParsingErrorHandler;
 import me.retrodaredevil.solarthing.rest.exceptions.DatabaseException;
+import me.retrodaredevil.solarthing.type.closed.meta.RootMetaPacket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -32,10 +35,14 @@ import static java.util.Objects.requireNonNull;
 
 public class SimpleQueryHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SimpleQueryHandler.class);
+	private static final Duration METADATA_CACHE_VALID = Duration.ofSeconds(15);
 
 	private final DefaultInstanceOptions defaultInstanceOptions;
 
 	private final SolarThingDatabase database;
+
+	private VersionedPacket<RootMetaPacket> metadataCache = null;
+	private Long lastMetadataCacheNanos = null;
 
 	public SimpleQueryHandler(DefaultInstanceOptions defaultInstanceOptions, CouchDbDatabaseSettings couchDbDatabaseSettings, ObjectMapper objectMapper) {
 		this.defaultInstanceOptions = defaultInstanceOptions;
@@ -106,15 +113,35 @@ public class SimpleQueryHandler {
 	}
 
 	public MetaDatabase queryMeta() {
-		// TODO We can have a better caching mechanism for this
-		try {
-			return new DefaultMetaDatabase(database.queryMetadata().getPacket());
-		} catch (NotFoundSolarThingDatabaseException e) {
-			// If we have not defined metadata, then we return an "empty" instance
-			return EmptyMetaDatabase.getInstance();
-		} catch (SolarThingDatabaseException e) {
-			throw new DatabaseException("Could not query meta", e);
+		final VersionedPacket<RootMetaPacket> metadata;
+		synchronized (this) {
+			final VersionedPacket<RootMetaPacket> currentCache = metadataCache;
+			final Long lastMetadataCacheNanos = this.lastMetadataCacheNanos;
+			if (lastMetadataCacheNanos != null && System.nanoTime() - lastMetadataCacheNanos < METADATA_CACHE_VALID.toNanos()) {
+				requireNonNull(currentCache);
+				metadata = currentCache;
+			} else {
+				UpdateToken updateToken = currentCache == null ? null : currentCache.getUpdateToken();
+				final VersionedPacket<RootMetaPacket> newMetadata;
+				try {
+					newMetadata = database.queryMetadata(updateToken);
+				} catch (NotFoundSolarThingDatabaseException e) {
+					// If we have not defined metadata, then we return an "empty" instance
+					return EmptyMetaDatabase.getInstance();
+				} catch (SolarThingDatabaseException e) {
+					throw new DatabaseException("Could not query meta", e);
+				}
+				this.lastMetadataCacheNanos = System.nanoTime();
+				if (newMetadata == null) {
+					requireNonNull(currentCache);
+					metadata = currentCache;
+				} else {
+					metadataCache = newMetadata;
+					metadata = newMetadata;
+				}
+			}
 		}
+		return new DefaultMetaDatabase(metadata.getPacket());
 	}
 
 	public List<VersionedPacket<StoredAlterPacket>> queryAlter(@NotNull String sourceId) {

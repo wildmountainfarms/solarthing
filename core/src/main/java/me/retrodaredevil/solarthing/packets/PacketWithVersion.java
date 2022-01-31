@@ -16,8 +16,7 @@ import me.retrodaredevil.solarthing.annotations.Nullable;
  * some implementations).
  */
 @JsonPropertyOrder({"packetType", "packetVersion"})
-public interface VersionedPacket extends DocumentedPacket {
-	// TODO rename this class to something else
+public interface PacketWithVersion extends DocumentedPacket {
 
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	@JsonProperty("packetVersion")

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.*;
 import me.retrodaredevil.solarthing.packets.Modes;
-import me.retrodaredevil.solarthing.packets.VersionedPacket;
+import me.retrodaredevil.solarthing.packets.PacketWithVersion;
 import me.retrodaredevil.solarthing.packets.support.Support;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import me.retrodaredevil.solarthing.solar.common.BasicChargeController;
@@ -24,7 +24,7 @@ import java.util.Set;
 @JsonDeserialize(as = ImmutableMXStatusPacket.class)
 @JsonTypeName("MXFM_STATUS")
 @JsonExplicit
-public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeController, DailyChargeController, BatteryVoltage, VersionedPacket {
+public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeController, DailyChargeController, BatteryVoltage, PacketWithVersion {
 
 	/** This version indicates that the packet no longer has convenience string fields. This indicates a different in serialization, not in underlying data. */
 	int VERSION_NO_MORE_CONVENIENCE_FIELDS = 2;

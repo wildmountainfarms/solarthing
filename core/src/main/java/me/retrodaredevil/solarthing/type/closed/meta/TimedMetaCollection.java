@@ -35,14 +35,15 @@ public class TimedMetaCollection {
 				nullablePackets.stream().filter(Objects::nonNull).collect(Collectors.toList())
 		);
 	}
-	// TODO these JSON properties are not consistent.
+	// NOTE: Even though we define these JSON annotations, we have never actually tested the serialization of a TimedMetaCollection
+
 	@JsonInclude(JsonInclude.Include.NON_NULL)
-	@JsonProperty("startTime")
+	@JsonProperty("start")
 	public Long getStartTime() {
 		return timeRange.getStartTimeMillis();
 	}
 	@JsonInclude(JsonInclude.Include.NON_NULL)
-	@JsonProperty("endTime")
+	@JsonProperty("end")
 	public Long getEndTime() {
 		return timeRange.getEndTimeMillis();
 	}

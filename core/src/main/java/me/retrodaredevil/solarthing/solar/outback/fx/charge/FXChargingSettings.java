@@ -28,7 +28,7 @@ public class FXChargingSettings {
 	}
 
 	public boolean isFloatTimerStartedImmediately(){
-		// TODO even on some?|all? newer firmwares the float timer starts immediately once the setpoint is reached
+		// Unknown: even on some?|all? newer firmwares the float timer starts immediately once the setpoint is reached
 		return rebulkVoltage == null; // if we're on older firmware without rebulk voltage, this also means that the float timer is started immediately
 	}
 	public float getStepSize(){

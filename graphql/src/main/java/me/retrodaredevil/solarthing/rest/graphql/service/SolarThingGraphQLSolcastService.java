@@ -118,7 +118,10 @@ public class SolarThingGraphQLSolcastService {
 		public @NotNull List<@NotNull DailyEnergy> queryDailyEnergyEstimates() throws IOException {
 			LocalDate startDate = Instant.ofEpochMilli(from).atZone(zoneId).toLocalDate();
 			LocalDate endDate = Instant.ofEpochMilli(to).atZone(zoneId).toLocalDate();
-			// TODO don't use getEstimatedActuals here
+			// Note that this call to getEstimatedActuals() has a good chance of requesting past data depending on what startDate is.
+			//   This is something we could think about changing in the future (maybe we should use cacheController).
+			//   However, for the time being we will keep it like this. Plus, I don't think this query is used often, so it doesn't matter for now.
+			// We might even consider using SolarThingSolcastDayQuery#queryEnergyEstimate() directly if we really want to change this
 			List<SimpleEstimatedActual> simpleEstimatedActuals = handler.cache.getEstimatedActuals(
 					startDate.atStartOfDay(zoneId).toInstant().toEpochMilli(),
 					endDate.plusDays(1).atStartOfDay(zoneId).toInstant().toEpochMilli(),

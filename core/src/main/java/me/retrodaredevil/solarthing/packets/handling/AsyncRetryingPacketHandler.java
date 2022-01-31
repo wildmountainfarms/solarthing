@@ -55,7 +55,7 @@ public class AsyncRetryingPacketHandler implements PacketHandler {
 						try {
 							for (PacketGroupNode<PacketCollection> node : toReupload) {
 								PacketCollection packetCollection = node.getPacketGroup();
-								packetHandler.handle(packetCollection); // TODO InstantType really doesn't have a purpose here, but I felt like setting it to NOT_INSTANT even though the data is perfectly valid
+								packetHandler.handle(packetCollection);
 								successfullyUploaded.add(node);
 							}
 							LOGGER.debug("Successfully reuploaded all " + toReupload.size() + " packets.");

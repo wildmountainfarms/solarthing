@@ -8,14 +8,14 @@ import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
-import me.retrodaredevil.solarthing.packets.VersionedPacket;
+import me.retrodaredevil.solarthing.packets.PacketWithVersion;
 import me.retrodaredevil.solarthing.reason.ExecutionReason;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
 
 @JsonTypeName("MATE_COMMAND_SUCCESS")
 @JsonDeserialize(as = ImmutableSuccessMateCommandPacket.class)
 @JsonExplicit
-public interface SuccessMateCommandPacket extends MateCommandFeedbackPacket, VersionedPacket {
+public interface SuccessMateCommandPacket extends MateCommandFeedbackPacket, PacketWithVersion {
 	int VERSION_EXECUTION_REASON_INCLUDED = 2;
 
 	int VERSION_LATEST = VERSION_EXECUTION_REASON_INCLUDED;

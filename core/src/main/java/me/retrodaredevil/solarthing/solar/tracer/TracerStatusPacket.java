@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
-import me.retrodaredevil.solarthing.packets.VersionedPacket;
+import me.retrodaredevil.solarthing.packets.PacketWithVersion;
 import me.retrodaredevil.solarthing.packets.identification.NumberedIdentifiable;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacket;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
@@ -15,7 +15,7 @@ import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 @JsonExplicit
 @JsonTypeName("TRACER_STATUS")
 @JsonDeserialize(as = ImmutableTracerStatusPacket.class)
-public interface TracerStatusPacket extends TracerReadTable, SolarStatusPacket, VersionedPacket, NumberedIdentifiable {
+public interface TracerStatusPacket extends TracerReadTable, SolarStatusPacket, PacketWithVersion, NumberedIdentifiable {
 
 	@UtilityClass
 	class Version {

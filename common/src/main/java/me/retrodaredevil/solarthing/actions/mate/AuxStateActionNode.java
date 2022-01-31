@@ -33,6 +33,8 @@ public class AuxStateActionNode implements ActionNode {
 		LatestPacketGroupEnvironment latestPacketGroupEnvironment = actionEnvironment.getInjectEnvironment().get(LatestPacketGroupEnvironment.class);
 		PacketGroupProvider packetGroupProvider = latestPacketGroupEnvironment.getPacketGroupProvider();
 		return new SimpleAction(false) {
+			/** A simple variable to prevent spamming of the log file*/
+			private boolean hadFX = true;
 			@Override
 			protected void onUpdate() {
 				super.onUpdate();
@@ -43,10 +45,16 @@ public class AuxStateActionNode implements ActionNode {
 				}
 				FXStatusPacket fxStatusPacket = OutbackUtil.getMasterFX(packetGroup);
 				if (fxStatusPacket == null) {
-					// TODO This spams the log file when this condition is met. Maybe we should figure out a way to stop the spamming of the log file so much
-					LOGGER.warn("No master FX Status Packet!");
+					if (hadFX) {
+						LOGGER.warn("No master FX Status Packet!");
+					}
+					hadFX = false;
 				} else {
 					setDone(fxStatusPacket.isAuxOn() == on);
+					if (!hadFX) {
+						LOGGER.info("We now have a master FX Status Packet");
+					}
+					hadFX = true;
 				}
 			}
 		};

@@ -22,6 +22,9 @@ import java.util.Map;
 /**
  * This event is useful for MX charge controllers with older firmware where they will be "stuck" in float mode once
  * they have entered float (usually after an EQ). This can alert you to manually get the MX out of float mode.
+ * <p>
+ * Update 2022.01.31 - Really all this alert indicates is that you have an MX with old firmware that is still in EQ mode.
+ * I believe that some older MXs need to be manually turned out of EQ.
  */
 @JsonTypeName("mxfloatstuck")
 public class MXFloatModeStuckEvent implements MessageEvent {
