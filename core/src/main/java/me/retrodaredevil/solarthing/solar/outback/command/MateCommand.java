@@ -19,6 +19,9 @@ import java.util.Map;
  * <p>
  * Note: In my experience, the DROP command does not go through if the FX is in absorb mode (and probably equalize too). There may be other times
  * when the FX or Mate does not accept the DROP command. So be aware of this
+ * <p>
+ * More on the DROP command not working: https://forum.outbackpower.com/viewtopic.php?t=14790 https://forum.outbackpower.com/viewtopic.php?t=14410
+ * Those forum posts seem to suggest that an unsuccessful DROP command is because of a high buy or charge current
  */
 public enum MateCommand implements Command {
 	/**

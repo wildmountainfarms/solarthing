@@ -5,6 +5,6 @@ import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.PacketEntry;
 
 @JsonExplicit
-public interface PacketCollection extends PacketGroup, PacketEntry {
+public interface PacketCollection extends BasicPacketGroup, PacketEntry {
 
 }

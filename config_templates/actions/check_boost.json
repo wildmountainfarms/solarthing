@@ -1,18 +1,10 @@
 {
   "type": "declaration",
   "main": {
-    "type": "queue",
-    "actions": [
-      {
-        "type": "race",
-        "racers": [
-          [{ "type": "lock", "name": "check_boost"}, { "type": "call", "name": "check"}],
-          [{ "type": "pass" }, { "type": "log", "message": "Something else had a lock on check_boost"}]
-        ]
-      },
-      { "type": "log", "message": "Unlocking...", "debug": true},
-      { "type": "unlock", "name": "check_boost" }
-    ]
+    "type": "withlock",
+    "name": "check_boost",
+    "action": { "type": "call", "name": "check"},
+    "ontimeout": { "type": "log", "message": "Something else had a lock on check_boost"}
   },
   "check": {
     "type": "race",

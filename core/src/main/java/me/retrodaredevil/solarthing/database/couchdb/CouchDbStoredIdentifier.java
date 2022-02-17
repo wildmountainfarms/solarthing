@@ -1,23 +1,38 @@
 package me.retrodaredevil.solarthing.database.couchdb;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.packets.collection.StoredIdentifier;
 
 import java.util.Objects;
 
+import static java.util.Objects.requireNonNull;
+
+/**
+ *
+ */
+@JsonTypeName("couchdb")
 public final class CouchDbStoredIdentifier extends StoredIdentifier {
 	private final String id;
 	private final String revision;
 
-	public CouchDbStoredIdentifier(long dateMillis, String id, String revision) {
+	@JsonCreator
+	public CouchDbStoredIdentifier(
+			@JsonProperty(value = "dateMillis", required = true) long dateMillis,
+			@JsonProperty(value = "id", required = true) String id,
+			@JsonProperty(value = "revision", required = true) String revision) {
 		super(dateMillis);
-		this.id = id;
-		this.revision = revision;
+		requireNonNull(this.id = id);
+		requireNonNull(this.revision = revision);
 	}
 
+	@JsonProperty("id")
 	public String getId() {
 		return id;
 	}
 
+	@JsonProperty("revision")
 	public String getRevision() {
 		return revision;
 	}
@@ -38,7 +53,8 @@ public final class CouchDbStoredIdentifier extends StoredIdentifier {
 	@Override
 	public String toString() {
 		return "CouchDbStoredIdentifier(" +
-				"id='" + id + '\'' +
+				"dateMillis=" + dateMillis +
+				", id='" + id + '\'' +
 				", revision='" + revision + '\'' +
 				')';
 	}

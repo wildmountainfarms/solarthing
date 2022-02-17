@@ -31,4 +31,6 @@ public interface ExecutionFeedbackPacket extends FeedbackPacket {
 
 	@JsonProperty("executionReason")
 	@NotNull ExecutionReason getExecutionReason();
+
+	// TODO consider adding a Nullable error type field here -- maybe WARN and ERROR
 }

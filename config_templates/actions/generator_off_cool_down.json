@@ -1,17 +1,19 @@
 {
   "type": "declaration",
   "main": {
-    "type": "queue",
-    "actions": [
-      {
-        "type": "race",
-        "racers": [
-          [{ "type": "acmode", "mode": "NO AC" }, { "type": "log", "message": "Generator is already off!" }],
-          [{ "type": "lock", "name": "send_commands"}, { "type": "call", "name": "run_commands"}],
-          [{ "type": "waitms", "wait": 5000}, { "type": "log", "message": "Something else had a lock on send_commands"}]
-        ]
-      },
-      { "type": "unlock", "name": "send_commands" }
+    "type": "race",
+    "racers": [
+      [{ "type": "acmode", "mode": "NO AC" }, { "type": "log", "message": "Generator is already off!" }],
+      [
+        {"type": "pass"},
+        {
+          "type": "withlock",
+          "name": "send_commands",
+          "action": { "type": "call", "name": "run_commands"},
+          "timeout": { "type": "wait", "duration": "PT5S"},
+          "ontimeout": { "type": "log", "message": "Something else had a lock on send_commands"}
+        }
+      ]
     ]
   },
   "force_drop": {
@@ -70,7 +72,12 @@
       { "type": "waitms", "wait": 2000},
       { "type": "matecommand", "command": "USE"},
       { "type": "matecommandwait" },
-      { "type": "log", "message": "Sent all commands for generator off!"}
+      { "type": "log", "message": "Sent all commands for generator off cool down!"},
+      {
+        "type": "feedback",
+        "message": "Sent all commands for generator off cool down",
+        "category": "informational.command.mate"
+      }
     ]
   }
 }

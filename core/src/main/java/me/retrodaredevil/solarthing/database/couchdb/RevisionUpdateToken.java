@@ -4,7 +4,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.database.UpdateToken;
+import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
+import me.retrodaredevil.solarthing.packets.collection.StoredIdentifier;
 
 import java.util.Objects;
 
@@ -23,6 +26,11 @@ public class RevisionUpdateToken implements UpdateToken {
 	@JsonProperty("revision")
 	public String getRevision() {
 		return revision;
+	}
+
+	@Override
+	public @NotNull StoredIdentifier toStoredIdentifier(@NotNull PacketCollection packetCollection) {
+		return new CouchDbStoredIdentifier(packetCollection.getDateMillis(), packetCollection.getDbId(), revision);
 	}
 
 	@Override

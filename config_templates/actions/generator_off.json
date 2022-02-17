@@ -1,17 +1,11 @@
 {
   "type": "declaration",
   "main": {
-    "type": "queue",
-    "actions": [
-      {
-        "type": "race",
-        "racers": [
-          [{ "type": "lock", "name": "send_commands"}, { "type": "call", "name": "run_commands"}],
-          [{ "type": "waitms", "wait": 5000}, { "type": "log", "message": "Something else had a lock on send_commands"}]
-        ]
-      },
-      { "type": "unlock", "name": "send_commands" }
-    ]
+    "type": "withlock",
+    "name": "send_commands",
+    "action": { "type": "call", "name": "run_commands"},
+    "timeout": { "type": "wait", "duration": "PT5S"},
+    "ontimeout": { "type": "log", "message": "Something else had a lock on send_commands"}
   },
   "force_drop": {
     "type": "queue",
@@ -22,7 +16,7 @@
         "type": "race",
         "racers": [
           [{ "type": "acmode", "mode": "AC USE", "not": true }, { "type": "pass"}],
-          [{ "type": "waitms", "wait": 2300}, { "type": "call", "name": "force_drop"}]
+          [{ "type": "wait", "duration": "PT2.3S"}, { "type": "call", "name": "force_drop"}]
         ]
       }
     ]

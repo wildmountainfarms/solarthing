@@ -81,7 +81,7 @@ public class SecurityPacketReceiver {
 
 	public void receivePacketGroups(List<StoredPacketGroup> packetGroups) {
 		LOGGER.debug("received packets! size: " + packetGroups.size());
-		List<TargetPacketGroup> packets = new ArrayList<>();
+		List<StoredPacketGroup> packets = new ArrayList<>();
 		long minTime = System.currentTimeMillis() - 5 * 60 * 1000; // last 5 minutes allowed
 		state.processed.headSet(new DateMillisStoredIdentifier(minTime), false).clear(); // Remove data that we don't need to look at anymore
 		// We don't have a max time. If someone uploads a packet with a future date millis, then it will get handled immediately, then never again.
@@ -98,7 +98,7 @@ public class SecurityPacketReceiver {
 			}
 			TargetPacketGroup targetPacketGroup = PacketGroups.parseToTargetPacketGroup(packetGroup);
 			if (targetPredicate.targets(targetPacketGroup, false)) {
-				packets.add(targetPacketGroup);
+				packets.add(packetGroup);
 				state.processed.add(packetGroup.getStoredIdentifier());
 			}
 		}
@@ -107,46 +107,68 @@ public class SecurityPacketReceiver {
 		 * which we want to allow. If we just updated senderLastCommandMap directly, this would not be allowed.
 		 */
 		Map<String, Long> lastCommands = new HashMap<>();
-		for(TargetPacketGroup packetGroup : packets){
+		for(StoredPacketGroup storedPacketGroup : packets){
+			TargetPacketGroup packetGroup = PacketGroups.parseToTargetPacketGroup(storedPacketGroup);
 			long packetGroupDateMillis = packetGroup.getDateMillis();
-			for(Packet packet : packetGroup.getPackets()){
-				SecurityPacket securityPacket = (SecurityPacket) packet;
-				SecurityPacketType packetType = securityPacket.getPacketType();
-				if (packet instanceof SenderPacket) {
-					String sender = ((SenderPacket) packet).getSender();
-					final String invalidSenderReason = sender == null ? "sender is null!" : SenderUtil.getInvalidSenderNameReason(sender);
-					if(packetType == SecurityPacketType.INTEGRITY_PACKET){
-						IntegrityPacket integrityPacket = (IntegrityPacket) packet;
-						if(invalidSenderReason != null){
-							LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, invalidSenderReason);
-						} else {
-							String data = decryptData(minTime, lastCommands, sender, integrityPacket.getEncryptedData(), packetGroupDateMillis);
-							handleMessage(data, sender);
-						}
-					} else if (packetType == SecurityPacketType.LARGE_INTEGRITY_PACKET) {
-						LargeIntegrityPacket largeIntegrityPacket = (LargeIntegrityPacket) packet;
-						if(invalidSenderReason != null){
-							LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, invalidSenderReason);
-						} else {
-							String encodedHash = decryptData(minTime, lastCommands, sender, largeIntegrityPacket.getEncryptedHash(), packetGroupDateMillis);
-							if (encodedHash != null) {
-								byte[] decodedHash = null;
-								try {
-									decodedHash = Base64Variants.getDefaultVariant().decode(encodedHash);
-								} catch (IllegalArgumentException e) {
-									// INVALID_DATA
-									LOGGER.error("Not base64 data!", e);
-								}
-								if (decodedHash != null) {
-									String payload = largeIntegrityPacket.getPayload();
-									byte[] payloadHash = HashUtil.hash(payload);
-									if (Arrays.equals(decodedHash, payloadHash)) {
-										LOGGER.debug("Successfully compared hashes!");
-										handleMessage(payload, sender);
-									} else {
-										// DIFFERENT_DATA
-										LOGGER.warn("Unsuccessfully compared hashes! The data may have been tampered with!");
-									}
+			List<? extends Packet> packetGroupPackets = packetGroup.getPackets();
+			if (packetGroupPackets.size() != 1) {
+				/*
+				In any "millis database" we have the documents inside follow the packet collection format.
+				Packet collections can have many packets inside them. When we are dealing with security packets,
+				we want to be able to easily refer to a single security packet. Because no one should ever need
+				to contain multiple security packets in a given packet collection, we will only process
+				packet collections with a single security packet. This allows things like SecurityEventPackets to work nicely,
+				and doesn't have any real drawbacks except for some (possible) future use case that we don't know of.
+				 */
+
+				boolean hasSenderPacket = packetGroupPackets.stream().anyMatch(packet -> packet instanceof SecurityPacket);
+				if (hasSenderPacket) {
+					LOGGER.warn("This packetGroup had a sender packet but packets.size was not 1!");
+				}
+				continue;
+			}
+			Packet packet = packetGroupPackets.stream().findFirst().orElseThrow(() -> new AssertionError("size should be 1! This should not fail"));
+			if (!(packet instanceof SecurityPacket)) {
+				// At the time of writing this comment (2022.02.02), this should never happen, but we like to prepare for the future!
+				LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Got a packet that was not a security packet! packet: " + packet);
+				continue;
+			}
+			SecurityPacket securityPacket = (SecurityPacket) packet;
+			SecurityPacketType packetType = securityPacket.getPacketType();
+			if (packet instanceof SenderPacket) {
+				String sender = ((SenderPacket) packet).getSender();
+				final String invalidSenderReason = sender == null ? "sender is null!" : SenderUtil.getInvalidSenderNameReason(sender);
+				if(packetType == SecurityPacketType.INTEGRITY_PACKET){
+					IntegrityPacket integrityPacket = (IntegrityPacket) packet;
+					if(invalidSenderReason != null){
+						LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, invalidSenderReason);
+					} else {
+						String data = decryptData(minTime, lastCommands, sender, integrityPacket.getEncryptedData(), packetGroupDateMillis);
+						handleMessage(data, sender);
+					}
+				} else if (packetType == SecurityPacketType.LARGE_INTEGRITY_PACKET) {
+					LargeIntegrityPacket largeIntegrityPacket = (LargeIntegrityPacket) packet;
+					if(invalidSenderReason != null){
+						LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, invalidSenderReason);
+					} else {
+						String encodedHash = decryptData(minTime, lastCommands, sender, largeIntegrityPacket.getEncryptedHash(), packetGroupDateMillis);
+						if (encodedHash != null) {
+							byte[] decodedHash = null;
+							try {
+								decodedHash = Base64Variants.getDefaultVariant().decode(encodedHash);
+							} catch (IllegalArgumentException e) {
+								// INVALID_DATA
+								LOGGER.error("Not base64 data!", e);
+							}
+							if (decodedHash != null) {
+								String payload = largeIntegrityPacket.getPayload();
+								byte[] payloadHash = HashUtil.hash(payload);
+								if (Arrays.equals(decodedHash, payloadHash)) {
+									LOGGER.debug("Successfully compared hashes!");
+									handleMessage(payload, sender);
+								} else {
+									// DIFFERENT_DATA
+									LOGGER.warn("Unsuccessfully compared hashes! The data may have been tampered with!");
 								}
 							}
 						}
