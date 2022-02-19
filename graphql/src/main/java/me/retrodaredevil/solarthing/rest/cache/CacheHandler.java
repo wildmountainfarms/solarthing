@@ -180,7 +180,10 @@ public class CacheHandler {
 						periodNumberPacketMap.put(periodNumber, value);
 					}
 					doNotUpdateDocumentIdsSet.add(value.getDbId());
-				} catch (JsonProcessingException ignored) { // We ignore this exception because getRevisionFromJsonData will throw an exception if the JSON is bad
+				} catch (JsonProcessingException ex) {
+					// If we are in this catch block, one of two things has happened:
+					//   The JSON is invalid (unlikely), we updated how a given cache is serialized/deserialized, or we're dumb and never tested to see if the deserialization works.
+					//   If the JSON is actually invalid, getRevisionFromJsonData will throw an exception. Otherwise, we need to calculate the given cache again
 					String revision = getRevisionFromJsonData(jsonData);
 					documentIdRevisionMapForUpdate.put(result.getDocumentId(), revision);
 				}
@@ -243,7 +246,7 @@ public class CacheHandler {
 					LOGGER.info("Error: " + documentResponse.getError() + " reason: " + documentResponse.getReason() + " on id: " + documentResponse.getId());
 				}
 			}
-			LOGGER.debug("Success: " + successCount + " fail: " + failCount + ". Tried to update: " + updateAttemptCount);
+			LOGGER.debug("(Cache updating) Success: " + successCount + " fail: " + failCount + ". Tried to update: " + updateAttemptCount);
 
 			int numberOfWantedType = 0;
 			for (CacheDataPacket cacheDataPacket : calculatedPackets) {
@@ -281,7 +284,7 @@ public class CacheHandler {
 		} catch (SolarThingDatabaseException e) {
 			// (Was TO-DO)
 			// The consumers of this API may be ok if there are holes in the data rather than getting no data at all, so maybe change this later?
-			throw new DatabaseException("Couldn't query status packets", e);
+			throw new DatabaseException("Couldn't query status packets for period. startPeriodNumber: " + startPeriodNumber + " endPeriodNumber: " + endPeriodNumber + " firstPeriodStart: " + firstPeriodStart, e);
 		}
 		List<CacheDataPacket> r = new ArrayList<>();
 		Map<String, List<InstancePacketGroup>> sourceMap = PacketGroups.parsePackets(packetGroups, defaultInstanceOptions);

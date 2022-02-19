@@ -13,6 +13,7 @@ import static java.util.Objects.requireNonNull;
 @JsonExplicit
 public class BatteryRecordDataCache extends BaseAccumulationDataCache {
 	public static final String CACHE_NAME = "batteryRecord";
+	// TODO create serialize and deserialize test for this
 
 	private final Identifier identifier;
 	private final Record record;
@@ -23,7 +24,7 @@ public class BatteryRecordDataCache extends BaseAccumulationDataCache {
 			@JsonProperty(value = "firstDateMillis", required = true) Long firstDateMillis,
 			@JsonProperty(value = "lastDateMillis", required = true) Long lastDateMillis,
 			@JsonProperty(value = "unknownStartDateMillis", required = true) Long unknownStartDateMillis,
-			@JsonProperty(value = "data", required = true) Record record) {
+			@JsonProperty(value = "record", required = true) Record record) {
 		super(firstDateMillis, lastDateMillis, unknownStartDateMillis);
 		requireNonNull(this.identifier = identifier);
 		this.record = record;
