@@ -19,6 +19,7 @@ import me.retrodaredevil.couchdbjava.response.BulkDocumentResponse;
 import me.retrodaredevil.couchdbjava.response.BulkGetResponse;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
+import me.retrodaredevil.solarthing.rest.cache.creators.BatteryRecordCacheNodeCreator;
 import me.retrodaredevil.solarthing.type.cache.CacheUtil;
 import me.retrodaredevil.solarthing.type.cache.packets.CacheDataPacket;
 import me.retrodaredevil.solarthing.database.MillisQuery;
@@ -51,9 +52,10 @@ public class CacheHandler {
 	/** This duration represents the amount of time to go "backwards" for calculating data for a single given period. If this is 4 and the period is from 10:00 to 11:00, then
 	 * that period actually requires data from 6:00 to 11:00 */
 	public static final Duration INFO_DURATION = Duration.ofHours(4);
-	private static final List<CacheCreator> CACHE_CREATORS = Arrays.asList(
+	private static final List<CacheCreator> CACHE_CREATORS = List.of(
 			new DefaultIdentificationCacheCreator<>(new ChargeControllerAccumulationCacheNodeCreator()),
-			new DefaultIdentificationCacheCreator<>(new FXAccumulationCacheNodeCreator())
+			new DefaultIdentificationCacheCreator<>(new FXAccumulationCacheNodeCreator()),
+			new DefaultIdentificationCacheCreator<>(new BatteryRecordCacheNodeCreator())
 	);
 	private final Duration duration = Duration.ofMinutes(15);
 

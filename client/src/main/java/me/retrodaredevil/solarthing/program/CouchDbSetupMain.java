@@ -137,8 +137,8 @@ public class CouchDbSetupMain {
 				out.println("Adding packets design to database " + databaseType.getName());
 				MutablePacketsDesign design = new MutablePacketsDesign();
 				if (databaseType.needsMillisView()) {
-					out.println("This database will have the millis and millisNull view");
-					design.addMillisView().addMillisNullView();
+					out.println("This database will have the millisNull view");
+					design.addMillisNullView();
 				}
 				if (databaseType.needsSimpleAllDocsView()) {
 					out.println("This database will have the simpleAllDocs view");

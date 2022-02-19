@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.rest.cache;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import me.retrodaredevil.solarthing.type.cache.packets.IdentificationCacheDataPacket;
+import me.retrodaredevil.solarthing.type.cache.packets.data.BatteryRecordDataCache;
 import me.retrodaredevil.solarthing.type.cache.packets.data.ChargeControllerAccumulationDataCache;
 import me.retrodaredevil.solarthing.type.cache.packets.data.FXAccumulationDataCache;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,5 +37,13 @@ public class CacheController {
 	public List<IdentificationCacheDataPacket<FXAccumulationDataCache>> getFXAccumulation(String sourceId, long startMillis, long endMillis) {
 		final TypeReference<IdentificationCacheDataPacket<FXAccumulationDataCache>> typeReference = new TypeReference<IdentificationCacheDataPacket<FXAccumulationDataCache>>() {};
 		return cacheHandler.getCachesFromDateMillis(typeReference, FXAccumulationDataCache.CACHE_NAME, sourceId, startMillis, endMillis);
+	}
+	@GetMapping(
+			path = "/" + BatteryRecordDataCache.CACHE_NAME,
+			produces = "application/json"
+	)
+	public List<IdentificationCacheDataPacket<BatteryRecordDataCache>> getBatteryRecord(String sourceId, long startMillis, long endMillis) {
+		final TypeReference<IdentificationCacheDataPacket<BatteryRecordDataCache>> typeReference = new TypeReference<>() {};
+		return cacheHandler.getCachesFromDateMillis(typeReference, BatteryRecordDataCache.CACHE_NAME, sourceId, startMillis, endMillis);
 	}
 }

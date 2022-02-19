@@ -29,6 +29,8 @@ import me.retrodaredevil.solarthing.solar.accumulation.AccumulationCalc;
 import me.retrodaredevil.solarthing.solar.accumulation.AccumulationConfig;
 import me.retrodaredevil.solarthing.solar.accumulation.AccumulationPair;
 import me.retrodaredevil.solarthing.solar.accumulation.AccumulationUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -40,6 +42,8 @@ import static java.util.Objects.requireNonNull;
 import static me.retrodaredevil.solarthing.rest.graphql.service.SchemaConstants.*;
 
 public class SolarThingGraphQLDailyService {
+	private static final Logger LOGGER = LoggerFactory.getLogger(SolarThingGraphQLDailyService.class);
+
 	private final SimpleQueryHandler simpleQueryHandler;
 	private final ZoneId zoneId;
 	private final CacheController cacheController;
@@ -216,7 +220,7 @@ public class SolarThingGraphQLDailyService {
 					if (identifiable != null) {
 						r.add(new DataNode<>(data.getGenerationKWH(), identifiable, midpointMillis, sourceId, sourceIdentifierFragment.getIdentifierFragment().getFragmentId()));
 					} else {
-						System.err.println("Could not find identifiable for " + sourceIdentifierFragment );
+						LOGGER.warn("Could not find identifiable for " + sourceIdentifierFragment);
 					}
 					dateToControllerCache.computeIfAbsent(date, _date -> new HashMap<>()).put(sourceIdentifierFragment, total);
 				}

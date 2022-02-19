@@ -7,6 +7,7 @@ public class MutablePacketsDesign implements Design {
 	private final Map<String, View> views = new HashMap<>();
 	private String validateDocUpdate = null;
 
+	@Deprecated
 	public MutablePacketsDesign addMillisView() {
 		views.put("millis", new SimpleView("function(doc) {\n  emit(doc.dateMillis, doc);\n}"));
 		return this;
