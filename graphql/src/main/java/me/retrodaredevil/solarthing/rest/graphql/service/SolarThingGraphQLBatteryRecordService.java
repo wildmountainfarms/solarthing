@@ -148,7 +148,8 @@ public class SolarThingGraphQLBatteryRecordService {
 
 					double hours = (record.getKnownDurationMillis() + record.getGapDurationMillis()) / (1000.0 * 60 * 60);
 					double average = (record.getBatteryVoltageHours() + record.getGapBatteryVoltageHours()) / hours;
-					double weightedAveragePiece = firstIndex == 0 ? average * remainingWeight : average * currentWeight;
+
+					double weightedAveragePiece = average * currentWeight;
 					averageMap.compute(identifierFragment, (_identifier, currentAverage) -> currentAverage == null ? weightedAveragePiece : currentAverage + average);
 				}
 
@@ -157,7 +158,9 @@ public class SolarThingGraphQLBatteryRecordService {
 			}
 			return averageMap.entrySet().stream().map(entry -> {
 				var identifierFragment = entry.getKey();
-				var average = entry.getValue();
+				double rawAverage = entry.getValue();
+				double remainingWeight = remainingWeightMap.get(identifierFragment);
+				double average = rawAverage / (1 - remainingWeight);
 
 				Identifiable identifiable = packetFinder.getCached(identifierFragment);
 				if (identifiable == null) {
