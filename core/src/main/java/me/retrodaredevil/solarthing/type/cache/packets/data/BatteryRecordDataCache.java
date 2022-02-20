@@ -137,8 +137,8 @@ public class BatteryRecordDataCache extends BaseAccumulationDataCache {
 				@JsonProperty(value = "unknownDurationMillis", required = true) long unknownDurationMillis,
 				@JsonProperty(value = "batteryVoltageHours", required = true) double batteryVoltageHours,
 				@JsonProperty(value = "knownDurationMillis", required = true) long knownDurationMillis,
-				@JsonProperty("gapBatteryVoltageHours") double gapBatteryVoltageHours, // defaults to 0 if not present
-				@JsonProperty("gapDurationMillis") long gapDurationMillis // defaults to 0 if not present
+				@JsonProperty("gapBatteryVoltageHours") Double gapBatteryVoltageHours,
+				@JsonProperty("gapDurationMillis") Long gapDurationMillis
 		) {
 			this.minBatteryVoltage = minBatteryVoltage;
 			this.minBatteryVoltageDateMillis = minBatteryVoltageDateMillis;
@@ -148,8 +148,8 @@ public class BatteryRecordDataCache extends BaseAccumulationDataCache {
 			this.unknownDurationMillis = unknownDurationMillis;
 			this.batteryVoltageHours = batteryVoltageHours;
 			this.knownDurationMillis = knownDurationMillis;
-			this.gapBatteryVoltageHours = gapBatteryVoltageHours;
-			this.gapDurationMillis = gapDurationMillis;
+			this.gapBatteryVoltageHours = gapBatteryVoltageHours == null ? 0.0 : gapBatteryVoltageHours;
+			this.gapDurationMillis = gapDurationMillis == null ? 0L : gapDurationMillis;
 		}
 
 		@JsonProperty("minBatteryVoltage")

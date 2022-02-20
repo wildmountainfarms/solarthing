@@ -124,7 +124,7 @@ public class BatteryRecordCacheNodeCreator implements IdentificationCacheNodeCre
 					unknownBatteryVoltageHours, unknownDurationMillis,
 					mainVoltHourIntegral.getIntegral(),
 					lastDataBeforePeriodEnd.getDateMillis() - firstDateMillis,
-					0.0, 0
+					0.0, 0L
 			);
 		}
 		return new IdentificationCacheNode<>(
