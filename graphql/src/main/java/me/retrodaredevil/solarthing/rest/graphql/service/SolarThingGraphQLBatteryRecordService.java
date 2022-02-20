@@ -103,7 +103,7 @@ public class SolarThingGraphQLBatteryRecordService {
 			Map<IdentifierFragment, Double> remainingWeightMap = new HashMap<>();
 			while (true) {
 				long periodDurationMillis = lastStartDateMillis - first.getPeriodEndDateMillis();
-				long minimumEndDateMillis = last.getPeriodEndDateMillis() - (long) Math.ceil(periodDurationMillis * ratio);
+				long minimumEndDateMillis = lastStartDateMillis - (long) Math.ceil(periodDurationMillis * ratio);
 
 
 				Integer firstIndex = null;
@@ -115,6 +115,7 @@ public class SolarThingGraphQLBatteryRecordService {
 					if (packet.getPeriodEndDateMillis() < minimumEndDateMillis && i != lastFirstIndex - 1) {
 						continue;
 					}
+					//
 					if (firstIndex == null) {
 						firstIndex = i;
 					}
@@ -134,6 +135,8 @@ public class SolarThingGraphQLBatteryRecordService {
 				//noinspection ConstantConditions
 				assert firstIndex != null;
 
+				lastFirstIndex = firstIndex;
+				lastStartDateMillis = data.get(firstIndex).getPeriodStartDateMillis();
 
 				for (IdentificationCacheNode<BatteryRecordDataCache> cache : combined.getNodes()) {
 					IdentifierFragment identifierFragment = IdentifierFragment.create(cache.getFragmentId(), cache.getData().getIdentifier());
@@ -153,8 +156,6 @@ public class SolarThingGraphQLBatteryRecordService {
 					averageMap.compute(identifierFragment, (_identifier, currentAverage) -> currentAverage == null ? weightedAveragePiece : currentAverage + average);
 				}
 
-				lastFirstIndex = firstIndex;
-				lastStartDateMillis = data.get(firstIndex).getPeriodStartDateMillis();
 			}
 			return averageMap.entrySet().stream().map(entry -> {
 				var identifierFragment = entry.getKey();
