@@ -115,7 +115,6 @@ public class SolarThingGraphQLBatteryRecordService {
 					if (packet.getPeriodEndDateMillis() < minimumEndDateMillis && i != lastFirstIndex - 1) {
 						continue;
 					}
-					//
 					if (firstIndex == null) {
 						firstIndex = i;
 					}
@@ -126,6 +125,7 @@ public class SolarThingGraphQLBatteryRecordService {
 						combined = combined.combine(packet);
 					}
 					for (IdentificationCacheNode<BatteryRecordDataCache> cache : packet.getNodes()) {
+						// We want to cache the nodes that are available for caching
 						packetFinder.findPacket(IdentifierFragment.create(cache.getFragmentId(), cache.getData().getIdentifier()), packet.getPeriodStartDateMillis(), packet.getPeriodEndDateMillis());
 					}
 				}
@@ -153,7 +153,7 @@ public class SolarThingGraphQLBatteryRecordService {
 					double average = (record.getBatteryVoltageHours() + record.getGapBatteryVoltageHours()) / hours;
 
 					double weightedAveragePiece = average * currentWeight;
-					averageMap.compute(identifierFragment, (_identifier, currentAverage) -> currentAverage == null ? weightedAveragePiece : currentAverage + average);
+					averageMap.compute(identifierFragment, (_identifier, currentAverage) -> currentAverage == null ? weightedAveragePiece : currentAverage + weightedAveragePiece);
 				}
 
 			}
