@@ -112,7 +112,7 @@ public class SolarThingGraphQLBatteryRecordService {
 
 				for (int i = 0; i < lastFirstIndex; i++) {
 					IdentificationCacheDataPacket<BatteryRecordDataCache> packet = data.get(i);
-					if (packet.getPeriodEndDateMillis() > minimumEndDateMillis && i != lastFirstIndex - 1) {
+					if (packet.getPeriodEndDateMillis() < minimumEndDateMillis && i != lastFirstIndex - 1) {
 						continue;
 					}
 					if (firstIndex == null) {

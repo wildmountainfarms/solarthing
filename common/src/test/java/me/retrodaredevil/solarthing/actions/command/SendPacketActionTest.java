@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.actions.command;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.ExecutorService;
@@ -10,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class SendPacketActionTest {
 
+	@Disabled("GitHub Actions doesn't like this action very much because the Thread.sleep stuff to prevent race conditions doesn't always work.")
 	@Test
 	void testShutdownCausesInterruptException() {
 		AtomicBoolean didInterrupt = new AtomicBoolean(false);
