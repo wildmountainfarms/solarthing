@@ -27,15 +27,22 @@ public class PacketFinder {
 		updateWithRange(queryStart, queryEnd);
 		return cacheMap.get(identifierFragment);
 	}
+	public @Nullable Identifiable getCached(IdentifierFragment identifierFragment) {
+		synchronized (cacheMap) {
+			return cacheMap.get(identifierFragment);
+		}
+	}
 	private void updateWithRange(long queryStart, long queryEnd) {
 		List<? extends InstancePacketGroup> rawPackets = simpleQueryHandler.queryStatus(queryStart, queryEnd, null);
-		for (InstancePacketGroup instancePacketGroup : rawPackets) {
-			int fragmentId = instancePacketGroup.getFragmentId();
-			for (Packet packet : instancePacketGroup.getPackets()) {
-				if (packet instanceof Identifiable) {
-					Identifiable identifiable = (Identifiable) packet;
-					IdentifierFragment packetIdentifierFragment = IdentifierFragment.create(fragmentId, identifiable.getIdentifier());
-					cacheMap.putIfAbsent(packetIdentifierFragment, identifiable);
+		synchronized (cacheMap) {
+			for (InstancePacketGroup instancePacketGroup : rawPackets) {
+				int fragmentId = instancePacketGroup.getFragmentId();
+				for (Packet packet : instancePacketGroup.getPackets()) {
+					if (packet instanceof Identifiable) {
+						Identifiable identifiable = (Identifiable) packet;
+						IdentifierFragment packetIdentifierFragment = IdentifierFragment.create(fragmentId, identifiable.getIdentifier());
+						cacheMap.putIfAbsent(packetIdentifierFragment, identifiable);
+					}
 				}
 			}
 		}

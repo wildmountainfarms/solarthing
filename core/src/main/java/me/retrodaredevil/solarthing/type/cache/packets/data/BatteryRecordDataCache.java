@@ -13,7 +13,6 @@ import static java.util.Objects.requireNonNull;
 @JsonExplicit
 public class BatteryRecordDataCache extends BaseAccumulationDataCache {
 	public static final String CACHE_NAME = "batteryRecord";
-	// TODO create serialize and deserialize test for this
 
 	private final Identifier identifier;
 	private final Record record;

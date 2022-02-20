@@ -52,7 +52,7 @@ public final class DefaultIdentificationCacheDataPacket<T extends Identification
 	}
 
 	@Override
-	public CacheDataPacket combine(CacheDataPacket futurePacket) {
+	public IdentificationCacheDataPacket combine(CacheDataPacket futurePacket) {
 		@SuppressWarnings("unchecked")
 		DefaultIdentificationCacheDataPacket<T> packet = (DefaultIdentificationCacheDataPacket<T>) futurePacket;
 		return new DefaultIdentificationCacheDataPacket<>(

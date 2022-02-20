@@ -13,6 +13,9 @@ public interface IdentificationCacheDataPacket<T extends IdentificationCacheData
 	@JsonProperty("nodes")
 	List<IdentificationCacheNode<T>> getNodes();
 
+	@Override
+	IdentificationCacheDataPacket<T> combine(CacheDataPacket futurePacket);
+
 	default @Nullable IdentificationCacheNode<T> getNodeOrNull(int fragmentId, Identifier identifier) {
 		for (IdentificationCacheNode<T> node : getNodes()) {
 			if (node.getFragmentId() == fragmentId && node.getData().getIdentifier().equals(identifier)) {
