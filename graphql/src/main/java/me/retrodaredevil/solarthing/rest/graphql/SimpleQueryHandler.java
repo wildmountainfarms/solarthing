@@ -7,6 +7,7 @@ import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.database.MillisDatabase;
+import me.retrodaredevil.solarthing.database.MillisQuery;
 import me.retrodaredevil.solarthing.database.MillisQueryBuilder;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
 import me.retrodaredevil.solarthing.database.UpdateToken;
@@ -27,9 +28,17 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.RunnableFuture;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static java.util.Objects.requireNonNull;
 
@@ -43,6 +52,9 @@ public class SimpleQueryHandler {
 
 	private VersionedPacket<RootMetaPacket> metadataCache = null;
 	private Long lastMetadataCacheNanos = null;
+
+	private final Map<UniqueQuery, Future<? extends List<? extends PacketGroup>>> executingQueryMap = new HashMap<>();
+	private final Lock mutex = new ReentrantLock();
 
 	public SimpleQueryHandler(DefaultInstanceOptions defaultInstanceOptions, CouchDbDatabaseSettings couchDbDatabaseSettings, ObjectMapper objectMapper) {
 		this.defaultInstanceOptions = defaultInstanceOptions;
@@ -78,16 +90,51 @@ public class SimpleQueryHandler {
 	 * @return The resulting packets
 	 */
 	private List<? extends InstancePacketGroup> queryPackets(MillisDatabase database, long from, long to, String sourceId) {
+
+		MillisQuery millisQuery = new MillisQueryBuilder()
+				.startKey(from)
+				.endKey(to)
+				.build();
+		UniqueQuery uniqueQuery = new UniqueQuery(database, millisQuery);
+
+		final Future<? extends List<? extends PacketGroup>> future;
+		{
+			mutex.lock();
+			var currentFuture = executingQueryMap.get(uniqueQuery);
+			if (currentFuture != null) {
+				future = currentFuture;
+				mutex.unlock();
+			} else {
+				RunnableFuture<? extends List<? extends PacketGroup>> runnableFuture = new FutureTask<>(() -> {
+					try {
+						return database.query(millisQuery);
+					} catch (SolarThingDatabaseException e) {
+						throw new DatabaseException("Exception querying from " + from + " to " + to, e);
+					}
+				});
+				executingQueryMap.put(uniqueQuery, runnableFuture);
+				mutex.unlock();
+				runnableFuture.run();
+				future = runnableFuture;
+				mutex.lock();
+				executingQueryMap.remove(uniqueQuery);
+				mutex.unlock();
+			}
+		}
+
 		final List<? extends PacketGroup> rawPacketGroups;
 		try {
-
-			rawPacketGroups = database.query(new MillisQueryBuilder()
-					.startKey(from)
-					.endKey(to)
-					.build());
-		} catch (SolarThingDatabaseException e) {
-			throw new DatabaseException("Exception querying from " + from + " to " + to, e);
+			rawPacketGroups = future.get();
+		} catch (InterruptedException e) {
+			throw new DatabaseException("Interrupted!", e);
+		} catch (ExecutionException e) {
+			Throwable cause = e.getCause();
+			if (cause instanceof RuntimeException) {
+				throw (RuntimeException) cause;
+			}
+			throw new DatabaseException("Unknown execution exception", e);
 		}
+
 		if(rawPacketGroups.isEmpty()){
 			if (to - from > 60 * 1000) {
 				// Only debug this message if the requester is actually asking for a decent chunk of data
@@ -155,5 +202,28 @@ public class SimpleQueryHandler {
 
 	public DefaultInstanceOptions getDefaultInstanceOptions() {
 		return defaultInstanceOptions;
+	}
+
+	private static class UniqueQuery {
+		private final MillisDatabase millisDatabase;
+		private final MillisQuery millisQuery;
+
+		private UniqueQuery(MillisDatabase millisDatabase, MillisQuery millisQuery) {
+			this.millisDatabase = millisDatabase;
+			this.millisQuery = millisQuery;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+			UniqueQuery that = (UniqueQuery) o;
+			return millisDatabase.equals(that.millisDatabase) && millisQuery.equals(that.millisQuery);
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(millisDatabase, millisQuery);
+		}
 	}
 }
