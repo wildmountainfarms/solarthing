@@ -28,8 +28,8 @@ import me.retrodaredevil.solarthing.type.alter.StoredAlterPacket;
 import me.retrodaredevil.solarthing.type.closed.authorization.AuthorizationPacket;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import me.retrodaredevil.solarthing.util.sync.BasicResourceManager;
+import me.retrodaredevil.solarthing.util.sync.ReadWriteResourceManager;
 import me.retrodaredevil.solarthing.util.sync.ResourceManager;
-import me.retrodaredevil.solarthing.util.sync.SynchronizedResourceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,7 +105,7 @@ public final class AutomationMain {
 		SimpleDatabaseCache statusDatabaseCache = SimpleDatabaseCache.createDefault(clock);
 		ResourceManager<SimpleDatabaseCache> statusDatabaseCacheManager = new BasicResourceManager<>(statusDatabaseCache); // not thread safe
 		SimpleDatabaseCache eventDatabaseCache = SimpleDatabaseCache.createDefault(clock);
-		ResourceManager<SimpleDatabaseCache> eventDatabaseCacheManager = new SynchronizedResourceManager<>(eventDatabaseCache);
+		ResourceManager<SimpleDatabaseCache> eventDatabaseCacheManager = new ReadWriteResourceManager<>(eventDatabaseCache);
 		SimpleDatabaseCache openDatabaseCache = new SimpleDatabaseCache(Duration.ofMinutes(60), Duration.ofMinutes(40), Duration.ofMinutes(20), Duration.ofMinutes(15), clock);
 		ResourceManager<SimpleDatabaseCache> openDatabaseCacheManager = new BasicResourceManager<>(openDatabaseCache); // not thread safe
 

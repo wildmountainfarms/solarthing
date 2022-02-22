@@ -189,7 +189,11 @@ public class SolarThingGraphQLSolcastService {
 					throw new UnexpectedResponseException("Empty result for offset=" + offsetDays + "! This shouldn't happen!");
 				}
 			} else {
-				chargeControllerAccumulationCache = cacheController.getChargeControllerAccumulation(handler.sourceId, start, now.toEpochMilli());
+				chargeControllerAccumulationCache = cacheController.getChargeControllerAccumulation(
+						handler.sourceId,
+						start,
+						Math.min(now.toEpochMilli(), end) // for a query for today, this will use now, for a query for past days, it will use end
+				);
 				if (date.isBefore(today)) {
 					estimatedActuals = Collections.emptyList(); // We don't need solcast data for past data
 				} else {
