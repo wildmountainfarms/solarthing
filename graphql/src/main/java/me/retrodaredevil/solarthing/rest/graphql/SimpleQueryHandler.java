@@ -54,7 +54,7 @@ public class SimpleQueryHandler {
 	private Long lastMetadataCacheNanos = null;
 
 	private final Map<UniqueQuery, Future<? extends List<? extends PacketGroup>>> executingQueryMap = new HashMap<>();
-	private final Lock mutex = new ReentrantLock();
+	private final Lock executingQueryMutex = new ReentrantLock();
 
 	public SimpleQueryHandler(DefaultInstanceOptions defaultInstanceOptions, CouchDbDatabaseSettings couchDbDatabaseSettings, ObjectMapper objectMapper) {
 		this.defaultInstanceOptions = defaultInstanceOptions;
@@ -99,11 +99,17 @@ public class SimpleQueryHandler {
 
 		final Future<? extends List<? extends PacketGroup>> future;
 		{
-			mutex.lock();
+			// Many times a Grafana dashboard will make many graphql requests with the same from and to parameters.
+			//   Without this code, each graphql request would result in a separate request to the database.
+			//   Most of the time, these requests are being executed at the same time.
+			//   This piece of code takes advantage of the fact that we are requesting the same data at the same time.
+			//   If we find a Future that is already executing for a given query, we wait for that to complete instead of performing a separate request.
+			// This is sort of a caching mechanism, but it's a VERY temporary caching mechanism since data is not kept after is it queried.
+			executingQueryMutex.lock();
 			var currentFuture = executingQueryMap.get(uniqueQuery);
 			if (currentFuture != null) {
 				future = currentFuture;
-				mutex.unlock();
+				executingQueryMutex.unlock();
 			} else {
 				RunnableFuture<? extends List<? extends PacketGroup>> runnableFuture = new FutureTask<>(() -> {
 					try {
@@ -113,12 +119,12 @@ public class SimpleQueryHandler {
 					}
 				});
 				executingQueryMap.put(uniqueQuery, runnableFuture);
-				mutex.unlock();
+				executingQueryMutex.unlock();
 				runnableFuture.run();
 				future = runnableFuture;
-				mutex.lock();
+				executingQueryMutex.lock();
 				executingQueryMap.remove(uniqueQuery);
-				mutex.unlock();
+				executingQueryMutex.unlock();
 			}
 		}
 
