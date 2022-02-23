@@ -111,8 +111,7 @@ public class AlterManagerAction extends SimpleAction {
 					return false;
 				},
 				Collections.singleton(CommandOpenPacket.class),
-				listenStartTime,
-				new SecurityPacketReceiver.State()
+				listenStartTime
 		);
 	}
 

@@ -18,6 +18,14 @@ import org.jetbrains.annotations.NotNull;
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 public abstract class StoredIdentifier implements Comparable<StoredIdentifier> {
+	/*
+	Although these can be serialized to JSON, there is no particular use for serializing them to JSON *yet*.
+	When I first added the ability to serialize CouchDbStoredIdentifier to JSON, I didn't realize how much
+	that would tightly couple to CouchDB had I decided to put that in solarthing or solarthing_events.
+
+	I'm keeping the ability to serialize to JSON for now, but just know that unless something changes since I write
+	this comment, we could consider removing some JSON annotations around this code.
+	 */
 	protected final long dateMillis;
 
 	protected StoredIdentifier(long dateMillis) {

@@ -24,6 +24,9 @@ public interface SecurityEventPacket extends TypedDocumentedPacket<SecurityEvent
 	we StoredIdentifiers.
 	 */
 
-	@JsonProperty("storedIdentifier")
-	@NotNull StoredIdentifier getStoredIdentifier();
+	/**
+	 * @return The requesting document's ID
+	 */
+	@JsonProperty("requestDocumentId")
+	@NotNull String getRequestDocumentId();
 }
