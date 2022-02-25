@@ -16,13 +16,15 @@ public class AlterManagerActionNode implements ActionNode {
 
 	private final String sender;
 	private final File keyDirectory;
+	private final int fragmentId;
 
 	public AlterManagerActionNode(
 			@JsonProperty(value = "sender", required = true) String sender,
-			@JsonProperty(value = "key_directory", required = true) File keyDirectory
-	) {
+			@JsonProperty(value = "key_directory", required = true) File keyDirectory,
+			@JsonProperty(value = "fragment", required = true) int fragmentId) {
 		this.sender = sender;
 		this.keyDirectory = keyDirectory;
+		this.fragmentId = fragmentId;
 	}
 	@Override
 	public Action createAction(ActionEnvironment actionEnvironment) {
@@ -46,7 +48,8 @@ public class AlterManagerActionNode implements ActionNode {
 				openDatabaseCache,
 				alterPacketsProvider,
 				sourceId,
-				timeZoneEnvironment.getZoneId()
+				timeZoneEnvironment.getZoneId(),
+				fragmentId
 		);
 	}
 }

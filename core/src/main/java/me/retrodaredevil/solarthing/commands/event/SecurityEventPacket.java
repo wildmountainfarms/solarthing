@@ -1,8 +1,8 @@
 package me.retrodaredevil.solarthing.commands.event;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
 import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.WorkInProgress;
 import me.retrodaredevil.solarthing.marker.EventPacket;
 import me.retrodaredevil.solarthing.packets.TypedDocumentedPacket;
 import me.retrodaredevil.solarthing.packets.collection.StoredIdentifier;
@@ -12,7 +12,11 @@ import me.retrodaredevil.solarthing.packets.collection.StoredIdentifier;
  * All security event packets contain a {@link StoredIdentifier}. The stored identifier can be used to uniquely identify
  * one stored packet group in the "solarthing_open" database.
  */
-@WorkInProgress
+
+@JsonSubTypes({
+		@JsonSubTypes.Type(SecurityAcceptPacket.class),
+		@JsonSubTypes.Type(SecurityRejectPacket.class),
+})
 public interface SecurityEventPacket extends TypedDocumentedPacket<SecurityEventPacketType>, EventPacket {
 	/*
 	The reason that we use StoredIdentifier rather than UpdateTokens alongside a document ID is because
@@ -29,4 +33,5 @@ public interface SecurityEventPacket extends TypedDocumentedPacket<SecurityEvent
 	 */
 	@JsonProperty("requestDocumentId")
 	@NotNull String getRequestDocumentId();
+	// We don't have to store the UpdateToken (revision) because event packets should never be deleted or updated
 }

@@ -45,7 +45,10 @@ public class CommandUtil {
 							packetGroupReceiver,
 							new SecurityPacketReceiver.InstanceTargetPredicate(options.getSourceId(), options.getFragmentId()),
 							Collections.singleton(CommandOpenPacket.class),
-							System.currentTimeMillis()
+							System.currentTimeMillis(),
+							options.getFragmentId(),
+							options.getSourceId(),
+							database.getEventDatabase()
 					);
 					@Override
 					public void handle(PacketCollection packetCollection) throws PacketHandleException {

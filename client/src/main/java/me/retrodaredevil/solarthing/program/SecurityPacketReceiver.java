@@ -7,23 +7,29 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import me.retrodaredevil.solarthing.PacketGroupReceiver;
 import me.retrodaredevil.solarthing.SolarThingConstants;
+import me.retrodaredevil.solarthing.commands.event.ImmutableSecurityAcceptPacket;
+import me.retrodaredevil.solarthing.commands.event.ImmutableSecurityRejectPacket;
+import me.retrodaredevil.solarthing.commands.event.SecurityAcceptPacket;
+import me.retrodaredevil.solarthing.commands.event.SecurityEventPacket;
 import me.retrodaredevil.solarthing.commands.event.SecurityRejectPacket;
+import me.retrodaredevil.solarthing.database.MillisDatabase;
+import me.retrodaredevil.solarthing.database.couchdb.CouchDbStoredIdentifier;
+import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
+import me.retrodaredevil.solarthing.database.exception.UpdateConflictSolarThingDatabaseException;
 import me.retrodaredevil.solarthing.packets.DocumentedPacket;
 import me.retrodaredevil.solarthing.packets.Packet;
-import me.retrodaredevil.solarthing.packets.collection.DateMillisStoredIdentifier;
-import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
-import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
-import me.retrodaredevil.solarthing.packets.collection.StoredIdentifier;
-import me.retrodaredevil.solarthing.packets.collection.StoredPacketGroup;
-import me.retrodaredevil.solarthing.packets.collection.TargetPacketGroup;
+import me.retrodaredevil.solarthing.packets.collection.*;
 import me.retrodaredevil.solarthing.packets.collection.parsing.PacketParseException;
 import me.retrodaredevil.solarthing.packets.collection.parsing.PacketParsingErrorHandler;
 import me.retrodaredevil.solarthing.packets.collection.parsing.SimplePacketGroupParser;
+import me.retrodaredevil.solarthing.packets.instance.InstanceFragmentIndicatorPackets;
 import me.retrodaredevil.solarthing.packets.instance.InstancePacket;
 import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePacket;
+import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePackets;
 import me.retrodaredevil.solarthing.packets.security.AuthNewSenderPacket;
 import me.retrodaredevil.solarthing.packets.security.IntegrityPacket;
 import me.retrodaredevil.solarthing.packets.security.LargeIntegrityPacket;
+import me.retrodaredevil.solarthing.packets.security.SecurityPacket;
 import me.retrodaredevil.solarthing.packets.security.crypto.*;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.slf4j.Logger;
@@ -33,7 +39,10 @@ import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class SecurityPacketReceiver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SecurityPacketReceiver.class);
@@ -50,6 +59,11 @@ public class SecurityPacketReceiver {
 
 	private final Cipher cipher;
 	private final long listenStartTime;
+	private final int fragmentId;
+	private final String sourceId;
+	private final MillisDatabase eventDatabase;
+
+	private final ExecutorService executorService = Executors.newFixedThreadPool(3);
 
 	private final Map<String, Long> senderLastCommandMap = new HashMap<>();
 	private final NavigableSet<StoredIdentifier> processed = new TreeSet<>(); // Uses StoredIdentifier's compareTo
@@ -57,12 +71,18 @@ public class SecurityPacketReceiver {
 	/**
 	 * @param publicKeyLookUp The {@link PublicKeyLookUp} to get the PublicKey for a received {@link IntegrityPacket}
 	 * @param packetGroupReceiver Receives successfully decrypted messages
+	 * @param fragmentId The fragment ID of this SolarThing instance.
+	 * @param sourceId
+	 * @param eventDatabase
 	 */
-	public SecurityPacketReceiver(PublicKeyLookUp publicKeyLookUp, PacketGroupReceiver packetGroupReceiver, TargetPredicate targetPredicate, Collection<? extends Class<? extends DocumentedPacket>> packetClasses, long listenStartTime) {
+	public SecurityPacketReceiver(PublicKeyLookUp publicKeyLookUp, PacketGroupReceiver packetGroupReceiver, TargetPredicate targetPredicate, Collection<? extends Class<? extends DocumentedPacket>> packetClasses, long listenStartTime, int fragmentId, String sourceId, MillisDatabase eventDatabase) {
 		this.publicKeyLookUp = publicKeyLookUp;
 		this.packetGroupReceiver = packetGroupReceiver;
 		this.targetPredicate = targetPredicate;
 		this.listenStartTime = listenStartTime;
+		this.fragmentId = fragmentId;
+		this.sourceId = sourceId;
+		this.eventDatabase = eventDatabase;
 
 		List<Class<? extends DocumentedPacket>> classList = new ArrayList<>(packetClasses);
 		classList.add(InstancePacket.class);
@@ -80,11 +100,49 @@ public class SecurityPacketReceiver {
 		}
 	}
 
-	private void reject(StoredPacketGroup storedPacketGroup, SecurityRejectPacket.Reason reason, String moreInfo) {
+	private String storedIdentifierToDocumentId(StoredIdentifier storedIdentifier) {
+		if (!(storedIdentifier instanceof CouchDbStoredIdentifier)) {
+			throw new UnsupportedOperationException("This is tightly coupled to CouchDB. Unexpected storedIdentifier: " + storedIdentifier);
+		}
+		return ((CouchDbStoredIdentifier) storedIdentifier).getId();
+	}
 
+	private void reject(StoredPacketGroup storedPacketGroup, SecurityRejectPacket.Reason reason, String moreInfo) {
+		SecurityRejectPacket packet = new ImmutableSecurityRejectPacket(storedIdentifierToDocumentId(storedPacketGroup.getStoredIdentifier()), reason, moreInfo);
+		uploadSecurityEventPacket(packet);
 	}
 	private void accept(StoredPacketGroup storedPacketGroup) {
-
+		SecurityAcceptPacket packet = new ImmutableSecurityAcceptPacket(storedIdentifierToDocumentId(storedPacketGroup.getStoredIdentifier()));
+		uploadSecurityEventPacket(packet);
+	}
+	private void uploadSecurityEventPacket(SecurityEventPacket packet) {
+		Instant now = Instant.now();
+		String id = "security-event-status-" + fragmentId + "-" + packet.getRequestDocumentId();
+		PacketCollection packetCollection = PacketCollections.create(
+				now,
+				Arrays.asList(packet, InstanceFragmentIndicatorPackets.create(fragmentId), InstanceSourcePackets.create(sourceId)),
+				id
+		);
+		executorService.execute(() -> {
+			for (int tryIndex = 0; tryIndex < 3; tryIndex++) {
+				try {
+					eventDatabase.uploadPacketCollection(packetCollection, null);
+					break;
+				}
+				catch (UpdateConflictSolarThingDatabaseException e) {
+					LOGGER.warn("Got update conflict exception for id: " + id, e);
+					break; // We will assume we have already uploaded this packet to the database
+				} catch (SolarThingDatabaseException e) {
+					LOGGER.error("Could not upload security event packet. tryIndex: " + tryIndex + " id: " + id, e);
+				}
+				try {
+					Thread.sleep((tryIndex + 1) * 100);
+				} catch (InterruptedException e) {
+					LOGGER.error("Was interrupted", e);
+					Thread.currentThread().interrupt();
+				}
+			}
+		});
 	}
 
 	public void receivePacketGroups(List<StoredPacketGroup> packetGroups) {
@@ -118,6 +176,10 @@ public class SecurityPacketReceiver {
 		LOGGER.debug("Receiving packet group: " + storedPacketGroup.getStoredIdentifier());
 		long packetGroupDateMillis = packetGroup.getDateMillis();
 		List<? extends Packet> packetGroupPackets = packetGroup.getPackets();
+		if (packetGroupPackets.stream().noneMatch(packet -> packet instanceof SecurityPacket && !(packet instanceof AuthNewSenderPacket))) {
+			LOGGER.debug("This packet group has no useful SecurityPackets. Ignoring. identifier: " + storedPacketGroup.getStoredIdentifier());
+			return;
+		}
 		if (packetGroupPackets.size() != 1) {
 			/*
 			In any "millis database" we have the documents inside follow the packet collection format.

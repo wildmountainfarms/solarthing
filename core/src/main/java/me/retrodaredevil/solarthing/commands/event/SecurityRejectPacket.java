@@ -1,12 +1,20 @@
 package me.retrodaredevil.solarthing.commands.event;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.WorkInProgress;
-import me.retrodaredevil.solarthing.marker.EventPacket;
 
-@WorkInProgress
-public interface SecurityRejectPacket extends EventPacket {
+@JsonDeserialize(as = ImmutableSecurityRejectPacket.class)
+@JsonTypeName("REJECT")
+@JsonExplicit
+public interface SecurityRejectPacket extends SecurityEventPacket {
+
+	@Override
+	default @NotNull SecurityEventPacketType getPacketType() {
+		return SecurityEventPacketType.REJECT;
+	}
 
 	@JsonProperty("reason")
 	@NotNull Reason getReason();

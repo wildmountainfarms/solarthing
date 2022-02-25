@@ -23,6 +23,9 @@ public final class CouchDbQueryUtil {
 		if (millisQuery.isDescending()) {
 			builder.descending();
 		}
+		// Consider testing these commented out lines. https://docs.couchdb.org/en/stable/maintenance/performance.html#views-generation
+//		builder.stable(false)
+//				.update(ViewQueryParamsBuilder.Update.FALSE);
 		return builder.build();
 	}
 

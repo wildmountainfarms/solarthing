@@ -88,7 +88,7 @@ public class AlterManagerAction extends SimpleAction {
 
 	private long listenStartTime;
 
-	public AlterManagerAction(CommandManager commandManager, PublicKeyLookUp publicKeyLookUp, SolarThingDatabase database, DatabaseCache openDatabaseCache, AlterPacketsProvider alterPacketsProvider, String sourceId, ZoneId zoneId) {
+	public AlterManagerAction(CommandManager commandManager, PublicKeyLookUp publicKeyLookUp, SolarThingDatabase database, DatabaseCache openDatabaseCache, AlterPacketsProvider alterPacketsProvider, String sourceId, ZoneId zoneId, int fragmentId) {
 		super(false);
 		this.commandManager = commandManager;
 		this.database = database;
@@ -111,7 +111,10 @@ public class AlterManagerAction extends SimpleAction {
 					return false;
 				},
 				Collections.singleton(CommandOpenPacket.class),
-				listenStartTime
+				listenStartTime,
+				fragmentId,
+				sourceId,
+				database.getEventDatabase()
 		);
 	}
 

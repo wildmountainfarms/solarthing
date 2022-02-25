@@ -9,6 +9,10 @@ import me.retrodaredevil.action.node.environment.ActionEnvironment;
 
 import java.io.File;
 
+/**
+ * Providing a fragment for something in the automation program is not something you would be expecting to see.
+ * The fragment ID is needed to identify the security event packets being uploaded. It is recommended to use a fragment ID in the 5000s
+ */
 @JsonTypeName("alter_manager")
 public class WrappedAlterManagerActionNode implements ActionNode {
 
@@ -16,9 +20,10 @@ public class WrappedAlterManagerActionNode implements ActionNode {
 
 	public WrappedAlterManagerActionNode(
 			@JsonProperty(value = "sender", required = true) String sender,
-			@JsonProperty(value = "key_directory", required = true) File keyDirectory
+			@JsonProperty(value = "key_directory", required = true) File keyDirectory,
+			@JsonProperty(value = "fragment", required = true) int fragmentId
 	) {
-		actionNode = SingleActionNode.create(new AlterManagerActionNode(sender, keyDirectory));
+		actionNode = SingleActionNode.create(new AlterManagerActionNode(sender, keyDirectory, fragmentId));
 	}
 
 	@Override
