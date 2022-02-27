@@ -16,6 +16,7 @@ import me.retrodaredevil.solarthing.packets.handling.PacketListReceiverMultiplex
 import me.retrodaredevil.solarthing.program.ConfigUtil;
 
 import java.io.File;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,13 +28,20 @@ import static java.util.Objects.requireNonNull;
 public class ModbusDataRequester implements DataRequester {
 	private final File ioBundleFile;
 	private final Map<Integer, ModbusRequester> addressToModbusRequesterMap;
+	private final long rtuInitialTimeoutMillis;
+	private final long rtuEndTimeoutMillis;
 
 	@JsonCreator
 	public ModbusDataRequester(
 			@JsonProperty(value = "io", required = true) File ioBundleFile,
-			@JsonProperty(value = "devices", required = true) Map<Integer, ModbusRequester> addressToModbusRequesterMap) {
+			@JsonProperty(value = "devices", required = true) Map<Integer, ModbusRequester> addressToModbusRequesterMap,
+			@JsonProperty("initial_timeout") String initialTimeoutDurationString,
+			@JsonProperty("end_timeout") String endTimeoutDurationString
+	) {
 		requireNonNull(this.ioBundleFile = ioBundleFile);
 		requireNonNull(this.addressToModbusRequesterMap = addressToModbusRequesterMap);
+		rtuInitialTimeoutMillis = initialTimeoutDurationString == null ? 2000 : Duration.parse(initialTimeoutDurationString).toMillis();
+		rtuEndTimeoutMillis = endTimeoutDurationString == null ? 40 : Duration.parse(endTimeoutDurationString).toMillis();
 	}
 
 	@Override
@@ -41,7 +49,7 @@ public class ModbusDataRequester implements DataRequester {
 		ModbusRequester first = addressToModbusRequesterMap.values().stream().findFirst().orElseThrow(NoSuchElementException::new);
 		IOConfig ioConfig = ConfigUtil.parseIOConfig(ioBundleFile, first.getDefaultSerialConfig());
 		ReloadableIOBundle ioBundle = new ReloadableIOBundle(ioConfig::createIOBundle);
-		ModbusSlaveBus modbus = new IOModbusSlaveBus(ioBundle, new RtuDataEncoder(2000, 40, 4));
+		ModbusSlaveBus modbus = new IOModbusSlaveBus(ioBundle, new RtuDataEncoder(rtuInitialTimeoutMillis, rtuEndTimeoutMillis, 4));
 
 		ReloadIOSuccessReporterHandler reloadIOSuccessReporterHandler = new ReloadIOSuccessReporterHandler(ioBundle::reload);
 

@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.Set;
 
 import static me.retrodaredevil.solarthing.SolarThingConstants.*;
@@ -92,8 +93,12 @@ public enum SolarThingDatabaseType {
 		if (this == CLOSED) { // This database is readonly by all
 			return Collections.emptySet();
 		}
-		if (this == SolarThingDatabaseType.CACHE || this == SolarThingDatabaseType.ALTER) {
+		if (this == CACHE || this == ALTER) {
 			return Collections.singleton(UserType.MANAGER);
+		}
+		if (this == EVENT) {
+			// When the automation program is running the alter manager action, we want the manager user to upload to the events database
+			return EnumSet.of(UserType.UPLOADER, UserType.MANAGER);
 		}
 		return Collections.singleton(UserType.UPLOADER);
 	}

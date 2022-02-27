@@ -5,27 +5,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.couchdbjava.CouchDbDatabase;
 import me.retrodaredevil.couchdbjava.CouchDbInstance;
 import me.retrodaredevil.couchdbjava.exception.CouchDbException;
-import me.retrodaredevil.couchdbjava.exception.CouchDbNotFoundException;
 import me.retrodaredevil.couchdbjava.exception.CouchDbNotModifiedException;
 import me.retrodaredevil.couchdbjava.json.JsonData;
 import me.retrodaredevil.couchdbjava.json.jackson.CouchDbJacksonUtil;
 import me.retrodaredevil.couchdbjava.response.DocumentData;
 import me.retrodaredevil.solarthing.SolarThingConstants;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.database.exception.IncompatibleUpdateTokenException;
-import me.retrodaredevil.solarthing.database.exception.NotFoundSolarThingDatabaseException;
-import me.retrodaredevil.solarthing.type.closed.authorization.AuthorizationPacket;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.commands.packets.status.CommandStatusPacket;
 import me.retrodaredevil.solarthing.database.MillisDatabase;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
 import me.retrodaredevil.solarthing.database.UpdateToken;
 import me.retrodaredevil.solarthing.database.VersionedPacket;
+import me.retrodaredevil.solarthing.database.exception.IncompatibleUpdateTokenException;
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
-import me.retrodaredevil.solarthing.type.event.feedback.FeedbackPacket;
-import me.retrodaredevil.solarthing.type.closed.meta.DeviceInfoPacket;
-import me.retrodaredevil.solarthing.type.closed.meta.RootMetaPacket;
-import me.retrodaredevil.solarthing.type.closed.meta.TargetMetaPacket;
 import me.retrodaredevil.solarthing.misc.common.meta.DataMetaPacket;
 import me.retrodaredevil.solarthing.misc.device.DevicePacket;
 import me.retrodaredevil.solarthing.misc.error.ErrorPacket;
@@ -39,6 +32,11 @@ import me.retrodaredevil.solarthing.solar.extra.SolarExtraPacket;
 import me.retrodaredevil.solarthing.solar.outback.command.packets.MateCommandFeedbackPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.meta.FXChargingSettingsPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.meta.FXChargingTemperatureAdjustPacket;
+import me.retrodaredevil.solarthing.type.closed.authorization.AuthorizationPacket;
+import me.retrodaredevil.solarthing.type.closed.meta.DeviceInfoPacket;
+import me.retrodaredevil.solarthing.type.closed.meta.RootMetaPacket;
+import me.retrodaredevil.solarthing.type.closed.meta.TargetMetaPacket;
+import me.retrodaredevil.solarthing.type.event.feedback.FeedbackPacket;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 
 import static java.util.Objects.requireNonNull;
@@ -152,10 +150,8 @@ public class CouchDbSolarThingDatabase implements SolarThingDatabase {
 			return database.getDocumentIfUpdated(name, revision);
 		} catch (CouchDbNotModifiedException e) {
 			return null;
-		} catch (CouchDbNotFoundException e) {
-			throw new NotFoundSolarThingDatabaseException(e);
 		} catch (CouchDbException e) {
-			throw new SolarThingDatabaseException(e);
+			throw ExceptionUtil.createFromCouchDbException(e);
 		}
 	}
 

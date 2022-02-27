@@ -15,6 +15,7 @@ import me.retrodaredevil.solarthing.commands.event.SecurityRejectPacket;
 import me.retrodaredevil.solarthing.database.MillisDatabase;
 import me.retrodaredevil.solarthing.database.couchdb.CouchDbStoredIdentifier;
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
+import me.retrodaredevil.solarthing.database.exception.UnauthorizedSolarThingDatabaseException;
 import me.retrodaredevil.solarthing.database.exception.UpdateConflictSolarThingDatabaseException;
 import me.retrodaredevil.solarthing.packets.DocumentedPacket;
 import me.retrodaredevil.solarthing.packets.Packet;
@@ -132,6 +133,9 @@ public class SecurityPacketReceiver {
 				catch (UpdateConflictSolarThingDatabaseException e) {
 					LOGGER.warn("Got update conflict exception for id: " + id, e);
 					break; // We will assume we have already uploaded this packet to the database
+				} catch (UnauthorizedSolarThingDatabaseException e) {
+					LOGGER.warn("Not authorized to upload to events database", e);
+					break;
 				} catch (SolarThingDatabaseException e) {
 					LOGGER.error("Could not upload security event packet. tryIndex: " + tryIndex + " id: " + id, e);
 				}

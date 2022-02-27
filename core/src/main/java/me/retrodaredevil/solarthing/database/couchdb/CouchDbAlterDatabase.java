@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import me.retrodaredevil.couchdbjava.CouchDbDatabase;
 import me.retrodaredevil.couchdbjava.exception.CouchDbException;
 import me.retrodaredevil.couchdbjava.exception.CouchDbNotFoundException;
+import me.retrodaredevil.couchdbjava.exception.CouchDbUnauthorizedException;
 import me.retrodaredevil.couchdbjava.exception.CouchDbUpdateConflictException;
 import me.retrodaredevil.couchdbjava.json.JsonData;
 import me.retrodaredevil.couchdbjava.json.StringJsonData;
@@ -20,6 +21,7 @@ import me.retrodaredevil.solarthing.database.UpdateToken;
 import me.retrodaredevil.solarthing.database.VersionedPacket;
 import me.retrodaredevil.solarthing.database.exception.NotFoundSolarThingDatabaseException;
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
+import me.retrodaredevil.solarthing.database.exception.UnauthorizedSolarThingDatabaseException;
 import me.retrodaredevil.solarthing.database.exception.UpdateConflictSolarThingDatabaseException;
 import me.retrodaredevil.solarthing.type.alter.StoredAlterPacket;
 
@@ -47,10 +49,8 @@ public class CouchDbAlterDatabase implements AlterDatabase {
 			// as of right now, we don't support updating existing alter packets
 			DocumentResponse response = database.putDocument(storedAlterPacket.getDbId(), jsonData);
 			return new RevisionUpdateToken(response.getRev());
-		} catch (CouchDbUpdateConflictException e) { // this may be thrown if someone tries to upload a document with the same document ID
-			throw new UpdateConflictSolarThingDatabaseException(e);
 		} catch (CouchDbException e) {
-			throw new SolarThingDatabaseException(e);
+			throw ExceptionUtil.createFromCouchDbException(e);
 		}
 	}
 
@@ -59,10 +59,8 @@ public class CouchDbAlterDatabase implements AlterDatabase {
 		final ViewResponse allDocs;
 		try {
 			allDocs = database.allDocs(new ViewQueryParamsBuilder().includeDocs(true).build());
-		} catch (CouchDbNotFoundException e) {
-			throw new NotFoundSolarThingDatabaseException("Got not found exception", e);
 		} catch (CouchDbException e) {
-			throw new SolarThingDatabaseException("Could not query", e);
+			throw ExceptionUtil.createFromCouchDbException(e);
 		}
 
 		List<ViewResponse.DocumentEntry> rows = allDocs.getRows();
@@ -103,6 +101,10 @@ public class CouchDbAlterDatabase implements AlterDatabase {
 		String revision = revisionUpdateToken.getRevision();
 		try {
 			database.deleteDocument(documentId, revision);
+		} catch (CouchDbUnauthorizedException e) {
+			throw new UnauthorizedSolarThingDatabaseException(e);
+		} catch (CouchDbUpdateConflictException e) {
+			throw new UpdateConflictSolarThingDatabaseException("Update conflict on delete. Must not be latest revision. documentId: " + documentId + " revision: " + revision, e);
 		} catch (CouchDbNotFoundException e) {
 			throw new NotFoundSolarThingDatabaseException("(Not found) Could not delete documentId: " + documentId + " revision: " + revision, e);
 		} catch (CouchDbException e) {

@@ -45,7 +45,7 @@ public class RoverMain {
 				null);
 		Map<Integer, ModbusRequester> deviceMap = new HashMap<>();
 		deviceMap.put(options.getModbusAddress(), roverModbusRequester);
-		ModbusDataRequester dataRequester = new ModbusDataRequester(options.getIOBundleFile(), deviceMap);
+		ModbusDataRequester dataRequester = new ModbusDataRequester(options.getIOBundleFile(), deviceMap, null, null);
 
 		List<DataRequester> list = new ArrayList<>(dataRequesterList);
 		list.add(dataRequester);
