@@ -34,10 +34,12 @@ other/linux/.downloads/
 /program/**/config/actions/*
 !/program/**/config/actions/README.md
 
-!/program/graphql/download_solarting_graphql.sh
 
 /program/custom*
 !/program/create_custom.sh
+!/program/use_jar.sh
+!/program/download_solarthing.sh
+!/program/graphql_download_solarthing.sh
 
 /program/.downloads/*
 !/program/.downloads/README.md

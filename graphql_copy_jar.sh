@@ -2,6 +2,8 @@
 BASEDIR=$(dirname "$0")
 cd "$BASEDIR" || exit 1
 
+# TODO update this to be like copy_jar.sh
+
 if [ "$#" -gt 0 ]; then
   TARGET=$1
   scp program/.downloads/solarthing-graphql-SNAPSHOT.jar "$TARGET:/opt/solarthing/program/.downloads" || exit 1

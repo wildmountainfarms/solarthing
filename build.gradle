@@ -4,8 +4,8 @@ buildscript {
         junit5Version = '5.8.2' // https://junit.org/junit5/
         junit5PlatformVersion = '1.8.2'
 
-        slf4jVersion = '1.7.32' // http://www.slf4j.org/download.html
-        log4jVersion = '2.17.1' // https://logging.apache.org/log4j/2.x/javadoc.html
+        slf4jVersion = '1.7.36' // http://www.slf4j.org/download.html
+        log4jVersion = '2.17.2' // https://logging.apache.org/log4j/2.x/javadoc.html
         // https://github.com/FasterXML/jackson/wiki/Jackson-Releases
         jacksonVersion = '2.13.1' // https://github.com/FasterXML/jackson-databind/releases
         // retrofit is why we need allow-opens. context: https://stackoverflow.com/questions/60915381/retrofit2-maven-project-illegal-reflective-access-warning // https://github.com/square/retrofit/issues/3341
