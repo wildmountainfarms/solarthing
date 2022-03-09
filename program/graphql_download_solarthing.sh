@@ -14,5 +14,5 @@ if ! zip -T ".downloads/solarthing-graphql-$SOLARTHING_VERSION.jar" 1>/dev/null 
 else
   echo Already downloaded
 fi
-ln -sf "../.downloads/solarthing-graphql-$SOLARTHING_VERSION.jar" graphql/solarthing-graphql.jar || exit 1
+../other/scripts/generic_use_jar.sh solarthing-graphql.jar ".downloads/solarthing-graphql-$SOLARTHING_VERSION.jar" || exit 1
 echo Using SolarThing GraphQL Version: "$SOLARTHING_VERSION"

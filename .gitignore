@@ -37,7 +37,6 @@ other/linux/.downloads/
 
 /program/custom*
 !/program/create_custom.sh
-!/program/use_jar.sh
 !/program/download_solarthing.sh
 !/program/graphql_download_solarthing.sh
 

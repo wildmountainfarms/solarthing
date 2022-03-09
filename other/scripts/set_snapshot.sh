@@ -11,10 +11,10 @@ if [ "$#" -eq 2 ]; then
 
   if [ "$CURRENT_REFERENCE" = "$SNAPSHOT_1" ]; then
     cp "$RELATIVE_PATH" "$SNAPSHOT_2" || exit 1
-    ../other/scripts/use_jar.sh "$JAR_PREFIX.jar" "$SNAPSHOT_2" || exit 1
+    ../other/scripts/generic_use_jar.sh "$JAR_PREFIX.jar" "$SNAPSHOT_2" || exit 1
   else
     cp "$RELATIVE_PATH" "$SNAPSHOT_1" || exit 1
-    ../other/scripts/use_jar.sh "$JAR_PREFIX.jar" "$SNAPSHOT_1" || exit 1
+    ../other/scripts/generic_use_jar.sh "$JAR_PREFIX.jar" "$SNAPSHOT_1" || exit 1
   fi
 else
   echo "Usage: ./set_snapshot.sh solarthing <path to jar>"

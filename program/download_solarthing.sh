@@ -14,5 +14,5 @@ if ! zip -T ".downloads/solarthing-$SOLARTHING_VERSION.jar" 1>/dev/null 2>&1; th
 else
   echo Already downloaded
 fi
-ln -sf ".downloads/solarthing-$SOLARTHING_VERSION.jar" solarthing.jar || exit 1
+../other/scripts/generic_use_jar.sh solarthing.jar ".downloads/solarthing-$SOLARTHING_VERSION.jar" || exit 1
 echo Using SolarThing Version: "$SOLARTHING_VERSION"

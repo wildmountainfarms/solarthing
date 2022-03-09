@@ -7,6 +7,6 @@ if [ "$#" -eq 2 ]; then
   ln -sf "$RELATIVE_PATH" "$BASEDIR/../../program/$JAR_NAME" || exit 1
   echo "Made $JAR_NAME reference $2"
 else
-  echo "Usage: ./use_jar.sh solarthing.jar <path to jar>"
+  echo "Usage: ./generic_use_jar.sh solarthing.jar <path to jar>"
 fi
 
