@@ -13,6 +13,7 @@ import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.config.options.*;
+import me.retrodaredevil.solarthing.exceptions.ConfigException;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.HourIntervalPacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
@@ -147,6 +148,15 @@ public final class SolarMain {
 				return AutomationMain.startAutomation((AutomationProgramOptions) options);
 			}
 			throw new AssertionError("Unknown program type... type=" + programType + " programOptions=" + options);
+		} catch (ConfigException e) {
+			String logMessage = "Ending SolarThing. " + getJarInfo();
+			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "[LOG] " + logMessage);
+			System.out.println("[stdout] " + logMessage);
+			System.err.println("[stderr] " + logMessage);
+			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)Got config exception", e);
+			LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "SolarThing is shutting down. This is caused by an error in your configuration or in how your environment is set up. Detailed message below:\n\n" + e.getUserMessage());
+			LogManager.shutdown();
+			return SolarThingConstants.EXIT_CODE_INVALID_CONFIG;
 		} catch (Throwable t) {
 			boolean invalidJar = t instanceof ClassNotFoundException || t instanceof NoClassDefFoundError;
 			if (invalidJar) {
@@ -242,14 +252,19 @@ public final class SolarMain {
 		String firstArg = args[0];
 		String[] subArgs = new String[args.length - 1];
 		System.arraycopy(args, 1, subArgs, 0, args.length - 1);
-		if (firstArg.equals("run")) {
-			return doMain(subArgs);
-		} else if (firstArg.equals("version")) {
-			return outputVersion();
-		} else if (firstArg.equals("check")) {
-			return CheckMain.doCheck(subArgs);
+		switch (firstArg) {
+			case "run":
+				return doMain(subArgs);
+			case "version":
+				return outputVersion();
+			case "check":
+				return CheckMain.doCheck(subArgs);
+			default:
+				System.err.println("Unknown argument: " + firstArg + "\n" +
+						"Previous SolarThing versions allowed the running of SolarThing without the 'run' prefix.\n" +
+						"Adding 'run' may fix your problem.");
+				return 1;
 		}
-		return doMain(args);
 	}
 
 	public static void main(String[] args) {

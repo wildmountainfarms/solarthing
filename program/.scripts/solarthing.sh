@@ -9,4 +9,4 @@ fi
 echo Using base config = "$BASE_CONFIG"
 
 
-"$BASEDIR/../.bin/local_log_solarthing" --base "$BASE_CONFIG"
+"$BASEDIR/../.bin/local_log_solarthing" run --base "$BASE_CONFIG"

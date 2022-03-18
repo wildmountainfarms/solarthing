@@ -12,6 +12,7 @@ import me.retrodaredevil.solarthing.config.io.IOConfig;
 import me.retrodaredevil.solarthing.config.io.SerialIOConfig;
 import me.retrodaredevil.solarthing.config.options.DatabaseOption;
 import me.retrodaredevil.solarthing.config.options.PacketHandlingOption;
+import me.retrodaredevil.solarthing.exceptions.ConfigException;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 
 import java.io.File;
@@ -27,6 +28,13 @@ public final class ConfigUtil {
 
 	static final ObjectMapper MAPPER = DatabaseSettingsUtil.registerDatabaseSettings(JacksonUtil.defaultMapper());
 
+	private static ConfigException createExceptionFromJackson(File file, IOException jacksonIOException) {
+		if (jacksonIOException.getMessage().contains("end-of-input")) {
+			throw new ConfigException("Invalid JSON in file: " + file + " (check formatting)", jacksonIOException);
+		}
+		throw new ConfigException("Couldn't parse data from file: " + file + " Please make sure your JSON is correct.", jacksonIOException);
+	}
+
 	public static List<DatabaseConfig> getDatabaseConfigs(PacketHandlingOption options){
 		List<File> files = options.getDatabaseConfigurationFiles();
 		List<DatabaseConfig> r = new ArrayList<>();
@@ -40,12 +48,12 @@ public final class ConfigUtil {
 		try {
 			reader = new FileInputStream(file);
 		} catch (FileNotFoundException e) {
-			throw new RuntimeException(e);
+			throw new ConfigException("Could not find the file: " + file, e);
 		}
 		try {
 			return MAPPER.readValue(reader, DatabaseConfig.class);
 		} catch (IOException e) {
-			throw new RuntimeException("Couldn't parse data!", e);
+			throw createExceptionFromJackson(file, e);
 		}
 	}
 
@@ -54,7 +62,7 @@ public final class ConfigUtil {
 		try {
 			inputStream = new FileInputStream(configFile);
 		} catch (FileNotFoundException e) {
-			throw new RuntimeException(e);
+			throw new ConfigException("Could not find file: " + configFile, e);
 		}
 		InjectableValues.Std iv = new InjectableValues.Std();
 		iv.addValue(SerialIOConfig.DEFAULT_SERIAL_CONFIG_KEY, defaultSerialConfig);
@@ -65,7 +73,7 @@ public final class ConfigUtil {
 		try {
 			config = mapper.readValue(inputStream, IOConfig.class);
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			throw createExceptionFromJackson(configFile, e);
 		}
 		return config;
 	}
@@ -74,7 +82,22 @@ public final class ConfigUtil {
 		try {
 			return config.createIOBundle();
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			final String extra;
+			if (config instanceof SerialIOConfig) {
+				extra = " Make sure that the serial port is correct and you have the right permissions.";
+			} else {
+				extra = "";
+			}
+			// Note: If we consider using exit codes in the future to determine whether the program should restart,
+			//   and if we decide that ConfigExceptions should warrant a restart to not occur, then we may want to reconsider
+			//   this particular case because it's possible for the serial port to be connected in the future.
+			// Or, it might not matter because this particular method isn't used very often, as you cannot use this method
+			//   if you need a ReloadableIOBundle
+			throw new ConfigException(
+					"Could not create IO bundle from config file: " + configFile,
+					e,
+					"Your IO configuration was successfully parsed from " + configFile + ", but we failed to initialize it." + extra
+			);
 		}
 	}
 	public static CouchDbDatabaseSettings expectCouchDbDatabaseSettings(DatabaseOption options) {
