@@ -1,3 +1,5 @@
+NOTE! This is outdated! New documentation here: https://solarthing.readthedocs.io
+
 # Quickstart
 Ready to get started? Run these commands:
 

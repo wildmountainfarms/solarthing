@@ -4,7 +4,7 @@
 [![](https://img.shields.io/github/stars/wildmountainfarms/solarthing.svg?style=social)](https://github.com/wildmountainfarms/solarthing/stargazers)
 [![](https://img.shields.io/github/v/release/wildmountainfarms/solarthing.svg)](https://github.com/wildmountainfarms/solarthing/releases)
 [![](https://img.shields.io/github/release-date/wildmountainfarms/solarthing.svg)](https://github.com/wildmountainfarms/solarthing/releases)
-[![](https://img.shields.io/github/downloads/wildmountainfarms/solarthing/total.svg)](other/docs/quickstart.md)
+[![](https://img.shields.io/github/downloads/wildmountainfarms/solarthing/total.svg)](https://solarthing.readthedocs.io/en/latest/installation.html)
 
 Stores solar data in a database to view on Android, Grafana, or PVOutput
 
@@ -38,7 +38,7 @@ Ready to install? Use the [Quickstart](https://solarthing.readthedocs.io/en/late
 * Supports CouchDB, InfluxDB, local JSON file, and PVOutput exporting.
   * Multiple databases can even be used at the same time!
   * Packets are uploaded in parallel to multiple databases at the same time
-* Can [report Raspberry Pi CPU temperature](other/docs/raspberry_pi_cpu_temperature.md).
+* Can [report Raspberry Pi CPU temperature](https://solarthing.readthedocs.io/en/latest/config/rpi-cpu-temp.html).
 * Easy setup on Linux. Runs *without* root.
 
 ## Supported Databases
@@ -88,9 +88,9 @@ and SolarThing GraphQL run on a separate "NAS" computer. This NAS runs the autom
 The automation program handles the sending of Slack messages for low battery notifications.
 
 ### Database Setup
-* [CouchDB setup](other/docs/couchdb_setup.md)<br/>
+* [CouchDB setup](https://solarthing.readthedocs.io/en/latest/config/couchdb.html)<br/>
   * Used for SolarThing Android, SolarThing Web, and SolarThing GraphQL (which gets data to Grafana)
-* [InfluxDB 2.0 setup](other/docs/influxdb2_setup.md)<br/>
+* [InfluxDB 2.0 setup](https://solarthing.readthedocs.io/en/latest/config/influxdb2.html)<br/>
   * Used for direct Grafana queries
 
 #### [Developer Use](other/docs/developer_use.md)
@@ -98,13 +98,13 @@ The automation program handles the sending of Slack messages for low battery not
 #### [Technical](other/docs/technical/technical.md)
 #### [Project Structure](other/docs/technical/project_structure.md)
 #### [History](other/docs/history.md)
-#### [Google Analytics](other/docs/google_analytics.md)
-#### [Updating](other/docs/updating.md)
+#### [Google Analytics](https://solarthing.readthedocs.io/en/latest/config/analytics.html)
+#### [Updating](https://solarthing.readthedocs.io/en/latest/updating.html)
 
 #### Configuration
 This uses all JSON for configuring everything. The files you edit are all in one place unless you decide to move them.
 
-See [Quickstart](other/docs/quickstart.md) to see how to set them up
+See [configuration](https://solarthing.readthedocs.io/en/latest/configuration.html) to see how to set them up
 
 ### Renogy Rover Monitoring Alternatives
 Don't like something about SolarThing? Here are some alternatives to monitor your Renogy Rover.

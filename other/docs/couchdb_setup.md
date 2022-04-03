@@ -1,3 +1,7 @@
+NOTE! This is outdated! New documentation here: https://solarthing.readthedocs.io
+
+Documentation for this particular page here: https://solarthing.readthedocs.io/en/latest/config/couchdb.html
+
 # CouchDB
 All you need is a vanilla CouchDB instance to create a usable database. You can download it here: https://couchdb.apache.org/
 
