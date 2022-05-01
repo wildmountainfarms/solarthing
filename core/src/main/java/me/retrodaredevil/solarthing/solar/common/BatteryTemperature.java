@@ -1,10 +1,11 @@
 package me.retrodaredevil.solarthing.solar.common;
 
 import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 
 public interface BatteryTemperature {
 	@GraphQLInclude("batteryTemperatureCelsius")
-	Number getBatteryTemperatureCelsius();
+	@NotNull Number getBatteryTemperatureCelsius();
 
 	@GraphQLInclude("batteryTemperatureFahrenheit")
 	default float getBatteryTemperatureFahrenheit() {
