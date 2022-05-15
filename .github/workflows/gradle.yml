@@ -16,5 +16,7 @@ jobs:
     - uses: actions/setup-node@v3
       with:
         node-version: 16
+    - name: Install dependencies
+      run: (cd web && npm install)
     - name: Build with Gradle
       run: ./gradlew build
