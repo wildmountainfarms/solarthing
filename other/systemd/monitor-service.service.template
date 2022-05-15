@@ -1,5 +1,6 @@
 [Unit]
 Description=The service for monitoring other services ##name##
+After=network-online.target
 
 [Service]
 TimeoutStartSec=1
@@ -9,4 +10,4 @@ User=solarthing
 Group=solarthing
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=multi-user.target,network-online.target

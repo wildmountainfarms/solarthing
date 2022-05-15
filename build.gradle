@@ -7,15 +7,15 @@ buildscript {
         slf4jVersion = '1.7.36' // http://www.slf4j.org/download.html
         log4jVersion = '2.17.2' // https://logging.apache.org/log4j/2.x/javadoc.html
         // https://github.com/FasterXML/jackson/wiki/Jackson-Releases
-        jacksonVersion = '2.13.2' // https://github.com/FasterXML/jackson-databind/releases
+        jacksonVersion = '2.13.3' // https://github.com/FasterXML/jackson-databind/tags
         // retrofit is why we need allow-opens. context: https://stackoverflow.com/questions/60915381/retrofit2-maven-project-illegal-reflective-access-warning // https://github.com/square/retrofit/issues/3341
-        retrofitVersion = "2.9.0" // https://github.com/square/retrofit/releases
+        retrofitVersion = "2.9.0" // https://github.com/square/retrofit/tags
         shadowVersion = '7.1.2' // https://github.com/johnrengelman/shadow/releases // only works on gradle 7
         ioLibVersion = '2.3.0' // https://github.com/retrodaredevil/io-lib/releases
         okhttpVersion = "4.9.3" // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
 //        couchdbJavaVersion = '1.0.0'
         couchdbJavaVersion = "83d5c5bb785e989dd132bd681fd8d45c3f9fb03d".substring(0, 10)
-        dockerComposePluginVersion = "0.15.2" // https://github.com/avast/gradle-docker-compose-plugin/releases
+        dockerComposePluginVersion = "0.16.4" // https://github.com/avast/gradle-docker-compose-plugin/releases
     }
     dependencies {
         classpath "com.avast.gradle:gradle-docker-compose-plugin:$dockerComposePluginVersion"
@@ -24,7 +24,7 @@ buildscript {
 
 
 plugins {
-    id 'com.diffplug.spotless' version '6.4.1' // https://search.maven.org/search?q=a:spotless-plugin-gradle
+    id 'com.diffplug.spotless' version '6.6.1' // https://search.maven.org/search?q=a:spotless-plugin-gradle
 }
 
 version "0.0.1-SNAPSHOT"
@@ -196,6 +196,6 @@ project(":graphql"){
 }
 
 wrapper {
-    gradleVersion = '7.3.2'
+    gradleVersion = '7.4.2'
     distributionType = Wrapper.DistributionType.ALL
 }
