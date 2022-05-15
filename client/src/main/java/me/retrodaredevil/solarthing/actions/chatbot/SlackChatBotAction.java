@@ -16,6 +16,9 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import static java.util.Objects.requireNonNull;
 
@@ -27,9 +30,9 @@ public class SlackChatBotAction extends SimpleAction {
 	private final MessageSender messageSender;
 	private final ChatBotHandler handler;
 
-	private SocketModeClient client = null;
-	/** For some reason we need this because {@link SocketModeClient#verifyConnection()} sometimes returns true after an error happens */
-	private volatile boolean needsReinitialize = false;
+	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+	private volatile SocketModeClient client = null;
 
 	public SlackChatBotAction(String appToken, MessageSender messageSender, Slack slack, ChatBotHandler handler) {
 		super(false);
@@ -42,8 +45,9 @@ public class SlackChatBotAction extends SimpleAction {
 	@Override
 	protected void onUpdate() {
 		super.onUpdate();
-		if (client == null || !client.verifyConnection() || needsReinitialize) {
-			initClient();
+		if (client == null) {
+			// It's OK if we submit LOTS of things to run. executorService is single threaded, so only one will run at a time
+			executorService.execute(() -> logUncaught(this::initClient));
 		} else {
 			LOGGER.debug("We're good and connected!");
 		}
@@ -52,20 +56,31 @@ public class SlackChatBotAction extends SimpleAction {
 	@Override
 	protected void onEnd(boolean peacefullyEnded) {
 		super.onEnd(peacefullyEnded);
+		executorService.shutdownNow();
+		final boolean success;
+		try {
+			success = executorService.awaitTermination(200, TimeUnit.MILLISECONDS);
+		} catch (InterruptedException e) {
+			// We don't expect this thread to be interrupted
+			throw new RuntimeException(e);
+		}
+		if (!success) {
+			LOGGER.warn("Unable to terminate the running initClient() call!");
+		}
 		closeClient();
 	}
-	private void initClient() {
-		LOGGER.debug("Initializing client!");
-		SocketModeClient currentClient = this.client;
-		if (currentClient != null) {
-			LOGGER.debug("Closing current client");
-			try {
-				currentClient.close();
-				LOGGER.debug("Closed without exception");
-			} catch (IOException e) {
-				LOGGER.error("Got error while current slack socket mode client. (This is probably to be expected)", e);
-			}
+	private static void logUncaught(Runnable runnable) {
+		try {
+			runnable.run();
+		} catch (Throwable e) {
+			LOGGER.error("Uncaught exception", e);
 		}
+	}
+	private void initClient() {
+		if (this.client != null) {
+			return;
+		}
+		LOGGER.debug("Initializing client!");
 		final SocketModeClient client;
 		try {
 			client = slack.socketMode(appToken, SocketModeClient.Backend.JavaWebSocket);
@@ -83,25 +98,10 @@ public class SlackChatBotAction extends SimpleAction {
 		});
 		client.addWebSocketErrorListener(throwable -> {
 			LOGGER.error("Got slack connection error", throwable);
-			needsReinitialize = true;
 		});
-		LOGGER.debug("Going to connect");
-		try {
-			client.connect();
-			// this blocks for ~.5 second. We should eventually put this in another thread
-		} catch (IOException e) {
-			// we should handle this exception better later, because it's likely that it could get thrown and crash our program
-			try {
-				client.close();
-			} catch (IOException ioException) {
-				e.addSuppressed(ioException);
-			}
-			LOGGER.error("Error connecting", e);
-			return;
-		}
+		client.setAutoReconnectEnabled(true); // as long as we call this, we should never have to call client.connect()
+		LOGGER.debug("client set up successfully. Will automatically connect soon.");
 		this.client = client;
-		needsReinitialize = false;
-		LOGGER.debug("Connect successfully!");
 	}
 	private void closeClient() {
 		SocketModeClient client = this.client;
@@ -109,9 +109,15 @@ public class SlackChatBotAction extends SimpleAction {
 			if (client != null) {
 				client.close();
 			}
-			slack.close();
 		} catch (IOException e) {
 			LOGGER.error("Error while closing client", e);
+		} catch (Exception e) {
+			throw new RuntimeException("This shouldn't be thrown", e);
+		}
+		try {
+			slack.close();
+		} catch (IOException e) {
+			LOGGER.error("Error while closing slack", e);
 		} catch (Exception e) {
 			throw new RuntimeException("This shouldn't be thrown", e);
 		}

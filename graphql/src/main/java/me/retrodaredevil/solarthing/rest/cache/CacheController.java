@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/cache")
+@RequestMapping({ "/cache", "/api/v1/cache" })
 public class CacheController {
 
 	private final CacheHandler cacheHandler;

@@ -9,10 +9,12 @@ public final class ProductModelUtil {
 	Renogy models:
 	RBC30D1S-G1      - Dual Input DC-DC on board battery charger
 	RNG-CTRL-RVRPG40 - Renogy Rover 40A Positive Ground
-	RCC20RVRE-G1     - Rover Elite 20A
+	RCC20RVRE-G1     - Rover Elite 20A (No MES Load)
 	ML2440           - SRNE 40 AMP
 	RNG-CTRL-ADV30   - Renogy Adventurer 30A (I believe this is only available in the Lithium model)
 	RNG-CTRL-WND10   - Renogy Wanderer 10A (but apparently getRatedChargingCurrentValue() returns 20)
+	RNG-CTRL-RVR30   - Renogy Rover 30A
+	RNG-CTRL-WND30   - Renogy Wanderer 30A
 	 */
 
 	public static boolean isRoverElite(String productModel){
