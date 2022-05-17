@@ -2,6 +2,7 @@
 *.attach_pid*
 .~lock*
 *.log.gz
+gradle.properties
 
 /config.json
 /other/systemd/config.json

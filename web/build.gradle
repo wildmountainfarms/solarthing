@@ -3,6 +3,15 @@ plugins {
 }
 
 task appNpmBuild(type: NpmTask) {
+    // This commented code does not work because react-scripts spawns a node process itself internally and that fails because it doesn't see this PATH for some reason
+    // Here's a command that will come in useful if we ever get this working again
+    //   echo "NODE_BIN=$(whereis npm | sed "s/npm: //" | sed "s/\/npm$//")" >> "gradle.properties"
+    /*if (project.hasProperty("NODE_BIN")) {
+        String newPath = ((String) environment["PATH"]) + ":" + findProperty("NODE_BIN")
+        // environment is defined in NpmTask
+        environment.put("PATH", newPath)
+    }*/
+    environment.put("NODE_ENV", "development")
     args = ["run", "build"]
 }
 
