@@ -14,5 +14,8 @@ task appNpmBuild(type: NpmTask) {
     environment.put("NODE_ENV", "development")
     args = ["run", "build"]
 }
+task generateCode(type: NpmTask) {
+    args = ["run", "graphql:codegen"]
+}
 
 assemble.dependsOn(appNpmBuild)

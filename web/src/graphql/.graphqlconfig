@@ -1,0 +1,15 @@
+{
+  "name": "SolarThing GraphQL Schema for use with IntelliJ GraphQL Plugin",
+  "schemaPath": "schema.graphql",
+  "extensions": {
+    "endpoints": {
+      "Default GraphQL Endpoint": {
+        "url": "http://localhost:8080/graphql",
+        "headers": {
+          "user-agent": "JS GraphQL"
+        },
+        "introspect": false
+      }
+    }
+  }
+}

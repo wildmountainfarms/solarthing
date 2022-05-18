@@ -1,0 +1,8 @@
+query home($sourceId: String!, $currentTimeMillis: Long!) {
+  queryStatusLast(sourceId: $sourceId, to: $currentTimeMillis) {
+    batteryVoltageAverage {
+      data
+      dateMillis
+    }
+  }
+}
