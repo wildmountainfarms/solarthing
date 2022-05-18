@@ -34,6 +34,7 @@ public class RoverBoostSetActionNode implements ActionNode {
 		RoverWriteTable write = environment.getWrite();
 		return Actions.createRunOnce(() -> {
 			try {
+				// TODO have a packet for reporting this to solarthing_events
 				if (boostVoltageRaw != null) {
 					write.setBoostChargingVoltageRaw(boostVoltageRaw);
 				}

@@ -28,5 +28,9 @@ indent_size = 4
 indent_style = space
 indent_size = 4
 
+[{*.js, *.css, *.ts, *.tsx, *.jsx}]
+indent_style = space
+indent_size = 2
+
 [syslog-ng.conf]
 indent_style = tab

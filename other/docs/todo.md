@@ -85,6 +85,7 @@ and also react to messages that have been fully processed (request successfully 
 * Make chatbot interpret "cancel generator off at 5pm" or provide better way for cancelling commands than ID
 * Packets for when a command is accepted or rejected and when its action is done running
 * Make it so that MessageEvents can easily use a NanoProvider rather than System.nanoTime() directly.
+* Add alert to detect when messages are being spammed to solarthing_open
   
 ### Completed
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
