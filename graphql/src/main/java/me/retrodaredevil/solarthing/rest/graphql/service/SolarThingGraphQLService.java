@@ -54,14 +54,14 @@ public class SolarThingGraphQLService {
 
 
 	@GraphQLQuery(description = "Query status packets in the specified time range.")
-	public SolarThingStatusQuery queryStatus(
+	public @NotNull SolarThingStatusQuery queryStatus(
 			@GraphQLArgument(name = "from", description = DESCRIPTION_FROM) long from, @GraphQLArgument(name = "to", description = DESCRIPTION_TO) long to,
 			@GraphQLArgument(name = "sourceId", description = DESCRIPTION_OPTIONAL_SOURCE) @Nullable String sourceId){
 		List<? extends InstancePacketGroup> packets = simpleQueryHandler.queryStatus(from, to, sourceId);
 		return new SolarThingStatusQuery(new BasicPacketGetter(packets, PacketFilter.KEEP_ALL), simpleQueryHandler.sortPackets(packets, sourceId), simpleQueryHandler);
 	}
 	@GraphQLQuery(description = "Query the latest collection of status packets on or before the 'to' timestamp.")
-	public SolarThingStatusQuery queryStatusLast(
+	public @NotNull SolarThingStatusQuery queryStatusLast(
 			@GraphQLArgument(name = "to", description = DESCRIPTION_TO) long to,
 			@GraphQLArgument(name = "sourceId", description = DESCRIPTION_OPTIONAL_SOURCE) @Nullable String sourceId,
 			@GraphQLArgument(name = "reversed", defaultValue = "false", description = "If set to true, the returned list will be reversed. Useful to set to true if you want the very latest packet to be first.") boolean reversed){
@@ -73,7 +73,7 @@ public class SolarThingGraphQLService {
 		return new SolarThingStatusQuery(new ReversedPacketGetter(new LastPacketGetter(packets, PacketFilter.KEEP_ALL), reversed), simpleQueryHandler.sortPackets(lastPackets, sourceId), simpleQueryHandler);
 	}
 	@GraphQLQuery
-	public SolarThingEventQuery queryEvent(
+	public @NotNull SolarThingEventQuery queryEvent(
 			@GraphQLArgument(name = "from", description = DESCRIPTION_FROM) long from, @GraphQLArgument(name = "to", description = DESCRIPTION_TO) long to,
 			@GraphQLArgument(name = "sourceId", description = DESCRIPTION_OPTIONAL_SOURCE) @Nullable String sourceId,
 			@GraphQLArgument(name = "includeUnknownChangePackets", defaultValue = "false", description = DESCRIPTION_INCLUDE_UNKNOWN_CHANGE) boolean includeUnknownChangePackets
@@ -81,7 +81,7 @@ public class SolarThingGraphQLService {
 		return new SolarThingEventQuery(new BasicPacketGetter(simpleQueryHandler.queryEvent(from, to, sourceId), new UnknownChangePacketsFilter(includeUnknownChangePackets)));
 	}
 	@GraphQLQuery(description = "Queries events in the specified time range while only including the specified identifier in the specified fragment")
-	public SolarThingEventQuery queryEventIdentifier(
+	public @NotNull SolarThingEventQuery queryEventIdentifier(
 			@GraphQLArgument(name = "from", description = DESCRIPTION_FROM) long from, @GraphQLArgument(name = "to", description = DESCRIPTION_TO) long to,
 			@GraphQLArgument(name = "fragmentId", description = DESCRIPTION_FRAGMENT_ID) int fragmentId,
 			@GraphQLArgument(name = "identifier") @NotNull String identifierRepresentation,
@@ -94,7 +94,7 @@ public class SolarThingGraphQLService {
 		));
 	}
 	@GraphQLQuery(description = "Queries events in the specified time range while only including the specified fragment")
-	public SolarThingEventQuery queryEventFragment(
+	public @NotNull SolarThingEventQuery queryEventFragment(
 			@GraphQLArgument(name = "from", description = DESCRIPTION_FROM) long from, @GraphQLArgument(name = "to", description = DESCRIPTION_TO) long to,
 			@GraphQLArgument(name = "fragmentId", description = DESCRIPTION_FRAGMENT_ID) int fragmentId,
 			@GraphQLArgument(name = "includeUnknownChangePackets", defaultValue = "false", description = DESCRIPTION_INCLUDE_UNKNOWN_CHANGE) boolean includeUnknownChangePackets

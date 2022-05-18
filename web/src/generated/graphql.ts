@@ -200,7 +200,7 @@ export type DailyFxPacket = {
   dailyMaxBatteryVoltage: Scalars['Float'];
   /** The minimum battery voltage for the day. Note this may reset at a different time compared to max battery voltage for the day. */
   dailyMinBatteryVoltage: Scalars['Float'];
-  /** @deprecated Deprecated */
+  /** @deprecated Field no longer supported */
   errorModeValue: Scalars['Int'];
   errorModes: Array<FxErrorMode>;
   hasError: Scalars['Boolean'];
@@ -591,7 +591,7 @@ export type MxStatusPacket = {
   __typename?: 'MXStatusPacket';
   /** The address of the port that this device is plugged in to. If 0, this is plugged in to the mate */
   address: Scalars['Int'];
-  /** @deprecated Deprecated */
+  /** @deprecated Field no longer supported */
   ampChargerCurrent: Scalars['Float'];
   auxBitActive: Scalars['Boolean'];
   auxMode: AuxMode;
@@ -599,7 +599,7 @@ export type MxStatusPacket = {
   auxModeValueRaw: Scalars['Int'];
   /** The battery voltage */
   batteryVoltage: Scalars['Float'];
-  /** @deprecated Deprecated */
+  /** @deprecated Field no longer supported */
   chargerCurrent: Scalars['Int'];
   chargerMode: Scalars['Int'];
   chargingCurrent: Scalars['BigDecimal'];
@@ -999,11 +999,11 @@ export type Query = {
   queryAlter?: Maybe<SolarThingAlterQuery>;
   queryBatteryEstimate: SolarThingBatteryEstimate;
   queryBatteryRecord: SolarThingBatteryRecordQuery;
-  queryEvent?: Maybe<SolarThingEventQuery>;
+  queryEvent: SolarThingEventQuery;
   /** Queries events in the specified time range while only including the specified fragment */
-  queryEventFragment?: Maybe<SolarThingEventQuery>;
+  queryEventFragment: SolarThingEventQuery;
   /** Queries events in the specified time range while only including the specified identifier in the specified fragment */
-  queryEventIdentifier?: Maybe<SolarThingEventQuery>;
+  queryEventIdentifier: SolarThingEventQuery;
   /** Gives the timer values for the master FX of a single fragment over a time range */
   queryFXCharging?: Maybe<Array<Maybe<DataNode_FxChargingPacket>>>;
   queryFullDay?: Maybe<SolarThingFullDayStatusQuery>;
@@ -1012,9 +1012,9 @@ export type Query = {
   querySolcast?: Maybe<SolarThingSolcastQuery>;
   querySolcastDay?: Maybe<SolarThingSolcastDayQuery>;
   /** Query status packets in the specified time range. */
-  queryStatus?: Maybe<SolarThingStatusQuery>;
+  queryStatus: SolarThingStatusQuery;
   /** Query the latest collection of status packets on or before the 'to' timestamp. */
-  queryStatusLast?: Maybe<SolarThingStatusQuery>;
+  queryStatusLast: SolarThingStatusQuery;
 };
 
 
@@ -1357,14 +1357,14 @@ export type SolarDevice = {
 export enum SolarEventPacketType {
   FxAcModeChange = 'FX_AC_MODE_CHANGE',
   FxAuxStateChange = 'FX_AUX_STATE_CHANGE',
-  /** @deprecated Deprecated */
+  /** @deprecated Field no longer supported */
   FxDailyDayEnd = 'FX_DAILY_DAY_END',
   FxErrorModeChange = 'FX_ERROR_MODE_CHANGE',
   FxOperationalModeChange = 'FX_OPERATIONAL_MODE_CHANGE',
   FxWarningModeChange = 'FX_WARNING_MODE_CHANGE',
   MxfmAuxModeChange = 'MXFM_AUX_MODE_CHANGE',
   MxfmChargerModeChange = 'MXFM_CHARGER_MODE_CHANGE',
-  /** @deprecated Deprecated */
+  /** @deprecated Field no longer supported */
   MxfmDailyDayEnd = 'MXFM_DAILY_DAY_END',
   MxfmErrorModeChange = 'MXFM_ERROR_MODE_CHANGE',
   MxfmRawDayEnd = 'MXFM_RAW_DAY_END',
@@ -1374,10 +1374,10 @@ export enum SolarEventPacketType {
 }
 
 export enum SolarExtraPacketType {
-  /** @deprecated Deprecated */
+  /** @deprecated Field no longer supported */
   FxCharging = 'FX_CHARGING',
   FxDaily = 'FX_DAILY',
-  /** @deprecated Deprecated */
+  /** @deprecated Field no longer supported */
   MxfmDaily = 'MXFM_DAILY'
 }
 
@@ -1767,7 +1767,7 @@ export type HomeQueryVariables = Exact<{
 }>;
 
 
-export type HomeQuery = { __typename?: 'Query', queryStatusLast?: { __typename?: 'SolarThingStatusQuery', batteryVoltageAverage: Array<{ __typename?: 'SimpleNode_Float', data: number, dateMillis: any }> } | null };
+export type HomeQuery = { __typename?: 'Query', queryStatusLast: { __typename?: 'SolarThingStatusQuery', batteryVoltageAverage: Array<{ __typename?: 'SimpleNode_Float', data: number, dateMillis: any }> } };
 
 
 export const HomeDocument = `

@@ -15,7 +15,7 @@ function App() {
         <h1>SolarThing</h1>
         {!isSuccess
           ? <p>Loading Data</p>
-          : <p>Battery: {isSuccess && data!.queryStatusLast!.batteryVoltageAverage[0].data} V</p>}
+          : <p>Battery: {isSuccess && data!.queryStatusLast.batteryVoltageAverage[0].data} V</p>}
 
       </header>
     </div>

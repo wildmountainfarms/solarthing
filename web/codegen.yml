@@ -1,5 +1,6 @@
 overwrite: true
-schema: "http://localhost:8080/graphql"
+#schema: "http://localhost:8080/graphql"
+schema: "schema.graphqls"
 documents: ./**/*.graphql
 generates:
   src/generated/graphql.ts:
@@ -11,6 +12,6 @@ generates:
       fetcher: graphql-request
 #      fetcher:
 #        endpoint: "http://localhost:8080/graphql"
-  ./graphql.schema.json:
-    plugins:
-      - "introspection"
+#  ./graphql.schema.json:
+#    plugins:
+#      - "introspection"

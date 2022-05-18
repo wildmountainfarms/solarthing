@@ -3,6 +3,7 @@
 .~lock*
 *.log.gz
 gradle.properties
+/web/schema.graphqls
 
 /config.json
 /other/systemd/config.json
