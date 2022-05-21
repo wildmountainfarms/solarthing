@@ -45,4 +45,8 @@ public class DatabaseAuthorization {
 	private String getCookieString() {
 		return cookie.toString();
 	}
+
+	public Cookie getCookie() {
+		return cookie;
+	}
 }

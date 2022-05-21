@@ -1,6 +1,12 @@
 ### Individual documentation
 [Solar readme](solar/README.md)
 
+### Line count
+```shell
+cd ../../..
+find | grep -E '\.java$|\.kt$|\.js$|\.tsx?$' | grep -v node_modules | xargs cat | wc -l
+```
+
 ### How packets are stored
 Each packet in the database holds other packets that were saved at the same time. This makes
 it simple to link FX1 FX2 and MX3 packets to one single packet. By default the program links packets together by saving

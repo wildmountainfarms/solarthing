@@ -59,7 +59,7 @@ task copyWebApp(type: Copy) {
     //   These warnings can be ignored because we only care about the bootJar and bootRun tasks being correct.
     //   This does, however, have the downside of optimizations being disabled for certain tasks.
     from "$rootDir/web/build"
-    into "$rootDir/graphql/build/resources/main/static/."
+    into "$rootDir/server/build/resources/main/static/."
 }
 copyWebApp.dependsOn(":web:build")
 bootJar.dependsOn(copyWebApp)

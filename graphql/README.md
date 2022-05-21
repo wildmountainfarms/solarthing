@@ -1,4 +1,4 @@
-# GraphQL
+# Server 
 This module contains a Spring Boot REST API that uses GraphQL to fetch SolarThing data from CouchDB.
 
 For usage with Grafana, look in [this folder](../other/grafana). **This readme file is for technical details,

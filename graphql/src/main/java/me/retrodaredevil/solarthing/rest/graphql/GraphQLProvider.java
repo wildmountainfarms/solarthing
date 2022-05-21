@@ -20,6 +20,8 @@ import me.retrodaredevil.solarthing.rest.graphql.service.SolarThingGraphQLFXServ
 import me.retrodaredevil.solarthing.rest.graphql.service.SolarThingGraphQLLongTermService;
 import me.retrodaredevil.solarthing.rest.graphql.service.SolarThingGraphQLService;
 import me.retrodaredevil.solarthing.rest.graphql.service.SolarThingGraphQLSolcastService;
+import me.retrodaredevil.solarthing.rest.graphql.service.web.DefaultDatabaseProvider;
+import me.retrodaredevil.solarthing.rest.graphql.service.web.SolarThingAdminService;
 import me.retrodaredevil.solarthing.rest.graphql.solcast.SolcastConfig;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.slf4j.Logger;
@@ -119,6 +121,7 @@ public class GraphQLProvider {
 				.withOperationsFromSingleton(new SolarThingGraphQLFXService(simpleQueryHandler))
 				.withOperationsFromSingleton(new SolarThingGraphQLSolcastService(solcastConfig, zoneId, cacheController))
 				.withOperationsFromSingleton(new SolarThingGraphQLAlterService(simpleQueryHandler))
+				.withOperationsFromSingleton(new SolarThingAdminService(new DefaultDatabaseProvider(couchDbDatabaseSettings, objectMapper)))
 				.withTypeInfoGenerator(new SolarThingTypeInfoGenerator())
 				.withValueMapperFactory(jacksonValueMapperFactory)
 				.withResolverBuilders(resolverBuilder)
