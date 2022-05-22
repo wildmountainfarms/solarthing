@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.rest.graphql.service.web;
 
-import me.retrodaredevil.couchdbjava.exception.CouchDbException;
 import me.retrodaredevil.couchdbjava.okhttp.OkHttpCouchDbInstance;
 import me.retrodaredevil.couchdbjava.okhttp.auth.OkHttpAuthHandler;
 import okhttp3.Cookie;
