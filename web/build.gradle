@@ -16,7 +16,7 @@ task appNpmBuild(type: NpmTask) {
 }
 task generateCode(type: NpmTask) {
     args = ["run", "graphql:codegen"]
-    dependsOn(":graphql:run")
+    dependsOn(":graphql:generateSchema")
 }
 
 assemble.dependsOn(appNpmBuild)

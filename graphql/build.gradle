@@ -14,7 +14,6 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
-apply plugin: 'application'
 
 sourceCompatibility = JavaVersion.VERSION_11
 targetCompatibility = JavaVersion.VERSION_11
@@ -65,9 +64,10 @@ copyWebApp.dependsOn(":web:build")
 bootJar.dependsOn(copyWebApp)
 bootRun.dependsOn(copyWebApp)
 
-run {
+task generateSchema(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
     // Used to generate schema to file
-    mainClassName = "me.retrodaredevil.solarthing.rest.graphql.OutputSchemaMain"
+    mainClass = "me.retrodaredevil.solarthing.rest.graphql.OutputSchemaMain"
     // workingDir is implicitly /graphql
     args = ["../web/schema.graphqls"]
 }
