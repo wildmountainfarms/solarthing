@@ -114,7 +114,7 @@ public class TracerModbusRequester implements ModbusRequester {
 			}
 		}
 		return new DataRequesterResult(
-				new ModbusListUpdaterWrapper(new TracerPacketListUpdater(number, read, write, tracerClockOptions, netCatServerHandler == null ? null : new ConnectionHandler(netCatServerHandler), connectionHandlerHasFlushLogic), reloadCache, successReporter, sendErrorPackets, "tracer.error." + number),
+				new ModbusListUpdaterWrapper(ModbusListUpdaterWrapper.LogType.TRACER, new TracerPacketListUpdater(number, read, write, tracerClockOptions, netCatServerHandler == null ? null : new ConnectionHandler(netCatServerHandler), connectionHandlerHasFlushLogic), reloadCache, successReporter, sendErrorPackets, "tracer.error." + number),
 				new AttachToCommandEnvironmentUpdater(Collections.singletonList(tracerModbusEnvironment), attachToCommands::contains)
 		);
 

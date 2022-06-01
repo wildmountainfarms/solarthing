@@ -13,6 +13,7 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.annotations.DcdcOnly;
 import me.retrodaredevil.solarthing.solar.renogy.rover.annotations.ResetEvening;
 import me.retrodaredevil.solarthing.solar.renogy.rover.annotations.ResetMorning;
 import me.retrodaredevil.solarthing.solar.renogy.rover.annotations.RoverOnly;
+import me.retrodaredevil.solarthing.solar.renogy.rover.annotations.SolarInverterChargerUnsupported;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.ImmutableSpecialPowerControl_E021;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.ImmutableSpecialPowerControl_E02D;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerControl_E021;
@@ -386,6 +387,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	@JsonProperty("dailyMaxChargingPower")
 	int getDailyMaxChargingPower();
 
+	@SolarInverterChargerUnsupported
 	@ResetMorning
 	@JsonProperty("dailyMaxDischargingPower")
 	int getDailyMaxDischargingPower();

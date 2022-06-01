@@ -3,13 +3,16 @@ package me.retrodaredevil.solarthing.program.receiver;
 import me.retrodaredevil.io.modbus.ModbusMessage;
 import me.retrodaredevil.io.modbus.ModbusRuntimeException;
 import me.retrodaredevil.io.modbus.ModbusTimeoutException;
+import me.retrodaredevil.io.modbus.handling.ErrorCodeException;
 import me.retrodaredevil.io.modbus.handling.ParsedResponseException;
 import me.retrodaredevil.io.modbus.handling.RawResponseException;
+import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.config.request.modbus.SuccessReporter;
 import me.retrodaredevil.solarthing.io.NotInitializedIOException;
 import me.retrodaredevil.solarthing.misc.error.ImmutableExceptionErrorPacket;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
+import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.ExceptionCodeError;
 import me.retrodaredevil.solarthing.util.TimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +23,7 @@ public class ModbusListUpdaterWrapper implements PacketListReceiver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModbusListUpdaterWrapper.class);
 	private static final String MODBUS_RUNTIME_EXCEPTION_CATCH_LOCATION_IDENTIFIER = "read.modbus";
 
+	private final LogType logType;
 	private final PacketListReceiver packetListReceiver;
 	private final Runnable reloadCache;
 	private final SuccessReporter successReporter;
@@ -29,7 +33,8 @@ public class ModbusListUpdaterWrapper implements PacketListReceiver {
 
 	private boolean hasBeenSuccessful = false;
 
-	public ModbusListUpdaterWrapper(PacketListReceiver packetListReceiver, Runnable reloadCache, SuccessReporter successReporter, boolean isSendErrorPackets, String errorIdentifierString) {
+	public ModbusListUpdaterWrapper(LogType logType, PacketListReceiver packetListReceiver, Runnable reloadCache, SuccessReporter successReporter, boolean isSendErrorPackets, String errorIdentifierString) {
+		this.logType = logType;
 		this.packetListReceiver = packetListReceiver;
 		this.reloadCache = reloadCache;
 		this.successReporter = successReporter;
@@ -87,7 +92,22 @@ public class ModbusListUpdaterWrapper implements PacketListReceiver {
 				ParsedResponseException parsedResponseException = (ParsedResponseException) e;
 				ModbusMessage message = parsedResponseException.getResponse();
 				String hexFunctionCode = String.format("%02X", message.getFunctionCode());
-				LOGGER.info("Communication with rover working well. Got this response back: function code=0x" + hexFunctionCode + " data='" + dataToSplitHex(message.getByteData()) + "' feel free to open issue at https://github.com/wildmountainfarms/solarthing/issues/");
+				LOGGER.info("Communication with device working well. Got this response back: function code=0x" + hexFunctionCode + " data='" + dataToSplitHex(message.getByteData()) + "' feel free to open issue at https://github.com/wildmountainfarms/solarthing/issues/");
+				if (logType == LogType.ROVER) {
+					if (e instanceof ErrorCodeException) {
+						int code = ((ErrorCodeException) e).getExceptionCode();
+						ExceptionCodeError error = ExceptionCodeError.fromCodeOrNull(code);
+						if (error == ExceptionCodeError.READ_EXCEPTION_UNSUPPORTED_FUNCTION_CODE) {
+							LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "Got unsupported function code error. This should never happen.");
+						} else if (error == ExceptionCodeError.READ_EXCEPTION_UNSUPPORTED_REGISTER) {
+							LOGGER.info("This error is common on models of charge controllers that are unsupported by SolarThing. When you create your issue, please include the model of your charge controller.");
+						} else if (error == ExceptionCodeError.READ_EXCEPTION_TOO_MANY_REGISTERS_TO_READ) {
+							LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "This error should never happen because we never request to read too many registers. Please report this.");
+						} else if (error == ExceptionCodeError.READ_EXCEPTION_CANNOT_READ_MULTIPLE_REGISTERS) {
+							LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "This error is unexpected. To attempt to fix this yourself, please visit: https://solarthing.readthedocs.io/en/latest/rover/bulk-request.html to disable bulk request. Please report this anyway, as it should never happen.");
+						}
+					}
+				}
 			} else if (e instanceof RawResponseException) {
 				byte[] data = ((RawResponseException) e).getRawData();
 				LOGGER.info("Got part of a response back. (Maybe timed out halfway through?) data='" + dataToSplitHex(data) + "' Feel free to open an issue at https://github.com/wildmountainfarms/solarthing/issues/");
@@ -103,5 +123,13 @@ public class ModbusListUpdaterWrapper implements PacketListReceiver {
 		successReporter.reportSuccess();
 		final long readDurationNanos = System.nanoTime() - startTimeNanos;
 		LOGGER.debug("took " + TimeUtil.nanosToSecondsString(readDurationNanos) + " seconds to read from device");
+	}
+
+	/**
+	 * Helps this class understand what type of device is being handled. This helps with log debug information
+	 */
+	public enum LogType {
+		ROVER,
+		TRACER,
 	}
 }

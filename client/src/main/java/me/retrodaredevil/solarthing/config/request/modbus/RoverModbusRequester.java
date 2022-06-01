@@ -96,7 +96,7 @@ public class RoverModbusRequester implements ModbusRequester {
 			}
 		}
 		return new DataRequesterResult(
-				new ModbusListUpdaterWrapper(new RoverPacketListUpdater(number, read, write, netCatServerHandler == null ? null : new ConnectionHandler(netCatServerHandler)), reloadCache, successReporter, sendErrorPackets, "rover.error." + number),
+				new ModbusListUpdaterWrapper(ModbusListUpdaterWrapper.LogType.ROVER, new RoverPacketListUpdater(number, read, write, netCatServerHandler == null ? null : new ConnectionHandler(netCatServerHandler)), reloadCache, successReporter, sendErrorPackets, "rover.error." + number),
 				new AttachToCommandEnvironmentUpdater(Collections.singletonList(roverModbusEnvironment), attachToCommands::contains)
 		);
 	}
