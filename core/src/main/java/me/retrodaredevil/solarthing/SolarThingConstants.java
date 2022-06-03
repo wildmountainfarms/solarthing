@@ -62,4 +62,9 @@ public final class SolarThingConstants {
 	/** Not used yet but we have this defined in solarthing.service.template */
 	@Deprecated
 	public static final int EXIT_CODE_RESTART_NEEDED_UNUSED_2 = 212;
+
+	public static final class Links {
+		private Links() { throw new UnsupportedOperationException(); }
+		public static final String ISSUES = "https://github.com/wildmountainfarms/solarthing/issues";
+	}
 }

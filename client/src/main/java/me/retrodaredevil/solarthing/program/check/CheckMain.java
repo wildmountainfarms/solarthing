@@ -1,5 +1,7 @@
 package me.retrodaredevil.solarthing.program.check;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lexicalscope.jewel.cli.ArgumentValidationException;
 import com.lexicalscope.jewel.cli.Cli;
 import com.lexicalscope.jewel.cli.CliFactory;
@@ -29,6 +31,7 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusSlaveRe
 import me.retrodaredevil.solarthing.solar.tracer.TracerReadTable;
 import me.retrodaredevil.solarthing.solar.tracer.modbus.TracerModbusSlaveRead;
 import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
+import me.retrodaredevil.solarthing.util.JacksonUtil;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -96,13 +99,17 @@ public class CheckMain {
 			return parsedData[0];
 		}
 	}
-	private static boolean doModbus(@NotNull String port, int startingAddress, boolean scan, SerialConfig serialConfig, Function<ModbusSlave, BatteryVoltage> slaveToReadTable) throws SerialPortException {
+	private static boolean doModbus(@NotNull String port, int startingAddress, boolean scan, boolean debugTable, SerialConfig serialConfig, Function<ModbusSlave, BatteryVoltage> slaveToReadTable) throws SerialPortException {
 		System.out.println("Going to open serial port using default serial configuration...");
 		try(JSerialIOBundle ioBundle = JSerialIOBundle.createPort(port, serialConfig)) {
 			System.out.println("Successfully opened serial port...");
 			ModbusSlaveBus bus = new IOModbusSlaveBus(ioBundle, new RtuDataEncoder());
 			MutableAddressModbusSlave modbusSlave = new MutableAddressModbusSlave(startingAddress, bus);
 			BatteryVoltage readTable = slaveToReadTable.apply(modbusSlave);
+
+			ObjectMapper modbusCatchingMapper = JacksonUtil.defaultMapper();
+			modbusCatchingMapper.registerModule(ModbusSerializationCatcher.createModule(readTable.getClass()));
+
 			int maxAddress = scan ? 247 : startingAddress;
 			for (int currentAddress = startingAddress; currentAddress <= maxAddress; currentAddress++) {
 				modbusSlave.setAddress(currentAddress);
@@ -110,6 +117,18 @@ public class CheckMain {
 				try {
 					float batteryVoltage = readTable.getBatteryVoltage();
 					System.out.println("Success! Battery Voltage: " + batteryVoltage);
+					if (debugTable) {
+						System.out.println("Debug enabled. Going to print out as much data as possible...");
+						try {
+							String data = modbusCatchingMapper.writeValueAsString(readTable);
+							System.out.println(data);
+							System.out.println("(At least some) data successfully retrieved above");
+						} catch (JsonProcessingException e) {
+							e.printStackTrace(System.out);
+							System.out.println("\nSome error occurred while trying to get more data.\n" +
+									"This should not happen, as this is designed to catch errors. Report this here: " + SolarThingConstants.Links.ISSUES);
+						}
+					}
 					return true;
 				} catch (ModbusTimeoutException e) {
 					System.err.println("Got timeout. This means that the modbus address is incorrect or that the cable is not functioning properly.");
@@ -122,14 +141,14 @@ public class CheckMain {
 			return false;
 		}
 	}
-	private static boolean scanForRover(@NotNull String port, int modbusAddress, boolean scan) throws SerialPortException {
-		return doModbus(port, modbusAddress, scan, RoverReadTable.SERIAL_CONFIG, RoverModbusSlaveRead::new);
+	private static boolean scanForRover(@NotNull String port, int modbusAddress, boolean scan, boolean debugTable) throws SerialPortException {
+		return doModbus(port, modbusAddress, scan, debugTable, RoverReadTable.SERIAL_CONFIG, RoverModbusSlaveRead::new);
 	}
-	private static boolean scanForTracer(@NotNull String port, int modbusAddress, boolean scan) throws SerialPortException {
-		return doModbus(port, modbusAddress, scan, TracerReadTable.SERIAL_CONFIG, TracerModbusSlaveRead::new);
+	private static boolean scanForTracer(@NotNull String port, int modbusAddress, boolean scan, boolean debugTable) throws SerialPortException {
+		return doModbus(port, modbusAddress, scan, debugTable, TracerReadTable.SERIAL_CONFIG, TracerModbusSlaveRead::new);
 	}
 
-	private static int doForOptions(@NotNull String port, @Nullable String type, @Nullable Integer modbusAddress, boolean scan) throws SerialPortException {
+	private static int doForOptions(@NotNull String port, @Nullable String type, @Nullable Integer modbusAddress, boolean scan, boolean debugTable) throws SerialPortException {
 		if (type == null) {
 			if (scan) {
 				System.err.println("Scan is not supported when searching through all possible options");
@@ -139,10 +158,10 @@ public class CheckMain {
 				return 0;
 			}
 			int address = modbusAddress == null ? 1 : modbusAddress;
-			if (scanForRover(port, address, false)) {
+			if (scanForRover(port, address, false, debugTable)) {
 				return 0;
 			}
-			if (scanForTracer(port, address, false)) {
+			if (scanForTracer(port, address, false, debugTable)) {
 				return 0;
 			}
 			System.err.println("Did not detect any devices.");
@@ -157,6 +176,10 @@ public class CheckMain {
 					System.err.println("Scan is not supported for mate");
 					return SolarThingConstants.EXIT_CODE_INVALID_OPTIONS;
 				}
+				if (debugTable) {
+					System.err.println("The mate option does not support extra debugging");
+					return SolarThingConstants.EXIT_CODE_INVALID_OPTIONS;
+				}
 				if (scanForMate(port)) {
 					return 0;
 				}
@@ -164,12 +187,12 @@ public class CheckMain {
 			} else {
 				int address = modbusAddress == null ? 1 : modbusAddress;
 				if (type.equals("rover")) {
-					if (scanForRover(port, address, scan)) {
+					if (scanForRover(port, address, scan, debugTable)) {
 						return 0;
 					}
 					return SolarThingConstants.EXIT_CODE_FAIL;
 				} else if (type.equals("tracer")) {
-					if (scanForTracer(port, address, scan)) {
+					if (scanForTracer(port, address, scan, debugTable)) {
 						return 0;
 					}
 					return SolarThingConstants.EXIT_CODE_FAIL;
@@ -202,7 +225,7 @@ public class CheckMain {
 		}
 		String type = options.getType();
 		try {
-			return doForOptions(port, type, options.getModbusAddress(), options.isScan());
+			return doForOptions(port, type, options.getModbusAddress(), options.isScan(), options.isDebugTable());
 		} catch (SerialPortException e) {
 			System.err.println("Could not open serial port! Is it connected? Is '" + port + "' correct?");
 			System.err.println("Message: " + e.getMessage());

@@ -17,4 +17,7 @@ public interface CheckOptions {
 
 	@Option(longName = "scan", description = "Set this flag if you want to scan multiple modbus addresses. Starts at the value set from --modbus")
 	boolean isScan();
+
+	@Option(longName = "debug", description = "Set this flag if you want to debug all possible data.")
+	boolean isDebugTable();
 }
