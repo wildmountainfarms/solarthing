@@ -5,9 +5,22 @@ on:
     types: [published]
 
 jobs:
+  shared-outputs:
+    name: Shared Outputs
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.modified_tag.outputs.version }}
+    steps:
+      - id: modified_tag
+        name: Modify Tag
+        run: |
+          tag_name="${{ github.event.release.tag_name }}"
+          version=$(echo "$tag_name" | sed "s/v//")
+          echo "::set-output name=version::$version"
   release:
     name: Upload Release Assets
     runs-on: ubuntu-latest
+    needs: shared-outputs
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 11
@@ -21,11 +34,6 @@ jobs:
         run: (cd web && npm install)
       - name: Build with Gradle
         run: ./gradlew build -x test
-      - id: modified_tag
-        run: |
-          tag_name="${{ github.event.release.tag_name }}"
-          version=$(echo "$tag_name" | sed "s/v//")
-          echo "::set-output name=version::$version"
       - name: Upload SolarThing Release Asset
         uses: actions/upload-release-asset@v1
         env:
@@ -33,7 +41,7 @@ jobs:
         with:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: ./client/build/libs/client-0.0.1-SNAPSHOT.jar
-          asset_name: solarthing-${{ steps.modified_tag.outputs.version }}.jar
+          asset_name: solarthing-${{ needs.shared-outputs.outputs.version }}.jar
           asset_content_type: application/octet-stream
       - name: Upload SolarThing GraphQL Release Asset
         uses: actions/upload-release-asset@v1
@@ -42,5 +50,36 @@ jobs:
         with:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: ./graphql/build/libs/graphql-0.0.1-SNAPSHOT.jar
-          asset_name: solarthing-graphql-${{ steps.modified_tag.outputs.version }}.jar
+          asset_name: solarthing-graphql-${{ needs.shared-outputs.outputs.version }}.jar
           asset_content_type: application/octet-stream
+  release-docs:
+    name: Upload Release Documentation
+    runs-on: ubuntu-latest
+    needs: shared-outputs
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: 'wildmountainfarms/solarthing-docs'
+      - name: Generate PDF
+        run: (cd docs/ && make latexpdf)
+      - name: Generate Epub
+        run: (cd docs/ && make epub)
+      - name: Upload PDF
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./docs/build/latex/solarthing.pdf
+          asset_name: solarthing-docs-${{ needs.shared-outputs.outputs.version }}.pdf
+          asset_content_type: application/octet-stream
+      - name: Upload Epub
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./docs/build/epub/SolarThing.epub
+          asset_name: solarthing-docs-${{ needs.shared-outputs.outputs.version }}.epub
+          asset_content_type: application/octet-stream
+
