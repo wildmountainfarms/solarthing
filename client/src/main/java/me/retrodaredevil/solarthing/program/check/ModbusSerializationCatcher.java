@@ -23,10 +23,21 @@ public class ModbusSerializationCatcher extends BeanPropertyWriter {
 	@Override
 	public void serializeAsField(Object bean, JsonGenerator gen, SerializerProvider prov) throws Exception {
 		try {
+			System.out.println("Serializing: " + _name);
 			super.serializeAsField(bean, gen, prov);
-		} catch (ErrorCodeException ex) {
+		} catch (Exception ex) { // likely an InvocationTargetException, but catch exception in case it is anything else
+			final ErrorCodeException actual;
+			if (ex instanceof ErrorCodeException) {
+				actual = (ErrorCodeException) ex;
+			} else {
+				if (ex.getCause() instanceof ErrorCodeException) {
+					actual = (ErrorCodeException) ex.getCause();
+				} else {
+					throw ex;
+				}
+			}
 			gen.writeFieldName(_name);
-			gen.writeString("Modbus Exception: " + ex.getExceptionCode());
+			gen.writeString("Modbus Exception: " + actual.getExceptionCode());
 		}
 	}
 
