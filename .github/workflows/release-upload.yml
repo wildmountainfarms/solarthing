@@ -68,7 +68,7 @@ jobs:
           python3 -m venv .venv
           source .venv/bin/activate
           pip install -r docs/source/requirements.txt
-          sudo apt-get install python3-sphinx latexmk
+          sudo apt-get install python3-sphinx texlive-latex-extra latexmk
           (cd docs/ && make latexpdf)
           (cd docs/ && make epub)
       - name: Upload PDF
