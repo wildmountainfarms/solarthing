@@ -133,3 +133,4 @@ SolarThing doesn't support Outback Mate3 devices, but there's lots of other soft
 These links document people talking about SolarThing or creating cables
 * https://diysolarforum.com/threads/renogy-devices-and-raspberry-pi-bluetooth-wifi.30235
 * http://renogy.boards.net/thread/535/using-rj11-cable-connect-raspberry
+* https://www.t6forum.com

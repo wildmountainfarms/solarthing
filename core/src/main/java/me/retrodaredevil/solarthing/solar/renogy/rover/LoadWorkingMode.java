@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover;
 
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.CodeMode;
 
 /**
@@ -27,7 +28,7 @@ public enum LoadWorkingMode implements CodeMode {
 	;
 	private final int value;
 	private final Integer timeDelay;
-	
+
 	LoadWorkingMode(int value, Integer timeDelay) {
 		this.value = value;
 		this.timeDelay = timeDelay;
@@ -35,14 +36,14 @@ public enum LoadWorkingMode implements CodeMode {
 	public Integer getTimeDelay(){
 		return timeDelay;
 	}
-	
+
 	@Override
 	public int getValueCode() {
 		return value;
 	}
-	
+
 	@Override
-	public String getModeName() {
+	public @NotNull String getModeName() {
 		return toString();
 	}
 }

@@ -1,11 +1,12 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover.special;
 
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.CodeMode;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.solar.renogy.rover.ChargingMethod;
 
 public interface SpecialPowerControl_E02D extends UpperLower16Bit {
-	
+
 	default String getFormattedInfo(){
 		return "intelligent power: " + (isIntelligentPowerEnabled() ? "enabled" : "disabled") + "\n" +
 			"each night on: " + (isEachNightOnEnabled() ? "enabled" : "disabled") + "\n" +
@@ -14,15 +15,15 @@ public interface SpecialPowerControl_E02D extends UpperLower16Bit {
 			"no charging below 0C: " + (isNoChargingBelow0CEnabled() ? "enabled" : "disabled") + "\n" +
 			"system voltage: " + getSystemVoltage().getModeName();
 	}
-	
+
 	default boolean isIntelligentPowerEnabled(){
 		return (0b10 & getUpper()) != 0;
 	}
-	
+
 	default boolean isEachNightOnEnabled(){
 		return (0b1 & getUpper()) != 0;
 	}
-	
+
 	default int getBatteryTypeValueCode(){
 		return (0b11110000 & getLower()) >>> 4;
 	}
@@ -43,14 +44,14 @@ public interface SpecialPowerControl_E02D extends UpperLower16Bit {
 	default ChargingMethod_E02D getChargingMethod(){
 		return Modes.getActiveMode(ChargingMethod_E02D.class, getChargingMethodValueCode());
 	}
-	
+
 	/**
 	 * @return true if "no charging below 0C" is enabled, false otherwise
 	 */
 	default boolean isNoChargingBelow0CEnabled(){
 		return (0b100 & getLower()) != 0;
 	}
-	
+
 	default int getSystemVoltageValueCode(){
 		return 0b11 & getLower();
 	}
@@ -60,26 +61,26 @@ public interface SpecialPowerControl_E02D extends UpperLower16Bit {
 	default boolean is24VSystem(){
 		return getSystemVoltage() == SystemVoltage.V24;
 	}
-	
+
 	enum BatteryType implements CodeMode {
 		LEAD_ACID("lead-acid", 0),
 		LITHIUM("lithium", 1);
-		
+
 		private final String name;
 		private final int value;
-		
+
 		BatteryType(String name, int value) {
 			this.name = name;
 			this.value = value;
 		}
-		
+
 		@Override
 		public int getValueCode() {
 			return value;
 		}
-		
+
 		@Override
-		public String getModeName() {
+		public @NotNull String getModeName() {
 			return name;
 		}
 	}
@@ -88,26 +89,26 @@ public interface SpecialPowerControl_E02D extends UpperLower16Bit {
 		DIRECT(1, ChargingMethod.DIRECT),
 		;
 		private static final int IGNORED_BITS = 0b11111100;
-		
+
 		private final int value;
 		private final ChargingMethod chargingMethod;
-		
+
 		ChargingMethod_E02D(int value, ChargingMethod chargingMethod) {
 			this.value = value;
 			this.chargingMethod = chargingMethod;
 		}
-		
+
 		public ChargingMethod getChargingMethod(){
 			return chargingMethod;
 		}
-		
+
 		@Override
 		public int getValueCode() {
 			return value;
 		}
-		
+
 		@Override
-		public String getModeName() {
+		public @NotNull String getModeName() {
 			return chargingMethod.getModeName();
 		}
 	}
@@ -118,22 +119,22 @@ public interface SpecialPowerControl_E02D extends UpperLower16Bit {
 		V12(12, 0),
 		V24(24, 1)
 		;
-		
+
 		private final int voltage;
 		private final int code;
-		
+
 		SystemVoltage(int voltage, int code) {
 			this.voltage = voltage;
 			this.code = code;
 		}
-		
+
 		@Override
 		public int getValueCode() {
 			return code;
 		}
-		
+
 		@Override
-		public String getModeName() {
+		public @NotNull String getModeName() {
 			return voltage + "V";
 		}
 	}

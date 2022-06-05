@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover;
 
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.CodeMode;
 import me.retrodaredevil.solarthing.solar.renogy.rover.annotations.RoverOnly;
 
@@ -33,7 +34,7 @@ public enum StreetLight implements CodeMode {
 	}
 
 	@Override
-	public String getModeName() {
+	public @NotNull String getModeName() {
 		return name;
 	}
 

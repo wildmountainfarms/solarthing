@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.solar.outback.mx;
 
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.BitmaskMode;
 
 /**
@@ -24,7 +25,7 @@ public enum MXErrorMode implements BitmaskMode {
 	}
 
 	@Override
-	public String getModeName() {
+	public @NotNull String getModeName() {
 		return name;
 	}
 

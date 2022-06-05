@@ -86,7 +86,7 @@ public enum OperationalMode implements CodeMode, SolarMode { // one must be acti
 	}
 
 	@Override
-	public String getModeName() {
+	public @NotNull String getModeName() {
 		return name;
 	}
 

@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.solar.tracer.mode;
 
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.CodeMode;
 
 public enum LoadControlMode implements CodeMode {
@@ -23,7 +24,7 @@ public enum LoadControlMode implements CodeMode {
 	}
 
 	@Override
-	public String getModeName() {
+	public @NotNull String getModeName() {
 		return name;
 	}
 }

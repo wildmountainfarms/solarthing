@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.solar.tracer.mode;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.CodeMode;
 
 public enum TracerBatteryType implements CodeMode {
@@ -23,7 +24,7 @@ public enum TracerBatteryType implements CodeMode {
 	}
 
 	@Override
-	public String getModeName() {
+	public @NotNull String getModeName() {
 		return name;
 	}
 

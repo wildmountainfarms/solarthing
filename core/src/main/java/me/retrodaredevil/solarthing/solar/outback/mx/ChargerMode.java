@@ -51,7 +51,7 @@ public enum ChargerMode implements CodeMode, SolarMode {
 	}
 
 	@Override
-	public String getModeName() {
+	public @NotNull String getModeName() {
 		return name;
 	}
 

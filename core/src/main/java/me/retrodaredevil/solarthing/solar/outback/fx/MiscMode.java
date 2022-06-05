@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.solar.outback.fx;
 
 
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.BitmaskMode;
 
 /**
@@ -30,7 +31,7 @@ public enum MiscMode implements BitmaskMode {
 	}
 
 	@Override
-	public String getModeName() {
+	public @NotNull String getModeName() {
 		return name;
 	}
 	@Override

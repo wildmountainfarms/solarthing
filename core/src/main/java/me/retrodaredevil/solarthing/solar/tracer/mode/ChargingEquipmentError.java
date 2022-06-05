@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.solar.tracer.mode;
 
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.BitmaskMode;
 
 public enum ChargingEquipmentError implements BitmaskMode {
@@ -28,7 +29,7 @@ public enum ChargingEquipmentError implements BitmaskMode {
 	}
 
 	@Override
-	public String getModeName() {
+	public @NotNull String getModeName() {
 		return name;
 	}
 }

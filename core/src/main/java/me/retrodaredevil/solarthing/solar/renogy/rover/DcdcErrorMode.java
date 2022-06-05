@@ -1,5 +1,7 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover;
 
+import me.retrodaredevil.solarthing.annotations.NotNull;
+
 public enum DcdcErrorMode implements SimpleRoverErrorMode {
 	BACKUP_BATTERY_OVER_DISCHARGE("Backup battery over discharge", 1),
 	BACKUP_BATTERY_OVER_VOLTAGE("Backup battery over pressure", 1 << 1),
@@ -40,7 +42,7 @@ public enum DcdcErrorMode implements SimpleRoverErrorMode {
 	}
 
 	@Override
-	public String getModeName() {
+	public @NotNull String getModeName() {
 		return name;
 	}
 }

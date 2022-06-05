@@ -19,6 +19,7 @@ import me.retrodaredevil.couchdbjava.response.BulkDocumentResponse;
 import me.retrodaredevil.couchdbjava.response.BulkGetResponse;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.rest.cache.creators.BatteryRecordCacheNodeCreator;
 import me.retrodaredevil.solarthing.type.cache.CacheUtil;
 import me.retrodaredevil.solarthing.type.cache.packets.CacheDataPacket;
@@ -94,7 +95,7 @@ public class CacheHandler {
 		}
 		return getCaches(typeReference, cacheName, sourceId, getPeriodNumber(startMillis), getPeriodNumber(endMillis));
 	}
-	public <T extends CacheDataPacket> List<T> getCaches(TypeReference<T> typeReference, String cacheName, String sourceId, long startPeriodNumber, long endPeriodNumber) {
+	public <T extends CacheDataPacket> @NotNull List<T> getCaches(TypeReference<T> typeReference, String cacheName, String sourceId, long startPeriodNumber, long endPeriodNumber) {
 		requireNonNull(typeReference);
 		requireNonNull(cacheName);
 		requireNonNull(sourceId, "The source cannot be null!");

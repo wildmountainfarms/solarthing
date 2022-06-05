@@ -1,5 +1,7 @@
 package me.retrodaredevil.solarthing.solar.common;
 
+import me.retrodaredevil.solarthing.annotations.NotNull;
+
 public enum SolarModeType implements BasicSolarMode {
 	INVERTER_OFF("Off"),
 	INVERTER_ON("On"),
@@ -38,7 +40,7 @@ public enum SolarModeType implements BasicSolarMode {
 	}
 
 	@Override
-	public String getModeName() {
+	public @NotNull String getModeName() {
 		return displayName;
 	}
 

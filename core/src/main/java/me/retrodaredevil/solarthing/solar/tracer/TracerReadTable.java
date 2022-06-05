@@ -238,11 +238,11 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 	@JsonProperty("secondMinuteHourDayMonthYearRaw")
 	long getSecondMinuteHourDayMonthYearRaw();
 	@GraphQLInclude("clockTime")
-	default LocalTime getClockTime() {
+	default @NotNull LocalTime getClockTime() {
 		return TracerUtil.extractTracer48BitRawInstantToLocalTime(getSecondMinuteHourDayMonthYearRaw());
 	}
 	@GraphQLInclude("clockMonthDay")
-	default MonthDay getClockMonthDay() {
+	default @NotNull MonthDay getClockMonthDay() {
 		return TracerUtil.extractTracer48BitRawInstantToMonthDay(getSecondMinuteHourDayMonthYearRaw());
 	}
 	@GraphQLInclude("clockYearNumber")
@@ -254,7 +254,7 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 	 * A non-standard method that returns a {@link LocalDateTime} where the year 2021 is internally represented as 21
 	 */
 	@GraphQLInclude("clockSolarThing")
-	default LocalDateTime getSolarThingLocalDateTime() {
+	default @NotNull LocalDateTime getSolarThingLocalDateTime() {
 		return getClockTime().atDate(getClockMonthDay().atYear(getClockYearNumber() + 2000));
 	}
 
@@ -312,7 +312,7 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 	@JsonProperty("lengthOfNightRaw")
 	int getLengthOfNightRaw();
 	@GraphQLInclude("lengthOfNight")
-	default Duration getLengthOfNight() { return TracerUtil.convertTracerDurationRawToDuration(getLengthOfNightRaw()); }
+	default @NotNull Duration getLengthOfNight() { return TracerUtil.convertTracerDurationRawToDuration(getLengthOfNightRaw()); }
 
 	@JsonProperty("batteryRatedVoltageCode")
 	int getBatteryRatedVoltageCode();

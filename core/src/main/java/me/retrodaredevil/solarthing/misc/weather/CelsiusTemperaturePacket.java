@@ -59,7 +59,7 @@ public class CelsiusTemperaturePacket implements TemperaturePacket {
 	}
 
 	@Override
-	public DeviceSource getDeviceSource() {
+	public @NotNull DeviceSource getDeviceSource() {
 		return deviceSource;
 	}
 }

@@ -92,7 +92,7 @@ public class SolarThingGraphQLBatteryRecordService {
 		}
 
 		@GraphQLQuery
-		public @NotNull List<DataNode<Double>> queryEstimate(@GraphQLArgument(name = "ratio") double ratio) {
+		public @NotNull List<@NotNull DataNode<Double>> queryEstimate(@GraphQLArgument(name = "ratio") double ratio) {
 			var first = data.get(0);
 			var last = data.get(data.size() - 1);
 

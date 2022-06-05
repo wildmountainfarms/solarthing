@@ -58,7 +58,7 @@ public class SolarThingGraphQLLongTermService {
 		}
 
 		@GraphQLQuery
-		public @NotNull List<IdentificationCacheDataPacket<ChargeControllerAccumulationDataCache>> chargeControllerAccumulationRaw(){
+		public @NotNull List<@NotNull IdentificationCacheDataPacket<ChargeControllerAccumulationDataCache>> chargeControllerAccumulationRaw(){
 			return cacheController.getChargeControllerAccumulation(sourceId, startMillis, endMillis);
 		}
 		@GraphQLQuery

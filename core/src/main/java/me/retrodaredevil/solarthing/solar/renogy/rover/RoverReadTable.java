@@ -118,7 +118,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	 * @return The string representing the product model
 	 */
 	@JsonProperty("productModelString")
-	default String getProductModel(){
+	default @NotNull String getProductModel(){
 		byte[] raw = getProductModelValue();
 		if(raw.length != 16){
 			throw new IllegalStateException();
@@ -148,11 +148,11 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	@ConvenienceField(sincePacketVersion = RoverStatusPacket.Version.REMOVED_CONVENIENCE_FIELDS)
 	@ValidSinceVersion(version = RoverStatusPacket.Version.CORRECT_TWO_REGISTER)
 	@GraphQLInclude("softwareVersion")
-	default Version getSoftwareVersion(){ return new Version(getSoftwareVersionValue()); }
+	default @NotNull Version getSoftwareVersion(){ return new Version(getSoftwareVersionValue()); }
 	@ConvenienceField(sincePacketVersion = RoverStatusPacket.Version.REMOVED_CONVENIENCE_FIELDS_2)
 	@ValidSinceVersion(version = RoverStatusPacket.Version.CORRECT_TWO_REGISTER)
 	@JsonProperty("softwareVersionString")
-	default String getSoftwareVersionString() { return getSoftwareVersion().toString(); }
+	default @NotNull String getSoftwareVersionString() { return getSoftwareVersion().toString(); }
 
 	/**
 	 * Should be serialized as "hardwareVersion"
