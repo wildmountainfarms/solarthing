@@ -1,0 +1,6 @@
+query login($password: String!){
+  databaseAuthorize(username: "admin", password: $password) {
+    cookie
+    url
+  }
+}

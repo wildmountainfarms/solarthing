@@ -24,4 +24,9 @@ class DatabaseAuthorizationTest {
 		));
 		System.out.println(output);
 	}
+
+	@Test
+	void testCreate() {
+		DatabaseAuthorization.create("db.example.com", "AuthSession=mysecrethere; expires=Tue, 07 Jun 2022 04:11:52 GMT; path=/; httponly");
+	}
 }

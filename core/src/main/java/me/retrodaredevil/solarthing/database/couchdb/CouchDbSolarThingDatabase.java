@@ -7,6 +7,7 @@ import me.retrodaredevil.couchdbjava.CouchDbInstance;
 import me.retrodaredevil.couchdbjava.exception.CouchDbException;
 import me.retrodaredevil.couchdbjava.exception.CouchDbNotModifiedException;
 import me.retrodaredevil.couchdbjava.json.JsonData;
+import me.retrodaredevil.couchdbjava.json.StringJsonData;
 import me.retrodaredevil.couchdbjava.json.jackson.CouchDbJacksonUtil;
 import me.retrodaredevil.couchdbjava.response.DocumentData;
 import me.retrodaredevil.solarthing.SolarThingConstants;
@@ -136,6 +137,26 @@ public class CouchDbSolarThingDatabase implements SolarThingDatabase {
 			return new VersionedPacket<>(packet, new RevisionUpdateToken(data.getRevision()));
 		} catch (JsonProcessingException e) {
 			throw new SolarThingDatabaseException("Invalid authorization packet! Failed to parse!", e);
+		}
+	}
+
+	@Override
+	public void updateAuthorized(@NotNull AuthorizationPacket authorizationPacket, @Nullable UpdateToken updateToken) throws SolarThingDatabaseException {
+		final JsonData data;
+		try {
+			data = new StringJsonData(simpleObjectMapper.writeValueAsString(authorizationPacket));
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException("Exception should not occur when serializing authorization packet.", e);
+		}
+		try {
+			if (updateToken == null) {
+				closedDatabase.putDocument("authorized", data);
+			} else {
+				RevisionUpdateToken revisionUpdateToken = validateUpdateToken(updateToken);
+				closedDatabase.updateDocument("authorized", revisionUpdateToken.getRevision(), data);
+			}
+		} catch (CouchDbException e) {
+			throw ExceptionUtil.createFromCouchDbException(e);
 		}
 	}
 

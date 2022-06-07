@@ -1,6 +1,6 @@
 {
   "name": "SolarThing GraphQL Schema for use with IntelliJ GraphQL Plugin",
-  "schemaPath": "schema.graphql",
+  "schemaPath": "schema.graphqls",
   "extensions": {
     "endpoints": {
       "Default GraphQL Endpoint": {

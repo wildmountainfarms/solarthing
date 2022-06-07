@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.rest.graphql.service.web;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import okhttp3.Cookie;
 import okhttp3.HttpUrl;
 
@@ -24,9 +25,13 @@ public class DatabaseAuthorization {
 	}
 
 	@JsonCreator
-	public static DatabaseAuthorization create(@JsonProperty("url") String urlString, @JsonProperty("cookie") String cookieString) {
+	public static DatabaseAuthorization create(
+			@JsonProperty("url") @NotNull String urlString,
+			@JsonProperty("cookie") @NotNull String cookieString
+	) {
 
-		HttpUrl url = HttpUrl.get(urlString);
+		// internally in Cookie.parse only HttpUrl.host() and HttpUrl.encodedPath() are used, so tacking a http:// on just allows us to easily use this
+		HttpUrl url = HttpUrl.get("https://" + urlString);
 		requireNonNull(url, "Parsing URL resulted in null! urlString: " + urlString);
 		Cookie cookie = requireNonNull(Cookie.parse(url, cookieString), "Parsing cookie resulted in null! cookieString: " + cookieString + " urlString: " + urlString);
 		return new DatabaseAuthorization(cookie);
@@ -36,13 +41,13 @@ public class DatabaseAuthorization {
 	}
 
 
-	@JsonProperty("url")
-	private String getUrlString() {
+	@JsonProperty("url") // public to avoid IllegalAccessException in GraphQL-spqr code
+	public @NotNull String getUrlString() {
 		return cookie.domain().toString();
 	}
 
-	@JsonProperty("cookie")
-	private String getCookieString() {
+	@JsonProperty("cookie") // public to avoid IllegalAccessException in GraphQL-spqr code
+	public @NotNull String getCookieString() {
 		return cookie.toString();
 	}
 

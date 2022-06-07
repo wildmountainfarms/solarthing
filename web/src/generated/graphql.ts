@@ -31,6 +31,8 @@ export type Scalars = {
   LocalTime: any;
   /** Long type */
   Long: any;
+  /** Built-in scalar for dynamic values */
+  ObjectScalar: any;
   /** Use SPQR's SchemaPrinter to remove this from SDL */
   UNREPRESENTABLE: any;
 };
@@ -62,6 +64,12 @@ export enum AlterPacketType {
   Flag = 'FLAG',
   ScheduledCommand = 'SCHEDULED_COMMAND'
 }
+
+export type AuthorizedSender = {
+  __typename?: 'AuthorizedSender';
+  data: PermissionObject;
+  sender: Scalars['String'];
+};
 
 export enum AuxMode {
   Disabled = 'DISABLED',
@@ -267,6 +275,17 @@ export type DataNode_Float = {
   fragmentIdString?: Maybe<Scalars['String']>;
   identifiable: Identifiable;
   sourceId: Scalars['String'];
+};
+
+export type DatabaseAuthorization = {
+  __typename?: 'DatabaseAuthorization';
+  cookie: Scalars['String'];
+  url: Scalars['String'];
+};
+
+export type DatabaseAuthorizationInput = {
+  cookie: Scalars['String'];
+  url: Scalars['String'];
 };
 
 export enum DcdcErrorMode {
@@ -665,6 +684,19 @@ export type MonthDay = {
   monthValue: Scalars['Int'];
 };
 
+/** Mutation root */
+export type Mutation = {
+  __typename?: 'Mutation';
+  removeAuthorizedSender: Scalars['Boolean'];
+};
+
+
+/** Mutation root */
+export type MutationRemoveAuthorizedSenderArgs = {
+  authorization: DatabaseAuthorizationInput;
+  sender: Scalars['String'];
+};
+
 export type OperatingSettingBundle = {
   __typename?: 'OperatingSettingBundle';
   durationHours: Scalars['Int'];
@@ -970,6 +1002,13 @@ export type PacketNode_TracerStatusPacket = {
   sourceId: Scalars['String'];
 };
 
+export type PermissionObject = {
+  __typename?: 'PermissionObject';
+  /** @deprecated Field no longer supported */
+  fragments?: Maybe<Scalars['ObjectScalar']>;
+  publicKey?: Maybe<Scalars['String']>;
+};
+
 export type PzemShuntStatusPacket = {
   __typename?: 'PzemShuntStatusPacket';
   currentAmps: Scalars['Float'];
@@ -996,6 +1035,8 @@ export type PzemShuntStatusPacket = {
 /** Query root */
 export type Query = {
   __typename?: 'Query';
+  authorizedSenders: Array<AuthorizedSender>;
+  databaseAuthorize: DatabaseAuthorization;
   queryAlter?: Maybe<SolarThingAlterQuery>;
   queryBatteryEstimate: SolarThingBatteryEstimate;
   queryBatteryRecord: SolarThingBatteryRecordQuery;
@@ -1015,6 +1056,13 @@ export type Query = {
   queryStatus: SolarThingStatusQuery;
   /** Query the latest collection of status packets on or before the 'to' timestamp. */
   queryStatusLast: SolarThingStatusQuery;
+};
+
+
+/** Query root */
+export type QueryDatabaseAuthorizeArgs = {
+  password: Scalars['String'];
+  username: Scalars['String'];
 };
 
 
@@ -1270,7 +1318,7 @@ export type RoverStatusPacket = {
   packetType: SolarStatusPacketType;
   packetVersion?: Maybe<Scalars['Int']>;
   productModelEncoded?: Maybe<Scalars['Base64String']>;
-  productModelString?: Maybe<Scalars['String']>;
+  productModelString: Scalars['String'];
   /** The product serial number. Note that is not always unique as devices' serial numbers can accidentally be reset. */
   productSerialNumber: Scalars['Int'];
   productType: Scalars['Int'];
@@ -1287,7 +1335,7 @@ export type RoverStatusPacket = {
   sensed2?: Maybe<SensingBundle>;
   sensed3?: Maybe<SensingBundle>;
   sensingTimeDelayRaw?: Maybe<Scalars['Int']>;
-  softwareVersion?: Maybe<Version>;
+  softwareVersion: Version;
   softwareVersionValue: Scalars['Int'];
   solarModeName: Scalars['String'];
   solarModeType: SolarModeType;
@@ -1341,7 +1389,7 @@ export type SimpleNode_Float = {
 export type SimpleRoverErrorMode = {
   __typename?: 'SimpleRoverErrorMode';
   maskValue: Scalars['Int'];
-  modeName?: Maybe<Scalars['String']>;
+  modeName: Scalars['String'];
 };
 
 export type SolarDevice = {
@@ -1383,7 +1431,7 @@ export enum SolarExtraPacketType {
 
 export type SolarMode = {
   __typename?: 'SolarMode';
-  modeName?: Maybe<Scalars['String']>;
+  modeName: Scalars['String'];
   solarModeType: SolarModeType;
 };
 
@@ -1439,7 +1487,7 @@ export type SolarThingAlterQueryFlagsArgs = {
 
 export type SolarThingBatteryEstimate = {
   __typename?: 'SolarThingBatteryEstimate';
-  queryEstimate: Array<Maybe<DataNode_Double>>;
+  queryEstimate: Array<DataNode_Double>;
 };
 
 
@@ -1489,7 +1537,7 @@ export type SolarThingFullDayStatusQuery = {
 export type SolarThingLongTermQuery = {
   __typename?: 'SolarThingLongTermQuery';
   chargeControllerAccumulation?: Maybe<IdentificationCacheDataPacket_ChargeControllerAccumulationDataCache>;
-  chargeControllerAccumulationRaw: Array<Maybe<IdentificationCacheDataPacket_ChargeControllerAccumulationDataCache>>;
+  chargeControllerAccumulationRaw: Array<IdentificationCacheDataPacket_ChargeControllerAccumulationDataCache>;
 };
 
 export type SolarThingSolcastDayQuery = {
@@ -1565,7 +1613,7 @@ export type TemperaturePacket = {
   identifier: DataIdentifier;
   identityInfo: IdentityInfo;
   packetType: WeatherPacketType;
-  source?: Maybe<DeviceSource>;
+  source: DeviceSource;
   temperatureCelsius: Scalars['Float'];
   temperatureFahrenheit: Scalars['Float'];
 };
@@ -1638,9 +1686,9 @@ export type TracerStatusPacket = {
   chargingStatusName: Scalars['String'];
   chargingType: TracerChargingType;
   chargingTypeValue: Scalars['Int'];
-  clockMonthDay?: Maybe<MonthDay>;
-  clockSolarThing?: Maybe<Scalars['LocalDateTime']>;
-  clockTime?: Maybe<Scalars['LocalTime']>;
+  clockMonthDay: MonthDay;
+  clockSolarThing: Scalars['LocalDateTime'];
+  clockTime: Scalars['LocalTime'];
   clockYearNumber: Scalars['Int'];
   controllerTemperatureCelsius: Scalars['Float'];
   controllerTemperatureFahrenheit: Scalars['Float'];
@@ -1681,7 +1729,7 @@ export type TracerStatusPacket = {
   isManualLoadControlOn: Scalars['Boolean'];
   isNight: Scalars['Boolean'];
   isRunning: Scalars['Boolean'];
-  lengthOfNight?: Maybe<Scalars['Duration']>;
+  lengthOfNight: Scalars['Duration'];
   lengthOfNightRaw: Scalars['Int'];
   lightSignalStartupDelayTime: Scalars['Int'];
   lightSignalTurnOffDelayTime: Scalars['Int'];
@@ -1769,6 +1817,13 @@ export type HomeQueryVariables = Exact<{
 
 export type HomeQuery = { __typename?: 'Query', queryStatusLast: { __typename?: 'SolarThingStatusQuery', batteryVoltageAverage: Array<{ __typename?: 'SimpleNode_Float', data: number, dateMillis: any }> } };
 
+export type LoginQueryVariables = Exact<{
+  password: Scalars['String'];
+}>;
+
+
+export type LoginQuery = { __typename?: 'Query', databaseAuthorize: { __typename?: 'DatabaseAuthorization', cookie: string, url: string } };
+
 
 export const HomeDocument = `
     query home($sourceId: String!, $currentTimeMillis: Long!) {
@@ -1792,5 +1847,27 @@ export const useHomeQuery = <
     useQuery<HomeQuery, TError, TData>(
       ['home', variables],
       fetcher<HomeQuery, HomeQueryVariables>(client, HomeDocument, variables, headers),
+      options
+    );
+export const LoginDocument = `
+    query login($password: String!) {
+  databaseAuthorize(username: "admin", password: $password) {
+    cookie
+    url
+  }
+}
+    `;
+export const useLoginQuery = <
+      TData = LoginQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: LoginQueryVariables,
+      options?: UseQueryOptions<LoginQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<LoginQuery, TError, TData>(
+      ['login', variables],
+      fetcher<LoginQuery, LoginQueryVariables>(client, LoginDocument, variables, headers),
       options
     );
