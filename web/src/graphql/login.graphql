@@ -1,5 +1,5 @@
-query login($password: String!){
-  databaseAuthorize(username: "admin", password: $password) {
+query login($username: String!, $password: String!){
+  databaseAuthorize(username: $username, password: $password) {
     cookie
     url
   }

@@ -1818,6 +1818,7 @@ export type HomeQueryVariables = Exact<{
 export type HomeQuery = { __typename?: 'Query', queryStatusLast: { __typename?: 'SolarThingStatusQuery', batteryVoltageAverage: Array<{ __typename?: 'SimpleNode_Float', data: number, dateMillis: any }> } };
 
 export type LoginQueryVariables = Exact<{
+  username: Scalars['String'];
   password: Scalars['String'];
 }>;
 
@@ -1850,8 +1851,8 @@ export const useHomeQuery = <
       options
     );
 export const LoginDocument = `
-    query login($password: String!) {
-  databaseAuthorize(username: "admin", password: $password) {
+    query login($username: String!, $password: String!) {
+  databaseAuthorize(username: $username, password: $password) {
     cookie
     url
   }
