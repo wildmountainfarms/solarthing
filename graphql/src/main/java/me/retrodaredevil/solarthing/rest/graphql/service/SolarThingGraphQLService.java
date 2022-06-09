@@ -1,5 +1,7 @@
 package me.retrodaredevil.solarthing.rest.graphql.service;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import io.leangen.graphql.annotations.*;
 import io.leangen.graphql.annotations.types.GraphQLType;
 import me.retrodaredevil.solarthing.SolarThingConstants;
@@ -39,6 +41,7 @@ import me.retrodaredevil.solarthing.solar.tracer.TracerStatusPacket;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static me.retrodaredevil.solarthing.rest.graphql.service.SchemaConstants.*;
@@ -70,7 +73,12 @@ public class SolarThingGraphQLService {
 		for(List<InstancePacketGroup> packetGroups : PacketGroups.mapFragments(packets).values()) {
 			lastPackets.add(packetGroups.get(packetGroups.size() - 1));
 		}
-		return new SolarThingStatusQuery(new ReversedPacketGetter(new LastPacketGetter(packets, PacketFilter.KEEP_ALL), reversed), simpleQueryHandler.sortPackets(lastPackets, sourceId), simpleQueryHandler);
+		List<? extends FragmentedPacketGroup> sortedPackets = simpleQueryHandler.sortPackets(lastPackets, sourceId);
+		return new SolarThingStatusQuery(
+				new ReversedPacketGetter(new LastPacketGetter(packets, PacketFilter.KEEP_ALL), reversed),
+				sortedPackets.isEmpty() ? Collections.emptyList() : Collections.singletonList(sortedPackets.get(sortedPackets.size() - 1)),
+				simpleQueryHandler
+		);
 	}
 	@GraphQLQuery
 	public @NotNull SolarThingEventQuery queryEvent(
@@ -238,6 +246,132 @@ public class SolarThingGraphQLService {
 				}
 			}
 			return r;
+		}
+		@GraphQLQuery
+		public @NotNull List<@NotNull SimpleNode<FlatData>> flatData() {
+			List<SimpleNode<FlatData>> r = new ArrayList<>();
+			for (FragmentedPacketGroup packetGroup : sortedPackets) {
+				List<BatteryVoltage> batteryVoltage = new ArrayList<>();
+				List<FXStatusPacket> fx = new ArrayList<>();
+				List<BasicChargeController> chargeController = new ArrayList<>();
+				for (Packet packet : packetGroup.getPackets()) {
+					if (packet instanceof BatteryVoltage) {
+						batteryVoltage.add((BatteryVoltage) packet);
+					}
+					if (packet instanceof FXStatusPacket) {
+						fx.add((FXStatusPacket) packet);
+					}
+					if (packet instanceof BasicChargeController) {
+						chargeController.add((BasicChargeController) packet);
+					}
+				}
+				FlatData flatData = new FlatData(batteryVoltage, fx, chargeController);
+				r.add(new SimpleNode<>(flatData, packetGroup.getDateMillis()));
+			}
+			return r;
+		}
+	}
+	public static class FlatDataFX {
+		private final List<FXStatusPacket> fx;
+
+		public FlatDataFX(List<FXStatusPacket> fx) {
+			this.fx = fx;
+			if (fx.isEmpty()) {
+				throw new IllegalArgumentException();
+			}
+		}
+
+		//		private final @NotNull ACMode acMode;
+		@JsonProperty("loadWattage")
+		public float getLoadWattage() {
+			float total = 0.0f;
+			for (FXStatusPacket device : fx) {
+				total += device.getInverterWattage();
+			}
+			return total;
+		}
+		@JsonPropertyDescription("The buy wattage from the AC being used by the FX(s)")
+		@JsonProperty("acBuyWattage")
+		public float getACBuyWattage() {
+			float total = 0.0f;
+			for (FXStatusPacket device : fx) {
+				total += device.getBuyWattage();
+			}
+			return total;
+		}
+		@JsonPropertyDescription("The charging wattage from the AC being used by the FX(s)")
+		@JsonProperty("acChargeWattage")
+		public float getACChargeWattage() {
+			float total = 0.0f;
+			for (FXStatusPacket device : fx) {
+				total += device.getChargerWattage();
+			}
+			return total;
+		}
+	}
+	public static class FlatDataChargeController {
+		private final List<BasicChargeController> chargeController;
+
+		public FlatDataChargeController(List<BasicChargeController> chargeController) {
+			this.chargeController = chargeController;
+			if (chargeController.isEmpty()) {
+				throw new IllegalArgumentException();
+			}
+		}
+		@JsonProperty("pvWattage")
+		public float getPVWattage() {
+			float total = 0.0f;
+			for (BasicChargeController device : chargeController) {
+				total += device.getPVWattage().floatValue();
+			}
+			return total;
+		}
+		@JsonProperty("chargerWattage")
+		public float getChargerWattage() {
+			float total = 0.0f;
+			for (BasicChargeController device : chargeController) {
+				total += device.getChargingPower().floatValue();
+			}
+			return total;
+		}
+	}
+	public static class FlatData {
+		private final List<BatteryVoltage> batteryVoltage;
+		private final List<FXStatusPacket> fx;
+		private final List<BasicChargeController> chargeController;
+
+		public FlatData(List<BatteryVoltage> batteryVoltage, List<FXStatusPacket> fx, List<BasicChargeController> chargeController) {
+			this.batteryVoltage = batteryVoltage;
+			this.fx = fx;
+			this.chargeController = chargeController;
+		}
+
+		@JsonProperty("fx")
+		public @Nullable FlatDataFX fx() {
+			if (fx.isEmpty()) {
+				return null;
+			}
+			return new FlatDataFX(fx);
+		}
+		@JsonProperty("chargeController")
+		public @Nullable FlatDataChargeController chargeController() {
+			if (chargeController.isEmpty()) {
+				return null;
+			}
+			return new FlatDataChargeController(chargeController);
+		}
+
+		@JsonProperty("batteryVoltage")
+		public @Nullable Float getBatteryVoltage() {
+			// default to prefer first FX battery voltage;
+			BatteryVoltage device = fx.isEmpty() ? null : fx.get(0);
+			if (device == null) {
+				device = batteryVoltage.isEmpty() ? null : batteryVoltage.get(0);
+			}
+			if (device == null) {
+				return null;
+			}
+			return device.getBatteryVoltage();
 		}
 	}
 	public static class SolarThingEventQuery {

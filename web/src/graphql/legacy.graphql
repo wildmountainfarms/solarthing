@@ -1,0 +1,18 @@
+query legacy($sourceId: String!, $currentTimeMillis: Long!){
+  queryStatusLast(sourceId: $sourceId, to: $currentTimeMillis) {
+    flatData {
+      data {
+        batteryVoltage
+        fx {
+          loadWattage
+          acBuyWattage
+          acChargeWattage
+        }
+        chargeController {
+          pvWattage
+          chargerWattage
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,55 @@
+.page {
+  background-color: #00095d;
+  color: #FFF;
+  padding-top: 5px;
+  padding-bottom: 0px;
+  margin: 0;
+}
+.header {
+  text-align: center;
+}
+
+.large_info{
+  font-size: 60px;
+  text-align: center;
+}
+.medium_info{
+  font-size: 40px;
+  text-align: center;
+}
+.number_heading{
+  font-size: 25px;
+  font-weight: bold;
+  text-align: center;
+}
+
+
+/* ==== IDs ==== */
+#battery_voltage, #panel_watts, #panel_amps, #panel_volts {
+  font-weight: bold;
+}
+/* All stuff in nerd info*/
+#packets_info, #operating_mode, #ac_mode, #aux_mode, #charger_mode, #misc_mode, #warnings, #errors_fx, #errors_mx {
+  font-weight: bold;
+}
+#warnings, #errors_fx, #errors_mx {
+  color: #FF0000;
+}
+.nerd_info {
+  padding-left: 10px;
+}
+.nerd_header {
+  padding-left: 5px;
+}
+#chart_div{
+  /*background-color: look in index.js ;*/
+  border: solid 5px #1c4fb7;
+  border-radius: 10px;
+  margin: 10px;
+  /*width: 800px;*/
+  height: 500px;
+}
+#hours_toggle{
+  width: 200px;
+  height: 40px;
+}

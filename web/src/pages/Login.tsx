@@ -32,23 +32,29 @@ export default function Login() {
           >Log Out</button>
         </> : <>
           <p>Hello! Log in here!</p>
-          <input value={username} onChange={function(event){
-            setUsername(event.target.value)
-          }}/>
-          <br/>
-          <input
-            value={password}
-            type="password"
-            onChange={function(event){
-            setPassword(event.target.value)
-          }}/>
-          <br/>
-          <button
-            onClick={function() {
-              submitLogin();
-            }}
-          >Log in</button>
-          { error && <p>Got error: {(error as any).message}</p>}
+          <form onSubmit={() => submitLogin()}>
+            <label>
+              Username:
+              <input value={username} onChange={function(event){
+                setUsername(event.target.value)
+              }}/>
+            </label>
+            <br/>
+            <label>
+              Password:
+              <input
+                value={password}
+                type="password"
+                onChange={function(event){
+                setPassword(event.target.value)
+              }}/>
+            </label>
+            <br/>
+            <input type="submit" value="Log In"/>
+            <>
+              { error && <p>Got error: {(error as any).message}</p>}
+            </>
+          </form>
 
         </>}
     </div>

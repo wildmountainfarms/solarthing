@@ -484,6 +484,28 @@ export type FlagPacket = {
   packetType: AlterPacketType;
 };
 
+export type FlatData = {
+  __typename?: 'FlatData';
+  batteryVoltage?: Maybe<Scalars['Float']>;
+  chargeController?: Maybe<FlatDataChargeController>;
+  fx?: Maybe<FlatDataFx>;
+};
+
+export type FlatDataChargeController = {
+  __typename?: 'FlatDataChargeController';
+  chargerWattage: Scalars['Float'];
+  pvWattage: Scalars['Float'];
+};
+
+export type FlatDataFx = {
+  __typename?: 'FlatDataFX';
+  /** The buy wattage from the AC being used by the FX(s) */
+  acBuyWattage: Scalars['Float'];
+  /** The charging wattage from the AC being used by the FX(s) */
+  acChargeWattage: Scalars['Float'];
+  loadWattage: Scalars['Float'];
+};
+
 export type Forecast = {
   __typename?: 'Forecast';
   energyGenerationEstimate: Scalars['Float'];
@@ -1380,6 +1402,12 @@ export type SimpleEstimatedActual = {
   pv_estimate_watts: Scalars['Float'];
 };
 
+export type SimpleNode_FlatData = {
+  __typename?: 'SimpleNode_FlatData';
+  data: FlatData;
+  dateMillis: Scalars['Long'];
+};
+
 export type SimpleNode_Float = {
   __typename?: 'SimpleNode_Float';
   data: Scalars['Float'];
@@ -1572,6 +1600,7 @@ export type SolarThingStatusQuery = {
   cpuTemperature: Array<PacketNode_CpuTemperaturePacket>;
   dailyChargeController: Array<PacketNode_DailyChargeController>;
   dualTemperature: Array<PacketNode_DualTemperature>;
+  flatData: Array<SimpleNode_FlatData>;
   fxDaily: Array<PacketNode_DailyFxPacket>;
   fxStatus: Array<PacketNode_FxStatusPacket>;
   mxStatus: Array<PacketNode_MxStatusPacket>;
@@ -1817,6 +1846,14 @@ export type HomeQueryVariables = Exact<{
 
 export type HomeQuery = { __typename?: 'Query', queryStatusLast: { __typename?: 'SolarThingStatusQuery', batteryVoltageAverage: Array<{ __typename?: 'SimpleNode_Float', data: number, dateMillis: any }> } };
 
+export type LegacyQueryVariables = Exact<{
+  sourceId: Scalars['String'];
+  currentTimeMillis: Scalars['Long'];
+}>;
+
+
+export type LegacyQuery = { __typename?: 'Query', queryStatusLast: { __typename?: 'SolarThingStatusQuery', flatData: Array<{ __typename?: 'SimpleNode_FlatData', data: { __typename?: 'FlatData', batteryVoltage?: number | null, fx?: { __typename?: 'FlatDataFX', loadWattage: number, acBuyWattage: number, acChargeWattage: number } | null, chargeController?: { __typename?: 'FlatDataChargeController', pvWattage: number, chargerWattage: number } | null } }> } };
+
 export type LoginQueryVariables = Exact<{
   username: Scalars['String'];
   password: Scalars['String'];
@@ -1848,6 +1885,40 @@ export const useHomeQuery = <
     useQuery<HomeQuery, TError, TData>(
       ['home', variables],
       fetcher<HomeQuery, HomeQueryVariables>(client, HomeDocument, variables, headers),
+      options
+    );
+export const LegacyDocument = `
+    query legacy($sourceId: String!, $currentTimeMillis: Long!) {
+  queryStatusLast(sourceId: $sourceId, to: $currentTimeMillis) {
+    flatData {
+      data {
+        batteryVoltage
+        fx {
+          loadWattage
+          acBuyWattage
+          acChargeWattage
+        }
+        chargeController {
+          pvWattage
+          chargerWattage
+        }
+      }
+    }
+  }
+}
+    `;
+export const useLegacyQuery = <
+      TData = LegacyQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: LegacyQueryVariables,
+      options?: UseQueryOptions<LegacyQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<LegacyQuery, TError, TData>(
+      ['legacy', variables],
+      fetcher<LegacyQuery, LegacyQueryVariables>(client, LegacyDocument, variables, headers),
       options
     );
 export const LoginDocument = `
