@@ -22,12 +22,6 @@ public class OutputSchemaMain {
 	public static void main(String[] args) {
 		File outputFile = new File(args[0]);
 
-		try {
-			GraphQLProvider.updateNonNull();
-		} catch (NoSuchFieldException | IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-
 		CouchDbDatabaseSettings couchDbDatabaseSettings = new CouchDbDatabaseSettings(
 				new CouchPropertiesBuilder("http", "localhost", 5984, null, null).build(),
 				new OkHttpPropertiesBuilder().build()

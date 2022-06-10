@@ -5,7 +5,11 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import graphql.GraphQL;
 import graphql.schema.GraphQLSchema;
+import io.leangen.graphql.ExtensionList;
+import io.leangen.graphql.ExtensionProvider;
+import io.leangen.graphql.GeneratorConfiguration;
 import io.leangen.graphql.GraphQLSchemaGenerator;
+import io.leangen.graphql.generator.mapping.TypeMapper;
 import io.leangen.graphql.generator.mapping.common.NonNullMapper;
 import io.leangen.graphql.metadata.strategy.query.ResolverBuilder;
 import io.leangen.graphql.metadata.strategy.value.jackson.JacksonValueMapperFactory;
@@ -33,11 +37,17 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Component
 public class GraphQLProvider {
@@ -59,6 +69,7 @@ public class GraphQLProvider {
 	}
 
 
+	@Deprecated(forRemoval = true)
 	static void updateNonNull() throws NoSuchFieldException, IllegalAccessException {
 		// more info here: https://github.com/leangen/graphql-spqr/issues/334
 		Field field = NonNullMapper.class.getDeclaredField("COMMON_NON_NULL_ANNOTATIONS");
@@ -73,14 +84,32 @@ public class GraphQLProvider {
 		newAnnotations[newAnnotations.length - 1] = NotNull.class.getName();
 		field.set(null, newAnnotations);
 	}
+	@SuppressWarnings("unchecked")
+	static void updateNonNull(NonNullMapper nonNullMapper) {
+		final Field field;
+		try {
+			field = NonNullMapper.class.getDeclaredField("nonNullAnnotations");
+		} catch (NoSuchFieldException e) {
+			throw new RuntimeException(e);
+		}
+		field.setAccessible(true);
+		Set<Class<? extends Annotation>> nonNullAnnotations;
+		try {
+			nonNullAnnotations = (Set<Class<? extends Annotation>>) field.get(nonNullMapper);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+		Set<Class<? extends Annotation>> newAnnotations = new HashSet<>(nonNullAnnotations);
+		newAnnotations.add(NotNull.class);
+		try {
+			field.set(nonNullMapper, newAnnotations);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	@PostConstruct
 	public void init() {
-		try {
-			updateNonNull();
-		} catch (NoSuchFieldException | IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
 		ObjectMapper objectMapper = JacksonUtil.defaultMapper();
 
 		SolcastConfig solcastConfig = null;
@@ -122,6 +151,7 @@ public class GraphQLProvider {
 				.withOperationsFromSingleton(new SolarThingGraphQLSolcastService(solcastConfig, zoneId, cacheController))
 				.withOperationsFromSingleton(new SolarThingGraphQLAlterService(simpleQueryHandler))
 				.withOperationsFromSingleton(new SolarThingAdminService(new DefaultDatabaseProvider(couchDbDatabaseSettings, objectMapper)))
+				.withTypeMappers((config, defaults) -> defaults.modify(NonNullMapper.class, GraphQLProvider::updateNonNull))
 				.withTypeInfoGenerator(new SolarThingTypeInfoGenerator())
 				.withValueMapperFactory(jacksonValueMapperFactory)
 				.withResolverBuilders(resolverBuilder)

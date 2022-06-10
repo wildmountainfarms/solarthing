@@ -489,6 +489,8 @@ export type FlatData = {
   batteryVoltage?: Maybe<Scalars['Float']>;
   chargeController?: Maybe<FlatDataChargeController>;
   fx?: Maybe<FlatDataFx>;
+  /** Returns a string representing the operating modes of all the devices */
+  operatingModeString: Scalars['String'];
 };
 
 export type FlatDataChargeController = {
@@ -503,6 +505,7 @@ export type FlatDataFx = {
   acBuyWattage: Scalars['Float'];
   /** The charging wattage from the AC being used by the FX(s) */
   acChargeWattage: Scalars['Float'];
+  acMode: AcMode;
   loadWattage: Scalars['Float'];
 };
 
@@ -1852,7 +1855,7 @@ export type LegacyQueryVariables = Exact<{
 }>;
 
 
-export type LegacyQuery = { __typename?: 'Query', queryStatusLast: { __typename?: 'SolarThingStatusQuery', flatData: Array<{ __typename?: 'SimpleNode_FlatData', data: { __typename?: 'FlatData', batteryVoltage?: number | null, fx?: { __typename?: 'FlatDataFX', loadWattage: number, acBuyWattage: number, acChargeWattage: number } | null, chargeController?: { __typename?: 'FlatDataChargeController', pvWattage: number, chargerWattage: number } | null } }> } };
+export type LegacyQuery = { __typename?: 'Query', queryStatusLast: { __typename?: 'SolarThingStatusQuery', flatData: Array<{ __typename?: 'SimpleNode_FlatData', data: { __typename?: 'FlatData', batteryVoltage?: number | null, fx?: { __typename?: 'FlatDataFX', loadWattage: number, acBuyWattage: number, acChargeWattage: number, acMode: AcMode } | null, chargeController?: { __typename?: 'FlatDataChargeController', pvWattage: number, chargerWattage: number } | null } }> } };
 
 export type LoginQueryVariables = Exact<{
   username: Scalars['String'];
@@ -1897,6 +1900,7 @@ export const LegacyDocument = `
           loadWattage
           acBuyWattage
           acChargeWattage
+          acMode
         }
         chargeController {
           pvWattage

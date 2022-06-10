@@ -7,6 +7,7 @@ query legacy($sourceId: String!, $currentTimeMillis: Long!){
           loadWattage
           acBuyWattage
           acChargeWattage
+          acMode
         }
         chargeController {
           pvWattage

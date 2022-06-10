@@ -1,19 +1,35 @@
 import styles from './Legacy.module.css'
-import {LegacyQuery, useLegacyQuery} from "../generated/graphql";
+import {AcMode, useLegacyQuery} from "../generated/graphql";
 import {graphQLClient} from "../client";
 import {getTimeMillisRounded} from "../timeUtil";
-import {useState} from "react";
 
 
 export default function Legacy() {
   // TODO don't use default source ID
   const timeMillisRounded = getTimeMillisRounded();
-  const {data, error, isLoading } = useLegacyQuery(
+  const {data, error, isLoading, isLoadingError } = useLegacyQuery(
     graphQLClient,
     { sourceId: "default", currentTimeMillis: "" + timeMillisRounded},
     { refetchInterval: 10_000, keepPreviousData: true }
   );
-  const nestedData = data?.queryStatusLast.flatData[0]?.data;
+  const actualData = isLoadingError ? undefined : data;
+  const nestedData = actualData?.queryStatusLast.flatData[0]?.data;
+  const fallbackMessage = error ? "ERROR" : isLoading ? "Loading" : "No data";
+  let generatorStatus: string | undefined;
+  switch (nestedData?.fx?.acMode) {
+    case AcMode.AcUse:
+      generatorStatus = "Using generator power";
+      break;
+    case AcMode.NoAc:
+      generatorStatus = "Generator off";
+      break;
+    case AcMode.AcDrop:
+      generatorStatus = "Generator on, not using";
+      break;
+    default:
+      generatorStatus = undefined;
+      break;
+  }
   return <>
     <div className={styles.page}>
       <h1 className={styles.header}>Wild Mountain Farms Power Information</h1>
@@ -21,38 +37,38 @@ export default function Legacy() {
         <hr/>
         <div className={styles.number_heading}>Current Battery Voltage</div>
         <div className={styles.large_info}>
-          {nestedData?.batteryVoltage ?? (error ? "ERROR" : isLoading ? "Loading" : "No data")}
+          {nestedData?.batteryVoltage ?? fallbackMessage}
           V
         </div>
 
         <hr/>
         <div className={styles.number_heading}>Solar Panel Status</div>
-        <div className={styles.large_info}><span id="panel_watts">ERROR</span> W</div>
+        <div className={styles.large_info}>{nestedData?.chargeController?.pvWattage} W</div>
         <div className={styles.number_heading}>Solar Charging</div>
-        <div className={styles.large_info}><span id="charger">ERROR</span> W</div>
+        <div className={styles.large_info}>{nestedData?.chargeController?.chargerWattage} W</div>
 
         <hr/>
         <div className={styles.number_heading}>Load</div>
-        <div className={styles.large_info}><span id="load">ERROR</span> W</div>
+        <div className={styles.large_info}>{nestedData?.fx?.loadWattage} W</div>
 
         <hr/>
-        <div className={styles.number_heading}>Generator Status</div>
-        <div className={styles.large_info}><span id="generator_status">ERROR</span></div>
-        <div className={styles.medium_info}>Total: <span id="generator_total_watts">ERROR</span> W</div>
-        <div className={styles.medium_info}>Charge: <span id="generator_charge_watts">ERROR</span> W</div>
+        {generatorStatus && <>
+          <div className={styles.number_heading}>Generator Status</div>
+          <div className={styles.large_info}>{generatorStatus}</div>
+          <div className={styles.medium_info}>Total: {nestedData!.fx!.acBuyWattage} W</div>
+          <div className={styles.medium_info}>Charge: {nestedData!.fx!.acChargeWattage} W</div>
+          <hr/>
+        </>}
 
-        <hr/>
         {/*<div id="chart_div"></div>*/}
+        {/*<hr/>*/}
 
-        <hr/>
         <div className={styles.nerd_info}>
           <h3 className={styles.nerd_header}>Nerd Info</h3>
           <p>
             Devices Info: <span id="packets_info">unknown</span>
             <br/>
             Operating Mode: <span id="operating_mode">unknown</span>
-            <br/>
-            AC Mode: <span id="ac_mode">unknown</span>
             <br/>
             Aux Mode: <span id="aux_mode">unknown</span>
             <br/>

@@ -12,6 +12,7 @@ import me.retrodaredevil.solarthing.rest.graphql.packets.*;
 import me.retrodaredevil.solarthing.rest.graphql.packets.nodes.DataNode;
 import me.retrodaredevil.solarthing.rest.graphql.packets.nodes.PacketNode;
 import me.retrodaredevil.solarthing.rest.graphql.packets.nodes.SimpleNode;
+import me.retrodaredevil.solarthing.solar.outback.fx.ACMode;
 import me.retrodaredevil.solarthing.solar.renogy.rover.event.RoverChargingStateChangePacket;
 import me.retrodaredevil.solarthing.type.closed.meta.*;
 import me.retrodaredevil.solarthing.misc.device.CpuTemperaturePacket;
@@ -308,6 +309,10 @@ public class SolarThingGraphQLService {
 			}
 			return total;
 		}
+		@JsonProperty("acMode")
+		public @NotNull ACMode getACMode() {
+			return fx.get(0).getACMode();
+		}
 	}
 	public static class FlatDataChargeController {
 		private final List<BasicChargeController> chargeController;
@@ -372,6 +377,11 @@ public class SolarThingGraphQLService {
 				return null;
 			}
 			return device.getBatteryVoltage();
+		}
+		@JsonPropertyDescription("Returns a string representing the operating modes of all the devices")
+		@JsonProperty("operatingModeString")
+		public @NotNull String getOperatingModeString() {
+			throw new UnsupportedOperationException("TODO");
 		}
 	}
 	public static class SolarThingEventQuery {
