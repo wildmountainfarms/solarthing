@@ -200,5 +200,17 @@ public final class Modes {
 		}
 		return builder.toString();
 	}
+	public static <T extends BitmaskMode> String toString(Collection<? extends T> values){
+		StringBuilder builder = new StringBuilder();
+		boolean empty = true;
+		for(T value : values){
+			if(!empty){
+				builder.append(", ");
+			}
+			builder.append(value.getModeName());
+			empty = false;
+		}
+		return builder.toString();
+	}
 	// endregion
 }

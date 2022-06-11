@@ -36,16 +36,13 @@ export default function Legacy() {
       <section style={{width:"100%"}}>
         <hr/>
         <div className={styles.number_heading}>Current Battery Voltage</div>
-        <div className={styles.large_info}>
-          {nestedData?.batteryVoltage ?? fallbackMessage}
-          V
-        </div>
+        <div className={styles.large_info}>{nestedData?.batteryVoltage ?? fallbackMessage} V</div>
 
         <hr/>
         <div className={styles.number_heading}>Solar Panel Status</div>
-        <div className={styles.large_info}>{nestedData?.chargeController?.pvWattage} W</div>
+        <div className={styles.large_info}>{nestedData?.chargeController?.pvWattage?.toFixed(1)} W</div>
         <div className={styles.number_heading}>Solar Charging</div>
-        <div className={styles.large_info}>{nestedData?.chargeController?.chargerWattage} W</div>
+        <div className={styles.large_info}>{nestedData?.chargeController?.chargerWattage?.toFixed(1)} W</div>
 
         <hr/>
         <div className={styles.number_heading}>Load</div>
@@ -66,23 +63,15 @@ export default function Legacy() {
         <div className={styles.nerd_info}>
           <h3 className={styles.nerd_header}>Nerd Info</h3>
           <p>
-            Devices Info: <span id="packets_info">unknown</span>
+            Devices Info: {nestedData?.deviceInfoString ?? fallbackMessage}
             <br/>
-            Operating Mode: <span id="operating_mode">unknown</span>
+            Operating Mode: {nestedData?.operatingModeString ?? fallbackMessage}
             <br/>
-            Aux Mode: <span id="aux_mode">unknown</span>
+            Misc Modes: {nestedData?.fx?.miscModesString ?? fallbackMessage}
             <br/>
-            Charger Mode: <span id="charger_mode">unknown</span>
+            Warnings: {nestedData?.fx?.warningsString ?? fallbackMessage}
             <br/>
-            Misc Modes: <span id="misc_mode"></span>
-            <br/>
-            Warnings: <span id="warnings"></span>
-            <br/>
-            FX Errors: <span id="errors_fx"></span>
-            <br/>
-            MXFM Errors: <span id="errors_mx"></span>
-            <br/>
-            Rover Errors: <span id="errors_rover"></span>
+            Errors: <span id="errors">{nestedData?.errorsString ?? fallbackMessage}</span>
           </p>
         </div>
       </section>

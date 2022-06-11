@@ -2,29 +2,35 @@ package me.retrodaredevil.solarthing.rest.graphql.service;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
-import io.leangen.graphql.annotations.*;
+import io.leangen.graphql.annotations.GraphQLArgument;
+import io.leangen.graphql.annotations.GraphQLQuery;
 import io.leangen.graphql.annotations.types.GraphQLType;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
-import me.retrodaredevil.solarthing.rest.graphql.SimpleQueryHandler;
-import me.retrodaredevil.solarthing.rest.graphql.packets.*;
-import me.retrodaredevil.solarthing.rest.graphql.packets.nodes.DataNode;
-import me.retrodaredevil.solarthing.rest.graphql.packets.nodes.PacketNode;
-import me.retrodaredevil.solarthing.rest.graphql.packets.nodes.SimpleNode;
-import me.retrodaredevil.solarthing.solar.outback.fx.ACMode;
-import me.retrodaredevil.solarthing.solar.renogy.rover.event.RoverChargingStateChangePacket;
-import me.retrodaredevil.solarthing.type.closed.meta.*;
 import me.retrodaredevil.solarthing.misc.device.CpuTemperaturePacket;
 import me.retrodaredevil.solarthing.misc.weather.TemperaturePacket;
+import me.retrodaredevil.solarthing.packets.BitmaskMode;
+import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.InstancePacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
+import me.retrodaredevil.solarthing.packets.identification.Identifiable;
+import me.retrodaredevil.solarthing.rest.graphql.SimpleQueryHandler;
+import me.retrodaredevil.solarthing.rest.graphql.packets.FragmentFilter;
+import me.retrodaredevil.solarthing.rest.graphql.packets.IdentifierFilter;
+import me.retrodaredevil.solarthing.rest.graphql.packets.PacketFilter;
+import me.retrodaredevil.solarthing.rest.graphql.packets.PacketFilterMultiplexer;
+import me.retrodaredevil.solarthing.rest.graphql.packets.UnknownChangePacketsFilter;
+import me.retrodaredevil.solarthing.rest.graphql.packets.nodes.DataNode;
+import me.retrodaredevil.solarthing.rest.graphql.packets.nodes.PacketNode;
+import me.retrodaredevil.solarthing.rest.graphql.packets.nodes.SimpleNode;
 import me.retrodaredevil.solarthing.solar.BatteryUtil;
 import me.retrodaredevil.solarthing.solar.common.*;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
 import me.retrodaredevil.solarthing.solar.outback.command.packets.SuccessMateCommandPacket;
+import me.retrodaredevil.solarthing.solar.outback.fx.ACMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.OperationalMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.event.FXACModeChangePacket;
@@ -38,12 +44,19 @@ import me.retrodaredevil.solarthing.solar.outback.mx.event.MXChargerModeChangePa
 import me.retrodaredevil.solarthing.solar.outback.mx.event.MXRawDayEndPacket;
 import me.retrodaredevil.solarthing.solar.pzem.PzemShuntStatusPacket;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
+import me.retrodaredevil.solarthing.solar.renogy.rover.event.RoverChargingStateChangePacket;
 import me.retrodaredevil.solarthing.solar.tracer.TracerStatusPacket;
+import me.retrodaredevil.solarthing.type.closed.meta.BasicMetaPacket;
+import me.retrodaredevil.solarthing.type.closed.meta.MetaDatabase;
+import me.retrodaredevil.solarthing.type.closed.meta.TargetMetaPacket;
+import me.retrodaredevil.solarthing.type.closed.meta.TargetedMetaPacket;
+import me.retrodaredevil.solarthing.type.closed.meta.TargetedMetaPacketType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static me.retrodaredevil.solarthing.rest.graphql.service.SchemaConstants.*;
 
@@ -252,10 +265,15 @@ public class SolarThingGraphQLService {
 		public @NotNull List<@NotNull SimpleNode<FlatData>> flatData() {
 			List<SimpleNode<FlatData>> r = new ArrayList<>();
 			for (FragmentedPacketGroup packetGroup : sortedPackets) {
+				List<SolarDevice> solarDevice = new ArrayList<>();
 				List<BatteryVoltage> batteryVoltage = new ArrayList<>();
 				List<FXStatusPacket> fx = new ArrayList<>();
 				List<BasicChargeController> chargeController = new ArrayList<>();
+				List<ErrorReporter> errorReporter = new ArrayList<>();
 				for (Packet packet : packetGroup.getPackets()) {
+					if (packet instanceof SolarDevice) {
+						solarDevice.add((SolarDevice) packet);
+					}
 					if (packet instanceof BatteryVoltage) {
 						batteryVoltage.add((BatteryVoltage) packet);
 					}
@@ -265,12 +283,26 @@ public class SolarThingGraphQLService {
 					if (packet instanceof BasicChargeController) {
 						chargeController.add((BasicChargeController) packet);
 					}
+					if (packet instanceof ErrorReporter) {
+						errorReporter.add((ErrorReporter) packet);
+					}
 				}
-				FlatData flatData = new FlatData(batteryVoltage, fx, chargeController);
+				FlatData flatData = new FlatData(solarDevice, batteryVoltage, fx, chargeController, errorReporter);
 				r.add(new SimpleNode<>(flatData, packetGroup.getDateMillis()));
 			}
 			return r;
 		}
+	}
+
+	/**
+	 * @return The name that should be used when a device may not be present in a string
+	 */
+	private static String optionalName(Identifiable device) {
+		String name = device.getIdentityInfo().getShortName();
+		if (device.getIdentityInfo().isSuffixMeaningful()) {
+			name += " " + device.getIdentityInfo().getSuffix();
+		}
+		return name;
 	}
 	public static class FlatDataFX {
 		private final List<FXStatusPacket> fx;
@@ -313,6 +345,32 @@ public class SolarThingGraphQLService {
 		public @NotNull ACMode getACMode() {
 			return fx.get(0).getACMode();
 		}
+		@JsonProperty("miscModesString")
+		public @NotNull String getMiscModesString() {
+			StringBuilder result = new StringBuilder();
+			for (FXStatusPacket device : fx) {
+				String miscModes = device.getMiscModesString();
+				if (!miscModes.isEmpty()) {
+					String name = optionalName(device);
+					result.append("(").append(name).append(")").append(miscModes);
+				}
+			}
+			return result.toString();
+		}
+		@JsonPropertyDescription("Returns the warnings if there are any, empty string if no errors. Errors are formatted with device first, then error description")
+		@JsonProperty("warningsString")
+		public @NotNull String getWarningsString() {
+			StringBuilder result = new StringBuilder();
+			for (FXStatusPacket device : fx) {
+				List<BitmaskMode> errors = new ArrayList<>(device.getWarningModes());
+				if (!errors.isEmpty()) {
+					String name = optionalName(device);
+					String errorsString = Modes.toString(errors);
+					result.append("(").append(name).append(")").append(errorsString);
+				}
+			}
+			return result.toString();
+		}
 	}
 	public static class FlatDataChargeController {
 		private final List<BasicChargeController> chargeController;
@@ -341,14 +399,18 @@ public class SolarThingGraphQLService {
 		}
 	}
 	public static class FlatData {
+		private final List<SolarDevice> solarDevice;
 		private final List<BatteryVoltage> batteryVoltage;
 		private final List<FXStatusPacket> fx;
 		private final List<BasicChargeController> chargeController;
+		private final List<ErrorReporter> errorReporter;
 
-		public FlatData(List<BatteryVoltage> batteryVoltage, List<FXStatusPacket> fx, List<BasicChargeController> chargeController) {
+		public FlatData(List<SolarDevice> solarDevice, List<BatteryVoltage> batteryVoltage, List<FXStatusPacket> fx, List<BasicChargeController> chargeController, List<ErrorReporter> errorReporter) {
+			this.solarDevice = solarDevice;
 			this.batteryVoltage = batteryVoltage;
 			this.fx = fx;
 			this.chargeController = chargeController;
+			this.errorReporter = errorReporter;
 		}
 
 		@JsonProperty("fx")
@@ -378,10 +440,38 @@ public class SolarThingGraphQLService {
 			}
 			return device.getBatteryVoltage();
 		}
+		@JsonPropertyDescription("Returns a comma separated string of the names of connected devices")
+		@JsonProperty("deviceInfoString")
+		public @NotNull String getDeviceInfoString() {
+			return solarDevice.stream().map(device -> device.getIdentityInfo().getDisplayName()).collect(Collectors.joining(", "));
+		}
 		@JsonPropertyDescription("Returns a string representing the operating modes of all the devices")
 		@JsonProperty("operatingModeString")
 		public @NotNull String getOperatingModeString() {
-			throw new UnsupportedOperationException("TODO");
+			StringBuilder result = new StringBuilder();
+			for (SolarDevice device : solarDevice) {
+				String name = device.getIdentityInfo().getShortName();
+				String modeName = device.getSolarMode().getSolarModeType().getModeName();
+				if (result.length() > 0) {
+					result.append(',');
+				}
+				result.append("(").append(name).append(")").append(modeName);
+			}
+			return result.toString();
+		}
+		@JsonPropertyDescription("Returns the errors if there are any, empty string if no errors. Errors are formatted with device first, then error description")
+		@JsonProperty("errorsString")
+		public @NotNull String getErrorsString() {
+			StringBuilder result = new StringBuilder();
+			for (ErrorReporter device : errorReporter) {
+				List<BitmaskMode> errors = new ArrayList<>(device.getErrorModes());
+				if (!errors.isEmpty()) {
+					String name = device.getIdentityInfo().getShortName();
+					String errorsString = Modes.toString(errors);
+					result.append("(").append(name).append(")").append(errorsString);
+				}
+			}
+			return result.toString();
 		}
 	}
 	public static class SolarThingEventQuery {

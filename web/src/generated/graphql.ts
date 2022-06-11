@@ -488,6 +488,10 @@ export type FlatData = {
   __typename?: 'FlatData';
   batteryVoltage?: Maybe<Scalars['Float']>;
   chargeController?: Maybe<FlatDataChargeController>;
+  /** Returns a comma separated string of the names of connected devices */
+  deviceInfoString: Scalars['String'];
+  /** Returns the errors if there are any, empty string if no errors. Errors are formatted with device first, then error description */
+  errorsString: Scalars['String'];
   fx?: Maybe<FlatDataFx>;
   /** Returns a string representing the operating modes of all the devices */
   operatingModeString: Scalars['String'];
@@ -507,6 +511,9 @@ export type FlatDataFx = {
   acChargeWattage: Scalars['Float'];
   acMode: AcMode;
   loadWattage: Scalars['Float'];
+  miscModesString: Scalars['String'];
+  /** Returns the warnings if there are any, empty string if no errors. Errors are formatted with device first, then error description */
+  warningsString: Scalars['String'];
 };
 
 export type Forecast = {
@@ -1855,7 +1862,7 @@ export type LegacyQueryVariables = Exact<{
 }>;
 
 
-export type LegacyQuery = { __typename?: 'Query', queryStatusLast: { __typename?: 'SolarThingStatusQuery', flatData: Array<{ __typename?: 'SimpleNode_FlatData', data: { __typename?: 'FlatData', batteryVoltage?: number | null, fx?: { __typename?: 'FlatDataFX', loadWattage: number, acBuyWattage: number, acChargeWattage: number, acMode: AcMode } | null, chargeController?: { __typename?: 'FlatDataChargeController', pvWattage: number, chargerWattage: number } | null } }> } };
+export type LegacyQuery = { __typename?: 'Query', queryStatusLast: { __typename?: 'SolarThingStatusQuery', flatData: Array<{ __typename?: 'SimpleNode_FlatData', data: { __typename?: 'FlatData', deviceInfoString: string, batteryVoltage?: number | null, operatingModeString: string, errorsString: string, fx?: { __typename?: 'FlatDataFX', loadWattage: number, acBuyWattage: number, acChargeWattage: number, acMode: AcMode, miscModesString: string, warningsString: string } | null, chargeController?: { __typename?: 'FlatDataChargeController', pvWattage: number, chargerWattage: number } | null } }> } };
 
 export type LoginQueryVariables = Exact<{
   username: Scalars['String'];
@@ -1895,12 +1902,17 @@ export const LegacyDocument = `
   queryStatusLast(sourceId: $sourceId, to: $currentTimeMillis) {
     flatData {
       data {
+        deviceInfoString
         batteryVoltage
+        operatingModeString
+        errorsString
         fx {
           loadWattage
           acBuyWattage
           acChargeWattage
           acMode
+          miscModesString
+          warningsString
         }
         chargeController {
           pvWattage
