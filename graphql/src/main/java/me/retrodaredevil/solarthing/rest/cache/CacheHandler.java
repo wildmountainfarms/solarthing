@@ -21,6 +21,7 @@ import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.rest.cache.creators.BatteryRecordCacheNodeCreator;
+import me.retrodaredevil.solarthing.rest.cache.creators.TemperatureRecordCacheNodeCreator;
 import me.retrodaredevil.solarthing.type.cache.CacheUtil;
 import me.retrodaredevil.solarthing.type.cache.packets.CacheDataPacket;
 import me.retrodaredevil.solarthing.database.MillisQuery;
@@ -56,7 +57,8 @@ public class CacheHandler {
 	private static final List<CacheCreator> CACHE_CREATORS = List.of(
 			new DefaultIdentificationCacheCreator<>(new ChargeControllerAccumulationCacheNodeCreator()),
 			new DefaultIdentificationCacheCreator<>(new FXAccumulationCacheNodeCreator()),
-			new DefaultIdentificationCacheCreator<>(new BatteryRecordCacheNodeCreator())
+			new DefaultIdentificationCacheCreator<>(new BatteryRecordCacheNodeCreator()),
+			new DefaultIdentificationCacheCreator<>(new TemperatureRecordCacheNodeCreator())
 	);
 	private final Duration duration = Duration.ofMinutes(15);
 
