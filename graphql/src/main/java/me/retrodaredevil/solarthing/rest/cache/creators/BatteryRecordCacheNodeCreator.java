@@ -60,7 +60,7 @@ public class BatteryRecordCacheNodeCreator implements IdentificationCacheNodeCre
 				lastDataBeforePreviousPeriodStart = packet;
 			} else if (dateMillis < periodStartDateMillis) {
 				lastDataBeforePeriodStart = packet;
-			} else {
+			} else { // inside the current period
 				if (firstDataAfterPeriodStart == null) {
 					firstDataAfterPeriodStart = packet;
 				}

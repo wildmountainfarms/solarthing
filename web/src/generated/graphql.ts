@@ -37,10 +37,10 @@ export type Scalars = {
   UNREPRESENTABLE: any;
 };
 
-export enum AcMode {
-  AcDrop = 'AC_DROP',
-  AcUse = 'AC_USE',
-  NoAc = 'NO_AC'
+export enum ACMode {
+  AC_DROP = 'AC_DROP',
+  AC_USE = 'AC_USE',
+  NO_AC = 'NO_AC'
 }
 
 export type ActivePeriod = {
@@ -52,17 +52,17 @@ export type ActivePeriod = {
 };
 
 
-export type ActivePeriodActiveArgs = {
+export type ActivePeriodactiveArgs = {
   dateMillis: Scalars['Long'];
 };
 
 export enum ActivePeriodType {
-  TimeRange = 'TIME_RANGE'
+  TIME_RANGE = 'TIME_RANGE'
 }
 
 export enum AlterPacketType {
-  Flag = 'FLAG',
-  ScheduledCommand = 'SCHEDULED_COMMAND'
+  FLAG = 'FLAG',
+  SCHEDULED_COMMAND = 'SCHEDULED_COMMAND'
 }
 
 export type AuthorizedSender = {
@@ -72,17 +72,17 @@ export type AuthorizedSender = {
 };
 
 export enum AuxMode {
-  Disabled = 'DISABLED',
-  Diversion = 'DIVERSION',
-  ErrorOutput = 'ERROR_OUTPUT',
-  Float = 'FLOAT',
-  LowBattery = 'LOW_BATTERY',
-  Manual = 'MANUAL',
-  NightLight = 'NIGHT_LIGHT',
-  PvTrigger = 'PV_TRIGGER',
-  PwmDiversion = 'PWM_DIVERSION',
-  Remote = 'REMOTE',
-  VentFan = 'VENT_FAN'
+  DISABLED = 'DISABLED',
+  DIVERSION = 'DIVERSION',
+  ERROR_OUTPUT = 'ERROR_OUTPUT',
+  FLOAT = 'FLOAT',
+  LOW_BATTERY = 'LOW_BATTERY',
+  MANUAL = 'MANUAL',
+  NIGHT_LIGHT = 'NIGHT_LIGHT',
+  PV_TRIGGER = 'PV_TRIGGER',
+  PWM_DIVERSION = 'PWM_DIVERSION',
+  REMOTE = 'REMOTE',
+  VENT_FAN = 'VENT_FAN'
 }
 
 /** Represents a charge controller that charges the battery and has input from PV */
@@ -105,14 +105,14 @@ export type BasicChargeController = {
 };
 
 export enum BatteryDetection {
-  Auto = 'AUTO',
+  AUTO = 'AUTO',
   V12 = 'V12',
   V24 = 'V24'
 }
 
 export enum BatteryManagementMode {
-  Soc = 'SOC',
-  VoltageCompensation = 'VOLTAGE_COMPENSATION'
+  SOC = 'SOC',
+  VOLTAGE_COMPENSATION = 'VOLTAGE_COMPENSATION'
 }
 
 export type BatteryVoltage = {
@@ -134,41 +134,41 @@ export type ChargeControllerAccumulationDataCache = {
 };
 
 export enum ChargerMode {
-  Absorb = 'ABSORB',
-  Bulk = 'BULK',
-  Eq = 'EQ',
-  Float = 'FLOAT',
-  Silent = 'SILENT'
+  ABSORB = 'ABSORB',
+  BULK = 'BULK',
+  EQ = 'EQ',
+  FLOAT = 'FLOAT',
+  SILENT = 'SILENT'
 }
 
 export enum ChargingEquipmentError {
-  AntiReverseMosfetShort = 'ANTI_REVERSE_MOSFET_SHORT',
-  ChargingMosfetShort = 'CHARGING_MOSFET_SHORT',
-  ChargingOrAntiReverseMosfetShort = 'CHARGING_OR_ANTI_REVERSE_MOSFET_SHORT',
-  Fault = 'FAULT',
-  InputOverCurrent = 'INPUT_OVER_CURRENT',
-  LoadMosfetShort = 'LOAD_MOSFET_SHORT',
-  LoadOverCurrent = 'LOAD_OVER_CURRENT',
-  LoadShort = 'LOAD_SHORT',
-  PvInputShort = 'PV_INPUT_SHORT'
+  ANTI_REVERSE_MOSFET_SHORT = 'ANTI_REVERSE_MOSFET_SHORT',
+  CHARGING_MOSFET_SHORT = 'CHARGING_MOSFET_SHORT',
+  CHARGING_OR_ANTI_REVERSE_MOSFET_SHORT = 'CHARGING_OR_ANTI_REVERSE_MOSFET_SHORT',
+  FAULT = 'FAULT',
+  INPUT_OVER_CURRENT = 'INPUT_OVER_CURRENT',
+  LOAD_MOSFET_SHORT = 'LOAD_MOSFET_SHORT',
+  LOAD_OVER_CURRENT = 'LOAD_OVER_CURRENT',
+  LOAD_SHORT = 'LOAD_SHORT',
+  PV_INPUT_SHORT = 'PV_INPUT_SHORT'
 }
 
 export enum ChargingState {
-  Activated = 'ACTIVATED',
-  Boost = 'BOOST',
-  CurrentLimiting = 'CURRENT_LIMITING',
-  Deactivated = 'DEACTIVATED',
-  DirectCharge = 'DIRECT_CHARGE',
-  Eq = 'EQ',
-  Float = 'FLOAT',
-  Mppt = 'MPPT'
+  ACTIVATED = 'ACTIVATED',
+  BOOST = 'BOOST',
+  CURRENT_LIMITING = 'CURRENT_LIMITING',
+  DEACTIVATED = 'DEACTIVATED',
+  DIRECT_CHARGE = 'DIRECT_CHARGE',
+  EQ = 'EQ',
+  FLOAT = 'FLOAT',
+  MPPT = 'MPPT'
 }
 
 export enum ChargingStatus {
-  Boost = 'BOOST',
-  Equalization = 'EQUALIZATION',
-  Float = 'FLOAT',
-  NoCharging = 'NO_CHARGING'
+  BOOST = 'BOOST',
+  EQUALIZATION = 'EQUALIZATION',
+  FLOAT = 'FLOAT',
+  NO_CHARGING = 'NO_CHARGING'
 }
 
 export type CpuTemperaturePacket = {
@@ -196,10 +196,10 @@ export type DailyEnergy = {
   dayStart: Scalars['Long'];
 };
 
-export type DailyFxPacket = {
+export type DailyFXPacket = {
   __typename?: 'DailyFXPacket';
   acModeValues: Array<Scalars['Int']>;
-  acModes: Array<AcMode>;
+  acModes: Array<ACMode>;
   /** The address of the port that this device is plugged in to. If 0, this is plugged in to the mate */
   address: Scalars['Int'];
   buyKWH: Scalars['Float'];
@@ -210,7 +210,7 @@ export type DailyFxPacket = {
   dailyMinBatteryVoltage: Scalars['Float'];
   /** @deprecated Field no longer supported */
   errorModeValue: Scalars['Int'];
-  errorModes: Array<FxErrorMode>;
+  errorModes: Array<FXErrorMode>;
   hasError: Scalars['Boolean'];
   identifier: KnownSupplementaryIdentifier_OutbackIdentifier;
   identityInfo: IdentityInfo;
@@ -257,9 +257,9 @@ export type DataNode_Double = {
   sourceId: Scalars['String'];
 };
 
-export type DataNode_FxChargingPacket = {
+export type DataNode_FXChargingPacket = {
   __typename?: 'DataNode_FXChargingPacket';
-  data: FxChargingPacket;
+  data: FXChargingPacket;
   dateMillis: Scalars['Long'];
   fragmentId: Scalars['Int'];
   fragmentIdString?: Maybe<Scalars['String']>;
@@ -280,6 +280,7 @@ export type DataNode_Float = {
 export type DatabaseAuthorization = {
   __typename?: 'DatabaseAuthorization';
   cookie: Scalars['String'];
+  expiresAt: Scalars['Long'];
   url: Scalars['String'];
 };
 
@@ -289,23 +290,23 @@ export type DatabaseAuthorizationInput = {
 };
 
 export enum DcdcErrorMode {
-  BackupBatteryOverDischarge = 'BACKUP_BATTERY_OVER_DISCHARGE',
-  BackupBatteryOverVoltage = 'BACKUP_BATTERY_OVER_VOLTAGE',
-  BackupBatteryUnderVoltage = 'BACKUP_BATTERY_UNDER_VOLTAGE',
-  BatteryOverTemperature = 'BATTERY_OVER_TEMPERATURE',
-  BatteryTemperatureHaltCharging = 'BATTERY_TEMPERATURE_HALT_CHARGING',
-  BmsOvercharge = 'BMS_OVERCHARGE',
-  ControllerOverTemperature = 'CONTROLLER_OVER_TEMPERATURE',
-  ControllerWarm = 'CONTROLLER_WARM',
-  FanAlarm = 'FAN_ALARM',
-  GeneratorOverVoltage = 'GENERATOR_OVER_VOLTAGE',
-  OverCurrent = 'OVER_CURRENT',
-  PvOverVoltage = 'PV_OVER_VOLTAGE',
-  PvPowerOverload = 'PV_POWER_OVERLOAD',
-  SolarPanelReverselyConnected = 'SOLAR_PANEL_REVERSELY_CONNECTED',
-  StartBatteryBackup = 'START_BATTERY_BACKUP',
-  UnableToTranslateB22 = 'UNABLE_TO_TRANSLATE_B22',
-  UnableToTranslateB23 = 'UNABLE_TO_TRANSLATE_B23'
+  BACKUP_BATTERY_OVER_DISCHARGE = 'BACKUP_BATTERY_OVER_DISCHARGE',
+  BACKUP_BATTERY_OVER_VOLTAGE = 'BACKUP_BATTERY_OVER_VOLTAGE',
+  BACKUP_BATTERY_UNDER_VOLTAGE = 'BACKUP_BATTERY_UNDER_VOLTAGE',
+  BATTERY_OVER_TEMPERATURE = 'BATTERY_OVER_TEMPERATURE',
+  BATTERY_TEMPERATURE_HALT_CHARGING = 'BATTERY_TEMPERATURE_HALT_CHARGING',
+  BMS_OVERCHARGE = 'BMS_OVERCHARGE',
+  CONTROLLER_OVER_TEMPERATURE = 'CONTROLLER_OVER_TEMPERATURE',
+  CONTROLLER_WARM = 'CONTROLLER_WARM',
+  FAN_ALARM = 'FAN_ALARM',
+  GENERATOR_OVER_VOLTAGE = 'GENERATOR_OVER_VOLTAGE',
+  OVER_CURRENT = 'OVER_CURRENT',
+  PV_OVER_VOLTAGE = 'PV_OVER_VOLTAGE',
+  PV_POWER_OVERLOAD = 'PV_POWER_OVERLOAD',
+  SOLAR_PANEL_REVERSELY_CONNECTED = 'SOLAR_PANEL_REVERSELY_CONNECTED',
+  START_BATTERY_BACKUP = 'START_BATTERY_BACKUP',
+  UNABLE_TO_TRANSLATE_B22 = 'UNABLE_TO_TRANSLATE_B22',
+  UNABLE_TO_TRANSLATE_B23 = 'UNABLE_TO_TRANSLATE_B23'
 }
 
 export type DeviceInfoPacket = {
@@ -317,7 +318,7 @@ export type DeviceInfoPacket = {
 };
 
 export enum DevicePacketType {
-  DeviceCpuTemperature = 'DEVICE_CPU_TEMPERATURE'
+  DEVICE_CPU_TEMPERATURE = 'DEVICE_CPU_TEMPERATURE'
 }
 
 export type DeviceSource = {
@@ -341,12 +342,12 @@ export type ExecutionReason = {
 };
 
 export enum ExecutionReasonType {
-  Source = 'SOURCE'
+  SOURCE = 'SOURCE'
 }
 
-export type FxacModeChangePacket = {
+export type FXACModeChangePacket = {
   __typename?: 'FXACModeChangePacket';
-  acMode: AcMode;
+  acMode: ACMode;
   acModeName: Scalars['String'];
   acModeValue: Scalars['Int'];
   /** The address of the port that this device is plugged in to. If 0, this is plugged in to the mate */
@@ -354,12 +355,12 @@ export type FxacModeChangePacket = {
   identifier: KnownSupplementaryIdentifier_OutbackIdentifier;
   identityInfo: IdentityInfo;
   packetType: SolarEventPacketType;
-  previousACMode?: Maybe<AcMode>;
+  previousACMode?: Maybe<ACMode>;
   previousACModeName?: Maybe<Scalars['String']>;
   previousACModeValue?: Maybe<Scalars['Int']>;
 };
 
-export type FxAuxStateChangePacket = {
+export type FXAuxStateChangePacket = {
   __typename?: 'FXAuxStateChangePacket';
   /** The address of the port that this device is plugged in to. If 0, this is plugged in to the mate */
   address: Scalars['Int'];
@@ -370,21 +371,21 @@ export type FxAuxStateChangePacket = {
   wasAuxActive?: Maybe<Scalars['Boolean']>;
 };
 
-export enum FxChargingMode {
-  Absorb = 'ABSORB',
-  BulkToAbsorb = 'BULK_TO_ABSORB',
-  BulkToEq = 'BULK_TO_EQ',
-  Eq = 'EQ',
-  Float = 'FLOAT',
-  Refloat = 'REFLOAT',
-  Silent = 'SILENT'
+export enum FXChargingMode {
+  ABSORB = 'ABSORB',
+  BULK_TO_ABSORB = 'BULK_TO_ABSORB',
+  BULK_TO_EQ = 'BULK_TO_EQ',
+  EQ = 'EQ',
+  FLOAT = 'FLOAT',
+  REFLOAT = 'REFLOAT',
+  SILENT = 'SILENT'
 }
 
-export type FxChargingPacket = {
+export type FXChargingPacket = {
   __typename?: 'FXChargingPacket';
   /** The address of the port that this device is plugged in to. If 0, this is plugged in to the mate */
   address: Scalars['Int'];
-  fxChargingMode?: Maybe<FxChargingMode>;
+  fxChargingMode?: Maybe<FXChargingMode>;
   remainingAbsorbTimeMillis: Scalars['Long'];
   remainingEqualizeTimeMillis: Scalars['Long'];
   remainingFloatTimeMillis: Scalars['Long'];
@@ -393,18 +394,18 @@ export type FxChargingPacket = {
   totalFloatTimeMillis: Scalars['Long'];
 };
 
-export enum FxErrorMode {
-  BackFeed = 'BACK_FEED',
-  HighBattery = 'HIGH_BATTERY',
-  LowBattery = 'LOW_BATTERY',
-  LowVacOutput = 'LOW_VAC_OUTPUT',
-  OverTemp = 'OVER_TEMP',
-  PhaseLoss = 'PHASE_LOSS',
-  ShortedOutput = 'SHORTED_OUTPUT',
-  StackingError = 'STACKING_ERROR'
+export enum FXErrorMode {
+  BACK_FEED = 'BACK_FEED',
+  HIGH_BATTERY = 'HIGH_BATTERY',
+  LOW_BATTERY = 'LOW_BATTERY',
+  LOW_VAC_OUTPUT = 'LOW_VAC_OUTPUT',
+  OVER_TEMP = 'OVER_TEMP',
+  PHASE_LOSS = 'PHASE_LOSS',
+  SHORTED_OUTPUT = 'SHORTED_OUTPUT',
+  STACKING_ERROR = 'STACKING_ERROR'
 }
 
-export type FxOperationalModeChangePacket = {
+export type FXOperationalModeChangePacket = {
   __typename?: 'FXOperationalModeChangePacket';
   /** The address of the port that this device is plugged in to. If 0, this is plugged in to the mate */
   address: Scalars['Int'];
@@ -420,7 +421,7 @@ export type FxOperationalModeChangePacket = {
 };
 
 /** Status packet for FX devices */
-export type FxStatusPacket = {
+export type FXStatusPacket = {
   __typename?: 'FXStatusPacket';
   acMode: Scalars['Int'];
   acModeName: Scalars['String'];
@@ -436,7 +437,7 @@ export type FxStatusPacket = {
   chargerWattage: Scalars['Int'];
   chksum: Scalars['Int'];
   errorMode: Scalars['Int'];
-  errorModes: Array<FxErrorMode>;
+  errorModes: Array<FXErrorMode>;
   errorsString: Scalars['String'];
   hasError: Scalars['Boolean'];
   identifier: OutbackIdentifier;
@@ -492,7 +493,7 @@ export type FlatData = {
   deviceInfoString: Scalars['String'];
   /** Returns the errors if there are any, empty string if no errors. Errors are formatted with device first, then error description */
   errorsString: Scalars['String'];
-  fx?: Maybe<FlatDataFx>;
+  fx?: Maybe<FlatDataFX>;
   /** Returns a string representing the operating modes of all the devices */
   operatingModeString: Scalars['String'];
 };
@@ -503,13 +504,13 @@ export type FlatDataChargeController = {
   pvWattage: Scalars['Float'];
 };
 
-export type FlatDataFx = {
+export type FlatDataFX = {
   __typename?: 'FlatDataFX';
   /** The buy wattage from the AC being used by the FX(s) */
   acBuyWattage: Scalars['Float'];
   /** The charging wattage from the AC being used by the FX(s) */
   acChargeWattage: Scalars['Float'];
-  acMode: AcMode;
+  acMode: ACMode;
   loadWattage: Scalars['Float'];
   miscModesString: Scalars['String'];
   /** Returns the warnings if there are any, empty string if no errors. Errors are formatted with device first, then error description */
@@ -571,10 +572,10 @@ export type IdentityInfo = {
 };
 
 export enum InputVoltageStatus {
-  HighVoltage = 'HIGH_VOLTAGE',
-  InputError = 'INPUT_ERROR',
-  Normal = 'NORMAL',
-  NotConnected = 'NOT_CONNECTED'
+  HIGH_VOLTAGE = 'HIGH_VOLTAGE',
+  INPUT_ERROR = 'INPUT_ERROR',
+  NORMAL = 'NORMAL',
+  NOT_CONNECTED = 'NOT_CONNECTED'
 }
 
 export type KnownSupplementaryIdentifier_OutbackIdentifier = {
@@ -592,11 +593,11 @@ export type KnownSupplementaryIdentifier_RoverIdentifier = {
 };
 
 export enum LoadTimingControlSelection {
-  OneTimer = 'ONE_TIMER',
-  TwoTimer = 'TWO_TIMER'
+  ONE_TIMER = 'ONE_TIMER',
+  TWO_TIMER = 'TWO_TIMER'
 }
 
-export type MxAuxModeChangePacket = {
+export type MXAuxModeChangePacket = {
   __typename?: 'MXAuxModeChangePacket';
   /** The address of the port that this device is plugged in to. If 0, this is plugged in to the mate */
   address: Scalars['Int'];
@@ -607,7 +608,7 @@ export type MxAuxModeChangePacket = {
   rawAuxModeValue: Scalars['Int'];
 };
 
-export type MxChargerModeChangePacket = {
+export type MXChargerModeChangePacket = {
   __typename?: 'MXChargerModeChangePacket';
   /** The address of the port that this device is plugged in to. If 0, this is plugged in to the mate */
   address: Scalars['Int'];
@@ -620,13 +621,13 @@ export type MxChargerModeChangePacket = {
   previousChargingModeName?: Maybe<Scalars['String']>;
 };
 
-export enum MxErrorMode {
-  HighVoc = 'HIGH_VOC',
-  ShortedBatterySensor = 'SHORTED_BATTERY_SENSOR',
-  TooHot = 'TOO_HOT'
+export enum MXErrorMode {
+  HIGH_VOC = 'HIGH_VOC',
+  SHORTED_BATTERY_SENSOR = 'SHORTED_BATTERY_SENSOR',
+  TOO_HOT = 'TOO_HOT'
 }
 
-export type MxRawDayEndPacket = {
+export type MXRawDayEndPacket = {
   __typename?: 'MXRawDayEndPacket';
   /** The address of the port that this device is plugged in to. If 0, this is plugged in to the mate */
   address: Scalars['Int'];
@@ -638,7 +639,7 @@ export type MxRawDayEndPacket = {
   packetType: SolarEventPacketType;
 };
 
-export type MxStatusPacket = {
+export type MXStatusPacket = {
   __typename?: 'MXStatusPacket';
   /** The address of the port that this device is plugged in to. If 0, this is plugged in to the mate */
   address: Scalars['Int'];
@@ -661,7 +662,7 @@ export type MxStatusPacket = {
   dailyAHSupport: Support;
   dailyKWH: Scalars['Float'];
   errorMode: Scalars['Int'];
-  errorModes: Array<MxErrorMode>;
+  errorModes: Array<MXErrorMode>;
   hasError: Scalars['Boolean'];
   identifier: OutbackIdentifier;
   identityInfo: IdentityInfo;
@@ -676,37 +677,37 @@ export type MxStatusPacket = {
 };
 
 export enum MateCommand {
-  AuxOff = 'AUX_OFF',
-  AuxOn = 'AUX_ON',
-  Drop = 'DROP',
-  Off = 'OFF',
-  On = 'ON',
-  Search = 'SEARCH',
-  Use = 'USE'
+  AUX_OFF = 'AUX_OFF',
+  AUX_ON = 'AUX_ON',
+  DROP = 'DROP',
+  OFF = 'OFF',
+  ON = 'ON',
+  SEARCH = 'SEARCH',
+  USE = 'USE'
 }
 
 export enum MateCommandFeedbackPacketType {
-  MateCommandSuccess = 'MATE_COMMAND_SUCCESS'
+  MATE_COMMAND_SUCCESS = 'MATE_COMMAND_SUCCESS'
 }
 
 export enum MiscMode {
-  AuxOutputOn = 'AUX_OUTPUT_ON',
-  Fx_230VUnit = 'FX_230V_UNIT'
+  AUX_OUTPUT_ON = 'AUX_OUTPUT_ON',
+  FX_230V_UNIT = 'FX_230V_UNIT'
 }
 
 export enum Month {
-  April = 'APRIL',
-  August = 'AUGUST',
-  December = 'DECEMBER',
-  February = 'FEBRUARY',
-  January = 'JANUARY',
-  July = 'JULY',
-  June = 'JUNE',
-  March = 'MARCH',
-  May = 'MAY',
-  November = 'NOVEMBER',
-  October = 'OCTOBER',
-  September = 'SEPTEMBER'
+  APRIL = 'APRIL',
+  AUGUST = 'AUGUST',
+  DECEMBER = 'DECEMBER',
+  FEBRUARY = 'FEBRUARY',
+  JANUARY = 'JANUARY',
+  JULY = 'JULY',
+  JUNE = 'JUNE',
+  MARCH = 'MARCH',
+  MAY = 'MAY',
+  NOVEMBER = 'NOVEMBER',
+  OCTOBER = 'OCTOBER',
+  SEPTEMBER = 'SEPTEMBER'
 }
 
 export type MonthDay = {
@@ -724,7 +725,7 @@ export type Mutation = {
 
 
 /** Mutation root */
-export type MutationRemoveAuthorizedSenderArgs = {
+export type MutationremoveAuthorizedSenderArgs = {
   authorization: DatabaseAuthorizationInput;
   sender: Scalars['String'];
 };
@@ -736,20 +737,20 @@ export type OperatingSettingBundle = {
 };
 
 export enum OperationalMode {
-  AgsError = 'AGS_ERROR',
-  Charge = 'CHARGE',
-  ChargerOff = 'CHARGER_OFF',
-  ComError = 'COM_ERROR',
-  Eq = 'EQ',
-  Float = 'FLOAT',
-  FxError = 'FX_ERROR',
-  InvOff = 'INV_OFF',
-  InvOn = 'INV_ON',
-  PassThru = 'PASS_THRU',
-  Search = 'SEARCH',
-  SellEnabled = 'SELL_ENABLED',
-  Silent = 'SILENT',
-  Support = 'SUPPORT'
+  AGS_ERROR = 'AGS_ERROR',
+  CHARGE = 'CHARGE',
+  CHARGER_OFF = 'CHARGER_OFF',
+  COM_ERROR = 'COM_ERROR',
+  EQ = 'EQ',
+  FLOAT = 'FLOAT',
+  FX_ERROR = 'FX_ERROR',
+  INV_OFF = 'INV_OFF',
+  INV_ON = 'INV_ON',
+  PASS_THRU = 'PASS_THRU',
+  SEARCH = 'SEARCH',
+  SELL_ENABLED = 'SELL_ENABLED',
+  SILENT = 'SILENT',
+  SUPPORT = 'SUPPORT'
 }
 
 export type OutbackIdentifier = {
@@ -760,7 +761,7 @@ export type OutbackIdentifier = {
   representation: Scalars['String'];
 };
 
-export type PvCurrentAndVoltage = {
+export type PVCurrentAndVoltage = {
   __typename?: 'PVCurrentAndVoltage';
   identifier: Identifier;
   identityInfo: IdentityInfo;
@@ -817,14 +818,14 @@ export type PacketNode_DailyChargeController = {
   sourceId: Scalars['String'];
 };
 
-export type PacketNode_DailyFxPacket = {
+export type PacketNode_DailyFXPacket = {
   __typename?: 'PacketNode_DailyFXPacket';
   dateMillis: Scalars['Long'];
   fragmentDeviceInfo?: Maybe<DeviceInfoPacket>;
   /** The fragment the packet was from */
   fragmentId: Scalars['Int'];
   fragmentIdString: Scalars['String'];
-  packet: DailyFxPacket;
+  packet: DailyFXPacket;
   /** The Source ID the packet was from */
   sourceId: Scalars['String'];
 };
@@ -841,110 +842,110 @@ export type PacketNode_DualTemperature = {
   sourceId: Scalars['String'];
 };
 
-export type PacketNode_FxacModeChangePacket = {
+export type PacketNode_FXACModeChangePacket = {
   __typename?: 'PacketNode_FXACModeChangePacket';
   dateMillis: Scalars['Long'];
   fragmentDeviceInfo?: Maybe<DeviceInfoPacket>;
   /** The fragment the packet was from */
   fragmentId: Scalars['Int'];
   fragmentIdString: Scalars['String'];
-  packet: FxacModeChangePacket;
+  packet: FXACModeChangePacket;
   /** The Source ID the packet was from */
   sourceId: Scalars['String'];
 };
 
-export type PacketNode_FxAuxStateChangePacket = {
+export type PacketNode_FXAuxStateChangePacket = {
   __typename?: 'PacketNode_FXAuxStateChangePacket';
   dateMillis: Scalars['Long'];
   fragmentDeviceInfo?: Maybe<DeviceInfoPacket>;
   /** The fragment the packet was from */
   fragmentId: Scalars['Int'];
   fragmentIdString: Scalars['String'];
-  packet: FxAuxStateChangePacket;
+  packet: FXAuxStateChangePacket;
   /** The Source ID the packet was from */
   sourceId: Scalars['String'];
 };
 
-export type PacketNode_FxOperationalModeChangePacket = {
+export type PacketNode_FXOperationalModeChangePacket = {
   __typename?: 'PacketNode_FXOperationalModeChangePacket';
   dateMillis: Scalars['Long'];
   fragmentDeviceInfo?: Maybe<DeviceInfoPacket>;
   /** The fragment the packet was from */
   fragmentId: Scalars['Int'];
   fragmentIdString: Scalars['String'];
-  packet: FxOperationalModeChangePacket;
+  packet: FXOperationalModeChangePacket;
   /** The Source ID the packet was from */
   sourceId: Scalars['String'];
 };
 
-export type PacketNode_FxStatusPacket = {
+export type PacketNode_FXStatusPacket = {
   __typename?: 'PacketNode_FXStatusPacket';
   dateMillis: Scalars['Long'];
   fragmentDeviceInfo?: Maybe<DeviceInfoPacket>;
   /** The fragment the packet was from */
   fragmentId: Scalars['Int'];
   fragmentIdString: Scalars['String'];
-  packet: FxStatusPacket;
+  packet: FXStatusPacket;
   /** The Source ID the packet was from */
   sourceId: Scalars['String'];
 };
 
-export type PacketNode_MxAuxModeChangePacket = {
+export type PacketNode_MXAuxModeChangePacket = {
   __typename?: 'PacketNode_MXAuxModeChangePacket';
   dateMillis: Scalars['Long'];
   fragmentDeviceInfo?: Maybe<DeviceInfoPacket>;
   /** The fragment the packet was from */
   fragmentId: Scalars['Int'];
   fragmentIdString: Scalars['String'];
-  packet: MxAuxModeChangePacket;
+  packet: MXAuxModeChangePacket;
   /** The Source ID the packet was from */
   sourceId: Scalars['String'];
 };
 
-export type PacketNode_MxChargerModeChangePacket = {
+export type PacketNode_MXChargerModeChangePacket = {
   __typename?: 'PacketNode_MXChargerModeChangePacket';
   dateMillis: Scalars['Long'];
   fragmentDeviceInfo?: Maybe<DeviceInfoPacket>;
   /** The fragment the packet was from */
   fragmentId: Scalars['Int'];
   fragmentIdString: Scalars['String'];
-  packet: MxChargerModeChangePacket;
+  packet: MXChargerModeChangePacket;
   /** The Source ID the packet was from */
   sourceId: Scalars['String'];
 };
 
-export type PacketNode_MxRawDayEndPacket = {
+export type PacketNode_MXRawDayEndPacket = {
   __typename?: 'PacketNode_MXRawDayEndPacket';
   dateMillis: Scalars['Long'];
   fragmentDeviceInfo?: Maybe<DeviceInfoPacket>;
   /** The fragment the packet was from */
   fragmentId: Scalars['Int'];
   fragmentIdString: Scalars['String'];
-  packet: MxRawDayEndPacket;
+  packet: MXRawDayEndPacket;
   /** The Source ID the packet was from */
   sourceId: Scalars['String'];
 };
 
-export type PacketNode_MxStatusPacket = {
+export type PacketNode_MXStatusPacket = {
   __typename?: 'PacketNode_MXStatusPacket';
   dateMillis: Scalars['Long'];
   fragmentDeviceInfo?: Maybe<DeviceInfoPacket>;
   /** The fragment the packet was from */
   fragmentId: Scalars['Int'];
   fragmentIdString: Scalars['String'];
-  packet: MxStatusPacket;
+  packet: MXStatusPacket;
   /** The Source ID the packet was from */
   sourceId: Scalars['String'];
 };
 
-export type PacketNode_PvCurrentAndVoltage = {
+export type PacketNode_PVCurrentAndVoltage = {
   __typename?: 'PacketNode_PVCurrentAndVoltage';
   dateMillis: Scalars['Long'];
   fragmentDeviceInfo?: Maybe<DeviceInfoPacket>;
   /** The fragment the packet was from */
   fragmentId: Scalars['Int'];
   fragmentIdString: Scalars['String'];
-  packet: PvCurrentAndVoltage;
+  packet: PVCurrentAndVoltage;
   /** The Source ID the packet was from */
   sourceId: Scalars['String'];
 };
@@ -1078,7 +1079,7 @@ export type Query = {
   /** Queries events in the specified time range while only including the specified identifier in the specified fragment */
   queryEventIdentifier: SolarThingEventQuery;
   /** Gives the timer values for the master FX of a single fragment over a time range */
-  queryFXCharging?: Maybe<Array<Maybe<DataNode_FxChargingPacket>>>;
+  queryFXCharging?: Maybe<Array<Maybe<DataNode_FXChargingPacket>>>;
   queryFullDay?: Maybe<SolarThingFullDayStatusQuery>;
   queryLongTermMillis?: Maybe<SolarThingLongTermQuery>;
   queryLongTermMonth?: Maybe<SolarThingLongTermQuery>;
@@ -1092,20 +1093,20 @@ export type Query = {
 
 
 /** Query root */
-export type QueryDatabaseAuthorizeArgs = {
+export type QuerydatabaseAuthorizeArgs = {
   password: Scalars['String'];
   username: Scalars['String'];
 };
 
 
 /** Query root */
-export type QueryQueryAlterArgs = {
+export type QueryqueryAlterArgs = {
   sourceId: Scalars['String'];
 };
 
 
 /** Query root */
-export type QueryQueryBatteryEstimateArgs = {
+export type QueryqueryBatteryEstimateArgs = {
   duration?: InputMaybe<Scalars['Duration']>;
   sourceId?: InputMaybe<Scalars['String']>;
   to: Scalars['Long'];
@@ -1113,7 +1114,7 @@ export type QueryQueryBatteryEstimateArgs = {
 
 
 /** Query root */
-export type QueryQueryBatteryRecordArgs = {
+export type QueryqueryBatteryRecordArgs = {
   from: Scalars['Long'];
   sourceId?: InputMaybe<Scalars['String']>;
   to: Scalars['Long'];
@@ -1121,7 +1122,7 @@ export type QueryQueryBatteryRecordArgs = {
 
 
 /** Query root */
-export type QueryQueryEventArgs = {
+export type QueryqueryEventArgs = {
   from: Scalars['Long'];
   includeUnknownChangePackets?: InputMaybe<Scalars['Boolean']>;
   sourceId?: InputMaybe<Scalars['String']>;
@@ -1130,7 +1131,7 @@ export type QueryQueryEventArgs = {
 
 
 /** Query root */
-export type QueryQueryEventFragmentArgs = {
+export type QueryqueryEventFragmentArgs = {
   fragmentId: Scalars['Int'];
   from: Scalars['Long'];
   includeUnknownChangePackets?: InputMaybe<Scalars['Boolean']>;
@@ -1139,7 +1140,7 @@ export type QueryQueryEventFragmentArgs = {
 
 
 /** Query root */
-export type QueryQueryEventIdentifierArgs = {
+export type QueryqueryEventIdentifierArgs = {
   acceptSupplementary?: InputMaybe<Scalars['Boolean']>;
   fragmentId: Scalars['Int'];
   from: Scalars['Long'];
@@ -1150,7 +1151,7 @@ export type QueryQueryEventIdentifierArgs = {
 
 
 /** Query root */
-export type QueryQueryFxChargingArgs = {
+export type QueryqueryFXChargingArgs = {
   fragmentId: Scalars['Int'];
   from: Scalars['Long'];
   to: Scalars['Long'];
@@ -1158,7 +1159,7 @@ export type QueryQueryFxChargingArgs = {
 
 
 /** Query root */
-export type QueryQueryFullDayArgs = {
+export type QueryqueryFullDayArgs = {
   from: Scalars['Long'];
   sourceId?: InputMaybe<Scalars['String']>;
   to: Scalars['Long'];
@@ -1167,7 +1168,7 @@ export type QueryQueryFullDayArgs = {
 
 
 /** Query root */
-export type QueryQueryLongTermMillisArgs = {
+export type QueryqueryLongTermMillisArgs = {
   from: Scalars['Long'];
   sourceId?: InputMaybe<Scalars['String']>;
   to: Scalars['Long'];
@@ -1175,7 +1176,7 @@ export type QueryQueryLongTermMillisArgs = {
 
 
 /** Query root */
-export type QueryQueryLongTermMonthArgs = {
+export type QueryqueryLongTermMonthArgs = {
   month?: InputMaybe<Month>;
   sourceId?: InputMaybe<Scalars['String']>;
   year: Scalars['Int'];
@@ -1183,7 +1184,7 @@ export type QueryQueryLongTermMonthArgs = {
 
 
 /** Query root */
-export type QueryQuerySolcastArgs = {
+export type QueryquerySolcastArgs = {
   from: Scalars['Long'];
   sourceId: Scalars['String'];
   to: Scalars['Long'];
@@ -1191,14 +1192,14 @@ export type QueryQuerySolcastArgs = {
 
 
 /** Query root */
-export type QueryQuerySolcastDayArgs = {
+export type QueryquerySolcastDayArgs = {
   sourceId: Scalars['String'];
   to: Scalars['Long'];
 };
 
 
 /** Query root */
-export type QueryQueryStatusArgs = {
+export type QueryqueryStatusArgs = {
   from: Scalars['Long'];
   sourceId?: InputMaybe<Scalars['String']>;
   to: Scalars['Long'];
@@ -1206,20 +1207,20 @@ export type QueryQueryStatusArgs = {
 
 
 /** Query root */
-export type QueryQueryStatusLastArgs = {
+export type QueryqueryStatusLastArgs = {
   reversed?: InputMaybe<Scalars['Boolean']>;
   sourceId?: InputMaybe<Scalars['String']>;
   to: Scalars['Long'];
 };
 
 export enum RoverBatteryType {
-  Gel = 'GEL',
-  Lithium = 'LITHIUM',
-  Lithium_48V = 'LITHIUM_48V',
-  Open = 'OPEN',
-  Sealed = 'SEALED',
-  UserLocked = 'USER_LOCKED',
-  UserUnlocked = 'USER_UNLOCKED'
+  GEL = 'GEL',
+  LITHIUM = 'LITHIUM',
+  LITHIUM_48V = 'LITHIUM_48V',
+  OPEN = 'OPEN',
+  SEALED = 'SEALED',
+  USER_LOCKED = 'USER_LOCKED',
+  USER_UNLOCKED = 'USER_UNLOCKED'
 }
 
 export type RoverChargingStateChangePacket = {
@@ -1235,21 +1236,21 @@ export type RoverChargingStateChangePacket = {
 };
 
 export enum RoverErrorMode {
-  AmbientTempHigh = 'AMBIENT_TEMP_HIGH',
-  AntiReverseShort = 'ANTI_REVERSE_SHORT',
-  BatteryOverDischarge = 'BATTERY_OVER_DISCHARGE',
-  BatteryOverVoltage = 'BATTERY_OVER_VOLTAGE',
-  BatteryUnderVoltage = 'BATTERY_UNDER_VOLTAGE',
-  ChargeShortCircuit = 'CHARGE_SHORT_CIRCUIT',
-  ControllerTempHigh = 'CONTROLLER_TEMP_HIGH',
-  LoadOver = 'LOAD_OVER',
-  LoadShortCircuit = 'LOAD_SHORT_CIRCUIT',
-  PvInputOverpower = 'PV_INPUT_OVERPOWER',
-  PvInputSideOverVoltage = 'PV_INPUT_SIDE_OVER_VOLTAGE',
-  PvInputSideShortCircuit = 'PV_INPUT_SIDE_SHORT_CIRCUIT',
-  SolarPanelCounterCurrent = 'SOLAR_PANEL_COUNTER_CURRENT',
-  SolarPanelReverselyConnected = 'SOLAR_PANEL_REVERSELY_CONNECTED',
-  SolarPanelWorkingPointOverVoltage = 'SOLAR_PANEL_WORKING_POINT_OVER_VOLTAGE'
+  AMBIENT_TEMP_HIGH = 'AMBIENT_TEMP_HIGH',
+  ANTI_REVERSE_SHORT = 'ANTI_REVERSE_SHORT',
+  BATTERY_OVER_DISCHARGE = 'BATTERY_OVER_DISCHARGE',
+  BATTERY_OVER_VOLTAGE = 'BATTERY_OVER_VOLTAGE',
+  BATTERY_UNDER_VOLTAGE = 'BATTERY_UNDER_VOLTAGE',
+  CHARGE_SHORT_CIRCUIT = 'CHARGE_SHORT_CIRCUIT',
+  CONTROLLER_TEMP_HIGH = 'CONTROLLER_TEMP_HIGH',
+  LOAD_OVER = 'LOAD_OVER',
+  LOAD_SHORT_CIRCUIT = 'LOAD_SHORT_CIRCUIT',
+  PV_INPUT_OVERPOWER = 'PV_INPUT_OVERPOWER',
+  PV_INPUT_SIDE_OVER_VOLTAGE = 'PV_INPUT_SIDE_OVER_VOLTAGE',
+  PV_INPUT_SIDE_SHORT_CIRCUIT = 'PV_INPUT_SIDE_SHORT_CIRCUIT',
+  SOLAR_PANEL_COUNTER_CURRENT = 'SOLAR_PANEL_COUNTER_CURRENT',
+  SOLAR_PANEL_REVERSELY_CONNECTED = 'SOLAR_PANEL_REVERSELY_CONNECTED',
+  SOLAR_PANEL_WORKING_POINT_OVER_VOLTAGE = 'SOLAR_PANEL_WORKING_POINT_OVER_VOLTAGE'
 }
 
 export type RoverIdentifier = {
@@ -1441,30 +1442,30 @@ export type SolarDevice = {
 };
 
 export enum SolarEventPacketType {
-  FxAcModeChange = 'FX_AC_MODE_CHANGE',
-  FxAuxStateChange = 'FX_AUX_STATE_CHANGE',
+  FX_AC_MODE_CHANGE = 'FX_AC_MODE_CHANGE',
+  FX_AUX_STATE_CHANGE = 'FX_AUX_STATE_CHANGE',
   /** @deprecated Field no longer supported */
-  FxDailyDayEnd = 'FX_DAILY_DAY_END',
-  FxErrorModeChange = 'FX_ERROR_MODE_CHANGE',
-  FxOperationalModeChange = 'FX_OPERATIONAL_MODE_CHANGE',
-  FxWarningModeChange = 'FX_WARNING_MODE_CHANGE',
-  MxfmAuxModeChange = 'MXFM_AUX_MODE_CHANGE',
-  MxfmChargerModeChange = 'MXFM_CHARGER_MODE_CHANGE',
+  FX_DAILY_DAY_END = 'FX_DAILY_DAY_END',
+  FX_ERROR_MODE_CHANGE = 'FX_ERROR_MODE_CHANGE',
+  FX_OPERATIONAL_MODE_CHANGE = 'FX_OPERATIONAL_MODE_CHANGE',
+  FX_WARNING_MODE_CHANGE = 'FX_WARNING_MODE_CHANGE',
+  MXFM_AUX_MODE_CHANGE = 'MXFM_AUX_MODE_CHANGE',
+  MXFM_CHARGER_MODE_CHANGE = 'MXFM_CHARGER_MODE_CHANGE',
   /** @deprecated Field no longer supported */
-  MxfmDailyDayEnd = 'MXFM_DAILY_DAY_END',
-  MxfmErrorModeChange = 'MXFM_ERROR_MODE_CHANGE',
-  MxfmRawDayEnd = 'MXFM_RAW_DAY_END',
-  RoverChargingStateChange = 'ROVER_CHARGING_STATE_CHANGE',
-  RoverErrorModeChange = 'ROVER_ERROR_MODE_CHANGE',
-  TracerChargingEquipmentStatusChange = 'TRACER_CHARGING_EQUIPMENT_STATUS_CHANGE'
+  MXFM_DAILY_DAY_END = 'MXFM_DAILY_DAY_END',
+  MXFM_ERROR_MODE_CHANGE = 'MXFM_ERROR_MODE_CHANGE',
+  MXFM_RAW_DAY_END = 'MXFM_RAW_DAY_END',
+  ROVER_CHARGING_STATE_CHANGE = 'ROVER_CHARGING_STATE_CHANGE',
+  ROVER_ERROR_MODE_CHANGE = 'ROVER_ERROR_MODE_CHANGE',
+  TRACER_CHARGING_EQUIPMENT_STATUS_CHANGE = 'TRACER_CHARGING_EQUIPMENT_STATUS_CHANGE'
 }
 
 export enum SolarExtraPacketType {
   /** @deprecated Field no longer supported */
-  FxCharging = 'FX_CHARGING',
-  FxDaily = 'FX_DAILY',
+  FX_CHARGING = 'FX_CHARGING',
+  FX_DAILY = 'FX_DAILY',
   /** @deprecated Field no longer supported */
-  MxfmDaily = 'MXFM_DAILY'
+  MXFM_DAILY = 'MXFM_DAILY'
 }
 
 export type SolarMode = {
@@ -1474,35 +1475,35 @@ export type SolarMode = {
 };
 
 export enum SolarModeType {
-  Absorb = 'ABSORB',
-  Bulk = 'BULK',
-  BulkAbsorb = 'BULK_ABSORB',
-  BulkEqualize = 'BULK_EQUALIZE',
-  BulkFloat = 'BULK_FLOAT',
-  ChargeControllerOff = 'CHARGE_CONTROLLER_OFF',
-  CurrentLimiting = 'CURRENT_LIMITING',
-  DirectCharge = 'DIRECT_CHARGE',
-  Equalize = 'EQUALIZE',
-  Float = 'FLOAT',
-  InverterChargerOff = 'INVERTER_CHARGER_OFF',
-  InverterOff = 'INVERTER_OFF',
-  InverterOn = 'INVERTER_ON',
-  InverterPassThru = 'INVERTER_PASS_THRU',
-  InverterSearch = 'INVERTER_SEARCH',
-  InverterSell = 'INVERTER_SELL',
-  InverterSilent = 'INVERTER_SILENT',
-  InverterSupport = 'INVERTER_SUPPORT',
-  InverterUnknown = 'INVERTER_UNKNOWN'
+  ABSORB = 'ABSORB',
+  BULK = 'BULK',
+  BULK_ABSORB = 'BULK_ABSORB',
+  BULK_EQUALIZE = 'BULK_EQUALIZE',
+  BULK_FLOAT = 'BULK_FLOAT',
+  CHARGE_CONTROLLER_OFF = 'CHARGE_CONTROLLER_OFF',
+  CURRENT_LIMITING = 'CURRENT_LIMITING',
+  DIRECT_CHARGE = 'DIRECT_CHARGE',
+  EQUALIZE = 'EQUALIZE',
+  FLOAT = 'FLOAT',
+  INVERTER_CHARGER_OFF = 'INVERTER_CHARGER_OFF',
+  INVERTER_OFF = 'INVERTER_OFF',
+  INVERTER_ON = 'INVERTER_ON',
+  INVERTER_PASS_THRU = 'INVERTER_PASS_THRU',
+  INVERTER_SEARCH = 'INVERTER_SEARCH',
+  INVERTER_SELL = 'INVERTER_SELL',
+  INVERTER_SILENT = 'INVERTER_SILENT',
+  INVERTER_SUPPORT = 'INVERTER_SUPPORT',
+  INVERTER_UNKNOWN = 'INVERTER_UNKNOWN'
 }
 
 export enum SolarStatusPacketType {
-  BatteryVoltageOnly = 'BATTERY_VOLTAGE_ONLY',
-  FlexnetDcStatus = 'FLEXNET_DC_STATUS',
-  FxStatus = 'FX_STATUS',
-  MxfmStatus = 'MXFM_STATUS',
-  PzemShunt = 'PZEM_SHUNT',
-  RenogyRoverStatus = 'RENOGY_ROVER_STATUS',
-  TracerStatus = 'TRACER_STATUS'
+  BATTERY_VOLTAGE_ONLY = 'BATTERY_VOLTAGE_ONLY',
+  FLEXNET_DC_STATUS = 'FLEXNET_DC_STATUS',
+  FX_STATUS = 'FX_STATUS',
+  MXFM_STATUS = 'MXFM_STATUS',
+  PZEM_SHUNT = 'PZEM_SHUNT',
+  RENOGY_ROVER_STATUS = 'RENOGY_ROVER_STATUS',
+  TRACER_STATUS = 'TRACER_STATUS'
 }
 
 export type SolarThingAlterQuery = {
@@ -1514,12 +1515,12 @@ export type SolarThingAlterQuery = {
 };
 
 
-export type SolarThingAlterQueryActiveFlagsArgs = {
+export type SolarThingAlterQueryactiveFlagsArgs = {
   dateMillis: Scalars['Long'];
 };
 
 
-export type SolarThingAlterQueryFlagsArgs = {
+export type SolarThingAlterQueryflagsArgs = {
   mustBeActive?: InputMaybe<Scalars['Boolean']>;
 };
 
@@ -1529,7 +1530,7 @@ export type SolarThingBatteryEstimate = {
 };
 
 
-export type SolarThingBatteryEstimateQueryEstimateArgs = {
+export type SolarThingBatteryEstimatequeryEstimateArgs = {
   ratio: Scalars['Float'];
 };
 
@@ -1540,24 +1541,24 @@ export type SolarThingBatteryRecordQuery = {
 
 export type SolarThingEventQuery = {
   __typename?: 'SolarThingEventQuery';
-  fxACModeChange: Array<PacketNode_FxacModeChangePacket>;
-  fxAuxStateChange: Array<PacketNode_FxAuxStateChangePacket>;
-  fxOperationalModeChange: Array<PacketNode_FxOperationalModeChangePacket>;
+  fxACModeChange: Array<PacketNode_FXACModeChangePacket>;
+  fxAuxStateChange: Array<PacketNode_FXAuxStateChangePacket>;
+  fxOperationalModeChange: Array<PacketNode_FXOperationalModeChangePacket>;
   mateCommand: Array<PacketNode_SuccessMateCommandPacket>;
-  mxAuxModeChange: Array<PacketNode_MxAuxModeChangePacket>;
-  mxChargerModeChange: Array<PacketNode_MxChargerModeChangePacket>;
-  mxRawDayEnd: Array<PacketNode_MxRawDayEndPacket>;
+  mxAuxModeChange: Array<PacketNode_MXAuxModeChangePacket>;
+  mxChargerModeChange: Array<PacketNode_MXChargerModeChangePacket>;
+  mxRawDayEnd: Array<PacketNode_MXRawDayEndPacket>;
   roverChargingStateChange: Array<PacketNode_RoverChargingStateChangePacket>;
 };
 
 
-export type SolarThingEventQueryFxOperationalModeChangeArgs = {
+export type SolarThingEventQueryfxOperationalModeChangeArgs = {
   exclude?: InputMaybe<Array<OperationalMode>>;
   include?: InputMaybe<Array<OperationalMode>>;
 };
 
 
-export type SolarThingEventQueryMateCommandArgs = {
+export type SolarThingEventQuerymateCommandArgs = {
   exclude?: InputMaybe<Array<MateCommand>>;
   include?: InputMaybe<Array<MateCommand>>;
 };
@@ -1585,7 +1586,7 @@ export type SolarThingSolcastDayQuery = {
 };
 
 
-export type SolarThingSolcastDayQueryQueryEnergyEstimateArgs = {
+export type SolarThingSolcastDayQueryqueryEnergyEstimateArgs = {
   offset?: InputMaybe<Scalars['Int']>;
 };
 
@@ -1597,7 +1598,7 @@ export type SolarThingSolcastQuery = {
 };
 
 
-export type SolarThingSolcastQueryQueryForecastsArgs = {
+export type SolarThingSolcastQueryqueryForecastsArgs = {
   includePast?: InputMaybe<Scalars['Boolean']>;
 };
 
@@ -1611,12 +1612,12 @@ export type SolarThingStatusQuery = {
   dailyChargeController: Array<PacketNode_DailyChargeController>;
   dualTemperature: Array<PacketNode_DualTemperature>;
   flatData: Array<SimpleNode_FlatData>;
-  fxDaily: Array<PacketNode_DailyFxPacket>;
-  fxStatus: Array<PacketNode_FxStatusPacket>;
-  mxStatus: Array<PacketNode_MxStatusPacket>;
+  fxDaily: Array<PacketNode_DailyFXPacket>;
+  fxStatus: Array<PacketNode_FXStatusPacket>;
+  mxStatus: Array<PacketNode_MXStatusPacket>;
   pzemShuntStatus: Array<PacketNode_PzemShuntStatusPacket>;
   roverStatus: Array<PacketNode_RoverStatusPacket>;
-  solar: Array<PacketNode_PvCurrentAndVoltage>;
+  solar: Array<PacketNode_PVCurrentAndVoltage>;
   solarDevice: Array<PacketNode_SolarDevice>;
   temperature: Array<PacketNode_TemperaturePacket>;
   tracerStatus: Array<PacketNode_TracerStatusPacket>;
@@ -1633,16 +1634,16 @@ export type SuccessMateCommandPacket = {
 };
 
 export enum Support {
-  FullySupported = 'FULLY_SUPPORTED',
-  NotSupported = 'NOT_SUPPORTED',
-  Unknown = 'UNKNOWN'
+  FULLY_SUPPORTED = 'FULLY_SUPPORTED',
+  NOT_SUPPORTED = 'NOT_SUPPORTED',
+  UNKNOWN = 'UNKNOWN'
 }
 
 export enum TargetedMetaPacketType {
-  DataInfo = 'DATA_INFO',
-  DeviceInfo = 'DEVICE_INFO',
-  FxChargingSettings = 'FX_CHARGING_SETTINGS',
-  FxChargingTemperatureAdjust = 'FX_CHARGING_TEMPERATURE_ADJUST'
+  DATA_INFO = 'DATA_INFO',
+  DEVICE_INFO = 'DEVICE_INFO',
+  FX_CHARGING_SETTINGS = 'FX_CHARGING_SETTINGS',
+  FX_CHARGING_TEMPERATURE_ADJUST = 'FX_CHARGING_TEMPERATURE_ADJUST'
 }
 
 export type TemperaturePacket = {
@@ -1658,29 +1659,29 @@ export type TemperaturePacket = {
 };
 
 export enum TracerBatteryTemperatureStatus {
-  LowTemperature = 'LOW_TEMPERATURE',
-  Normal = 'NORMAL',
-  OverTemperature = 'OVER_TEMPERATURE'
+  LOW_TEMPERATURE = 'LOW_TEMPERATURE',
+  NORMAL = 'NORMAL',
+  OVER_TEMPERATURE = 'OVER_TEMPERATURE'
 }
 
 export enum TracerBatteryType {
-  Flooded = 'FLOODED',
-  Gel = 'GEL',
-  Sealed = 'SEALED',
-  User = 'USER'
+  FLOODED = 'FLOODED',
+  GEL = 'GEL',
+  SEALED = 'SEALED',
+  USER = 'USER'
 }
 
 export enum TracerBatteryVoltageStatus {
-  Fault = 'FAULT',
-  LowVoltageDisconnect = 'LOW_VOLTAGE_DISCONNECT',
-  Normal = 'NORMAL',
-  OverVoltage = 'OVER_VOLTAGE',
-  UnderVoltage = 'UNDER_VOLTAGE'
+  FAULT = 'FAULT',
+  LOW_VOLTAGE_DISCONNECT = 'LOW_VOLTAGE_DISCONNECT',
+  NORMAL = 'NORMAL',
+  OVER_VOLTAGE = 'OVER_VOLTAGE',
+  UNDER_VOLTAGE = 'UNDER_VOLTAGE'
 }
 
 export enum TracerChargingType {
-  Mppt = 'MPPT',
-  Pwm = 'PWM'
+  MPPT = 'MPPT',
+  PWM = 'PWM'
 }
 
 export type TracerIdentifier = {
@@ -1834,18 +1835,18 @@ export type Version = {
 };
 
 export enum WarningMode {
-  AcInputFreqHigh = 'AC_INPUT_FREQ_HIGH',
-  AcInputFreqLow = 'AC_INPUT_FREQ_LOW',
-  BuyAmpsGtInputSize = 'BUY_AMPS_GT_INPUT_SIZE',
-  CommError = 'COMM_ERROR',
-  FanFailure = 'FAN_FAILURE',
-  InputVacHigh = 'INPUT_VAC_HIGH',
-  InputVacLow = 'INPUT_VAC_LOW',
-  TempSensorFailed = 'TEMP_SENSOR_FAILED'
+  AC_INPUT_FREQ_HIGH = 'AC_INPUT_FREQ_HIGH',
+  AC_INPUT_FREQ_LOW = 'AC_INPUT_FREQ_LOW',
+  BUY_AMPS_GT_INPUT_SIZE = 'BUY_AMPS_GT_INPUT_SIZE',
+  COMM_ERROR = 'COMM_ERROR',
+  FAN_FAILURE = 'FAN_FAILURE',
+  INPUT_VAC_HIGH = 'INPUT_VAC_HIGH',
+  INPUT_VAC_LOW = 'INPUT_VAC_LOW',
+  TEMP_SENSOR_FAILED = 'TEMP_SENSOR_FAILED'
 }
 
 export enum WeatherPacketType {
-  Temperature = 'TEMPERATURE'
+  TEMPERATURE = 'TEMPERATURE'
 }
 
 export type HomeQueryVariables = Exact<{
@@ -1862,7 +1863,7 @@ export type LegacyQueryVariables = Exact<{
 }>;
 
 
-export type LegacyQuery = { __typename?: 'Query', queryStatusLast: { __typename?: 'SolarThingStatusQuery', flatData: Array<{ __typename?: 'SimpleNode_FlatData', data: { __typename?: 'FlatData', deviceInfoString: string, batteryVoltage?: number | null, operatingModeString: string, errorsString: string, fx?: { __typename?: 'FlatDataFX', loadWattage: number, acBuyWattage: number, acChargeWattage: number, acMode: AcMode, miscModesString: string, warningsString: string } | null, chargeController?: { __typename?: 'FlatDataChargeController', pvWattage: number, chargerWattage: number } | null } }> } };
+export type LegacyQuery = { __typename?: 'Query', queryStatusLast: { __typename?: 'SolarThingStatusQuery', flatData: Array<{ __typename?: 'SimpleNode_FlatData', data: { __typename?: 'FlatData', deviceInfoString: string, batteryVoltage?: number | null, operatingModeString: string, errorsString: string, fx?: { __typename?: 'FlatDataFX', loadWattage: number, acBuyWattage: number, acChargeWattage: number, acMode: ACMode, miscModesString: string, warningsString: string } | null, chargeController?: { __typename?: 'FlatDataChargeController', pvWattage: number, chargerWattage: number } | null } }> } };
 
 export type LoginQueryVariables = Exact<{
   username: Scalars['String'];
@@ -1870,11 +1871,11 @@ export type LoginQueryVariables = Exact<{
 }>;
 
 
-export type LoginQuery = { __typename?: 'Query', databaseAuthorize: { __typename?: 'DatabaseAuthorization', cookie: string, url: string } };
+export type LoginQuery = { __typename?: 'Query', databaseAuthorize: { __typename?: 'DatabaseAuthorization', cookie: string, url: string, expiresAt: any } };
 
 
 export const HomeDocument = `
-    query home($sourceId: String!, $currentTimeMillis: Long!) {
+    query Home($sourceId: String!, $currentTimeMillis: Long!) {
   queryStatusLast(sourceId: $sourceId, to: $currentTimeMillis) {
     batteryVoltageAverage {
       data
@@ -1893,12 +1894,12 @@ export const useHomeQuery = <
       headers?: RequestInit['headers']
     ) =>
     useQuery<HomeQuery, TError, TData>(
-      ['home', variables],
+      ['Home', variables],
       fetcher<HomeQuery, HomeQueryVariables>(client, HomeDocument, variables, headers),
       options
     );
 export const LegacyDocument = `
-    query legacy($sourceId: String!, $currentTimeMillis: Long!) {
+    query Legacy($sourceId: String!, $currentTimeMillis: Long!) {
   queryStatusLast(sourceId: $sourceId, to: $currentTimeMillis) {
     flatData {
       data {
@@ -1933,15 +1934,16 @@ export const useLegacyQuery = <
       headers?: RequestInit['headers']
     ) =>
     useQuery<LegacyQuery, TError, TData>(
-      ['legacy', variables],
+      ['Legacy', variables],
       fetcher<LegacyQuery, LegacyQueryVariables>(client, LegacyDocument, variables, headers),
       options
     );
 export const LoginDocument = `
-    query login($username: String!, $password: String!) {
+    query Login($username: String!, $password: String!) {
   databaseAuthorize(username: $username, password: $password) {
     cookie
     url
+    expiresAt
   }
 }
     `;
@@ -1955,7 +1957,7 @@ export const useLoginQuery = <
       headers?: RequestInit['headers']
     ) =>
     useQuery<LoginQuery, TError, TData>(
-      ['login', variables],
+      ['Login', variables],
       fetcher<LoginQuery, LoginQueryVariables>(client, LoginDocument, variables, headers),
       options
     );

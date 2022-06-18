@@ -1,10 +1,10 @@
-import {Auth, useAuth} from "../authUtil";
+import {useDatabaseAuth} from "../authUtil";
 import React, {useState} from "react";
 import {useLoginQuery} from "../generated/graphql";
 import {graphQLClient} from "../client";
 
 export default function Login() {
-  const [auth, setAuth] = useAuth();
+  const [databaseAuth, setDatabaseAuth] = useDatabaseAuth();
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const { status, data, error, isLoading, isSuccess, refetch } = useLoginQuery(graphQLClient, { username, password }, { refetchOnWindowFocus: false, enabled: false});
@@ -12,8 +12,7 @@ export default function Login() {
     refetch().then(value => {
       if (value.isSuccess && !error) {
         const databaseAuthorization = value.data.databaseAuthorize;
-        const auth: Auth = { databaseAuthorization };
-        setAuth(auth);
+        setDatabaseAuth({ cookie: databaseAuthorization.cookie, url: databaseAuthorization.url, expires: new Date(databaseAuthorization.expiresAt) });
       }
     });
   }
@@ -23,11 +22,11 @@ export default function Login() {
         ? <>
           <p>Logging In...</p>
         </>
-        : auth.databaseAuthorization ? <>
+        : databaseAuth ? <>
           <p>You are logged in</p>
           <button
             onClick={function () {
-              setAuth({databaseAuthorization: undefined});
+              setDatabaseAuth(undefined);
             }}
           >Log Out</button>
         </> : <>

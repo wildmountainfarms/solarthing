@@ -1,37 +1,24 @@
-import {DatabaseAuthorizationInput} from "./generated/graphql";
-import {getCookie, removeCookie, setCookie} from "typescript-cookie";
-import {Dispatch, useState} from "react";
+import {Dispatch} from "react";
+import {useCookies} from "react-cookie";
 
-export interface Auth {
-  databaseAuthorization?: DatabaseAuthorizationInput
+export interface DatabaseAuth {
+  cookie: string
+  url: string
+  expires: Date
 }
 
 
-export function useAuth(): [Auth, Dispatch<Auth>] {
-  const [count, setCount] = useState<number>(0);
-  const authorizationCookieString = getCookie("authorizationCookie");
-  const authorizationDomain = getCookie("authorizationDomain");
-  const result = authorizationCookieString === undefined || authorizationDomain === undefined
-    ? undefined
-    : {
-      cookie: authorizationCookieString, url: authorizationDomain
-    };
+export function useDatabaseAuth(): [DatabaseAuth | undefined, Dispatch<DatabaseAuth | undefined>] {
+  const [currentValue, setCookie, removeCookie] = useCookies<"databaseAuthCookie", DatabaseAuth>(["databaseAuthCookie"])
   return [
-    { databaseAuthorization: result },
-    auth => {
-      setCount(c => c + 1);
-      saveDatabaseAuthorization(auth);
+    Object.keys(currentValue).length === 0 ? undefined : currentValue,
+    databaseAuth => {
+      if (databaseAuth === undefined) {
+        removeCookie("databaseAuthCookie");
+      } else {
+        setCookie("databaseAuthCookie", databaseAuth, {expires: databaseAuth.expires});
+      }
     }
   ];
 }
 
-function saveDatabaseAuthorization(auth: Auth) {
-  const authorization = auth.databaseAuthorization;
-  if (authorization === undefined) {
-    removeCookie("authorizationCookie");
-    removeCookie("authorizationDomain");
-  } else {
-    setCookie("authorizationCookie", authorization.cookie);
-    setCookie("authorizationDomain", authorization.url);
-  }
-}

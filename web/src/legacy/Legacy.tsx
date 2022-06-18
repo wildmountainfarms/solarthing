@@ -1,5 +1,5 @@
 import styles from './Legacy.module.css'
-import {AcMode, useLegacyQuery} from "../generated/graphql";
+import {ACMode, useLegacyQuery} from "../generated/graphql";
 import {graphQLClient} from "../client";
 import {getTimeMillisRounded} from "../timeUtil";
 
@@ -17,13 +17,13 @@ export default function Legacy() {
   const fallbackMessage = error ? "ERROR" : isLoading ? "Loading" : "No data";
   let generatorStatus: string | undefined;
   switch (nestedData?.fx?.acMode) {
-    case AcMode.AcUse:
+    case ACMode.AC_USE:
       generatorStatus = "Using generator power";
       break;
-    case AcMode.NoAc:
+    case ACMode.NO_AC:
       generatorStatus = "Generator off";
       break;
-    case AcMode.AcDrop:
+    case ACMode.AC_DROP:
       generatorStatus = "Generator on, not using";
       break;
     default:

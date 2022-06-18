@@ -1,7 +1,9 @@
 package me.retrodaredevil.solarthing.rest.graphql.service.web;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import okhttp3.Cookie;
@@ -49,6 +51,11 @@ public class DatabaseAuthorization {
 	@JsonProperty("cookie") // public to avoid IllegalAccessException in GraphQL-spqr code
 	public @NotNull String getCookieString() {
 		return cookie.toString();
+	}
+
+	@GraphQLInclude("expiresAt")
+	public long getExpiresAt() {
+		return cookie.expiresAt();
 	}
 
 	public Cookie getCookie() {
