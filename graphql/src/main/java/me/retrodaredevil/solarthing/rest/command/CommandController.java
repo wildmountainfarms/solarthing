@@ -21,12 +21,12 @@ import org.springframework.web.server.ResponseStatusException;
 // Caused by: java.lang.IllegalArgumentException: When allowCredentials is true, allowedOrigins cannot contain the special value "*" since that cannot be set on the "Access-Control-Allow-Origin" response header. To allow credentials to a set of origins, list them explicitly or consider using "allowedOriginPatterns" instead.
 @CrossOrigin(originPatterns = { "http://*:[*]", "https://*:[*]" }, allowCredentials = "true") // This endpoint is consumed by client-side Grafana code, so we need this
 @RestController
-@RequestMapping({ "/command", "/api/v1/command" })
+@RequestMapping("/api/v1/command")
 public class CommandController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CommandController.class);
 	/*
 	For testing this, go to this URL:
-	http://localhost:8080/command/run?apiKey=0f5c1855-3a51-4fa9-b810-1d2b604fb154&commandName=GEN%20ON
+	http://localhost:8080/api/v1/command/run?apiKey=0f5c1855-3a51-4fa9-b810-1d2b604fb154&commandName=GEN%20ON
 	 */
 
 	private final CommandHandler commandHandler;

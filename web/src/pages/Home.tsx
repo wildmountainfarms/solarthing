@@ -2,6 +2,7 @@ import {useHomeQuery} from "../generated/graphql";
 import {graphQLClient} from "../client";
 import React from "react";
 import {getTimeMillisRounded} from "../timeUtil";
+import Layout from "../layout/Layout";
 
 function BatteryVoltage() {
   // TODO don't hardcode default sourceId
@@ -17,14 +18,14 @@ function BatteryVoltage() {
 
 export default function Home() {
   return <>
-    <div>
+    <Layout>
       <div className="App">
         <header className="App-header">
           <h1>SolarThing</h1>
           <BatteryVoltage/>
 
-         </header>
-       </div>
-    </div>
+        </header>
+      </div>
+    </Layout>
   </>
 }

@@ -1,0 +1,38 @@
+
+/*
+Thansk https://stackoverflow.com/a/48822854/5434860
+We can look at that again if we want a header spanning the width of the page
+ */
+.page {
+  display: flex
+}
+
+.sideNav {
+  padding-top: 2em;
+  width: 10em;
+  background-color: #512;
+}
+
+.main {
+  flex: 1 0 auto;
+}
+
+.navLinkCurrent, .navLink {
+  margin-top: 5px;
+  width: 10em;
+  height: 2em;
+  background-color: #845;
+  display: flex;
+  align-items: center;
+}
+.navLink:hover {
+  background-color: #877;
+}
+.navLinkCurrent {
+  background-color: #666;
+}
+.navLinkContents {
+  padding-left: 1em;
+  color: #FFF;
+  text-decoration: none;
+}
