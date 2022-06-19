@@ -3,14 +3,23 @@
 Thansk https://stackoverflow.com/a/48822854/5434860
 We can look at that again if we want a header spanning the width of the page
  */
+.pageWrapper {
+  width: 100%;
+  height: 100%;
+}
 .page {
-  display: flex
+  display: flex;
 }
 
 .sideNav {
+  height: 100vh;
   padding-top: 2em;
   width: 10em;
   background-color: #512;
+}
+.sideNavContents {
+  /*padding-top: 2em;*/
+
 }
 
 .main {
@@ -35,4 +44,22 @@ We can look at that again if we want a header spanning the width of the page
   padding-left: 1em;
   color: #FFF;
   text-decoration: none;
+}
+
+.navFooter {
+  height: 4em;
+  width: 10em;
+  display: flex;
+  /*position: absolute;*/
+  /*margin-top: auto;*/
+  align-self: flex-end;
+  align-items: center;
+  cursor: pointer; /* You can click this to login*/
+}
+.navFooter:hover {
+  background-color: #877;
+}
+.navFooterContents {
+  padding-left: 1em;
+  color: #FFF;
 }

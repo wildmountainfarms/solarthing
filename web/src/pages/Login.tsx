@@ -2,6 +2,7 @@ import {useDatabaseAuth} from "../authUtil";
 import React, {useState} from "react";
 import {useLoginQuery} from "../generated/graphql";
 import {graphQLClient} from "../client";
+import Layout from "../layout/Layout";
 
 export default function Login() {
   const [databaseAuth, setDatabaseAuth] = useDatabaseAuth();
@@ -17,7 +18,7 @@ export default function Login() {
     });
   }
   return <>
-    <div>
+    <Layout>
       { isLoading
         ? <>
           <p>Logging In...</p>
@@ -56,6 +57,6 @@ export default function Login() {
           </form>
 
         </>}
-    </div>
+    </Layout>
   </>;
 }

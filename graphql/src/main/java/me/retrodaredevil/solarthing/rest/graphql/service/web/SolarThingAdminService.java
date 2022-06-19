@@ -3,6 +3,8 @@ package me.retrodaredevil.solarthing.rest.graphql.service.web;
 import io.leangen.graphql.annotations.GraphQLMutation;
 import io.leangen.graphql.annotations.GraphQLQuery;
 import me.retrodaredevil.solarthing.annotations.NotNull;
+import me.retrodaredevil.solarthing.annotations.Nullable;
+import me.retrodaredevil.solarthing.database.SessionInfo;
 import me.retrodaredevil.solarthing.database.VersionedPacket;
 import me.retrodaredevil.solarthing.database.exception.NotFoundSolarThingDatabaseException;
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
@@ -28,6 +30,18 @@ public class SolarThingAdminService {
 	@GraphQLQuery
 	public @NotNull DatabaseAuthorization databaseAuthorize(@NotNull String username, @NotNull String password) {
 		return databaseProvider.authorize(username, password);
+	}
+
+	@GraphQLQuery
+	public @Nullable String username(@Nullable DatabaseAuthorization authorization) {
+		// Allow authorization to be nullable, because it is valid to call getSessionInfo() without being logged in
+		final SessionInfo sessionInfo;
+		try {
+			sessionInfo = databaseProvider.getDatabase(authorization).getSessionInfo();
+		} catch (SolarThingDatabaseException e) {
+			throw new DatabaseException(e);
+		}
+		return sessionInfo.getUsername();
 	}
 
 	@GraphQLQuery

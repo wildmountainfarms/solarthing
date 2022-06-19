@@ -10,11 +10,13 @@ import me.retrodaredevil.couchdbjava.json.JsonData;
 import me.retrodaredevil.couchdbjava.json.StringJsonData;
 import me.retrodaredevil.couchdbjava.json.jackson.CouchDbJacksonUtil;
 import me.retrodaredevil.couchdbjava.response.DocumentData;
+import me.retrodaredevil.couchdbjava.response.SessionGetResponse;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.commands.packets.status.CommandStatusPacket;
 import me.retrodaredevil.solarthing.database.MillisDatabase;
+import me.retrodaredevil.solarthing.database.SessionInfo;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
 import me.retrodaredevil.solarthing.database.UpdateToken;
 import me.retrodaredevil.solarthing.database.VersionedPacket;
@@ -44,6 +46,7 @@ import static java.util.Objects.requireNonNull;
 
 public class CouchDbSolarThingDatabase implements SolarThingDatabase {
 
+	private final CouchDbInstance instance;
 	private final CouchDbDatabase closedDatabase;
 	private final ObjectMapper metaObjectMapper;
 	private final ObjectMapper simpleObjectMapper;
@@ -61,6 +64,7 @@ public class CouchDbSolarThingDatabase implements SolarThingDatabase {
 	 * @param mapper The object mapper. "Lenient" settings should have already been applied to this
 	 */
 	public CouchDbSolarThingDatabase(CouchDbInstance instance, PacketParsingErrorHandler errorHandler, ObjectMapper mapper) {
+		this.instance = instance;
 		closedDatabase = instance.getDatabase(SolarThingConstants.CLOSED_DATABASE);
 		metaObjectMapper = JacksonUtil.lenientSubTypeMapper(mapper.copy());
 		metaObjectMapper.getSubtypeResolver().registerSubtypes(TargetMetaPacket.class, DeviceInfoPacket.class, DataMetaPacket.class, FXChargingSettingsPacket.class, FXChargingTemperatureAdjustPacket.class);
@@ -158,6 +162,18 @@ public class CouchDbSolarThingDatabase implements SolarThingDatabase {
 		} catch (CouchDbException e) {
 			throw ExceptionUtil.createFromCouchDbException(e);
 		}
+	}
+
+	@Override
+	public @NotNull SessionInfo getSessionInfo() throws SolarThingDatabaseException{
+		final SessionGetResponse response;
+		try {
+			response = instance.getSessionInfo();
+		} catch (CouchDbException e) {
+			throw ExceptionUtil.createFromCouchDbException(e);
+		}
+		String name = response.getUserContext().getName();
+		return new SessionInfo(name);
 	}
 
 	private static DocumentData queryDocument(CouchDbDatabase database, String name, UpdateToken updateToken) throws SolarThingDatabaseException {

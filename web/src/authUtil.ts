@@ -1,17 +1,26 @@
 import {Dispatch} from "react";
 import {useCookies} from "react-cookie";
+import {DatabaseAuthorizationInput} from "./generated/graphql";
 
 export interface DatabaseAuth {
-  cookie: string
-  url: string
-  expires: Date
+  cookie: string;
+  url: string;
+  expires: Date;
+
 }
 
+export function toDatabaseAuthorizationInput(databaseAuth: DatabaseAuth): DatabaseAuthorizationInput {
+  return { cookie: databaseAuth.cookie, url: databaseAuth.url };
+}
+
+interface StoredCookies {
+  databaseAuthCookie: DatabaseAuth
+}
 
 export function useDatabaseAuth(): [DatabaseAuth | undefined, Dispatch<DatabaseAuth | undefined>] {
-  const [currentValue, setCookie, removeCookie] = useCookies<"databaseAuthCookie", DatabaseAuth>(["databaseAuthCookie"])
+  const [currentValue, setCookie, removeCookie] = useCookies<"databaseAuthCookie", StoredCookies>(["databaseAuthCookie"]);
   return [
-    Object.keys(currentValue).length === 0 ? undefined : currentValue,
+    currentValue.databaseAuthCookie,
     databaseAuth => {
       if (databaseAuth === undefined) {
         removeCookie("databaseAuthCookie");

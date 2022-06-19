@@ -71,6 +71,11 @@ General rule of thumb:
   * Why the custom NotNull/Nullable? We want good Kotlin support, and we want to be able to annotate more than just methods.
 * If something is exposed through GraphQL and it is not null, always put a `@NotNull` on it.
 
+### Branching
+If you are committing directly to the wildmountainfarms/solarthing project, you should be using branch names using
+the `my-branch-name` format. Unless you have access to commit to the solarthing project directly, 
+you can name the branch whatever you would like on your forked solarthing repository.
+
 ### Customizing
 The different command line options give you may ways to receive data and export data. CouchDB and InfluxDB
 are both supported.

@@ -1089,6 +1089,7 @@ export type Query = {
   queryStatus: SolarThingStatusQuery;
   /** Query the latest collection of status packets on or before the 'to' timestamp. */
   queryStatusLast: SolarThingStatusQuery;
+  username?: Maybe<Scalars['String']>;
 };
 
 
@@ -1211,6 +1212,12 @@ export type QueryqueryStatusLastArgs = {
   reversed?: InputMaybe<Scalars['Boolean']>;
   sourceId?: InputMaybe<Scalars['String']>;
   to: Scalars['Long'];
+};
+
+
+/** Query root */
+export type QueryusernameArgs = {
+  authorization?: InputMaybe<DatabaseAuthorizationInput>;
 };
 
 export enum RoverBatteryType {
@@ -1849,6 +1856,13 @@ export enum WeatherPacketType {
   TEMPERATURE = 'TEMPERATURE'
 }
 
+export type LoginInfoQueryVariables = Exact<{
+  authorization?: InputMaybe<DatabaseAuthorizationInput>;
+}>;
+
+
+export type LoginInfoQuery = { __typename?: 'Query', username?: string | null };
+
 export type HomeQueryVariables = Exact<{
   sourceId: Scalars['String'];
   currentTimeMillis: Scalars['Long'];
@@ -1874,6 +1888,25 @@ export type LoginQueryVariables = Exact<{
 export type LoginQuery = { __typename?: 'Query', databaseAuthorize: { __typename?: 'DatabaseAuthorization', cookie: string, url: string, expiresAt: any } };
 
 
+export const LoginInfoDocument = `
+    query LoginInfo($authorization: DatabaseAuthorizationInput) {
+  username(authorization: $authorization)
+}
+    `;
+export const useLoginInfoQuery = <
+      TData = LoginInfoQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables?: LoginInfoQueryVariables,
+      options?: UseQueryOptions<LoginInfoQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<LoginInfoQuery, TError, TData>(
+      variables === undefined ? ['LoginInfo'] : ['LoginInfo', variables],
+      fetcher<LoginInfoQuery, LoginInfoQueryVariables>(client, LoginInfoDocument, variables, headers),
+      options
+    );
 export const HomeDocument = `
     query Home($sourceId: String!, $currentTimeMillis: Long!) {
   queryStatusLast(sourceId: $sourceId, to: $currentTimeMillis) {

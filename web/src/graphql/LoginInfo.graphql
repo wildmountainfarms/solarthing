@@ -1,0 +1,3 @@
+query LoginInfo($authorization: DatabaseAuthorizationInput) {
+  username(authorization: $authorization)
+}

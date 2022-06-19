@@ -43,4 +43,6 @@ public interface SolarThingDatabase {
 	default @NotNull VersionedPacket<AuthorizationPacket> queryAuthorized() throws SolarThingDatabaseException { return requireNonNull(queryAuthorized(null)); }
 
 	void updateAuthorized(@NotNull AuthorizationPacket authorizationPacket, @Nullable UpdateToken updateToken) throws SolarThingDatabaseException;
+
+	@NotNull SessionInfo getSessionInfo() throws SolarThingDatabaseException;
 }
