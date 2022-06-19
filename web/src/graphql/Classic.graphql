@@ -1,4 +1,4 @@
-query Legacy($sourceId: String!, $currentTimeMillis: Long!){
+query Classic($sourceId: String!, $currentTimeMillis: Long!){
   queryStatusLast(sourceId: $sourceId, to: $currentTimeMillis) {
     flatData {
       data {

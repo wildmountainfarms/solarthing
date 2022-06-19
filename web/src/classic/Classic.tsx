@@ -1,13 +1,14 @@
-import styles from './Legacy.module.css'
-import {ACMode, useLegacyQuery} from "../generated/graphql";
+import styles from './Classic.module.css'
+import {ACMode, useClassicQuery} from "../generated/graphql";
 import {graphQLClient} from "../client";
 import {getTimeMillisRounded} from "../timeUtil";
+import Layout from "../layout/Layout";
 
 
-export default function Legacy() {
+function Classic() {
   // TODO don't use default source ID
   const timeMillisRounded = getTimeMillisRounded();
-  const {data, error, isLoading, isLoadingError } = useLegacyQuery(
+  const {data, error, isLoading, isLoadingError } = useClassicQuery(
     graphQLClient,
     { sourceId: "default", currentTimeMillis: "" + timeMillisRounded},
     { refetchInterval: 10_000, keepPreviousData: true }
@@ -77,5 +78,12 @@ export default function Legacy() {
       </section>
       <h6 className={styles.header}>Programmed by Josh and Dave</h6>
     </div>
+  </>
+}
+export default function ClassicWithLayout() {
+  return <>
+    <Layout>
+      <Classic/>
+    </Layout>
   </>
 }

@@ -1856,12 +1856,13 @@ export enum WeatherPacketType {
   TEMPERATURE = 'TEMPERATURE'
 }
 
-export type LoginInfoQueryVariables = Exact<{
-  authorization?: InputMaybe<DatabaseAuthorizationInput>;
+export type ClassicQueryVariables = Exact<{
+  sourceId: Scalars['String'];
+  currentTimeMillis: Scalars['Long'];
 }>;
 
 
-export type LoginInfoQuery = { __typename?: 'Query', username?: string | null };
+export type ClassicQuery = { __typename?: 'Query', queryStatusLast: { __typename?: 'SolarThingStatusQuery', flatData: Array<{ __typename?: 'SimpleNode_FlatData', data: { __typename?: 'FlatData', deviceInfoString: string, batteryVoltage?: number | null, operatingModeString: string, errorsString: string, fx?: { __typename?: 'FlatDataFX', loadWattage: number, acBuyWattage: number, acChargeWattage: number, acMode: ACMode, miscModesString: string, warningsString: string } | null, chargeController?: { __typename?: 'FlatDataChargeController', pvWattage: number, chargerWattage: number } | null } }> } };
 
 export type HomeQueryVariables = Exact<{
   sourceId: Scalars['String'];
@@ -1871,14 +1872,6 @@ export type HomeQueryVariables = Exact<{
 
 export type HomeQuery = { __typename?: 'Query', queryStatusLast: { __typename?: 'SolarThingStatusQuery', batteryVoltageAverage: Array<{ __typename?: 'SimpleNode_Float', data: number, dateMillis: any }> } };
 
-export type LegacyQueryVariables = Exact<{
-  sourceId: Scalars['String'];
-  currentTimeMillis: Scalars['Long'];
-}>;
-
-
-export type LegacyQuery = { __typename?: 'Query', queryStatusLast: { __typename?: 'SolarThingStatusQuery', flatData: Array<{ __typename?: 'SimpleNode_FlatData', data: { __typename?: 'FlatData', deviceInfoString: string, batteryVoltage?: number | null, operatingModeString: string, errorsString: string, fx?: { __typename?: 'FlatDataFX', loadWattage: number, acBuyWattage: number, acChargeWattage: number, acMode: ACMode, miscModesString: string, warningsString: string } | null, chargeController?: { __typename?: 'FlatDataChargeController', pvWattage: number, chargerWattage: number } | null } }> } };
-
 export type LoginQueryVariables = Exact<{
   username: Scalars['String'];
   password: Scalars['String'];
@@ -1887,24 +1880,52 @@ export type LoginQueryVariables = Exact<{
 
 export type LoginQuery = { __typename?: 'Query', databaseAuthorize: { __typename?: 'DatabaseAuthorization', cookie: string, url: string, expiresAt: any } };
 
+export type LoginInfoQueryVariables = Exact<{
+  authorization?: InputMaybe<DatabaseAuthorizationInput>;
+}>;
 
-export const LoginInfoDocument = `
-    query LoginInfo($authorization: DatabaseAuthorizationInput) {
-  username(authorization: $authorization)
+
+export type LoginInfoQuery = { __typename?: 'Query', username?: string | null };
+
+
+export const ClassicDocument = `
+    query Classic($sourceId: String!, $currentTimeMillis: Long!) {
+  queryStatusLast(sourceId: $sourceId, to: $currentTimeMillis) {
+    flatData {
+      data {
+        deviceInfoString
+        batteryVoltage
+        operatingModeString
+        errorsString
+        fx {
+          loadWattage
+          acBuyWattage
+          acChargeWattage
+          acMode
+          miscModesString
+          warningsString
+        }
+        chargeController {
+          pvWattage
+          chargerWattage
+        }
+      }
+    }
+  }
 }
     `;
-export const useLoginInfoQuery = <
-      TData = LoginInfoQuery,
+export const useClassicQuery = <
+      TData = ClassicQuery,
       TError = unknown
     >(
       client: GraphQLClient,
-      variables?: LoginInfoQueryVariables,
-      options?: UseQueryOptions<LoginInfoQuery, TError, TData>,
+      variables: ClassicQueryVariables,
+      options?: UseQueryOptions<ClassicQuery, TError, TData>,
       headers?: RequestInit['headers']
     ) =>
-    useQuery<LoginInfoQuery, TError, TData>(
-      variables === undefined ? ['LoginInfo'] : ['LoginInfo', variables],
-      fetcher<LoginInfoQuery, LoginInfoQueryVariables>(client, LoginInfoDocument, variables, headers),
+    useQuery<ClassicQuery, TError, TData>(
+      ['Classic', variables],
+      fetcher<ClassicQuery, ClassicQueryVariables>(client, ClassicDocument, variables, headers),
       options
     );
 export const HomeDocument = `
@@ -1931,46 +1952,6 @@ export const useHomeQuery = <
       fetcher<HomeQuery, HomeQueryVariables>(client, HomeDocument, variables, headers),
       options
     );
-export const LegacyDocument = `
-    query Legacy($sourceId: String!, $currentTimeMillis: Long!) {
-  queryStatusLast(sourceId: $sourceId, to: $currentTimeMillis) {
-    flatData {
-      data {
-        deviceInfoString
-        batteryVoltage
-        operatingModeString
-        errorsString
-        fx {
-          loadWattage
-          acBuyWattage
-          acChargeWattage
-          acMode
-          miscModesString
-          warningsString
-        }
-        chargeController {
-          pvWattage
-          chargerWattage
-        }
-      }
-    }
-  }
-}
-    `;
-export const useLegacyQuery = <
-      TData = LegacyQuery,
-      TError = unknown
-    >(
-      client: GraphQLClient,
-      variables: LegacyQueryVariables,
-      options?: UseQueryOptions<LegacyQuery, TError, TData>,
-      headers?: RequestInit['headers']
-    ) =>
-    useQuery<LegacyQuery, TError, TData>(
-      ['Legacy', variables],
-      fetcher<LegacyQuery, LegacyQueryVariables>(client, LegacyDocument, variables, headers),
-      options
-    );
 export const LoginDocument = `
     query Login($username: String!, $password: String!) {
   databaseAuthorize(username: $username, password: $password) {
@@ -1992,5 +1973,24 @@ export const useLoginQuery = <
     useQuery<LoginQuery, TError, TData>(
       ['Login', variables],
       fetcher<LoginQuery, LoginQueryVariables>(client, LoginDocument, variables, headers),
+      options
+    );
+export const LoginInfoDocument = `
+    query LoginInfo($authorization: DatabaseAuthorizationInput) {
+  username(authorization: $authorization)
+}
+    `;
+export const useLoginInfoQuery = <
+      TData = LoginInfoQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables?: LoginInfoQueryVariables,
+      options?: UseQueryOptions<LoginInfoQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<LoginInfoQuery, TError, TData>(
+      variables === undefined ? ['LoginInfo'] : ['LoginInfo', variables],
+      fetcher<LoginInfoQuery, LoginInfoQueryVariables>(client, LoginInfoDocument, variables, headers),
       options
     );
