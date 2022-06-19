@@ -46,29 +46,25 @@ export default function Layout({children}: LayoutProps) {
     navigate("/login");
   }
   return <>
-    <div className={styles.pageWrapper}>
-      <div className={styles.page}>
-        <div className={styles.sideNav}>
-          <div>
-            <PageLink to={"/"} name={"Home"}/>
-            <PageLink to={"/legacy"} name={"Legacy"}/>
-          </div>
+    <div className={styles.page}>
+      <div className={styles.sideNav}>
+        <PageLink to={"/"} name={"Home"}/>
+        <PageLink to={"/legacy"} name={"Legacy"}/>
 
-          <div className={styles.navFooter} onClick={authorization === undefined ? goToLogin : logout}>
-            <div className={styles.navFooterContents}>
-              { authorization !== undefined ? <>
-                Logout
-                <br/>
-                { data?.username ?? "..."}
-              </> : <>
-                Login
-              </> }
-            </div>
+        <div className={styles.navFooter} onClick={authorization === undefined ? goToLogin : logout}>
+          <div className={styles.navFooterContents}>
+            { authorization !== undefined ? <>
+              Logout
+              <br/>
+              { data?.username ?? "..."}
+            </> : <>
+              Login
+            </> }
           </div>
         </div>
-        <div className={styles.main}>
-          {children}
-        </div>
+      </div>
+      <div className={styles.main}>
+        {children}
       </div>
     </div>
   </>
