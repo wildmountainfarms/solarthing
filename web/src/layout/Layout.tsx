@@ -49,8 +49,10 @@ export default function Layout({children}: LayoutProps) {
     <div className={styles.pageWrapper}>
       <div className={styles.page}>
         <div className={styles.sideNav}>
-          <PageLink to={"/"} name={"Home"}/>
-          <PageLink to={"/legacy"} name={"Legacy"}/>
+          <div>
+            <PageLink to={"/"} name={"Home"}/>
+            <PageLink to={"/legacy"} name={"Legacy"}/>
+          </div>
 
           <div className={styles.navFooter} onClick={authorization === undefined ? goToLogin : logout}>
             <div className={styles.navFooterContents}>

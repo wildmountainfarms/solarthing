@@ -9,6 +9,9 @@ We can look at that again if we want a header spanning the width of the page
 }
 .page {
   display: flex;
+  height: 100%;
+  width: 100%;
+  margin: 0;
 }
 
 .sideNav {
@@ -16,10 +19,9 @@ We can look at that again if we want a header spanning the width of the page
   padding-top: 2em;
   width: 10em;
   background-color: #512;
-}
-.sideNavContents {
-  /*padding-top: 2em;*/
 
+  display: flex;
+  flex-direction: column;
 }
 
 .main {
@@ -47,12 +49,12 @@ We can look at that again if we want a header spanning the width of the page
 }
 
 .navFooter {
+  margin-top: auto;
+  margin-bottom: 0;
+
   height: 4em;
   width: 10em;
   display: flex;
-  /*position: absolute;*/
-  /*margin-top: auto;*/
-  align-self: flex-end;
   align-items: center;
   cursor: pointer; /* You can click this to login*/
 }
