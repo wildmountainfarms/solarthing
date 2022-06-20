@@ -18,7 +18,9 @@ We can look at that again if we want a header spanning the width of the page
 }
 
 .main {
+  height: 100vh;
   flex: 1 0 auto;
+  overflow-y: auto; /* Have a scrollbar for the main div only */
 }
 
 .navLinkCurrent, .navLink {
@@ -44,16 +46,32 @@ We can look at that again if we want a header spanning the width of the page
 .navFooter {
   margin-top: auto;
 
+}
+.navFooterLogin {
   height: 4em;
   width: 10em;
   display: flex;
   align-items: center;
   cursor: pointer; /* You can click this to login*/
 }
-.navFooter:hover {
+.navFooterLogin:hover {
   background-color: #877;
 }
-.navFooterContents {
+.navFooterLoginContents {
   padding-left: 1em;
   color: #FFF;
+}
+
+.sourceIdSelector {
+  width: 10em;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Vertically center */
+  height: 6em;
+  justify-content: center; /* Horizontally center*/
+  color: #FFF;
+  background-color: #666;
+}
+.sourceIdSelector input {
+  width: 8em;
 }

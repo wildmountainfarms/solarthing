@@ -3,12 +3,13 @@ import {graphQLClient} from "../client";
 import React from "react";
 import {getTimeMillisRounded} from "../timeUtil";
 import Layout from "../layout/Layout";
+import {useSourceId} from "../sourceUtil";
 
 function BatteryVoltage() {
-  // TODO don't hardcode default sourceId
+  const [sourceId] = useSourceId();
   // We have to use a rounded up value to make sure that useQuery doesn't keep reloading the data
   const timeMillisRounded = getTimeMillisRounded();
-  const {data, error, isLoading, isSuccess} = useHomeQuery(graphQLClient, { sourceId: "default", currentTimeMillis: "" + timeMillisRounded});
+  const {data, error, isLoading, isSuccess} = useHomeQuery(graphQLClient, { sourceId, currentTimeMillis: "" + timeMillisRounded});
   return <>
     {!isSuccess
       ? <p>Loading Data</p>

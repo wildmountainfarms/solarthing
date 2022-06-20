@@ -3,14 +3,15 @@ import {ACMode, useClassicQuery} from "../generated/graphql";
 import {graphQLClient} from "../client";
 import {getTimeMillisRounded} from "../timeUtil";
 import Layout from "../layout/Layout";
+import {useSourceId} from "../sourceUtil";
 
 
 function Classic() {
-  // TODO don't use default source ID
+  const [sourceId] = useSourceId();
   const timeMillisRounded = getTimeMillisRounded();
   const {data, error, isLoading, isLoadingError } = useClassicQuery(
     graphQLClient,
-    { sourceId: "default", currentTimeMillis: "" + timeMillisRounded},
+    { sourceId, currentTimeMillis: "" + timeMillisRounded},
     { refetchInterval: 10_000, keepPreviousData: true }
   );
   const actualData = isLoadingError ? undefined : data;
