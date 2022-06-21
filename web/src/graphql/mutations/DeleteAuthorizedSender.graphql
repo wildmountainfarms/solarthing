@@ -1,0 +1,4 @@
+mutation DeleteAuthorizedSender($sender: String!, $authorization: DatabaseAuthorizationInput!) {
+  removeAuthorizedSender(sender: $sender, authorization: $authorization)
+}
+

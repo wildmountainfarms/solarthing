@@ -1,6 +1,6 @@
 import { GraphQLClient } from 'graphql-request';
 import { RequestInit } from 'graphql-request/dist/types.dom';
-import { useQuery, UseQueryOptions } from 'react-query';
+import { useQuery, useMutation, UseQueryOptions, UseMutationOptions } from 'react-query';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -1892,6 +1892,14 @@ export type LoginInfoQueryVariables = Exact<{
 
 export type LoginInfoQuery = { __typename?: 'Query', username?: string | null };
 
+export type DeleteAuthorizedSenderMutationVariables = Exact<{
+  sender: Scalars['String'];
+  authorization: DatabaseAuthorizationInput;
+}>;
+
+
+export type DeleteAuthorizedSenderMutation = { __typename?: 'Mutation', removeAuthorizedSender: boolean };
+
 
 export const AuthorizedDocument = `
     query Authorized {
@@ -2021,5 +2029,23 @@ export const useLoginInfoQuery = <
     useQuery<LoginInfoQuery, TError, TData>(
       variables === undefined ? ['LoginInfo'] : ['LoginInfo', variables],
       fetcher<LoginInfoQuery, LoginInfoQueryVariables>(client, LoginInfoDocument, variables, headers),
+      options
+    );
+export const DeleteAuthorizedSenderDocument = `
+    mutation DeleteAuthorizedSender($sender: String!, $authorization: DatabaseAuthorizationInput!) {
+  removeAuthorizedSender(sender: $sender, authorization: $authorization)
+}
+    `;
+export const useDeleteAuthorizedSenderMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<DeleteAuthorizedSenderMutation, TError, DeleteAuthorizedSenderMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<DeleteAuthorizedSenderMutation, TError, DeleteAuthorizedSenderMutationVariables, TContext>(
+      ['DeleteAuthorizedSender'],
+      (variables?: DeleteAuthorizedSenderMutationVariables) => fetcher<DeleteAuthorizedSenderMutation, DeleteAuthorizedSenderMutationVariables>(client, DeleteAuthorizedSenderDocument, variables, headers)(),
       options
     );
