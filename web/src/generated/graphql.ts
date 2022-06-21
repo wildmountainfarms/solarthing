@@ -1856,6 +1856,11 @@ export enum WeatherPacketType {
   TEMPERATURE = 'TEMPERATURE'
 }
 
+export type AuthorizedQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AuthorizedQuery = { __typename?: 'Query', authorizedSenders: Array<{ __typename?: 'AuthorizedSender', sender: string, data: { __typename?: 'PermissionObject', publicKey?: string | null } }> };
+
 export type ClassicQueryVariables = Exact<{
   sourceId: Scalars['String'];
   currentTimeMillis: Scalars['Long'];
@@ -1888,6 +1893,30 @@ export type LoginInfoQueryVariables = Exact<{
 export type LoginInfoQuery = { __typename?: 'Query', username?: string | null };
 
 
+export const AuthorizedDocument = `
+    query Authorized {
+  authorizedSenders {
+    sender
+    data {
+      publicKey
+    }
+  }
+}
+    `;
+export const useAuthorizedQuery = <
+      TData = AuthorizedQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables?: AuthorizedQueryVariables,
+      options?: UseQueryOptions<AuthorizedQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<AuthorizedQuery, TError, TData>(
+      variables === undefined ? ['Authorized'] : ['Authorized', variables],
+      fetcher<AuthorizedQuery, AuthorizedQueryVariables>(client, AuthorizedDocument, variables, headers),
+      options
+    );
 export const ClassicDocument = `
     query Classic($sourceId: String!, $currentTimeMillis: Long!) {
   queryStatusLast(sourceId: $sourceId, to: $currentTimeMillis) {

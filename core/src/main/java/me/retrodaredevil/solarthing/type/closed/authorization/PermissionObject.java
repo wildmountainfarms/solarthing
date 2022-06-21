@@ -17,7 +17,7 @@ import static java.util.Objects.requireNonNull;
  * checked each time a particular permission needs to be used.
  */
 @JsonExplicit
-@JsonIgnoreProperties({"fragments"}) // we need to allow this to be present for a few versions after we remove this to allow SolarThing instances to be updated to accept packets that do NOT have this property
+@JsonIgnoreProperties(value = {"fragments"}, allowGetters = true) // we need to allow this to be present for a few versions after we remove this to allow SolarThing instances to be updated to accept packets that do NOT have this property
 public final class PermissionObject {
 	private final String publicKey;
 	private final PublicKey publicKeyObject;

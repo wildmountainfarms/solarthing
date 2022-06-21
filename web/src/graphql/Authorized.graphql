@@ -1,0 +1,8 @@
+query Authorized {
+  authorizedSenders {
+    sender
+    data {
+      publicKey
+    }
+  }
+}

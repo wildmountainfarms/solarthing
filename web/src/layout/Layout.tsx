@@ -83,6 +83,7 @@ export default function Layout({children}: LayoutProps) {
     <div className={styles.page}>
       <div className={styles.sideNav}>
         <PageLink to={"/"} name={"Home"}/>
+        <PageLink to={"/authorized"} name={"Authorized"}/>
         <PageLink to={"/classic"} name={"Classic"}/>
 
         <div className={styles.navFooter}>

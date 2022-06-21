@@ -3,6 +3,7 @@ import React, {useState} from "react";
 import {useLoginQuery} from "../generated/graphql";
 import {graphQLClient} from "../client";
 import Layout from "../layout/Layout";
+import styles from './SolarThing.module.css';
 
 export default function Login() {
   const [databaseAuth, setDatabaseAuth] = useDatabaseAuth();
@@ -19,44 +20,45 @@ export default function Login() {
   }
   return <>
     <Layout>
-      { isLoading
-        ? <>
-          <p>Logging In...</p>
-        </>
-        : databaseAuth ? <>
-          <p>You are logged in</p>
-          <button
-            onClick={function () {
-              setDatabaseAuth(undefined);
-            }}
-          >Log Out</button>
-        </> : <>
-          <p>Hello! Log in here!</p>
-          <form onSubmit={() => submitLogin()}>
-            <label>
-              Username:
-              <input value={username} onChange={function(event){
-                setUsername(event.target.value)
-              }}/>
-            </label>
-            <br/>
-            <label>
-              Password:
-              <input
-                value={password}
-                type="password"
-                onChange={function(event){
-                setPassword(event.target.value)
-              }}/>
-            </label>
-            <br/>
-            <input type="submit" value="Log In"/>
-            <>
-              { error && <p>Got error: {(error as any).message}</p>}
-            </>
-          </form>
-
-        </>}
+      <div className={styles.contentDiv}>
+        { isLoading
+          ? <>
+            <p>Logging In...</p>
+          </>
+          : databaseAuth ? <>
+            <p>You are logged in</p>
+            <button
+              onClick={function () {
+                setDatabaseAuth(undefined);
+              }}
+            >Log Out</button>
+          </> : <>
+            <p>Hello! Log in here!</p>
+            <form onSubmit={() => submitLogin()}>
+              <label>
+                Username:
+                <input value={username} onChange={function(event){
+                  setUsername(event.target.value)
+                }}/>
+              </label>
+              <br/>
+              <label>
+                Password:
+                <input
+                  value={password}
+                  type="password"
+                  onChange={function(event){
+                    setPassword(event.target.value)
+                  }}/>
+              </label>
+              <br/>
+              <input type="submit" value="Log In"/>
+              <>
+                { error && <p>Got error: {(error as any).message}</p>}
+              </>
+            </form>
+          </>}
+      </div>
     </Layout>
   </>;
 }

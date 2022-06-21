@@ -4,6 +4,7 @@ import React from "react";
 import {getTimeMillisRounded} from "../timeUtil";
 import Layout from "../layout/Layout";
 import {useSourceId} from "../sourceUtil";
+import styles from './SolarThing.module.css';
 
 function BatteryVoltage() {
   const [sourceId] = useSourceId();
@@ -20,7 +21,7 @@ function BatteryVoltage() {
 export default function Home() {
   return <>
     <Layout>
-      <div className="App">
+      <div className={styles.contentDiv}>
         <header className="App-header">
           <h1>SolarThing</h1>
           <BatteryVoltage/>
