@@ -33,14 +33,14 @@ jobs:
       - name: Install dependencies
         run: (cd web && npm install)
       - name: Build with Gradle
-        run: ./gradlew build -x test
+        run: ./gradlew build client:shadowJar -x test
       - name: Upload SolarThing Release Asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./client/build/libs/client-0.0.1-SNAPSHOT.jar
+          asset_path: ./client/build/libs/client-0.0.1-SNAPSHOT-all.jar
           asset_name: solarthing-${{ needs.shared-outputs.outputs.version }}.jar
           asset_content_type: application/octet-stream
       - name: Upload SolarThing GraphQL Release Asset
