@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.packets.security;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 
 public class ImmutableLargeIntegrityPacket implements LargeIntegrityPacket {
 
@@ -20,7 +21,7 @@ public class ImmutableLargeIntegrityPacket implements LargeIntegrityPacket {
 	}
 
 	@Override
-	public String getSender() {
+	public @NotNull String getSender() {
 		return sender;
 	}
 

@@ -1,19 +1,35 @@
 
-.emptyDeleteSenderTd, .emptyDeleteSenderTdWidth {
+.optionSenderTd, .optionSenderTdWidth {
   width: 2.5em;
 }
 
-.deleteSenderTd, .emptyDeleteSenderTd {
+.optionSenderTd {
   height: 2.5em;
-  /*height: 3em;*/
-  padding: 0.3em;
 }
-.deleteSenderButtonDiv {
+.divButtonContainer {
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.deleteSenderButtonDiv {
+  width: 1.7em;
+  height: 1.7em;
   color: #FFF;
   font-size: 15px;
   background-color: #F33;
+  border: solid 1px #000;
+  cursor: pointer;
+}
+.addSenderButtonDiv {
+  width: 1.7em;
+  height: 1.7em;
+  color: #FFF;
+  font-size: 15px;
+  background-color: #3F3;
   border: solid 1px #000;
   cursor: pointer;
 }

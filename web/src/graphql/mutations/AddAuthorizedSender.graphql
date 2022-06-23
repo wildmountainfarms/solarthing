@@ -1,0 +1,3 @@
+mutation AddAuthorizedSender($sender: String!, $publicKey: String!, $authorization: DatabaseAuthorizationInput!) {
+  addAuthorizedSender(sender: $sender, publicKey: $publicKey, authorization: $authorization)
+}

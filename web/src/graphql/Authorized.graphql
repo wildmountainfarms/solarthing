@@ -5,4 +5,11 @@ query Authorized {
       publicKey
     }
   }
+  authRequests {
+    dateMillis
+    data {
+      sender
+      publicKey
+    }
+  }
 }

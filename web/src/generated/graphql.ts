@@ -65,6 +65,13 @@ export enum AlterPacketType {
   SCHEDULED_COMMAND = 'SCHEDULED_COMMAND'
 }
 
+export type AuthNewSenderPacket = {
+  __typename?: 'AuthNewSenderPacket';
+  packetType: SecurityPacketType;
+  publicKey: Scalars['String'];
+  sender: Scalars['String'];
+};
+
 export type AuthorizedSender = {
   __typename?: 'AuthorizedSender';
   data: PermissionObject;
@@ -720,7 +727,17 @@ export type MonthDay = {
 /** Mutation root */
 export type Mutation = {
   __typename?: 'Mutation';
+  addAuthorizedSender: Scalars['Boolean'];
   removeAuthorizedSender: Scalars['Boolean'];
+};
+
+
+/** Mutation root */
+export type MutationaddAuthorizedSenderArgs = {
+  allowReplace?: InputMaybe<Scalars['Boolean']>;
+  authorization: DatabaseAuthorizationInput;
+  publicKey: Scalars['String'];
+  sender: Scalars['String'];
 };
 
 
@@ -1068,6 +1085,7 @@ export type PzemShuntStatusPacket = {
 /** Query root */
 export type Query = {
   __typename?: 'Query';
+  authRequests: Array<SimpleNode_AuthNewSenderPacket>;
   authorizedSenders: Array<AuthorizedSender>;
   databaseAuthorize: DatabaseAuthorization;
   queryAlter?: Maybe<SolarThingAlterQuery>;
@@ -1402,6 +1420,12 @@ export type ScheduledCommandPacket = {
   packetType: AlterPacketType;
 };
 
+export enum SecurityPacketType {
+  AUTH_NEW_SENDER = 'AUTH_NEW_SENDER',
+  INTEGRITY_PACKET = 'INTEGRITY_PACKET',
+  LARGE_INTEGRITY_PACKET = 'LARGE_INTEGRITY_PACKET'
+}
+
 export type SensingBundle = {
   __typename?: 'SensingBundle';
   powerWithNoPeopleSensedRaw: Scalars['Int'];
@@ -1418,6 +1442,12 @@ export type SimpleEstimatedActual = {
   period_start?: Maybe<Scalars['Instant']>;
   pv_estimate: Scalars['Float'];
   pv_estimate_watts: Scalars['Float'];
+};
+
+export type SimpleNode_AuthNewSenderPacket = {
+  __typename?: 'SimpleNode_AuthNewSenderPacket';
+  data: AuthNewSenderPacket;
+  dateMillis: Scalars['Long'];
 };
 
 export type SimpleNode_FlatData = {
@@ -1859,7 +1889,7 @@ export enum WeatherPacketType {
 export type AuthorizedQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AuthorizedQuery = { __typename?: 'Query', authorizedSenders: Array<{ __typename?: 'AuthorizedSender', sender: string, data: { __typename?: 'PermissionObject', publicKey?: string | null } }> };
+export type AuthorizedQuery = { __typename?: 'Query', authorizedSenders: Array<{ __typename?: 'AuthorizedSender', sender: string, data: { __typename?: 'PermissionObject', publicKey?: string | null } }>, authRequests: Array<{ __typename?: 'SimpleNode_AuthNewSenderPacket', dateMillis: any, data: { __typename?: 'AuthNewSenderPacket', sender: string, publicKey: string } }> };
 
 export type ClassicQueryVariables = Exact<{
   sourceId: Scalars['String'];
@@ -1892,6 +1922,15 @@ export type LoginInfoQueryVariables = Exact<{
 
 export type LoginInfoQuery = { __typename?: 'Query', username?: string | null };
 
+export type AddAuthorizedSenderMutationVariables = Exact<{
+  sender: Scalars['String'];
+  publicKey: Scalars['String'];
+  authorization: DatabaseAuthorizationInput;
+}>;
+
+
+export type AddAuthorizedSenderMutation = { __typename?: 'Mutation', addAuthorizedSender: boolean };
+
 export type DeleteAuthorizedSenderMutationVariables = Exact<{
   sender: Scalars['String'];
   authorization: DatabaseAuthorizationInput;
@@ -1906,6 +1945,13 @@ export const AuthorizedDocument = `
   authorizedSenders {
     sender
     data {
+      publicKey
+    }
+  }
+  authRequests {
+    dateMillis
+    data {
+      sender
       publicKey
     }
   }
@@ -2029,6 +2075,28 @@ export const useLoginInfoQuery = <
     useQuery<LoginInfoQuery, TError, TData>(
       variables === undefined ? ['LoginInfo'] : ['LoginInfo', variables],
       fetcher<LoginInfoQuery, LoginInfoQueryVariables>(client, LoginInfoDocument, variables, headers),
+      options
+    );
+export const AddAuthorizedSenderDocument = `
+    mutation AddAuthorizedSender($sender: String!, $publicKey: String!, $authorization: DatabaseAuthorizationInput!) {
+  addAuthorizedSender(
+    sender: $sender
+    publicKey: $publicKey
+    authorization: $authorization
+  )
+}
+    `;
+export const useAddAuthorizedSenderMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<AddAuthorizedSenderMutation, TError, AddAuthorizedSenderMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<AddAuthorizedSenderMutation, TError, AddAuthorizedSenderMutationVariables, TContext>(
+      ['AddAuthorizedSender'],
+      (variables?: AddAuthorizedSenderMutationVariables) => fetcher<AddAuthorizedSenderMutation, AddAuthorizedSenderMutationVariables>(client, AddAuthorizedSenderDocument, variables, headers)(),
       options
     );
 export const DeleteAuthorizedSenderDocument = `

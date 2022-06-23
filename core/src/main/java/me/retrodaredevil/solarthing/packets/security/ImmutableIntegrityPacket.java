@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.packets.security;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 
 public final class ImmutableIntegrityPacket implements IntegrityPacket {
 	private final String sender;
@@ -15,15 +16,15 @@ public final class ImmutableIntegrityPacket implements IntegrityPacket {
 		this.sender = sender;
 		this.encryptedData = encryptedData;
 	}
-	
+
 	@Override
-	public String getSender() {
+	public @NotNull String getSender() {
 		return sender;
 	}
-	
+
 	@Override
 	public String getEncryptedData() {
 		return encryptedData;
 	}
-	
+
 }

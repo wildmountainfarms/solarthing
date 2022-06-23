@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.packets.security;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.security.crypto.InvalidKeyException;
 import me.retrodaredevil.solarthing.packets.security.crypto.KeyUtil;
 
@@ -22,19 +23,19 @@ public final class ImmutableAuthNewSenderPacket implements AuthNewSenderPacket {
 		this.publicKey = publicKey;
 		publicKeyObject = KeyUtil.decodePublicKey(publicKey);
 	}
-	
+
 	@Override
-	public String getPublicKey() {
+	public @NotNull String getPublicKey() {
 		return publicKey;
 	}
-	
+
 	@Override
 	public PublicKey getPublicKeyObject() {
 		return publicKeyObject;
 	}
 
 	@Override
-	public String getSender() {
+	public @NotNull String getSender() {
 		return sender;
 	}
 }

@@ -154,10 +154,10 @@ public class CouchDbSolarThingDatabase implements SolarThingDatabase {
 		}
 		try {
 			if (updateToken == null) {
-				closedDatabase.putDocument("authorized", data);
+				closedDatabase.putDocument(AuthorizationPacket.DOCUMENT_ID, data);
 			} else {
 				RevisionUpdateToken revisionUpdateToken = validateUpdateToken(updateToken);
-				closedDatabase.updateDocument("authorized", revisionUpdateToken.getRevision(), data);
+				closedDatabase.updateDocument(AuthorizationPacket.DOCUMENT_ID, revisionUpdateToken.getRevision(), data);
 			}
 		} catch (CouchDbException e) {
 			throw ExceptionUtil.createFromCouchDbException(e);
