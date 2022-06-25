@@ -16,6 +16,7 @@ public class SocketSimpleConnection implements SimpleConnection {
 	private final BufferedReader bufferedReader;
 	private final PrintWriter writer;
 
+	@SuppressWarnings("DefaultCharset")
 	public SocketSimpleConnection(Socket socket) throws IOException {
 		this.socket = socket;
 		InputStream inputStream = socket.getInputStream();

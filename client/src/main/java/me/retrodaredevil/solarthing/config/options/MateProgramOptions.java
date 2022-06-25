@@ -78,6 +78,8 @@ public class MateProgramOptions extends PacketHandlingOptionBase implements IOBu
 		return r;
 	}
 
+	@SuppressWarnings("unused")
+	@Deprecated // for removal // This was used a while ago. Before I remove this, I will confirm that we won't need this again
 	private static class MateFXChargingSettings {
 		@JsonProperty("rebulk_voltage")
 		private Float rebulkSetpoint;

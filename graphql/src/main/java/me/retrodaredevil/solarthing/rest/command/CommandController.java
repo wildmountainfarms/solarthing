@@ -40,7 +40,6 @@ public class CommandController {
 	 *
 	 * @param apiKey The api key
 	 * @param commandName The name of the command, which corresponds to an action
-	 * @return
 	 */
 	@GetMapping(
 			path = "/run",

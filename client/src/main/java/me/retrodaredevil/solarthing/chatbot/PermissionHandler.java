@@ -18,8 +18,7 @@ public class PermissionHandler {
 	/**
 	 *
 	 * @param userPermissionString The permission the user has such as "solarthing.commands.*" or "solarthing.commands.1.GEN OFF"
-	 * @param desiredPermissionString
-	 * @return
+	 * @param desiredPermissionString The permission we want to see if the user has
 	 */
 	public boolean permissionMatches(String userPermissionString, String desiredPermissionString) {
 		requireNonNull(userPermissionString);

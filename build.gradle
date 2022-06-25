@@ -16,6 +16,8 @@ buildscript {
 //        couchdbJavaVersion = '1.0.0'
         couchdbJavaVersion = "8ff00d2c490af49ca19b29a7852b72578a97fae8".substring(0, 10)
         dockerComposePluginVersion = "0.16.4" // https://github.com/avast/gradle-docker-compose-plugin/releases
+        errorpronePluginVersion = '2.0.2'
+        errorproneCoreVersion = '2.14.0'
     }
     dependencies {
         classpath "com.avast.gradle:gradle-docker-compose-plugin:$dockerComposePluginVersion"
@@ -25,6 +27,7 @@ buildscript {
 
 plugins {
     id 'com.diffplug.spotless' version '6.7.2' // https://search.maven.org/search?q=a:spotless-plugin-gradle
+    id 'net.ltgt.errorprone' version "$errorpronePluginVersion"
 }
 
 version "0.0.1-SNAPSHOT"
@@ -92,11 +95,16 @@ allprojects {
 subprojects {
     apply plugin: 'java-library'
     apply plugin: 'maven-publish'
+    apply plugin: 'net.ltgt.errorprone'
     repositories {
         maven { url "https://jitpack.io" }
         maven { url "https://repo.maven.apache.org/maven2" }
     }
     dependencies {
+        // https://mvnrepository.com/artifact/com.google.errorprone/error_prone_core
+        errorprone "com.google.errorprone:error_prone_core:$errorproneCoreVersion"
+        errorprone "com.google.errorprone:error_prone_annotations:$errorproneCoreVersion"
+
         testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit5Version
         testImplementation "org.junit.jupiter:junit-jupiter-params:$junit5Version"
         testImplementation "org.junit.platform:junit-platform-commons:$junit5PlatformVersion"
@@ -113,6 +121,24 @@ subprojects {
             // If we don't have this, we get warnings for something about retrofit2.Platform
             //   - likely solcast action node
             jvmArgs "--add-opens=java.base/java.lang.invoke=ALL-UNNAMED"
+        }
+    }
+    tasks.withType(JavaCompile).configureEach {
+        options.errorprone {
+            disable("MissingSummary") // Our JavaDocs don't need to be perfect
+            disable("StringSplitter") // Yes String.split(String) has surprising behavior, but we know how to be careful.
+            disable("EqualsGetClass") // Most of the time we prefer that equality checks don't evaluate to true for subclasses
+            disable("NullableOnContainingClass") // This is dumb, who would do it this way? A.B reads as a fully qualified name to me...
+            disable("InvalidLink") // So many times this is wrong. #equals(Object) is a valid link!
+            disable("ComparableType") // different Identifiers need to be able to be compared to each other, so we disable this for now.
+            disable("DoNotClaimAnnotations") // TODO figure how how to make our annotation processor more "correct"
+            disable("ReturnValueIgnored") // remove this once this is fixed: https://github.com/google/error-prone/issues/3292
+            disable("UnusedMethod") // This is useful, but has this issue: https://github.com/google/error-prone/issues/3144
+            disable("InlineMeSuggester") // Wrong when annotated by annotations, and I don't need this feature
+            disable("EmptyCatch") // This is a great warning, but IntelliJ wants ignored exceptions to be named "ignored" and ErrorProne wants "ok"...
+            disable("FutureReturnValueIgnored") // For "send and forget" stuff, this is really annoying
+            disable("UnusedVariable") // We are OK with this most of the time
+            disable("CanonicalDuration") // I will specify my durations in whatever units I please
         }
     }
     gradle.projectsEvaluated {

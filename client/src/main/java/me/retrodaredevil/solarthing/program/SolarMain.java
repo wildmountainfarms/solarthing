@@ -98,6 +98,7 @@ public final class SolarMain {
 				+ " Java version: " + System.getProperty("java.version");
 	}
 
+	@SuppressWarnings("DefaultCharset")
 	public static int doMainCommand(CommandOptions commandOptions, File baseConfigFile) {
 		String user = System.getProperty("user.name");
 		if (!user.equals("solarthing")) {
@@ -112,6 +113,7 @@ public final class SolarMain {
 		LOGGER.info("Using base configuration file: " + baseConfigFile);
 		final FileReader fileReader;
 		try {
+			// TODO when update to Java 11, set explicit charset
 			fileReader = new FileReader(baseConfigFile);
 		} catch(FileNotFoundException ex){
 			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)File not found", ex);

@@ -11,6 +11,7 @@ import java.io.OutputStream;
 
 public class ReloadableIOBundle implements IOBundle {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ReloadableIOBundle.class);
+	@SuppressWarnings("InputStreamSlowMultibyteRead")
 	private static final IOBundle BLANK_IO_BUNDLE = IOBundle.of(new InputStream() {
 		@Override
 		public int read() throws IOException {

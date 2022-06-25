@@ -44,11 +44,11 @@ public final class DefaultIdentificationCacheDataPacket<T extends Identification
 		Map<IdentifierFragment, T> map = new HashMap<>();
 		putOnMap(map, first);
 		putOnMap(map, second);
-		return map.entrySet().stream().map((identifierFragmentTEntry -> {
+		return map.entrySet().stream().map((identifierFragmentTEntry) -> {
 			IdentifierFragment identifierFragment = identifierFragmentTEntry.getKey();
 			T data = identifierFragmentTEntry.getValue();
 			return new IdentificationCacheNode<>(identifierFragment.getFragmentId(), data);
-		})).collect(Collectors.toList());
+		}).collect(Collectors.toList());
 	}
 
 	@Override

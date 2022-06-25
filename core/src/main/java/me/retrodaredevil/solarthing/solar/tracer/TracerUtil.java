@@ -21,8 +21,6 @@ public final class TracerUtil {
 
 	/**
 	 * Used for 0x903E, 0x903F, 0x9065
-	 * @param duration
-	 * @return
 	 */
 	public static int convertDurationToTracerDurationRaw(Duration duration) {
 		long totalMinutes = duration.toMinutes();

@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 
 import static java.util.Objects.requireNonNull;
@@ -57,7 +58,8 @@ public class SolarReader {
 			len = in.read(buffer); // read as much as possible
 			if(len == -1) throw new AssertionError("Because we call in.available(), len should never be -1. Did we change the code?");
 		}
-		String s = new String(buffer, 0, len);
+		// Use LATIN charset because we don't expect the MSB to be used. We only expect ASCII characters
+		String s = new String(buffer, 0, len, StandardCharsets.ISO_8859_1);
 		final Collection<? extends Packet> newPackets;
 		try {
 			newPackets = creator.add(s.toCharArray());

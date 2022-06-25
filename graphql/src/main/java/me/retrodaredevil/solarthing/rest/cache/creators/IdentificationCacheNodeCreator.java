@@ -22,7 +22,6 @@ public interface IdentificationCacheNodeCreator<T extends IdentificationCacheDat
 	 *                or use the extra data for *smart* calculations. You can assume these are sorted in ascending order.
 	 * @param periodStart The start of the period
 	 * @param periodDuration The duration of the period
-	 * @return
 	 */
 	IdentificationCacheNode<T> create(IdentifierFragment identifierFragment, List<TimestampedPacket<U>> packets, Instant periodStart, Duration periodDuration);
 }

@@ -47,13 +47,14 @@ import java.util.*;
 public class PVOutputUploadMain {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PVOutputUploadMain.class);
 	private static final ObjectMapper MAPPER = JacksonUtil.lenientMapper(JacksonUtil.defaultMapper());
-	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
 	// TODO Make this an action for the automation program
 
 
 	@SuppressWarnings({"SameReturnValue", "deprecation"})
 	public static int startPVOutputUpload(PVOutputUploadProgramOptions options, CommandOptions commandOptions, File dataDirectory){
+		final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd"); // Not thread safe, otherwise this would be a static field
+
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Starting PV Output upload program");
 		ZoneId zoneId = options.getZoneId();
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Using time zone: {}", zoneId.getDisplayName(TextStyle.FULL, Locale.US)); // Use US local since I (retrodaredevil) am the one debugging
@@ -102,6 +103,7 @@ public class PVOutputUploadMain {
 
 		return startRealTimeProgram(options, database, handler, service, options.getZoneId());
 	}
+	@SuppressWarnings("CatchAndPrintStackTrace")
 	private static int startRangeUpload(
 			SimpleDate fromDate, SimpleDate toDate,
 			PVOutputUploadProgramOptions options, SolarThingDatabase database,
@@ -182,12 +184,12 @@ public class PVOutputUploadMain {
 				LOGGER.error("Got error serializing JSON. This should never happen.", e);
 			}
 			boolean successful = false;
-			for (int j = 0; j < 5; j++) {
+			for (long j = 0; j < 5; j++) {
 				if (j != 0) {
 					System.out.println("Sleeping before trying again");
 					try {
 						//noinspection BusyWait
-						Thread.sleep(j * 7000);
+						Thread.sleep(j * 7000L);
 					} catch (InterruptedException e) {
 						Thread.currentThread().interrupt();
 						System.err.println("Interrupted");

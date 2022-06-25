@@ -18,9 +18,14 @@ public class PzemShuntModbusSlaveRead implements PzemShuntReadTable {
 	private static final MessageHandler<int[]> ENERGY = new ReadInputRegisters(0x0004, 2);
 	private static final MessageHandler<int[]> HIGH_ALARM = new ReadInputRegisters(0x0006, 1);
 	private static final MessageHandler<int[]> LOW_ALARM = new ReadInputRegisters(0x0007, 1);
+
+	@SuppressWarnings("unused")
 	private static final int EXCEPTION_ILLEGAL_FUNCTION = 1;
+	@SuppressWarnings("unused")
 	private static final int EXCEPTION_ILLEGAL_ADDRESS = 2;
+	@SuppressWarnings("unused")
 	private static final int EXCEPTION_ILLEGAL_DATA = 3;
+	@SuppressWarnings("unused")
 	private static final int EXCEPTION_SLAVE_ERROR = 4;
 
 	private static int convertTo32Bit(int[] arrayWithLengthOf2){

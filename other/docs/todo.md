@@ -45,7 +45,6 @@ don't look like they're constantly disconnecting and reconnecting
 * The Tracer doesn't have a way to tell if it's in absorb mode, but we could use the settings to tell if it has reached the setpoint
 and is not giving full available power.
   * I'm not sure how we should indicate something like this on Grafana quite yet
-* Use https://github.com/tbroyer/gradle-errorprone-plugin
 * Metadata packet that describes the solar panels connected to a charge controller between a period of time
 * Program that uploads malicious data to solarthing_open to better understand how SolarThing reacts to malicious data
 * Make validation function that prevents people from adding packets to CouchDB that are super far in the future.
@@ -86,6 +85,7 @@ and also react to messages that have been fully processed (request successfully 
 * Packets for when a command is accepted or rejected and when its action is done running
 * Make it so that MessageEvents can easily use a NanoProvider rather than System.nanoTime() directly.
 * Add alert to detect when messages are being spammed to solarthing_open
+* Add info about the state of CouchDB on the home page of SolarThing web
   
 ### Completed
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
@@ -154,6 +154,7 @@ easy displaying in Grafana
 * Get rid of InstantType
 * Add event packets for rover and tracer devices (like we did for MXs and FXs)
 * Make monitor-service only start after WiFi has kicked in
+* Use https://github.com/tbroyer/gradle-errorprone-plugin
 
 ### Look into
 * Look into supporting Elasticsearch, MongoDB, Graphite

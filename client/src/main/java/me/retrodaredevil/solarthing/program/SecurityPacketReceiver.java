@@ -73,8 +73,8 @@ public class SecurityPacketReceiver {
 	 * @param publicKeyLookUp The {@link PublicKeyLookUp} to get the PublicKey for a received {@link IntegrityPacket}
 	 * @param packetGroupReceiver Receives successfully decrypted messages
 	 * @param fragmentId The fragment ID of this SolarThing instance.
-	 * @param sourceId
-	 * @param eventDatabase
+	 * @param sourceId The source ID of this SolarThing instance
+	 * @param eventDatabase The event database
 	 */
 	public SecurityPacketReceiver(PublicKeyLookUp publicKeyLookUp, PacketGroupReceiver packetGroupReceiver, TargetPredicate targetPredicate, Collection<? extends Class<? extends DocumentedPacket>> packetClasses, long listenStartTime, int fragmentId, String sourceId, MillisDatabase eventDatabase) {
 		this.publicKeyLookUp = publicKeyLookUp;
@@ -125,7 +125,7 @@ public class SecurityPacketReceiver {
 				id
 		);
 		executorService.execute(() -> {
-			for (int tryIndex = 0; tryIndex < 3; tryIndex++) {
+			for (long tryIndex = 0; tryIndex < 3; tryIndex++) {
 				try {
 					eventDatabase.uploadPacketCollection(packetCollection, null);
 					break;
@@ -140,7 +140,7 @@ public class SecurityPacketReceiver {
 					LOGGER.error("Could not upload security event packet. tryIndex: " + tryIndex + " id: " + id, e);
 				}
 				try {
-					Thread.sleep((tryIndex + 1) * 100);
+					Thread.sleep((tryIndex + 1) * 100L);
 				} catch (InterruptedException e) {
 					LOGGER.error("Was interrupted", e);
 					Thread.currentThread().interrupt();

@@ -139,7 +139,7 @@ public class JacksonResolverBuilder implements ResolverBuilder {
 				System.err.println("property=" + property + " is unsupported! name=" + property.getName() + " accessor=" + property.getAccessor());
 			}
 		}
-		return r;
+		return Collections.unmodifiableCollection(r);
 	}
 
 

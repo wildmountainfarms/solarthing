@@ -59,8 +59,8 @@ public class CouchDbSolarThingDatabase implements SolarThingDatabase {
 
 	/**
 	 *
-	 * @param instance
-	 * @param errorHandler
+	 * @param instance The CouchDB instance
+	 * @param errorHandler The error handler
 	 * @param mapper The object mapper. "Lenient" settings should have already been applied to this
 	 */
 	public CouchDbSolarThingDatabase(CouchDbInstance instance, PacketParsingErrorHandler errorHandler, ObjectMapper mapper) {

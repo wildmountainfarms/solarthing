@@ -71,6 +71,7 @@ public final class PacketGroups {
 				switch (instancePacket.getPacketType()) {
 					case SOURCE: sourcePacket = (InstanceSourcePacket) packet; break;
 					case TARGET: targetPacket = (InstanceTargetPacket) packet; break;
+					default: break;
 				}
 			} else {
 				packets.add(packet);

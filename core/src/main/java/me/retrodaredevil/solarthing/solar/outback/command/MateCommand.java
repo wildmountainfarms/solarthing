@@ -64,6 +64,7 @@ public enum MateCommand implements Command {
 	private final char command;
 	private final String name;
 
+	@SuppressWarnings("ImmutableEnumChecker")
 	private final byte[] byteArray;
 
 	MateCommand(char command, String name) {

@@ -29,6 +29,7 @@ final class RenogyTest {
 		assertEquals(-2, RoverReadTable.convertRawTemperature(2 | (1 << 7)));
 		assertEquals(-30, RoverReadTable.convertRawTemperature(30 | (1 << 7)));
 	}
+	@SuppressWarnings("ErroneousBitwiseExpression")
 	@Test
 	void testStreetLight(){
 		assertTrue(StreetLight.OFF.isActive(~StreetLight.IGNORED_BITS & 0b01111111));

@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -29,7 +30,8 @@ public class RaspberryPiCpuTemperatureListUpdater implements PacketListReceiver 
 					LOGGER.warn("Read length is " + len + "!");
 					return;
 				}
-				String result = new String(buffer, 0, len);
+				// Use US_ASCII because we don't expect the MSB to be used, as we are only expecting ASCII characters from the program
+				String result = new String(buffer, 0, len, StandardCharsets.US_ASCII);
 				String[] split1 = result.split("=");
 				if(split1.length != 2){
 					LOGGER.warn("split1.length != 2!!! split1.length=" + split1.length);

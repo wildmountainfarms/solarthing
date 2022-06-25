@@ -14,9 +14,13 @@ public class IdentifierFragmentBase<T extends Identifier> implements KnownIdenti
 		this.fragmentId = fragmentId;
 		requireNonNull(this.identifier = identifier);
 	}
+
+	@Override
 	public int getFragmentId() {
 		return fragmentId;
 	}
+
+	@Override
 	public @NotNull T getIdentifier() {
 		return identifier;
 	}

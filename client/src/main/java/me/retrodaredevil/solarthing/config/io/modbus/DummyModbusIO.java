@@ -89,6 +89,7 @@ public class DummyModbusIO implements IOBundle {
 		}
 	}
 
+	@SuppressWarnings("InputStreamSlowMultibyteRead")
 	private final InputStream inputStream = new InputStream() {
 		@Override
 		public int read() throws IOException {

@@ -72,7 +72,7 @@ public class EstimatedActualCache {
 			for (Node node : clamp ? simpleEstimatedActualSet.tailSet(new Node(startPointMillis), true).headSet(new Node(endPointMillis), true) : simpleEstimatedActualSet) {
 				r.add((SimpleEstimatedActual) node.data);
 			}
-			return r;
+			return Collections.unmodifiableList(r);
 		}
 	}
 
@@ -96,7 +96,7 @@ public class EstimatedActualCache {
 			for (Node node : clamp ? forecastSet.tailSet(new Node(startPointMillis), true).headSet(new Node(endPointMillis), true) : forecastSet) {
 				r.add((Forecast) node.data);
 			}
-			return r;
+			return Collections.unmodifiableList(r);
 		}
 	}
 	private static boolean isTimestampOld(long now, Long timestamp) {

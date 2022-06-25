@@ -37,8 +37,8 @@ public interface CacheDataPacket extends PacketEntry, SourcedPacket {
 
 	/**
 	 * Combines this packet with a future packet. Note this will only work as expected if these packets are back to back
-	 * @param futurePacket
-	 * @return
+	 * @param futurePacket The {@link CacheDataPacket} of the same type as this
+	 * @return The combined packet
 	 */
 	CacheDataPacket combine(CacheDataPacket futurePacket);
 }

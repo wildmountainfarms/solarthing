@@ -21,6 +21,7 @@ import java.util.Scanner;
 public final class RoverSetupProgram {
 	private RoverSetupProgram(){ throw new UnsupportedOperationException(); }
 
+	@SuppressWarnings("DefaultCharset")
 	public static int startRoverSetup(@Nullable MutableAddressModbusSlave slave, RoverReadTable read, RoverWriteTable write, Runnable reloadCache, Runnable reloadIO){
 		System.out.println("Starting rover setup! This is deprecated and will be removed in a future version!.");
 		Scanner scanner = new Scanner(System.in);
@@ -260,6 +261,7 @@ public final class RoverSetupProgram {
 					// sensing stuff
 					case "sensingtimedelayseconds":
 						System.out.println(read.getSensingTimeDelaySeconds());
+						break;
 					case "ledloadcurrentmilliamps":
 						System.out.println(read.getLEDLoadCurrentMilliAmps());
 						break;

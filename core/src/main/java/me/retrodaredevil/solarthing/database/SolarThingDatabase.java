@@ -14,7 +14,6 @@ public interface SolarThingDatabase {
 	/**
 	 *
 	 * @param updateToken The update token to validate
-	 * @return
 	 */
 	@Contract("_ -> param1")
 	@NotNull UpdateToken validateUpdateToken(@NotNull UpdateToken updateToken);

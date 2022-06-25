@@ -49,7 +49,6 @@ public final class AccumulationCalc {
 	 * @param totalGetter The getter function that gives the desired data point to be summed
 	 * @param packets For each packet, an associated {@link SumNode} is present in the returned list
 	 * @param <T> The type of the packet that is being used to calculate the total
-	 * @return
 	 */
 	@Contract(pure = true)
 	public static <T extends DailyData, U extends AccumulationValue<U>> List<SumNode<U>> getTotals(

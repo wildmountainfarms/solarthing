@@ -29,6 +29,7 @@ public class MateCommandSender implements OnDataReceive {
 		this.onCommandExecute = requireNonNull(onCommandExecute);
 	}
 
+	@Override
 	public void onDataReceive(boolean firstData, boolean stale) {
 		if(firstData && !stale){
 			SourcedCommand<MateCommand> sourcedCommand = commandProvider.pollCommand();

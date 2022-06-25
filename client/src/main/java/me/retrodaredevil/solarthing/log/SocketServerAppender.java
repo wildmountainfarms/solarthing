@@ -26,6 +26,8 @@ import java.util.concurrent.TimeUnit;
 import static java.util.Objects.requireNonNull;
 
 @Plugin(name = "ServerSocket", category = "Core", elementType = "appender", printObject = true)
+@SuppressWarnings("CatchAndPrintStackTrace")
+@Deprecated // I never got this working, so this is not in a working or useful state at the moment
 public class SocketServerAppender extends AbstractOutputStreamAppender<SocketServerAppender.ServerSocketManager> {
 
 	private final Queue<Byte> outputQueue;
