@@ -15,6 +15,7 @@ import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbData
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
 import me.retrodaredevil.solarthing.database.couchdb.CouchDbSolarThingDatabase;
 import me.retrodaredevil.solarthing.packets.collection.parsing.PacketParsingErrorHandler;
+import me.retrodaredevil.solarthing.rest.exceptions.DatabaseException;
 import okhttp3.Cookie;
 
 import static java.util.Objects.requireNonNull;
@@ -58,7 +59,7 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 		try {
 			cookieAuthHandler.authSession(noAuthInstance);
 		} catch (CouchDbException e) {
-			throw new RuntimeException(e);
+			throw new DatabaseException(e);
 		}
 		Cookie cookie = requireNonNull(cookieAuthHandler.getAuthCookie());
 		return DatabaseAuthorization.create(cookie);

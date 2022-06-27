@@ -51,14 +51,14 @@ public class ChatBotCommandHelper {
 		List<String> permissions = permissionMap.getOrDefault(message.getUserId(), Collections.emptyList());
 		return getCommands()
 				.stream()
-				.filter(availableCommand -> hasPermission(permissions, message, availableCommand.getPermission()))
+				.filter(availableCommand -> hasPermission(message, availableCommand.getPermission(), permissions))
 				.collect(Collectors.toList());
 	}
 	public boolean hasPermission(Message message, String permissionString) {
 		List<String> permissions = permissionMap.getOrDefault(message.getUserId(), Collections.emptyList());
-		return hasPermission(permissions, message, permissionString);
+		return hasPermission(message, permissionString, permissions);
 	}
-	private boolean hasPermission(List<String> permissions, Message message, String permissionString) {
+	private boolean hasPermission(Message message, String permissionString, List<String> permissions) {
 		return permissions.stream().anyMatch(permission -> permissionHandler.permissionMatches(permission, permissionString));
 	}
 

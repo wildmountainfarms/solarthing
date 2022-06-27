@@ -139,6 +139,35 @@ subprojects {
             disable("FutureReturnValueIgnored") // For "send and forget" stuff, this is really annoying
             disable("UnusedVariable") // We are OK with this most of the time
             disable("CanonicalDuration") // I will specify my durations in whatever units I please
+
+            // Experimental Errors
+            enable("ClassName")
+            warn("DepAnn")
+            warn("EmptyIf")
+            warn("InsecureCryptoUsage")
+            // Experimental Warnings
+            warn("AnnotationPosition")
+            warn("ConstantPatternCompile")
+            warn("DifferentNameButSame")
+            error("EqualsBrokenForNull")
+            warn("InconsistentOverloads")
+            warn("InitializeInline")
+            warn("InterfaceWithOnlyStatics")
+            warn("InterruptedExceptionSwallowed")
+            warn("Interruption")
+//            warn("MemberName") // useful, but stuff like _myVariable does not work, and that can be useful *sometimes*
+            warn("NonCanonicalStaticMemberImport")
+//            warn("PreferJavaTimeOverload") // SolarThing uses a lot of dateMillis, and many times it does not make sense to use java.time
+            warn("RedundantOverride")
+            warn("RedundantThrows")
+//            warn("ThrowSpecificExceptions") // TODO Something we need to work on in the SolarThing codebase
+            warn("TransientMisuse")
+            warn("TryWithResourcesVariable")
+            warn("UnnecessarilyFullyQualified")
+            warn("UnnecessaryAnonymousClass") // suggest
+            warn("UnusedException")
+
+
         }
     }
     gradle.projectsEvaluated {

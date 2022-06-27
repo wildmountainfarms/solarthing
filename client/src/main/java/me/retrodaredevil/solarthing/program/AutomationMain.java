@@ -84,6 +84,7 @@ public final class AutomationMain {
 		}
 	}
 
+	@SuppressWarnings("InconsistentOverloads")
 	public static int startAutomation(List<ActionNode> actionNodes, DatabaseTimeZoneOptionBase options, long periodMillis) {
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Starting automation program.");
 		final CouchDbDatabaseSettings couchSettings;

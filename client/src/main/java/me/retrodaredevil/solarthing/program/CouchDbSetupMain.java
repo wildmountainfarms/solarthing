@@ -25,7 +25,6 @@ import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbData
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 
 import java.io.PrintStream;
-import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;

@@ -94,7 +94,8 @@ public class SolarThingAdminService {
 		try {
 			// This query doesn't require an authorization, but might as well give it because then we will fail early
 			return authorizedDatabase.queryAuthorized();
-		} catch (NotFoundSolarThingDatabaseException e) {
+		} catch (@SuppressWarnings("UnusedException") NotFoundSolarThingDatabaseException e) {
+			// We don't need to provide the exception, because this particular exception can only mean one thing: The document does not exist in the database
 			throw new NoSuchElementException("Sender: " + sender + " was not present in the authorized document! (There is no authorized document)");
 		} catch (SolarThingDatabaseException e) {
 			throw new DatabaseException(e);

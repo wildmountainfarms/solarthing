@@ -37,7 +37,7 @@ public class SocketSimpleConnection implements SimpleConnection {
 				return bufferedReader.readLine();
 			}
 			return null;
-		} catch (IOException e) {
+		} catch (@SuppressWarnings("UnusedException") IOException e) {
 			try {
 				socket.close();
 			} catch (IOException ignored) {

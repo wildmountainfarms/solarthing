@@ -80,7 +80,8 @@ public class CommandManager {
 				Files.write(publicKeyFile.toPath(), keyPair.getPublic().getEncoded(), StandardOpenOption.CREATE);
 				Files.write(privateKeyFile.toPath(), keyPair.getPrivate().getEncoded(), StandardOpenOption.CREATE);
 			} catch (IOException ioException) {
-				throw new RuntimeException("Error writing keys", e);
+				// TODO use more specific exception here
+				throw new RuntimeException("Error writing keys", ioException);
 			}
 		}
 		return requireNonNull(keyPair);

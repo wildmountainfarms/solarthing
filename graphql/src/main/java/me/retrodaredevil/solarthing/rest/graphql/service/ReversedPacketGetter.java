@@ -16,7 +16,7 @@ public class ReversedPacketGetter implements PacketGetter {
 	}
 
 	@Override
-	public @NotNull <T> List<@NotNull PacketNode<T>> getPackets(Class<T> clazz) {
+	public <T> @NotNull List<@NotNull PacketNode<T>> getPackets(Class<T> clazz) {
 		List<PacketNode<T>> r = packetGetter.getPackets(clazz);
 		if (reversed) {
 			Collections.reverse(r);

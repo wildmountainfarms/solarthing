@@ -52,6 +52,7 @@ public class InjectEnvironment {
 			map.put(object.getClass(), object);
 			return this;
 		}
+		@SuppressWarnings("InconsistentOverloads")
 		public <T> Builder add(Class<? super T> clazz, T object) {
 			map.put(clazz, object);
 			return this;

@@ -17,6 +17,7 @@ public final class ExceptionUtil {
 	public static SolarThingDatabaseException createFromCouchDbException(CouchDbException exception) {
 		return createFromCouchDbException(null, exception);
 	}
+	@SuppressWarnings("InconsistentOverloads") // while this is an "inconsistent overload", it is consistent with how the exception constructors work
 	public static SolarThingDatabaseException createFromCouchDbException(String message, CouchDbException exception) {
 		if (exception instanceof CouchDbUnauthorizedException) {
 			return new UnauthorizedSolarThingDatabaseException(message, exception);

@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 public final class OkHttpUtil {
 	private OkHttpUtil() { throw new UnsupportedOperationException(); }
 
+	@SuppressWarnings("PreferJavaTimeOverload") // TODO consider refactoring OkHttpProperties to use Java 8 time stuff
 	public static OkHttpClient.Builder createBuilder(OkHttpProperties okHttpProperties) {
 		return new OkHttpClient.Builder()
 				.retryOnConnectionFailure(okHttpProperties.isRetryOnConnectionFailure())
