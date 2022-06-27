@@ -85,7 +85,7 @@ public class SolarThingAdminService {
 					.filter(packet -> packet instanceof AuthNewSenderPacket)
 					.map(packet -> (AuthNewSenderPacket) packet)
 					.map(packet -> new SimpleNode<>(packet, dateMillis))
-					.collect(Collectors.toCollection(() -> r));
+					.forEachOrdered(r::add);
 		}
 
 		return r;

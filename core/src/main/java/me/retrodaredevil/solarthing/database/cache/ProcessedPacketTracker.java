@@ -28,7 +28,7 @@ public class ProcessedPacketTracker {
 									.filter(storedPacketGroup -> !processed.contains(storedPacketGroup.getStoredIdentifier()))
 									.collect(Collectors.toList());
 						});
-		r.stream().map(StoredPacketGroup::getStoredIdentifier).collect(Collectors.toCollection(() -> processed));
+		r.stream().map(StoredPacketGroup::getStoredIdentifier).forEachOrdered(processed::add);
 		return r;
 	}
 }

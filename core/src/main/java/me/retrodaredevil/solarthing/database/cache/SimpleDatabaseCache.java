@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.NavigableSet;
 import java.util.NoSuchElementException;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -110,7 +109,7 @@ public class SimpleDatabaseCache implements DatabaseCache {
 		}
 		Instant now = clock.instant();
 		packetGroups.tailSet(new Node(queryStartDateMillis), true).clear();
-		queriedPacketGroups.stream().map(Node::new).collect(Collectors.toCollection(() -> packetGroups));
+		queriedPacketGroups.stream().map(Node::new).forEachOrdered(packetGroups::add);
 
 		long lowestPossibleVolatileAfterDateMillis = now.minus(volatileWindowDuration).toEpochMilli();
 		if (queryEndDateMillis != null && queryEndDateMillis < lowestPossibleVolatileAfterDateMillis) {

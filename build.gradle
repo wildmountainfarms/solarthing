@@ -132,7 +132,7 @@ subprojects {
             disable("InvalidLink") // So many times this is wrong. #equals(Object) is a valid link!
             disable("ComparableType") // different Identifiers need to be able to be compared to each other, so we disable this for now.
             disable("DoNotClaimAnnotations") // TODO figure how how to make our annotation processor more "correct"
-            disable("ReturnValueIgnored") // remove this once this is fixed: https://github.com/google/error-prone/issues/3292
+//            disable("ReturnValueIgnored") // remove this once this is fixed: https://github.com/google/error-prone/issues/3292
             disable("UnusedMethod") // This is useful, but has this issue: https://github.com/google/error-prone/issues/3144
             disable("InlineMeSuggester") // Wrong when annotated by annotations, and I don't need this feature
             disable("EmptyCatch") // This is a great warning, but IntelliJ wants ignored exceptions to be named "ignored" and ErrorProne wants "ok"...
