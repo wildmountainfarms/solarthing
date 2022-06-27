@@ -14,5 +14,7 @@ public interface PacketHandler {
 
 	class Defaults {
 		public static final PacketHandler HANDLE_NOTHING = (packetCollection) -> {};
+
+		private Defaults() { throw new UnsupportedOperationException(); }
 	}
 }

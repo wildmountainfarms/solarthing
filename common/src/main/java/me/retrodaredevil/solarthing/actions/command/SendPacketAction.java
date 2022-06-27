@@ -115,7 +115,7 @@ public class SendPacketAction extends SimpleAction implements LinkedAction {
 		}
 	}
 
-	private boolean upload(MillisDatabase millisDatabase, PacketCollection packetCollection) {
+	private static boolean upload(MillisDatabase millisDatabase, PacketCollection packetCollection) {
 		try {
 			millisDatabase.uploadPacketCollection(packetCollection, null);
 			LOGGER.info("Uploaded packetCollection: " + packetCollection.getDbId());

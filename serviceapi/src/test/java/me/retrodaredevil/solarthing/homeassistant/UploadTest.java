@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UploadTest {
+	private UploadTest() { throw new UnsupportedOperationException(); }
 
 	private static void testRetrofit(OkHttpClient client) throws IOException {
 		Retrofit retrofit = HomeAssistantRetrofitUtil.defaultBuilder(new Retrofit.Builder(), "http://192.168.1.210:8123/api/")

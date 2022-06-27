@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.program;
 
 import me.retrodaredevil.solarthing.SolarThingConstants;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.packets.collection.DefaultInstanceOptions;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
@@ -15,7 +16,7 @@ import java.util.Map;
 public class PacketUtil {
 	private PacketUtil() { throw new UnsupportedOperationException(); }
 
-	public static List<FragmentedPacketGroup> getPacketGroups(String sourceId, DefaultInstanceOptions defaultInstanceOptions, List<? extends PacketGroup> packetGroups){
+	public static @Nullable List<FragmentedPacketGroup> getPacketGroups(String sourceId, DefaultInstanceOptions defaultInstanceOptions, List<? extends PacketGroup> packetGroups){
 		// We use the SHORT* variants here because we want data from *right now*. This is especially good for when the automation program uses it,
 		//   because it can quickly switch master fragments.
 		Map<String, List<FragmentedPacketGroup>> packetGroupsMap = PacketGroups.sortPackets(

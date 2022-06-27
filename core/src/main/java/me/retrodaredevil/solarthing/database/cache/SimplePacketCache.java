@@ -62,7 +62,7 @@ public class SimplePacketCache<T extends Packet> implements PacketCache<T> {
 	}
 
 	public interface PacketSource<T extends Packet> {
-		VersionedPacket<T> query(UpdateToken updateToken) throws QueryException;
+		VersionedPacket<T> query(@Nullable UpdateToken updateToken) throws QueryException;
 	}
 	public static class QueryException extends Exception {
 		public QueryException() {

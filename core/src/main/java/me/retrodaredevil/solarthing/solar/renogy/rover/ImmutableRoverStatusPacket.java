@@ -601,7 +601,7 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	}
 
 	@Override
-	public Integer getPowerWithPeopleSensedRaw(Sensing sensing) {
+	public @Nullable Integer getPowerWithPeopleSensedRaw(Sensing sensing) {
 		switch(sensing){
 			case SENSING_1: return sensed1 == null ? null : sensed1.getPowerWithPeopleSensedRaw();
 			case SENSING_2: return sensed2 == null ? null : sensed2.getPowerWithPeopleSensedRaw();
@@ -611,7 +611,7 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	}
 
 	@Override
-	public Integer getPowerWithNoPeopleSensedRaw(Sensing sensing) {
+	public @Nullable Integer getPowerWithNoPeopleSensedRaw(Sensing sensing) {
 		switch(sensing){
 			case SENSING_1: return sensed1 == null ? null : sensed1.getPowerWithNoPeopleSensedRaw();
 			case SENSING_2: return sensed2 == null ? null : sensed2.getPowerWithNoPeopleSensedRaw();
@@ -621,7 +621,7 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	}
 
 	@Override
-	public SensingBundle getSensingBundle(Sensing sensing) {
+	public @Nullable SensingBundle getSensingBundle(Sensing sensing) {
 		switch(sensing){
 			case SENSING_1: return sensed1;
 			case SENSING_2: return sensed2;

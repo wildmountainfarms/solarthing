@@ -176,7 +176,7 @@ public class CouchDbSolarThingDatabase implements SolarThingDatabase {
 		return new SessionInfo(name);
 	}
 
-	private static DocumentData queryDocument(CouchDbDatabase database, String name, UpdateToken updateToken) throws SolarThingDatabaseException {
+	private static @Nullable DocumentData queryDocument(CouchDbDatabase database, String name, UpdateToken updateToken) throws SolarThingDatabaseException {
 		final String revision;
 		if (updateToken == null) {
 			revision = null;

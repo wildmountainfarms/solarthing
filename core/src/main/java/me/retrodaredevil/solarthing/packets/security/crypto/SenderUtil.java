@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.packets.security.crypto;
 
 import com.fasterxml.jackson.core.Base64Variants;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 
 import java.nio.charset.StandardCharsets;
@@ -14,7 +15,7 @@ public final class SenderUtil {
 
 	private static final Set<Character> invalidCharacterSet = new HashSet<>(Arrays.asList('/', '\\', ':', '*', '?', '"', '<', '>', '|'));
 
-	public static String getInvalidSenderNameReason(String sender){
+	public static @Nullable String getInvalidSenderNameReason(String sender){
 		if(sender.equals(".")){
 			return "sender cannot equal '.'";
 		}

@@ -101,7 +101,7 @@ public class SecurityPacketReceiver {
 		}
 	}
 
-	private String storedIdentifierToDocumentId(StoredIdentifier storedIdentifier) {
+	private static String storedIdentifierToDocumentId(StoredIdentifier storedIdentifier) {
 		if (!(storedIdentifier instanceof CouchDbStoredIdentifier)) {
 			throw new UnsupportedOperationException("This is tightly coupled to CouchDB. Unexpected storedIdentifier: " + storedIdentifier);
 		}

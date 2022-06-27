@@ -12,5 +12,7 @@ public interface OnDataReceive {
 	void onDataReceive(boolean firstData, boolean stale);
 	class Defaults {
 		public static final OnDataReceive NOTHING = (firstData, stale) -> {};
+
+		private Defaults() { throw new UnsupportedOperationException(); }
 	}
 }

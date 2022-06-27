@@ -45,6 +45,7 @@ import java.time.format.TextStyle;
 import java.util.*;
 
 public class PVOutputUploadMain {
+	private PVOutputUploadMain(){ throw new UnsupportedOperationException(); }
 	private static final Logger LOGGER = LoggerFactory.getLogger(PVOutputUploadMain.class);
 	private static final ObjectMapper MAPPER = JacksonUtil.lenientMapper(JacksonUtil.defaultMapper());
 

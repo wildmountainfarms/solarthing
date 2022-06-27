@@ -31,6 +31,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class RequestMain {
+	private RequestMain() { throw new UnsupportedOperationException(); }
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(RequestMain.class);
 
 	public static int startRequestProgram(RequestProgramOptions options, File dataDirectory) throws Exception {

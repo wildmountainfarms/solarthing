@@ -9,10 +9,10 @@ import static java.util.Objects.requireNonNull;
 public class PermissionHandler {
 
 
-	private List<String> split(String toSplit) {
+	private static List<String> split(String toSplit) {
 		return Stream.of(toSplit.split("\\.")).collect(Collectors.toList());
 	}
-	private List<Permission> convert(List<String> permissions) {
+	private static List<Permission> convert(List<String> permissions) {
 		return permissions.stream().map(Permission::parse).collect(Collectors.toList());
 	}
 	/**

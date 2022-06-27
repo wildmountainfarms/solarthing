@@ -13,6 +13,7 @@ import retrofit2.Retrofit;
 import java.io.IOException;
 
 public class UploadTest {
+	private UploadTest() { throw new UnsupportedOperationException(); }
 	private static void testRetrofit(OkHttpClient client) throws IOException {
 		Retrofit retrofit = PVOutputRetrofitUtil.defaultBuilder()
 				.client(client)

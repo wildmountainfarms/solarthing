@@ -167,6 +167,34 @@ subprojects {
             warn("UnnecessaryAnonymousClass") // suggest
             warn("UnusedException")
 
+            // Experimental Suggestions
+            warn("ConstantField")
+//            warn("FieldCanBeFinal") // Useful on everything but :client module, because of the usages of @JsonProperty on mutable fields.
+            warn("FieldCanBeLocal")
+            warn("FieldCanBeStatic")
+//            warn("FieldMissingNullable") // There are many private fields where this is easy enough to tell
+            warn("ForEachIterable")
+            warn("LambdaFunctionalInterface")
+//            warn("MethodCanBeStatic") // TODO Very, very useful, but I don't need this warning in tests
+//            error("MissingBraces") // I would love to enforce this in all places except equals(), so disable for now
+            error("MixedArrayDimensions")
+//            error("MultiVariableDeclaration") // While frowned upon many times, we use this a lot and it is helpful somtimes
+            error("MultipleTopLevelClasses")
+            error("PackageLocation")
+//            warn("ParameterMissingNullable") // This is useful. Maybe uncomment if we become more religious about use of @Nullable
+            error("PrivateConstructorForUtilityClass")
+            warn("RemoveUnusedImports")
+//            warn("ReturnMissingNullable") // Useful onlyl if we become more religious about use of @Nullable
+            warn("ReturnsNullCollection")
+            warn("SwitchDefault")
+            error("SymbolToString")
+            warn("ThrowsUncheckedException") // we should be unchecked exceptions in JavaDoc instead
+            warn("TryFailRefactoring")
+            error("TypeToString")
+//            warn("UngroupedOverloads") //
+            warn("UnnecessaryBoxedAssignment")
+            warn("UnnecessaryBoxedVariable")
+            error("UnnecessaryStaticImport")
 
         }
     }

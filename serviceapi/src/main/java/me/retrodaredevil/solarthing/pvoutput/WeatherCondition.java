@@ -1,5 +1,7 @@
 package me.retrodaredevil.solarthing.pvoutput;
 
+import me.retrodaredevil.solarthing.annotations.Nullable;
+
 public enum WeatherCondition implements PVOutputString {
 	FINE("Fine"),
 	PARTLY_CLOUDY("Partly Cloudy"),
@@ -28,7 +30,7 @@ public enum WeatherCondition implements PVOutputString {
 	public String getName(){
 		return name;
 	}
-	public static WeatherCondition getConditionFromStringOrNull(String string){
+	public static @Nullable WeatherCondition getConditionFromStringOrNull(String string){
 		for(WeatherCondition condition : values()){
 			if(condition.name.equals(string)){
 				return condition;

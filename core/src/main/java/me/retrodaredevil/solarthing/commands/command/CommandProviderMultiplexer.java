@@ -1,5 +1,7 @@
 package me.retrodaredevil.solarthing.commands.command;
 
+import me.retrodaredevil.solarthing.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -13,7 +15,7 @@ public class CommandProviderMultiplexer<T extends Command> implements CommandPro
 	}
 
 	@Override
-	public SourcedCommand<T> pollCommand() {
+	public @Nullable SourcedCommand<T> pollCommand() {
 		for(CommandProvider<T> commandProvider : commandProviderList){
 			SourcedCommand<T> command = commandProvider.pollCommand();
 			if(command != null){

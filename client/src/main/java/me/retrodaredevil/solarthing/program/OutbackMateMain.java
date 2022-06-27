@@ -40,6 +40,7 @@ import java.util.*;
 import static java.util.Objects.requireNonNull;
 
 public class OutbackMateMain {
+	private OutbackMateMain() { throw new UnsupportedOperationException(); }
 	private static final Logger LOGGER = LoggerFactory.getLogger(OutbackMateMain.class);
 
 	private static final Collection<MateCommand> ALLOWED_COMMANDS = EnumSet.of(MateCommand.AUX_OFF, MateCommand.AUX_ON, MateCommand.USE, MateCommand.DROP);

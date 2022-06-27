@@ -38,7 +38,7 @@ public interface SolarThingDatabase {
 	 * @throws me.retrodaredevil.solarthing.database.exception.NotFoundSolarThingDatabaseException Thrown if the packet does not exist
 	 * @throws SolarThingDatabaseException Thrown on connection errors or parsing errors
 	 */
-	@Nullable VersionedPacket<AuthorizationPacket> queryAuthorized(UpdateToken updateToken) throws SolarThingDatabaseException;
+	@Nullable VersionedPacket<AuthorizationPacket> queryAuthorized(@Nullable UpdateToken updateToken) throws SolarThingDatabaseException;
 	default @NotNull VersionedPacket<AuthorizationPacket> queryAuthorized() throws SolarThingDatabaseException { return requireNonNull(queryAuthorized(null)); }
 
 	void updateAuthorized(@NotNull AuthorizationPacket authorizationPacket, @Nullable UpdateToken updateToken) throws SolarThingDatabaseException;

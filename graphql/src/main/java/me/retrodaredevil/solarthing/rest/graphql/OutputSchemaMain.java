@@ -19,6 +19,7 @@ import java.nio.file.Files;
 import java.util.Collections;
 
 public class OutputSchemaMain {
+	private OutputSchemaMain() { throw new UnsupportedOperationException(); }
 	public static void main(String[] args) {
 		File outputFile = new File(args[0]);
 

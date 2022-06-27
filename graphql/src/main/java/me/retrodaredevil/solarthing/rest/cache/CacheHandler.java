@@ -48,7 +48,7 @@ import java.util.*;
 import static java.util.Objects.requireNonNull;
 
 public class CacheHandler {
-	private final Logger LOGGER = LoggerFactory.getLogger(CacheHandler.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CacheHandler.class);
 	private static final int QUERY_PERIOD_COUNT = 4 * 24; // we can request data a day at a time, but we won't do more than that
 	/** This duration represents the amount of time to go "backwards" for calculating data for a single given period. If this is 4 and the period is from 10:00 to 11:00, then
 	 * that period actually requires data from 6:00 to 11:00 */

@@ -9,7 +9,7 @@ import java.util.Map;
 import static java.util.Objects.requireNonNull;
 
 public class ReloadIOSuccessReporterHandler {
-	private final Logger LOGGER = LoggerFactory.getLogger(ReloadIOSuccessReporterHandler.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ReloadIOSuccessReporterHandler.class);
 	private final Runnable reloadIO;
 
 	private final Map<Object, Integer> reporterToErrorCountMap = new HashMap<>();

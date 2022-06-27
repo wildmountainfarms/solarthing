@@ -9,6 +9,8 @@ import java.io.File;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PacketTestUtil {
+	private PacketTestUtil() { throw new UnsupportedOperationException(); }
+
 	public static final File SOLARTHING_ROOT = new File("..");
 
 	public static <T> void testJson(T originalPacket, Class<T> packetClass) throws JsonProcessingException {

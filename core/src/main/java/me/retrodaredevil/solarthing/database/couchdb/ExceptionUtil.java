@@ -4,6 +4,7 @@ import me.retrodaredevil.couchdbjava.exception.CouchDbException;
 import me.retrodaredevil.couchdbjava.exception.CouchDbNotFoundException;
 import me.retrodaredevil.couchdbjava.exception.CouchDbUnauthorizedException;
 import me.retrodaredevil.couchdbjava.exception.CouchDbUpdateConflictException;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.database.exception.NotFoundSolarThingDatabaseException;
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
@@ -18,7 +19,7 @@ public final class ExceptionUtil {
 		return createFromCouchDbException(null, exception);
 	}
 	@SuppressWarnings("InconsistentOverloads") // while this is an "inconsistent overload", it is consistent with how the exception constructors work
-	public static SolarThingDatabaseException createFromCouchDbException(String message, CouchDbException exception) {
+	public static SolarThingDatabaseException createFromCouchDbException(@Nullable String message, CouchDbException exception) {
 		if (exception instanceof CouchDbUnauthorizedException) {
 			return new UnauthorizedSolarThingDatabaseException(message, exception);
 		}

@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.solar.outback.fx.charge;
 
+import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.solar.BatteryUtil;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.OperationalMode;
@@ -124,7 +125,7 @@ public class FXChargingStateHandler {
 			floatTimer.countDown(deltaTimeMillis);
 		}
 	}
-	public FXChargingMode getMode(){
+	public @Nullable FXChargingMode getMode(){
 		OperationalMode operationalMode = this.previousOperationalMode;
 		if(operationalMode == null){
 			return null;

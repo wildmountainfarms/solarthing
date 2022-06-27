@@ -1,5 +1,7 @@
 package me.retrodaredevil.solarthing.util;
 
+import me.retrodaredevil.solarthing.annotations.Nullable;
+
 import java.time.Instant;
 import java.util.Objects;
 
@@ -37,17 +39,17 @@ public final class TimeRange {
 		return createBefore(endTime.toEpochMilli());
 	}
 
-	public Long getStartTimeMillis() {
+	public @Nullable Long getStartTimeMillis() {
 		return startTime;
 	}
-	public Instant getStartTime() {
+	public @Nullable Instant getStartTime() {
 		return startTime == null ? null : Instant.ofEpochMilli(startTime);
 	}
 
-	public Long getEndTimeMillis() {
+	public @Nullable Long getEndTimeMillis() {
 		return endTime;
 	}
-	public Instant getEndTime() {
+	public @Nullable Instant getEndTime() {
 		return endTime == null ? null : Instant.ofEpochMilli(endTime);
 	}
 	public boolean isForever() {

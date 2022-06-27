@@ -1,10 +1,14 @@
 package me.retrodaredevil.solarthing.util;
 
+import me.retrodaredevil.solarthing.annotations.UtilityClass;
+
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
+@UtilityClass
 public class MathUtil {
+	private MathUtil() { throw new UnsupportedOperationException(); }
 
 	private static final MathContext FLOAT_CONTEXT = new MathContext(6, RoundingMode.HALF_UP);
 

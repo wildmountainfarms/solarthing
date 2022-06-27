@@ -16,5 +16,7 @@ public interface PacketCollectionIdGenerator {
 			return "" + year + "," + month + "," + day + "," +
 					hour + "," + minute + "," + second + "," + Math.random(); // avoid collisions
 		};
+
+		private Defaults() { throw new UnsupportedOperationException(); }
 	}
 }

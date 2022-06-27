@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class RoverMain {
+	private RoverMain() { throw new UnsupportedOperationException(); }
 	private static final Logger LOGGER = LoggerFactory.getLogger(RoverMain.class);
 
 

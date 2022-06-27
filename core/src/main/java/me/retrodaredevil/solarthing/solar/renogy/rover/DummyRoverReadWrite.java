@@ -15,7 +15,7 @@ import java.util.Map;
 import static java.util.Objects.requireNonNull;
 
 public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
-	private final Identifier IDENTIFIER = new SingleTypeIdentifier("DummyRoverReadWrite");
+	private static final Identifier IDENTIFIER = new SingleTypeIdentifier("DummyRoverReadWrite");
 	public interface OnChange {
 		void onChange(String fieldName, String previousValue, String newValue);
 	}

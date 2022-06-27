@@ -42,12 +42,7 @@ public class MateAnalyticsHandler implements PacketHandler {
 				if (Boolean.TRUE.equals(mx.isFlexMax())) {
 					fmCount++;
 				}
-				Boolean oldMate = mx.isOldMateFirmware();
-				if (Boolean.TRUE.equals(oldMate)) {
-					isOldFirmware = true;
-				} else if (Boolean.FALSE.equals(oldMate)) {
-					isOldFirmware = false;
-				}
+				isOldFirmware = mx.isOldMateFirmware();
 			}
 		}
 		String data = "";

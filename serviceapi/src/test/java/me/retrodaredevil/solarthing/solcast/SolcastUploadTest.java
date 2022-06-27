@@ -16,6 +16,7 @@ import java.time.Instant;
 import static java.util.Objects.requireNonNull;
 
 public class SolcastUploadTest {
+	private SolcastUploadTest() { throw new UnsupportedOperationException(); }
 	private static final String RESOURCE_ID = "90d5-ccbe-7af4-280c";
 	private static void testRetrofit(OkHttpClient client) throws IOException {
 		Retrofit retrofit = SolcastRetrofitUtil.defaultBuilder()
