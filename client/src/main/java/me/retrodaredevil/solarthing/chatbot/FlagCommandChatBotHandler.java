@@ -234,6 +234,9 @@ public class FlagCommandChatBotHandler implements ChatBotHandler {
 				messageSender.sendMessage("Could not request delete for flag alias with flag name: '" + flagName + "' under ID: " + packetToRequestDeleteFor.getPacket().getDbId() + ". See logs for details.");
 			}
 		}
+		if (packets.isEmpty()) {
+			messageSender.sendMessage("No flag aliases were found with flag name: " + flagName);
+		}
 	}
 
 	@Override
@@ -283,9 +286,11 @@ public class FlagCommandChatBotHandler implements ChatBotHandler {
 				} else {
 					messageSender.sendMessage("You do not have permission to edit flags");
 				}
+				return true;
 			} else if (split[1].equals("list")) {
 				// Anyone can list flags. No permission required.
 				listFlags(messageSender);
+				return true;
 			} else if (split[1].equals("alias")) {
 				if (split.length <= 2) {
 					messageSender.sendMessage(INCORRECT_USAGE + "\n\t" + USAGE_ALIAS_ADD + "\n\t" + USAGE_ALIAS_DELETE);
@@ -320,6 +325,7 @@ public class FlagCommandChatBotHandler implements ChatBotHandler {
 					}
 
 					addFlagAlias(messageSender, flagName, flagAlias, defaultDuration);
+					return true;
 				} else if (split[2].equals("delete")) {
 					if (split.length <= 3) {
 						messageSender.sendMessage(INCORRECT_USAGE + "\n\t" + USAGE_ALIAS_DELETE);
@@ -327,17 +333,18 @@ public class FlagCommandChatBotHandler implements ChatBotHandler {
 					}
 					String flagName = split[3];
 					deleteFlagAlias(messageSender, flagName);
+					return true;
 				} else {
 					messageSender.sendMessage(INCORRECT_USAGE + "\n\t" + USAGE_ALIAS_ADD + "\n\t" + USAGE_ALIAS_DELETE);
+					return true;
 				}
-			} else if (split[1].equals("delete")) {
-
 			} else {
 				messageSender.sendMessage(USAGE);
+				return true;
 			}
-			return true;
+		} else {
+			return false;
 		}
-		return false;
 	}
 
 	@Override
