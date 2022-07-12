@@ -95,6 +95,7 @@ public class BatteryRecordDataCache extends BaseAccumulationDataCache {
 		return identifier;
 	}
 
+	@SuppressWarnings("JavaLangClash")
 	@JsonExplicit
 	public static class Record {
 

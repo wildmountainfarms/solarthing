@@ -86,6 +86,14 @@ and also react to messages that have been fully processed (request successfully 
 * Make it so that MessageEvents can easily use a NanoProvider rather than System.nanoTime() directly.
 * Add alert to detect when messages are being spammed to solarthing_open
 * Add info about the state of CouchDB on the home page of SolarThing web
+* Add TOML support for config files: https://github.com/FasterXML/jackson-dataformats-text
+* Have a way to query record data such as the day with the highest daily kWh value
+  * Likely involves cache database. 
+  * A single cache document could include an entire month's worth of data, so this will not involve `CacheHandler`.
+  * Calculation can be based off of `chargeControllerAccumulation`.
+* Have a CouchDB validation function that stops old packets from being saved
+* CouchDB web page for sending commands
+* Command that turns off generator before it goes into absorb
   
 ### Completed
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)

@@ -5,6 +5,7 @@ import me.retrodaredevil.solarthing.AlterPacketsProvider;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.commands.packets.open.CommandOpenPacket;
 import me.retrodaredevil.solarthing.commands.packets.open.DeleteAlterPacket;
+import me.retrodaredevil.solarthing.commands.packets.open.FlagAliasAddPacket;
 import me.retrodaredevil.solarthing.commands.packets.open.ImmutableRequestCommandPacket;
 import me.retrodaredevil.solarthing.commands.packets.open.RequestCommandPacket;
 import me.retrodaredevil.solarthing.commands.packets.open.RequestFlagPacket;
@@ -35,8 +36,10 @@ import me.retrodaredevil.solarthing.type.alter.AlterPacket;
 import me.retrodaredevil.solarthing.type.alter.ImmutableStoredAlterPacket;
 import me.retrodaredevil.solarthing.type.alter.StoredAlterPacket;
 import me.retrodaredevil.solarthing.type.alter.flag.ActivePeriod;
+import me.retrodaredevil.solarthing.type.alter.flag.FlagAliasData;
 import me.retrodaredevil.solarthing.type.alter.flag.FlagData;
 import me.retrodaredevil.solarthing.type.alter.flag.TimeRangeActivePeriod;
+import me.retrodaredevil.solarthing.type.alter.packets.FlagAliasPacket;
 import me.retrodaredevil.solarthing.type.alter.packets.FlagPacket;
 import me.retrodaredevil.solarthing.type.alter.packets.ScheduledCommandData;
 import me.retrodaredevil.solarthing.type.alter.packets.ScheduledCommandPacket;
@@ -226,6 +229,16 @@ public class AlterManagerAction extends SimpleAction {
 				FlagPacket flagPacket = new FlagPacket(flagData, executionReason);
 				String databaseId = "alter-flag-" + flagData.getFlagName() + "-" + sender + "-" + Math.random();
 				StoredAlterPacket storedAlterPacket = new ImmutableStoredAlterPacket(databaseId, now, flagPacket, sourceId);
+				storedAlterPacketsToUpload.add(storedAlterPacket);
+			} else if (packet instanceof FlagAliasAddPacket) {
+				FlagAliasAddPacket flagAliasAddPacket = (FlagAliasAddPacket) packet;
+				FlagAliasData flagAliasData = flagAliasAddPacket.getFlagAliasData();
+				ExecutionReason executionReason = new OpenSourceExecutionReason(new OpenSource(
+						sender, packetGroup.getDateMillis(), flagAliasAddPacket, flagAliasAddPacket.getUniqueString()
+				));
+				FlagAliasPacket flagAliasPacket = new FlagAliasPacket(flagAliasData, executionReason);
+				String databaseId = "alter-flag-alias-" + flagAliasData.getFlagName() + "-" + sender + "-" + Math.random();
+				StoredAlterPacket storedAlterPacket = new ImmutableStoredAlterPacket(databaseId, now, flagAliasPacket, sourceId);
 				storedAlterPacketsToUpload.add(storedAlterPacket);
 			}
 		}

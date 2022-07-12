@@ -23,7 +23,7 @@ public class ImmutableRequestFlagPacket implements RequestFlagPacket {
 
 	@Override
 	public @NotNull String getUniqueString() {
-		return "ImmutableRequestFlagPacket(" +
+		return "RequestFlagPacket(" +
 				"flagData=" + flagData.getUniqueString() +
 				')';
 

@@ -8,4 +8,6 @@ public enum CommandOpenPacketType implements DocumentedPacketType {
 	REQUEST_FLAG,
 	DELETE_ALTER,
 	REQUEST_HEARTBEAT,
+	FLAG_ALIAS_ADD,
+	FLAG_ALIAS_DELETE,
 }

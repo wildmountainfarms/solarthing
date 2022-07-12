@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.commands.packets.open;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import me.retrodaredevil.solarthing.PacketTestUtil;
 import me.retrodaredevil.solarthing.database.couchdb.RevisionUpdateToken;
+import me.retrodaredevil.solarthing.type.alter.flag.FlagAliasData;
 import me.retrodaredevil.solarthing.type.alter.flag.FlagData;
 import me.retrodaredevil.solarthing.type.alter.flag.TimeRangeActivePeriod;
 import me.retrodaredevil.solarthing.type.alter.packets.ScheduledCommandData;
@@ -31,5 +32,7 @@ class CommandOpenPacketsTest {
 		PacketTestUtil.testJson(new ImmutableScheduleCommandPacket(new ScheduledCommandData(System.currentTimeMillis(), "GEN OFF", Collections.singleton(1)), UUID.randomUUID()), CommandOpenPacket.class, true);
 		PacketTestUtil.testJson(new ImmutableDeleteAlterPacket("my_document_id", new RevisionUpdateToken("46-9ab7d71841380a36e1ec9e367deae36e")), CommandOpenPacket.class, true);
 		PacketTestUtil.testJson(new ImmutableRequestHeartbeatPacket(new HeartbeatData("Hourly Mate Ping", "heartbeat.ping.mate.hourly", Duration.ofHours(1), Duration.ofMinutes(5)), UUID.randomUUID()), CommandOpenPacket.class, true);
+		PacketTestUtil.testJson(new ImmutableFlagAliasAddPacket(new FlagAliasData("my_flag_name", "My Cool Alias", null)), CommandOpenPacket.class, true);
+		PacketTestUtil.testJson(new ImmutableFlagAliasAddPacket(new FlagAliasData("my_flag_name", "My Cool Alias", 5000L)), CommandOpenPacket.class, true);
 	}
 }
