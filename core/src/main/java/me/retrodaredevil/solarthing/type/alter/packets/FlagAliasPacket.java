@@ -28,7 +28,7 @@ public final class FlagAliasPacket implements AlterPacket {
 	}
 	@Override
 	public @NotNull AlterPacketType getPacketType() {
-		return AlterPacketType.FLAG;
+		return AlterPacketType.FLAG_ALIAS;
 	}
 
 	@JsonProperty("flagAliasData")
