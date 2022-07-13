@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -86,6 +87,7 @@ public class FlagCommandChatBotHandler implements ChatBotHandler {
 			if (flagDataList.isEmpty()) {
 				messageSender.sendMessage("There are no flags set.");
 			} else {
+				// TODO make active period prettier
 				messageSender.sendMessage(
 						"Flags:\n" + flagDataList.stream().map(flagData -> flagData.getFlagName() + " " + flagData.getActivePeriod())
 								.collect(Collectors.joining("\n"))
@@ -398,12 +400,14 @@ public class FlagCommandChatBotHandler implements ChatBotHandler {
 		if (!canEditFlags(helpMessage)) {
 			return Collections.emptyList();
 		}
-		return Arrays.asList(
+		List<String> result = new ArrayList<>(Arrays.asList(
 				USAGE_SET,
 				USAGE_CLEAR,
 				USAGE_LIST,
 				USAGE_ALIAS_ADD,
 				USAGE_ALIAS_DELETE
-		);
+		));
+		result.addAll(getAliasHelpLines());
+		return result;
 	}
 }

@@ -5,7 +5,6 @@ import me.retrodaredevil.solarthing.annotations.UtilityClass;
 
 import java.util.Iterator;
 import java.util.function.Function;
-import java.util.stream.StreamSupport;
 
 @UtilityClass
 public final class ChatBotUtil {
