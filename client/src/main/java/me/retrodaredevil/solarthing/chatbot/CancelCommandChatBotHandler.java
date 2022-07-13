@@ -58,7 +58,7 @@ public class CancelCommandChatBotHandler implements ChatBotHandler {
 		return commandHelper.hasPermission(message, "solarthing.unschedule");
 	}
 
-	private static List<VersionedPacket<StoredAlterPacket>> findStoredPacketsWithSchedulingIdOrNull(Stream<? extends VersionedPacket<StoredAlterPacket>> storedAlterPackets, UUID schedulingId) {
+	private static List<VersionedPacket<StoredAlterPacket>> findStoredPacketsWithSchedulingId(Stream<? extends VersionedPacket<StoredAlterPacket>> storedAlterPackets, UUID schedulingId) {
 		requireNonNull(schedulingId);
 		// The most common way to schedule commands is using an OpenSourceExecutionReason with a packet that is a
 		//   ScheduleCommandPacket, which has a unique ID in it. We will need to accept multiple
@@ -70,7 +70,7 @@ public class CancelCommandChatBotHandler implements ChatBotHandler {
 				ExecutionReason executionReason = ((ScheduledCommandPacket) alterPacket).getExecutionReason();
 				if (executionReason instanceof OpenSourceExecutionReason) {
 					OpenSourcePacket openSourcePacket = ((OpenSourceExecutionReason) executionReason).getSource().getPacket();
-					// Instead of using ScheduleCommandPacket here, might as well be more general and use UniqueRequestIdContainer.
+					// Instead of using ScheduleCommandPacket here (notice, not Scheduled), might as well be more general and use UniqueRequestIdContainer.
 					//   At the time of writing this code, there's not actually a reason for it, but hey, maybe using UniqueRequestContainerId over ScheduleCommandPacket
 					//   will be useful in the future.
 					return openSourcePacket instanceof UniqueRequestIdContainer && ((UniqueRequestIdContainer) openSourcePacket).getUniqueRequestId().equals(schedulingId);
@@ -85,7 +85,7 @@ public class CancelCommandChatBotHandler implements ChatBotHandler {
 			messageSender.sendMessage("Unable to cancel commands, as we are unable to reach the alter database.");
 			return;
 		}
-		List<VersionedPacket<StoredAlterPacket>> targets = findStoredPacketsWithSchedulingIdOrNull(packets.stream(), schedulingId);
+		List<VersionedPacket<StoredAlterPacket>> targets = findStoredPacketsWithSchedulingId(packets.stream(), schedulingId);
 		if (targets.isEmpty()) {
 			messageSender.sendMessage("Unable to find a scheduled command that was scheduled with the ID of " + schedulingId);
 		} else if (targets.size() > 1) {

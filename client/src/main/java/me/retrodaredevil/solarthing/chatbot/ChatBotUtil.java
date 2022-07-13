@@ -3,7 +3,9 @@ package me.retrodaredevil.solarthing.chatbot;
 import info.debatty.java.stringsimilarity.JaroWinkler;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 
+import java.util.Iterator;
 import java.util.function.Function;
+import java.util.stream.StreamSupport;
 
 @UtilityClass
 public final class ChatBotUtil {
@@ -18,9 +20,13 @@ public final class ChatBotUtil {
 		return similarity(s1, s2) > SIMILARITY_CONSTANT;
 	}
 	public static <T> T findBest(Iterable<? extends T> iterable, Function<? super T, ? extends String> toText, String text) {
+		return findBest(iterable.iterator(), toText, text);
+	}
+	public static <T> T findBest(Iterator<? extends T> iterator, Function<? super T, ? extends String> toText, String text) {
 		T best = null;
 		double bestSimilarity = 0;
-		for (T element : iterable) {
+		while (iterator.hasNext()) {
+			T element = iterator.next();
 			double similarity = ChatBotUtil.similarity(text, toText.apply(element));
 			if (similarity > SIMILARITY_CONSTANT && similarity > bestSimilarity) {
 				best = element;

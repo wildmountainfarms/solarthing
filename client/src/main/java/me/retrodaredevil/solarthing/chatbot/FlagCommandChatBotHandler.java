@@ -35,10 +35,12 @@ import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class FlagCommandChatBotHandler implements ChatBotHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FlagCommandChatBotHandler.class);
@@ -149,6 +151,7 @@ public class FlagCommandChatBotHandler implements ChatBotHandler {
 		// TODO We should check if the flag being requested is already active.
 		uploadPacket(requestFlagPacket, success -> {
 			if (success) {
+				// TODO inform sender of end time if duration != null
 				messageSender.sendMessage("Successfully requested flag: '" + flagName + "' to be set.");
 			} else {
 				messageSender.sendMessage("Was unable to request flag set. See logs for details or try again.");
@@ -237,6 +240,18 @@ public class FlagCommandChatBotHandler implements ChatBotHandler {
 		if (packets.isEmpty()) {
 			messageSender.sendMessage("No flag aliases were found with flag name: " + flagName);
 		}
+	}
+	private static Stream<FlagAliasPacket> findAliases(Stream<? extends VersionedPacket<StoredAlterPacket>> storedAlterPackets) {
+		return storedAlterPackets
+				.map(versionedPacket -> {
+					StoredAlterPacket storedAlterPacket = versionedPacket.getPacket();
+					AlterPacket alterPacket = storedAlterPacket.getPacket();
+					if (alterPacket instanceof FlagAliasPacket) {
+						return (FlagAliasPacket) alterPacket;
+					}
+					return null;
+				})
+				.filter(Objects::nonNull);
 	}
 
 	@Override
@@ -343,8 +358,39 @@ public class FlagCommandChatBotHandler implements ChatBotHandler {
 				return true;
 			}
 		} else {
+			List<VersionedPacket<StoredAlterPacket>> packets = alterPacketsProvider.getPackets();
+			if (packets == null) {
+				// we can't see if there are any aliases available, so we can't do fuzzy matching for them
+				return false;
+			}
+			Stream<FlagAliasPacket> flagAliasPackets = findAliases(packets.stream());
+			FlagAliasPacket best = ChatBotUtil.findBest(flagAliasPackets.iterator(), flagAliasPacket -> flagAliasPacket.getFlagAliasData().getFlagAlias(), message.getText());
+			if (best != null) {
+				FlagAliasData data = best.getFlagAliasData();
+				setFlag(messageSender, data.getFlagName(), data.getDefaultDuration());
+				return true;
+			}
 			return false;
 		}
+	}
+
+	private List<String> getAliasHelpLines() {
+		List<VersionedPacket<StoredAlterPacket>> packets = alterPacketsProvider.getPackets();
+		if (packets == null) {
+			// we can't see if there are any aliases available, so we can't do fuzzy matching for them
+			return Collections.emptyList();
+		}
+		return findAliases(packets.stream())
+				.map(flagAliasPacket -> {
+					FlagAliasData data = flagAliasPacket.getFlagAliasData();
+					String extra = "";
+					Duration defaultDuration = data.getDefaultDuration();
+					if (defaultDuration != null) {
+						extra = " for " + TimeUtil.millisToPrettyString(defaultDuration.toMillis());
+					}
+					return '"' + data.getFlagAlias() + "\" -- Sets flag " + data.getFlagName() + extra;
+				})
+				.collect(Collectors.toList());
 	}
 
 	@Override
@@ -355,7 +401,9 @@ public class FlagCommandChatBotHandler implements ChatBotHandler {
 		return Arrays.asList(
 				USAGE_SET,
 				USAGE_CLEAR,
-				USAGE_LIST
+				USAGE_LIST,
+				USAGE_ALIAS_ADD,
+				USAGE_ALIAS_DELETE
 		);
 	}
 }

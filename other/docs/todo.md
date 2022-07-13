@@ -94,6 +94,18 @@ and also react to messages that have been fully processed (request successfully 
 * Have a CouchDB validation function that stops old packets from being saved
 * CouchDB web page for sending commands
 * Command that turns off generator before it goes into absorb
+* Turn on generator when certain rules are met (run command when certain rules are met)
+  * Potential rules:
+    * Battery voltage is below X
+    * Battery voltage is below X for Y duration
+    * Battery voltage average of last X duration is at or below Y
+    * Net load is above X
+    * Net load is above X for Y duration
+    * Net load average of last X duration is at or above Y
+    * Predicted net load average of next X duration is at or above Y
+      * Will predict load using data from past week
+      * Will predict charge using solcast
+* Add this to web: https://github.com/IvanGoncharov/graphql-voyager
   
 ### Completed
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
