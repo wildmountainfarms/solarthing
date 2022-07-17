@@ -7,6 +7,8 @@ import me.retrodaredevil.action.node.convenient.SingleActionNode;
 import me.retrodaredevil.action.node.convenient.TimeoutActionNode;
 import me.retrodaredevil.action.node.convenient.WithLockActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
+import me.retrodaredevil.action.node.expression.action.node.AllActionNode;
+import me.retrodaredevil.action.node.expression.action.node.AnyActionNode;
 
 @JsonSubTypes({
 		@JsonSubTypes.Type(QueueActionNode.class),
@@ -22,6 +24,9 @@ import me.retrodaredevil.action.node.environment.ActionEnvironment;
 		@JsonSubTypes.Type(TimeoutActionNode.class),
 		@JsonSubTypes.Type(SingleActionNode.class),
 		@JsonSubTypes.Type(WithLockActionNode.class),
+
+		@JsonSubTypes.Type(AllActionNode.class),
+		@JsonSubTypes.Type(AnyActionNode.class),
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
 public interface ActionNode {

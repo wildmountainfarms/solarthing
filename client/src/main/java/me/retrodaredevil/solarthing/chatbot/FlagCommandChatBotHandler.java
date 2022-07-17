@@ -212,7 +212,7 @@ public class FlagCommandChatBotHandler implements ChatBotHandler {
 
 		uploadPacket(flagAliasAddPacket, success -> {
 			if (success) {
-				messageSender.sendMessage("Successfully added alias for flag:  " + flagAliasAddPacket.getFlagAliasData().getFlagName());
+				messageSender.sendMessage("Successfully requested to add alias for flag:  " + flagAliasAddPacket.getFlagAliasData().getFlagName());
 			} else {
 				messageSender.sendMessage("Was unable to add alias. See logs for details or try again.");
 			}
@@ -408,6 +408,6 @@ public class FlagCommandChatBotHandler implements ChatBotHandler {
 				USAGE_ALIAS_DELETE
 		));
 		result.addAll(getAliasHelpLines());
-		return result;
+		return Collections.unmodifiableList(result);
 	}
 }
