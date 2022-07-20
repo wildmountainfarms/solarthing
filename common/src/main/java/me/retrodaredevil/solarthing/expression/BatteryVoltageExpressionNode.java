@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.expression;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.action.node.expression.NumericExpression;
 import me.retrodaredevil.action.node.expression.node.NumericExpressionNode;
@@ -10,6 +11,7 @@ import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
 
 import java.util.stream.Collectors;
 
+@JsonTypeName("battery-voltage")
 public class BatteryVoltageExpressionNode implements NumericExpressionNode {
 	@Override
 	public NumericExpression createExpression(ActionEnvironment actionEnvironment) {

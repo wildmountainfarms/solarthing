@@ -1,0 +1,21 @@
+{
+  "type": "declaration",
+  "main": {
+    "type": "race",
+    "racers": [
+      [
+        {
+          "type": "any",
+          "expression": {
+            "type": "comparison",
+            "lhs": { "type": "battery-voltage" },
+            "operator": "<=",
+            "rhs": { "type": "constant-number", "constant": 22.2 }
+          }
+        },
+        { "type": "log", "message": "The battery voltage is low" }
+      ],
+      [ { "type": "pass" }, { "type": "pass" } ]
+    ]
+  }
+}

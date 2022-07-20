@@ -70,7 +70,7 @@ public class ComparisonExpression implements BooleanExpression {
 		List<BooleanExpressionResult> resultList = new ArrayList<>();
 		for (NumericExpressionResult leftResult : leftResultList) {
 			for (NumericExpressionResult rightResult : rightResultList) {
-				resultList.add(BooleanExpressionResult.create(operator.evaluate(leftResult, rightResult)));
+				resultList.add(BooleanExpressionResult.get(operator.evaluate(leftResult, rightResult)));
 			}
 		}
 		return resultList;

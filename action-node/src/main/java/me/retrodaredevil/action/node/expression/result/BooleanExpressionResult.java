@@ -1,9 +1,20 @@
 package me.retrodaredevil.action.node.expression.result;
 
-public interface BooleanExpressionResult extends ExpressionResult {
-	boolean getBoolean();
+public enum BooleanExpressionResult implements ExpressionResult {
+	TRUE(true),
+	FALSE(false),
+	;
+	private final boolean value;
 
-	static BooleanExpressionResult create(boolean result) {
-		return () -> result;
+	BooleanExpressionResult(boolean value) {
+		this.value = value;
+	}
+
+	public boolean getBoolean() {
+		return value;
+	}
+
+	public static BooleanExpressionResult get(boolean result) {
+		return result ? TRUE : FALSE;
 	}
 }
