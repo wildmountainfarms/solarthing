@@ -113,10 +113,10 @@ public class TracerModbusRequester implements ModbusRequester {
 				throw new RuntimeException("Could not create NetCatServerHandler", e);
 			}
 		}
-		return new DataRequesterResult(
-				new ModbusListUpdaterWrapper(ModbusListUpdaterWrapper.LogType.TRACER, new TracerPacketListUpdater(number, read, write, tracerClockOptions, netCatServerHandler == null ? null : new ConnectionHandler(netCatServerHandler), connectionHandlerHasFlushLogic), reloadCache, successReporter, sendErrorPackets, "tracer.error." + number),
-				new AttachToCommandEnvironmentUpdater(Collections.singletonList(tracerModbusEnvironment), attachToCommands::contains)
-		);
+		return DataRequesterResult.builder()
+				.statusPacketListReceiver(new ModbusListUpdaterWrapper(ModbusListUpdaterWrapper.LogType.TRACER, new TracerPacketListUpdater(number, read, write, tracerClockOptions, netCatServerHandler == null ? null : new ConnectionHandler(netCatServerHandler), connectionHandlerHasFlushLogic), reloadCache, successReporter, sendErrorPackets, "tracer.error." + number))
+				.environmentUpdater(new AttachToCommandEnvironmentUpdater(Collections.singletonList(tracerModbusEnvironment), attachToCommands::contains))
+				.build();
 
 	}
 }

@@ -29,6 +29,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class RequestMain {
 	private RequestMain() { throw new UnsupportedOperationException(); }
@@ -43,6 +44,7 @@ public class RequestMain {
 	}
 
 	public static <T extends PacketHandlingOption & CommandOption> int startRequestProgram(T options, AnalyticsManager analyticsManager, List<DataRequester> dataRequesterList, long period, long minimumWait) throws Exception {
+		// Note this is very similar to code in OutbackMateMain and could eventually be refactored
 		EnvironmentUpdater[] environmentUpdaterReference = new EnvironmentUpdater[1];
 		PacketHandlerInit.Result handlersResult = PacketHandlerInit.initHandlers(
 				options,
@@ -50,14 +52,17 @@ public class RequestMain {
 				Collections.singleton(new RoverAnalyticsHandler(analyticsManager))
 		);
 		PacketListReceiverHandlerBundle bundle = handlersResult.getBundle();
+		List<DataRequesterResult> dataRequesterResults = dataRequesterList.stream()
+				.map(dataRequester -> dataRequester.create(new RequestObject(bundle.getEventHandler().getPacketListReceiverAccepter())))
+				.collect(Collectors.toList());
+		// TODO remove dataRequestList parameter soon and use options.getDataRequesterList()
 
 		List<PacketListReceiver> packetListReceiverList = new ArrayList<>();
 		List<EnvironmentUpdater> environmentUpdaters = new ArrayList<>();
-		for (DataRequester dataRequester : dataRequesterList) {
-			DataRequesterResult result = dataRequester.create(new RequestObject(bundle.getEventHandler().getPacketListReceiverAccepter()));
-			packetListReceiverList.add(result.getStatusPacketListReceiver());
-			environmentUpdaters.add(result.getEnvironmentUpdater());
-		}
+
+		dataRequesterResults.stream().map(DataRequesterResult::getStatusPacketListReceiver).forEachOrdered(packetListReceiverList::add);
+		dataRequesterResults.stream().map(DataRequesterResult::getEnvironmentUpdater).forEachOrdered(environmentUpdaters::add);
+
 		packetListReceiverList.add(new RoverEventUpdaterListReceiver(bundle.getEventHandler().getPacketListReceiverAccepter())); // will add events for each rover packet if there are any to add
 		packetListReceiverList.add(new TracerEventUpdaterListReceiver(bundle.getEventHandler().getPacketListReceiverAccepter())); // will add events for each tracer packet if there are any to add
 		if (options.hasCommands()) {
@@ -67,6 +72,7 @@ public class RequestMain {
 
 		packetListReceiverList.add(new DataIdentifiablePacketListChecker());
 		packetListReceiverList.add(new DaySummaryLogListReceiver());
+		dataRequesterResults.stream().map(DataRequesterResult::getStatusEndPacketListReceiver).forEachOrdered(packetListReceiverList::add);
 		packetListReceiverList.addAll(bundle.createDefaultPacketListReceivers());
 
 		return doRequest(new PacketListReceiverMultiplexer(packetListReceiverList), Duration.ofMillis(period), Duration.ofMillis(minimumWait));

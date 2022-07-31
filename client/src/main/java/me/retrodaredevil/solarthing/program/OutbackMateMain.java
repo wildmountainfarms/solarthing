@@ -13,7 +13,6 @@ import me.retrodaredevil.solarthing.commands.packets.status.AvailableCommandsLis
 import me.retrodaredevil.solarthing.config.io.IOConfig;
 import me.retrodaredevil.solarthing.config.options.MateProgramOptions;
 import me.retrodaredevil.solarthing.config.options.ProgramType;
-import me.retrodaredevil.solarthing.config.request.DataRequester;
 import me.retrodaredevil.solarthing.config.request.DataRequesterResult;
 import me.retrodaredevil.solarthing.config.request.RequestObject;
 import me.retrodaredevil.solarthing.io.ReloadableIOBundle;
@@ -36,6 +35,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.time.Duration;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
@@ -54,6 +54,7 @@ public class OutbackMateMain {
 		IOConfig ioConfig = ConfigUtil.parseIOConfig(options.getIOBundleFile(), OutbackConstants.MATE_CONFIG);
 		try(ReloadableIOBundle ioBundle = new ReloadableIOBundle(ioConfig::createIOBundle)) {
 
+			// Note this is very similar to code in RequestMain and could eventually be refactored
 			EnvironmentUpdater[] environmentUpdaterReference = new EnvironmentUpdater[1];
 			PacketHandlerInit.Result handlersResult = PacketHandlerInit.initHandlers(
 					options,
@@ -61,6 +62,9 @@ public class OutbackMateMain {
 					Collections.singleton(new MateAnalyticsHandler(analyticsManager))
 			);
 			PacketListReceiverHandlerBundle bundle = handlersResult.getBundle();
+			List<DataRequesterResult> dataRequesterResults = options.getDataRequesterList().stream()
+					.map(dataRequester -> dataRequester.create(new RequestObject(bundle.getEventHandler().getPacketListReceiverAccepter())))
+					.collect(Collectors.toList());
 
 
 			List<PacketListReceiver> packetListReceiverList = new ArrayList<>(Arrays.asList(
@@ -70,11 +74,10 @@ public class OutbackMateMain {
 					new FXStatusListUpdater(new DailyIdentifier(options.getZoneId()))
 			));
 			List<EnvironmentUpdater> environmentUpdaters = new ArrayList<>();
-			for (DataRequester dataRequester : options.getDataRequesterList()) {
-				DataRequesterResult result = dataRequester.create(new RequestObject(bundle.getEventHandler().getPacketListReceiverAccepter()));
-				packetListReceiverList.add(result.getStatusPacketListReceiver());
-				environmentUpdaters.add(result.getEnvironmentUpdater());
-			}
+
+			dataRequesterResults.stream().map(DataRequesterResult::getStatusPacketListReceiver).forEachOrdered(packetListReceiverList::add);
+			dataRequesterResults.stream().map(DataRequesterResult::getEnvironmentUpdater).forEachOrdered(environmentUpdaters::add);
+
 			final List<CommandProvider<MateCommand>> commandProviders;
 			if (options.hasCommands()) {
 				packetListReceiverList.add(new AvailableCommandsListUpdater(options.getCommandInfoList(), false));
@@ -97,6 +100,7 @@ public class OutbackMateMain {
 
 			packetListReceiverList.add(new DataIdentifiablePacketListChecker());
 			packetListReceiverList.add(new DaySummaryLogListReceiver());
+			dataRequesterResults.stream().map(DataRequesterResult::getStatusEndPacketListReceiver).forEachOrdered(packetListReceiverList::add);
 			packetListReceiverList.addAll(bundle.createDefaultPacketListReceivers());
 
 			return SolarMain.initReader(

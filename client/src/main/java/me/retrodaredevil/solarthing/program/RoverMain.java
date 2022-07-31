@@ -17,7 +17,6 @@ import me.retrodaredevil.solarthing.config.request.modbus.ModbusDataRequester;
 import me.retrodaredevil.solarthing.config.request.modbus.ModbusRequester;
 import me.retrodaredevil.solarthing.config.request.modbus.RoverModbusRequester;
 import me.retrodaredevil.solarthing.io.ReloadableIOBundle;
-import me.retrodaredevil.solarthing.program.modbus.ModbusCacheSlave;
 import me.retrodaredevil.solarthing.program.modbus.MutableAddressModbusSlave;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverReadTable;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverWriteTable;
@@ -38,6 +37,7 @@ public class RoverMain {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RoverMain.class);
 
 
+	@Deprecated // TODO remove this soon
 	private static int doRover(RoverProgramOptions options, AnalyticsManager analyticsManager, List<DataRequester> dataRequesterList) throws Exception {
 		RoverModbusRequester roverModbusRequester = new RoverModbusRequester(
 				options.isSendErrorPackets(), options.isBulkRequest(),
@@ -54,6 +54,7 @@ public class RoverMain {
 		return RequestMain.startRequestProgram(options, analyticsManager, list, options.getPeriod(), options.getMinimumWait());
 	}
 
+	@Deprecated
 	public static int connectRover(RoverProgramOptions options, File dataDirectory) throws Exception {
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Beginning rover program");
 		AnalyticsManager analyticsManager = new AnalyticsManager(options.isAnalyticsEnabled(), dataDirectory);
@@ -63,25 +64,16 @@ public class RoverMain {
 		return doRover(options, analyticsManager, dataRequesterList);
 	}
 	public static int connectRoverSetup(RoverSetupProgramOptions options) {
-		return doRoverProgram(options, RoverSetupProgram::startRoverSetup, null);
+		return doRoverProgram(options, RoverSetupProgram::startRoverSetup);
 	}
-	private static int doRoverProgram(RoverOption options, RoverProgramRunner runner, @Nullable RegisterCacheHandler registerCacheHandler) {
+	private static int doRoverProgram(RoverOption options, RoverProgramRunner runner) {
 		IOConfig ioConfig = ConfigUtil.parseIOConfig(options.getIOBundleFile(), RoverReadTable.SERIAL_CONFIG);
 		try(ReloadableIOBundle ioBundle = new ReloadableIOBundle(ioConfig::createIOBundle)) {
 			ModbusSlaveBus modbus = new IOModbusSlaveBus(ioBundle, new RtuDataEncoder(2000, 20, 4));
 			MutableAddressModbusSlave slave = new MutableAddressModbusSlave(options.getModbusAddress(), modbus);
-			final RoverReadTable read;
-			final Runnable reloadCache;
-			if (registerCacheHandler != null) {
-				ModbusCacheSlave modbusCacheSlave = new ModbusCacheSlave(slave);
-				read = new RoverModbusSlaveRead(modbusCacheSlave);
-				reloadCache = () -> registerCacheHandler.cacheRegisters(modbusCacheSlave);
-			} else {
-				read = new RoverModbusSlaveRead(slave);
-				reloadCache = () -> {};
-			}
+			RoverReadTable read = new RoverModbusSlaveRead(slave);
 			RoverWriteTable write = new RoverModbusSlaveWrite(slave);
-			return runner.doProgram(slave, read, write, reloadCache, ioBundle::reload);
+			return runner.doProgram(slave, read, write, () -> {}, ioBundle::reload);
 		} catch (Exception e) {
 			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)Got exception!", e);
 			return SolarThingConstants.EXIT_CODE_CRASH;
@@ -90,9 +82,5 @@ public class RoverMain {
 	@FunctionalInterface
 	private interface RoverProgramRunner {
 		int doProgram(@Nullable MutableAddressModbusSlave modbusSlave, RoverReadTable read, RoverWriteTable write, Runnable reloadCache, Runnable reloadIO);
-	}
-	@FunctionalInterface
-	private interface RegisterCacheHandler {
-		void cacheRegisters(ModbusCacheSlave modbusCacheSlave);
 	}
 }

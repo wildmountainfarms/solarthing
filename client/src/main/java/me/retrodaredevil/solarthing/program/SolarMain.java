@@ -139,7 +139,8 @@ public final class SolarMain {
 			if(programType == ProgramType.MATE) {
 				return OutbackMateMain.connectMate((MateProgramOptions) options, dataDirectory);
 			} else if(programType == ProgramType.ROVER){
-				return RoverMain.connectRover((RoverProgramOptions) options, dataDirectory);
+				LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "The rover program must be migrated to the request program. (You get the same features)");
+				return SolarThingConstants.EXIT_CODE_MIGRATE;
 			} else if(programType == ProgramType.ROVER_SETUP){
 				return RoverMain.connectRoverSetup((RoverSetupProgramOptions) options);
 			} else if(programType == ProgramType.PVOUTPUT_UPLOAD){

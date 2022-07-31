@@ -120,6 +120,7 @@ public final class AutomationMain {
 				.add(new TimeZoneEnvironment(options.getZoneId()))
 				.add(new LatestPacketGroupEnvironment(fragmentedPacketGroupProvider)) // access is thread safe if needed
 				.add(new LatestFragmentedPacketGroupEnvironment(fragmentedPacketGroupProvider)) // access is thread safe if needed
+				.add(new StatusDatabaseCacheEnvironment(statusDatabaseCacheManager))
 				.add(new EventDatabaseCacheEnvironment(eventDatabaseCacheManager))
 				.add(new OpenDatabaseCacheEnvironment(openDatabaseCache))
 				.add(new AlterPacketsEnvironment(alterPacketsReference::get)) // access is thread safe if needed

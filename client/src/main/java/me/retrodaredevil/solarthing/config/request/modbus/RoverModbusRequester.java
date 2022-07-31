@@ -95,9 +95,9 @@ public class RoverModbusRequester implements ModbusRequester {
 				throw new RuntimeException("Could not create NetCatServerHandler", e);
 			}
 		}
-		return new DataRequesterResult(
-				new ModbusListUpdaterWrapper(ModbusListUpdaterWrapper.LogType.ROVER, new RoverPacketListUpdater(number, read, write, netCatServerHandler == null ? null : new ConnectionHandler(netCatServerHandler)), reloadCache, successReporter, sendErrorPackets, "rover.error." + number),
-				new AttachToCommandEnvironmentUpdater(Collections.singletonList(roverModbusEnvironment), attachToCommands::contains)
-		);
+		return DataRequesterResult.builder()
+				.statusPacketListReceiver(new ModbusListUpdaterWrapper(ModbusListUpdaterWrapper.LogType.ROVER, new RoverPacketListUpdater(number, read, write, netCatServerHandler == null ? null : new ConnectionHandler(netCatServerHandler)), reloadCache, successReporter, sendErrorPackets, "rover.error." + number))
+				.environmentUpdater(new AttachToCommandEnvironmentUpdater(Collections.singletonList(roverModbusEnvironment), attachToCommands::contains))
+				.build();
 	}
 }

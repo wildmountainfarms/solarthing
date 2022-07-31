@@ -5,7 +5,9 @@ import me.retrodaredevil.solarthing.misc.device.RaspberryPiCpuTemperatureListUpd
 
 @JsonTypeName("rpi-cpu-temp")
 public class RaspberryPiCpuTemperatureDataRequester implements DataRequester {
-	private final DataRequesterResult result = new DataRequesterResult(new RaspberryPiCpuTemperatureListUpdater());
+	private final DataRequesterResult result = DataRequesterResult.builder()
+			.statusPacketListReceiver(new RaspberryPiCpuTemperatureListUpdater())
+			.build();
 	@Override
 	public DataRequesterResult create(RequestObject requestObject) {
 		return result;

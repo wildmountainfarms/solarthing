@@ -19,10 +19,13 @@ public class W1TemperatureDataRequester implements DataRequester {
 	) {
 		this.directory = directory;
 		this.dataId = dataId;
+		// TODO add required property
 	}
 
 	@Override
 	public DataRequesterResult create(RequestObject requestObject) {
-		return new DataRequesterResult(new W1TemperatureListUpdater(directory, dataId));
+		return DataRequesterResult.builder()
+				.statusPacketListReceiver(new W1TemperatureListUpdater(directory, dataId))
+				.build();
 	}
 }

@@ -43,7 +43,7 @@ public final class PacketListReceiverHandlerBundle {
 				getStatusHandler().getPacketListReceiverAccepter(), // store packets present in list to prepare them to be made into a PacketCollection
 				getStatusHandler().getPacketListReceiverPacker(), // pack stored status packets into a PacketCollection
 				getEventHandler().getPacketListReceiverPacker(), // pack stored event packets into a PacketCollection
-				getStatusHandler().getPacketListReceiverHandler(), // send the status PacketCollection off the to the database
+				getStatusHandler().getPacketListReceiverHandler(), // send the status PacketCollection off to the database
 				getEventHandler().getPacketListReceiverHandler() // send the event PacketCollection off to the database
 		);
 	}

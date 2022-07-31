@@ -51,6 +51,8 @@ public final class SolarThingConstants {
 	public static final int EXIT_CODE_INTERRUPTED = 198;
 	public static final int EXIT_CODE_FAIL = 199;
 	public static final int EXIT_CODE_NOT_IMPLEMENTED = 200;
+	/** The exit code used when some sort of configuration needs to be migrated*/
+	public static final int EXIT_CODE_MIGRATE = 201;
 
 	// https://www.freedesktop.org/software/systemd/man/systemd.service.html#RestartForceExitStatus=
 

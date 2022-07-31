@@ -35,6 +35,8 @@ public class PzemShuntDataRequester implements DataRequester {
 		final IOBundle ioBundle = ConfigUtil.createIOBundle(ioBundleFile, PzemShuntReadTable.SERIAL_CONFIG);
 		ModbusSlaveBus bus = new IOModbusSlaveBus(ioBundle, new RtuDataEncoder());
 		ModbusSlave slave = new ImmutableAddressModbusSlave(modbusAddress, bus);
-		return new DataRequesterResult(new PzemShuntPacketListUpdater(dataId, modbusAddress, new PzemShuntModbusSlaveRead(slave)));
+		return DataRequesterResult.builder()
+				.statusPacketListReceiver(new PzemShuntPacketListUpdater(dataId, modbusAddress, new PzemShuntModbusSlaveRead(slave)))
+				.build();
 	}
 }

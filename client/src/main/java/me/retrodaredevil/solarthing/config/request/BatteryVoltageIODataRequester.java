@@ -38,8 +38,11 @@ public class BatteryVoltageIODataRequester implements DataRequester {
 
 	@Override
 	public DataRequesterResult create(RequestObject requestObject) {
+		@SuppressWarnings("resource")
 		final IOBundle ioBundle = ConfigUtil.createIOBundle(ioBundleFile, RoverReadTable.SERIAL_CONFIG);
 
-		return new DataRequesterResult(new BatteryVoltageIOListUpdater(ioBundle.getInputStream(), dataId, multiplier, invalidWhenBelow, invalidWhenAbove));
+		return DataRequesterResult.builder()
+				.statusPacketListReceiver(new BatteryVoltageIOListUpdater(ioBundle.getInputStream(), dataId, multiplier, invalidWhenBelow, invalidWhenAbove))
+				.build();
 	}
 }

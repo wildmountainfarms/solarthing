@@ -63,9 +63,9 @@ public class ModbusDataRequester implements DataRequester {
 			packetListReceiverList.add(result.getStatusPacketListReceiver());
 			environmentUpdaterList.add(result.getEnvironmentUpdater());
 		}
-		return new DataRequesterResult(
-				new PacketListReceiverMultiplexer(packetListReceiverList),
-				new EnvironmentUpdaterMultiplexer(environmentUpdaterList)
-		);
+		return DataRequesterResult.builder()
+				.statusPacketListReceiver(new PacketListReceiverMultiplexer(packetListReceiverList))
+				.environmentUpdater(new EnvironmentUpdaterMultiplexer(environmentUpdaterList))
+				.build();
 	}
 }
