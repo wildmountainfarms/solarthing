@@ -111,6 +111,8 @@ and also react to messages that have been fully processed (request successfully 
 * Create a custom type recognizable by some custom jackson serializer.
   * The type can be something like AnnotatedList<SomeObject> and will allow strings
   above the object in the json array
+* Status page on SolarThing web to show which components of SolarThing are or are not working
+* Ability to upload to a backup CouchDB database, but with a unique document ID as to not cause conflicts when the databases sync again
   
 ### Completed
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
