@@ -182,7 +182,7 @@ subprojects {
             error("MultipleTopLevelClasses")
             error("PackageLocation")
 //            warn("ParameterMissingNullable") // This is useful. Maybe uncomment if we become more religious about use of @Nullable
-            error("PrivateConstructorForUtilityClass")
+            error("PrivateConstructorForUtilityClass") // not completely ideal for spring classes with static initialization
             warn("RemoveUnusedImports")
 //            warn("ReturnMissingNullable") // Useful onlyl if we become more religious about use of @Nullable
             warn("ReturnsNullCollection")

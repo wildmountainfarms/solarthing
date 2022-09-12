@@ -13,6 +13,7 @@
     "@types/react-dom": "^18.0.4",
     "graphql": "^16.5.0",
     "graphql-request": "^4.2.0",
+    "graphql-voyager": "^1.0.0-rc.31",
     "react": "^18.1.0",
     "react-cookie": "^4.1.1",
     "react-dom": "^18.1.0",
@@ -24,6 +25,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "postbuild": "shx cp node_modules/graphql-voyager/dist/voyager.worker.js build/",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "graphql:codegen": "graphql-codegen --config codegen.yml"
@@ -49,6 +51,7 @@
     "@graphql-codegen/typescript-graphql-request": "^4.4.5",
     "@graphql-codegen/typescript-operations": "^2.3.5",
     "@graphql-codegen/typescript-react-query": "^3.5.9",
-    "react-scripts": "5.0.1"
+    "react-scripts": "5.0.1",
+    "shx": "^0.3.4"
   }
 }
