@@ -85,6 +85,8 @@ export default function Layout({children}: LayoutProps) {
         <PageLink to={"/"} name={"Home"}/>
         <PageLink to={"/authorized"} name={"Authorized"}/>
         <PageLink to={"/classic"} name={"Classic"}/>
+        <PageLink to={"/graphql-view"} name={"GraphQL View"}/>
+        <PageLink to={"/graphiql"} name={"GraphQL Query"}/>
 
         <div className={styles.navFooter}>
           <SourceIdSelector/>

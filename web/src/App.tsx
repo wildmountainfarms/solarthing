@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import ClassicWithLayout from "./classic/Classic";
 import Authorized from './pages/Authorized';
 import GraphQLView from './pages/GraphQLView';
+import GraphQLQuery from "./pages/GraphQLQuery";
 
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
         <Route path='/authorized' element={<Authorized/>}/>
         <Route path='/classic' element={<ClassicWithLayout/>}/>
         <Route path='/graphql-view' element={<GraphQLView/>}/>
+        <Route path='/graphiql' element={<GraphQLQuery/>}/>
       </Routes>
     </Router>
   );
