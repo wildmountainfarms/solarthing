@@ -12,6 +12,7 @@ const fetcher = createGraphiQLFetcher({
 
 export default function GraphQLQuery() {
 
+  // Decent demo of what this is similar to: https://graphql.org/swapi-graphql
   return (
     <Layout>
       <div className={styles.contentDiv}>
