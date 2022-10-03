@@ -269,6 +269,15 @@ public class AlterManagerAction extends SimpleAction {
 	}
 
 
+	/**
+	 * @deprecated This method *probably* works perfectly fine, but it is untested against malicious data and the fact that we have to use this method itself shows
+	 *             how we are using this as a bandaid for the real problem: We need to be sure that the solarthing_open database is secure
+	 *             from people putting in malicious packets (which can contain malicious data or have a document ID that might conflict with
+	 *             the generated one that needs to be used)
+	 *             This solution isn't the worst thing in the world until you start replicating solarthing_open databases to each other,
+	 *             and you start running multiple alter manager programs.
+	 */
+	@Deprecated
 	private boolean isDocumentMadeByUs(Instant now, ScheduledCommandData scheduledCommandData, StoredPacketGroup existingDocument) {
 		LargeIntegrityPacket largeIntegrityPacket = (LargeIntegrityPacket) existingDocument.getPackets().stream()
 				.filter(p -> p instanceof LargeIntegrityPacket)
