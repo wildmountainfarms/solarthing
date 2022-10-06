@@ -14,4 +14,6 @@ public interface AlterDatabase {
 	default void delete(VersionedPacket<? extends StoredAlterPacket> versionedPacket) throws SolarThingDatabaseException {
 		delete(versionedPacket.getPacket().getDbId(), versionedPacket.getUpdateToken());
 	}
+
+	DatabaseSource getDatabaseSource();
 }

@@ -17,7 +17,7 @@ function BatteryVoltage() {
       ? <p>Loading Data</p>
       : averageNode === undefined
         ? <p>No battery voltage data</p>
-        : <p>Battery: {isSuccess && averageNode.data} V</p>
+        : <p>Battery: {isSuccess && averageNode.data.toFixed(2)} V</p>
     }
   </>
 }

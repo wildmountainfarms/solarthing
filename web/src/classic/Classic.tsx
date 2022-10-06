@@ -38,7 +38,7 @@ function Classic() {
       <section style={{width:"100%"}}>
         <hr/>
         <div className={styles.number_heading}>Current Battery Voltage</div>
-        <div className={styles.large_info}>{nestedData?.batteryVoltage ?? fallbackMessage} V</div>
+        <div className={styles.large_info}>{nestedData?.batteryVoltage?.toFixed(1) ?? fallbackMessage} V</div>
 
         <hr/>
         <div className={styles.number_heading}>Solar Panel Status</div>
