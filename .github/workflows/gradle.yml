@@ -20,3 +20,5 @@ jobs:
       run: (cd web && npm install)
     - name: Build with Gradle
       run: ./gradlew build
+    - name: Web Generate Code Not Broken
+      run: ./gradlew web:generateCode

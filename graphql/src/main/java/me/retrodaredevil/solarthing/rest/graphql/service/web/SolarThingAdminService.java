@@ -173,7 +173,7 @@ public class SolarThingAdminService {
 		@NotNull DatabaseStatus getStatus(@GraphQLArgument(name = "type") @NotNull SolarThingDatabaseType databaseType);
 	}
 
-	private class SolarThingDatabaseSystemStatus implements DatabaseSystemStatus {
+	private static class SolarThingDatabaseSystemStatus implements DatabaseSystemStatus {
 		private final SolarThingDatabase database;
 
 		private SolarThingDatabaseSystemStatus(SolarThingDatabase database) {
