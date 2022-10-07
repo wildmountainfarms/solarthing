@@ -62,6 +62,7 @@ export enum ActivePeriodType {
 
 export enum AlterPacketType {
   FLAG = 'FLAG',
+  FLAG_ALIAS = 'FLAG_ALIAS',
   SCHEDULED_COMMAND = 'SCHEDULED_COMMAND'
 }
 
@@ -294,6 +295,24 @@ export type DatabaseAuthorization = {
 export type DatabaseAuthorizationInput = {
   cookie: Scalars['String'];
   url: Scalars['String'];
+};
+
+export enum DatabaseStatus {
+  BAD_PERMISSIONS = 'BAD_PERMISSIONS',
+  COMPLETE = 'COMPLETE',
+  ERROR = 'ERROR',
+  INCOMPLETE = 'INCOMPLETE',
+  NOT_PRESENT = 'NOT_PRESENT'
+}
+
+export type DatabaseSystemStatus = {
+  __typename?: 'DatabaseSystemStatus';
+  getStatus: DatabaseStatus;
+};
+
+
+export type DatabaseSystemStatusgetStatusArgs = {
+  type: SolarThingDatabaseType;
 };
 
 export enum DcdcErrorMode {
@@ -1107,6 +1126,7 @@ export type Query = {
   queryStatus: SolarThingStatusQuery;
   /** Query the latest collection of status packets on or before the 'to' timestamp. */
   queryStatusLast: SolarThingStatusQuery;
+  systemStatus?: Maybe<DatabaseSystemStatus>;
   username?: Maybe<Scalars['String']>;
 };
 
@@ -1329,7 +1349,7 @@ export type RoverStatusPacket = {
   dailyMinBatteryVoltage: Scalars['Float'];
   dcdcErrorModes: Array<DcdcErrorMode>;
   /** The DcdcErrorMode or an empty list if this is not a DCDC charge controller */
-  dcdcErrorModesOrEmpty?: Maybe<Array<Maybe<DcdcErrorMode>>>;
+  dcdcErrorModesOrEmpty: Array<DcdcErrorMode>;
   dischargingAmpHoursOfBatteryCount: Scalars['Int'];
   dischargingLimitVoltageRaw: Scalars['Int'];
   endOfChargeSOC: Scalars['Int'];
@@ -1388,7 +1408,7 @@ export type RoverStatusPacket = {
   recognizedVoltage: Scalars['Int'];
   roverErrorModes: Array<RoverErrorMode>;
   /** The RoverErrorModes or an empty list if this is a DCDC charge controller */
-  roverErrorModesOrEmpty?: Maybe<Array<Maybe<RoverErrorMode>>>;
+  roverErrorModesOrEmpty: Array<RoverErrorMode>;
   sensed1?: Maybe<SensingBundle>;
   sensed2?: Maybe<SensingBundle>;
   sensed3?: Maybe<SensingBundle>;
@@ -1575,6 +1595,15 @@ export type SolarThingBatteryRecordQuery = {
   __typename?: 'SolarThingBatteryRecordQuery';
   averageBatteryVoltage: Array<DataNode_Double>;
 };
+
+export enum SolarThingDatabaseType {
+  ALTER = 'ALTER',
+  CACHE = 'CACHE',
+  CLOSED = 'CLOSED',
+  EVENT = 'EVENT',
+  OPEN = 'OPEN',
+  STATUS = 'STATUS'
+}
 
 export type SolarThingEventQuery = {
   __typename?: 'SolarThingEventQuery';
@@ -1899,6 +1928,11 @@ export type ClassicQueryVariables = Exact<{
 
 export type ClassicQuery = { __typename?: 'Query', queryStatusLast: { __typename?: 'SolarThingStatusQuery', flatData: Array<{ __typename?: 'SimpleNode_FlatData', data: { __typename?: 'FlatData', deviceInfoString: string, batteryVoltage?: number | null, operatingModeString: string, errorsString: string, fx?: { __typename?: 'FlatDataFX', loadWattage: number, acBuyWattage: number, acChargeWattage: number, acMode: ACMode, miscModesString: string, warningsString: string } | null, chargeController?: { __typename?: 'FlatDataChargeController', pvWattage: number, chargerWattage: number } | null } }> } };
 
+export type DatabaseStatusQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type DatabaseStatusQuery = { __typename?: 'Query', systemStatus?: { __typename?: 'DatabaseSystemStatus', status: DatabaseStatus, event: DatabaseStatus, open: DatabaseStatus, closed: DatabaseStatus, alter: DatabaseStatus, cache: DatabaseStatus } | null };
+
 export type HomeQueryVariables = Exact<{
   sourceId: Scalars['String'];
   currentTimeMillis: Scalars['Long'];
@@ -2009,6 +2043,32 @@ export const useClassicQuery = <
     useQuery<ClassicQuery, TError, TData>(
       ['Classic', variables],
       fetcher<ClassicQuery, ClassicQueryVariables>(client, ClassicDocument, variables, headers),
+      options
+    );
+export const DatabaseStatusDocument = `
+    query DatabaseStatus {
+  systemStatus {
+    status: getStatus(type: STATUS)
+    event: getStatus(type: EVENT)
+    open: getStatus(type: OPEN)
+    closed: getStatus(type: CLOSED)
+    alter: getStatus(type: ALTER)
+    cache: getStatus(type: CACHE)
+  }
+}
+    `;
+export const useDatabaseStatusQuery = <
+      TData = DatabaseStatusQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables?: DatabaseStatusQueryVariables,
+      options?: UseQueryOptions<DatabaseStatusQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<DatabaseStatusQuery, TError, TData>(
+      variables === undefined ? ['DatabaseStatus'] : ['DatabaseStatus', variables],
+      fetcher<DatabaseStatusQuery, DatabaseStatusQueryVariables>(client, DatabaseStatusDocument, variables, headers),
       options
     );
 export const HomeDocument = `
