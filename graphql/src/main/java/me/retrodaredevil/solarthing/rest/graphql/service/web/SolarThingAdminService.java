@@ -214,6 +214,7 @@ public class SolarThingAdminService {
 			} catch (UnauthorizedSolarThingDatabaseException e) {
 				return databaseType.isPublic() ? DatabaseStatus.BAD_PERMISSIONS : DatabaseStatus.COMPLETE;
 			} catch (SolarThingDatabaseException e) {
+				// TODO log
 				return DatabaseStatus.ERROR;
 			}
 		}
