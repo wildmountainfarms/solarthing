@@ -178,6 +178,8 @@ public class SolarThingAdminService {
 
 		private SolarThingDatabaseSystemStatus(SolarThingDatabase database) {
 			requireNonNull(this.database = database);
+			// NOTE: If the database has authentication on it, calling getStatus for some databases may produce inconsistent results
+			// TODO maybe consider removing authentication from database or make this work when authenticated or when unauthenticated
 		}
 		@Override
 		public @NotNull DatabaseStatus getStatus(@NotNull SolarThingDatabaseType databaseType) {
