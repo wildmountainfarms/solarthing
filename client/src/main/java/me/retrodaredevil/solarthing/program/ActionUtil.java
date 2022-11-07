@@ -15,25 +15,33 @@ import me.retrodaredevil.solarthing.actions.message.SendMessageActionNode;
 import me.retrodaredevil.solarthing.actions.rover.RoverBoostSetActionNode;
 import me.retrodaredevil.solarthing.actions.rover.RoverBoostVoltageActionNode;
 import me.retrodaredevil.solarthing.actions.rover.RoverLoadActionNode;
+import me.retrodaredevil.solarthing.actions.rover.modbus.RoverModbusActionNode;
 import me.retrodaredevil.solarthing.actions.solcast.SolcastActionNode;
 import me.retrodaredevil.solarthing.actions.tracer.TracerLoadActionNode;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
+import me.retrodaredevil.solarthing.config.options.ActionsOption;
 import me.retrodaredevil.solarthing.config.options.CommandOption;
+import me.retrodaredevil.solarthing.util.JacksonUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @UtilityClass
 public final class ActionUtil {
 	private ActionUtil() { throw new UnsupportedOperationException(); }
 
+	private static final ObjectMapper CONFIG_MAPPER = ActionUtil.registerActionNodes(JacksonUtil.defaultMapper());
+
 	public static ObjectMapper registerActionNodes(ObjectMapper objectMapper) {
 		objectMapper.registerSubtypes(
 				MateCommandActionNode.class,
 				MateCommandWaitActionNode.class,
 
+				RoverModbusActionNode.class,
 				RoverLoadActionNode.class,
 				RoverBoostSetActionNode.class,
 				RoverBoostVoltageActionNode.class,
@@ -65,5 +73,13 @@ public final class ActionUtil {
 			actionNodeMap.put(name, actionNode);
 		}
 		return actionNodeMap;
+	}
+
+	public static List<ActionNode> getActionNodes(ActionsOption options) throws IOException {
+		List<ActionNode> actionNodes = new ArrayList<>();
+		for (File file : options.getActionNodeFiles()) {
+			actionNodes.add(CONFIG_MAPPER.readValue(file, ActionNode.class));
+		}
+		return actionNodes;
 	}
 }

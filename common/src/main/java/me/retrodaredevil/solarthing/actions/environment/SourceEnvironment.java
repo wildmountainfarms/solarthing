@@ -5,6 +5,7 @@ import me.retrodaredevil.solarthing.type.open.OpenSource;
 /**
  * Contains an {@link OpenSource} that describes who has "requested" some action and when it was requested and how it was requested
  */
+@Deprecated
 public class SourceEnvironment {
 	private final OpenSource source;
 

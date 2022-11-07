@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.program;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.environment.NanoTimeProviderEnvironment;
 import me.retrodaredevil.action.node.util.NanoTimeProvider;
 import me.retrodaredevil.couchdb.CouchDbUtil;
@@ -8,15 +9,19 @@ import me.retrodaredevil.couchdbjava.CouchDbInstance;
 import me.retrodaredevil.solarthing.PacketGroupReceiver;
 import me.retrodaredevil.solarthing.PacketGroupReceiverMultiplexer;
 import me.retrodaredevil.solarthing.SolarThingConstants;
-import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.solarthing.actions.command.EnvironmentUpdater;
 import me.retrodaredevil.solarthing.actions.environment.EventReceiverEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.ExecutionReasonEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnvironment;
-import me.retrodaredevil.solarthing.actions.environment.SourceEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.TimeZoneEnvironment;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.config.databases.IndividualSettings;
-import me.retrodaredevil.solarthing.config.databases.implementations.*;
+import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
+import me.retrodaredevil.solarthing.config.databases.implementations.InfluxDb2DatabaseSettings;
+import me.retrodaredevil.solarthing.config.databases.implementations.InfluxDbDatabaseSettings;
+import me.retrodaredevil.solarthing.config.databases.implementations.LatestFileDatabaseSettings;
+import me.retrodaredevil.solarthing.config.databases.implementations.MqttDatabaseSettings;
+import me.retrodaredevil.solarthing.config.databases.implementations.PostDatabaseSettings;
 import me.retrodaredevil.solarthing.config.options.CommandOption;
 import me.retrodaredevil.solarthing.config.options.PacketHandlingOption;
 import me.retrodaredevil.solarthing.couchdb.CouchDbPacketSaver;
@@ -35,6 +40,8 @@ import me.retrodaredevil.solarthing.packets.handling.implementations.JacksonStri
 import me.retrodaredevil.solarthing.packets.handling.implementations.PostPacketHandler;
 import me.retrodaredevil.solarthing.program.receiver.ActionNodeDataReceiver;
 import me.retrodaredevil.solarthing.program.receiver.RequestHeartbeatReceiver;
+import me.retrodaredevil.solarthing.reason.OpenSourceExecutionReason;
+import me.retrodaredevil.solarthing.type.open.OpenSource;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import me.retrodaredevil.solarthing.util.frequency.FrequentHandler;
 import okhttp3.MediaType;
@@ -166,19 +173,23 @@ public class PacketHandlerInit {
 			Map<String, ActionNode> actionNodeMap = ActionUtil.getActionNodeMap(CONFIG_MAPPER, options);
 			ActionNodeDataReceiver commandReceiver = new ActionNodeDataReceiver(
 					actionNodeMap,
-					(source, injectEnvironmentBuilder) -> {
+					(executionReason, injectEnvironmentBuilder) -> {
+						if (!(executionReason instanceof OpenSourceExecutionReason)) {
+							throw new IllegalStateException("When receiving data from ActionNodeDataReceiver, we expect to get an OpenSourceExecutionReason");
+						}
+						OpenSource source = ((OpenSourceExecutionReason) executionReason).getSource();
 						injectEnvironmentBuilder
 								.add(new NanoTimeProviderEnvironment(NanoTimeProvider.SYSTEM_NANO_TIME))
 								.add(new TimeZoneEnvironment(options.getZoneId()))
 								.add(new LatestPacketGroupEnvironment(latestPacketHandler::getLatestPacketCollection))
-								.add(new SourceEnvironment(source))
+								.add(new ExecutionReasonEnvironment(executionReason))
 								.add(new EventReceiverEnvironment(PacketListReceiverHandlerBundle.createEventPacketListReceiverHandler(SolarMain.getSourceAndFragmentUpdater(options), options.getZoneId(), packetHandlerBundle)))
 						;
 						EnvironmentUpdater environmentUpdater = environmentUpdaterSupplier.get();
 						if (environmentUpdater == null) {
 							throw new NullPointerException("The EnvironmentUpdater supplier gave a null value! (Fatal)");
 						}
-						environmentUpdater.updateInjectEnvironment(source, injectEnvironmentBuilder);
+						environmentUpdater.updateInjectEnvironment(executionReason, injectEnvironmentBuilder);
 					}
 			);
 			PacketGroupReceiver mainPacketGroupReceiver = new PacketGroupReceiverMultiplexer(Arrays.asList(

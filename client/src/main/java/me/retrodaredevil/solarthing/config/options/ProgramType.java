@@ -12,7 +12,7 @@ import java.io.IOException;
 @JsonSerialize(using = ProgramType.Serializer.class)
 public enum ProgramType {
 	MATE("mate"),
-	ROVER("rover"),
+//	ROVER("rover"),
 	ROVER_SETUP("rover-setup"),
 	PVOUTPUT_UPLOAD("pvoutput-upload"),
 	REQUEST("request"),

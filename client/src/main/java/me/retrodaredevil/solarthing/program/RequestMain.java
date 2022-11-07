@@ -1,35 +1,51 @@
 package me.retrodaredevil.solarthing.program;
 
+import me.retrodaredevil.action.ActionMultiplexer;
+import me.retrodaredevil.action.Actions;
+import me.retrodaredevil.action.node.ActionNode;
+import me.retrodaredevil.action.node.environment.ActionEnvironment;
+import me.retrodaredevil.action.node.environment.InjectEnvironment;
+import me.retrodaredevil.action.node.environment.NanoTimeProviderEnvironment;
+import me.retrodaredevil.action.node.environment.VariableEnvironment;
+import me.retrodaredevil.action.node.util.NanoTimeProvider;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.actions.command.EnvironmentUpdater;
 import me.retrodaredevil.solarthing.actions.command.EnvironmentUpdaterMultiplexer;
+import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.SourceIdEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.TimeZoneEnvironment;
 import me.retrodaredevil.solarthing.analytics.AnalyticsManager;
 import me.retrodaredevil.solarthing.analytics.RoverAnalyticsHandler;
 import me.retrodaredevil.solarthing.commands.packets.status.AvailableCommandsListUpdater;
-import me.retrodaredevil.solarthing.config.options.CommandOption;
+import me.retrodaredevil.solarthing.config.options.ActionsOption;
 import me.retrodaredevil.solarthing.config.options.PacketHandlingOption;
 import me.retrodaredevil.solarthing.config.options.ProgramType;
 import me.retrodaredevil.solarthing.config.options.RequestProgramOptions;
-import me.retrodaredevil.solarthing.config.request.DataRequester;
 import me.retrodaredevil.solarthing.config.request.DataRequesterResult;
 import me.retrodaredevil.solarthing.config.request.RequestObject;
 import me.retrodaredevil.solarthing.misc.common.DataIdentifiablePacketListChecker;
 import me.retrodaredevil.solarthing.packets.Packet;
+import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiverMultiplexer;
 import me.retrodaredevil.solarthing.program.receiver.RoverEventUpdaterListReceiver;
 import me.retrodaredevil.solarthing.program.receiver.TracerEventUpdaterListReceiver;
+import me.retrodaredevil.solarthing.reason.ExecutionReason;
+import me.retrodaredevil.solarthing.reason.PacketCollectionExecutionReason;
 import me.retrodaredevil.solarthing.solar.DaySummaryLogListReceiver;
 import me.retrodaredevil.solarthing.util.TimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.util.Objects.requireNonNull;
 
 public class RequestMain {
 	private RequestMain() { throw new UnsupportedOperationException(); }
@@ -40,10 +56,10 @@ public class RequestMain {
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Beginning request program");
 		AnalyticsManager analyticsManager = new AnalyticsManager(options.isAnalyticsEnabled(), dataDirectory);
 		analyticsManager.sendStartUp(ProgramType.REQUEST);
-		return startRequestProgram(options, analyticsManager, options.getDataRequesterList(), options.getPeriod(), options.getMinimumWait());
+		return startRequestProgram(options, analyticsManager, options.getPeriod(), options.getMinimumWait());
 	}
 
-	public static <T extends PacketHandlingOption & CommandOption> int startRequestProgram(T options, AnalyticsManager analyticsManager, List<DataRequester> dataRequesterList, long period, long minimumWait) throws Exception {
+	private static int startRequestProgram(RequestProgramOptions options, AnalyticsManager analyticsManager, Duration period, Duration minimumWait) throws Exception {
 		// Note this is very similar to code in OutbackMateMain and could eventually be refactored
 		EnvironmentUpdater[] environmentUpdaterReference = new EnvironmentUpdater[1];
 		PacketHandlerInit.Result handlersResult = PacketHandlerInit.initHandlers(
@@ -52,10 +68,9 @@ public class RequestMain {
 				Collections.singleton(new RoverAnalyticsHandler(analyticsManager))
 		);
 		PacketListReceiverHandlerBundle bundle = handlersResult.getBundle();
-		List<DataRequesterResult> dataRequesterResults = dataRequesterList.stream()
+		List<DataRequesterResult> dataRequesterResults = options.getDataRequesterList().stream()
 				.map(dataRequester -> dataRequester.create(new RequestObject(bundle.getEventHandler().getPacketListReceiverAccepter())))
 				.collect(Collectors.toList());
-		// TODO remove dataRequestList parameter soon and use options.getDataRequesterList()
 
 		List<PacketListReceiver> packetListReceiverList = new ArrayList<>();
 		List<EnvironmentUpdater> environmentUpdaters = new ArrayList<>();
@@ -72,10 +87,36 @@ public class RequestMain {
 
 		packetListReceiverList.add(new DataIdentifiablePacketListChecker());
 		packetListReceiverList.add(new DaySummaryLogListReceiver());
+//		packetListReceiverList.add(createActionExecutorPacketListReceiver(options, environmentUpdaterReference[0])); part of the first draft of adding local actions
 		dataRequesterResults.stream().map(DataRequesterResult::getStatusEndPacketListReceiver).forEachOrdered(packetListReceiverList::add);
 		packetListReceiverList.addAll(bundle.createDefaultPacketListReceivers());
 
-		return doRequest(new PacketListReceiverMultiplexer(packetListReceiverList), Duration.ofMillis(period), Duration.ofMillis(minimumWait));
+		return doRequest(new PacketListReceiverMultiplexer(packetListReceiverList), period, minimumWait);
+	}
+	private static <T extends ActionsOption & PacketHandlingOption> PacketHandler createActionExecutorPacketHandler(T options, EnvironmentUpdater environmentUpdater) throws IOException {
+		List<ActionNode> actionNodes = ActionUtil.getActionNodes(options);
+		requireNonNull(environmentUpdater);
+
+		VariableEnvironment variableEnvironment = new VariableEnvironment();
+
+		ActionMultiplexer multiplexer = new Actions.ActionMultiplexerBuilder().build();
+
+		return packetCollection -> {
+			InjectEnvironment.Builder injectEnvironmentBuilder = new InjectEnvironment.Builder()
+					.add(new NanoTimeProviderEnvironment(NanoTimeProvider.SYSTEM_NANO_TIME))
+					.add(new SourceIdEnvironment(options.getSourceId()))
+					.add(new TimeZoneEnvironment(options.getZoneId()))
+					.add(new LatestPacketGroupEnvironment(() -> packetCollection))
+					;
+			ExecutionReason executionReason = new PacketCollectionExecutionReason(packetCollection.getDateMillis(), packetCollection.getDbId());
+			environmentUpdater.updateInjectEnvironment(executionReason, injectEnvironmentBuilder);
+			InjectEnvironment injectEnvironment = injectEnvironmentBuilder.build();
+
+			for (ActionNode actionNode : actionNodes) {
+				multiplexer.add(actionNode.createAction(new ActionEnvironment(variableEnvironment, new VariableEnvironment(), injectEnvironment)));
+			}
+			multiplexer.update();
+		};
 	}
 	private static int doRequest(PacketListReceiver packetListReceiver, Duration period, Duration minimumWait) {
 		while (!Thread.currentThread().isInterrupted()) {

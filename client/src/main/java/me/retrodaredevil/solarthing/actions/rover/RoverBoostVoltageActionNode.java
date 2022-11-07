@@ -11,6 +11,7 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Deprecated
 @JsonTypeName("roverboostvoltage")
 public class RoverBoostVoltageActionNode implements ActionNode {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RoverBoostVoltageActionNode.class);
@@ -33,7 +34,6 @@ public class RoverBoostVoltageActionNode implements ActionNode {
 	@Override
 	public Action createAction(ActionEnvironment actionEnvironment) {
 		RoverMatcher.Provider provider = roverMatcher.createProvider(actionEnvironment.getInjectEnvironment());
-		provider.validateData();
 		return new SimpleAction(false) {
 			@Override
 			protected void onUpdate() {

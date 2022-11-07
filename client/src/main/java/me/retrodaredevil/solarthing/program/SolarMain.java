@@ -28,7 +28,12 @@ import org.apache.logging.log4j.LogManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.Instant;
 import java.util.List;
 import java.util.Random;
@@ -138,9 +143,6 @@ public final class SolarMain {
 		try {
 			if(programType == ProgramType.MATE) {
 				return OutbackMateMain.connectMate((MateProgramOptions) options, dataDirectory);
-			} else if(programType == ProgramType.ROVER){
-				LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "The rover program must be migrated to the request program. (You get the same features)");
-				return SolarThingConstants.EXIT_CODE_MIGRATE;
 			} else if(programType == ProgramType.ROVER_SETUP){
 				return RoverMain.connectRoverSetup((RoverSetupProgramOptions) options);
 			} else if(programType == ProgramType.PVOUTPUT_UPLOAD){

@@ -6,7 +6,6 @@ import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 
 @JsonSubTypes({
 		@JsonSubTypes.Type(MateProgramOptions.class),
-		@JsonSubTypes.Type(RoverProgramOptions.class),
 		@JsonSubTypes.Type(RoverSetupProgramOptions.class),
 		@JsonSubTypes.Type(PVOutputUploadProgramOptions.class),
 		@JsonSubTypes.Type(RequestProgramOptions.class),

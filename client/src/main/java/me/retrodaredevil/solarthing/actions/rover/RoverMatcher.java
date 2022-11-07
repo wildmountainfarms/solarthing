@@ -30,24 +30,30 @@ public final class RoverMatcher {
 		);
 	}
 
+	/**
+	 * @throws IllegalStateException Thrown if a fragment ID was or was not needed based on the provided packet group environment
+	 */
 	public Provider createProvider(InjectEnvironment injectEnvironment) {
 		LatestFragmentedPacketGroupEnvironment latestFragmentedPacketGroupEnvironment = injectEnvironment.getOrNull(LatestFragmentedPacketGroupEnvironment.class);
 		if (latestFragmentedPacketGroupEnvironment == null) {
+			if (fragmentId != null) {
+				throw new IllegalStateException("For a local environment, you cannot specify the fragment ID!");
+			}
 			LatestPacketGroupEnvironment latestPacketGroupEnvironment = injectEnvironment.get(LatestPacketGroupEnvironment.class);
 			return new LocalProvider(latestPacketGroupEnvironment.getPacketGroupProvider());
+		}
+		if (fragmentId == null) {
+			// A RoverMatcherData can be used "locally" in the request (rover) program and can also be used in the automation program.
+			//   When used in the automation program, there's the possibility of multiple fragments each having their own rovers
+			//   so, in that case, we have to be explicit
+			throw new IllegalStateException("In the automation program, or in an environment where the fragment ID is provided, you must supply a fragment ID to compare against!");
 		}
 		return new FragmentedProvider(latestFragmentedPacketGroupEnvironment.getFragmentedPacketGroupProvider());
 	}
 
-	interface Provider {
-		/**
-		 * @throws IllegalStateException Thrown if there was any invalid configuration
-		 */
-		void validateData();
+	public interface Provider {
 
 		/**
-		 * Note: You should call {@link #validateData()} at least once before calling this method. {@link #validateData()} throws only a certain set of exceptions,
-		 * where as this could throw any type of {@link RuntimeException} if you do not validate beforehand.
 		 * @return The latest {@link RoverStatusPacket} that matches data from a {@link RoverMatcher}
 		 */
 		@Nullable RoverStatusPacket get();
@@ -61,19 +67,13 @@ public final class RoverMatcher {
 		}
 
 		@Override
-		public void validateData() {
-			if (fragmentId != null) {
-				throw new IllegalStateException("For a local environment, you cannot specify the fragment ID!");
-			}
-		}
-
-		@Override
 		public @Nullable RoverStatusPacket get() {
 			PacketGroup packetGroup = packetGroupProvider.getPacketGroup();
 			if (packetGroup == null) {
 				LOGGER.warn("packetGroup is null!");
 				return null;
 			}
+			// Note we assume fragmentId is null
 			return packetGroup.getPackets().stream()
 					.filter(packet -> packet instanceof RoverStatusPacket)
 					.map(packet -> (RoverStatusPacket) packet)
@@ -89,23 +89,13 @@ public final class RoverMatcher {
 		}
 
 		@Override
-		public void validateData() {
-			if (fragmentId == null) {
-				// A RoverMatcherData can be used "locally" in the request (rover) program and can also be used in the automation program.
-				//   When used in the automation program, there's the possibility of multiple fragments each having their own rovers
-				//   so, in that case, we have to be explicit
-				throw new IllegalStateException("In the automation program, or in an environment where the fragment ID is provided, you must supply a fragment ID to compare against!");
-			}
-		}
-
-		@Override
 		public @Nullable RoverStatusPacket get() {
 			FragmentedPacketGroup packetGroup = fragmentedPacketGroupProvider.getPacketGroup();
 			if (packetGroup == null) {
 				LOGGER.warn("packetGroup is null!");
 				return null;
 			}
-			int fragmentId = RoverMatcher.this.fragmentId; // implicitly assert this is non-null // should have been caught by validateData earlier anyway if it was null
+			int fragmentId = RoverMatcher.this.fragmentId; // implicitly assert this is non-null
 			return packetGroup.getPackets().stream()
 					.filter(packet -> packetGroup.getFragmentId(packet) == fragmentId && packet instanceof RoverStatusPacket)
 					.map(packet -> (RoverStatusPacket) packet)

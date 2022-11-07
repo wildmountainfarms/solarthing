@@ -140,6 +140,8 @@ subprojects {
             disable("UnusedVariable") // We are OK with this most of the time
             disable("CanonicalDuration") // I will specify my durations in whatever units I please
 
+            error("MissingOverride")
+
             // Experimental Errors
             enable("ClassName")
             warn("DepAnn")

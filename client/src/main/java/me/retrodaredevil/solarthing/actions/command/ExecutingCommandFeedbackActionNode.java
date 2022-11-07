@@ -8,12 +8,11 @@ import me.retrodaredevil.action.Actions;
 import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.EventReceiverEnvironment;
-import me.retrodaredevil.solarthing.actions.environment.SourceEnvironment;
-import me.retrodaredevil.solarthing.type.event.feedback.ImmutableExecutionFeedbackPacket;
-import me.retrodaredevil.solarthing.type.open.OpenSource;
+import me.retrodaredevil.solarthing.actions.environment.ExecutionReasonEnvironment;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.program.PacketListReceiverHandler;
-import me.retrodaredevil.solarthing.reason.OpenSourceExecutionReason;
+import me.retrodaredevil.solarthing.reason.ExecutionReason;
+import me.retrodaredevil.solarthing.type.event.feedback.ImmutableExecutionFeedbackPacket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,12 +38,13 @@ public class ExecutingCommandFeedbackActionNode implements ActionNode {
 	}
 	@Override
 	public Action createAction(ActionEnvironment actionEnvironment) {
-		SourceEnvironment sourceEnvironment = actionEnvironment.getInjectEnvironment().get(SourceEnvironment.class);
+		ExecutionReasonEnvironment  executionReasonEnvironment = actionEnvironment.getInjectEnvironment().get(ExecutionReasonEnvironment.class);
 		EventReceiverEnvironment eventReceiverEnvironment = actionEnvironment.getInjectEnvironment().get(EventReceiverEnvironment.class);
-		OpenSource source = sourceEnvironment.getSource();
+
+		ExecutionReason executionReason = executionReasonEnvironment.getExecutionReason();
 		PacketListReceiverHandler packetListReceiverHandler = eventReceiverEnvironment.getEventPacketListReceiverHandler();
 
-		List<Packet> packets = Arrays.asList(new ImmutableExecutionFeedbackPacket(message, category, new OpenSourceExecutionReason(source)));
+		List<Packet> packets = Arrays.asList(new ImmutableExecutionFeedbackPacket(message, category, executionReason));
 		return Actions.createRunOnce(() -> {
 			LOGGER.debug("Going to upload an execution feedback packet.");
 			Instant now = Instant.now();

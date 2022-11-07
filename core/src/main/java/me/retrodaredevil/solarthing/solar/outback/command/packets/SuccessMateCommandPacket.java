@@ -43,6 +43,9 @@ public interface SuccessMateCommandPacket extends MateCommandFeedbackPacket, Pac
 	 * The fact that this is a string shows that this is very much legacy code. If I could redo it, I'd create a better way to communicate the data that
 	 * {@link me.retrodaredevil.solarthing.DataSource} tries to communicate, without having to store it in string form. If you need more history, feel free
 	 * to look around commit <a href="https://github.com/wildmountainfarms/solarthing/commit/44518ff8bdaa381739df8d3613f53808576ec6f7">44518ff8bdaa381739df8d3613f53808576ec6f7</a>
+	 * <p>
+	 * As of 2022.11.06 when used with an {@link ExecutionReason} other than an {@link me.retrodaredevil.solarthing.reason.OpenSourceExecutionReason}, the above does not apply.
+	 * You should not use this anyway and should stick to {@link ExecutionReason} unless you are dealing with old legacy packets
 	 *
 	 * @return The string representing the source of the command
 	 */

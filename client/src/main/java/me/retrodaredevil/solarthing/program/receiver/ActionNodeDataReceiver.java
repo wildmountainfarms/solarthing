@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.program.receiver;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.ActionMultiplexer;
 import me.retrodaredevil.action.Actions;
+import me.retrodaredevil.solarthing.reason.OpenSourceExecutionReason;
 import me.retrodaredevil.solarthing.type.open.OpenSource;
 import me.retrodaredevil.solarthing.PacketGroupReceiver;
 import me.retrodaredevil.solarthing.SolarThingConstants;
@@ -69,7 +70,7 @@ public class ActionNodeDataReceiver implements PacketGroupReceiver {
 		ActionNode requested = actionNodeMap.get(commandName);
 		if(requested != null){
 			InjectEnvironment.Builder injectEnvironmentBuilder = new InjectEnvironment.Builder();
-			environmentUpdater.updateInjectEnvironment(source, injectEnvironmentBuilder);
+			environmentUpdater.updateInjectEnvironment(new OpenSourceExecutionReason(source), injectEnvironmentBuilder);
 			Action action = requested.createAction(new ActionEnvironment(variableEnvironment, new VariableEnvironment(), injectEnvironmentBuilder.build()));
 			// Now that action has been created, add it to the action multiplexer. (Adding is thread safe).
 			//   The action has not been used by this thread, so when a different thread starts executing it, there will be no problems.

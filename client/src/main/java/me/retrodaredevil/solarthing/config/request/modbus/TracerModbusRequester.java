@@ -14,9 +14,9 @@ import me.retrodaredevil.solarthing.config.request.TracerClockOptions;
 import me.retrodaredevil.solarthing.netcat.ConnectionHandler;
 import me.retrodaredevil.solarthing.netcat.NetCatServerHandler;
 import me.retrodaredevil.solarthing.packets.identification.NumberedIdentifier;
+import me.retrodaredevil.solarthing.program.modbus.ModbusCacheSlave;
 import me.retrodaredevil.solarthing.program.receiver.ModbusListUpdaterWrapper;
 import me.retrodaredevil.solarthing.program.receiver.TracerPacketListUpdater;
-import me.retrodaredevil.solarthing.program.modbus.ModbusCacheSlave;
 import me.retrodaredevil.solarthing.solar.tracer.TracerReadTable;
 import me.retrodaredevil.solarthing.solar.tracer.TracerWriteTable;
 import me.retrodaredevil.solarthing.solar.tracer.modbus.TracerModbusSlaveRead;
@@ -113,6 +113,7 @@ public class TracerModbusRequester implements ModbusRequester {
 				throw new RuntimeException("Could not create NetCatServerHandler", e);
 			}
 		}
+		// TODO follow rover pattern for environment updater
 		return DataRequesterResult.builder()
 				.statusPacketListReceiver(new ModbusListUpdaterWrapper(ModbusListUpdaterWrapper.LogType.TRACER, new TracerPacketListUpdater(number, read, write, tracerClockOptions, netCatServerHandler == null ? null : new ConnectionHandler(netCatServerHandler), connectionHandlerHasFlushLogic), reloadCache, successReporter, sendErrorPackets, "tracer.error." + number))
 				.environmentUpdater(new AttachToCommandEnvironmentUpdater(Collections.singletonList(tracerModbusEnvironment), attachToCommands::contains))
