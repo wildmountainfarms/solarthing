@@ -11,6 +11,7 @@ import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.RoverErrorEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.RoverModbusEnvironment;
+import me.retrodaredevil.solarthing.actions.error.ActionErrorState;
 import me.retrodaredevil.solarthing.solar.renogy.rover.LoadWorkingMode;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverWriteTable;
 import me.retrodaredevil.solarthing.solar.renogy.rover.StreetLight;
@@ -33,7 +34,7 @@ public class RoverLoadActionNode implements ActionNode {
 		RoverErrorEnvironment errorEnvironment = actionEnvironment.getInjectEnvironment().get(RoverErrorEnvironment.class);
 
 		RoverWriteTable write = environment.getWrite();
-		RoverActionErrorState errorState = errorEnvironment.getRoverActionErrorState();
+		ActionErrorState errorState = errorEnvironment.getRoverActionErrorState();
 		return Actions.createRunOnce(() -> {
 			try {
 				write.setLoadWorkingMode(LoadWorkingMode.MANUAL);

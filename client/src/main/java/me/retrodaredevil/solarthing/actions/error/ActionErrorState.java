@@ -1,6 +1,6 @@
-package me.retrodaredevil.solarthing.actions.rover;
+package me.retrodaredevil.solarthing.actions.error;
 
-public final class RoverActionErrorState {
+public final class ActionErrorState {
 
 	private int errorCount = 0;
 	private int successCount = 0;

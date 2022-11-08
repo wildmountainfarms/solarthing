@@ -18,6 +18,7 @@ import me.retrodaredevil.solarthing.actions.rover.RoverLoadActionNode;
 import me.retrodaredevil.solarthing.actions.rover.modbus.RoverModbusActionNode;
 import me.retrodaredevil.solarthing.actions.solcast.SolcastActionNode;
 import me.retrodaredevil.solarthing.actions.tracer.TracerLoadActionNode;
+import me.retrodaredevil.solarthing.actions.tracer.modbus.TracerModbusActionNode;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.config.options.ActionsOption;
 import me.retrodaredevil.solarthing.config.options.CommandOption;
@@ -46,6 +47,7 @@ public final class ActionUtil {
 				RoverBoostSetActionNode.class,
 				RoverBoostVoltageActionNode.class,
 
+				TracerModbusActionNode.class,
 				TracerLoadActionNode.class,
 
 				HomeAssistantActionNode.class,

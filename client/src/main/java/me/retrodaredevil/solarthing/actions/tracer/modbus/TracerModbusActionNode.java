@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing.actions.rover.modbus;
+package me.retrodaredevil.solarthing.actions.tracer.modbus;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -9,9 +9,9 @@ import me.retrodaredevil.action.WhenDone;
 import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.PassActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
-import me.retrodaredevil.solarthing.actions.environment.MultiRoverModbusEnvironment;
-import me.retrodaredevil.solarthing.actions.environment.RoverErrorEnvironment;
-import me.retrodaredevil.solarthing.actions.environment.RoverModbusEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.MultiTracerModbusEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.TracerErrorEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.TracerModbusEnvironment;
 import me.retrodaredevil.solarthing.actions.error.TryErrorStateAction;
 import me.retrodaredevil.solarthing.packets.identification.NumberedIdentifier;
 
@@ -21,23 +21,17 @@ import java.util.stream.Collectors;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Injects a {@link RoverModbusEnvironment} into (multiple) actions.
- * Each given action will be executed sequentially, only executing the next action if the previous action was successful.
- * After either all actions have been executed or an error has occurred in any of the actions, the "on_success" or "on_error"
- * action will be run.
- * <p>
- * The success and error actions do not have a {@link RoverModbusEnvironment} injected into them.
- * If an error occurs while an action is executing, the action will complete then the "on_error" action will become active.
+ * @see me.retrodaredevil.solarthing.actions.rover.modbus.RoverModbusActionNode This class is copy pasted and is the tracer version of this.
  */
-@JsonTypeName("rover-modbus")
-public class RoverModbusActionNode implements ActionNode {
+@JsonTypeName("tracer-modbus")
+public class TracerModbusActionNode implements ActionNode {
 	private final int number;
 	private final List<ActionNode> sequentialActions;
 	private final ActionNode successAction;
 	private final ActionNode errorAction;
 
 	@JsonCreator
-	public RoverModbusActionNode(
+	public TracerModbusActionNode(
 			@JsonProperty("number") Integer number,
 			@JsonProperty(value = "actions", required = true) List<ActionNode> sequentialActions,
 			@JsonProperty(value = "on_success") ActionNode successAction,
@@ -51,27 +45,27 @@ public class RoverModbusActionNode implements ActionNode {
 
 	@Override
 	public Action createAction(ActionEnvironment actionEnvironment) {
-		MultiRoverModbusEnvironment multiRoverModbusEnvironment = actionEnvironment.getInjectEnvironment().get(MultiRoverModbusEnvironment.class);
-		RoverModbusEnvironment roverModbusEnvironment = multiRoverModbusEnvironment.getOrNull(number);
-		if (roverModbusEnvironment == null) {
-			throw new IllegalStateException("No rover modbus environment for number: " + number);
+		MultiTracerModbusEnvironment multiTracerModbusEnvironment = actionEnvironment.getInjectEnvironment().get(MultiTracerModbusEnvironment.class);
+		TracerModbusEnvironment tracerModbusEnvironment = multiTracerModbusEnvironment.getOrNull(number);
+		if (tracerModbusEnvironment == null) {
+			throw new IllegalStateException("No tracer modbus environment for number: " + number);
 		}
 		Action success = successAction.createAction(actionEnvironment);
 		Action error = errorAction.createAction(actionEnvironment);
 
-		RoverErrorEnvironment roverErrorEnvironment = new RoverErrorEnvironment();
+		TracerErrorEnvironment tracerErrorEnvironment = new TracerErrorEnvironment();
 
 		ActionEnvironment injectedActionEnvironment = new ActionEnvironment(
 				actionEnvironment.getGlobalEnvironment(),
 				actionEnvironment.getLocalEnvironment(),
 				actionEnvironment.getInjectEnvironment().newBuilder()
-						.add(roverModbusEnvironment)
-						.add(roverErrorEnvironment)
+						.add(tracerModbusEnvironment)
+						.add(tracerErrorEnvironment)
 						.build()
 		);
 
 		List<Action> actions = sequentialActions.stream().map(actionNode -> actionNode.createAction(injectedActionEnvironment)).collect(Collectors.toList());
 
-		return Actions.createLinkedActionRunner(new TryErrorStateAction(actions, success, error, roverErrorEnvironment.getRoverActionErrorState()), WhenDone.BE_DONE, true);
+		return Actions.createLinkedActionRunner(new TryErrorStateAction(actions, success, error, tracerErrorEnvironment.getTracerActionErrorState()), WhenDone.BE_DONE, true);
 	}
 }

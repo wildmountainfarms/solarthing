@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.actions.rover.expression;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.action.node.expression.NumericExpression;
 import me.retrodaredevil.action.node.expression.node.NumericExpressionNode;
@@ -11,6 +12,7 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
 
 import java.util.Collections;
 
+@JsonTypeName("rover-boost-voltage")
 public class RoverBoostVoltageExpressionNode implements NumericExpressionNode {
 	private final RoverMatcher roverMatcher;
 

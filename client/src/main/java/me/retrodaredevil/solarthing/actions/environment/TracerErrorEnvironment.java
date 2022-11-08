@@ -2,17 +2,17 @@ package me.retrodaredevil.solarthing.actions.environment;
 
 import me.retrodaredevil.solarthing.actions.error.ActionErrorState;
 
-public class RoverErrorEnvironment {
+public class TracerErrorEnvironment {
 	private final ActionErrorState actionErrorState;
 
-	public RoverErrorEnvironment(ActionErrorState actionErrorState) {
+	public TracerErrorEnvironment(ActionErrorState actionErrorState) {
 		this.actionErrorState = actionErrorState;
 	}
-	public RoverErrorEnvironment() {
+	public TracerErrorEnvironment() {
 		this(new ActionErrorState());
 	}
 
-	public ActionErrorState getRoverActionErrorState() {
+	public ActionErrorState getTracerActionErrorState() {
 		return actionErrorState;
 	}
 }

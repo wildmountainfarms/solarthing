@@ -68,7 +68,6 @@ public class RequestMain {
 
 		packetListReceiverList.add(new DataIdentifiablePacketListChecker());
 		packetListReceiverList.add(new DaySummaryLogListReceiver());
-//		packetListReceiverList.add(createActionExecutorPacketListReceiver(options, environmentUpdaterReference[0])); part of the first draft of adding local actions
 		dataRequesterResults.stream().map(DataRequesterResult::getStatusEndPacketListReceiver).forEachOrdered(packetListReceiverList::add);
 		packetListReceiverList.addAll(bundle.createDefaultPacketListReceivers());
 

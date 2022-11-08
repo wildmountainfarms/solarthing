@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MultiRoverModbusEnvironment {
+public final class MultiRoverModbusEnvironment {
 	private final Map<Integer, RoverModbusEnvironment> map;
 
 	public MultiRoverModbusEnvironment(Map<Integer, RoverModbusEnvironment> map) {
