@@ -85,7 +85,6 @@ and also react to messages that have been fully processed (request successfully 
 * Packets for when a command is accepted or rejected and when its action is done running
 * Make it so that MessageEvents can easily use a NanoProvider rather than System.nanoTime() directly.
 * Add alert to detect when messages are being spammed to solarthing_open
-* Add info about the state of CouchDB on the home page of SolarThing web
 * Add TOML support for config files: https://github.com/FasterXML/jackson-dataformats-text
 * Have a way to query record data such as the day with the highest daily kWh value
   * Likely involves cache database. 
@@ -114,6 +113,9 @@ and also react to messages that have been fully processed (request successfully 
 * Some sort of (integration) test that tests the functioning of a request or mate program
 * Add a method to ActionNode that allows a user friendly reporting of why a given action node
   may not be supported with the configuration or type of program being ran.
+* Status page on SolarThing web to show which components of SolarThing are or are not working
+* Ability to upload to a backup CouchDB database, but with a unique document ID as to not cause conflicts when the databases sync again
+
   
 ### Completed
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
@@ -183,6 +185,7 @@ easy displaying in Grafana
 * Add event packets for rover and tracer devices (like we did for MXs and FXs)
 * Make monitor-service only start after WiFi has kicked in
 * Use https://github.com/tbroyer/gradle-errorprone-plugin
+* Add info about the state of CouchDB on the home page of SolarThing web
 
 ### Look into
 * Look into supporting Elasticsearch, MongoDB, Graphite

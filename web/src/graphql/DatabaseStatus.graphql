@@ -1,0 +1,10 @@
+query DatabaseStatus {
+  systemStatus {
+    status:getStatus(type: STATUS)
+    event:getStatus(type: EVENT)
+    open:getStatus(type: OPEN)
+    closed:getStatus(type: CLOSED)
+    alter:getStatus(type: ALTER)
+    cache:getStatus(type: CACHE)
+  }
+}

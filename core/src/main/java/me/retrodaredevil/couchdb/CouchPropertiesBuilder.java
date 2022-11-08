@@ -24,6 +24,11 @@ public class CouchPropertiesBuilder {
 		this.username = username;
 		this.password = password;
 	}
+	public CouchPropertiesBuilder(HttpUrl url, String username, String password) {
+		httpUrlBuilder = url.newBuilder();
+		this.username = username;
+		this.password = password;
+	}
 	public CouchPropertiesBuilder(CouchProperties properties){
 		httpUrlBuilder = properties.getHttpUrl().newBuilder();
 		username = properties.getUsername();

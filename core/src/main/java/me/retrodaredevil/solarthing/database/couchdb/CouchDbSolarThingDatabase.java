@@ -15,6 +15,8 @@ import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.commands.packets.status.CommandStatusPacket;
+import me.retrodaredevil.solarthing.database.DatabaseManagementSource;
+import me.retrodaredevil.solarthing.database.DatabaseSource;
 import me.retrodaredevil.solarthing.database.MillisDatabase;
 import me.retrodaredevil.solarthing.database.SessionInfo;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
@@ -47,7 +49,10 @@ import static java.util.Objects.requireNonNull;
 public class CouchDbSolarThingDatabase implements SolarThingDatabase {
 
 	private final CouchDbInstance instance;
+	private final DatabaseManagementSource databaseManagementSource;
 	private final CouchDbDatabase closedDatabase;
+	private final DatabaseSource closedDatabaseSource;
+	private final DatabaseSource cacheDatabaseSource;
 	private final ObjectMapper metaObjectMapper;
 	private final ObjectMapper simpleObjectMapper;
 
@@ -65,7 +70,10 @@ public class CouchDbSolarThingDatabase implements SolarThingDatabase {
 	 */
 	public CouchDbSolarThingDatabase(CouchDbInstance instance, PacketParsingErrorHandler errorHandler, ObjectMapper mapper) {
 		this.instance = instance;
+		databaseManagementSource = new CouchDbDatabaseManagementSource(instance);
 		closedDatabase = instance.getDatabase(SolarThingConstants.CLOSED_DATABASE);
+		closedDatabaseSource = new CouchDbDatabaseSource(closedDatabase);
+		cacheDatabaseSource = new CouchDbDatabaseSource(instance.getDatabase(SolarThingConstants.CACHE_DATABASE)); // we don't use cache database anywhere in this class except here, so we can just call instance.getDatabase() here
 		metaObjectMapper = JacksonUtil.lenientSubTypeMapper(mapper.copy());
 		metaObjectMapper.getSubtypeResolver().registerSubtypes(TargetMetaPacket.class, DeviceInfoPacket.class, DataMetaPacket.class, FXChargingSettingsPacket.class, FXChargingTemperatureAdjustPacket.class);
 		simpleObjectMapper = mapper.copy();
@@ -98,6 +106,11 @@ public class CouchDbSolarThingDatabase implements SolarThingDatabase {
 	}
 
 	@Override
+	public @NotNull DatabaseManagementSource getDatabaseManagementSource() {
+		return databaseManagementSource;
+	}
+
+	@Override
 	public @NotNull RevisionUpdateToken validateUpdateToken(@NotNull UpdateToken updateToken) {
 		return checkUpdateToken(updateToken);
 	}
@@ -112,6 +125,16 @@ public class CouchDbSolarThingDatabase implements SolarThingDatabase {
 	@Override
 	public @NotNull CouchDbAlterDatabase getAlterDatabase() {
 		return alterDatabase;
+	}
+
+	@Override
+	public @NotNull DatabaseSource getClosedDatabaseSource() {
+		return closedDatabaseSource;
+	}
+
+	@Override
+	public @NotNull DatabaseSource getCacheDatabaseSource() {
+		return cacheDatabaseSource;
 	}
 
 	@Override

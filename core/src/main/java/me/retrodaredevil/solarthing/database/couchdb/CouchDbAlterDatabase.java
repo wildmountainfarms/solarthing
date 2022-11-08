@@ -17,6 +17,7 @@ import me.retrodaredevil.couchdbjava.response.DocumentResponse;
 import me.retrodaredevil.couchdbjava.response.ViewResponse;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.database.AlterDatabase;
+import me.retrodaredevil.solarthing.database.DatabaseSource;
 import me.retrodaredevil.solarthing.database.UpdateToken;
 import me.retrodaredevil.solarthing.database.VersionedPacket;
 import me.retrodaredevil.solarthing.database.exception.NotFoundSolarThingDatabaseException;
@@ -31,10 +32,12 @@ import java.util.List;
 public class CouchDbAlterDatabase implements AlterDatabase {
 	private final CouchDbDatabase database;
 	private final ObjectMapper mapper;
+	private final DatabaseSource databaseSource;
 
 	public CouchDbAlterDatabase(CouchDbDatabase database, ObjectMapper mapper) {
 		this.database = database;
 		this.mapper = mapper;
+		databaseSource = new CouchDbDatabaseSource(database);
 	}
 
 	@Override
@@ -110,5 +113,10 @@ public class CouchDbAlterDatabase implements AlterDatabase {
 		} catch (CouchDbException e) {
 			throw new SolarThingDatabaseException("Could not delete documentId: " + documentId + " revision: " + revision, e);
 		}
+	}
+
+	@Override
+	public DatabaseSource getDatabaseSource() {
+		return databaseSource;
 	}
 }

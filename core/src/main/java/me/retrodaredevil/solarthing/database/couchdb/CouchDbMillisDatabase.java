@@ -13,6 +13,7 @@ import me.retrodaredevil.couchdbjava.response.DocumentData;
 import me.retrodaredevil.couchdbjava.response.DocumentResponse;
 import me.retrodaredevil.couchdbjava.response.ViewResponse;
 import me.retrodaredevil.solarthing.couchdb.SolarThingCouchDb;
+import me.retrodaredevil.solarthing.database.DatabaseSource;
 import me.retrodaredevil.solarthing.database.MillisDatabase;
 import me.retrodaredevil.solarthing.database.MillisQuery;
 import me.retrodaredevil.solarthing.database.UpdateToken;
@@ -34,11 +35,13 @@ public class CouchDbMillisDatabase implements MillisDatabase {
 	private final CouchDbDatabase database;
 	private final ObjectMapper mapper;
 	private final SimplePacketGroupParser parser;
+	private final CouchDbDatabaseSource databaseSource;
 
 	public CouchDbMillisDatabase(CouchDbDatabase database, ObjectMapper mapper, PacketParsingErrorHandler errorHandler) {
 		this.database = database;
 		this.mapper = mapper;
 		this.parser = new SimplePacketGroupParser(mapper, errorHandler);
+		databaseSource = new CouchDbDatabaseSource(database);
 	}
 
 	private VersionedPacket<StoredPacketGroup> jsonDataToStoredPacketGroup(JsonData jsonData) throws SolarThingDatabaseException {
@@ -123,6 +126,11 @@ public class CouchDbMillisDatabase implements MillisDatabase {
 		} catch (CouchDbException e) {
 			throw ExceptionUtil.createFromCouchDbException("Couldn't get revision", e);
 		}
+	}
+
+	@Override
+	public DatabaseSource getDatabaseSource() {
+		return databaseSource;
 	}
 
 	@Override

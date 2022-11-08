@@ -1,7 +1,7 @@
 overwrite: true
 #schema: "http://localhost:8080/graphql"
 schema: "schema.graphqls"
-documents: ./**/*.graphql
+documents: ./src/**/*.graphql
 generates:
   src/generated/graphql.ts:
     plugins:

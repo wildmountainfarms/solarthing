@@ -12,4 +12,6 @@ public interface MillisDatabase {
 	UpdateToken uploadPacketCollection(PacketCollection packetCollection, UpdateToken updateToken) throws SolarThingDatabaseException;
 	VersionedPacket<StoredPacketGroup> getPacketCollection(String documentId) throws SolarThingDatabaseException;
 	UpdateToken getCurrentUpdateToken(String documentId) throws SolarThingDatabaseException;
+
+	DatabaseSource getDatabaseSource();
 }

@@ -11,6 +11,8 @@ import static java.util.Objects.requireNonNull;
 
 public interface SolarThingDatabase {
 
+	@NotNull DatabaseManagementSource getDatabaseManagementSource();
+
 	/**
 	 *
 	 * @param updateToken The update token to validate
@@ -23,6 +25,18 @@ public interface SolarThingDatabase {
 	@NotNull MillisDatabase getOpenDatabase();
 
 	@NotNull AlterDatabase getAlterDatabase();
+
+	/**
+	 * There is no object to represent the closed database, so you can call this method to get its {@link DatabaseSource}
+	 * @return The DatabaseSource of the solarthing_closed database
+	 */
+	@NotNull DatabaseSource getClosedDatabaseSource();
+
+	/**
+	 * There is not object to represent the cache database, so you can call thsi method to get its {@link DatabaseSource}
+	 * @return The DatabaseSource of the solarthing_cache database
+	 */
+	@NotNull DatabaseSource getCacheDatabaseSource();
 
 	/**
 	 * @param updateToken The update token. null will be returned if the meta document has not been updated since this update token. If null, the returned packet will not be null

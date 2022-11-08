@@ -1,16 +1,20 @@
 package me.retrodaredevil.solarthing.rest.graphql.service.web;
 
+import graphql.AssertException;
 import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLMutation;
 import io.leangen.graphql.annotations.GraphQLQuery;
+import me.retrodaredevil.solarthing.SolarThingDatabaseType;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
+import me.retrodaredevil.solarthing.database.DatabaseSource;
 import me.retrodaredevil.solarthing.database.MillisQueryBuilder;
 import me.retrodaredevil.solarthing.database.SessionInfo;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
 import me.retrodaredevil.solarthing.database.VersionedPacket;
 import me.retrodaredevil.solarthing.database.exception.NotFoundSolarThingDatabaseException;
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
+import me.retrodaredevil.solarthing.database.exception.UnauthorizedSolarThingDatabaseException;
 import me.retrodaredevil.solarthing.packets.collection.StoredPacketGroup;
 import me.retrodaredevil.solarthing.packets.security.AuthNewSenderPacket;
 import me.retrodaredevil.solarthing.packets.security.crypto.InvalidKeyException;
@@ -29,6 +33,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+
+import static java.util.Objects.requireNonNull;
 
 public class SolarThingAdminService {
 
@@ -147,6 +153,72 @@ public class SolarThingAdminService {
 			database.updateAuthorized(newPacket, versionedPacket.getUpdateToken());
 		} catch (SolarThingDatabaseException e) {
 			throw new DatabaseException(e);
+		}
+	}
+	@GraphQLQuery(name = "systemStatus")
+	public DatabaseSystemStatus getSystemStatus() {
+		SolarThingDatabase database = databaseProvider.getDatabase(null);
+		return new SolarThingDatabaseSystemStatus(database);
+	}
+
+	public enum DatabaseStatus {
+		NOT_PRESENT,
+		BAD_PERMISSIONS,
+		ERROR,
+		INCOMPLETE,
+		COMPLETE,
+	}
+	public interface DatabaseSystemStatus {
+		@GraphQLQuery(name = "getStatus")
+		@NotNull DatabaseStatus getStatus(@GraphQLArgument(name = "type") @NotNull SolarThingDatabaseType databaseType);
+	}
+
+	private static class SolarThingDatabaseSystemStatus implements DatabaseSystemStatus {
+		private final SolarThingDatabase database;
+
+		private SolarThingDatabaseSystemStatus(SolarThingDatabase database) {
+			requireNonNull(this.database = database);
+			// NOTE: If the database has authentication on it, calling getStatus for some databases may produce inconsistent results
+			// TODO maybe consider removing authentication from database or make this work when authenticated or when unauthenticated
+		}
+		@Override
+		public @NotNull DatabaseStatus getStatus(@NotNull SolarThingDatabaseType databaseType) {
+			final DatabaseSource source;
+			switch (requireNonNull(databaseType)) {
+				case STATUS:
+					source = database.getStatusDatabase().getDatabaseSource();
+					break;
+				case EVENT:
+					source = database.getEventDatabase().getDatabaseSource();
+					break;
+				case CLOSED:
+					source = database.getClosedDatabaseSource();
+					break;
+				case OPEN:
+					source = database.getOpenDatabase().getDatabaseSource();
+					break;
+				case CACHE:
+					source = database.getCacheDatabaseSource();
+					break;
+				case ALTER:
+					source = database.getAlterDatabase().getDatabaseSource();
+					break;
+				default:
+					throw new AssertException("Unknown database type: " + databaseType);
+			}
+			try {
+				boolean exists = source.exists();
+				if (!exists) {
+					return DatabaseStatus.NOT_PRESENT;
+				}
+				// down the line, we could check the _design/packets document to make sure that a validate function is present if needed
+				return databaseType.isPublic() ? DatabaseStatus.COMPLETE : DatabaseStatus.BAD_PERMISSIONS;
+			} catch (UnauthorizedSolarThingDatabaseException e) {
+				return databaseType.isPublic() ? DatabaseStatus.BAD_PERMISSIONS : DatabaseStatus.COMPLETE;
+			} catch (SolarThingDatabaseException e) {
+				// TODO log
+				return DatabaseStatus.ERROR;
+			}
 		}
 	}
 }

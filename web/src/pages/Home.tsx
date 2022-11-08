@@ -11,10 +11,14 @@ function BatteryVoltage() {
   // We have to use a rounded up value to make sure that useQuery doesn't keep reloading the data
   const timeMillisRounded = getTimeMillisRounded();
   const {data, error, isLoading, isSuccess} = useHomeQuery(graphQLClient, { sourceId, currentTimeMillis: "" + timeMillisRounded});
+  const averageNode = data === undefined ? undefined : data!.queryStatusLast.batteryVoltageAverage[0];
   return <>
     {!isSuccess
       ? <p>Loading Data</p>
-      : <p>Battery: {isSuccess && data!.queryStatusLast.batteryVoltageAverage[0].data} V</p>}
+      : averageNode === undefined
+        ? <p>No battery voltage data</p>
+        : <p>Battery: {isSuccess && averageNode.data.toFixed(2)} V</p>
+    }
   </>
 }
 
