@@ -1,5 +1,7 @@
 package me.retrodaredevil.solarthing.config.request.modbus;
 
+import me.retrodaredevil.solarthing.reason.ExecutionReason;
+import me.retrodaredevil.solarthing.reason.OpenSourceExecutionReason;
 import me.retrodaredevil.solarthing.type.open.OpenSource;
 import me.retrodaredevil.solarthing.actions.command.EnvironmentUpdater;
 import me.retrodaredevil.action.node.environment.InjectEnvironment;
@@ -14,6 +16,7 @@ import java.util.function.Predicate;
  * <p>
  * This command name is determined by {@link RequestCommandPacket} which is retrieved from {@link OpenSource#getPacket()}
  */
+@Deprecated
 public class AttachToCommandEnvironmentUpdater implements EnvironmentUpdater {
 	private final Collection<Object> environmentsToAdd;
 	private final Predicate<? super String> shouldAttachToCommandPredicate;
@@ -24,13 +27,15 @@ public class AttachToCommandEnvironmentUpdater implements EnvironmentUpdater {
 	}
 
 	@Override
-	public void updateInjectEnvironment(OpenSource source, InjectEnvironment.Builder injectEnvironmentBuilder) {
-		Packet packet = source.getPacket();
-		if (packet instanceof RequestCommandPacket) {
-			String commandName = ((RequestCommandPacket) packet).getCommandName();
-			if (shouldAttachToCommandPredicate.test(commandName)) {
-				for (Object environment : environmentsToAdd) {
-					injectEnvironmentBuilder.add(environment);
+	public void updateInjectEnvironment(ExecutionReason executionReason, InjectEnvironment.Builder injectEnvironmentBuilder) {
+		if (executionReason instanceof OpenSourceExecutionReason) {
+			Packet packet = ((OpenSourceExecutionReason) executionReason).getSource().getPacket();
+			if (packet instanceof RequestCommandPacket) {
+				String commandName = ((RequestCommandPacket) packet).getCommandName();
+				if (shouldAttachToCommandPredicate.test(commandName)) {
+					for (Object environment : environmentsToAdd) {
+						injectEnvironmentBuilder.add(environment);
+					}
 				}
 			}
 		}

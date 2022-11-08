@@ -12,7 +12,7 @@ import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("automation")
 @JsonExplicit
-public class AutomationProgramOptions extends DatabaseTimeZoneOptionBase {
+public class AutomationProgramOptions extends DatabaseTimeZoneOptionBase implements ActionsOption {
 	@JsonProperty("actions")
 	private List<File> actionNodeFiles;
 
@@ -24,6 +24,7 @@ public class AutomationProgramOptions extends DatabaseTimeZoneOptionBase {
 		return ProgramType.AUTOMATION;
 	}
 
+	@Override
 	public List<File> getActionNodeFiles() {
 		return requireNonNull(actionNodeFiles);
 	}

@@ -6,11 +6,8 @@ import me.retrodaredevil.solarthing.actions.command.EnvironmentUpdaterMultiplexe
 import me.retrodaredevil.solarthing.analytics.AnalyticsManager;
 import me.retrodaredevil.solarthing.analytics.RoverAnalyticsHandler;
 import me.retrodaredevil.solarthing.commands.packets.status.AvailableCommandsListUpdater;
-import me.retrodaredevil.solarthing.config.options.CommandOption;
-import me.retrodaredevil.solarthing.config.options.PacketHandlingOption;
 import me.retrodaredevil.solarthing.config.options.ProgramType;
 import me.retrodaredevil.solarthing.config.options.RequestProgramOptions;
-import me.retrodaredevil.solarthing.config.request.DataRequester;
 import me.retrodaredevil.solarthing.config.request.DataRequesterResult;
 import me.retrodaredevil.solarthing.config.request.RequestObject;
 import me.retrodaredevil.solarthing.misc.common.DataIdentifiablePacketListChecker;
@@ -40,10 +37,10 @@ public class RequestMain {
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Beginning request program");
 		AnalyticsManager analyticsManager = new AnalyticsManager(options.isAnalyticsEnabled(), dataDirectory);
 		analyticsManager.sendStartUp(ProgramType.REQUEST);
-		return startRequestProgram(options, analyticsManager, options.getDataRequesterList(), options.getPeriod(), options.getMinimumWait());
+		return startRequestProgram(options, analyticsManager, options.getPeriod(), options.getMinimumWait());
 	}
 
-	public static <T extends PacketHandlingOption & CommandOption> int startRequestProgram(T options, AnalyticsManager analyticsManager, List<DataRequester> dataRequesterList, long period, long minimumWait) throws Exception {
+	private static int startRequestProgram(RequestProgramOptions options, AnalyticsManager analyticsManager, Duration period, Duration minimumWait) throws Exception {
 		// Note this is very similar to code in OutbackMateMain and could eventually be refactored
 		EnvironmentUpdater[] environmentUpdaterReference = new EnvironmentUpdater[1];
 		PacketHandlerInit.Result handlersResult = PacketHandlerInit.initHandlers(
@@ -52,10 +49,9 @@ public class RequestMain {
 				Collections.singleton(new RoverAnalyticsHandler(analyticsManager))
 		);
 		PacketListReceiverHandlerBundle bundle = handlersResult.getBundle();
-		List<DataRequesterResult> dataRequesterResults = dataRequesterList.stream()
+		List<DataRequesterResult> dataRequesterResults = options.getDataRequesterList().stream()
 				.map(dataRequester -> dataRequester.create(new RequestObject(bundle.getEventHandler().getPacketListReceiverAccepter())))
 				.collect(Collectors.toList());
-		// TODO remove dataRequestList parameter soon and use options.getDataRequesterList()
 
 		List<PacketListReceiver> packetListReceiverList = new ArrayList<>();
 		List<EnvironmentUpdater> environmentUpdaters = new ArrayList<>();
@@ -75,7 +71,7 @@ public class RequestMain {
 		dataRequesterResults.stream().map(DataRequesterResult::getStatusEndPacketListReceiver).forEachOrdered(packetListReceiverList::add);
 		packetListReceiverList.addAll(bundle.createDefaultPacketListReceivers());
 
-		return doRequest(new PacketListReceiverMultiplexer(packetListReceiverList), Duration.ofMillis(period), Duration.ofMillis(minimumWait));
+		return doRequest(new PacketListReceiverMultiplexer(packetListReceiverList), period, minimumWait);
 	}
 	private static int doRequest(PacketListReceiver packetListReceiver, Duration period, Duration minimumWait) {
 		while (!Thread.currentThread().isInterrupted()) {

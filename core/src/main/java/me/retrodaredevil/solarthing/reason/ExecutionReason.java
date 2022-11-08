@@ -13,7 +13,8 @@ import me.retrodaredevil.solarthing.util.UniqueStringRepresentation;
  * NOTE: Implementations of this interface should implement {@link #equals(Object)}
  */
 @JsonSubTypes({
-		@JsonSubTypes.Type(OpenSourceExecutionReason.class)
+		@JsonSubTypes.Type(OpenSourceExecutionReason.class),
+		@JsonSubTypes.Type(PacketCollectionExecutionReason.class),
 })
 @JsonExplicit
 public interface ExecutionReason extends TypedDocumentedPacket<ExecutionReasonType>, UniqueStringRepresentation {

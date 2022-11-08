@@ -1,8 +1,8 @@
 package me.retrodaredevil.solarthing.program;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.action.ActionMultiplexer;
 import me.retrodaredevil.action.Actions;
+import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.action.node.environment.InjectEnvironment;
 import me.retrodaredevil.action.node.environment.NanoTimeProviderEnvironment;
@@ -11,13 +11,16 @@ import me.retrodaredevil.action.node.util.NanoTimeProvider;
 import me.retrodaredevil.couchdb.CouchDbUtil;
 import me.retrodaredevil.solarthing.FragmentedPacketGroupProvider;
 import me.retrodaredevil.solarthing.SolarThingConstants;
-import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.solarthing.actions.environment.*;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.config.options.AutomationProgramOptions;
 import me.retrodaredevil.solarthing.config.options.DatabaseTimeZoneOptionBase;
-import me.retrodaredevil.solarthing.database.*;
+import me.retrodaredevil.solarthing.database.DatabaseDocumentKeyMap;
+import me.retrodaredevil.solarthing.database.MillisDatabase;
+import me.retrodaredevil.solarthing.database.MillisQuery;
+import me.retrodaredevil.solarthing.database.SolarThingDatabase;
+import me.retrodaredevil.solarthing.database.VersionedPacket;
 import me.retrodaredevil.solarthing.database.cache.SimpleDatabaseCache;
 import me.retrodaredevil.solarthing.database.cache.SimplePacketCache;
 import me.retrodaredevil.solarthing.database.couchdb.CouchDbSolarThingDatabase;
@@ -26,18 +29,15 @@ import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.StoredPacketGroup;
 import me.retrodaredevil.solarthing.type.alter.StoredAlterPacket;
 import me.retrodaredevil.solarthing.type.closed.authorization.AuthorizationPacket;
-import me.retrodaredevil.solarthing.util.JacksonUtil;
 import me.retrodaredevil.solarthing.util.sync.BasicResourceManager;
 import me.retrodaredevil.solarthing.util.sync.ReadWriteResourceManager;
 import me.retrodaredevil.solarthing.util.sync.ResourceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.Clock;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -47,14 +47,9 @@ public final class AutomationMain {
 	private AutomationMain() { throw new UnsupportedOperationException(); }
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AutomationMain.class);
-	private static final ObjectMapper CONFIG_MAPPER = ActionUtil.registerActionNodes(JacksonUtil.defaultMapper());
 
 	public static int startAutomation(AutomationProgramOptions options) throws IOException {
-		List<ActionNode> actionNodes = new ArrayList<>();
-		for (File file : options.getActionNodeFiles()) {
-			actionNodes.add(CONFIG_MAPPER.readValue(file, ActionNode.class));
-		}
-		return startAutomation(actionNodes, options, options.getPeriodMillis());
+		return startAutomation(ActionUtil.getActionNodes(options), options, options.getPeriodMillis());
 	}
 
 	private static void queryAndFeed(MillisDatabase millisDatabase, ResourceManager<SimpleDatabaseCache> databaseCacheManager, boolean useEndDate) {

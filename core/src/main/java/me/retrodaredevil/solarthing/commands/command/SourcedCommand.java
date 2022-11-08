@@ -1,22 +1,18 @@
 package me.retrodaredevil.solarthing.commands.command;
 
-import me.retrodaredevil.solarthing.type.open.OpenSource;
+import me.retrodaredevil.solarthing.reason.ExecutionReason;
 
 import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 
 public final class SourcedCommand<T extends Command> {
-	private final OpenSource source;
+	private final ExecutionReason executionReason;
 	private final T command;
 
-	public SourcedCommand(OpenSource source, T command) {
-		this.source = requireNonNull(source);
+	public SourcedCommand(ExecutionReason executionReason, T command) {
+		this.executionReason = requireNonNull(executionReason);
 		this.command = requireNonNull(command);
-	}
-
-	public OpenSource getSource() {
-		return source;
 	}
 
 	@Override
@@ -24,16 +20,20 @@ public final class SourcedCommand<T extends Command> {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		SourcedCommand<?> that = (SourcedCommand<?>) o;
-		return source.equals(that.source) &&
+		return executionReason.equals(that.executionReason) &&
 				command.equals(that.command);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(source, command);
+		return Objects.hash(executionReason, command);
 	}
 
 	public T getCommand() {
 		return command;
+	}
+
+	public ExecutionReason getExecutionReason() {
+		return executionReason;
 	}
 }

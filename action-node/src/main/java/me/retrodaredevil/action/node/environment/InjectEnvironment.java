@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Once created, an {@link InjectEnvironment} is immutable and thread safe. Values returned by {@link #get(Class)} should be immutable and thread safe,
@@ -55,6 +57,16 @@ public class InjectEnvironment {
 		@SuppressWarnings("InconsistentOverloads")
 		public <T> Builder add(Class<? super T> clazz, T object) {
 			map.put(clazz, object);
+			return this;
+		}
+		public <T> Builder update(Class<T> clazz, Function<T, T> updateFunction, Supplier<T> createFunction) {
+			// TODO do we want to use java.util.function here? Do we care about Android compatibility?
+			T current = clazz.cast(map.get(clazz));
+			if (current == null) {
+				current = createFunction.get();
+			}
+			current = updateFunction.apply(current);
+			map.put(clazz, current);
 			return this;
 		}
 		public InjectEnvironment build() {

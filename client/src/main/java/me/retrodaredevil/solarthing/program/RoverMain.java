@@ -4,18 +4,10 @@ import me.retrodaredevil.io.modbus.IOModbusSlaveBus;
 import me.retrodaredevil.io.modbus.ModbusSlaveBus;
 import me.retrodaredevil.io.modbus.RtuDataEncoder;
 import me.retrodaredevil.solarthing.SolarThingConstants;
-import me.retrodaredevil.solarthing.analytics.AnalyticsManager;
 import me.retrodaredevil.solarthing.annotations.Nullable;
-import me.retrodaredevil.solarthing.commands.CommandInfo;
 import me.retrodaredevil.solarthing.config.io.IOConfig;
-import me.retrodaredevil.solarthing.config.options.ProgramType;
 import me.retrodaredevil.solarthing.config.options.RoverOption;
-import me.retrodaredevil.solarthing.config.options.RoverProgramOptions;
 import me.retrodaredevil.solarthing.config.options.RoverSetupProgramOptions;
-import me.retrodaredevil.solarthing.config.request.DataRequester;
-import me.retrodaredevil.solarthing.config.request.modbus.ModbusDataRequester;
-import me.retrodaredevil.solarthing.config.request.modbus.ModbusRequester;
-import me.retrodaredevil.solarthing.config.request.modbus.RoverModbusRequester;
 import me.retrodaredevil.solarthing.io.ReloadableIOBundle;
 import me.retrodaredevil.solarthing.program.modbus.MutableAddressModbusSlave;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverReadTable;
@@ -25,44 +17,11 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusSlaveWr
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 public class RoverMain {
 	private RoverMain() { throw new UnsupportedOperationException(); }
 	private static final Logger LOGGER = LoggerFactory.getLogger(RoverMain.class);
 
 
-	@Deprecated // TODO remove this soon
-	private static int doRover(RoverProgramOptions options, AnalyticsManager analyticsManager, List<DataRequester> dataRequesterList) throws Exception {
-		RoverModbusRequester roverModbusRequester = new RoverModbusRequester(
-				options.isSendErrorPackets(), options.isBulkRequest(),
-				options.getCommandInfoList().stream().map(CommandInfo::getName).collect(Collectors.toList()), // attach the given rover modbus environment to all commands
-				null,
-				null);
-		Map<Integer, ModbusRequester> deviceMap = new HashMap<>();
-		deviceMap.put(options.getModbusAddress(), roverModbusRequester);
-		ModbusDataRequester dataRequester = new ModbusDataRequester(options.getIOBundleFile(), deviceMap, null, null);
-
-		List<DataRequester> list = new ArrayList<>(dataRequesterList);
-		list.add(dataRequester);
-
-		return RequestMain.startRequestProgram(options, analyticsManager, list, options.getPeriod(), options.getMinimumWait());
-	}
-
-	@Deprecated
-	public static int connectRover(RoverProgramOptions options, File dataDirectory) throws Exception {
-		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Beginning rover program");
-		AnalyticsManager analyticsManager = new AnalyticsManager(options.isAnalyticsEnabled(), dataDirectory);
-		analyticsManager.sendStartUp(ProgramType.ROVER);
-
-		List<DataRequester> dataRequesterList = new ArrayList<>(options.getDataRequesterList());
-		return doRover(options, analyticsManager, dataRequesterList);
-	}
 	public static int connectRoverSetup(RoverSetupProgramOptions options) {
 		return doRoverProgram(options, RoverSetupProgram::startRoverSetup);
 	}

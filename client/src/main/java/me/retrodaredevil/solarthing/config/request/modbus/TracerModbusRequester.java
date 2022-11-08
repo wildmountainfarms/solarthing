@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.io.modbus.ModbusSlave;
 import me.retrodaredevil.io.serial.SerialConfig;
 import me.retrodaredevil.solarthing.SolarThingConstants;
+import me.retrodaredevil.solarthing.actions.command.EnvironmentUpdaterMultiplexer;
+import me.retrodaredevil.solarthing.actions.environment.MultiTracerModbusEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.TracerModbusEnvironment;
 import me.retrodaredevil.solarthing.config.netcat.NetCatConfig;
 import me.retrodaredevil.solarthing.config.request.DataRequesterResult;
@@ -14,9 +16,9 @@ import me.retrodaredevil.solarthing.config.request.TracerClockOptions;
 import me.retrodaredevil.solarthing.netcat.ConnectionHandler;
 import me.retrodaredevil.solarthing.netcat.NetCatServerHandler;
 import me.retrodaredevil.solarthing.packets.identification.NumberedIdentifier;
+import me.retrodaredevil.solarthing.program.modbus.ModbusCacheSlave;
 import me.retrodaredevil.solarthing.program.receiver.ModbusListUpdaterWrapper;
 import me.retrodaredevil.solarthing.program.receiver.TracerPacketListUpdater;
-import me.retrodaredevil.solarthing.program.modbus.ModbusCacheSlave;
 import me.retrodaredevil.solarthing.solar.tracer.TracerReadTable;
 import me.retrodaredevil.solarthing.solar.tracer.TracerWriteTable;
 import me.retrodaredevil.solarthing.solar.tracer.modbus.TracerModbusSlaveRead;
@@ -26,7 +28,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @JsonTypeName("tracer")
 public class TracerModbusRequester implements ModbusRequester {
@@ -57,6 +61,9 @@ public class TracerModbusRequester implements ModbusRequester {
 		this.tracerClockOptions = tracerClockOptions;
 		this.configurationServerConfig = configurationServerConfig;
 		this.connectionHandlerHasFlushLogic = Boolean.TRUE.equals(connectionHandlerHasFlushLogic);
+		if (attachToCommands != null) {
+			LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Hey! We noticed you are defining 'commands' on this rover modbus requester! Instead, please refer to your specific rover by its number. (" + this.number + " in your case)");
+		}
 		if (number != null) {
 			LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Hey! We noticed you are defining 'number' on this tracer modbus requester! Please don't do that unless you actually need to!!");
 		}
@@ -113,9 +120,21 @@ public class TracerModbusRequester implements ModbusRequester {
 				throw new RuntimeException("Could not create NetCatServerHandler", e);
 			}
 		}
+		final MultiTracerModbusEnvironment multiTracerModbusEnvironmentToAdd;
+		{
+			Map<Integer, TracerModbusEnvironment> map = new HashMap<>();
+			map.put(number, tracerModbusEnvironment);
+			multiTracerModbusEnvironmentToAdd = new MultiTracerModbusEnvironment(map);
+		}
 		return DataRequesterResult.builder()
 				.statusPacketListReceiver(new ModbusListUpdaterWrapper(ModbusListUpdaterWrapper.LogType.TRACER, new TracerPacketListUpdater(number, read, write, tracerClockOptions, netCatServerHandler == null ? null : new ConnectionHandler(netCatServerHandler), connectionHandlerHasFlushLogic), reloadCache, successReporter, sendErrorPackets, "tracer.error." + number))
-				.environmentUpdater(new AttachToCommandEnvironmentUpdater(Collections.singletonList(tracerModbusEnvironment), attachToCommands::contains))
+				.environmentUpdater(
+						new EnvironmentUpdaterMultiplexer(
+								new AttachToCommandEnvironmentUpdater(Collections.singletonList(tracerModbusEnvironment), attachToCommands::contains),
+								(_executionReason, injectEnvironmentBuilder) ->
+										injectEnvironmentBuilder.update(MultiTracerModbusEnvironment.class, multiTracerModbusEnvironment -> multiTracerModbusEnvironment.plus(multiTracerModbusEnvironmentToAdd), MultiTracerModbusEnvironment::new)
+						)
+				)
 				.build();
 
 	}

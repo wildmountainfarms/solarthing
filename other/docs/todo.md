@@ -110,8 +110,12 @@ and also react to messages that have been fully processed (request successfully 
 * Create a custom type recognizable by some custom jackson serializer.
   * The type can be something like AnnotatedList<SomeObject> and will allow strings
   above the object in the json array
+* Some sort of (integration) test that tests the functioning of a request or mate program
+* Add a method to ActionNode that allows a user friendly reporting of why a given action node
+  may not be supported with the configuration or type of program being ran.
 * Status page on SolarThing web to show which components of SolarThing are or are not working
 * Ability to upload to a backup CouchDB database, but with a unique document ID as to not cause conflicts when the databases sync again
+
   
 ### Completed
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
@@ -195,6 +199,7 @@ easy displaying in Grafana
   * Looks interesting
 * [Metrictank](https://grafana.com/oss/metrictank/)
 * IntelliJ is complaining about "busy waiting". We do a lot of this. Should we change how we're doing this?
+* Integrate with this somehow idk https://github.com/pipedrive/graphql-schema-registry
 
 #### Additions I'm not going to work on
 These might be useful to some people. I will not implement these in the future, but pull requests are welcome!

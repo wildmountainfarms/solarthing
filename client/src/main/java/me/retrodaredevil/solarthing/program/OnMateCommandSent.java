@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.program;
 
-import me.retrodaredevil.solarthing.type.open.OpenSource;
 import me.retrodaredevil.solarthing.commands.command.OnCommandExecute;
 import me.retrodaredevil.solarthing.commands.command.SourcedCommand;
 import me.retrodaredevil.solarthing.packets.Packet;
@@ -24,13 +23,18 @@ public class OnMateCommandSent implements OnCommandExecute<MateCommand> {
 
 	@Override
 	public void onCommandExecute(SourcedCommand<MateCommand> command) {
-		OpenSource source = command.getSource();
-		ExecutionReason reason = new OpenSourceExecutionReason(source);
+		ExecutionReason executionReason = command.getExecutionReason();
+		final String dataSource;
+		if (executionReason instanceof OpenSourceExecutionReason) {
+			dataSource = ((OpenSourceExecutionReason) executionReason).getSource().toDataSource().toString(); // for legacy reasons, include the data source converted to a string
+		} else {
+			dataSource = executionReason.getUniqueString(); // this may occur for new packets
+		}
 		Packet packet = new ImmutableSuccessMateCommandPacket(
 				SuccessMateCommandPacket.VERSION_LATEST,
 				command.getCommand(),
-				source.toDataSource().toString(), // for legacy reasons, include the data source converted to a string
-				reason
+				dataSource,
+				executionReason
 		);
 		packetListReceiver.receive(Collections.singletonList(packet));
 	}

@@ -1,9 +1,13 @@
 package me.retrodaredevil.solarthing.actions.command;
 
-import me.retrodaredevil.solarthing.type.open.OpenSource;
 import me.retrodaredevil.action.node.environment.InjectEnvironment;
+import me.retrodaredevil.solarthing.reason.ExecutionReason;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 public class EnvironmentUpdaterMultiplexer implements EnvironmentUpdater {
 	private final List<EnvironmentUpdater> environmentUpdaterList;
@@ -16,9 +20,9 @@ public class EnvironmentUpdaterMultiplexer implements EnvironmentUpdater {
 	}
 
 	@Override
-	public void updateInjectEnvironment(OpenSource source, InjectEnvironment.Builder injectEnvironmentBuilder) {
+	public void updateInjectEnvironment(ExecutionReason executionReason, InjectEnvironment.Builder injectEnvironmentBuilder) {
 		for (EnvironmentUpdater environmentUpdater : environmentUpdaterList) {
-			environmentUpdater.updateInjectEnvironment(source, injectEnvironmentBuilder);
+			environmentUpdater.updateInjectEnvironment(executionReason, injectEnvironmentBuilder);
 		}
 	}
 }

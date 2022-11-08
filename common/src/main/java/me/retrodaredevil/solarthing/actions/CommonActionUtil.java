@@ -8,6 +8,7 @@ import me.retrodaredevil.solarthing.actions.command.SendEncryptedActionNode;
 import me.retrodaredevil.solarthing.actions.mate.ACModeActionNode;
 import me.retrodaredevil.solarthing.actions.mate.AuxStateActionNode;
 import me.retrodaredevil.solarthing.actions.mate.FXOperationalModeActionNode;
+import me.retrodaredevil.solarthing.actions.rover.expression.RoverBoostVoltageExpressionNode;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.expression.BatteryVoltageExpressionNode;
 
@@ -34,7 +35,8 @@ public final class CommonActionUtil {
 		objectMapper.registerSubtypes(
 				ExpressionNode.class,
 
-				BatteryVoltageExpressionNode.class
+				BatteryVoltageExpressionNode.class,
+				RoverBoostVoltageExpressionNode.class
 		);
 		return objectMapper;
 	}

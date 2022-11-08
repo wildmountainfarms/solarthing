@@ -3,30 +3,39 @@ package me.retrodaredevil.solarthing.config.options;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 
+import java.io.File;
+import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 
-public abstract class RequestProgramOptionsBase extends PacketHandlingOptionBase implements AnalyticsOption, CommandOption {
+import static java.util.Objects.requireNonNull;
+
+public abstract class RequestProgramOptionsBase extends PacketHandlingOptionBase implements AnalyticsOption, CommandOption, ActionsOption {
 	@JsonProperty(AnalyticsOption.PROPERTY_NAME)
 	private boolean isAnalyticsEnabled = AnalyticsOption.DEFAULT_IS_ANALYTICS_ENABLED;
 
+	// When defined as a Duration, Jackson will parse numbers as second values for the duration
 	@JsonProperty("period")
-	private float periodSeconds = 5.0f;
+	private Duration period = Duration.ofSeconds(5);
 	@JsonProperty("minimum_wait")
-	private float minimumWaitSeconds = 1.0f;
+	private Duration minimumWait = Duration.ofSeconds(1);
 
 	@JsonProperty("commands")
 	private List<CommandConfig> commandConfigs;
+
+	@JsonProperty("actions")
+	private List<File> actionNodeFiles = new ArrayList<>();
 
 	@Override
 	public boolean isAnalyticsOptionEnabled() {
 		return isAnalyticsEnabled;
 	}
 
-	public long getPeriod() {
-		return Math.round(periodSeconds * 1000.0f);
+	public Duration getPeriod() {
+		return requireNonNull(period);
 	}
-	public long getMinimumWait() {
-		return Math.round(minimumWaitSeconds * 1000.0f);
+	public Duration getMinimumWait() {
+		return requireNonNull(minimumWait);
 	}
 
 	@Override
@@ -34,4 +43,8 @@ public abstract class RequestProgramOptionsBase extends PacketHandlingOptionBase
 		return commandConfigs;
 	}
 
+	@Override
+	public List<File> getActionNodeFiles() {
+		return requireNonNull(actionNodeFiles, "You cannot use a null value for the actions property! Use an empty array or leave it undefined.");
+	}
 }

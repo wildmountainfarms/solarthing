@@ -15,6 +15,8 @@ public final class ProductModelUtil {
 	RNG-CTRL-WND10   - Renogy Wanderer 10A (but apparently getRatedChargingCurrentValue() returns 20)
 	RNG-CTRL-RVR30   - Renogy Rover 30A
 	RNG-CTRL-WND30   - Renogy Wanderer 30A
+	RNG-CTRL-RVR40   - Renogy Rover 40A (negative ground)
+	RNG-CTRL-ROVER60 - Renogy Rover 60A (negative ground)
 	 */
 
 	public static boolean isRoverElite(String productModel){
