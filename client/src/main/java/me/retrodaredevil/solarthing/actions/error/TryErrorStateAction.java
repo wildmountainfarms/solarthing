@@ -54,4 +54,3 @@ public class TryErrorStateAction extends SimpleAction implements LinkedAction {
 		return nextAction;
 	}
 }
-
