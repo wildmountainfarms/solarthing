@@ -50,7 +50,6 @@ import me.retrodaredevil.solarthing.program.receiver.RequestHeartbeatReceiver;
 import me.retrodaredevil.solarthing.reason.ExecutionReason;
 import me.retrodaredevil.solarthing.reason.OpenSourceExecutionReason;
 import me.retrodaredevil.solarthing.reason.PacketCollectionExecutionReason;
-import me.retrodaredevil.solarthing.type.open.OpenSource;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import me.retrodaredevil.solarthing.util.frequency.FrequentHandler;
 import okhttp3.MediaType;
