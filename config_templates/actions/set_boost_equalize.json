@@ -1,10 +1,9 @@
 {
   "type": "rover-modbus",
-  "number": 1,
   "actions": [{
     "type": "roverboostset",
-    "voltageraw": 151,
-    "minutes": 120
+    "voltageraw": 152,
+    "minutes": 130
   }]
 }
 

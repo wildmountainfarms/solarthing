@@ -11,6 +11,7 @@ import me.retrodaredevil.solarthing.actions.mate.FXOperationalModeActionNode;
 import me.retrodaredevil.solarthing.actions.rover.expression.RoverBoostVoltageExpressionNode;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.expression.BatteryVoltageExpressionNode;
+import me.retrodaredevil.solarthing.expression.NetChargeExpressionNode;
 
 @UtilityClass
 public final class CommonActionUtil {
@@ -36,6 +37,7 @@ public final class CommonActionUtil {
 				ExpressionNode.class,
 
 				BatteryVoltageExpressionNode.class,
+				NetChargeExpressionNode.class,
 				RoverBoostVoltageExpressionNode.class
 		);
 		return objectMapper;

@@ -186,9 +186,8 @@ public class PacketHandlerInit {
 					actionNodeMap,
 					(executionReason, injectEnvironmentBuilder) -> {
 						if (!(executionReason instanceof OpenSourceExecutionReason)) {
-							throw new IllegalStateException("When receiving data from ActionNodeDataReceiver, we expect to get an OpenSourceExecutionReason");
+							LOGGER.warn("We usually expect the execution reason to be an OpenSourceExecutionReason. If the program logic has changed, remove this log message!");
 						}
-						OpenSource source = ((OpenSourceExecutionReason) executionReason).getSource();
 						injectEnvironmentBuilder
 								.add(new NanoTimeProviderEnvironment(NanoTimeProvider.SYSTEM_NANO_TIME))
 								.add(new TimeZoneEnvironment(options.getZoneId()))

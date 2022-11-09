@@ -1,4 +1,7 @@
 {
-  "type": "roverload",
-  "on": true
+  "type": "rover-modbus",
+  "actions": [{
+    "type": "roverload",
+    "on": true
+  }]
 }

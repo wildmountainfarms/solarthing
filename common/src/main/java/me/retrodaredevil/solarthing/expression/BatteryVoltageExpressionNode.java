@@ -6,7 +6,9 @@ import me.retrodaredevil.action.node.expression.NumericExpression;
 import me.retrodaredevil.action.node.expression.node.NumericExpressionNode;
 import me.retrodaredevil.action.node.expression.result.NumericExpressionResult;
 import me.retrodaredevil.solarthing.FragmentedPacketGroupProvider;
+import me.retrodaredevil.solarthing.PacketGroupProvider;
 import me.retrodaredevil.solarthing.actions.environment.LatestFragmentedPacketGroupEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnvironment;
 import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
 
 import java.util.stream.Collectors;
@@ -15,8 +17,8 @@ import java.util.stream.Collectors;
 public class BatteryVoltageExpressionNode implements NumericExpressionNode {
 	@Override
 	public NumericExpression createExpression(ActionEnvironment actionEnvironment) {
-		LatestFragmentedPacketGroupEnvironment latestFragmentedPacketGroupEnvironment = actionEnvironment.getInjectEnvironment().get(LatestFragmentedPacketGroupEnvironment.class);
-		FragmentedPacketGroupProvider provider = latestFragmentedPacketGroupEnvironment.getFragmentedPacketGroupProvider();
+		LatestPacketGroupEnvironment latestFragmentedPacketGroupEnvironment = actionEnvironment.getInjectEnvironment().get(LatestPacketGroupEnvironment.class);
+		PacketGroupProvider provider = latestFragmentedPacketGroupEnvironment.getPacketGroupProvider();
 
 		return () -> provider.getPacketGroup().getPackets().stream()
 				.filter(packet -> packet instanceof BatteryVoltage)

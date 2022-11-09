@@ -104,12 +104,8 @@ and also react to messages that have been fully processed (request successfully 
     * Predicted net load average of next X duration is at or above Y
       * Will predict load using data from past week
       * Will predict charge using solcast
-* Add this to web: https://github.com/IvanGoncharov/graphql-voyager
 * Created a "program2" directory that allows for an easier creation of custom directories
 * Change floats to BigDecimals
-* Create a custom type recognizable by some custom jackson serializer.
-  * The type can be something like AnnotatedList<SomeObject> and will allow strings
-  above the object in the json array
 * Some sort of (integration) test that tests the functioning of a request or mate program
 * Add a method to ActionNode that allows a user friendly reporting of why a given action node
   may not be supported with the configuration or type of program being ran.
@@ -186,6 +182,7 @@ easy displaying in Grafana
 * Make monitor-service only start after WiFi has kicked in
 * Use https://github.com/tbroyer/gradle-errorprone-plugin
 * Add info about the state of CouchDB on the home page of SolarThing web
+* Add this to web: https://github.com/IvanGoncharov/graphql-voyager
 
 ### Look into
 * Look into supporting Elasticsearch, MongoDB, Graphite

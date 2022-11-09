@@ -1,21 +1,29 @@
 {
   "type": "declaration",
   "main": {
+    "type": "withlock",
+    "name": "low_battery_alert",
+    "action": {
+      "type": "call",
+      "name": "run_check"
+    }
+  },
+  "run_check": {
     "type": "race",
     "racers": [
       [
         {
-          "type": "any",
+          "type": "all",
           "expression": {
             "type": "comparison",
             "lhs": { "type": "battery-voltage" },
-            "operator": "<=",
+            "operator": ">",
             "rhs": { "type": "constant-number", "constant": 22.2 }
           }
         },
-        { "type": "log", "message": "The battery voltage is low" }
+        { "type": "log", "message": "Battery voltage is fine", "debug": true }
       ],
-      [ { "type": "pass" }, { "type": "pass" } ]
+      [ { "type": "wait", "duration": "PT60S" }, { "type": "log", "message": "Hey battery is low", "summary": true } ]
     ]
   }
 }

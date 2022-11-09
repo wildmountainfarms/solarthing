@@ -1,5 +1,8 @@
 {
-  "type": "roverboostset",
-  "voltageraw": 147,
-  "minutes": 90
+  "type": "rover-modbus",
+  "actions": [{
+    "type": "roverboostset",
+    "voltageraw": 148,
+    "minutes": 110
+  }]
 }
