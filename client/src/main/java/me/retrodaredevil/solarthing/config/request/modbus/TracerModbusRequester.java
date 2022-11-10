@@ -62,7 +62,7 @@ public class TracerModbusRequester implements ModbusRequester {
 		this.configurationServerConfig = configurationServerConfig;
 		this.connectionHandlerHasFlushLogic = Boolean.TRUE.equals(connectionHandlerHasFlushLogic);
 		if (attachToCommands != null) {
-			LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Hey! We noticed you are defining 'commands' on this rover modbus requester! Instead, please refer to your specific rover by its number. (" + this.number + " in your case)");
+			LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Hey! We noticed you are defining 'commands' on this tracer modbus requester! Instead, please refer to your specific rover by its number. (" + this.number + " in your case)");
 		}
 		if (number != null) {
 			LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Hey! We noticed you are defining 'number' on this tracer modbus requester! Please don't do that unless you actually need to!!");

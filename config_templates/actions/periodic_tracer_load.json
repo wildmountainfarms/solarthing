@@ -1,0 +1,26 @@
+{
+  "type": "declaration",
+  "main": {
+    "type": "withlock",
+    "name": "periodic_tracer_load",
+    "action": {
+      "type": "call",
+      "name": "run_load"
+    }
+  },
+  "run_load": {
+    "type": "queue",
+    "actions": [
+      {
+        "type": "tracer-modbus",
+        "actions": [
+          { "type": "tracerload", "on": true },
+          { "type": "wait", "duration": "PT3S" },
+          { "type": "tracerload", "on": false }
+        ],
+        "on_error": { "type": "log", "message": "Failed to do one of the tracer commands!" },
+        "on_success": { "type": "wait", "duration": "PT60S" }
+      }
+    ]
+  }
+}

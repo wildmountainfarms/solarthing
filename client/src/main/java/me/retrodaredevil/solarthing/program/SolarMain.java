@@ -167,6 +167,10 @@ public final class SolarMain {
 			if (invalidJar) {
 				LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "We're about to give you an error with some technical stuff, but this error is likely caused by you switching out jar files while SolarThing is running. If it isn't, please report this error.");
 			}
+			boolean uncommonError = t instanceof UnsatisfiedLinkError;
+			if (uncommonError) {
+				LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Got an UnsatisfiedLinkError which is uncommon. If setup correctly, after this crash program will relaunch (hopefully successfully).");
+			}
 			String logMessage = "Ending SolarThing. " + getJarInfo();
 			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "[LOG] " + logMessage);
 			System.out.println("[stdout] " + logMessage);
@@ -176,7 +180,13 @@ public final class SolarMain {
 			LogManager.shutdown(); // makes sure all buffered logs are flushed // this should be done automatically, but we'll do it anyway
 			System.err.println();
 			t.printStackTrace(System.err); // print to stderr just in case logging isn't going well
-			return invalidJar ? SolarThingConstants.EXIT_CODE_RESTART_NEEDED_JAR_UPDATED : SolarThingConstants.EXIT_CODE_CRASH;
+			if (invalidJar) {
+				return SolarThingConstants.EXIT_CODE_RESTART_NEEDED_JAR_UPDATED;
+			}
+			if (uncommonError) {
+				return SolarThingConstants.EXIT_CODE_RESTART_NEEDED_UNCOMMON_ERROR;
+			}
+			return SolarThingConstants.EXIT_CODE_CRASH;
 		}
 	}
 

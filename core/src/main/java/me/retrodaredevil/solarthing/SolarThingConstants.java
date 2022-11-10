@@ -58,9 +58,8 @@ public final class SolarThingConstants {
 
 	/** The exit code that is used when SolarThing crashes because of a {@link NoClassDefFoundError} */
 	public static final int EXIT_CODE_RESTART_NEEDED_JAR_UPDATED = 210;
-	/** Not used yet but we have this defined in solarthing.service.template */
-	@Deprecated
-	public static final int EXIT_CODE_RESTART_NEEDED_UNUSED_1 = 211;
+	/** Used for errors that are uncommon and that are typically fixed by relaunching. These errors are typically erorrs that occur during startup of SolarThing*/
+	public static final int EXIT_CODE_RESTART_NEEDED_UNCOMMON_ERROR = 211;
 	/** Not used yet but we have this defined in solarthing.service.template */
 	@Deprecated
 	public static final int EXIT_CODE_RESTART_NEEDED_UNUSED_2 = 212;
