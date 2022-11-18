@@ -17,7 +17,6 @@ import me.retrodaredevil.solarthing.type.cache.packets.data.BatteryRecordDataCac
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
