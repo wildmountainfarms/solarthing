@@ -183,7 +183,9 @@ public class SolarThingGraphQLService {
 		}
 		@GraphQLQuery
 		public @NotNull List<@NotNull PacketNode<TemperaturePacket>> temperature() {
-			return packetGetter.getPackets(TemperaturePacket.class);
+			List<PacketNode<TemperaturePacket>> packetNodes = packetGetter.getPackets(TemperaturePacket.class);
+			packetNodes.removeIf(node -> TemperaturePacket.POSSIBLE_BAD_VALUES.contains(node.getPacket().getTemperatureCelsius()));
+			return packetNodes;
 		}
 		@GraphQLQuery
 		public @NotNull List<@NotNull PacketNode<PzemShuntStatusPacket>> pzemShuntStatus() {

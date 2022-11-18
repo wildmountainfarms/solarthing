@@ -17,6 +17,7 @@ import me.retrodaredevil.solarthing.type.cache.packets.data.BatteryRecordDataCac
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,21 +60,27 @@ public class SolarThingGraphQLBatteryRecordService {
 					if (record != null) {
 						double voltHours = record.getBatteryVoltageHours();
 						double hours = record.getKnownDurationMillis() / (1000.0 * 60 * 60);
-						double average = voltHours / hours; // integral over interval BAAYYBEEEEE
+						if (hours > 0.0) {
+							double average = voltHours / hours; // integral over interval BAAYYBEEEEE
+							if (!Double.isFinite(average)) {
+								// This should never happen (after adding hours > 0.0), but we'll keep it anyway
+								throw new IllegalStateException("Bad record values! identifier: " + batteryRecord.getIdentifier() + " voltHours: " + voltHours + " hours: " + hours);
+							}
 
-						SourceIdentifierFragment sourceIdentifierFragment = SourceIdentifierFragment.create(sourceId, node.getFragmentId(), batteryRecord.getIdentifier());
-						Identifiable identifiable = packetFinder.findPacket(sourceIdentifierFragment.getIdentifierFragment(), cache.getPeriodStartDateMillis(), cache.getPeriodEndDateMillis());
+							SourceIdentifierFragment sourceIdentifierFragment = SourceIdentifierFragment.create(sourceId, node.getFragmentId(), batteryRecord.getIdentifier());
+							Identifiable identifiable = packetFinder.findPacket(sourceIdentifierFragment.getIdentifierFragment(), cache.getPeriodStartDateMillis(), cache.getPeriodEndDateMillis());
 
-						if (identifiable != null) {
-							r.add(new DataNode<>(
-									average,
-									identifiable,
-									midpointMillis,
-									sourceId,
-									node.getFragmentId()
-							));
-						} else {
-							LOGGER.warn("Could not find identifiable for " + sourceIdentifierFragment);
+							if (identifiable != null) {
+								r.add(new DataNode<>(
+										average,
+										identifiable,
+										midpointMillis,
+										sourceId,
+										node.getFragmentId()
+								));
+							} else {
+								LOGGER.warn("Could not find identifiable for " + sourceIdentifierFragment);
+							}
 						}
 					}
 				}
