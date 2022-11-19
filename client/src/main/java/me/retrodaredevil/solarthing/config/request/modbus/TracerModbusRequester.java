@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.io.modbus.ModbusSlave;
 import me.retrodaredevil.io.serial.SerialConfig;
 import me.retrodaredevil.solarthing.SolarThingConstants;
-import me.retrodaredevil.solarthing.actions.command.EnvironmentUpdaterMultiplexer;
 import me.retrodaredevil.solarthing.actions.environment.MultiTracerModbusEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.TracerModbusEnvironment;
 import me.retrodaredevil.solarthing.config.netcat.NetCatConfig;
@@ -27,9 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @JsonTypeName("tracer")
@@ -38,7 +35,6 @@ public class TracerModbusRequester implements ModbusRequester {
 
 	private final boolean sendErrorPackets;
 	private final boolean bulkRequest;
-	private final List<String> attachToCommands;
 	private final int number;
 	private final TracerClockOptions tracerClockOptions;
 	private final NetCatConfig configurationServerConfig;
@@ -48,7 +44,6 @@ public class TracerModbusRequester implements ModbusRequester {
 	public TracerModbusRequester(
 			@JsonProperty("error_packets") Boolean sendErrorPackets,
 			@JsonProperty("bulk_request") Boolean bulkRequest,
-			@JsonProperty("commands") List<String> attachToCommands,
 			@JsonProperty("number") Integer number,
 			@JsonProperty("clock") TracerClockOptions tracerClockOptions,
 			@JsonProperty("server") NetCatConfig configurationServerConfig,
@@ -56,14 +51,10 @@ public class TracerModbusRequester implements ModbusRequester {
 	) {
 		this.sendErrorPackets = Boolean.TRUE.equals(sendErrorPackets); // default false
 		this.bulkRequest = !Boolean.FALSE.equals(bulkRequest); // default true
-		this.attachToCommands = attachToCommands == null ? Collections.emptyList() : attachToCommands;
 		this.number = number == null ? NumberedIdentifier.DEFAULT_NUMBER : number;
 		this.tracerClockOptions = tracerClockOptions;
 		this.configurationServerConfig = configurationServerConfig;
 		this.connectionHandlerHasFlushLogic = Boolean.TRUE.equals(connectionHandlerHasFlushLogic);
-		if (attachToCommands != null) {
-			LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Hey! We noticed you are defining 'commands' on this tracer modbus requester! Instead, please refer to your specific rover by its number. (" + this.number + " in your case)");
-		}
 		if (number != null) {
 			LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Hey! We noticed you are defining 'number' on this tracer modbus requester! Please don't do that unless you actually need to!!");
 		}
@@ -129,11 +120,8 @@ public class TracerModbusRequester implements ModbusRequester {
 		return DataRequesterResult.builder()
 				.statusPacketListReceiver(new ModbusListUpdaterWrapper(ModbusListUpdaterWrapper.LogType.TRACER, new TracerPacketListUpdater(number, read, write, tracerClockOptions, netCatServerHandler == null ? null : new ConnectionHandler(netCatServerHandler), connectionHandlerHasFlushLogic), reloadCache, successReporter, sendErrorPackets, "tracer.error." + number))
 				.environmentUpdater(
-						new EnvironmentUpdaterMultiplexer(
-								new AttachToCommandEnvironmentUpdater(Collections.singletonList(tracerModbusEnvironment), attachToCommands::contains),
-								(_executionReason, injectEnvironmentBuilder) ->
-										injectEnvironmentBuilder.update(MultiTracerModbusEnvironment.class, multiTracerModbusEnvironment -> multiTracerModbusEnvironment.plus(multiTracerModbusEnvironmentToAdd), MultiTracerModbusEnvironment::new)
-						)
+						(_executionReason, injectEnvironmentBuilder) ->
+								injectEnvironmentBuilder.update(MultiTracerModbusEnvironment.class, multiTracerModbusEnvironment -> multiTracerModbusEnvironment.plus(multiTracerModbusEnvironmentToAdd), MultiTracerModbusEnvironment::new)
 				)
 				.build();
 

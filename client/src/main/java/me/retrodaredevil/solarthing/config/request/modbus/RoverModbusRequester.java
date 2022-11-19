@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.io.modbus.ModbusSlave;
 import me.retrodaredevil.io.serial.SerialConfig;
 import me.retrodaredevil.solarthing.SolarThingConstants;
-import me.retrodaredevil.solarthing.actions.command.EnvironmentUpdaterMultiplexer;
 import me.retrodaredevil.solarthing.actions.environment.MultiRoverModbusEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.RoverModbusEnvironment;
 import me.retrodaredevil.solarthing.config.netcat.NetCatConfig;
@@ -26,9 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @JsonTypeName("rover")
@@ -36,7 +33,6 @@ public class RoverModbusRequester implements ModbusRequester {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RoverModbusRequester.class);
 	private final boolean sendErrorPackets;
 	private final boolean bulkRequest;
-	private final List<String> attachToCommands;
 	private final int number;
 	private final NetCatConfig configurationServerConfig;
 
@@ -44,17 +40,12 @@ public class RoverModbusRequester implements ModbusRequester {
 	public RoverModbusRequester(
 			@JsonProperty("error_packets") Boolean sendErrorPackets,
 			@JsonProperty("bulk_request") Boolean bulkRequest,
-			@JsonProperty("commands") List<String> attachToCommands,
 			@JsonProperty("number") Integer number,
 			@JsonProperty("server") NetCatConfig configurationServerConfig) {
 		this.sendErrorPackets = Boolean.TRUE.equals(sendErrorPackets); // default false
 		this.bulkRequest = !Boolean.FALSE.equals(bulkRequest); // default true
-		this.attachToCommands = attachToCommands == null ? Collections.emptyList() : attachToCommands;
 		this.number = number == null ? NumberedIdentifier.DEFAULT_NUMBER : number;
 		this.configurationServerConfig = configurationServerConfig;
-		if (attachToCommands != null) {
-			LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Hey! We noticed you are defining 'commands' on this rover modbus requester! Instead, please refer to your specific rover by its number. (" + this.number + " in your case)");
-		}
 		if (number != null) {
 			LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Hey! We noticed you are defining 'number' on this rover modbus requester! Please don't do that unless you actually need to!!");
 		}
@@ -111,11 +102,8 @@ public class RoverModbusRequester implements ModbusRequester {
 		return DataRequesterResult.builder()
 				.statusPacketListReceiver(new ModbusListUpdaterWrapper(ModbusListUpdaterWrapper.LogType.ROVER, new RoverPacketListUpdater(number, read, write, netCatServerHandler == null ? null : new ConnectionHandler(netCatServerHandler)), reloadCache, successReporter, sendErrorPackets, "rover.error." + number))
 				.environmentUpdater(
-						new EnvironmentUpdaterMultiplexer(
-								new AttachToCommandEnvironmentUpdater(Collections.singletonList(roverModbusEnvironment), attachToCommands::contains),
-								(_executionReason, injectEnvironmentBuilder) ->
-										injectEnvironmentBuilder.update(MultiRoverModbusEnvironment.class, multiRoverModbusEnvironment -> multiRoverModbusEnvironment.plus(multiRoverModbusEnvironmentToAdd), MultiRoverModbusEnvironment::new)
-						)
+						(_executionReason, injectEnvironmentBuilder) ->
+								injectEnvironmentBuilder.update(MultiRoverModbusEnvironment.class, multiRoverModbusEnvironment -> multiRoverModbusEnvironment.plus(multiRoverModbusEnvironmentToAdd), MultiRoverModbusEnvironment::new)
 				).build();
 	}
 }

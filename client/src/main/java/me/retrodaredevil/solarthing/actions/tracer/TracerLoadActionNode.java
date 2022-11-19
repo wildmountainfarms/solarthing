@@ -5,11 +5,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.Actions;
-import me.retrodaredevil.io.modbus.ModbusRuntimeException;
-import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
+import me.retrodaredevil.io.modbus.ModbusRuntimeException;
+import me.retrodaredevil.solarthing.actions.environment.TracerErrorEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.TracerModbusEnvironment;
+import me.retrodaredevil.solarthing.actions.error.ActionErrorState;
 import me.retrodaredevil.solarthing.solar.tracer.TracerWriteTable;
 import me.retrodaredevil.solarthing.solar.tracer.mode.LoadControlMode;
 import org.slf4j.Logger;
@@ -29,14 +30,20 @@ public class TracerLoadActionNode implements ActionNode {
 	@Override
 	public Action createAction(ActionEnvironment actionEnvironment) {
 		TracerModbusEnvironment tracerModbusEnvironment = actionEnvironment.getInjectEnvironment().get(TracerModbusEnvironment.class);
+		TracerErrorEnvironment errorEnvironment = actionEnvironment.getInjectEnvironment().get(TracerErrorEnvironment.class);
+
 		TracerWriteTable write = tracerModbusEnvironment.getWrite();
+		ActionErrorState errorState = errorEnvironment.getTracerActionErrorState();
+
 		return Actions.createRunOnce(() -> {
 			try {
 				write.setLoadControlMode(LoadControlMode.MANUAL_CONTROL);
 				write.setManualLoadControlOn(on);
-				LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Successfully executed tracer load command. on: " + on);
+				LOGGER.info("Successfully executed tracer load command. on: " + on);
+				errorState.incrementSuccessCount();
 			} catch (ModbusRuntimeException e) {
 				LOGGER.error("Unable to perform tracer write Modbus request", e);
+				errorState.incrementErrorCount();
 			}
 		});
 	}

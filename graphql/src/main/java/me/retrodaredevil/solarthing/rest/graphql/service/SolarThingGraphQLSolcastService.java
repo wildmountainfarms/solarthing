@@ -74,6 +74,8 @@ public class SolarThingGraphQLSolcastService {
 			@GraphQLArgument(name = "sourceId") @NotNull String sourceId){
 		SolcastHandler handler = sourceHandlerMap.get(sourceId);
 		if (handler == null) {
+			// TODO consider if there's a better way to indicate that the given source is not supported
+			// This seemed fine at first, but the graphql-datasource doesn't like it when it cannot find the full data path, and returning null here prevents the full path from being visible
 			return null;
 		}
 		return new SolarThingSolcastQuery(handler, from, to, zoneId);

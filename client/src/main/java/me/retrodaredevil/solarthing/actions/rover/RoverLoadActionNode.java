@@ -5,10 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.Actions;
-import me.retrodaredevil.io.modbus.ModbusRuntimeException;
-import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
+import me.retrodaredevil.io.modbus.ModbusRuntimeException;
 import me.retrodaredevil.solarthing.actions.environment.RoverErrorEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.RoverModbusEnvironment;
 import me.retrodaredevil.solarthing.actions.error.ActionErrorState;
@@ -39,7 +38,7 @@ public class RoverLoadActionNode implements ActionNode {
 			try {
 				write.setLoadWorkingMode(LoadWorkingMode.MANUAL);
 				write.setStreetLightStatus(on ? StreetLight.ON : StreetLight.OFF);
-				LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Successfully executed load command. on: " + on);
+				LOGGER.info("Successfully executed load command. on: " + on);
 				errorState.incrementSuccessCount();
 			} catch (ModbusRuntimeException e) {
 				LOGGER.error("Unable to perform Modbus request", e);
