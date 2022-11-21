@@ -105,6 +105,10 @@ and also react to messages that have been fully processed (request successfully 
       * Will predict load using data from past week
       * Will predict charge using solcast
 * Created a "program2" directory that allows for an easier creation of custom directories
+  * Instead, create new repository called solarthing-config
+    * Contains directories: `scripts`, `bin`, `downloads`, `configs`.
+    * `configs` has the layout `configs/<hostname>/<solarthing|server>/<program name>/base.json
+    * `scripts` has `create_solarthing.sh <program name>` and `create_server.sh <program name>`.
 * Change floats to BigDecimals
 * Some sort of (integration) test that tests the functioning of a request or mate program
 * Add a method to ActionNode that allows a user friendly reporting of why a given action node

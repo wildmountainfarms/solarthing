@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" packages="me.retrodaredevil.solarthing.log,biz.paluch.logging.gelf.log4j2">
+    <Properties>
+        <Property name="logPath">logs</Property>
+        <Property name="LOG_PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</Property>
+        <Property name="filePermissions">rw-rw-r--</Property>
+        <Property name="applicationName">Request Program</Property>
+        <Property name="gelfHost">udp:localhost</Property>
+        <Property name="gelfPort">12201</Property>
+    </Properties>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <MarkerFilter marker="NO_CONSOLE" onMatch="DENY" onMismatch="NEUTRAL"/>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </Console>
+        <RollingFile name="logAll" fileName="${logPath}/log_debug.log" filePattern="${logPath}/log_debug_%d{yyyy.MM.dd}-%i.log.gz"
+                     immediateFlush="false" bufferSize="16384" filePermissions="${filePermissions}">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <OnStartupTriggeringPolicy />
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="3GB" />
+            </Policies>
+            <DefaultRolloverStrategy max="1">
+                <Delete basePath="${logPath}" maxDepth="1">
+                    <IfFileName glob="log_debug_*.log.gz" />
+                    <IfLastModified age="14d" />
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+
+        <!-- https://github.com/mp911de/logstash-gelf/#log4j2 -->
+        <Gelf name="gelf" host="${gelfHost}" port="${gelfPort}" version="1.1" extractStackTrace="true"
+              filterStackTrace="true" mdcProfiling="true" includeFullMdc="true" maximumMessageSize="8192"
+              originHost="%host{fqdn}" additionalFieldTypes="application=String">
+            <Field name="timestamp" pattern="%d{dd MMM yyyy HH:mm:ss,SSS}" />
+            <Field name="level" pattern="%level" />
+            <Field name="simpleClassName" pattern="%C{1}" />
+            <Field name="className" pattern="%C" />
+            <Field name="server" pattern="%host" />
+            <Field name="server.fqdn" pattern="%host{fqdn}" />
+            <Field name="marker" pattern="%marker" />
+            <Field name="application" literal="${applicationName}" />
+        </Gelf>
+
+        <RollingFile name="logSummary" fileName="${logPath}/log_summary.log" filePattern="${logPath}/log_summary_%d{yyyy.MM.dd}-%i.log.gz"
+                     filePermissions="${filePermissions}">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <MarkerFilter marker="SUMMARY" onMatch="ACCEPT" onMismatch="DENY"/>
+            <Policies>
+                <OnStartupTriggeringPolicy />
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="3GB" />
+            </Policies>
+            <DefaultRolloverStrategy>
+                <Delete basePath="${logPath}" maxDepth="1">
+                    <IfFileName glob="log_summary_*.log.gz" />
+                    <IfLastModified age="400d" />
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Root level="DEBUG" >
+            <AppenderRef ref="Console" level="DEBUG"/>
+        </Root>
+        <Logger name="me.retrodaredevil.solarthing">
+            <AppenderRef ref="logAll" level="DEBUG"/>
+            <AppenderRef ref="gelf" level="DEBUG"/>
+            <AppenderRef ref="logSummary" level="DEBUG"/> <!-- We can allow debugs to go through because it will filter for explicit SUMMARY marker -->
+        </Logger>
+        <Logger name="org.ektorp" level="INFO">
+            <AppenderRef ref="logAll"/>
+        </Logger>
+        <Logger name="org.apache.http" level="INFO">
+            <AppenderRef ref="logAll"/>
+        </Logger>
+        <Logger name="org.influxdb" level="INFO">
+            <AppenderRef ref="logAll"/>
+        </Logger>
+        <Logger name="com.slack.api" level="INFO">
+            <AppenderRef ref="logAll"/>
+        </Logger>
+    </Loggers>
+</Configuration>
