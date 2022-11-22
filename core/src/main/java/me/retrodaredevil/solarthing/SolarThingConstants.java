@@ -29,6 +29,12 @@ public final class SolarThingConstants {
 	 */
 	public static final Marker NO_CONSOLE = MarkerFactory.getMarker("NO_CONSOLE");
 
+	/**
+	 * This can be used to stop certain messages from being logged to GELF.
+	 * This is useful when you want to give information to the average user, but don't want to pollute remote logs.
+	 */
+	public static final Marker NO_REMOTE = MarkerFactory.getMarker("NO_REMOTE");
+
 
 	/** Duration for how long to query back in time to get only the latest packets*/
 	public static final Duration LATEST_PACKETS_DURATION = Duration.ofMinutes(12);

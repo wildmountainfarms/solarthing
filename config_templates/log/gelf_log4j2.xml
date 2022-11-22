@@ -32,15 +32,21 @@
         <!-- https://github.com/mp911de/logstash-gelf/#log4j2 -->
         <Gelf name="gelf" host="${gelfHost}" port="${gelfPort}" version="1.1" extractStackTrace="true"
               filterStackTrace="true" mdcProfiling="true" includeFullMdc="true" maximumMessageSize="8192"
-              originHost="%host{fqdn}" additionalFieldTypes="application=String">
+              originHost="%host{fqdn}"
+              additionalFieldTypes="application=String,marker=String,threadName=String,levelName=String">
+            <MarkerFilter marker="NO_REMOTE" onMatch="DENY" onMismatch="NEUTRAL"/>
+
             <Field name="timestamp" pattern="%d{dd MMM yyyy HH:mm:ss,SSS}" />
             <Field name="level" pattern="%level" />
             <Field name="simpleClassName" pattern="%C{1}" />
             <Field name="className" pattern="%C" />
             <Field name="server" pattern="%host" />
             <Field name="server.fqdn" pattern="%host{fqdn}" />
-            <Field name="marker" pattern="%marker" />
+
             <Field name="application" literal="${applicationName}" />
+            <Field name="marker" pattern="%marker" />
+            <Field name="threadName" pattern="%t" />
+            <Field name="levelName" pattern="%-5level" />
         </Gelf>
 
         <RollingFile name="logSummary" fileName="${logPath}/log_summary.log" filePattern="${logPath}/log_summary_%d{yyyy.MM.dd}-%i.log.gz"

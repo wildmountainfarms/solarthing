@@ -26,8 +26,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @JsonTypeName("tracer")
 public class TracerModbusRequester implements ModbusRequester {
@@ -39,6 +42,7 @@ public class TracerModbusRequester implements ModbusRequester {
 	private final TracerClockOptions tracerClockOptions;
 	private final NetCatConfig configurationServerConfig;
 	private final boolean connectionHandlerHasFlushLogic;
+	private final Set<ModbusListUpdaterWrapper.Feature> extraFeatures;
 
 	@JsonCreator
 	public TracerModbusRequester(
@@ -47,7 +51,8 @@ public class TracerModbusRequester implements ModbusRequester {
 			@JsonProperty("number") Integer number,
 			@JsonProperty("clock") TracerClockOptions tracerClockOptions,
 			@JsonProperty("server") NetCatConfig configurationServerConfig,
-			@JsonProperty("connectionHandlerHasFlushLogic") Boolean connectionHandlerHasFlushLogic
+			@JsonProperty("connectionHandlerHasFlushLogic") Boolean connectionHandlerHasFlushLogic,
+			@JsonProperty("features") Set<ModbusListUpdaterWrapper.Feature> extraFeatures
 	) {
 		this.sendErrorPackets = Boolean.TRUE.equals(sendErrorPackets); // default false
 		this.bulkRequest = !Boolean.FALSE.equals(bulkRequest); // default true
@@ -55,6 +60,7 @@ public class TracerModbusRequester implements ModbusRequester {
 		this.tracerClockOptions = tracerClockOptions;
 		this.configurationServerConfig = configurationServerConfig;
 		this.connectionHandlerHasFlushLogic = Boolean.TRUE.equals(connectionHandlerHasFlushLogic);
+		this.extraFeatures = extraFeatures == null ? Collections.emptySet() : EnumSet.copyOf(extraFeatures);
 		if (number != null) {
 			LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Hey! We noticed you are defining 'number' on this tracer modbus requester! Please don't do that unless you actually need to!!");
 		}
@@ -118,7 +124,7 @@ public class TracerModbusRequester implements ModbusRequester {
 			multiTracerModbusEnvironmentToAdd = new MultiTracerModbusEnvironment(map);
 		}
 		return DataRequesterResult.builder()
-				.statusPacketListReceiver(new ModbusListUpdaterWrapper(ModbusListUpdaterWrapper.LogType.TRACER, new TracerPacketListUpdater(number, read, write, tracerClockOptions, netCatServerHandler == null ? null : new ConnectionHandler(netCatServerHandler), connectionHandlerHasFlushLogic), reloadCache, successReporter, sendErrorPackets, "tracer.error." + number))
+				.statusPacketListReceiver(new ModbusListUpdaterWrapper(ModbusListUpdaterWrapper.LogType.TRACER, new TracerPacketListUpdater(number, read, write, tracerClockOptions, netCatServerHandler == null ? null : new ConnectionHandler(netCatServerHandler), connectionHandlerHasFlushLogic), reloadCache, successReporter, sendErrorPackets, "tracer.error." + number, extraFeatures))
 				.environmentUpdater(
 						(_executionReason, injectEnvironmentBuilder) ->
 								injectEnvironmentBuilder.update(MultiTracerModbusEnvironment.class, multiTracerModbusEnvironment -> multiTracerModbusEnvironment.plus(multiTracerModbusEnvironmentToAdd), MultiTracerModbusEnvironment::new)

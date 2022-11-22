@@ -57,7 +57,7 @@ public final class PacketListReceiverHandlerBundle {
 							try {
 								LOGGER.debug(SolarThingConstants.NO_CONSOLE, MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(packets));
 							} catch (JsonProcessingException e) {
-								LOGGER.debug("Never mind about that...", e);
+								LOGGER.debug("Could not serialize packets to debug...", e);
 							}
 						}
 				),
@@ -74,11 +74,11 @@ public final class PacketListReceiverHandlerBundle {
 				new PacketListReceiverMultiplexer(
 						sourceAndFragmentUpdater,
 						(packets) -> {
-							LOGGER.debug("Debugging all packets");
+							LOGGER.debug(SolarThingConstants.NO_REMOTE, "Debugging all packets");
 							try {
-								LOGGER.debug(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(packets));
+								LOGGER.debug(SolarThingConstants.NO_REMOTE, MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(packets));
 							} catch (JsonProcessingException e) {
-								LOGGER.debug("Never mind about that...", e);
+								LOGGER.debug("Could not serialize packets to debug...", e);
 							}
 						}
 				),

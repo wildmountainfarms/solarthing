@@ -11,7 +11,8 @@
       "io": "config/io.json",
       "devices": {
         "1": {
-          "type": "tracer"
+          "type": "tracer",
+          "features": [ "DEBUG_MODBUS_TIMEOUT" ]
         }
       }
     }

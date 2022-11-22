@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Set;
 
 public class ModbusListUpdaterWrapper implements PacketListReceiver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModbusListUpdaterWrapper.class);
@@ -31,15 +32,18 @@ public class ModbusListUpdaterWrapper implements PacketListReceiver {
 	private final boolean isSendErrorPackets;
 	private final String errorIdentifierString;
 
+	private final Set<Feature> extraFeatures;
+
 	private boolean hasBeenSuccessful = false;
 
-	public ModbusListUpdaterWrapper(LogType logType, PacketListReceiver packetListReceiver, Runnable reloadCache, SuccessReporter successReporter, boolean isSendErrorPackets, String errorIdentifierString) {
+	public ModbusListUpdaterWrapper(LogType logType, PacketListReceiver packetListReceiver, Runnable reloadCache, SuccessReporter successReporter, boolean isSendErrorPackets, String errorIdentifierString, Set<Feature> extraFeatures) {
 		this.logType = logType;
 		this.packetListReceiver = packetListReceiver;
 		this.reloadCache = reloadCache;
 		this.successReporter = successReporter;
 		this.isSendErrorPackets = isSendErrorPackets;
 		this.errorIdentifierString = errorIdentifierString;
+		this.extraFeatures = extraFeatures;
 	}
 	private static String dataToSplitHex(byte[] data) {
 		StringBuilder builder = new StringBuilder();
@@ -62,7 +66,6 @@ public class ModbusListUpdaterWrapper implements PacketListReceiver {
 			reloadCache.run();
 			packetListReceiver.receive(packets);
 		} catch(ModbusRuntimeException e){
-			LOGGER.error("Modbus exception", e);
 
 			if (isSendErrorPackets) {
 				LOGGER.debug("Sending error packets");
@@ -81,10 +84,10 @@ public class ModbusListUpdaterWrapper implements PacketListReceiver {
 				isTimeout = true;
 				// These messages will hopefully help people with problems fix it faster.
 				if (hasBeenSuccessful) {
-					LOGGER.info("\n\nHey! We noticed you got a ModbusTimeoutException after getting this to work.\n" +
+					LOGGER.info(SolarThingConstants.NO_REMOTE, "\n\nHey! We noticed you got a ModbusTimeoutException after getting this to work.\n" +
 							"This is likely a fluke and hopefully this message isn't printed a bunch of times. If it is not a fluke, you may want to check your cable.\n");
 				} else {
-					LOGGER.info("\n\nHey! We noticed you got a ModbusTimeoutException.\n" +
+					LOGGER.info(SolarThingConstants.NO_REMOTE, "\n\nHey! We noticed you got a ModbusTimeoutException.\n" +
 							"This is likely a problem with your cable. SolarThing is communicating fine with your serial adapter, but it cannot reach the device.\n" +
 							"Make sure the cable you have has the correct pinout, and feel free to open an issue at https://github.com/wildmountainfarms/solarthing/issues if you need help.\n");
 				}
@@ -112,6 +115,11 @@ public class ModbusListUpdaterWrapper implements PacketListReceiver {
 				byte[] data = ((RawResponseException) e).getRawData();
 				LOGGER.info("Got part of a response back. (Maybe timed out halfway through?) data='" + dataToSplitHex(data) + "' Feel free to open an issue at https://github.com/wildmountainfarms/solarthing/issues/");
 			}
+			if (isTimeout && extraFeatures.contains(Feature.DEBUG_MODBUS_TIMEOUT)) {
+				LOGGER.debug("Modbus exception", e);
+			} else {
+				LOGGER.error("Modbus exception", e);
+			}
 			if (isTimeout) {
 				successReporter.reportTimeout();
 			} else {
@@ -131,5 +139,9 @@ public class ModbusListUpdaterWrapper implements PacketListReceiver {
 	public enum LogType {
 		ROVER,
 		TRACER,
+	}
+	public enum Feature {
+		/** A feature that allows the level of modbus exceptions to be DEBUG only if it was a timeout modbus exception*/
+		DEBUG_MODBUS_TIMEOUT,
 	}
 }
