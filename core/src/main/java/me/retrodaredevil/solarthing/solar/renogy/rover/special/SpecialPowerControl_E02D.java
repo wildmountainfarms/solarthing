@@ -1,12 +1,21 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover.special;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.CodeMode;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.solar.renogy.rover.ChargingMethod;
 
+/**
+ * Represents the special power control values of register 0xE02D.
+ * Can be serialized to JSON, but cannot be deserialized. Serialization should only be used for debugging or for GraphQL schema.
+ * <p>
+ * Although this uses a mix of JsonProperty and GraphQLInclude annotations, it's just to maintain convention and is not for any particular purpose
+ */
 public interface SpecialPowerControl_E02D extends UpperLower16Bit {
 
+	@GraphQLInclude("formattedInfo")
 	default String getFormattedInfo(){
 		return "intelligent power: " + (isIntelligentPowerEnabled() ? "enabled" : "disabled") + "\n" +
 			"each night on: " + (isEachNightOnEnabled() ? "enabled" : "disabled") + "\n" +
@@ -16,20 +25,25 @@ public interface SpecialPowerControl_E02D extends UpperLower16Bit {
 			"system voltage: " + getSystemVoltage().getModeName();
 	}
 
+	@JsonProperty("isIntelligentPowerEnabled")
 	default boolean isIntelligentPowerEnabled(){
 		return (0b10 & getUpper()) != 0;
 	}
 
+	@JsonProperty("isEachNightOnEnabled")
 	default boolean isEachNightOnEnabled(){
 		return (0b1 & getUpper()) != 0;
 	}
 
+	@JsonProperty("batteryTypeValueCode")
 	default int getBatteryTypeValueCode(){
 		return (0b11110000 & getLower()) >>> 4;
 	}
+	@GraphQLInclude("batteryType")
 	default BatteryType getBatteryType(){
 		return Modes.getActiveMode(BatteryType.class, getBatteryTypeValueCode());
 	}
+	@GraphQLInclude("isLithiumBattery")
 	default boolean isLithiumBattery(){
 		switch(getBatteryType()){
 			case LITHIUM: return true;
@@ -40,7 +54,9 @@ public interface SpecialPowerControl_E02D extends UpperLower16Bit {
 	default int getRawChargingMethodValueCode(){
 		return (0b1000 & getLower()) >>> 3; // TODO determine if this is correct and if we need a raw/non-raw getter
 	}
+	@JsonProperty("chargingMethodValueCode")
 	default int getChargingMethodValueCode(){ return ~ChargingMethod_E02D.IGNORED_BITS & getRawChargingMethodValueCode(); }
+	@GraphQLInclude("chargingMethod")
 	default ChargingMethod_E02D getChargingMethod(){
 		return Modes.getActiveMode(ChargingMethod_E02D.class, getChargingMethodValueCode());
 	}
@@ -48,16 +64,20 @@ public interface SpecialPowerControl_E02D extends UpperLower16Bit {
 	/**
 	 * @return true if "no charging below 0C" is enabled, false otherwise
 	 */
+	@JsonProperty("isNoChargingBelow0CEnabled")
 	default boolean isNoChargingBelow0CEnabled(){
 		return (0b100 & getLower()) != 0;
 	}
 
+	@JsonProperty("systemVoltageValueCode")
 	default int getSystemVoltageValueCode(){
 		return 0b11 & getLower();
 	}
+	@GraphQLInclude("systemVoltage")
 	default SystemVoltage getSystemVoltage(){
 		return Modes.getActiveMode(SystemVoltage.class, getSystemVoltageValueCode());
 	}
+	@GraphQLInclude("is24VSystem")
 	default boolean is24VSystem(){
 		return getSystemVoltage() == SystemVoltage.V24;
 	}

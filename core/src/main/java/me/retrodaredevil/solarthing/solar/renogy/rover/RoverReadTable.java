@@ -662,6 +662,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	@JsonProperty("specialPowerControlE021Raw")
 	@RoverOnly
 	int getSpecialPowerControlE021Raw();
+	@GraphQLInclude("specialPowerControlE021")
 	@RoverOnly
 	default SpecialPowerControl_E021 getSpecialPowerControlE021(){ return new ImmutableSpecialPowerControl_E021(getSpecialPowerControlE021Raw()); }
 
@@ -716,6 +717,8 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	@JsonProperty("specialPowerControlE02DRaw")
 	@RoverOnly
 	@Nullable Integer getSpecialPowerControlE02DRaw();
+	@GraphQLInclude("specialPowerControlE02D")
+	@RoverOnly
 	default @Nullable SpecialPowerControl_E02D getSpecialPowerControlE02D(){
 		Integer raw = getSpecialPowerControlE02DRaw();
 		return raw == null ? null : new ImmutableSpecialPowerControl_E02D(raw);
