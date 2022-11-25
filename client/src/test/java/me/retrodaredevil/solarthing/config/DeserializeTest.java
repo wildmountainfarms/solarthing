@@ -204,7 +204,7 @@ public class DeserializeTest {
 			Action action = actionNode.createAction(new ActionEnvironment(new VariableEnvironment(), new VariableEnvironment(), injectEnvironment));
 			action.update();
 			assertFalse(action.isDone());
-			timeReference[0] = timeReference[0].plus(Duration.ofSeconds(30));
+			timeReference[0] = timeReference[0].plus(Duration.ofSeconds(45));
 			action.update();
 			assertFalse(action.isDone());
 

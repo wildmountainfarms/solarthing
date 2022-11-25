@@ -188,6 +188,7 @@ public class SolarThingGraphQLSolcastService {
 				chargeControllerAccumulationCache = Collections.emptyList(); // we have no data for a future date
 				estimatedActuals = handler.cache.getEstimatedActuals(start, end, true);
 				if (estimatedActuals.isEmpty()) {
+					// I have seen this pop up while looking at Grafana. TODO determine what this being thrown means and if this is a bug or not
 					throw new UnexpectedResponseException("Empty result for offset=" + offsetDays + "! This shouldn't happen!");
 				}
 			} else {
