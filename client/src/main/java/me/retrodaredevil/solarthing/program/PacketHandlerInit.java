@@ -41,6 +41,7 @@ import me.retrodaredevil.solarthing.influxdb.infuxdb2.InfluxDb2PacketSaver;
 import me.retrodaredevil.solarthing.influxdb.retention.ConstantRetentionPolicyGetter;
 import me.retrodaredevil.solarthing.influxdb.retention.FrequentRetentionPolicyGetter;
 import me.retrodaredevil.solarthing.mqtt.MqttPacketSaver;
+import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.handling.*;
 import me.retrodaredevil.solarthing.packets.handling.implementations.FileWritePacketHandler;
 import me.retrodaredevil.solarthing.packets.handling.implementations.JacksonStringPacketHandler;
@@ -231,7 +232,12 @@ public class PacketHandlerInit {
 
 		ActionMultiplexer multiplexer = new Actions.ActionMultiplexerBuilder().build();
 
+		PacketCollection[] packetCollectionReference = new PacketCollection[] { null };
+		LatestPacketGroupEnvironment latestPacketGroupEnvironment = new LatestPacketGroupEnvironment(() -> requireNonNull(packetCollectionReference[0], "Using latestPacketGroupEnvironment before initializing packet collection!"));
+
 		return packetCollection -> {
+			packetCollectionReference[0] = packetCollection;
+
 			EnvironmentUpdater environmentUpdater = environmentUpdaterSupplier.get();
 			ExecutionReason executionReason = new PacketCollectionExecutionReason(packetCollection.getDateMillis(), packetCollection.getDbId());
 			InjectEnvironment.Builder injectEnvironmentBuilder = new InjectEnvironment.Builder()
@@ -239,7 +245,7 @@ public class PacketHandlerInit {
 					.add(new NanoTimeProviderEnvironment(NanoTimeProvider.SYSTEM_NANO_TIME))
 					.add(new SourceIdEnvironment(options.getSourceId()))
 					.add(new TimeZoneEnvironment(options.getZoneId()))
-					.add(new LatestPacketGroupEnvironment(() -> packetCollection))
+					.add(latestPacketGroupEnvironment)
 					;
 			environmentUpdater.updateInjectEnvironment(executionReason, injectEnvironmentBuilder);
 			InjectEnvironment injectEnvironment = injectEnvironmentBuilder.build();

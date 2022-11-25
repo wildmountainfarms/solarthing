@@ -6,7 +6,8 @@
     "action": {
       "type": "call",
       "name": "run_check"
-    }
+    },
+    "ontimeout": { "type": "log", "message": "low_battery_alert locked (timer is counting down)", "debug": true }
   },
   "run_check": {
     "type": "race",

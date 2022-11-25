@@ -32,7 +32,7 @@
       "type": "race",
       "racers": [
         [ { "type": "call", "name": "is_aux_off_or_generator_on" }, { "type": "pass" }],
-        [ { "type": "wait", "duration": "PT30S" }, { "type": "call", "name": "send_alert"}]
+        [ { "type": "wait", "duration": "PT45S" }, { "type": "call", "name": "send_alert"}]
       ]
     }
   },
