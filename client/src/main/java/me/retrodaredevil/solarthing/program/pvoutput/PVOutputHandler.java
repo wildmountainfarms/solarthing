@@ -32,6 +32,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 
+import static java.util.Objects.requireNonNull;
+
 public class PVOutputHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PVOutputHandler.class);
 
@@ -70,6 +72,7 @@ public class PVOutputHandler {
 				AccumulationConfig.createDefault(dayStartTimeMillis)
 		);
 		for (Packet packet : latestPacketGroup.getPackets()) {
+			long dateMillis = requireNonNull(latestPacketGroup.getDateMillis(packet), "Implementation of FragmentedPacketGroup did not provide individual dateMillis! type: " + latestPacketGroup.getClass().getName());
 			if (packet instanceof PVCurrentAndVoltage) {
 				int fragmentId = latestPacketGroup.getFragmentId(packet);
 				PVCurrentAndVoltage pvCurrentAndVoltage = (PVCurrentAndVoltage) packet;
@@ -77,6 +80,7 @@ public class PVOutputHandler {
 				if (voltageIdentifierFragmentMatcher.matches(identifierFragment)) {
 					float voltage = pvCurrentAndVoltage.getPVVoltage().floatValue();
 					addStatusParametersBuilder.setVoltage(voltage);
+					LOGGER.debug("[status parameters] added voltage using " + identifierFragment + " from dateMillis: " + dateMillis);
 				}
 			} else if (packet instanceof TemperaturePacket) {
 				int fragmentId = latestPacketGroup.getFragmentId(packet);
@@ -86,8 +90,9 @@ public class PVOutputHandler {
 					float temperatureCelsius = temperaturePacket.getTemperatureCelsius();
 					if (!TemperaturePacket.POSSIBLE_BAD_VALUES.contains(temperatureCelsius)) {
 						addStatusParametersBuilder.setTemperatureCelsius(temperatureCelsius);
+						LOGGER.debug("[status parameters] added temperature using " + identifierFragment + " from dateMillis: " + dateMillis);
 					} else {
-						LOGGER.info("Not setting temperature: " + temperatureCelsius + " because it could be a bad reading");
+						LOGGER.info("[status parameters] Not setting temperature: " + temperatureCelsius + " because it could be a bad reading. From: " + identifierFragment + " from dateMillis: " + dateMillis);
 					}
 				}
 			}

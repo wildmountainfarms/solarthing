@@ -20,7 +20,7 @@ public interface TemperaturePacket extends WeatherPacket, SourcedData {
 	/**
 	 * Represents temperature celsius values that might indicate a bad reading
 	 */
-	Set<Float> POSSIBLE_BAD_VALUES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(0.0f, 25.0f)));
+	Set<Float> POSSIBLE_BAD_VALUES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(0.0f, 24.0f, 25.0f)));
 
 	@DefaultFinal
 	@Override
