@@ -1,0 +1,22 @@
+plugins {
+    id 'java'
+    id 'antlr'
+}
+
+version = '0.0.1-SNAPSHOT'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    antlr 'org.antlr:antlr4:4.11.1' // use ANTLR version 4
+}
+compileJava {
+//    options.compilerArgs << "-XepExcludedPaths:.*/build/generated-src/.*" // for antlr generated folder to remove errorprone warnings from ANTLR
+}
+generateGrammarSource {
+    maxHeapSize = "64m"
+    arguments += [
+            "-visitor", "-long-messages",
+    ]
+}

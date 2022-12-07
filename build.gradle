@@ -125,6 +125,7 @@ subprojects {
     }
     tasks.withType(JavaCompile).configureEach {
         options.errorprone {
+//            disableWarningsInGeneratedCode = true // doesn't seem to work
             disable("MissingSummary") // Our JavaDocs don't need to be perfect
             disable("StringSplitter") // Yes String.split(String) has surprising behavior, but we know how to be careful.
             disable("EqualsGetClass") // Most of the time we prefer that equality checks don't evaluate to true for subclasses
@@ -275,6 +276,19 @@ project(":graphql"){
         api project(":core")
         api project(":common")
         api project(":serviceapi")
+        api project(":action-node")
+        annotationProcessor project(":process-annotations")
+    }
+}
+project(":action-node"){
+    apply plugin: 'java'
+    dependencies {
+        annotationProcessor project(":process-annotations")
+    }
+}
+project(":action-lang"){
+    apply plugin: 'java'
+    dependencies {
         api project(":action-node")
         annotationProcessor project(":process-annotations")
     }
