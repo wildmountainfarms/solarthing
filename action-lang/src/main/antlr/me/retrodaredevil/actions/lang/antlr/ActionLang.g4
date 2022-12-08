@@ -7,87 +7,95 @@ package me.retrodaredevil.actions.lang.antlr;
 }
 
 node
-//    : node_part ('{' node_list '}')? (':' node)? TERMINATOR?
-    : node_part colon simple_argument
-    | node_part
+    : node_part (CURLY_L NEW_LINE* (node (term NEW_LINE* node)* term? NEW_LINE*)? CURLY_R)? (COLON node)? term?
     ;
 
 
 node_part
-    : IDENTIFIER '(' ')'
-    | IDENTIFIER '(' argument_list ','? ')'
-    | IDENTIFIER '(' argument_list ',' named_argument_list ','? ')'
-    | IDENTIFIER '(' named_argument_list ','? ')'
-    | IDENTIFIER ' ' simple_argument
-//    | IDENTIFIER
+    : IDENTIFIER PAREN_L NEW_LINE* PAREN_R
+    | IDENTIFIER PAREN_L NEW_LINE* argument_list NEW_LINE* COMMA? PAREN_R
+    | IDENTIFIER PAREN_L NEW_LINE* argument_list NEW_LINE* COMMA NEW_LINE* named_argument_list NEW_LINE* COMMA? NEW_LINE* PAREN_R
+    | IDENTIFIER PAREN_L NEW_LINE* named_argument_list NEW_LINE* COMMA? NEW_LINE* PAREN_R
+    | IDENTIFIER simple_argument
+    | IDENTIFIER
     ;
-
-//node_list
-//    : ()
-//    | node (TERMINATOR node)* TERMINATOR?
-//    ;
 
 argument_list
-    : argument (',' argument)*
+    : argument (NEW_LINE* COMMA NEW_LINE* argument)*
     ;
 named_argument_list
-    : IDENTIFIER '=' argument (',' IDENTIFIER '=' argument)*
+    : IDENTIFIER EQUAL argument (NEW_LINE* COMMA NEW_LINE* IDENTIFIER EQUAL argument)*
     ;
 
 argument
     : node
-    | simple_argument
+    | number
+    | STRING
+    | BOOLEAN
+    | array
     ;
 simple_argument
-    : text
-    | NUMBER
+    : IDENTIFIER // In this case, an IDENTIFIER should be interpreted as a STRING
+    | STRING
+    | number
     | BOOLEAN
     | array
     ;
 
 array
-    : '[' ']'
-    | '[' argument (',' argument)* ','? ']'
+    : BRACKET_L BRACKET_R
+    | BRACKET_L argument (COMMA argument)* COMMA? BRACKET_R
     ;
 
-text
-    : IDENTIFIER
-    | STRING
+number
+    : DECIMAL
+    | INT
+    | UNSIGNED_INT
     ;
 
-colon : ':';
+term
+    : NEW_LINE
+    | TERMINATOR
+    ;
+
+COLON : ':';
+EQUAL : '=';
+COMMA : ',';
+PAREN_L : '(';
+PAREN_R : ')';
+CURLY_L : '{';
+CURLY_R : '}';
+BRACKET_L : '[';
+BRACKET_R : ']';
 
 IDENTIFIER
-    : [A-Za-z_] [A-Za-z0-9_]*
+    : [A-Za-z_] ('-'? [A-Za-z0-9_])*
     ;
 STRING
-    : '"' (SIMPLE_CHARACTER | ESCAPED_CHARACTER)* '"'
+    : '"' ([ !#-[\]-~] | '\\"')* '"'
     ;
-SIMPLE_CHARACTER
-    : [ !#-[\]-~]
-    ;
-ESCAPED_CHARACTER
-    : '\\"'
-    ;
-UNSIGNED_INT
-    : [0-9]+
+DECIMAL
+    : ('-' | '+')? [0-9]+ ('.' [0-9]+)?
     ;
 INT
-    : ('-' | '+')? UNSIGNED_INT
+    : ('-' | '+') [0-9]+
     ;
-NUMBER
-    : INT ('.' UNSIGNED_INT)?
+UNSIGNED_INT
+    : ('-' | '+') [0-9]+
     ;
 BOOLEAN
     : ('true' | 'false')
     ;
 
-WS
-    : [ \t\r\n]+ -> skip
+NEW_LINE
+    : '\n'
+    | '//' (~'\n')*? '\n' // we need to treat end of line comments as new lines so the above grammar works
     ;
-//TERMINATOR
-//    : [;\n]
-//    ;
-//COMMENT
-//    : '#' ~'\n'*? '\n' -> skip
-//    ;
+
+TERMINATOR
+    : ';'
+    ;
+WS
+//    : [ \t\r\n]+ -> skip
+    : [ \t\r]+ -> skip
+    ;

@@ -1,35 +1,35 @@
 scope : queue {
-  init(myCounter, [ 0 ])
+  init(myCounter, [ 0.0 ])
   init(myText, [ "hello there" ])
-  fun main : withlock("low_battery_alert", call(run_check), ontimeout = log("low_battery_alert locked", debug = true))
+  fun main : withlock("low_battery_alert", call run_check, ontimeout = log("low_battery_alert locked", debug = true))
 
-  # Use the "exp" action to define battery_is_fine
-  #exp battery_is_fine : battery-voltage > 23.0
-  exp battery_is_fine : comparison(battery-voltage, ">", 23.0)  # equivalent to the above
+  // Use the "exp" action to define battery_is_fine
+  //exp battery_is_fine : battery-voltage() > 23.0
+  exp battery_is_fine : comparison(battery-voltage(), ">", 23.0)  // equivalent to the above
   act run_check : race {
-    # We could use battery_is_fine here if we wanted to
-    racer(all(get battery_is_fine) : pass
-    #racer(all(battery-voltage > 23.0) : pass
-    racer(wait(PT120S)) : queue {
+    // We could use battery_is_fine here if we wanted to
+    racer(all(get battery_is_fine)) : pass
+    //racer(all(battery-voltage > 23.0) : pass
+    racer(wait PT120S) : queue {
       log("Battery getting lower", summary = true)
-      wait(PT30M)
+      wait PT30M
     }
   }
 
-  act sin : import("./myMathSin.al")  # myMathSin.al file is only the sin function
-  select(["cos", "tan"]) : import("./myMath.al")  # myMath.al is a scope with many functions.
-  # Select will run the scope and then populate the current scope with "cos" and "tan".
-
+  act sin : import("./myMathSin.al")  // myMathSin.al file is only the sin function
+  select(["cos", "tan"]) : import("./myMath.al")  // myMath.al is a scope with many functions.
+  // Select will run the scope and then populate the current scope with "cos" and "tan".
   act some_random_function : parallel {
-    # parenthesis are not necessary when only a single argument is provided
+    // parenthesis are not necessary when only a single argument is provided
     queue { wait PT5S ; print "5 seconds is up" }
-    queue { wait(PT10S) ; print("10 seconds is up") }
+    queue { wait PT10S ; print("10 seconds is up") }
     queue {
-      set(myCounter, myCounter + 1)  # increments all values in myCounter list
+      // TODO make this parsable
+      //set(myCounter, myCounter + 1)  // increments all values in myCounter list
       print(concat(myText, " how is it going?"))
       scope : queue {
-        # p_ is a convention for variable names that are effectively arguments to a function
-        # In this case, draw_line is essentially a function that does something with two parameters, x and y
+        // p_ is a convention for variable names that are effectively arguments to a function
+        // In this case, draw_line is essentially a function that does something with two parameters, x and y
         init(p_x, [ 0 ])
         init(p_y, [ 0 ])
         call draw_line

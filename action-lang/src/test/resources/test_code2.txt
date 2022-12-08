@@ -1,1 +1,4 @@
-actionName firstArgument : secondAction
+scope : queue {
+  print "Hello there how are you?"
+  log("Cool message", summary = true); call someAction
+}

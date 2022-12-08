@@ -18,7 +18,7 @@ public class ActionLangTest {
 	@Test
 	void testCode() throws IOException {
 		ActionLangLexer lexer = new ActionLangLexer(CharStreams.fromStream(
-				requireNonNull(getClass().getResourceAsStream("/test_code2.txt"), "Expected file to be present!")
+				requireNonNull(getClass().getResourceAsStream("/test_code1.txt"), "Expected file to be present!")
 		));
 		ActionLangParser parser = new ActionLangParser(new CommonTokenStream(lexer));
 
