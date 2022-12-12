@@ -7,7 +7,7 @@ package me.retrodaredevil.actions.lang.antlr;
 }
 
 node
-    : node_part (CURLY_L NEW_LINE* (node (term NEW_LINE* node)* term? NEW_LINE*)? CURLY_R)? (COLON node)? term?
+    : node_part node_list_part? linked_node_part? term?
     ;
 
 
@@ -18,6 +18,12 @@ node_part
     | IDENTIFIER PAREN_L NEW_LINE* named_argument_list NEW_LINE* COMMA? NEW_LINE* PAREN_R
     | IDENTIFIER simple_argument
     | IDENTIFIER
+    ;
+node_list_part
+    : CURLY_L NEW_LINE* (node (term NEW_LINE* node)* term? NEW_LINE*)? CURLY_R
+    ;
+linked_node_part
+    : COLON node
     ;
 
 argument_list
@@ -48,9 +54,7 @@ array
     ;
 
 number
-    : DECIMAL
-    | INT
-    | UNSIGNED_INT
+    : NUMBER
     ;
 
 term
@@ -68,23 +72,18 @@ CURLY_R : '}';
 BRACKET_L : '[';
 BRACKET_R : ']';
 
+BOOLEAN
+    : ('true' | 'false')
+    ;
+
 IDENTIFIER
     : [A-Za-z_] ('-'? [A-Za-z0-9_])*
     ;
 STRING
     : '"' ([ !#-[\]-~] | '\\"')* '"'
     ;
-DECIMAL
-    : ('-' | '+')? [0-9]+ ('.' [0-9]+)?
-    ;
-INT
-    : ('-' | '+') [0-9]+
-    ;
-UNSIGNED_INT
-    : ('-' | '+') [0-9]+
-    ;
-BOOLEAN
-    : ('true' | 'false')
+NUMBER // This isn't the exact regex for JSON numbers, but this regex aims for something like: https://www.json.org/json-en.html
+    : ('-' | '+')? ('0' | [1-9] [0-9]+) ('.' [0-9]+)? ([eE] ('-' | '+')? [0-9]+)?
     ;
 
 NEW_LINE

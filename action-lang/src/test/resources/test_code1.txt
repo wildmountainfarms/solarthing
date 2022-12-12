@@ -4,8 +4,8 @@ scope : queue {
   fun main : withlock("low_battery_alert", call run_check, ontimeout = log("low_battery_alert locked", debug = true))
 
   // Use the "exp" action to define battery_is_fine
-  //exp battery_is_fine : battery-voltage() > 23.0
-  exp battery_is_fine : comparison(battery-voltage(), ">", 23.0)  // equivalent to the above
+  //exp battery_is_fine : battery-voltage > 23.0
+  exp battery_is_fine : comparison(battery-voltage, ">", 23.0)  // equivalent to the above
   act run_check : race {
     // We could use battery_is_fine here if we wanted to
     racer(all(get battery_is_fine)) : pass
