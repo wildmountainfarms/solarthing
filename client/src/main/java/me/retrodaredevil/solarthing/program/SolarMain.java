@@ -249,7 +249,7 @@ public final class SolarMain {
 	private static int outputVersion() {
 		JarUtil.Data data = JarUtil.getData();
 		Instant lastModified = data.getLastModifiedInstantOrNull();
-		System.out.println("SolarThing made by Joshua Shannon\n" +
+		System.out.println("SolarThing made by Lavender Shannon\n" +
 				"Jar: " + data.getJarFileName() + "\n" +
 				"Jar last modified: " + (lastModified == null ? "unknown" : lastModified.toString()) + "\n" +
 				"Java version: " + System.getProperty("java.version"));

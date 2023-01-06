@@ -18,7 +18,7 @@ final class MateCommandFeedbackPacketTest {
 		PacketTestUtil.testJson(new ImmutableSuccessMateCommandPacket(SuccessMateCommandPacket.VERSION_LATEST, MateCommand.AUX_OFF, "my_source", null), MateCommandFeedbackPacket.class);
 
 		{
-			OpenSource source = new OpenSource("josh", 1632198320733L, new ImmutableRequestCommandPacket("GEN OFF"), "GEN OFF");
+			OpenSource source = new OpenSource("android-asdf", 1632198320733L, new ImmutableRequestCommandPacket("GEN OFF"), "GEN OFF");
 			PacketTestUtil.testJson(new ImmutableSuccessMateCommandPacket(SuccessMateCommandPacket.VERSION_LATEST, MateCommand.AUX_OFF, source.toDataSource().toString(), new OpenSourceExecutionReason(source)), MateCommandFeedbackPacket.class);
 		}
 	}
