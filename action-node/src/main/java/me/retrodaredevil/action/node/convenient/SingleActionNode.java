@@ -43,15 +43,15 @@ public class SingleActionNode implements ActionNode {
 
 	@Override
 	public Action createAction(ActionEnvironment actionEnvironment) {
-		VariableEnvironment global = actionEnvironment.getGlobalEnvironment();
 		return Actions.createDynamicActionRunner(() -> {
-			if (global.isLocked(lockName)) {
+			VariableEnvironment.LockSet globalLockSet = actionEnvironment.getVariableEnvironment().getGlobalLockSet();
+			if (globalLockSet.isLocked(lockName)) {
 				return Actions.createRunOnce(() -> {});
 			}
 			return new Actions.ActionQueueBuilder(
-					Actions.createRunOnce(() -> global.lock(lockName)),
+					Actions.createRunOnce(() -> globalLockSet.lock(lockName)),
 					actionNode.createAction(actionEnvironment),
-					Actions.createRunOnce(() -> global.unlock(lockName))
+					Actions.createRunOnce(() -> globalLockSet.unlock(lockName))
 			).immediatelyDoNextWhenDone(true).build();
 		});
 	}

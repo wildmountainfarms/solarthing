@@ -32,7 +32,7 @@ public class ActionNodeDataReceiver implements PacketGroupReceiver {
 	Note: This class has comments about making sure things are thread safe because PacketGroupReceivers are almost always called from another thread
 	*/
 
-	private final VariableEnvironment variableEnvironment = new VariableEnvironment();
+	private final VariableEnvironment globalVariableEnvironment = new VariableEnvironment();
 	private final ActionMultiplexer actionMultiplexer = new Actions.ActionMultiplexerBuilder().build(); // action-lib is designed to be thread safe
 
 	private final Map<String, ActionNode> actionNodeMap; // action nodes are not used directly, so thread safety is fine here. (Unless an ActionNode has weird state and isn't thread safe)
@@ -71,7 +71,7 @@ public class ActionNodeDataReceiver implements PacketGroupReceiver {
 		if(requested != null){
 			InjectEnvironment.Builder injectEnvironmentBuilder = new InjectEnvironment.Builder();
 			environmentUpdater.updateInjectEnvironment(new OpenSourceExecutionReason(source), injectEnvironmentBuilder);
-			Action action = requested.createAction(new ActionEnvironment(variableEnvironment, new VariableEnvironment(), injectEnvironmentBuilder.build()));
+			Action action = requested.createAction(new ActionEnvironment(globalVariableEnvironment, injectEnvironmentBuilder.build()));
 			// Now that action has been created, add it to the action multiplexer. (Adding is thread safe).
 			//   The action has not been used by this thread, so when a different thread starts executing it, there will be no problems.
 			actionMultiplexer.add(action);

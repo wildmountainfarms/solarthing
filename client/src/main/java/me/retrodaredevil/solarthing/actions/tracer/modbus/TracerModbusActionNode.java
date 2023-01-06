@@ -55,9 +55,7 @@ public class TracerModbusActionNode implements ActionNode {
 
 		TracerErrorEnvironment tracerErrorEnvironment = new TracerErrorEnvironment();
 
-		ActionEnvironment injectedActionEnvironment = new ActionEnvironment(
-				actionEnvironment.getGlobalEnvironment(),
-				actionEnvironment.getLocalEnvironment(),
+		ActionEnvironment injectedActionEnvironment = actionEnvironment.withInjectEnvironment(
 				actionEnvironment.getInjectEnvironment().newBuilder()
 						.add(tracerModbusEnvironment)
 						.add(tracerErrorEnvironment)

@@ -22,7 +22,6 @@ class ActionNodeTest {
 	private ActionEnvironment createEnvironment() {
 		return new ActionEnvironment(
 				new VariableEnvironment(),
-				new VariableEnvironment(),
 				new InjectEnvironment.Builder()
 						.add(new NanoTimeProviderEnvironment(NanoTimeProvider.SYSTEM_NANO_TIME))
 						.build()

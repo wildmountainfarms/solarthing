@@ -181,17 +181,17 @@ public class DeserializeTest {
 		for (FXStatusPacket packet : new FXStatusPacket[] { auxOffNoAC, auxOnACUse, auxOffACUse }) {
 			// for these three cases, the action should end immediately
 			packetGroupReference[0] = PacketGroups.createInstancePacketGroup(Collections.singleton(packet), 0L, "my_source_id", 999);
-			Action action = actionNode.createAction(new ActionEnvironment(new VariableEnvironment(), new VariableEnvironment(), injectEnvironment));
+			Action action = actionNode.createAction(new ActionEnvironment(new VariableEnvironment(), injectEnvironment));
 			action.update();
 			assertTrue(action.isDone());
 		}
 
 		{ // Test that no alert is sent unless the aux is on, and it's in No AC for 30 seconds
 			packetGroupReference[0] = PacketGroups.createInstancePacketGroup(Collections.singleton(auxOnNoAC), 0L, "my_source_id", 999);
-			Action action = actionNode.createAction(new ActionEnvironment(new VariableEnvironment(), new VariableEnvironment(), injectEnvironment));
+			Action action = actionNode.createAction(new ActionEnvironment(new VariableEnvironment(), injectEnvironment));
 			action.update();
 			assertFalse(action.isDone());
-			timeReference[0] = timeReference[0].plus(Duration.ofSeconds(29));
+			timeReference[0] = timeReference[0].plus(Duration.ofSeconds(44));
 			action.update();
 			assertFalse(action.isDone());
 
@@ -201,7 +201,7 @@ public class DeserializeTest {
 		}
 		{ // Test that the alert gets sent and the action doesn't end until the 300-second timeout completes
 			packetGroupReference[0] = PacketGroups.createInstancePacketGroup(Collections.singleton(auxOnNoAC), 0L, "my_source_id", 999);
-			Action action = actionNode.createAction(new ActionEnvironment(new VariableEnvironment(), new VariableEnvironment(), injectEnvironment));
+			Action action = actionNode.createAction(new ActionEnvironment(new VariableEnvironment(), injectEnvironment));
 			action.update();
 			assertFalse(action.isDone());
 			timeReference[0] = timeReference[0].plus(Duration.ofSeconds(45));

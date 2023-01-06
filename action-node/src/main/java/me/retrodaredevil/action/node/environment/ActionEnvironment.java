@@ -1,30 +1,21 @@
 package me.retrodaredevil.action.node.environment;
 
 public class ActionEnvironment {
-	private final VariableEnvironment globalEnvironment;
-	private final VariableEnvironment localEnvironment;
+	private final VariableEnvironment variableEnvironment;
 	private final InjectEnvironment injectEnvironment;
 
-	public ActionEnvironment(VariableEnvironment globalEnvironment, VariableEnvironment localEnvironment, InjectEnvironment injectEnvironment) {
-		this.globalEnvironment = globalEnvironment;
-		this.localEnvironment = localEnvironment;
+	public ActionEnvironment(VariableEnvironment variableEnvironment, InjectEnvironment injectEnvironment) {
+		this.variableEnvironment = variableEnvironment;
 		this.injectEnvironment = injectEnvironment;
 	}
 
-	/**
-	 * Note: {@link VariableEnvironment}s are not thread safe and are not designed to be used by multiple threads
-	 * @return The global variable environment
-	 */
-	public VariableEnvironment getGlobalEnvironment() {
-		return globalEnvironment;
-	}
 
 	/**
 	 * Note: {@link VariableEnvironment}s are not thread safe and are not designed to be used by multiple threads
 	 * @return The local variable environment
 	 */
-	public VariableEnvironment getLocalEnvironment() {
-		return localEnvironment;
+	public VariableEnvironment getVariableEnvironment() {
+		return variableEnvironment;
 	}
 
 	/**
@@ -32,5 +23,12 @@ public class ActionEnvironment {
 	 */
 	public InjectEnvironment getInjectEnvironment() {
 		return injectEnvironment;
+	}
+
+	public ActionEnvironment withVariableEnvironment(VariableEnvironment newVariableEnvironment) {
+		return new ActionEnvironment(newVariableEnvironment, injectEnvironment);
+	}
+	public ActionEnvironment withInjectEnvironment(InjectEnvironment newInjectEnvironment) {
+		return new ActionEnvironment(variableEnvironment, newInjectEnvironment);
 	}
 }

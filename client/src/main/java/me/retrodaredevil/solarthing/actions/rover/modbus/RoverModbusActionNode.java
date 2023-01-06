@@ -61,9 +61,7 @@ public class RoverModbusActionNode implements ActionNode {
 
 		RoverErrorEnvironment roverErrorEnvironment = new RoverErrorEnvironment();
 
-		ActionEnvironment injectedActionEnvironment = new ActionEnvironment(
-				actionEnvironment.getGlobalEnvironment(),
-				actionEnvironment.getLocalEnvironment(),
+		ActionEnvironment injectedActionEnvironment = actionEnvironment.withInjectEnvironment(
 				actionEnvironment.getInjectEnvironment().newBuilder()
 						.add(roverModbusEnvironment)
 						.add(roverErrorEnvironment)

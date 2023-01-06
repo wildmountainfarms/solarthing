@@ -63,7 +63,7 @@ public class CommandController {
 		InjectEnvironment injectEnvironment = commandHandler.createInjectEnvironment(commandName);
 		// We don't know or care what thread this is running on, so we won't have a shared global variable environment.
 		//   We could make a shared global environment a feature of this down the line, but for now let's keep this simple
-		ActionEnvironment actionEnvironment = new ActionEnvironment(new VariableEnvironment(), new VariableEnvironment(), injectEnvironment);
+		ActionEnvironment actionEnvironment = new ActionEnvironment(new VariableEnvironment(), injectEnvironment);
 		Action action = actionNode.createAction(actionEnvironment);
 		while (!action.isDone()) {
 			action.update();

@@ -228,7 +228,7 @@ public class PacketHandlerInit {
 		List<ActionNode> actionNodes = ActionUtil.getActionNodes(options);
 		requireNonNull(environmentUpdaterSupplier);
 
-		VariableEnvironment variableEnvironment = new VariableEnvironment();
+		VariableEnvironment globalVariableEnvironment = new VariableEnvironment();
 
 		ActionMultiplexer multiplexer = new Actions.ActionMultiplexerBuilder().build();
 
@@ -251,7 +251,7 @@ public class PacketHandlerInit {
 			InjectEnvironment injectEnvironment = injectEnvironmentBuilder.build();
 
 			for (ActionNode actionNode : actionNodes) {
-				multiplexer.add(actionNode.createAction(new ActionEnvironment(variableEnvironment, new VariableEnvironment(), injectEnvironment)));
+				multiplexer.add(actionNode.createAction(new ActionEnvironment(globalVariableEnvironment, injectEnvironment)));
 			}
 			multiplexer.update();
 		};

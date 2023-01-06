@@ -24,6 +24,7 @@ import me.retrodaredevil.action.node.expression.action.node.AnyActionNode;
 		@JsonSubTypes.Type(TimeoutActionNode.class),
 		@JsonSubTypes.Type(SingleActionNode.class),
 		@JsonSubTypes.Type(WithLockActionNode.class),
+		@JsonSubTypes.Type(PrintActionNode.class),
 
 		@JsonSubTypes.Type(AllActionNode.class),
 		@JsonSubTypes.Type(AnyActionNode.class),

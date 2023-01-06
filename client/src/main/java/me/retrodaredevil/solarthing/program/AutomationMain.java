@@ -91,7 +91,7 @@ public final class AutomationMain {
 		}
 		SolarThingDatabase database = CouchDbSolarThingDatabase.create(CouchDbUtil.createInstance(couchSettings.getCouchProperties(), couchSettings.getOkHttpProperties()));
 
-		VariableEnvironment variableEnvironment = new VariableEnvironment();
+		VariableEnvironment globalVariableEnvironment = new VariableEnvironment();
 
 		AtomicReference<FragmentedPacketGroup> latestPacketGroupReference = new AtomicReference<>(null); // Use atomic reference so that access is thread safe
 		AtomicReference<List<VersionedPacket<StoredAlterPacket>>> alterPacketsReference = new AtomicReference<>(null); // Use atomic reference so that access is thread safe
@@ -146,7 +146,7 @@ public final class AutomationMain {
 				latestPacketGroupReference.set(statusPacketGroup);
 			}
 			for (ActionNode actionNode : actionNodes) {
-				multiplexer.add(actionNode.createAction(new ActionEnvironment(variableEnvironment, new VariableEnvironment(), injectEnvironment)));
+				multiplexer.add(actionNode.createAction(new ActionEnvironment(globalVariableEnvironment, injectEnvironment)));
 			}
 			multiplexer.update();
 			LOGGER.debug("There are " + multiplexer.getActiveActions().size() + " active actions");

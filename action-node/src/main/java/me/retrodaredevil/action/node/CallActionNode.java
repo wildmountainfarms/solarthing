@@ -15,6 +15,6 @@ public class CallActionNode implements ActionNode {
 
 	@Override
 	public Action createAction(ActionEnvironment actionEnvironment) {
-		return Actions.createDynamicActionRunner(() -> actionEnvironment.getLocalEnvironment().getDeclaredAction(name).createAction(actionEnvironment));
+		return Actions.createDynamicActionRunner(() -> actionEnvironment.getVariableEnvironment().getDeclaredAction(name).createAction(actionEnvironment));
 	}
 }

@@ -1,11 +1,16 @@
 package me.retrodaredevil.action.node;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.Actions;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
+import me.retrodaredevil.action.node.scope.ScopeActionNode;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,15 +28,16 @@ public class DeclarationActionNode implements ActionNode {
 	}
 	@Override
 	public Action createAction(ActionEnvironment actionEnvironment) {
-		Action mainAction = mainDeclaration.createAction(actionEnvironment);
-		return new Actions.ActionQueueBuilder(
-				Actions.createRunOnce(() -> {
-					for(Map.Entry<String, ActionNode> entry : declarations.entrySet()) {
-						actionEnvironment.getLocalEnvironment().setDeclaredAction(entry.getKey(), entry.getValue());
-					}
-				}),
-				mainAction
-		).immediatelyDoNextWhenDone(true).build();
+		return new ScopeActionNode(
+				new QueueActionNode(Arrays.asList(
+						innerActionEnvironment -> Actions.createRunOnce(() -> {
+							for(Map.Entry<String, ActionNode> entry : declarations.entrySet()) {
+								innerActionEnvironment.getVariableEnvironment().setDeclaredAction(entry.getKey(), entry.getValue());
+							}
+						}),
+						mainDeclaration
+				))
+		).createAction(actionEnvironment);
 	}
 	static class Builder {
 		@JsonProperty(value = "main", required = true)

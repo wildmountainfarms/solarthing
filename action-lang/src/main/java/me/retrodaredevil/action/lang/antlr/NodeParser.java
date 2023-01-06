@@ -1,5 +1,8 @@
 package me.retrodaredevil.action.lang.antlr;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.TextNode;
 import me.retrodaredevil.action.lang.Argument;
 import me.retrodaredevil.action.lang.ArrayArgument;
 import me.retrodaredevil.action.lang.BooleanArgument;
@@ -20,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 public final class NodeParser {
+	private static final ObjectMapper MAPPER = new ObjectMapper();
 	private NodeParser() { throw new UnsupportedOperationException(); }
 
 	public static Node parseFrom(CharStream charStream) {
@@ -31,6 +35,17 @@ public final class NodeParser {
 
 		Visitor visitor = new Visitor();
 		return visitor.visitNode(nodeContext);
+	}
+
+	private static StringArgument stringFromString(TerminalNode stringTerminal) {
+		String rawText = stringTerminal.getText();
+		final TextNode text;
+		try {
+			text = MAPPER.readValue(rawText, TextNode.class);
+		} catch (JsonProcessingException e) {
+			throw new IllegalArgumentException("Incorrectly formatted string", e);
+		}
+		return new StringArgument(text.textValue());
 	}
 
 	private static class Visitor extends ActionLangBaseVisitor<Argument> {
@@ -92,7 +107,7 @@ public final class NodeParser {
 				return visitArray(ctx.array());
 			}
 			if (ctx.STRING() != null) {
-				return new StringArgument(ctx.STRING().getText());
+				return stringFromString(ctx.STRING());
 			}
 			if (ctx.BOOLEAN() != null) {
 				return BooleanArgument.get(ctx.BOOLEAN().getText().equals("true"));
@@ -112,7 +127,7 @@ public final class NodeParser {
 				return new StringArgument(ctx.IDENTIFIER().getText());
 			}
 			if (ctx.STRING() != null) {
-				return new StringArgument(ctx.STRING().getText());
+				return stringFromString(ctx.STRING());
 			}
 			if (ctx.BOOLEAN() != null) {
 				return BooleanArgument.get(ctx.BOOLEAN().getText().equals("true"));
