@@ -143,8 +143,10 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 	default int getAuxModeValue() {
 		return AuxMode.getActualValueCode(getRawAuxModeValue());
 	}
-	@GraphQLInclude("auxMode")
+	@Deprecated
 	default @NotNull AuxMode getAuxMode(){ return Modes.getActiveMode(AuxMode.class, getAuxModeValue());}
+	@GraphQLInclude("auxMode")
+	default @Nullable AuxMode getAuxModeOrNull(){ return Modes.getActiveModeOrNull(AuxMode.class, getAuxModeValue());}
 	@GraphQLInclude("auxBitActive")
 	default boolean isAuxBitActive(){ return AuxMode.isAuxModeActive(getRawAuxModeValue()); }
 
@@ -162,7 +164,7 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 
 	/**
 	 * Should be serialized as "chargerMode"
-	 *
+	 * <p>
 	 * Right now, the range should only be [0..4] as there are no documented charger modes other than those 5
 	 * @return [0..99] representing the MX's {@link ChargerMode}
 	 */
@@ -206,9 +208,14 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 	// endregion
 
 	// region Convenience Strings
+	@Deprecated
+	default @NotNull String getAuxModeName(){ return getAuxMode().getModeName(); }
 	@ConvenienceField
 	@JsonProperty("auxModeName")
-	default @NotNull String getAuxModeName(){ return getAuxMode().getModeName(); }
+	default @Nullable String getAuxModeNameOrNull(){
+		AuxMode auxMode = getAuxModeOrNull();
+		return auxMode == null ? null : auxMode.getModeName();
+	}
 	@ConvenienceField
 	@JsonProperty("errors")
 	default @NotNull String getErrorsString(){ return Modes.toString(MXErrorMode.class, getErrorModeValue()); }
@@ -218,7 +225,6 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 	// endregion
 
 	/**
-	 * Note: It is unknown if this means old MX firmware or old mate firmware
 	 * @return true if the Mate's firmware is pre 4.01, false otherwise
 	 */
 	default boolean isOldMateFirmware(){
@@ -234,12 +240,25 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 	 * @return true if this is a FlexMAX charge controller, false if it's an MX, null if the Mate has old firmware and is unable to tell
 	 */
 	default @Nullable Boolean isFlexMax(){
-		if (isAuxBitActive() || getAuxMode().isFlexMaxOnly() || getAmpChargerCurrent() != 0) {
+		if (isAuxBitActive() || getAmpChargerCurrent() != 0) {
+			return true;
+		}
+		AuxMode auxMode = getAuxModeOrNull();
+		boolean oldMateFirmware = isOldMateFirmware();
+		if (auxMode == null) {
+			// If we cannot parse the aux mode, then we assume we have an old MATE firmware and it is a FLEXmax.
+			//   If it's a new MATE firmware and we cannot parse the aux mode, we don't know what the heck is going on
+			return oldMateFirmware ? true : null;
+		}
+		if (auxMode.isFlexMaxOnly()) {
 			return true;
 		}
 		if (isOldMateFirmware()) {
+			// In this case we parsed an auxiliary mode that could be for an MX or for a FLEXmax.
+			//   It is most likely that this is an MX since we were able to parse the aux mode at all, but there's still a chance it is a FLEXmax.
 			return null;
 		}
+		// In this case, we have updated MATE firmware, so it is only an MX device if the daily AH reading is 9999
 		return getDailyAH() != 9999;
 	}
 

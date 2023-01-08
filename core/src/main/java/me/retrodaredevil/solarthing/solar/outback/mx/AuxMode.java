@@ -8,6 +8,9 @@ import me.retrodaredevil.solarthing.packets.CodeMode;
  * make sure that the value code you compare with this
  * <p>
  * Also, it's possible there are undocumented modes such as 27: https://forum.outbackpower.com/viewtopic.php?f=14&t=8268&sid=710ecc3edc75cf26584532c3b93d5aef
+ * <p>
+ * For modes such as 27 or 63, it is assumed that an Outback FLEXmax is being used and a Mate with outdated firmware is reporting the aux mode.
+ * For these situations, you must be careful in parsing the aux mode.
  */
 @SuppressWarnings("unused")
 public enum AuxMode implements CodeMode {
