@@ -1,23 +1,24 @@
 
 buildscript {
     ext {
-        junit5Version = '5.8.2' // https://junit.org/junit5/
-        junit5PlatformVersion = '1.8.2'
+        junit5Version = '5.9.2' // https://junit.org/junit5/
+        junit5PlatformVersion = '1.9.2'
 
-        slf4jVersion = '1.7.36' // http://www.slf4j.org/download.html
-        log4jVersion = '2.17.2' // https://logging.apache.org/log4j/2.x/javadoc.html
+        slf4jVersion = '2.0.6' // http://www.slf4j.org/download.html
+        log4jVersion = '2.19.0' // https://logging.apache.org/log4j/2.x/javadoc.html
+        // Note: Since Jackson 2.14, Android SDK 26 is required
         // https://github.com/FasterXML/jackson/wiki/Jackson-Releases
-        jacksonVersion = '2.13.3' // https://github.com/FasterXML/jackson-databind/tags
+        jacksonVersion = '2.14.1' // https://github.com/FasterXML/jackson-databind/tags
         // retrofit is why we need allow-opens. context: https://stackoverflow.com/questions/60915381/retrofit2-maven-project-illegal-reflective-access-warning // https://github.com/square/retrofit/issues/3341
         retrofitVersion = "2.9.0" // https://github.com/square/retrofit/tags
         shadowVersion = '7.1.2' // https://github.com/johnrengelman/shadow/releases // only works on gradle 7
         ioLibVersion = '2.3.0' // https://github.com/retrodaredevil/io-lib/releases
-        okhttpVersion = "4.9.3" // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
-//        couchdbJavaVersion = '1.0.0'
-        couchdbJavaVersion = "8ff00d2c490af49ca19b29a7852b72578a97fae8".substring(0, 10)
-        dockerComposePluginVersion = "0.16.4" // https://github.com/avast/gradle-docker-compose-plugin/releases
-        errorpronePluginVersion = '2.0.2'
-        errorproneCoreVersion = '2.14.0'
+        okhttpVersion = "4.10.0" // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
+        couchdbJavaVersion = '1.1.0'
+//        couchdbJavaVersion = "8ff00d2c490af49ca19b29a7852b72578a97fae8".substring(0, 10)
+        dockerComposePluginVersion = "0.16.11" // https://github.com/avast/gradle-docker-compose-plugin/releases
+        errorpronePluginVersion = '3.0.1' // https://github.com/tbroyer/gradle-errorprone-plugin/releases
+        errorproneCoreVersion = '2.18.0' // https://mvnrepository.com/artifact/com.google.errorprone/error_prone_core
     }
     dependencies {
         classpath "com.avast.gradle:gradle-docker-compose-plugin:$dockerComposePluginVersion"
@@ -26,7 +27,7 @@ buildscript {
 
 
 plugins {
-    id 'com.diffplug.spotless' version '6.7.2' // https://search.maven.org/search?q=a:spotless-plugin-gradle
+    id 'com.diffplug.spotless' version '6.13.0' // https://search.maven.org/search?q=a:spotless-plugin-gradle
     id 'net.ltgt.errorprone' version "$errorpronePluginVersion"
 }
 

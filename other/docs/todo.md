@@ -117,6 +117,7 @@ and also react to messages that have been fully processed (request successfully 
 * Ability to upload to a backup CouchDB database, but with a unique document ID as to not cause conflicts when the databases sync again
 * Add page to SolarThing web to create actions
 * Allow config files to be specified inline, and also allow inheriting of properties from other files
+* Make couchdb setup program tell more information about the database being configured.
 
   
 ### Completed
