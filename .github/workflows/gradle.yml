@@ -20,6 +20,8 @@ jobs:
       run: (cd web && npm install)
     - name: Build with Gradle
       run: ./gradlew build
+    - name: Integration Test
+      run: ./gradlew integration
       # TODO make something that will fail if generated/graphql.ts was changed and does not match the result of web:generateCode
     - name: Web Generate Code Not Broken
       run: ./gradlew web:generateCode
