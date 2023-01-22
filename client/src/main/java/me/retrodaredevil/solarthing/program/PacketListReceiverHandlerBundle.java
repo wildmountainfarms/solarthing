@@ -47,7 +47,7 @@ public final class PacketListReceiverHandlerBundle {
 				getEventHandler().getPacketListReceiverHandler() // send the event PacketCollection off to the database
 		);
 	}
-	public static <T extends PacketHandlingOption & CommandOption> PacketListReceiverHandler createEventPacketListReceiverHandler(PacketListReceiver sourceAndFragmentUpdater, ZoneId zoneId, PacketHandlerBundle packetHandlerBundle) {
+	public static PacketListReceiverHandler createEventPacketListReceiverHandler(PacketListReceiver sourceAndFragmentUpdater, ZoneId zoneId, PacketHandlerBundle packetHandlerBundle) {
 		PacketHandler eventPacketHandler = new PacketHandlerMultiplexer(packetHandlerBundle.getEventPacketHandlers());
 		return new PacketListReceiverHandler(
 				new PacketListReceiverMultiplexer(

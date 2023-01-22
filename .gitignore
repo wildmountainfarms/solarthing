@@ -335,4 +335,5 @@ gradle-app.setting
 /.idea/*
 !/.idea/dictionaries
 !/.idea/inspectionProfiles
+!/.idea/codeStyles
 

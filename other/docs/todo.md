@@ -118,6 +118,7 @@ and also react to messages that have been fully processed (request successfully 
 * Add page to SolarThing web to create actions
 * Allow config files to be specified inline, and also allow inheriting of properties from other files
 * Make couchdb setup program tell more information about the database being configured.
+* Look into https://www.mojohaus.org/animal-sniffer/
 
   
 ### Completed
