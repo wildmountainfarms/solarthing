@@ -1,0 +1,76 @@
+// This file contains notation script (.ns file extension)
+scope : queue {
+  init myCounter : const [ 0.0 ]
+  init myText : const [ "hello there" ])
+  fun main : with-lock("low_battery_alert", call run_check, on_timeout = log("low_battery_alert locked", debug = true))
+
+  // Use the "exp" action to define battery_is_fine
+  init battery_is_fine : comparison(battery-voltage, ">", const [ 23.0 ])  // equivalent to the above
+  init battery_is_currently_fine : eval : ref battery_is_fine
+  act run_check : race {
+    racer(all : ref battery_is_fine) : pass
+    racer(wait PT120S) : queue {
+      log("Battery getting lower", summary = true)
+      wait PT30M
+    }
+  }
+
+  act sin : import("./myMathSin.al")  // myMathSin.al file is only the sin function
+  select(["cos", "tan"]) : import("./myMath.al")  // myMath.al is a scope with many functions.
+  // Select will run the scope and then populate the current scope with "cos" and "tan".
+  act draw_line : queue {
+    expect x
+    expect y
+    init __return_value
+    scope {
+      // do some stuff
+    }
+  }
+  act some_random_function : parallel {
+    // parenthesis are not necessary when only a single argument is provided
+    queue { wait PT5S ; print "5 seconds is up" }
+    queue { wait PT10S ; print("10 seconds is up") }
+    queue {
+      set myCounter : binary(ref myCounter, "+", const 1)
+      print(concat(ref myText, " how is it going?"))
+    }
+    queue {
+      init result
+      scope : queue {
+        // TODO this is not ideal. We can make an action that accepts variables to actually pass through an environment correctly rather than this garbage
+        //   The fact that we have to use jump here is bad because it would be much better to use call, but we cannot because we need this scope with variables x, y
+        // In this case, draw_line is essentially a function that does something with two parameters, x and y
+        init x : const [ 0 ]
+        init y : const [ 0 ]
+        jump draw_line
+        set result : ref __return_value
+      }
+      // access result
+    }
+    queue {
+      params { // this is equivalent as above
+        param x : const [ 0 ]
+        param y : const [ 0 ]
+        init-return result
+      } : call draw_line
+    }
+    scope : queue {
+      init i : const 1
+      init j
+      set i : binary(ref i, "+", const 1)
+      set j : ref i
+      set i : const 0
+      // j is 2
+    }
+    scope : queue {
+      init i
+      init j
+      set i : binary(ref i, "+", const 1)
+      set-exp j : ref i
+      set i : const 0
+      // j is 0
+    }
+  }
+
+  call main
+}

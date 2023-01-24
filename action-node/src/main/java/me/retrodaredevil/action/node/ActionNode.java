@@ -9,17 +9,21 @@ import me.retrodaredevil.action.node.convenient.WithLockActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.action.node.expression.action.node.AllActionNode;
 import me.retrodaredevil.action.node.expression.action.node.AnyActionNode;
+import me.retrodaredevil.action.node.scope.ScopeActionNode;
 
 @JsonSubTypes({
 		@JsonSubTypes.Type(QueueActionNode.class),
 		@JsonSubTypes.Type(WaitMillisActionNode.class),
 		@JsonSubTypes.Type(WaitIsoActionNode.class),
 		@JsonSubTypes.Type(CallActionNode.class),
+		@JsonSubTypes.Type(JumpActionNode.class),
 		@JsonSubTypes.Type(PassActionNode.class),
 		@JsonSubTypes.Type(ForeverActionNode.class),
 		@JsonSubTypes.Type(LockActionNode.class),
 		@JsonSubTypes.Type(UnlockActionNode.class),
 		@JsonSubTypes.Type(DeclarationActionNode.class),
+		@JsonSubTypes.Type(ScopeActionNode.class),
+		@JsonSubTypes.Type(DefineActionActionNode.class),
 		@JsonSubTypes.Type(RaceActionNode.class),
 		@JsonSubTypes.Type(TimeoutActionNode.class),
 		@JsonSubTypes.Type(SingleActionNode.class),

@@ -19,7 +19,7 @@
             "type": "comparison",
             "lhs": { "type": "battery-voltage" },
             "operator": ">",
-            "rhs": { "type": "constant-number", "constant": 22.2 }
+            "rhs": { "type": "const", "value": 22.2 }
           }
         },
         { "type": "log", "message": "Battery voltage is fine", "debug": true }

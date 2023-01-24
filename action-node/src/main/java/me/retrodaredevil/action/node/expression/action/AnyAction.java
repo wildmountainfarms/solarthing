@@ -8,6 +8,7 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
+@Deprecated
 public class AnyAction extends SimpleAction {
 	private final BooleanExpression expression;
 

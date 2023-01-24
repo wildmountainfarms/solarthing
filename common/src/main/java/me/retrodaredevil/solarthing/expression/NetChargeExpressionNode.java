@@ -3,7 +3,7 @@ package me.retrodaredevil.solarthing.expression;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.action.node.expression.NumericExpression;
-import me.retrodaredevil.action.node.expression.node.NumericExpressionNode;
+import me.retrodaredevil.action.node.expression.node.ExpressionNode;
 import me.retrodaredevil.action.node.expression.result.NumericExpressionResult;
 import me.retrodaredevil.solarthing.FragmentedPacketGroupProvider;
 import me.retrodaredevil.solarthing.actions.environment.LatestFragmentedPacketGroupEnvironment;
@@ -15,7 +15,7 @@ import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 import java.util.Collections;
 
 @JsonTypeName("net-charge")
-public class NetChargeExpressionNode implements NumericExpressionNode {
+public class NetChargeExpressionNode implements ExpressionNode {
 	@Override
 	public NumericExpression createExpression(ActionEnvironment actionEnvironment) {
 		LatestFragmentedPacketGroupEnvironment latestFragmentedPacketGroupEnvironment = actionEnvironment.getInjectEnvironment().get(LatestFragmentedPacketGroupEnvironment.class);

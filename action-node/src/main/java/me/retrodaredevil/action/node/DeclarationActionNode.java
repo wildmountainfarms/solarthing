@@ -6,12 +6,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.action.Action;
-import me.retrodaredevil.action.Actions;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.action.node.scope.ScopeActionNode;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
@@ -28,15 +28,11 @@ public class DeclarationActionNode implements ActionNode {
 	}
 	@Override
 	public Action createAction(ActionEnvironment actionEnvironment) {
+		List<ActionNode> actionNodeList = new ArrayList<>();
+		declarations.entrySet().stream().map(entry -> new DefineActionActionNode(entry.getKey(), entry.getValue())).forEach(actionNodeList::add);
+		actionNodeList.add(mainDeclaration);
 		return new ScopeActionNode(
-				new QueueActionNode(Arrays.asList(
-						innerActionEnvironment -> Actions.createRunOnce(() -> {
-							for(Map.Entry<String, ActionNode> entry : declarations.entrySet()) {
-								innerActionEnvironment.getVariableEnvironment().setDeclaredAction(entry.getKey(), entry.getValue());
-							}
-						}),
-						mainDeclaration
-				))
+				new QueueActionNode(actionNodeList)
 		).createAction(actionEnvironment);
 	}
 	static class Builder {

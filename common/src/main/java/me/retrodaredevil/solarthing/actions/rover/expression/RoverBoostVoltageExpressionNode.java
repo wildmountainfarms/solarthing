@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.action.node.expression.NumericExpression;
-import me.retrodaredevil.action.node.expression.node.NumericExpressionNode;
+import me.retrodaredevil.action.node.expression.node.ExpressionNode;
 import me.retrodaredevil.action.node.expression.result.NumericExpressionResult;
 import me.retrodaredevil.solarthing.actions.rover.RoverMatcher;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
@@ -13,7 +13,7 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
 import java.util.Collections;
 
 @JsonTypeName("rover-boost-voltage")
-public class RoverBoostVoltageExpressionNode implements NumericExpressionNode {
+public class RoverBoostVoltageExpressionNode implements ExpressionNode {
 	private final RoverMatcher roverMatcher;
 
 	@JsonCreator

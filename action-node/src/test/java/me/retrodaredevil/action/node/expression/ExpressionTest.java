@@ -2,7 +2,6 @@ package me.retrodaredevil.action.node.expression;
 
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.node.expression.action.AllAction;
-import me.retrodaredevil.action.node.expression.action.AnyAction;
 import me.retrodaredevil.action.node.expression.result.BooleanExpressionResult;
 import me.retrodaredevil.action.node.expression.result.NumericExpressionResult;
 import org.junit.jupiter.api.Test;
@@ -47,7 +46,7 @@ class ExpressionTest {
 		List<BooleanExpressionResult>[] currentResult = new List[] { null };
 		currentResult[0] = Arrays.asList(BooleanExpressionResult.FALSE, BooleanExpressionResult.TRUE, BooleanExpressionResult.TRUE);
 		BooleanExpression expression = () -> currentResult[0];
-		Action allAction = new AllAction(expression);
+		Action allAction = new AllAction(expression, false);
 
 		allAction.update();
 		assertFalse(allAction.isDone());
@@ -65,7 +64,7 @@ class ExpressionTest {
 		List<BooleanExpressionResult>[] currentResult = new List[] { null };
 		currentResult[0] = Arrays.asList(BooleanExpressionResult.FALSE, BooleanExpressionResult.FALSE, BooleanExpressionResult.FALSE);
 		BooleanExpression expression = () -> currentResult[0];
-		Action anyAction = new AnyAction(expression);
+		Action anyAction = new AllAction(expression, true);
 
 		anyAction.update();
 		assertFalse(anyAction.isDone());

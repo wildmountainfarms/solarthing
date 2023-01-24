@@ -14,11 +14,11 @@ import static java.util.Objects.requireNonNull;
  * Essentially this is a numeric binary expression, but is currently only used upon comparisons between numeric types.
  */
 public class ComparisonExpression implements BooleanExpression {
-	private final NumericExpression lhs;
-	private final NumericExpression rhs;
+	private final Expression lhs;
+	private final Expression rhs;
 	private final Operator operator;
 
-	public ComparisonExpression(NumericExpression lhs, NumericExpression rhs, Operator operator) {
+	public ComparisonExpression(Expression lhs, Expression rhs, Operator operator) {
 		requireNonNull(this.lhs = lhs);
 		requireNonNull(this.rhs = rhs);
 		requireNonNull(this.operator = operator);
@@ -65,8 +65,8 @@ public class ComparisonExpression implements BooleanExpression {
 	}
 	@Override
 	public List<? extends BooleanExpressionResult> evaluate() {
-		List<? extends NumericExpressionResult> leftResultList = lhs.evaluate();
-		List<? extends NumericExpressionResult> rightResultList = rhs.evaluate();
+		List<? extends NumericExpressionResult> leftResultList = ExpressionConvert.convertTo(lhs.evaluate(), NumericExpressionResult.class);
+		List<? extends NumericExpressionResult> rightResultList = ExpressionConvert.convertTo(rhs.evaluate(), NumericExpressionResult.class);
 		List<BooleanExpressionResult> resultList = new ArrayList<>();
 		for (NumericExpressionResult leftResult : leftResultList) {
 			for (NumericExpressionResult rightResult : rightResultList) {

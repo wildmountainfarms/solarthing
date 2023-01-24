@@ -9,16 +9,19 @@ import me.retrodaredevil.action.node.environment.VariableEnvironment;
 
 import static java.util.Objects.requireNonNull;
 
-@JsonTypeName("call")
-public class CallActionNode implements ActionNode {
+/**
+ * Similar to {@link CallActionNode}, except whatever scope this is called from is used to create the action
+ */
+@JsonTypeName("jump")
+public class JumpActionNode implements ActionNode {
 	private final String name;
-	public CallActionNode(@JsonProperty("name") String name) {
+	public JumpActionNode(@JsonProperty("name") String name) {
 		this.name = requireNonNull(name);
 	}
 
 	@Override
 	public Action createAction(ActionEnvironment actionEnvironment) {
 		VariableEnvironment variableEnvironment = actionEnvironment.getVariableEnvironment();
-		return Actions.createDynamicActionRunner(() -> variableEnvironment.getDeclaredAction(name).createActionWithOriginalScope());
+		return Actions.createDynamicActionRunner(() -> variableEnvironment.getDeclaredAction(name).getActionNode().createAction(actionEnvironment));
 	}
 }

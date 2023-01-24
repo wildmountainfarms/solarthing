@@ -10,15 +10,15 @@ import me.retrodaredevil.action.node.expression.ComparisonExpression;
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("comparison")
-public class ComparisonExpressionNode implements BooleanExpressionNode {
-	private final NumericExpressionNode lhs;
-	private final NumericExpressionNode rhs;
+public class ComparisonExpressionNode implements ExpressionNode {
+	private final ExpressionNode lhs;
+	private final ExpressionNode rhs;
 	private final ComparisonExpression.Operator operator;
 
 	@JsonCreator
 	public ComparisonExpressionNode(
-			@JsonProperty(value = "lhs", required = true) NumericExpressionNode lhs,
-			@JsonProperty(value = "rhs", required = true) NumericExpressionNode rhs,
+			@JsonProperty(value = "lhs", required = true) ExpressionNode lhs,
+			@JsonProperty(value = "rhs", required = true) ExpressionNode rhs,
 			@JsonProperty(value = "operator", required = true) ComparisonExpression.Operator operator) {
 		requireNonNull(this.lhs = lhs);
 		requireNonNull(this.rhs = rhs);
@@ -27,6 +27,10 @@ public class ComparisonExpressionNode implements BooleanExpressionNode {
 
 	@Override
 	public BooleanExpression createExpression(ActionEnvironment actionEnvironment) {
-		return new ComparisonExpression(lhs.createExpression(actionEnvironment), rhs.createExpression(actionEnvironment), operator);
+		return new ComparisonExpression(
+				lhs.createExpression(actionEnvironment),
+				rhs.createExpression(actionEnvironment),
+				operator
+		);
 	}
 }

@@ -6,22 +6,22 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
-import me.retrodaredevil.action.node.expression.action.AnyAction;
-import me.retrodaredevil.action.node.expression.node.BooleanExpressionNode;
+import me.retrodaredevil.action.node.expression.action.AllAction;
+import me.retrodaredevil.action.node.expression.node.ExpressionNode;
 
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("any")
 public class AnyActionNode implements ActionNode {
-	private final BooleanExpressionNode expression;
+	private final ExpressionNode expression;
 
 	@JsonCreator
-	public AnyActionNode(@JsonProperty("expression") BooleanExpressionNode expression) {
+	public AnyActionNode(@JsonProperty("expression") ExpressionNode expression) {
 		requireNonNull(this.expression = expression);
 	}
 
 	@Override
 	public Action createAction(ActionEnvironment actionEnvironment) {
-		return new AnyAction(expression.createExpression(actionEnvironment));
+		return new AllAction(expression.createExpression(actionEnvironment), true);
 	}
 }
