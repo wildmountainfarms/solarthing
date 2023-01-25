@@ -83,7 +83,7 @@ STRING
     : '"' ([ !#-[\]-~] | '\\"')* '"'
     ;
 NUMBER // This isn't the exact regex for JSON numbers, but this regex aims for something like: https://www.json.org/json-en.html
-    : ('-' | '+')? ('0' | [1-9] [0-9]+) ('.' [0-9]+)? ([eE] ('-' | '+')? [0-9]+)?
+    : ('-' | '+')? ('0' | [1-9] [0-9]*) ('.' [0-9]+)? ([eE] ('-' | '+')? [0-9]+)?
     ;
 
 NEW_LINE

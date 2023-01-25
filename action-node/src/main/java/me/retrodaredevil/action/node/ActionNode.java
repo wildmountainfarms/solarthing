@@ -9,6 +9,7 @@ import me.retrodaredevil.action.node.convenient.WithLockActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.action.node.expression.action.node.AllActionNode;
 import me.retrodaredevil.action.node.expression.action.node.AnyActionNode;
+import me.retrodaredevil.action.node.expression.action.node.VariableInitActionNode;
 import me.retrodaredevil.action.node.scope.ScopeActionNode;
 
 @JsonSubTypes({
@@ -32,6 +33,7 @@ import me.retrodaredevil.action.node.scope.ScopeActionNode;
 
 		@JsonSubTypes.Type(AllActionNode.class),
 		@JsonSubTypes.Type(AnyActionNode.class),
+		@JsonSubTypes.Type(VariableInitActionNode.class),
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
 public interface ActionNode {

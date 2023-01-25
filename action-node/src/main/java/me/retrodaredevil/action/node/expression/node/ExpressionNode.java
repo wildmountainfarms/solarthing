@@ -8,7 +8,8 @@ import me.retrodaredevil.action.node.expression.Expression;
 @JsonSubTypes({
 		@JsonSubTypes.Type(ComparisonExpressionNode.class),
 		@JsonSubTypes.Type(ConstantExpressionNode.class),
-		@JsonSubTypes.Type(ReferenceVariableExpressionNode.class),
+		@JsonSubTypes.Type(VariableReferenceExpressionNode.class),
+		@JsonSubTypes.Type(ToStringExpressionNode.class),
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 public interface ExpressionNode {

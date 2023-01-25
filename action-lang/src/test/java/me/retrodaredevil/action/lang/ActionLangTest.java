@@ -41,7 +41,7 @@ public class ActionLangTest {
 		configMap.put("race", new SimpleNodeConfiguration("type", emptyList(), emptyMap(), "racers", null));
 		configMap.put("scope", new SimpleNodeConfiguration("type", emptyList(), emptyMap(), null, "action"));
 		configMap.put("queue", new SimpleNodeConfiguration("type", emptyList(), emptyMap(), "actions", null));
-		configMap.put("print", new SimpleNodeConfiguration("type", Arrays.asList("message"), emptyMap(), null, null));
+		configMap.put("print", new SimpleNodeConfiguration("type", Arrays.asList("message"), emptyMap(), null, "expression"));
 		configMap.put("log", new SimpleNodeConfiguration("type", Arrays.asList("message"), emptyMap(), null, null));
 		configMap.put("call", new SimpleNodeConfiguration("type", Arrays.asList("name"), emptyMap(), null, null));
 		configMap.put("init", new SimpleNodeConfiguration("type", Arrays.asList("name"), emptyMap(), null, "expression"));
@@ -50,6 +50,8 @@ public class ActionLangTest {
 		configMap.put("wait", new SimpleNodeConfiguration("type", Arrays.asList("duration"), emptyMap(), null, null));
 
 		// expressions
+		configMap.put("const", new SimpleNodeConfiguration("type", Arrays.asList("value"), emptyMap(), null, null));
+		configMap.put("str", new SimpleNodeConfiguration("type", emptyList(), emptyMap(), null, "expression"));
 		configMap.put("ref", new SimpleNodeConfiguration("type", Arrays.asList("name"), emptyMap(), null, null));
 		configMap.put("eval", new SimpleNodeConfiguration("type", Arrays.asList("name"), emptyMap(), null, null));
 		CONFIG_MAP = Collections.unmodifiableMap(configMap);

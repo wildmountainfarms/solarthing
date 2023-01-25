@@ -8,11 +8,11 @@ import me.retrodaredevil.action.node.environment.VariableEnvironment;
 import me.retrodaredevil.action.node.expression.Expression;
 
 @JsonTypeName("ref")
-public class ReferenceVariableExpressionNode implements ExpressionNode {
+public class VariableReferenceExpressionNode implements ExpressionNode {
 	private final String variableName;
 
 	@JsonCreator
-	public ReferenceVariableExpressionNode(@JsonProperty(value = "name", required = true) String variableName) {
+	public VariableReferenceExpressionNode(@JsonProperty(value = "name", required = true) String variableName) {
 		this.variableName = variableName;
 	}
 

@@ -2,7 +2,6 @@ package me.retrodaredevil.action.node.expression;
 
 import me.retrodaredevil.action.node.expression.result.ExpressionResult;
 import me.retrodaredevil.action.node.expression.type.ExpressionType;
-import me.retrodaredevil.action.node.expression.type.PrimitiveExpressionType;
 
 import java.util.List;
 
@@ -26,8 +25,8 @@ public interface Expression {
 		return type != expressionType;
 	}
 	default void checkSupport(ExpressionType expressionType) {
-		if (doesNotSupport(PrimitiveExpressionType.BOOLEAN)) {
-			throw new IllegalArgumentException("expression: " + this + " does not support the boolean type!");
+		if (doesNotSupport(expressionType)) {
+			throw new IllegalArgumentException("expression: " + this + " does not support the " + expressionType + " type!");
 		}
 	}
 }
