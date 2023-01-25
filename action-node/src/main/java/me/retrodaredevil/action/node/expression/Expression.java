@@ -16,6 +16,23 @@ public interface Expression {
 	default ExpressionType getType() {
 		return null;
 	}
+
+	default Expression evaluateToConstant() {
+		List<? extends ExpressionResult> resultList = evaluate();
+		ExpressionType expressionType = getType();
+		return new Expression() {
+			@Override
+			public List<? extends ExpressionResult> evaluate() {
+				return resultList;
+			}
+
+			@Override
+			public ExpressionType getType() {
+				return expressionType;
+			}
+		};
+	}
+
 	default boolean doesNotSupport(ExpressionType expressionType) {
 		requireNonNull(expressionType);
 		ExpressionType type = getType();

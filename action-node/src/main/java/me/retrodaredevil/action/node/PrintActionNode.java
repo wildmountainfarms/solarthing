@@ -10,7 +10,6 @@ import me.retrodaredevil.action.node.expression.Expression;
 import me.retrodaredevil.action.node.expression.ExpressionConvert;
 import me.retrodaredevil.action.node.expression.node.ExpressionNode;
 import me.retrodaredevil.action.node.expression.result.StringExpressionResult;
-import me.retrodaredevil.action.node.expression.type.ExpressionType;
 import me.retrodaredevil.action.node.expression.type.PrimitiveExpressionType;
 
 import java.io.PrintStream;

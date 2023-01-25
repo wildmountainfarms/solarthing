@@ -41,10 +41,16 @@ public class ActionLangTest {
 		configMap.put("race", new SimpleNodeConfiguration("type", emptyList(), emptyMap(), "racers", null));
 		configMap.put("scope", new SimpleNodeConfiguration("type", emptyList(), emptyMap(), null, "action"));
 		configMap.put("queue", new SimpleNodeConfiguration("type", emptyList(), emptyMap(), "actions", null));
+		configMap.put("parallel", new SimpleNodeConfiguration("type", emptyList(), emptyMap(), "actions", null));
 		configMap.put("print", new SimpleNodeConfiguration("type", Arrays.asList("message"), emptyMap(), null, "expression"));
 		configMap.put("log", new SimpleNodeConfiguration("type", Arrays.asList("message"), emptyMap(), null, null));
 		configMap.put("call", new SimpleNodeConfiguration("type", Arrays.asList("name"), emptyMap(), null, null));
+
 		configMap.put("init", new SimpleNodeConfiguration("type", Arrays.asList("name"), emptyMap(), null, "expression"));
+		configMap.put("init-exp", new SimpleNodeConfiguration("type", Arrays.asList("name"), emptyMap(), null, "expression"));
+		configMap.put("set", new SimpleNodeConfiguration("type", Arrays.asList("name"), emptyMap(), null, "expression"));
+		configMap.put("set-exp", new SimpleNodeConfiguration("type", Arrays.asList("name"), emptyMap(), null, "expression"));
+
 		configMap.put("all", new SimpleNodeConfiguration("type", emptyList(), emptyMap(), null, "expression"));
 		configMap.put("any", new SimpleNodeConfiguration("type", emptyList(), emptyMap(), null, "expression"));
 		configMap.put("wait", new SimpleNodeConfiguration("type", Arrays.asList("duration"), emptyMap(), null, null));
@@ -54,6 +60,8 @@ public class ActionLangTest {
 		configMap.put("str", new SimpleNodeConfiguration("type", emptyList(), emptyMap(), null, "expression"));
 		configMap.put("ref", new SimpleNodeConfiguration("type", Arrays.asList("name"), emptyMap(), null, null));
 		configMap.put("eval", new SimpleNodeConfiguration("type", Arrays.asList("name"), emptyMap(), null, null));
+		configMap.put("join", new SimpleNodeConfiguration("type", emptyList(), emptyMap(), null, "expression"));
+		configMap.put("union", new SimpleNodeConfiguration("type", emptyList(), emptyMap(), "expressions", null));
 		CONFIG_MAP = Collections.unmodifiableMap(configMap);
 	}
 
@@ -85,6 +93,7 @@ public class ActionLangTest {
 				CONFIG_MAP
 		));
 		JsonNode json = translator.translate(node);
+		System.out.println(json);
 		ActionNode actionNode = parseAction(json);
 		run(actionNode);
 	}

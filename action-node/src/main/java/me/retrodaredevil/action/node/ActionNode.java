@@ -9,11 +9,15 @@ import me.retrodaredevil.action.node.convenient.WithLockActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.action.node.expression.action.node.AllActionNode;
 import me.retrodaredevil.action.node.expression.action.node.AnyActionNode;
+import me.retrodaredevil.action.node.expression.action.node.VariableAssignActionNode;
+import me.retrodaredevil.action.node.expression.action.node.VariableAssignExpressionActionNode;
 import me.retrodaredevil.action.node.expression.action.node.VariableInitActionNode;
+import me.retrodaredevil.action.node.expression.action.node.VariableInitExpressionActionNode;
 import me.retrodaredevil.action.node.scope.ScopeActionNode;
 
 @JsonSubTypes({
 		@JsonSubTypes.Type(QueueActionNode.class),
+		@JsonSubTypes.Type(ParallelActionNode.class),
 		@JsonSubTypes.Type(WaitMillisActionNode.class),
 		@JsonSubTypes.Type(WaitIsoActionNode.class),
 		@JsonSubTypes.Type(CallActionNode.class),
@@ -34,6 +38,9 @@ import me.retrodaredevil.action.node.scope.ScopeActionNode;
 		@JsonSubTypes.Type(AllActionNode.class),
 		@JsonSubTypes.Type(AnyActionNode.class),
 		@JsonSubTypes.Type(VariableInitActionNode.class),
+		@JsonSubTypes.Type(VariableAssignActionNode.class),
+		@JsonSubTypes.Type(VariableInitExpressionActionNode.class),
+		@JsonSubTypes.Type(VariableAssignExpressionActionNode.class),
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
 public interface ActionNode {

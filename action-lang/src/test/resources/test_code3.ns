@@ -1,8 +1,26 @@
 scope : queue {
   print "Hello there how are you?"
-  wait PT4.1S
-  print "Finished"
+  parallel {
+    queue {
+      wait PT4.1S
+      print "4.1 seconds has passed"
+    }
+    queue {
+      wait PT3S
+      print "3 seconds has passed"
+    }
+    queue {
+      wait PT3.1S
+      print "3.1 seconds has passed"
+    }
+  }
   print : const [ "asdf" ]
   init x : const [ 3 ]
-  print : str : ref x
+  init y : ref x
+  init-exp z : ref x
+  print : join : union { const "x: "; str : ref x }
+  set x : const [ 4 ]
+  print : join : union { const "y: "; str : ref y }
+  print : join : union(expressions=[const "z: ", str : ref z])
+  //print : join : union { const "z: "; str : ref z }
 }

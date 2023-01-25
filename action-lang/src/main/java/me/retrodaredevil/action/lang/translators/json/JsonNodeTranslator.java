@@ -116,11 +116,15 @@ public class JsonNodeTranslator implements NodeTranslator<JsonNode> {
 				objectNode.set(fieldName, fieldValue);
 			}
 			if (simpleNodeConfiguration.getSubNodesFieldKey() == null && !node.getSubNodes().isEmpty()) {
-				throw new IllegalArgumentException("Sub nodes not supported!");
+				throw new IllegalArgumentException("Sub nodes not supported! identifier: " + node.getIdentifier());
 			}
 			if (simpleNodeConfiguration.getSubNodesFieldKey() != null) {
 				List<JsonNode> subJsonNodeList = node.getSubNodes().stream().map(this::translate).collect(Collectors.toList());
-				objectNode.set(simpleNodeConfiguration.getSubNodesFieldKey(), new ArrayNode(JsonNodeFactory.instance, subJsonNodeList));
+				if (!subJsonNodeList.isEmpty() || objectNode.get(simpleNodeConfiguration.getSubNodesFieldKey()) == null) {
+					// only set this if we are setting it to something non-empty, or the field has nothing in it yet
+					// (This prevents us from overriding something set with named args with an empty list)
+					objectNode.set(simpleNodeConfiguration.getSubNodesFieldKey(), new ArrayNode(JsonNodeFactory.instance, subJsonNodeList));
+				}
 			}
 			if (simpleNodeConfiguration.getLinkedNodeFieldKey() == null && node.getLinkedNode() != null) {
 				throw new IllegalArgumentException("Linked node not supported!");

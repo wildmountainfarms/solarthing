@@ -11,27 +11,28 @@ import me.retrodaredevil.action.node.environment.VariableEnvironment;
 import me.retrodaredevil.action.node.expression.Expression;
 import me.retrodaredevil.action.node.expression.node.ExpressionNode;
 
+
 import static java.util.Objects.requireNonNull;
 
-@JsonTypeName("init")
-public class VariableInitActionNode implements ActionNode {
+@JsonTypeName("init-exp")
+public class VariableInitExpressionActionNode implements ActionNode {
 	private final String variableName;
 	private final ExpressionNode expressionNode;
 
 	@JsonCreator
-	public VariableInitActionNode(
+	public VariableInitExpressionActionNode(
 			@JsonProperty(value = "name", required = true) String variableName,
-			@JsonProperty(value = "expression") ExpressionNode expressionNode) {
+			@JsonProperty(value = "expression", required = true) ExpressionNode expressionNode) {
 		this.variableName = requireNonNull(variableName);
-		this.expressionNode = expressionNode;
+		this.expressionNode = requireNonNull(expressionNode);
 	}
 
 	@Override
 	public Action createAction(ActionEnvironment actionEnvironment) {
 		VariableEnvironment variableEnvironment = actionEnvironment.getVariableEnvironment();
-		Expression expression = expressionNode == null ? null : expressionNode.createExpression(actionEnvironment);
+		Expression expression = expressionNode.createExpression(actionEnvironment);
 		return Actions.createRunOnce(() -> {
-			variableEnvironment.initializeVariable(variableName, expression == null ? null : expression.evaluateToConstant());
+			variableEnvironment.initializeVariable(variableName, expression);
 		});
 	}
 }
