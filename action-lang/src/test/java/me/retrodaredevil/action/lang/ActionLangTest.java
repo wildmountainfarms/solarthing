@@ -40,6 +40,7 @@ public class ActionLangTest {
 		// actions
 		configMap.put("race", new SimpleNodeConfiguration("type", emptyList(), emptyMap(), "racers", null));
 		configMap.put("scope", new SimpleNodeConfiguration("type", emptyList(), emptyMap(), null, "action"));
+		configMap.put("act", new SimpleNodeConfiguration("type", Arrays.asList("name"), emptyMap(), null, "action"));
 		configMap.put("queue", new SimpleNodeConfiguration("type", emptyList(), emptyMap(), "actions", null));
 		configMap.put("parallel", new SimpleNodeConfiguration("type", emptyList(), emptyMap(), "actions", null));
 		configMap.put("print", new SimpleNodeConfiguration("type", Arrays.asList("message"), emptyMap(), null, "expression"));
