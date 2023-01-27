@@ -286,9 +286,16 @@ project(":action-node"){
         annotationProcessor project(":process-annotations")
     }
 }
+project(":notation-script"){
+    apply plugin: 'java'
+    dependencies {
+        annotationProcessor project(":process-annotations")
+    }
+}
 project(":action-lang"){
     apply plugin: 'java'
     dependencies {
+        api project(":notation-script")
         api project(":action-node")
         annotationProcessor project(":process-annotations")
     }
