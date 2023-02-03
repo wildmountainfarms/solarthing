@@ -33,6 +33,8 @@ export type Scalars = {
   Long: any;
   /** Built-in scalar for dynamic values */
   ObjectScalar: any;
+  /** Built-in Short as Int */
+  Short: any;
   /** Use SPQR's SchemaPrinter to remove this from SDL */
   UNREPRESENTABLE: any;
 };
@@ -123,6 +125,11 @@ export enum BatteryManagementMode {
   VOLTAGE_COMPENSATION = 'VOLTAGE_COMPENSATION'
 }
 
+export enum BatteryType {
+  LEAD_ACID = 'LEAD_ACID',
+  LITHIUM = 'LITHIUM'
+}
+
 export type BatteryVoltage = {
   __typename?: 'BatteryVoltage';
   /** The battery voltage */
@@ -159,6 +166,16 @@ export enum ChargingEquipmentError {
   LOAD_OVER_CURRENT = 'LOAD_OVER_CURRENT',
   LOAD_SHORT = 'LOAD_SHORT',
   PV_INPUT_SHORT = 'PV_INPUT_SHORT'
+}
+
+export enum ChargingMethod_E02D {
+  DIRECT = 'DIRECT',
+  PWM = 'PWM'
+}
+
+export enum ChargingMethod_E021 {
+  DIRECT = 'DIRECT',
+  PWM = 'PWM'
 }
 
 export enum ChargingState {
@@ -368,6 +385,7 @@ export type ExecutionReason = {
 };
 
 export enum ExecutionReasonType {
+  PACKET_COLLECTION = 'PACKET_COLLECTION',
   SOURCE = 'SOURCE'
 }
 
@@ -672,7 +690,7 @@ export type MXStatusPacket = {
   /** @deprecated Field no longer supported */
   ampChargerCurrent: Scalars['Float'];
   auxBitActive: Scalars['Boolean'];
-  auxMode: AuxMode;
+  auxMode?: Maybe<AuxMode>;
   auxModeValue: Scalars['Int'];
   auxModeValueRaw: Scalars['Int'];
   /** The battery voltage */
@@ -1418,7 +1436,9 @@ export type RoverStatusPacket = {
   solarModeName: Scalars['String'];
   solarModeType: SolarModeType;
   solarModeTypeDisplayName: Scalars['String'];
+  specialPowerControlE02D?: Maybe<SpecialPowerControl_E02D>;
   specialPowerControlE02DRaw?: Maybe<Scalars['Int']>;
+  specialPowerControlE021?: Maybe<SpecialPowerControl_E021>;
   specialPowerControlE021Raw: Scalars['Int'];
   streetLightValue: Scalars['Int'];
   systemVoltageSetting: Scalars['Int'];
@@ -1689,6 +1709,42 @@ export type SolarThingStatusQuery = {
   tracerStatus: Array<PacketNode_TracerStatusPacket>;
 };
 
+export type SpecialPowerControl_E02D = {
+  __typename?: 'SpecialPowerControl_E02D';
+  batteryType?: Maybe<BatteryType>;
+  batteryTypeValueCode: Scalars['Int'];
+  chargingMethod?: Maybe<ChargingMethod_E02D>;
+  chargingMethodValueCode: Scalars['Int'];
+  combined: Scalars['Int'];
+  combinedShort: Scalars['Short'];
+  formattedInfo?: Maybe<Scalars['String']>;
+  is24VSystem: Scalars['Boolean'];
+  isEachNightOnEnabled: Scalars['Boolean'];
+  isIntelligentPowerEnabled: Scalars['Boolean'];
+  isLithiumBattery: Scalars['Boolean'];
+  isNoChargingBelow0CEnabled: Scalars['Boolean'];
+  lower: Scalars['Int'];
+  rawChargingMethodValueCode: Scalars['Int'];
+  systemVoltage?: Maybe<SystemVoltage>;
+  systemVoltageValueCode: Scalars['Int'];
+  upper: Scalars['Int'];
+};
+
+export type SpecialPowerControl_E021 = {
+  __typename?: 'SpecialPowerControl_E021';
+  chargingMethod?: Maybe<ChargingMethod_E021>;
+  chargingMethodValueCode: Scalars['Int'];
+  combined: Scalars['Int'];
+  combinedShort: Scalars['Short'];
+  formattedInfo?: Maybe<Scalars['String']>;
+  isChargingModeControlledByVoltage: Scalars['Boolean'];
+  isEachNightOnEnabled: Scalars['Boolean'];
+  isNoChargingBelow0CEnabled: Scalars['Boolean'];
+  isSpecialPowerControlEnabled: Scalars['Boolean'];
+  lower: Scalars['Int'];
+  upper: Scalars['Int'];
+};
+
 export type SuccessMateCommandPacket = {
   __typename?: 'SuccessMateCommandPacket';
   command: MateCommand;
@@ -1703,6 +1759,11 @@ export enum Support {
   FULLY_SUPPORTED = 'FULLY_SUPPORTED',
   NOT_SUPPORTED = 'NOT_SUPPORTED',
   UNKNOWN = 'UNKNOWN'
+}
+
+export enum SystemVoltage {
+  V12 = 'V12',
+  V24 = 'V24'
 }
 
 export enum TargetedMetaPacketType {

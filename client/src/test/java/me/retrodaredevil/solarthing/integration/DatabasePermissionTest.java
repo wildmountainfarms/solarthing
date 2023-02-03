@@ -88,12 +88,8 @@ public class DatabasePermissionTest {
 			} catch (SolarThingDatabaseException expected) {
 
 			}
-			try {
-				database.getEventDatabase().uploadPacketCollection(packetCollection, null);
-				fail("It is expected that manager users cannot upload!");
-			} catch (SolarThingDatabaseException expected) {
-
-			}
+			// since 2ff15e82 (Feb 2022), the manager user is allowed to upload to the events database, but not the status database.
+			database.getEventDatabase().uploadPacketCollection(packetCollection, null);
 		}
 	}
 }

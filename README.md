@@ -124,7 +124,7 @@ always a work in progress. If you find something confusing, please report it, so
 
 ---
 
-[![](https://img.shields.io/badge/author-Joshua%20Shannon-brightgreen.svg)](https://github.com/retrodaredevil)
+[![](https://img.shields.io/badge/author-Lavender%20Shannon-brightgreen.svg)](https://github.com/retrodaredevil)
 [![](https://img.shields.io/github/repo-size/wildmountainfarms/solarthing.svg)](#)
 [![](https://img.shields.io/github/languages/code-size/wildmountainfarms/solarthing.svg)](#)
 [![](https://img.shields.io/librariesio/github/wildmountainfarms/solarthing.svg)](https://libraries.io/github/wildmountainfarms/solarthing)

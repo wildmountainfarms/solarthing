@@ -7,21 +7,16 @@ public class MutablePacketsDesign implements Design {
 	private final Map<String, View> views = new HashMap<>();
 	private String validateDocUpdate = null;
 
-	@Deprecated
-	public MutablePacketsDesign addMillisView() {
-		views.put("millis", new SimpleView("function(doc) {\n  emit(doc.dateMillis, doc);\n}"));
-		return this;
-	}
 	public MutablePacketsDesign addMillisNullView() {
-		views.put("millisNull", new SimpleView("function(doc) {\n  emit(doc.dateMillis, null);\n}"));
+		views.put("millisNull", new SimpleView(DesignResource.VIEW_JAVASCRIPT_MILLIS_NULL.getAsString()));
 		return this;
 	}
 	public MutablePacketsDesign addSimpleAllDocsView() {
-		views.put("simpleAllDocs", new SimpleView("function(doc) {\n  emit(doc._id, null);\n}"));
+		views.put("simpleAllDocs", new SimpleView(DesignResource.VIEW_JAVASCRIPT_SIMPLE_ALL_DOCS.getAsString()));
 		return this;
 	}
 	public MutablePacketsDesign setReadonlyAuth() {
-		this.validateDocUpdate = "function(newDoc, oldDoc, userCtx, secObj) {\n\n  secObj.admins = secObj.admins || {};\n  secObj.admins.names = secObj.admins.names || [];\n  secObj.admins.roles = secObj.admins.roles || [];\n\n  var isAdmin = false;\n  if(userCtx.roles.indexOf('_admin') !== -1) {\n    isAdmin = true;\n  }\n  if(secObj.admins.names.indexOf(userCtx.name) !== -1) {\n    isAdmin = true;\n  }\n  for(var i = 0; i < userCtx.roles; i++) {\n    if(secObj.admins.roles.indexOf(userCtx.roles[i]) !== -1) {\n      isAdmin = true;\n    }\n  }\n\n  if(!isAdmin) {\n    throw {'unauthorized':'This is read only when unauthorized'};\n  }\n}";
+		this.validateDocUpdate = DesignResource.VALIDATE_JAVASCRIPT_READONLY_AUTH.getAsString();
 		return this;
 	}
 

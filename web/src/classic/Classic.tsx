@@ -77,7 +77,7 @@ function Classic() {
           </p>
         </div>
       </section>
-      <h6 className={styles.header}>Programmed by Josh and Dave</h6>
+      <h6 className={styles.header}>Programmed by Lavender</h6>
     </div>
   </>
 }

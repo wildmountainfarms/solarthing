@@ -64,14 +64,14 @@ You should follow this to create a user to upload data: https://stackoverflow.co
 You can also use that to create a user that can be used to read the database if you decide to require authentication to read the database
 
 ## Manual Maintenance
-CouchDB should do this automatically, but in case it doesn, run this: (replace joshua with your username)
+CouchDB should do this automatically, but in case it doesn, run this: (replace lavender with your username)
 
 ```shell script
-curl -H "Content-Type: application/json" -X POST -u joshua http://localhost:5984/solarthing/_compact
+curl -H "Content-Type: application/json" -X POST -u lavender http://localhost:5984/solarthing/_compact
 ```
 And this too:
 ```shell script
-curl -H "Content-Type: application/json" -X POST -u joshua http://localhost:5984/solarthing/_compact/packets
+curl -H "Content-Type: application/json" -X POST -u lavender http://localhost:5984/solarthing/_compact/packets
 ```
 
 ### Temporary CouchDB

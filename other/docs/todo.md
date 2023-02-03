@@ -117,9 +117,11 @@ and also react to messages that have been fully processed (request successfully 
 * Ability to upload to a backup CouchDB database, but with a unique document ID as to not cause conflicts when the databases sync again
 * Add page to SolarThing web to create actions
 * Allow config files to be specified inline, and also allow inheriting of properties from other files
+* Make couchdb setup program tell more information about the database being configured.
+* Look into https://www.mojohaus.org/animal-sniffer/
 * Allow jsonnet in configuration files
 * Alert to tell us if the revision ID is getting large on a particular document.
-This can help us know if the throttle factor is set too low on any SolarThing instance
+  This can help us know if the throttle factor is set too low on any SolarThing instance
 * Use http://doc.forecast.solar/doku.php?id=api:estimate as alternative to solcast
   * Also look at https://solargis.com/products/solar-power-forecast/overview
 

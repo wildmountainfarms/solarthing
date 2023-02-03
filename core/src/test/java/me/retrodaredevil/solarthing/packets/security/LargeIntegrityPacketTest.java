@@ -21,7 +21,7 @@ class LargeIntegrityPacketTest {
 		Cipher cipher = Cipher.getInstance(KeyUtil.CIPHER_TRANSFORMATION);
 		String encryptedHash = Encrypt.encrypt(cipher, keyPair.getPrivate(), data);
 
-		LargeIntegrityPacket packet = new ImmutableLargeIntegrityPacket("josh", encryptedHash, payload);
+		LargeIntegrityPacket packet = new ImmutableLargeIntegrityPacket("android-asdf", encryptedHash, payload);
 		String hashString = Decrypt.decrypt(cipher, keyPair.getPublic(), packet.getEncryptedHash());
 		assertEquals(data, hashString);
 		assertArrayEquals(Base64Variants.getDefaultVariant().decode(hashString.split(",", 2)[1]), HashUtil.hash(packet.getPayload()));

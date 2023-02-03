@@ -24,6 +24,9 @@ indent_size = 2
 indent_style = space
 indent_size = 4
 
+[.idea/**.xml]
+indent_size = 2
+
 [{*.py,*.g,*.g4}]
 indent_style = space
 indent_size = 4
