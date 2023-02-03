@@ -19,7 +19,7 @@ dependencies {
 
     implementation "org.apache.logging.log4j:log4j-core:$log4jVersion" // used for our custom error handler, otherwise not a necessary dependency
     implementation "org.apache.logging.log4j:log4j-jcl:$log4jVersion" // commons logging bridge.
-    implementation "org.apache.logging.log4j:log4j-slf4j-impl:$log4jVersion"
+    implementation "org.apache.logging.log4j:log4j-slf4j2-impl:$log4jVersion"
     implementation 'com.brsanthu:google-analytics-java:2.0.0'
 
     // https://github.com/slackapi/java-slack-sdk/releases
