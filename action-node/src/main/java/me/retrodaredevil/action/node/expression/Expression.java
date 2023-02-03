@@ -14,6 +14,8 @@ public interface Expression {
 	 * @return The known type of the expression or null. Null represents that the type is unknown until {@link #evaluate()} is called
 	 */
 	default ExpressionType getType() {
+		// TODO determine if this method is even needed. (When is it actually needed by something and when does it get in the way)
+		//   As of 2023.02.02 we don't even implement it everywhere since null is a valid value in any scenario with the recent introduction of the ref implementation
 		return null;
 	}
 

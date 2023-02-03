@@ -11,6 +11,9 @@ import me.retrodaredevil.action.node.environment.NanoTimeProviderEnvironment;
 import me.retrodaredevil.action.node.environment.VariableEnvironment;
 import me.retrodaredevil.io.serial.SerialConfigBuilder;
 import me.retrodaredevil.solarthing.FragmentedPacketGroupProvider;
+import me.retrodaredevil.solarthing.actions.CommonActionUtil;
+import me.retrodaredevil.solarthing.actions.config.ActionFormat;
+import me.retrodaredevil.solarthing.actions.config.ActionReference;
 import me.retrodaredevil.solarthing.actions.environment.LatestFragmentedPacketGroupEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnvironment;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
@@ -34,8 +37,13 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.*;
@@ -43,11 +51,13 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DeserializeTest {
 	private static final File SOLARTHING_ROOT = new File(".."); // Working directory for tests are the /client folder
 	private static final File BASE_CONFIG_DIRECTORY = new File(SOLARTHING_ROOT, "config_templates/base");
-	private static final File ACTION_CONFIG_DIRECTORY = new File(SOLARTHING_ROOT, "config_templates/actions");
+	private static final File ACTION_JSON_CONFIG_DIRECTORY = new File(SOLARTHING_ROOT, "config_templates/actions");
+	private static final Path ACTION_NS_CONFIG_DIRECTORY = SOLARTHING_ROOT.toPath().resolve("config_templates/actions-ns");
 	private static final File DATABASE_CONFIG_DIRECTORY = new File(SOLARTHING_ROOT, "config_templates/databases");
 	private static final File IO_CONFIG_DIRECTORY = new File(SOLARTHING_ROOT, "config_templates/io");
 
 	private static final FileFilter JSON_FILTER = file -> file.getName().endsWith(".json");
+	private static final DirectoryStream.Filter<? super Path> NOTATION_SCRIPT_FILTER = path -> path.getFileName().toString().endsWith(".ns");
 
 	private static final ObjectMapper MAPPER = ActionUtil.registerActionNodes(DatabaseSettingsUtil.registerDatabaseSettings(JacksonUtil.defaultMapper()));
 
@@ -86,6 +96,14 @@ public class DeserializeTest {
 		assertTrue(files.length >= 3);
 		return files;
 	}
+	private List<Path> getNotationScriptFiles(Path directory) throws IOException {
+		List<Path> files = new ArrayList<>();
+		try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(directory, NOTATION_SCRIPT_FILTER)) {
+			directoryStream.forEach(files::add);
+		}
+		assertTrue(files.size() >= 1);
+		return files;
+	}
 
 	@Test
 	void testAllBaseConfigs() {
@@ -108,7 +126,7 @@ public class DeserializeTest {
 		}
 	}
 	@Test
-	void testAllActions() {
+	void testJsonActions() {
 		/*
 		Also note that mattermost stuff was here, so we may not need it after it was removed on 2021.05.13
 
@@ -120,7 +138,7 @@ public class DeserializeTest {
 		TODO in future, uncomment if https://github.com/FasterXML/jackson-databind/issues/3072 is implemented
 		 */
 
-		for (File configFile : getJsonFiles(ACTION_CONFIG_DIRECTORY)) {
+		for (File configFile : getJsonFiles(ACTION_JSON_CONFIG_DIRECTORY)) {
 			if (configFile.getName().equals("message_sender.json")) {
 				// We cannot test this one because it tries to read the file "config/mattermost.json", and we currently don't have a mechanism to change that
 				continue;
@@ -129,6 +147,17 @@ public class DeserializeTest {
 				MAPPER.readValue(configFile, ActionNode.class);
 			} catch (IOException ex) {
 				fail("Failed parsing config: " + configFile, ex);
+			}
+		}
+	}
+	@Test
+	void testNotationScriptActions() throws IOException {
+		for (Path notationScriptFile : getNotationScriptFiles(ACTION_NS_CONFIG_DIRECTORY)) {
+			ActionReference actionReference = new ActionReference(notationScriptFile, ActionFormat.NOTATION_SCRIPT);
+			try {
+				CommonActionUtil.readActionReference(MAPPER, actionReference);
+			} catch (IOException ex) {
+				fail("Failed parsing script: " + notationScriptFile, ex);
 			}
 		}
 	}
@@ -160,7 +189,7 @@ public class DeserializeTest {
 
 	@Test
 	void testRunAlertGeneratorOffWhileAuxOn() throws IOException, ParsePacketAsciiDecimalDigitException, CheckSumException {
-		File file = new File(ACTION_CONFIG_DIRECTORY, "alert_generator_off_while_aux_on.json");
+		File file = new File(ACTION_JSON_CONFIG_DIRECTORY, "alert_generator_off_while_aux_on.json");
 		ActionNode actionNode = MAPPER.readValue(file, ActionNode.class);
 		// We need to simulate an automation program environment to run this action
 		Duration[] timeReference = new Duration [] { Duration.ZERO };

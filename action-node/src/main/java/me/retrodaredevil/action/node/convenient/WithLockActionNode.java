@@ -33,15 +33,15 @@ public class WithLockActionNode implements ActionNode {
 	private final ActionNode finallyAction;
 
 	public WithLockActionNode(
-			@JsonProperty("name") String lockName,
-			@JsonProperty(value = "set") String lockSetName,
-			@JsonProperty("action") ActionNode action,
+			@JsonProperty(value = "name", required = true) String lockName,
+			@JsonProperty("set") String lockSetName,
+			@JsonProperty(value = "action", required = true) ActionNode action,
 			@JsonProperty("timeout") ActionNode timeoutAction,
 			@JsonProperty("ontimeout") ActionNode onTimeoutAction,
 			@JsonProperty("finally") ActionNode finallyAction) {
-		requireNonNull(this.lockName = lockName);
+		this.lockName = requireNonNull(lockName);
 		this.lockSetName = lockSetName;
-		requireNonNull(this.action = action);
+		this.action = requireNonNull(action);
 		this.timeoutAction = timeoutAction == null ? PassActionNode.getInstance() : timeoutAction;
 		this.onTimeoutAction = onTimeoutAction == null ? PassActionNode.getInstance() : onTimeoutAction;
 		this.finallyAction = finallyAction == null ? PassActionNode.getInstance() : finallyAction;

@@ -231,6 +231,7 @@ public class SolarThingGraphQLSolcastService {
 	}
 
 	private static class SolcastHandler {
+		@SuppressWarnings("FieldCanBeLocal")
 		private final SolcastService service;
 		private final EstimatedActualCache cache;
 		private final String sourceId;

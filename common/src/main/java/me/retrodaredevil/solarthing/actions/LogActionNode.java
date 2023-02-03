@@ -17,6 +17,7 @@ public class LogActionNode implements ActionNode {
 	private final boolean debug;
 	private final boolean summary;
 
+	// TODO allow this to accept an expression similar to PrintActionNode
 	public LogActionNode(
 			@JsonProperty(value = "message", required = true) String message,
 			@JsonProperty("debug") Boolean debug,

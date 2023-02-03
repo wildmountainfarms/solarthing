@@ -1,4 +1,6 @@
 scope : queue {
   print "Hello there how are you?"
-  log("Cool message", summary = true); call someAction
+  // This code does not have to be run, just has to be parsed
+  // This code cannot contain SolarThing specific nodes
+  call someAction
 }

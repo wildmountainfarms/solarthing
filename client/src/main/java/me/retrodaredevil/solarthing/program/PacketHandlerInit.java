@@ -61,6 +61,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -73,7 +74,6 @@ public class PacketHandlerInit {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PacketHandlerInit.class);
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
-	private static final ObjectMapper CONFIG_MAPPER = ActionUtil.registerActionNodes(JacksonUtil.defaultMapper());
 
 	public static PacketHandlerBundle getPacketHandlerBundle(List<DatabaseConfig> configs, String uniqueStatusName, String uniqueEventName, String sourceId, int fragmentId){
 		List<PacketHandler> statusPacketHandlers = new ArrayList<>();
@@ -181,7 +181,7 @@ public class PacketHandlerInit {
 			LatestPacketHandler latestPacketHandler = new LatestPacketHandler(); // this is used to determine the state of the system when a command is requested
 			statusPacketHandlers.add(latestPacketHandler);
 
-			Map<String, ActionNode> actionNodeMap = ActionUtil.getActionNodeMap(CONFIG_MAPPER, options);
+			Map<String, ActionNode> actionNodeMap = ActionUtil.createCommandNameToActionNodeMap(options);
 			ActionNodeDataReceiver commandReceiver = new ActionNodeDataReceiver(
 					actionNodeMap,
 					(executionReason, injectEnvironmentBuilder) -> {
@@ -225,12 +225,14 @@ public class PacketHandlerInit {
 		return new Result(bundle, updateCommandActions);
 	}
 	private static <T extends ActionsOption & PacketHandlingOption> PacketHandler createActionExecutorPacketHandler(T options, Supplier<? extends EnvironmentUpdater> environmentUpdaterSupplier) throws IOException {
-		List<ActionNode> actionNodes = ActionUtil.getActionNodes(options);
+		requireNonNull(options);
 		requireNonNull(environmentUpdaterSupplier);
+		List<ActionNodeEntry> originalActionNodeEntries = ActionUtil.createActionNodeEntries(options);
 
 		VariableEnvironment globalVariableEnvironment = new VariableEnvironment();
 
 		ActionMultiplexer multiplexer = new Actions.ActionMultiplexerBuilder().build();
+		List<ActionNodeEntry> actionNodeEntries = new ArrayList<>(originalActionNodeEntries); // entries may be removed from this list
 
 		PacketCollection[] packetCollectionReference = new PacketCollection[] { null };
 		LatestPacketGroupEnvironment latestPacketGroupEnvironment = new LatestPacketGroupEnvironment(() -> requireNonNull(packetCollectionReference[0], "Using latestPacketGroupEnvironment before initializing packet collection!"));
@@ -250,8 +252,12 @@ public class PacketHandlerInit {
 			environmentUpdater.updateInjectEnvironment(executionReason, injectEnvironmentBuilder);
 			InjectEnvironment injectEnvironment = injectEnvironmentBuilder.build();
 
-			for (ActionNode actionNode : actionNodes) {
-				multiplexer.add(actionNode.createAction(new ActionEnvironment(globalVariableEnvironment, injectEnvironment)));
+			for (Iterator<ActionNodeEntry> iterator = actionNodeEntries.iterator(); iterator.hasNext(); ) {
+				ActionNodeEntry actionNodeEntry = iterator.next();
+				multiplexer.add(actionNodeEntry.getActionNode().createAction(new ActionEnvironment(globalVariableEnvironment, injectEnvironment)));
+				if (actionNodeEntry.isRunOnce()) {
+					iterator.remove();
+				}
 			}
 			multiplexer.update();
 		};

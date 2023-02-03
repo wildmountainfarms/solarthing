@@ -41,6 +41,7 @@ public class CommandHandler {
 		if (command == null) {
 			return null;
 		}
+		// TODO put some of this logic in the common module
 		try {
 			return CONFIG_MAPPER.readValue(command.getActionFile(), ActionNode.class);
 		} catch (IOException e) {

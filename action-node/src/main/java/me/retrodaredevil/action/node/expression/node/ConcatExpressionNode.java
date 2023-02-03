@@ -13,12 +13,12 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
-@JsonTypeName("union")
-public class UnionExpressionNode implements ExpressionNode {
+@JsonTypeName("concat")
+public class ConcatExpressionNode implements ExpressionNode {
 	private final List<ExpressionNode> expressionNodes;
 
 	@JsonCreator
-	public UnionExpressionNode(@JsonProperty(value = "expressions", required = true) List<ExpressionNode> expressionNodes) {
+	public ConcatExpressionNode(@JsonProperty(value = "expressions", required = true) List<ExpressionNode> expressionNodes) {
 		this.expressionNodes = requireNonNull(expressionNodes);
 	}
 

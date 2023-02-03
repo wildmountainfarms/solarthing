@@ -229,7 +229,7 @@ project(":common"){
     apply plugin: 'java'
     dependencies {
         api project(":core")
-        api project(":action-node")
+        api project(":action-lang")
         annotationProcessor project(":process-annotations")
     }
 }
@@ -240,7 +240,6 @@ project(":client"){
         api project(":core")
         api project(":common")
         api project(":serviceapi")
-        api project(":action-node")
         annotationProcessor project(":process-annotations")
     }
     test {
@@ -276,7 +275,6 @@ project(":graphql"){
         api project(":core")
         api project(":common")
         api project(":serviceapi")
-        api project(":action-node")
         annotationProcessor project(":process-annotations")
     }
 }

@@ -7,11 +7,14 @@ import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.config.request.DataRequester;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static java.util.Objects.requireNonNull;
+
 @SuppressWarnings("FieldCanBeLocal")
-abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements PacketHandlingOption {
+abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements PacketHandlingOption, ActionsOption, CommandOption, AnalyticsOption {
 //	private static final Logger LOGGER = LoggerFactory.getLogger(PacketHandlingOptionBase.class);
 
 	@JsonProperty
@@ -29,8 +32,19 @@ abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements Pa
 	@JsonProperty("request")
 	private @Nullable List<DataRequester> dataRequesterList;
 
+	@JsonProperty("commands")
+	private List<CommandConfig> commandConfigs;
+
+	@JsonProperty(AnalyticsOption.PROPERTY_NAME)
+	private boolean isAnalyticsEnabled = AnalyticsOption.DEFAULT_IS_ANALYTICS_ENABLED;
+
+	@JsonProperty("actions")
+	private List<File> actionNodeFiles = new ArrayList<>();
+	@JsonProperty("action_config")
+	private ActionConfig actionConfig = ActionConfig.EMPTY;
+
 	@Override
-	public @NotNull List<File> getDatabaseConfigurationFiles() {
+	public final @NotNull List<File> getDatabaseConfigurationFiles() {
 		List<File> r = databases;
 		if(r == null){
 			return Collections.emptyList();
@@ -39,31 +53,50 @@ abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements Pa
 	}
 
 	@Override
-	public @NotNull String getSourceId() {
+	public final @NotNull String getSourceId() {
 		return SourceIdValidator.validateSourceId(source);
 	}
 
 	@Override
-	public int getFragmentId() {
+	public final int getFragmentId() {
 		return fragment;
 	}
 
 	@Override
-	public Integer getUniqueIdsInOneHour() {
+	public final Integer getUniqueIdsInOneHour() {
 		return unique;
 	}
 
 	@Override
-	public boolean isDocumentIdShort() {
+	public final boolean isDocumentIdShort() {
 		return isShortId;
 	}
 
 	@Override
-	public @NotNull List<DataRequester> getDataRequesterList() {
+	public final @NotNull List<DataRequester> getDataRequesterList() {
 		List<DataRequester> r = dataRequesterList;
 		if (r == null) {
 			return Collections.emptyList();
 		}
 		return r;
+	}
+
+	@Override
+	public final @Nullable List<CommandConfig> getDeclaredCommandsNullable() {
+		return commandConfigs;
+	}
+	@Override
+	public final boolean isAnalyticsOptionEnabled() {
+		return isAnalyticsEnabled;
+	}
+
+	@Override
+	public final List<File> getActionNodeFiles() {
+		return requireNonNull(actionNodeFiles, "You cannot use a null value for the actions property! Use an empty array or leave it undefined.");
+	}
+
+	@Override
+	public final ActionConfig getActionConfig() {
+		return requireNonNull(actionConfig);
 	}
 }

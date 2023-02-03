@@ -3,20 +3,17 @@ package me.retrodaredevil.solarthing.config.options;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("mate")
 @JsonIgnoreProperties("allow_commands")
-public class MateProgramOptions extends PacketHandlingOptionBase implements IOBundleOption, AnalyticsOption, ProgramOptions, CommandOption, ActionsOption {
+public class MateProgramOptions extends PacketHandlingOptionBase implements IOBundleOption, ProgramOptions {
 
 	@JsonProperty("ignore_check_sum")
 	private boolean ignoreCheckSum = false;
@@ -29,21 +26,7 @@ public class MateProgramOptions extends PacketHandlingOptionBase implements IOBu
 	@JsonProperty("fx_warning_ignore")
 	private Map<Integer, Integer> fxWarningIgnoreMap;
 
-	@JsonProperty("commands")
-	private List<CommandConfig> commandConfigs;
 
-	@JsonProperty(AnalyticsOption.PROPERTY_NAME)
-	private boolean isAnalyticsEnabled = AnalyticsOption.DEFAULT_IS_ANALYTICS_ENABLED;
-
-
-	@JsonProperty("actions")
-	private List<File> actionNodeFiles = new ArrayList<>();
-
-
-	@Override
-	public @Nullable List<CommandConfig> getDeclaredCommandsNullable() {
-		return commandConfigs;
-	}
 
 	public boolean isIgnoreCheckSum() {
 		return ignoreCheckSum;
@@ -52,15 +35,6 @@ public class MateProgramOptions extends PacketHandlingOptionBase implements IOBu
 		return correctCheckSum;
 	}
 
-	@Override
-	public boolean isAnalyticsOptionEnabled() {
-		return isAnalyticsEnabled;
-	}
-
-	@Override
-	public List<File> getActionNodeFiles() {
-		return requireNonNull(actionNodeFiles, "You cannot use a null value for the actions property! Use an empty array or leave it undefined.");
-	}
 
 	@Override
 	public File getIOBundleFile() {

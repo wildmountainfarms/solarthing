@@ -71,6 +71,11 @@ General rule of thumb:
   * Why the custom NotNull/Nullable? We want good Kotlin support, and we want to be able to annotate more than just methods.
 * If something is exposed through GraphQL and it is not null, always put a `@NotNull` on it.
 
+### Other Conventions
+* Use `java.nio.file` rather than `java.io`.
+* Use `this.myVariable = requireNonNull(myVariable)` over `requireNonNull(this.myVariable = myVariable)`.
+  There is legacy code with the ladder.
+
 ### Branching
 If you are committing directly to the wildmountainfarms/solarthing project, you should be using branch names using
 the `my-branch-name` format. Unless you have access to commit to the solarthing project directly, 

@@ -22,10 +22,10 @@ scope : queue {
     init x : const 3
     init y : ref x
     init-exp z : ref x
-    print : join : union { const "x: "; str : ref x }
+    print : join : concat { const "x: "; str : ref x }
     set x : const 4
-    print : join : union { const "y: "; str : ref y }
-    print : join : union { const "z: "; str : ref z }
+    print : join : concat { const "y: "; str : ref y }
+    print : join : concat { const "z: "; str : ref z }
 
     call doSomething
   }

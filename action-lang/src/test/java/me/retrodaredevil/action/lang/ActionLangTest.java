@@ -5,11 +5,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.lang.antlr.NodeParser;
-import me.retrodaredevil.action.lang.translators.json.CustomNodeConfiguration;
 import me.retrodaredevil.action.lang.translators.json.JsonNodeTranslator;
-import me.retrodaredevil.action.lang.translators.json.NodeConfiguration;
 import me.retrodaredevil.action.lang.translators.json.SimpleConfigurationProvider;
-import me.retrodaredevil.action.lang.translators.json.SimpleNodeConfiguration;
 import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.action.node.environment.InjectEnvironment;
@@ -20,51 +17,11 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
-import static java.util.Collections.emptyList;
-import static java.util.Collections.emptyMap;
 import static java.util.Objects.requireNonNull;
 
 public class ActionLangTest {
 
 	private static final ObjectMapper MAPPER = new ObjectMapper();
-	private static final Map<String, NodeConfiguration> CONFIG_MAP;
-	static {
-		Map<String, NodeConfiguration> configMap = new HashMap<>();
-		configMap.put("racer", CustomNodeConfiguration.RACER);
-
-		// actions
-		configMap.put("race", new SimpleNodeConfiguration("type", emptyList(), emptyMap(), "racers", null));
-		configMap.put("scope", new SimpleNodeConfiguration("type", emptyList(), emptyMap(), null, "action"));
-		configMap.put("act", new SimpleNodeConfiguration("type", Arrays.asList("name"), emptyMap(), null, "action"));
-		configMap.put("queue", new SimpleNodeConfiguration("type", emptyList(), emptyMap(), "actions", null));
-		configMap.put("parallel", new SimpleNodeConfiguration("type", emptyList(), emptyMap(), "actions", null));
-		configMap.put("print", new SimpleNodeConfiguration("type", Arrays.asList("message"), emptyMap(), null, "expression"));
-		configMap.put("log", new SimpleNodeConfiguration("type", Arrays.asList("message"), emptyMap(), null, null));
-		configMap.put("call", new SimpleNodeConfiguration("type", Arrays.asList("name"), emptyMap(), null, null));
-
-		configMap.put("init", new SimpleNodeConfiguration("type", Arrays.asList("name"), emptyMap(), null, "expression"));
-		configMap.put("init-exp", new SimpleNodeConfiguration("type", Arrays.asList("name"), emptyMap(), null, "expression"));
-		configMap.put("set", new SimpleNodeConfiguration("type", Arrays.asList("name"), emptyMap(), null, "expression"));
-		configMap.put("set-exp", new SimpleNodeConfiguration("type", Arrays.asList("name"), emptyMap(), null, "expression"));
-
-		configMap.put("all", new SimpleNodeConfiguration("type", emptyList(), emptyMap(), null, "expression"));
-		configMap.put("any", new SimpleNodeConfiguration("type", emptyList(), emptyMap(), null, "expression"));
-		configMap.put("wait", new SimpleNodeConfiguration("type", Arrays.asList("duration"), emptyMap(), null, null));
-
-		// expressions
-		configMap.put("const", new SimpleNodeConfiguration("type", Arrays.asList("value"), emptyMap(), null, null));
-		configMap.put("str", new SimpleNodeConfiguration("type", emptyList(), emptyMap(), null, "expression"));
-		configMap.put("ref", new SimpleNodeConfiguration("type", Arrays.asList("name"), emptyMap(), null, null));
-		configMap.put("eval", new SimpleNodeConfiguration("type", Arrays.asList("name"), emptyMap(), null, null));
-		configMap.put("join", new SimpleNodeConfiguration("type", emptyList(), emptyMap(), null, "expression"));
-		configMap.put("union", new SimpleNodeConfiguration("type", emptyList(), emptyMap(), "expressions", null));
-		CONFIG_MAP = Collections.unmodifiableMap(configMap);
-	}
 
 	@Test
 	void testCode() throws IOException {
@@ -73,8 +30,8 @@ public class ActionLangTest {
 		));
 
 		NodeTranslator<JsonNode> translator = new JsonNodeTranslator(new SimpleConfigurationProvider(
-				new SimpleNodeConfiguration("type", emptyList(), Collections.emptyMap(), null, null),
-				CONFIG_MAP
+				ActionLangUtil.createDefaultNodeConfigurationBuilder().build(),
+				ActionLangUtil.NODE_CONFIG_MAP
 		));
 		System.out.println(translator.translate(node));
 	}
@@ -90,8 +47,8 @@ public class ActionLangTest {
 		));
 
 		NodeTranslator<JsonNode> translator = new JsonNodeTranslator(new SimpleConfigurationProvider(
-				new SimpleNodeConfiguration("type", emptyList(), Collections.emptyMap(), null, null),
-				CONFIG_MAP
+				ActionLangUtil.createDefaultNodeConfigurationBuilder().build(),
+				ActionLangUtil.NODE_CONFIG_MAP
 		));
 		JsonNode json = translator.translate(node);
 		System.out.println(json);

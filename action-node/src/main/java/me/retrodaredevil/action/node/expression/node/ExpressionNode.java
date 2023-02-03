@@ -11,7 +11,7 @@ import me.retrodaredevil.action.node.expression.Expression;
 		@JsonSubTypes.Type(VariableReferenceExpressionNode.class),
 		@JsonSubTypes.Type(ToStringExpressionNode.class),
 		@JsonSubTypes.Type(JoinStringExpressionNode.class),
-		@JsonSubTypes.Type(UnionExpressionNode.class),
+		@JsonSubTypes.Type(ConcatExpressionNode.class),
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 public interface ExpressionNode {

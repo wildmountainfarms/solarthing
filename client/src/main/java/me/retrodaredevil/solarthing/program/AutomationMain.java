@@ -2,7 +2,6 @@ package me.retrodaredevil.solarthing.program;
 
 import me.retrodaredevil.action.ActionMultiplexer;
 import me.retrodaredevil.action.Actions;
-import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.action.node.environment.InjectEnvironment;
 import me.retrodaredevil.action.node.environment.NanoTimeProviderEnvironment;
@@ -38,6 +37,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.time.Clock;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -49,7 +50,7 @@ public final class AutomationMain {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AutomationMain.class);
 
 	public static int startAutomation(AutomationProgramOptions options) throws IOException {
-		return startAutomation(ActionUtil.getActionNodes(options), options, options.getPeriodMillis());
+		return startAutomation(ActionUtil.createActionNodeEntries(options), options, options.getPeriodMillis());
 	}
 
 	private static void queryAndFeed(MillisDatabase millisDatabase, ResourceManager<SimpleDatabaseCache> databaseCacheManager, boolean useEndDate) {
@@ -80,7 +81,7 @@ public final class AutomationMain {
 	}
 
 	@SuppressWarnings("InconsistentOverloads")
-	public static int startAutomation(List<ActionNode> actionNodes, DatabaseTimeZoneOptionBase options, long periodMillis) {
+	public static int startAutomation(List<ActionNodeEntry> originalActionNodeEntries, DatabaseTimeZoneOptionBase options, long periodMillis) {
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Starting automation program.");
 		final CouchDbDatabaseSettings couchSettings;
 		try {
@@ -123,6 +124,7 @@ public final class AutomationMain {
 				.build();
 
 		ActionMultiplexer multiplexer = new Actions.ActionMultiplexerBuilder().build();
+		List<ActionNodeEntry> actionNodeEntries = new ArrayList<>(originalActionNodeEntries); // entries may be removed from this list
 		while (!Thread.currentThread().isInterrupted()) {
 			queryAndFeed(database.getStatusDatabase(), statusDatabaseCacheManager, true);
 			queryAndFeed(database.getEventDatabase(), eventDatabaseCacheManager, true);
@@ -145,8 +147,12 @@ public final class AutomationMain {
 				FragmentedPacketGroup statusPacketGroup = statusPacketGroups.get(statusPacketGroups.size() - 1);
 				latestPacketGroupReference.set(statusPacketGroup);
 			}
-			for (ActionNode actionNode : actionNodes) {
-				multiplexer.add(actionNode.createAction(new ActionEnvironment(globalVariableEnvironment, injectEnvironment)));
+			for (Iterator<ActionNodeEntry> iterator = actionNodeEntries.iterator(); iterator.hasNext(); ) {
+				ActionNodeEntry actionNodeEntry = iterator.next();
+				multiplexer.add(actionNodeEntry.getActionNode().createAction(new ActionEnvironment(globalVariableEnvironment, injectEnvironment)));
+				if (actionNodeEntry.isRunOnce()) {
+					iterator.remove();
+				}
 			}
 			multiplexer.update();
 			LOGGER.debug("There are " + multiplexer.getActiveActions().size() + " active actions");

@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.program;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.action.node.ActionNode;
+import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.actions.CommonActionUtil;
 import me.retrodaredevil.solarthing.actions.chatbot.WrappedSlackChatBotActionNode;
 import me.retrodaredevil.solarthing.actions.command.ExecutingCommandFeedbackActionNode;
@@ -20,9 +21,15 @@ import me.retrodaredevil.solarthing.actions.solcast.SolcastActionNode;
 import me.retrodaredevil.solarthing.actions.tracer.TracerLoadActionNode;
 import me.retrodaredevil.solarthing.actions.tracer.modbus.TracerModbusActionNode;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
+import me.retrodaredevil.solarthing.actions.config.ActionFormat;
+import me.retrodaredevil.solarthing.actions.config.ActionReference;
+import me.retrodaredevil.solarthing.config.options.ActionConfig;
 import me.retrodaredevil.solarthing.config.options.ActionsOption;
 import me.retrodaredevil.solarthing.config.options.CommandOption;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
+import org.jetbrains.annotations.Contract;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,9 +41,11 @@ import java.util.Map;
 @UtilityClass
 public final class ActionUtil {
 	private ActionUtil() { throw new UnsupportedOperationException(); }
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionUtil.class);
 
 	private static final ObjectMapper CONFIG_MAPPER = ActionUtil.registerActionNodes(JacksonUtil.defaultMapper());
 
+	@Contract("null -> fail; _ -> param1")
 	public static ObjectMapper registerActionNodes(ObjectMapper objectMapper) {
 		objectMapper.registerSubtypes(
 				MateCommandActionNode.class,
@@ -66,22 +75,33 @@ public final class ActionUtil {
 		return CommonActionUtil.registerActionNodes(objectMapper);
 	}
 
-	public static Map<String, ActionNode> getActionNodeMap(ObjectMapper objectMapper, CommandOption options) throws IOException {
+	public static Map<String, ActionNode> createCommandNameToActionNodeMap(CommandOption options) throws IOException {
 		Map<String, ActionNode> actionNodeMap = new HashMap<>();
-		for (Map.Entry<String, File> entry : options.getCommandFileMap().entrySet()) {
+		for (Map.Entry<String, ActionReference> entry : options.getCommandNameToActionReferenceMap().entrySet()) {
 			String name = entry.getKey();
-			File file = entry.getValue();
-			final ActionNode actionNode = objectMapper.readValue(file, ActionNode.class);
-			actionNodeMap.put(name, actionNode);
+			ActionReference actionReference = entry.getValue();
+			actionNodeMap.put(name, CommonActionUtil.readActionReference(CONFIG_MAPPER, actionReference));
 		}
 		return actionNodeMap;
 	}
 
-	public static List<ActionNode> getActionNodes(ActionsOption options) throws IOException {
-		List<ActionNode> actionNodes = new ArrayList<>();
+	public static List<ActionNodeEntry> createActionNodeEntries(ActionsOption options) throws IOException {
+		List<ActionNodeEntry> actionNodeEntries = new ArrayList<>();
 		for (File file : options.getActionNodeFiles()) {
-			actionNodes.add(CONFIG_MAPPER.readValue(file, ActionNode.class));
+			// We hardcode RAW_JSON here because getActionNodeFiles() is a legacy configuration,
+			//   so this for loop can be removed eventually in the future
+			ActionNode actionNode = CommonActionUtil.readActionReference(CONFIG_MAPPER, new ActionReference(file.toPath(), ActionFormat.RAW_JSON));
+			actionNodeEntries.add(new ActionNodeEntry(actionNode, false));
 		}
-		return actionNodes;
+		if (!actionNodeEntries.isEmpty()) {
+			LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "(Deprecated) Please use action_config configuration instead of actions!");
+		}
+		ActionConfig actionConfig = options.getActionConfig();
+		for (ActionConfig.Entry entry : actionConfig.getEntries()) {
+			ActionNode actionNode = CommonActionUtil.readActionReference(CONFIG_MAPPER, entry.getActionReference());
+			boolean runOnce = entry.isRunOnce();
+			actionNodeEntries.add(new ActionNodeEntry(actionNode, runOnce));
+		}
+		return actionNodeEntries;
 	}
 }

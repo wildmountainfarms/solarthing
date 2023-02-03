@@ -1,0 +1,28 @@
+scope : queue {
+  act is_aux_on : aux-state(on=true)
+  act is_aux_off : aux-state(on=false)
+  act is_generator_on : ac-mode(mode="No AC", not=true)
+  act is_generator_off : ac-mode(mode="No AC")
+  //act is_generator_off : any(equals(const "No AC", select ac-mode : master-fx))
+  act is_aux_on_and_generator_off : queue {
+    call is_aux_on
+    call is_generator_off
+  }
+  act is_aux_off_or_generator_on : race {
+    racer(call is_aux_off) : pass
+    racer(call is_generator_on) : pass
+  }
+  act send_alert : queue {
+    log "Aux is ON, but generator is not. Manually check generator for more info."
+  }
+  act continuous_check : with-lock "generator off while aux is on alert" : race {
+    racer(call is_aux_off_or_generator_on) : pass
+    racer(wait PT45S) : call send_alert
+  }
+
+  act main : race {
+    racer(call is_aux_on_and_generator_off) : call continuous_check
+    racer(pass) : pass
+  }
+  call main
+}

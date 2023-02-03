@@ -6,6 +6,7 @@ import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 
 import java.io.File;
 import java.time.Duration;
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
@@ -14,7 +15,9 @@ import static java.util.Objects.requireNonNull;
 @JsonExplicit
 public class AutomationProgramOptions extends DatabaseTimeZoneOptionBase implements ActionsOption {
 	@JsonProperty("actions")
-	private List<File> actionNodeFiles;
+	private List<File> actionNodeFiles = Collections.emptyList();
+	@JsonProperty("action_config")
+	private ActionConfig actionConfig = ActionConfig.EMPTY;
 
 	@JsonProperty("period")
 	private String periodDurationString = "PT5S";
@@ -26,8 +29,14 @@ public class AutomationProgramOptions extends DatabaseTimeZoneOptionBase impleme
 
 	@Override
 	public List<File> getActionNodeFiles() {
-		return requireNonNull(actionNodeFiles);
+		return requireNonNull(actionNodeFiles, "You cannot supply a null value here!");
 	}
+
+	@Override
+	public ActionConfig getActionConfig() {
+		return requireNonNull(actionConfig);
+	}
+
 	public long getPeriodMillis() {
 		return Duration.parse(periodDurationString).toMillis();
 	}

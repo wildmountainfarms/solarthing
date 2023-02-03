@@ -77,7 +77,7 @@ public class JsonNodeTranslator implements NodeTranslator<JsonNode> {
 		} else if (argument instanceof BooleanArgument) {
 			return BooleanNode.valueOf(((BooleanArgument) argument).getValue());
 		} else if (argument instanceof StringArgument) {
-			String rawValue = ((StringArgument) argument).getValue(); // TODO parse this correct if it begins with "
+			String rawValue = ((StringArgument) argument).getValue();
 			return TextNode.valueOf(rawValue);
 		} else throw new AssertionError("Unknown argument type: " + argument.getClass().getName());
 	}
@@ -92,12 +92,15 @@ public class JsonNodeTranslator implements NodeTranslator<JsonNode> {
 		} else if (config instanceof SimpleNodeConfiguration) {
 			SimpleNodeConfiguration simpleNodeConfiguration = (SimpleNodeConfiguration) config;
 			ObjectNode objectNode = new ObjectNode(JsonNodeFactory.instance);
-			objectNode.set(simpleNodeConfiguration.getIdentifierFieldKey(), new TextNode(node.getIdentifier()));
+			String typeName = simpleNodeConfiguration.getIdentifierFieldValueOverride() == null
+					? node.getIdentifier()
+					: simpleNodeConfiguration.getIdentifierFieldValueOverride();
+			objectNode.set(simpleNodeConfiguration.getIdentifierFieldKey(), new TextNode(typeName));
 			List<String> positionalArgumentFieldNames = simpleNodeConfiguration.getPositionalArgumentFieldNames();
 			List<Argument> positionalArguments = node.getPositionalArguments();
 			if (positionalArguments.size() > positionalArgumentFieldNames.size()) {
 				// We check for too many positional arguments and let whatever parses the JSON decide if there is too few arguments
-				throw new IllegalArgumentException("Too many positional arguments!");
+				throw new IllegalArgumentException("Too many positional arguments for type: " + typeName);
 			}
 			for (int i = 0; i < positionalArguments.size(); i++) {
 				String fieldName = positionalArgumentFieldNames.get(i);

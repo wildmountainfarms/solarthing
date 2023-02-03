@@ -1,10 +1,10 @@
 package me.retrodaredevil.solarthing.config.options;
 
+import me.retrodaredevil.solarthing.actions.config.ActionReference;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.commands.CommandInfo;
 
-import java.io.File;
 import java.util.*;
 
 public interface CommandOption {
@@ -17,10 +17,10 @@ public interface CommandOption {
 		return commandConfigs;
 	}
 
-	default Map<String, File> getCommandFileMap() {
-		Map<String, File> commandFileMap = new HashMap<>();
+	default Map<String, ActionReference> getCommandNameToActionReferenceMap() {
+		Map<String, ActionReference> commandFileMap = new HashMap<>();
 		for (CommandConfig commandConfig : getDeclaredCommands()) {
-			commandFileMap.put(commandConfig.getName(), commandConfig.getActionFile());
+			commandFileMap.put(commandConfig.getCommandInfo().getName(), commandConfig.getActionReference());
 		}
 		return commandFileMap;
 	}
@@ -28,7 +28,7 @@ public interface CommandOption {
 		List<CommandConfig> commandConfigs = getDeclaredCommands();
 		List<CommandInfo> r = new ArrayList<>(commandConfigs.size());
 		for (CommandConfig commandConfig : commandConfigs) {
-			r.add(commandConfig.createCommandInfo());
+			r.add(commandConfig.getCommandInfo());
 		}
 		return r;
 	}

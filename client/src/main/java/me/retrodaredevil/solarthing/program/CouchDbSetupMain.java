@@ -188,6 +188,7 @@ public class CouchDbSetupMain {
 	private static class UserEntry {
 		@JsonProperty
 		private final String name;
+		@SuppressWarnings("FieldCanBeStatic")
 		@JsonProperty
 		private final String type = "user";
 		@JsonProperty

@@ -58,6 +58,7 @@ public class CacheHandler {
 			new DefaultIdentificationCacheCreator<>(new FXAccumulationCacheNodeCreator()),
 			new DefaultIdentificationCacheCreator<>(new BatteryRecordCacheNodeCreator())
 	);
+	@SuppressWarnings("FieldCanBeStatic") // This is not static because there may be a time when we want to customize this value per object
 	private final Duration duration = Duration.ofMinutes(15);
 
 	private final ObjectMapper mapper;
