@@ -40,4 +40,14 @@ public final class Node implements Argument {
 	public Node getLinkedNode() {
 		return linkedNode;
 	}
+
+	@Override
+	public String toString() {
+		return "Node(identifier=" + identifier
+				+ ",positionalArguments=" + arguments
+				+ ",namedArguments=" + namedArguments
+				+ ",subNodes=" + subNodes
+				+ ",linkedNode=" + linkedNode
+				+ ")";
+	}
 }

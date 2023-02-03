@@ -17,4 +17,9 @@ public enum BooleanArgument implements Argument {
 	public boolean getValue() {
 		return value;
 	}
+
+	@Override
+	public String toString() {
+		return value ? "true" : "false";
+	}
 }

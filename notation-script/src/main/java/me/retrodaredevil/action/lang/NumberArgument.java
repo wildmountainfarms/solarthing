@@ -12,4 +12,9 @@ public final class NumberArgument implements Argument {
 	public Number getValue() {
 		return value;
 	}
+
+	@Override
+	public String toString() {
+		return value.toString();
+	}
 }

@@ -3,6 +3,7 @@ package me.retrodaredevil.action.lang;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class ArrayArgument implements Argument {
 	private final List<Argument> values;
@@ -13,5 +14,10 @@ public final class ArrayArgument implements Argument {
 
 	public List<Argument> getValues() {
 		return values;
+	}
+
+	@Override
+	public String toString() {
+		return "[" + values.stream().map(Object::toString).collect(Collectors.joining(", ")) + "]";
 	}
 }

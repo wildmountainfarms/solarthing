@@ -119,7 +119,7 @@ public class JsonNodeTranslator implements NodeTranslator<JsonNode> {
 				objectNode.set(fieldName, fieldValue);
 			}
 			if (simpleNodeConfiguration.getSubNodesFieldKey() == null && !node.getSubNodes().isEmpty()) {
-				throw new IllegalArgumentException("Sub nodes not supported! identifier: " + node.getIdentifier());
+				throw new IllegalArgumentException("Sub nodes not supported! identifier: " + node.getIdentifier() + " subNodes: " + node.getSubNodes());
 			}
 			if (simpleNodeConfiguration.getSubNodesFieldKey() != null) {
 				List<JsonNode> subJsonNodeList = node.getSubNodes().stream().map(this::translate).collect(Collectors.toList());
