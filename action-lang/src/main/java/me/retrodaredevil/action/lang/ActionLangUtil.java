@@ -15,6 +15,7 @@ public final class ActionLangUtil {
 	static {
 		Map<String, NodeConfiguration> configMap = new HashMap<>();
 		configMap.put("racer", CustomNodeConfiguration.RACER);
+		configMap.put("data", CustomNodeConfiguration.DATA);
 
 		SimpleNodeConfiguration.Builder builder = createDefaultNodeConfigurationBuilder();
 

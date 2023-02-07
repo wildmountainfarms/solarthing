@@ -20,7 +20,8 @@ public interface TemperaturePacket extends WeatherPacket, SourcedData {
 	/**
 	 * Represents temperature celsius values that might indicate a bad reading
 	 */
-	Set<Float> POSSIBLE_BAD_VALUES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(0.0f, 16.0f, 24.0f, 25.0f)));
+	Set<Float> POSSIBLE_BAD_VALUES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(0.0f, 16.0f, 24.0f, 25.0f, 25.3f)));
+	// 25.3 is from https://pvoutput.org/intraday.jsp?id=80279&sid=72206&dt=20230202. I'm not sure if that really needs to be in this list or not
 
 	@DefaultFinal
 	@Override

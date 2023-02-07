@@ -30,7 +30,14 @@ argument_list
     : argument (NEW_LINE* COMMA NEW_LINE* argument)*
     ;
 named_argument_list
-    : IDENTIFIER EQUAL argument (NEW_LINE* COMMA NEW_LINE* IDENTIFIER EQUAL argument)*
+    : lenient_identifier EQUAL argument (NEW_LINE* COMMA NEW_LINE* lenient_identifier EQUAL argument)*
+    ;
+
+lenient_identifier
+    : IDENTIFIER
+    | STRING
+    | BOOLEAN
+    | number
     ;
 
 argument

@@ -190,7 +190,17 @@ public class DeserializeTest {
 	@Test
 	void testRunAlertGeneratorOffWhileAuxOn() throws IOException, ParsePacketAsciiDecimalDigitException, CheckSumException {
 		File file = new File(ACTION_JSON_CONFIG_DIRECTORY, "alert_generator_off_while_aux_on.json");
-		ActionNode actionNode = MAPPER.readValue(file, ActionNode.class);
+		ActionNode jsonActionNode = MAPPER.readValue(file, ActionNode.class);
+
+		Path notationScriptPath = ACTION_NS_CONFIG_DIRECTORY.resolve("alert_generator_off_while_aux_on.ns");
+		ActionReference actionReference = new ActionReference(notationScriptPath, ActionFormat.NOTATION_SCRIPT);
+		ActionNode nsActionNode = CommonActionUtil.readActionReference(MAPPER, actionReference);
+
+		testRunAlertGeneratorOffWhileAuxOn(jsonActionNode);
+		testRunAlertGeneratorOffWhileAuxOn(nsActionNode);
+	}
+
+	void testRunAlertGeneratorOffWhileAuxOn(ActionNode actionNode) throws ParsePacketAsciiDecimalDigitException, CheckSumException {
 		// We need to simulate an automation program environment to run this action
 		Duration[] timeReference = new Duration [] { Duration.ZERO };
 		FragmentedPacketGroup[] packetGroupReference = new FragmentedPacketGroup[] { null };

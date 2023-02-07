@@ -1,0 +1,15 @@
+chatbot-slack(
+  app_token="xapp-1- your app token here",
+  token="xoxb- your auth token",
+  channel_id="#solarthing-commands",
+  key_directory=".data/keys",
+  sender="mainframe",
+  permissions=data(
+    U01BK1SET42=[
+      "solarthing.commands.*"
+    ],
+    "some other id": [
+      "solarthing.commands.1.GEN OFF"
+    ],
+  )
+)

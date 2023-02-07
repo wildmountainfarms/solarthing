@@ -48,6 +48,8 @@ public final class CommonActionUtil {
 		configMap.put("with-lock", builder.copy().rename("withlock").args("name").linkedNode("action").build());
 		configMap.put("aux-state", builder.copy().rename("auxstate").build());
 		configMap.put("ac-mode", builder.copy().rename("acmode").build());
+		configMap.put("fx-operational", builder.copy().rename("fxoperational").build());
+		configMap.put("chatbot-slack", builder.copy().rename("chatbot_slack").build());
 
 		TRANSLATOR = new JsonNodeTranslator(new SimpleConfigurationProvider(
 				builder.build(),

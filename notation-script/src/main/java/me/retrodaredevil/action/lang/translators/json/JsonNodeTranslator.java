@@ -18,6 +18,7 @@ import me.retrodaredevil.action.lang.StringArgument;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -61,6 +62,26 @@ public class JsonNodeTranslator implements NodeTranslator<JsonNode> {
 		);
 	}
 
+	/**
+	 * Translates a data(...) node into what is basically raw JSON.
+	 */
+	private JsonNode translateData(Node node) {
+		if (!node.getPositionalArguments().isEmpty()) {
+			throw new IllegalArgumentException("data does not support positional arguments!");
+		}
+		if (!node.getSubNodes().isEmpty()) {
+			throw new IllegalArgumentException("data does not support sub nodes!");
+		}
+		if (node.getLinkedNode() != null) {
+			throw new IllegalArgumentException("data does not support a linked node!");
+		}
+		Map<String, Argument> namedArguments = node.getNamedArguments();
+		Map<String, JsonNode> fieldMap = new HashMap<>();
+		namedArguments.entrySet()
+				.forEach(entry -> fieldMap.put(entry.getKey(), translateArgument(entry.getValue())));
+		return new ObjectNode(JsonNodeFactory.instance, fieldMap);
+	}
+
 	private JsonNode translateArgument(Argument argument) {
 		if (argument instanceof Node) {
 			return translate((Node) argument);
@@ -88,6 +109,8 @@ public class JsonNodeTranslator implements NodeTranslator<JsonNode> {
 		if (config instanceof CustomNodeConfiguration) {
 			if (config == CustomNodeConfiguration.RACER) {
 				return translateRacer(node);
+			} else if (config == CustomNodeConfiguration.DATA) {
+				return translateData(node);
 			} else throw new AssertionError("Unknown config: " + config);
 		} else if (config instanceof SimpleNodeConfiguration) {
 			SimpleNodeConfiguration simpleNodeConfiguration = (SimpleNodeConfiguration) config;

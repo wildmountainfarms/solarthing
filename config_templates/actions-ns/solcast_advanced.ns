@@ -1,0 +1,37 @@
+scope : queue {
+
+  act all_controllers : required(required=data(
+    1=["OutbackIdentifier(address=3)", "OutbackIdentifier(address=4)"],
+    2=["RoverIdentifier()"],
+    5=["TracerIdentifier()"],
+  ))
+  act full_output : fulloutput(
+    required=data(
+      1=["OutbackIdentifier(address=3)", "OutbackIdentifier(address=4)"],
+      2=["RoverIdentifier()"],
+      5=["TracerIdentifier()"],
+    ),
+    mx_float_ignore=data(1=["OutbackIdentifier(address=3)"]),
+  )
+
+  act main : queue {
+    log "Going to see if criteria is met to upload to solcast."
+    race {
+      racer(call all_controllers) : race {
+        racer(call full_output) : queue {
+          log "Confirmed we will upload to solcast"
+          solcast(
+            resource="asdf",
+            key="asdf",
+          )
+        }
+        racer(pass) : log "Not at full output."
+      }
+      racer(pass) : log "Not all devices are connected!"
+    }
+  }
+  with-lock "Solcast upload" : parallel {
+    wait PT5M // run this every 5 minutes (since this script should be ran as often as possible)
+    call main
+  }
+}

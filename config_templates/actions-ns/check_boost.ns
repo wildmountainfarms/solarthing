@@ -1,0 +1,38 @@
+scope : queue {
+
+  act set_normal : race {
+    racer(roverboostvoltage(voltageraw=148, fragment="2", not=true)) : call set_normal_command
+    racer(roverboostvoltage(voltageraw=148, fragment="2")) : log("Boost voltage is normal!", debug=true)
+    racer(pass) : log "Rover not found!"
+  }
+  act set_equalize : race {
+    racer(roverboostvoltage(voltageraw=148, fragment="2", not=true)) : log("Already equalizing", debug=true)
+    racer(roverboostvoltage(voltageraw=148, fragment="2")) : call set_equalize_command
+    racer(pass) : log "Rover not found!"
+  }
+  act set_normal_command : sendopen(
+    directory=".data/keys",
+    targets=[2],
+    sender="nasplex",
+    data=data(
+      type="requestcommand",
+      command="SET BOOST NORMAL"
+    ),
+  )
+  act set_equalize_command : sendopen(
+    directory=".data/keys",
+    targets=[2],
+    sender="nasplex",
+    data=data(
+      type="requestcommand",
+      command="SET BOOST EQUALIZE"
+    )
+  )
+  act check : race {
+    racer(fx-operational(mode="eq")) : call set_equalize
+    racer(fx-operational(mode="eq", not=true)) : call set_normal
+    racer(pass) : log "There must be no FX devices!"
+  }
+
+  with-lock("check_boost", ontimeout=log "Something else had a lock on check_boost") : call check
+}

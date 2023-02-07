@@ -21,5 +21,6 @@
       </option>
       <option name="IGNORE_FIELDS_USED_IN_MULTIPLE_METHODS" value="true" />
     </inspection_tool>
+    <inspection_tool class="ReassignedToPlainText" enabled="false" level="TEXT ATTRIBUTES" enabled_by_default="false" editorAttributes="CONSIDERATION_ATTRIBUTES" />
   </profile>
 </component>

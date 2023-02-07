@@ -36,8 +36,11 @@ public final class NodeParser {
 		Visitor visitor = new Visitor();
 		return visitor.visitNode(nodeContext);
 	}
+	private static StringArgument stringArgumentFromString(TerminalNode stringTerminal) {
+		return new StringArgument(stringFromString(stringTerminal));
+	}
 
-	private static StringArgument stringFromString(TerminalNode stringTerminal) {
+	private static String stringFromString(TerminalNode stringTerminal) {
 		String rawText = stringTerminal.getText();
 		final TextNode text;
 		try {
@@ -45,7 +48,25 @@ public final class NodeParser {
 		} catch (JsonProcessingException e) {
 			throw new IllegalArgumentException("Incorrectly formatted string", e);
 		}
-		return new StringArgument(text.textValue());
+		return text.textValue();
+	}
+	private static boolean booleanFromBoolean(TerminalNode booleanTerminal) {
+		return booleanTerminal.getText().equals("true");
+	}
+	private static String stringFromLenientIdentifier(ActionLangParser.Lenient_identifierContext lenientIdentifier) {
+		if (lenientIdentifier.IDENTIFIER() != null) {
+			return lenientIdentifier.IDENTIFIER().getText();
+		}
+		if (lenientIdentifier.STRING() != null) {
+			return stringFromString(lenientIdentifier.STRING());
+		}
+		if (lenientIdentifier.BOOLEAN() != null) {
+			return lenientIdentifier.BOOLEAN().getText();
+		}
+		if (lenientIdentifier.number() != null) {
+			return lenientIdentifier.number().getText();
+		}
+		throw new AssertionError("Not a valid lenient identifier! (this should never happen) text: " + lenientIdentifier.getText());
 	}
 
 	private static class Visitor extends ActionLangBaseVisitor<Argument> {
@@ -67,9 +88,8 @@ public final class NodeParser {
 				}
 				if (nodePart.named_argument_list() != null) {
 					for (int i = 0; i < nodePart.named_argument_list().argument().size(); i++) {
-						TerminalNode identifierTerminal = nodePart.named_argument_list().IDENTIFIER(i);
+						String argumentIdentifier = stringFromLenientIdentifier(nodePart.named_argument_list().lenient_identifier(i));
 						ActionLangParser.ArgumentContext argumentCtx = nodePart.named_argument_list().argument(i);
-						String argumentIdentifier = identifierTerminal.getText();
 						Argument argument = visitArgument(argumentCtx);
 						if (namedArguments.containsKey(argumentIdentifier)) {
 							// TODO possibly throw a different exception here
@@ -107,10 +127,10 @@ public final class NodeParser {
 				return visitArray(ctx.array());
 			}
 			if (ctx.STRING() != null) {
-				return stringFromString(ctx.STRING());
+				return stringArgumentFromString(ctx.STRING());
 			}
 			if (ctx.BOOLEAN() != null) {
-				return BooleanArgument.get(ctx.BOOLEAN().getText().equals("true"));
+				return BooleanArgument.get(booleanFromBoolean(ctx.BOOLEAN()));
 			}
 			throw new UnsupportedOperationException("Unknown state of ArgumentContext! ctx: " + ctx.getText());
 		}
@@ -127,7 +147,7 @@ public final class NodeParser {
 				return new StringArgument(ctx.IDENTIFIER().getText());
 			}
 			if (ctx.STRING() != null) {
-				return stringFromString(ctx.STRING());
+				return stringArgumentFromString(ctx.STRING());
 			}
 			if (ctx.BOOLEAN() != null) {
 				return BooleanArgument.get(ctx.BOOLEAN().getText().equals("true"));
