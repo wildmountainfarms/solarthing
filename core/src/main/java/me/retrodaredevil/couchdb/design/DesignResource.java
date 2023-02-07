@@ -29,6 +29,7 @@ public enum DesignResource {
 	</component>
 	*/
 	private final String fileName;
+	@SuppressWarnings("ImmutableEnumChecker") // This enum serves as a cache, which is state, which I have decided is OK in this particular case
 	private byte[] data = null;
 
 

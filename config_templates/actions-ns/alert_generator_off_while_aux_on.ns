@@ -6,6 +6,10 @@ scope : queue {
   }
   act send_alert : queue {
     log "Aux is ON, but generator is not. Manually check generator for more info."
+    //sendmessage(
+    //  send_to="config/message/slack.json",
+    //  message= "Aux is ON, but generator is not. Manually check generator for more info.",
+    //)
     wait PT300S
   }
   act continuous_check : with-lock "generator off while aux is on alert" : race {

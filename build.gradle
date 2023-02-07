@@ -19,6 +19,7 @@ buildscript {
         dockerComposePluginVersion = "0.16.11" // https://github.com/avast/gradle-docker-compose-plugin/releases
         errorpronePluginVersion = '3.0.1' // https://github.com/tbroyer/gradle-errorprone-plugin/releases
         errorproneCoreVersion = '2.18.0' // https://mvnrepository.com/artifact/com.google.errorprone/error_prone_core
+        antlrVersion = "4.11.1"
     }
     dependencies {
         classpath "com.avast.gradle:gradle-docker-compose-plugin:$dockerComposePluginVersion"
@@ -295,7 +296,16 @@ project(":notation-script"){
 project(":action-lang"){
     apply plugin: 'java'
     dependencies {
-        api project(":notation-script")
+        api(project(":notation-script")){
+            exclude group: "org.antlr", module: "antlr-runtime"
+            exclude group: "org.antlr", module: "antlr4"
+            // We exclude antlr4-runtime because we add it below as an api dependency rather than an implementation dependency
+            exclude group: "org.antlr", module: "antlr4-runtime"
+            exclude group: "org.antlr", module: "ST4"
+        }
+        // https://mvnrepository.com/artifact/org.antlr/antlr4-runtime
+        api group: 'org.antlr', name: 'antlr4-runtime', version: "$antlrVersion"
+
         api project(":action-node")
         annotationProcessor project(":process-annotations")
     }
