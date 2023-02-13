@@ -55,6 +55,7 @@ simple_argument
     | array
     ;
 
+// TODO allow new lines in array
 array
     : BRACKET_L BRACKET_R
     | BRACKET_L argument (COMMA argument)* COMMA? BRACKET_R
@@ -91,6 +92,10 @@ STRING
     ;
 NUMBER // This isn't the exact regex for JSON numbers, but this regex aims for something like: https://www.json.org/json-en.html
     : ('-' | '+')? ('0' | [1-9] [0-9]*) ('.' [0-9]+)? ([eE] ('-' | '+')? [0-9]+)?
+    ;
+
+MULTI_LINE_COMMENT
+    : '/*' .*? '*/' -> skip
     ;
 
 NEW_LINE

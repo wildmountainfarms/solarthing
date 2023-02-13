@@ -27,6 +27,7 @@ public final class ActionLangUtil {
 		configMap.put("parallel", builder.copy().subNodes("actions").build());
 		configMap.put("print", builder.copy().args("message").linkedNode("expression").build());
 		configMap.put("call", builder.copy().args("name").build());
+		configMap.put("invert", builder.copy().linkedNode("action").build());
 
 		configMap.put("init",     builder.copy().args("name").linkedNode("expression").build());
 		configMap.put("init-exp", builder.copy().args("name").linkedNode("expression").build());

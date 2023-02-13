@@ -1,0 +1,17 @@
+/*
+This ActionLanag script is designed to be run using a request program's action_config configuration.
+TODO ActionLang.g4 does not like the newline after this multi-line comment
+*/
+scope : queue {
+
+  act run_load : tracer-modbus(
+    on_error=log "Failed to do one of the tracer commands!",
+    on_success=wait PT60S
+  ) {
+    tracerload(on=true)
+    wait PT3S
+    tracerload(on=false)
+  }
+
+  with-lock "periodic tracer load" : call run_load
+}

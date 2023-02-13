@@ -34,21 +34,24 @@ public class RequiredIdentifierActionNode implements ActionNode {
 	public Action createAction(ActionEnvironment actionEnvironment) {
 		LatestFragmentedPacketGroupEnvironment latestPacketGroupEnvironment = actionEnvironment.getInjectEnvironment().get(LatestFragmentedPacketGroupEnvironment.class);
 		return new SimpleAction(false) {
-			@Override
-			protected void onUpdate() {
-				super.onUpdate();
+			private boolean meetsRequirements() {
 				FragmentedPacketGroup packetGroup = latestPacketGroupEnvironment.getFragmentedPacketGroupProvider().getPacketGroup();
 				if (packetGroup == null) {
-					return;
+					return false;
 				}
 				String reason = IdentifierUtil.getRequirementNotMetReason(requiredIdentifierMap, packetGroup);
 				if (reason != null) {
 					if (log) {
 						LOGGER.info("Requirement not met: " + reason);
 					}
-				} else {
-					setDone(true);
+					return false;
 				}
+				return true;
+			}
+			@Override
+			protected void onUpdate() {
+				super.onUpdate();
+				setDone(meetsRequirements());
 			}
 		};
 	}

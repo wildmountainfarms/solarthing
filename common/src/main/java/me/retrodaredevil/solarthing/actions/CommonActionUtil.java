@@ -50,6 +50,7 @@ public final class CommonActionUtil {
 		configMap.put("ac-mode", builder.copy().rename("acmode").build());
 		configMap.put("fx-operational", builder.copy().rename("fxoperational").build());
 		configMap.put("chatbot-slack", builder.copy().rename("chatbot_slack").build());
+		configMap.put("tracer-modbus", builder.copy().subNodes("actions").build());
 
 		TRANSLATOR = new JsonNodeTranslator(new SimpleConfigurationProvider(
 				builder.build(),

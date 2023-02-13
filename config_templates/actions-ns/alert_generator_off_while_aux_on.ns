@@ -1,4 +1,10 @@
 scope : queue {
+  act fx_not_present : invert : required(
+    required=data(
+      1=["OutbackIdentifier(address=1)"]
+    ),
+    log=false,
+  )
   act is_aux_off_or_generator_on : race {
     racer(aux-state(on=false)) : pass
     // TODO potentially replace with this later: none(equals(const "No AC", select ac-mode : master-fx))
@@ -13,6 +19,7 @@ scope : queue {
     wait PT300S
   }
   act continuous_check : with-lock "generator off while aux is on alert" : race {
+    racer(call fx_not_present) : pass // note that fx_not_present will reset this timer that is counting down, which may not be ideal
     racer(call is_aux_off_or_generator_on) : pass
     racer(wait PT45S) : call send_alert
   }

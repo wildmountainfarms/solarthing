@@ -124,6 +124,7 @@ and also react to messages that have been fully processed (request successfully 
   This can help us know if the throttle factor is set too low on any SolarThing instance
 * Use http://doc.forecast.solar/doku.php?id=api:estimate as alternative to solcast
   * Also look at https://solargis.com/products/solar-power-forecast/overview
+* SolarThing web page to edit meta document
 
   
 ### Completed

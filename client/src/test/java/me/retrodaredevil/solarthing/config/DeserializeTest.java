@@ -204,6 +204,7 @@ public class DeserializeTest {
 		// We need to simulate an automation program environment to run this action
 		Duration[] timeReference = new Duration [] { Duration.ZERO };
 		FragmentedPacketGroup[] packetGroupReference = new FragmentedPacketGroup[] { null };
+		final int FRAGMENT_ID = 1; // the fragment ID used in the required action in the alert ActionLang script
 
 		FragmentedPacketGroupProvider fragmentedPacketGroupProvider = () -> requireNonNull(packetGroupReference[0]);
 
@@ -219,14 +220,14 @@ public class DeserializeTest {
 
 		for (FXStatusPacket packet : new FXStatusPacket[] { auxOffNoAC, auxOnACUse, auxOffACUse }) {
 			// for these three cases, the action should end immediately
-			packetGroupReference[0] = PacketGroups.createInstancePacketGroup(Collections.singleton(packet), 0L, "my_source_id", 999);
+			packetGroupReference[0] = PacketGroups.createInstancePacketGroup(Collections.singleton(packet), 0L, "my_source_id", FRAGMENT_ID);
 			Action action = actionNode.createAction(new ActionEnvironment(new VariableEnvironment(), injectEnvironment));
 			action.update();
 			assertTrue(action.isDone());
 		}
 
 		{ // Test that no alert is sent unless the aux is on, and it's in No AC for 30 seconds
-			packetGroupReference[0] = PacketGroups.createInstancePacketGroup(Collections.singleton(auxOnNoAC), 0L, "my_source_id", 999);
+			packetGroupReference[0] = PacketGroups.createInstancePacketGroup(Collections.singleton(auxOnNoAC), 0L, "my_source_id", FRAGMENT_ID);
 			Action action = actionNode.createAction(new ActionEnvironment(new VariableEnvironment(), injectEnvironment));
 			action.update();
 			assertFalse(action.isDone());
@@ -234,12 +235,12 @@ public class DeserializeTest {
 			action.update();
 			assertFalse(action.isDone());
 
-			packetGroupReference[0] = PacketGroups.createInstancePacketGroup(Collections.singleton(auxOnACUse), 0L, "my_source_id", 999);
+			packetGroupReference[0] = PacketGroups.createInstancePacketGroup(Collections.singleton(auxOnACUse), 0L, "my_source_id", FRAGMENT_ID);
 			action.update();
 			assertTrue(action.isDone()); // No alert has been sent, since it started to AC Use before the 30 second period completed.
 		}
 		{ // Test that the alert gets sent and the action doesn't end until the 300-second timeout completes
-			packetGroupReference[0] = PacketGroups.createInstancePacketGroup(Collections.singleton(auxOnNoAC), 0L, "my_source_id", 999);
+			packetGroupReference[0] = PacketGroups.createInstancePacketGroup(Collections.singleton(auxOnNoAC), 0L, "my_source_id", FRAGMENT_ID);
 			Action action = actionNode.createAction(new ActionEnvironment(new VariableEnvironment(), injectEnvironment));
 			action.update();
 			assertFalse(action.isDone());
@@ -247,7 +248,7 @@ public class DeserializeTest {
 			action.update();
 			assertFalse(action.isDone());
 
-			packetGroupReference[0] = PacketGroups.createInstancePacketGroup(Collections.singleton(auxOnACUse), 0L, "my_source_id", 999);
+			packetGroupReference[0] = PacketGroups.createInstancePacketGroup(Collections.singleton(auxOnACUse), 0L, "my_source_id", FRAGMENT_ID);
 			action.update();
 			assertFalse(action.isDone()); // Alert has been sent, so the action isn't going to end
 

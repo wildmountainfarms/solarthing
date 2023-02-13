@@ -123,7 +123,7 @@ public class JsonNodeTranslator implements NodeTranslator<JsonNode> {
 			List<Argument> positionalArguments = node.getPositionalArguments();
 			if (positionalArguments.size() > positionalArgumentFieldNames.size()) {
 				// We check for too many positional arguments and let whatever parses the JSON decide if there is too few arguments
-				throw new IllegalArgumentException("Too many positional arguments for type: " + typeName);
+				throw new IllegalArgumentException("Too many positional arguments for type: " + typeName + ". Arguments: " + positionalArguments);
 			}
 			for (int i = 0; i < positionalArguments.size(); i++) {
 				String fieldName = positionalArgumentFieldNames.get(i);

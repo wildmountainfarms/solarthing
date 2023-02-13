@@ -34,6 +34,7 @@ import me.retrodaredevil.action.node.scope.ScopeActionNode;
 		@JsonSubTypes.Type(SingleActionNode.class),
 		@JsonSubTypes.Type(WithLockActionNode.class),
 		@JsonSubTypes.Type(PrintActionNode.class),
+		@JsonSubTypes.Type(InvertActionNode.class),
 
 		@JsonSubTypes.Type(AllActionNode.class),
 		@JsonSubTypes.Type(AnyActionNode.class),
