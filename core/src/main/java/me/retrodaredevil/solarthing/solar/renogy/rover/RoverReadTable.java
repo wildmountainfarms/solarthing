@@ -562,10 +562,10 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	@JsonProperty("batteryType")
 	int getBatteryTypeValue();
 	@GraphQLInclude("batteryType")
-	default RoverBatteryType getBatteryType(){ return Modes.getActiveMode(RoverBatteryType.class, getBatteryTypeValue()); }
+	default @NotNull RoverBatteryType getBatteryType(){ return Modes.getActiveMode(RoverBatteryType.class, getBatteryTypeValue()); }
 	@ConvenienceField(sincePacketVersion = RoverStatusPacket.Version.REMOVED_CONVENIENCE_FIELDS)
 	@JsonProperty("batteryTypeName") // convenient
-	default String getBatteryTypeName(){ return getBatteryType().getModeName(); }
+	default @NotNull String getBatteryTypeName(){ return getBatteryType().getModeName(); }
 
 	/** Called "High Voltage Disconnect" */
 	@JsonProperty("overVoltageThresholdRaw")

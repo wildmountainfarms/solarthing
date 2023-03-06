@@ -13,6 +13,9 @@ import me.retrodaredevil.solarthing.packets.collection.StoredIdentifier;
  * UpdateTokens can be serialized to JSON. As of right now, UpdateTokens should only be serialized and stored in the alter database.
  * The reason for this is that update tokens are inherently tied to a particular database, and that's OK for the alter database,
  * but for solarthing and solarthing_events, that is not OK.
+ * <p>
+ * Along with storing these in certain databases, it is completely OK to pass around serialized versions if the resulting
+ * JSON is going to have a short life span. This can be seen in the graphql (server) module
  */
 @JsonSubTypes({
 		@JsonSubTypes.Type(RevisionUpdateToken.class)
