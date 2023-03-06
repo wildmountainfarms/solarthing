@@ -5,6 +5,7 @@ import me.retrodaredevil.couchdb.CouchDbUtil;
 import me.retrodaredevil.couchdbjava.CouchDbInstance;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.NotNull;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.database.MillisDatabase;
 import me.retrodaredevil.solarthing.database.MillisQuery;
@@ -165,7 +166,7 @@ public class SimpleQueryHandler {
 		return queryPackets(database.getEventDatabase(), from, to, sourceId);
 	}
 
-	public MetaDatabase queryMeta() {
+	public @Nullable VersionedPacket<RootMetaPacket> queryRawMeta() {
 		final VersionedPacket<RootMetaPacket> metadata;
 		synchronized (this) {
 			final VersionedPacket<RootMetaPacket> currentCache = metadataCache;
@@ -180,7 +181,7 @@ public class SimpleQueryHandler {
 					newMetadata = database.queryMetadata(updateToken);
 				} catch (NotFoundSolarThingDatabaseException e) {
 					// If we have not defined metadata, then we return an "empty" instance
-					return EmptyMetaDatabase.getInstance();
+					return null;
 				} catch (SolarThingDatabaseException e) {
 					throw new DatabaseException("Could not query meta", e);
 				}
@@ -194,7 +195,15 @@ public class SimpleQueryHandler {
 				}
 			}
 		}
-		return new DefaultMetaDatabase(metadata.getPacket());
+		return metadata;
+	}
+
+	public MetaDatabase queryMeta() {
+		VersionedPacket<RootMetaPacket> versionedPacket = queryRawMeta();
+		if (versionedPacket == null) {
+			return EmptyMetaDatabase.getInstance();
+		}
+		return new DefaultMetaDatabase(versionedPacket.getPacket());
 	}
 
 	public List<VersionedPacket<StoredAlterPacket>> queryAlter(@NotNull String sourceId) {

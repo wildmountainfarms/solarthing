@@ -84,6 +84,7 @@ export default function Layout({children}: LayoutProps) {
       <div className={styles.sideNav}>
         <PageLink to={"/"} name={"Home"}/>
         <PageLink to={"/authorized"} name={"Authorized"}/>
+        <PageLink to={"/metadata"} name={"Metadata"}/>
         <PageLink to={"/classic"} name={"Classic"}/>
         <PageLink to={"/status"} name={"Status"}/>
         <PageLink to={"/graphql-view"} name={"GraphQL View"}/>

@@ -8,6 +8,7 @@ import Authorized from './pages/Authorized';
 import GraphQLView from './pages/GraphQLView';
 import GraphQLQuery from "./pages/GraphQLQuery";
 import Status from "./pages/Status";
+import Metadata from "./pages/Metadata";
 
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
         <Route path='/' element={<Home/>}/>
         <Route path='/login' element={<Login/>}/>
         <Route path='/authorized' element={<Authorized/>}/>
+        <Route path='/metadata' element={<Metadata/>}/>
         <Route path='/classic' element={<ClassicWithLayout/>}/>
         <Route path='/status' element={<Status/>}/>
         <Route path='/graphql-view' element={<GraphQLView/>}/>
