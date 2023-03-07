@@ -18,10 +18,10 @@ import java.util.Set;
 @JsonTypeName("TEMPERATURE")
 public interface TemperaturePacket extends WeatherPacket, SourcedData {
 	/**
-	 * Represents temperature celsius values that might indicate a bad reading
+	 * Represents temperature Celsius values that might indicate a bad reading.
+	 * The actual size of this set should probably be much larger, so don't actually rely on this.
 	 */
-	Set<Float> POSSIBLE_BAD_VALUES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(0.0f, 16.0f, 24.0f, 25.0f, 25.3f)));
-	// 25.3 is from https://pvoutput.org/intraday.jsp?id=80279&sid=72206&dt=20230202. I'm not sure if that really needs to be in this list or not
+	Set<Float> POSSIBLE_BAD_VALUES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(0.0f, 16.0f, 24.0f, 25.0f)));
 
 	@DefaultFinal
 	@Override

@@ -1,11 +1,12 @@
 package me.retrodaredevil.solarthing.program.pvoutput;
 
 import me.retrodaredevil.solarthing.misc.weather.TemperaturePacket;
-import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 import me.retrodaredevil.solarthing.packets.identification.IdentifierFragment;
-import me.retrodaredevil.solarthing.packets.identification.IdentifierFragmentMatcher;
+import me.retrodaredevil.solarthing.program.pvoutput.provider.DataProvider;
+import me.retrodaredevil.solarthing.program.pvoutput.provider.TemperatureCelsiusProvider;
+import me.retrodaredevil.solarthing.program.pvoutput.provider.VoltageProvider;
 import me.retrodaredevil.solarthing.pvoutput.SimpleDate;
 import me.retrodaredevil.solarthing.pvoutput.SimpleTime;
 import me.retrodaredevil.solarthing.pvoutput.data.AddOutputParametersBuilder;
@@ -20,7 +21,6 @@ import me.retrodaredevil.solarthing.solar.accumulation.value.FloatAccumulationVa
 import me.retrodaredevil.solarthing.solar.accumulation.value.FloatAccumulationValueFactory;
 import me.retrodaredevil.solarthing.solar.common.DailyAdvancedChargeController;
 import me.retrodaredevil.solarthing.solar.common.DailyChargeController;
-import me.retrodaredevil.solarthing.solar.common.PVCurrentAndVoltage;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.FXDailyData;
 import me.retrodaredevil.solarthing.solar.outback.fx.extra.DailyFXPacket;
 import me.retrodaredevil.solarthing.util.IdentifierUtil;
@@ -30,23 +30,23 @@ import org.slf4j.LoggerFactory;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.*;
-
-import static java.util.Objects.requireNonNull;
+import java.util.List;
+import java.util.Map;
 
 public class PVOutputHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PVOutputHandler.class);
 
 	private final ZoneId zoneId;
 	private final Map<Integer, List<String>> requiredIdentifierMap;
-	private final IdentifierFragmentMatcher voltageIdentifierFragmentMatcher;
-	private final IdentifierFragmentMatcher temperatureIdentifierFragmentMatcher;
+	private final VoltageProvider voltageProvider;
+	private final TemperatureCelsiusProvider temperatureCelsiusProvider;
 
-	public PVOutputHandler(ZoneId zoneId, Map<Integer, List<String>> requiredIdentifierMap, IdentifierFragmentMatcher voltageIdentifierFragmentMatcher, IdentifierFragmentMatcher temperatureIdentifierFragmentMatcher) {
+
+	public PVOutputHandler(ZoneId zoneId, Map<Integer, List<String>> requiredIdentifierMap, VoltageProvider voltageProvider, TemperatureCelsiusProvider temperatureCelsiusProvider) {
 		this.zoneId = zoneId;
 		this.requiredIdentifierMap = requiredIdentifierMap;
-		this.voltageIdentifierFragmentMatcher = voltageIdentifierFragmentMatcher;
-		this.temperatureIdentifierFragmentMatcher = temperatureIdentifierFragmentMatcher;
+		this.voltageProvider = voltageProvider;
+		this.temperatureCelsiusProvider = temperatureCelsiusProvider;
 	}
 	public boolean checkPackets(long dayStartTimeMillis, List<FragmentedPacketGroup> packetGroupList) {
 		if (packetGroupList.isEmpty()) {
@@ -62,6 +62,16 @@ public class PVOutputHandler {
 	}
 
 	public AddStatusParameters getStatus(long dayStartTimeMillis, List<FragmentedPacketGroup> packetGroupList) {
+		/*
+		TODO think about if we really want to use the grouped FragmentedPacketGroup list.
+		Alright. Lemme explain. This comment/to-do could really go in a bunch of places in SolarThing code, but I'm putting it here.
+		We use the grouped list as a sort of easy way out for ever thinking about what grouping packets actually means.
+		When we use packetGroupList below, it's mostly used for accumulated values that can be calculated using AccumulationUtil.
+		There is really no reason that the packets *need* to be grouped to do that calculation.
+		Remember that grouping packets could potentially throw out some packets if a fragment with less priority has packets stored more frequently.
+		It probably doesn't matter here, but it's worth considering changing how we do stuff like this in the future.
+		 */
+
 		FragmentedPacketGroup latestPacketGroup = packetGroupList.get(packetGroupList.size() - 1);
 		LOGGER.debug("Continuing with the latest packet group. Day start: " + dayStartTimeMillis);
 		AddStatusParametersBuilder addStatusParametersBuilder = createStatusBuilder(zoneId, latestPacketGroup.getDateMillis());
@@ -71,30 +81,20 @@ public class PVOutputHandler {
 				packetGroupList,
 				AccumulationConfig.createDefault(dayStartTimeMillis)
 		);
-		for (Packet packet : latestPacketGroup.getPackets()) {
-			long dateMillis = requireNonNull(latestPacketGroup.getDateMillis(packet), "Implementation of FragmentedPacketGroup did not provide individual dateMillis! type: " + latestPacketGroup.getClass().getName());
-			if (packet instanceof PVCurrentAndVoltage) {
-				int fragmentId = latestPacketGroup.getFragmentId(packet);
-				PVCurrentAndVoltage pvCurrentAndVoltage = (PVCurrentAndVoltage) packet;
-				IdentifierFragment identifierFragment = IdentifierFragment.create(fragmentId, pvCurrentAndVoltage.getIdentifier());
-				if (voltageIdentifierFragmentMatcher.matches(identifierFragment)) {
-					float voltage = pvCurrentAndVoltage.getPVVoltage().floatValue();
-					addStatusParametersBuilder.setVoltage(voltage);
-					LOGGER.debug("[status parameters] added voltage using " + identifierFragment + " from dateMillis: " + dateMillis);
-				}
-			} else if (packet instanceof TemperaturePacket) {
-				int fragmentId = latestPacketGroup.getFragmentId(packet);
-				TemperaturePacket temperaturePacket = (TemperaturePacket) packet;
-				IdentifierFragment identifierFragment = IdentifierFragment.create(fragmentId, temperaturePacket.getIdentifier());
-				if (temperatureIdentifierFragmentMatcher.matches(identifierFragment)) {
-					float temperatureCelsius = temperaturePacket.getTemperatureCelsius();
-					if (!TemperaturePacket.POSSIBLE_BAD_VALUES.contains(temperatureCelsius)) {
-						addStatusParametersBuilder.setTemperatureCelsius(temperatureCelsius);
-						LOGGER.debug("[status parameters] added temperature using " + identifierFragment + " from dateMillis: " + dateMillis);
-					} else {
-						LOGGER.info("[status parameters] Not setting temperature: " + temperatureCelsius + " because it could be a bad reading. From: " + identifierFragment + " from dateMillis: " + dateMillis);
-					}
-				}
+		DataProvider.Result resultVoltage = voltageProvider.getResult(latestPacketGroup);
+		if (resultVoltage != null) {
+			addStatusParametersBuilder.setVoltage(resultVoltage.getValue());
+			// some variables we debug may be null (depending on VoltageProvider implementation), but that's OK
+			LOGGER.debug("[status parameters] added voltage using identifier fragment: " + resultVoltage.getIdentifierFragment() + " from dateMillis: " + resultVoltage.getDateMillis());
+		}
+		DataProvider.Result resultTemperatureCelsius = temperatureCelsiusProvider.getResult(latestPacketGroup);
+		if (resultTemperatureCelsius != null) {
+			float temperatureCelsius = resultTemperatureCelsius.getValue();
+			if (!resultTemperatureCelsius.isPossiblyBadData() || !TemperaturePacket.POSSIBLE_BAD_VALUES.contains(temperatureCelsius)) {
+				addStatusParametersBuilder.setTemperatureCelsius(temperatureCelsius);
+				LOGGER.debug("[status parameters] added temperature using " + resultTemperatureCelsius.getIdentifierFragment() + " from dateMillis: " + resultTemperatureCelsius.getDateMillis());
+			} else {
+				LOGGER.info("[status parameters] Not setting temperature: " + temperatureCelsius + " because it could be a bad reading. From: " + resultTemperatureCelsius.getIdentifierFragment() + " from dateMillis: " + resultTemperatureCelsius.getDateMillis());
 			}
 		}
 		return addStatusParametersBuilder.build();

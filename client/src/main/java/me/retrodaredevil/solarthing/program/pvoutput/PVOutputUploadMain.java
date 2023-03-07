@@ -19,6 +19,10 @@ import me.retrodaredevil.solarthing.program.CommandOptions;
 import me.retrodaredevil.solarthing.program.ConfigUtil;
 import me.retrodaredevil.solarthing.program.DatabaseConfig;
 import me.retrodaredevil.solarthing.program.PacketUtil;
+import me.retrodaredevil.solarthing.program.pvoutput.provider.PVVoltageProvider;
+import me.retrodaredevil.solarthing.program.pvoutput.provider.TemperatureCelsiusProvider;
+import me.retrodaredevil.solarthing.program.pvoutput.provider.VoltageProvider;
+import me.retrodaredevil.solarthing.program.pvoutput.provider.TemperaturePacketTemperatureCelsiusProvider;
 import me.retrodaredevil.solarthing.pvoutput.CsvUtil;
 import me.retrodaredevil.solarthing.pvoutput.SimpleDate;
 import me.retrodaredevil.solarthing.pvoutput.data.*;
@@ -74,7 +78,10 @@ public class PVOutputUploadMain {
 				.build();
 		Retrofit retrofit = PVOutputRetrofitUtil.defaultBuilder().client(client).build();
 		PVOutputService service = retrofit.create(PVOutputService.class);
-		PVOutputHandler handler = new PVOutputHandler(zoneId, options.getRequiredIdentifierMap(), options.getVoltageIdentifierFragmentMatcher(), options.getTemperatureIdentifierFragmentMatcher());
+		// TODO allow a VoltageProvider and a TemperatureCelsiusProvider to be explicitly specified in program options
+		VoltageProvider voltageProvider = new PVVoltageProvider(options.getVoltageIdentifierFragmentMatcher());
+		TemperatureCelsiusProvider temperatureCelsiusProvider = new TemperaturePacketTemperatureCelsiusProvider(options.getTemperatureIdentifierFragmentMatcher(), null);
+		PVOutputHandler handler = new PVOutputHandler(zoneId, options.getRequiredIdentifierMap(), voltageProvider, temperatureCelsiusProvider);
 
 		String fromDateString = commandOptions.getPVOutputFromDate();
 		String toDateString = commandOptions.getPVOutputToDate();

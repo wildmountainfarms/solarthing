@@ -125,6 +125,11 @@ and also react to messages that have been fully processed (request successfully 
 * Use http://doc.forecast.solar/doku.php?id=api:estimate as alternative to solcast
   * Also look at https://solargis.com/products/solar-power-forecast/overview
 * SolarThing web page to edit meta document
+* Use PouchDB on machines running SolarThing instances so that connection problems don't affect packet reliability
+  * Use replication to sync: [replication](https://docs.couchdb.org/en/stable/replication/intro.html) and its [settings](https://docs.couchdb.org/en/stable/json-structure.html#replication-settings)
+  * We will have to delete old documents from PouchDB so that RAM usage doesn't get too high
+  * Use filters to not sync deleted documents: https://docs.couchdb.org/en/stable/ddocs/ddocs.html#filterfun
+  * Or alternatively, just [purge](https://docs.couchdb.org/en/stable/api/database/misc.html#db-purge) the documents. This would probably work better as "it's like the document doesn't even exist"
 
   
 ### Completed
