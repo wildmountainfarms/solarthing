@@ -5,6 +5,7 @@
 * Packet for disk usage
 * Send packet when mate serial port hasn't output data for 30 seconds
 * Create Dockerfile and example docker-compose file
+  * We should use https://hub.docker.com/r/azul/zulu-openjdk
 * Short term record packets for high/low battery voltage, FX inverter current, pv wattage, charging current, etc  
   * This would be very useful so that if packets are replaced there is still information on how
   high or low the battery voltage got or how high the load was

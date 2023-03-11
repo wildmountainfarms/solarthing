@@ -2,6 +2,8 @@ package me.retrodaredevil.solarthing.program.pvoutput.provider;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.misc.source.W1Source;
 import me.retrodaredevil.solarthing.misc.weather.TemperaturePacket;
@@ -10,24 +12,26 @@ import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 import me.retrodaredevil.solarthing.packets.identification.IdentifierFragment;
 import me.retrodaredevil.solarthing.packets.identification.IdentifierFragmentMatcher;
+import me.retrodaredevil.solarthing.packets.identification.IdentifierRepFragment;
 import me.retrodaredevil.solarthing.solar.common.BatteryTemperature;
 import me.retrodaredevil.solarthing.solar.common.ControllerTemperature;
 
 import static java.util.Objects.requireNonNull;
 
 /**
- * Identifies a {@link TemperaturePacket} from a given {@link IdentifierFragmentMatcher}.
+ * Selects a packet a given {@link IdentifierFragmentMatcher} and retrieves temperature depending on {@link #temperaturePacketType}.
  * <p>
  * Most of the time the source of the temperature packet is
  */
-public class TemperaturePacketTemperatureCelsiusProvider implements TemperatureCelsiusProvider {
+@JsonTypeName("packet")
+public class PacketTemperatureCelsiusProvider implements TemperatureCelsiusProvider {
 
 	private final IdentifierFragmentMatcher temperatureIdentifierFragmentMatcher;
 	private final TemperaturePacketType temperaturePacketType;
 
 	@JsonCreator
-	public TemperaturePacketTemperatureCelsiusProvider(
-			@JsonProperty(value = "identifier", required = true) IdentifierFragmentMatcher temperatureIdentifierFragmentMatcher,
+	public PacketTemperatureCelsiusProvider(
+			@JsonProperty(value = "identifier", required = true) @JsonDeserialize(as = IdentifierRepFragment.class) IdentifierFragmentMatcher temperatureIdentifierFragmentMatcher,
 			@JsonProperty("from") TemperaturePacketType temperaturePacketType) {
 		this.temperatureIdentifierFragmentMatcher = requireNonNull(temperatureIdentifierFragmentMatcher);
 		this.temperaturePacketType = temperaturePacketType == null ? TemperaturePacketType.PACKET : temperaturePacketType;
@@ -64,7 +68,7 @@ public class TemperaturePacketTemperatureCelsiusProvider implements TemperatureC
 					BatteryTemperature controllerTemperature = (BatteryTemperature) packet;
 					return new Result(controllerTemperature.getBatteryTemperatureCelsius().floatValue(), identifierFragment, dateMillis, false);
 				}
-			}
+			} else throw new AssertionError();
 		}
 		return null;
 	}

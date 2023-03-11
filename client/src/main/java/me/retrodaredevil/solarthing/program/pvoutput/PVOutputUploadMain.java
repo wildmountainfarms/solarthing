@@ -19,13 +19,15 @@ import me.retrodaredevil.solarthing.program.CommandOptions;
 import me.retrodaredevil.solarthing.program.ConfigUtil;
 import me.retrodaredevil.solarthing.program.DatabaseConfig;
 import me.retrodaredevil.solarthing.program.PacketUtil;
-import me.retrodaredevil.solarthing.program.pvoutput.provider.PVVoltageProvider;
 import me.retrodaredevil.solarthing.program.pvoutput.provider.TemperatureCelsiusProvider;
 import me.retrodaredevil.solarthing.program.pvoutput.provider.VoltageProvider;
-import me.retrodaredevil.solarthing.program.pvoutput.provider.TemperaturePacketTemperatureCelsiusProvider;
 import me.retrodaredevil.solarthing.pvoutput.CsvUtil;
 import me.retrodaredevil.solarthing.pvoutput.SimpleDate;
-import me.retrodaredevil.solarthing.pvoutput.data.*;
+import me.retrodaredevil.solarthing.pvoutput.data.AddBatchOutputParameters;
+import me.retrodaredevil.solarthing.pvoutput.data.AddOutputParameters;
+import me.retrodaredevil.solarthing.pvoutput.data.AddOutputParametersBuilder;
+import me.retrodaredevil.solarthing.pvoutput.data.AddStatusParameters;
+import me.retrodaredevil.solarthing.pvoutput.data.ImmutableAddBatchOutputParameters;
 import me.retrodaredevil.solarthing.pvoutput.service.PVOutputOkHttpUtil;
 import me.retrodaredevil.solarthing.pvoutput.service.PVOutputRetrofitUtil;
 import me.retrodaredevil.solarthing.pvoutput.service.PVOutputService;
@@ -46,7 +48,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.time.format.TextStyle;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 
 public class PVOutputUploadMain {
 	private PVOutputUploadMain(){ throw new UnsupportedOperationException(); }
@@ -78,9 +83,8 @@ public class PVOutputUploadMain {
 				.build();
 		Retrofit retrofit = PVOutputRetrofitUtil.defaultBuilder().client(client).build();
 		PVOutputService service = retrofit.create(PVOutputService.class);
-		// TODO allow a VoltageProvider and a TemperatureCelsiusProvider to be explicitly specified in program options
-		VoltageProvider voltageProvider = new PVVoltageProvider(options.getVoltageIdentifierFragmentMatcher());
-		TemperatureCelsiusProvider temperatureCelsiusProvider = new TemperaturePacketTemperatureCelsiusProvider(options.getTemperatureIdentifierFragmentMatcher(), null);
+		VoltageProvider voltageProvider = options.getVoltageProvider();
+		TemperatureCelsiusProvider temperatureCelsiusProvider = options.getTemperatureCelsiusProvider();
 		PVOutputHandler handler = new PVOutputHandler(zoneId, options.getRequiredIdentifierMap(), voltageProvider, temperatureCelsiusProvider);
 
 		String fromDateString = commandOptions.getPVOutputFromDate();
