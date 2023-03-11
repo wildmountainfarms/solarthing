@@ -18,10 +18,11 @@ else
 fi
 
 echo Updating...
-git config --local core.sharedRepository group || exit 1
 chmod -R g+rw . || exit 1 # all files and directories get group read/write permissions
 find . -type d -exec chmod g+xs {} \; || exit 1 # When you create a file in any directory, its group should be that of its directory
 chown -R solarthing:solarthing . || exit 1
+# Run git config after so that any permission errors can be fixed before altering this property
+git config --local core.sharedRepository group || exit 1
 echo Done
 
 # If you screw something up while messing with permissions, this may help:
