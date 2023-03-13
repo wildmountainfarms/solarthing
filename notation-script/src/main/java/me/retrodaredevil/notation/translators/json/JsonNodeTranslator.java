@@ -1,4 +1,4 @@
-package me.retrodaredevil.action.lang.translators.json;
+package me.retrodaredevil.notation.translators.json;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -8,13 +8,13 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
-import me.retrodaredevil.action.lang.Argument;
-import me.retrodaredevil.action.lang.ArrayArgument;
-import me.retrodaredevil.action.lang.BooleanArgument;
-import me.retrodaredevil.action.lang.Node;
-import me.retrodaredevil.action.lang.NodeTranslator;
-import me.retrodaredevil.action.lang.NumberArgument;
-import me.retrodaredevil.action.lang.StringArgument;
+import me.retrodaredevil.notation.Argument;
+import me.retrodaredevil.notation.ArrayArgument;
+import me.retrodaredevil.notation.BooleanArgument;
+import me.retrodaredevil.notation.Node;
+import me.retrodaredevil.notation.NodeTranslator;
+import me.retrodaredevil.notation.NumberArgument;
+import me.retrodaredevil.notation.StringArgument;
 
 import java.math.BigDecimal;
 import java.util.Arrays;

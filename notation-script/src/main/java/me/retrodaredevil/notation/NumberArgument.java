@@ -1,4 +1,4 @@
-package me.retrodaredevil.action.lang;
+package me.retrodaredevil.notation;
 
 import static java.util.Objects.requireNonNull;
 

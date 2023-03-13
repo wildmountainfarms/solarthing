@@ -1,8 +1,8 @@
 package me.retrodaredevil.action.lang;
 
-import me.retrodaredevil.action.lang.translators.json.CustomNodeConfiguration;
-import me.retrodaredevil.action.lang.translators.json.NodeConfiguration;
-import me.retrodaredevil.action.lang.translators.json.SimpleNodeConfiguration;
+import me.retrodaredevil.notation.translators.json.CustomNodeConfiguration;
+import me.retrodaredevil.notation.translators.json.NodeConfiguration;
+import me.retrodaredevil.notation.translators.json.SimpleNodeConfiguration;
 
 import java.util.Collections;
 import java.util.HashMap;

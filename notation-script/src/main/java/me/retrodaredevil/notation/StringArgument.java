@@ -1,4 +1,4 @@
-package me.retrodaredevil.action.lang;
+package me.retrodaredevil.notation;
 
 import com.fasterxml.jackson.databind.node.TextNode;
 

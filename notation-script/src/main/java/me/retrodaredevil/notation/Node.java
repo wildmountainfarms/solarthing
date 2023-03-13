@@ -1,4 +1,4 @@
-package me.retrodaredevil.action.lang;
+package me.retrodaredevil.notation;
 
 import java.util.ArrayList;
 import java.util.Collections;

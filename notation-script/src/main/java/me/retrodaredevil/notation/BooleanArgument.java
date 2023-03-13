@@ -1,4 +1,4 @@
-package me.retrodaredevil.action.lang;
+package me.retrodaredevil.notation;
 
 public enum BooleanArgument implements Argument {
 	TRUE(true),

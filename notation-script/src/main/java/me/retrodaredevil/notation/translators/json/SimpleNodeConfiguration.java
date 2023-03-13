@@ -1,4 +1,4 @@
-package me.retrodaredevil.action.lang.translators.json;
+package me.retrodaredevil.notation.translators.json;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -1,14 +1,14 @@
-package me.retrodaredevil.action.lang.antlr;
+package me.retrodaredevil.notation.antlr;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TextNode;
-import me.retrodaredevil.action.lang.Argument;
-import me.retrodaredevil.action.lang.ArrayArgument;
-import me.retrodaredevil.action.lang.BooleanArgument;
-import me.retrodaredevil.action.lang.Node;
-import me.retrodaredevil.action.lang.NumberArgument;
-import me.retrodaredevil.action.lang.StringArgument;
+import me.retrodaredevil.notation.Argument;
+import me.retrodaredevil.notation.ArrayArgument;
+import me.retrodaredevil.notation.BooleanArgument;
+import me.retrodaredevil.notation.Node;
+import me.retrodaredevil.notation.NumberArgument;
+import me.retrodaredevil.notation.StringArgument;
 import me.retrodaredevil.actions.lang.antlr.NotationScriptBaseVisitor;
 import me.retrodaredevil.actions.lang.antlr.NotationScriptLexer;
 import me.retrodaredevil.actions.lang.antlr.NotationScriptParser;
