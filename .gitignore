@@ -4,6 +4,10 @@
 *.log.gz
 gradle.properties
 /web/schema.graphqls
+# Don't commit NotationScript files only if those files are in the root
+/*.ns
+# A log4j2.xml in the root directory indicates it was being used for testing
+/log4j2.xml
 
 /config.json
 /other/systemd/config.json

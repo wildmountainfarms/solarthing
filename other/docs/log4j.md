@@ -16,7 +16,7 @@ Below this is advanced info that the typical user doesn't need to look into.
 ---
 ### Environment Variable
 ```shell script
-export LOG4j_log4j2_configurationFile=<path to config>
+export LOG4J_CONFIGURATION_FILE=<path to config>
 ```
 ### JVM Argument
 ```

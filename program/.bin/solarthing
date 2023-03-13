@@ -5,7 +5,8 @@ BASEDIR=$(dirname "$0")
 
 "$BASEDIR/../.scripts/download_if_needed.sh" || exit 1
 
-export LOG4J_log4j2_configurationFile="$BASEDIR"/../../config_templates/log/console_only_and_no_debug_log4j2.xml
+# see https://logging.apache.org/log4j/2.x/manual/configuration.html#system-properties
+export LOG4J_CONFIGURATION_FILE="$BASEDIR"/../../config_templates/log/console_only_and_no_debug_log4j2.xml
 
 export SOLARTHING_ROOT="$BASEDIR/../.."
 source "$BASEDIR/../.scripts/use_sdkman_if_available.sh" # Requires bash
