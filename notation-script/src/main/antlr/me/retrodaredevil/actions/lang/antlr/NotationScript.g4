@@ -1,4 +1,4 @@
-grammar ActionLang;
+grammar NotationScript;
 
 // Run `man ascii` to view ascii table
 

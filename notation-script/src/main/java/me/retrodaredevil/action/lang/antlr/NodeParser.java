@@ -9,9 +9,9 @@ import me.retrodaredevil.action.lang.BooleanArgument;
 import me.retrodaredevil.action.lang.Node;
 import me.retrodaredevil.action.lang.NumberArgument;
 import me.retrodaredevil.action.lang.StringArgument;
-import me.retrodaredevil.actions.lang.antlr.ActionLangBaseVisitor;
-import me.retrodaredevil.actions.lang.antlr.ActionLangLexer;
-import me.retrodaredevil.actions.lang.antlr.ActionLangParser;
+import me.retrodaredevil.actions.lang.antlr.NotationScriptBaseVisitor;
+import me.retrodaredevil.actions.lang.antlr.NotationScriptLexer;
+import me.retrodaredevil.actions.lang.antlr.NotationScriptParser;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -27,11 +27,11 @@ public final class NodeParser {
 	private NodeParser() { throw new UnsupportedOperationException(); }
 
 	public static Node parseFrom(CharStream charStream) {
-		ActionLangLexer lexer = new ActionLangLexer(charStream);
-		ActionLangParser parser = new ActionLangParser(new CommonTokenStream(lexer));
+		NotationScriptLexer lexer = new NotationScriptLexer(charStream);
+		NotationScriptParser parser = new NotationScriptParser(new CommonTokenStream(lexer));
 
 		// Parse the input and get the parse tree
-		ActionLangParser.NodeContext nodeContext = parser.node();
+		NotationScriptParser.NodeContext nodeContext = parser.node();
 
 		Visitor visitor = new Visitor();
 		return visitor.visitNode(nodeContext);
@@ -53,7 +53,7 @@ public final class NodeParser {
 	private static boolean booleanFromBoolean(TerminalNode booleanTerminal) {
 		return booleanTerminal.getText().equals("true");
 	}
-	private static String stringFromLenientIdentifier(ActionLangParser.Lenient_identifierContext lenientIdentifier) {
+	private static String stringFromLenientIdentifier(NotationScriptParser.Lenient_identifierContext lenientIdentifier) {
 		if (lenientIdentifier.IDENTIFIER() != null) {
 			return lenientIdentifier.IDENTIFIER().getText();
 		}
@@ -69,10 +69,10 @@ public final class NodeParser {
 		throw new AssertionError("Not a valid lenient identifier! (this should never happen) text: " + lenientIdentifier.getText());
 	}
 
-	private static class Visitor extends ActionLangBaseVisitor<Argument> {
+	private static class Visitor extends NotationScriptBaseVisitor<Argument> {
 		@Override
-		public Node visitNode(ActionLangParser.NodeContext ctx) {
-			ActionLangParser.Node_partContext nodePart = ctx.node_part();
+		public Node visitNode(NotationScriptParser.NodeContext ctx) {
+			NotationScriptParser.Node_partContext nodePart = ctx.node_part();
 			String identifier = nodePart.IDENTIFIER().getText();
 			List<Argument> arguments = new ArrayList<>();
 			Map<String, Argument> namedArguments = new LinkedHashMap<>();
@@ -81,7 +81,7 @@ public final class NodeParser {
 				arguments.add(argument);
 			} else {
 				if (nodePart.argument_list() != null) {
-					for (ActionLangParser.ArgumentContext argumentCtx : nodePart.argument_list().argument()) {
+					for (NotationScriptParser.ArgumentContext argumentCtx : nodePart.argument_list().argument()) {
 						Argument argument = visitArgument(argumentCtx);
 						arguments.add(argument);
 					}
@@ -89,7 +89,7 @@ public final class NodeParser {
 				if (nodePart.named_argument_list() != null) {
 					for (int i = 0; i < nodePart.named_argument_list().argument().size(); i++) {
 						String argumentIdentifier = stringFromLenientIdentifier(nodePart.named_argument_list().lenient_identifier(i));
-						ActionLangParser.ArgumentContext argumentCtx = nodePart.named_argument_list().argument(i);
+						NotationScriptParser.ArgumentContext argumentCtx = nodePart.named_argument_list().argument(i);
 						Argument argument = visitArgument(argumentCtx);
 						if (namedArguments.containsKey(argumentIdentifier)) {
 							// TODO possibly throw a different exception here
@@ -101,8 +101,8 @@ public final class NodeParser {
 			}
 			List<Node> subNodes = new ArrayList<>();
 			if (ctx.node_list_part() != null) {
-				ActionLangParser.Node_list_partContext nodeList = ctx.node_list_part();
-				for (ActionLangParser.NodeContext node : nodeList.node()) {
+				NotationScriptParser.Node_list_partContext nodeList = ctx.node_list_part();
+				for (NotationScriptParser.NodeContext node : nodeList.node()) {
 					subNodes.add(visitNode(node));
 				}
 			}
@@ -116,7 +116,7 @@ public final class NodeParser {
 		}
 
 		@Override
-		public Argument visitArgument(ActionLangParser.ArgumentContext ctx) {
+		public Argument visitArgument(NotationScriptParser.ArgumentContext ctx) {
 			if (ctx.node() != null) {
 				return visitNode(ctx.node());
 			}
@@ -136,7 +136,7 @@ public final class NodeParser {
 		}
 
 		@Override
-		public Argument visitSimple_argument(ActionLangParser.Simple_argumentContext ctx) {
+		public Argument visitSimple_argument(NotationScriptParser.Simple_argumentContext ctx) {
 			if (ctx.number() != null) {
 				return visitNumber(ctx.number());
 			}
@@ -156,16 +156,16 @@ public final class NodeParser {
 		}
 
 		@Override
-		public NumberArgument visitNumber(ActionLangParser.NumberContext ctx) {
+		public NumberArgument visitNumber(NotationScriptParser.NumberContext ctx) {
 			String numberText = ctx.NUMBER().getText();
 			BigDecimal number = new BigDecimal(numberText);
 			return new NumberArgument(number);
 		}
 
 		@Override
-		public ArrayArgument visitArray(ActionLangParser.ArrayContext ctx) {
+		public ArrayArgument visitArray(NotationScriptParser.ArrayContext ctx) {
 			List<Argument> arguments = new ArrayList<>();
-			for (ActionLangParser.ArgumentContext argumentContext : ctx.argument()) {
+			for (NotationScriptParser.ArgumentContext argumentContext : ctx.argument()) {
 				arguments.add(visitArgument(argumentContext));
 			}
 			return new ArrayArgument(arguments);
