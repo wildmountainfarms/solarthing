@@ -3,15 +3,16 @@ package me.retrodaredevil.solarthing.actions;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.action.lang.ActionLangUtil;
+import me.retrodaredevil.action.node.ActionNode;
+import me.retrodaredevil.action.node.expression.node.ExpressionNode;
 import me.retrodaredevil.notation.Node;
 import me.retrodaredevil.notation.NodeTranslator;
 import me.retrodaredevil.notation.antlr.NodeParser;
+import me.retrodaredevil.notation.antlr.SyntaxException;
 import me.retrodaredevil.notation.translators.json.JsonNodeTranslator;
 import me.retrodaredevil.notation.translators.json.NodeConfiguration;
 import me.retrodaredevil.notation.translators.json.SimpleConfigurationProvider;
 import me.retrodaredevil.notation.translators.json.SimpleNodeConfiguration;
-import me.retrodaredevil.action.node.ActionNode;
-import me.retrodaredevil.action.node.expression.node.ExpressionNode;
 import me.retrodaredevil.solarthing.actions.command.FlagActionNode;
 import me.retrodaredevil.solarthing.actions.command.SendEncryptedActionNode;
 import me.retrodaredevil.solarthing.actions.config.ActionFormat;
@@ -88,10 +89,15 @@ public final class CommonActionUtil {
 	public static ActionNode readActionReference(ObjectMapper objectMapper, ActionReference actionReference) throws IOException {
 		ActionFormat actionFormat = actionReference.getFormat();
 		if (actionFormat == ActionFormat.RAW_JSON) {
-//			return objectMapper.readValue(actionReference.getFile(), ActionNode.class);
 			return objectMapper.readValue(Files.newInputStream(actionReference.getPath()), ActionNode.class);
 		} else if (actionFormat == ActionFormat.NOTATION_SCRIPT) {
-			Node node = NodeParser.parseFrom(CharStreams.fromPath(actionReference.getPath(), StandardCharsets.UTF_8));
+			final Node node;
+			try {
+				node = NodeParser.parseFrom(CharStreams.fromPath(actionReference.getPath(), StandardCharsets.UTF_8));
+			} catch (SyntaxException e) {
+				throw new IOException("Got syntax error! Errors: " + e.getSyntaxErrors(), e);
+			}
+			// TODO translate(Node) can throw a range of runtime exceptions, maybe we should think about consolidating them into a single checked exception
 			JsonNode jsonNode = TRANSLATOR.translate(node);
 			LOGGER.debug("Compiled notation script file to JSON (below). path: " + actionReference.getPath() + "\n" + jsonNode);
 			return objectMapper.treeToValue(jsonNode, ActionNode.class);

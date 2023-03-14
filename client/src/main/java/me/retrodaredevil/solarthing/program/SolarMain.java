@@ -22,6 +22,7 @@ import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.packets.handling.RawPacketReceiver;
 import me.retrodaredevil.solarthing.packets.instance.InstanceFragmentIndicatorPackets;
 import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePackets;
+import me.retrodaredevil.solarthing.program.action.RunActionMain;
 import me.retrodaredevil.solarthing.program.check.CheckMain;
 import me.retrodaredevil.solarthing.program.pvoutput.PVOutputUploadMain;
 import org.apache.logging.log4j.LogManager;
@@ -261,7 +262,8 @@ public final class SolarMain {
 					"Commands:\n" +
 					"  run [options]\n" +
 					"  version\n" +
-					"  check --port <serial port> [--type <type>]");
+					"  check --port <serial port> [--type <type>]\n" +
+					"  action [file]");
 			return SolarThingConstants.EXIT_CODE_INVALID_OPTIONS;
 		}
 		String firstArg = args[0];
@@ -272,6 +274,8 @@ public final class SolarMain {
 				return doMain(subArgs);
 			case "version":
 				return outputVersion();
+			case "action":
+				return RunActionMain.runAction(subArgs);
 			case "check":
 				return CheckMain.doCheck(subArgs);
 			default:

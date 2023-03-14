@@ -7,6 +7,7 @@ import me.retrodaredevil.action.Action;
 import me.retrodaredevil.notation.Node;
 import me.retrodaredevil.notation.NodeTranslator;
 import me.retrodaredevil.notation.antlr.NodeParser;
+import me.retrodaredevil.notation.antlr.SyntaxException;
 import me.retrodaredevil.notation.translators.json.JsonNodeTranslator;
 import me.retrodaredevil.notation.translators.json.SimpleConfigurationProvider;
 import me.retrodaredevil.action.node.ActionNode;
@@ -26,7 +27,7 @@ public class ActionLangTest {
 	private static final ObjectMapper MAPPER = new ObjectMapper();
 
 	@Test
-	void testCode() throws IOException {
+	void testCode() throws IOException, SyntaxException {
 		Node node = NodeParser.parseFrom(CharStreams.fromStream(
 				requireNonNull(getClass().getResourceAsStream("/test_code2.ns"), "Expected file to be present!")
 		));
@@ -38,11 +39,11 @@ public class ActionLangTest {
 		System.out.println(translator.translate(node));
 	}
 	@Test
-	void runCode() throws IOException {
+	void runCode() throws IOException, SyntaxException {
 		runResource("/test_code3.ns");
 	}
 
-	private void runResource(String name) throws IOException {
+	private void runResource(String name) throws IOException, SyntaxException {
 
 		Node node = NodeParser.parseFrom(CharStreams.fromStream(
 				requireNonNull(getClass().getResourceAsStream(name), "Expected file to be present!")

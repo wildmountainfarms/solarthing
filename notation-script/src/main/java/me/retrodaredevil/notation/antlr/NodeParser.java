@@ -3,17 +3,18 @@ package me.retrodaredevil.notation.antlr;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TextNode;
+import me.retrodaredevil.actions.lang.antlr.NotationScriptBaseVisitor;
+import me.retrodaredevil.actions.lang.antlr.NotationScriptLexer;
+import me.retrodaredevil.actions.lang.antlr.NotationScriptParser;
 import me.retrodaredevil.notation.Argument;
 import me.retrodaredevil.notation.ArrayArgument;
 import me.retrodaredevil.notation.BooleanArgument;
 import me.retrodaredevil.notation.Node;
 import me.retrodaredevil.notation.NumberArgument;
 import me.retrodaredevil.notation.StringArgument;
-import me.retrodaredevil.actions.lang.antlr.NotationScriptBaseVisitor;
-import me.retrodaredevil.actions.lang.antlr.NotationScriptLexer;
-import me.retrodaredevil.actions.lang.antlr.NotationScriptParser;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.ConsoleErrorListener;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.math.BigDecimal;
@@ -26,12 +27,19 @@ public final class NodeParser {
 	private static final ObjectMapper MAPPER = new ObjectMapper();
 	private NodeParser() { throw new UnsupportedOperationException(); }
 
-	public static Node parseFrom(CharStream charStream) {
+	public static Node parseFrom(CharStream charStream) throws SyntaxException {
 		NotationScriptLexer lexer = new NotationScriptLexer(charStream);
+
+		ParseErrorListener parseErrorListener = new ParseErrorListener();
 		NotationScriptParser parser = new NotationScriptParser(new CommonTokenStream(lexer));
+		parser.removeErrorListener(ConsoleErrorListener.INSTANCE);
+		parser.addErrorListener(parseErrorListener);
 
 		// Parse the input and get the parse tree
 		NotationScriptParser.NodeContext nodeContext = parser.node();
+		if (!parseErrorListener.getSyntaxErrors().isEmpty()) {
+			throw new SyntaxException(parseErrorListener.getSyntaxErrors());
+		}
 
 		Visitor visitor = new Visitor();
 		return visitor.visitNode(nodeContext);

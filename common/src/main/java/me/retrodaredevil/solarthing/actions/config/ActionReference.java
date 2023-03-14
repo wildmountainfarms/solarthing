@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.actions.config;
 
-import java.io.File;
 import java.nio.file.Path;
 
 import static java.util.Objects.requireNonNull;
@@ -17,10 +16,6 @@ public final class ActionReference {
 		this.format = requireNonNull(format);
 	}
 
-	@Deprecated
-	public File getFile() {
-		return path.toFile();
-	}
 	public Path getPath() {
 		return path;
 	}
