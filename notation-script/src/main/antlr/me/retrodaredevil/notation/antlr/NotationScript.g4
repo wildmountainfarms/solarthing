@@ -3,7 +3,7 @@ grammar NotationScript;
 // Run `man ascii` to view ascii table
 
 @header {
-package me.retrodaredevil.actions.lang.antlr;
+package me.retrodaredevil.notation.antlr;
 }
 
 // We may add more sections to top_node in the future to support an "import" section
