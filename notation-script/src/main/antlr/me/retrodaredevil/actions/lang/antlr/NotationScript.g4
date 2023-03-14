@@ -6,6 +6,11 @@ grammar NotationScript;
 package me.retrodaredevil.actions.lang.antlr;
 }
 
+// We may add more sections to top_node in the future to support an "import" section
+top_node
+    : NEW_LINE* node NEW_LINE*
+    ;
+
 node
     : node_part node_list_part? linked_node_part? term?
     ;
@@ -55,10 +60,9 @@ simple_argument
     | array
     ;
 
-// TODO allow new lines in array
 array
-    : BRACKET_L BRACKET_R
-    | BRACKET_L argument (COMMA argument)* COMMA? BRACKET_R
+    : BRACKET_L NEW_LINE* BRACKET_R
+    | BRACKET_L NEW_LINE* argument (NEW_LINE* COMMA NEW_LINE* argument)* NEW_LINE* COMMA? NEW_LINE* BRACKET_R
     ;
 
 number

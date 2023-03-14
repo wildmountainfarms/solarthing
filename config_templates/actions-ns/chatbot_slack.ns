@@ -8,7 +8,7 @@ chatbot-slack(
     U01BK1SET42=[
       "solarthing.commands.*"
     ],
-    "some other id": [
+    "some other id"=[
       "solarthing.commands.1.GEN OFF"
     ],
   )

@@ -36,7 +36,8 @@ public final class NodeParser {
 		parser.addErrorListener(parseErrorListener);
 
 		// Parse the input and get the parse tree
-		NotationScriptParser.NodeContext nodeContext = parser.node();
+		NotationScriptParser.Top_nodeContext topNodeContext = parser.top_node();
+		NotationScriptParser.NodeContext nodeContext = topNodeContext.node();
 		if (!parseErrorListener.getSyntaxErrors().isEmpty()) {
 			throw new SyntaxException(parseErrorListener.getSyntaxErrors());
 		}
