@@ -21,6 +21,7 @@ public interface TemperaturePacket extends WeatherPacket, SourcedData {
 	 * Represents temperature Celsius values that might indicate a bad reading.
 	 * The actual size of this set should probably be much larger, so don't actually rely on this.
 	 */
+	@Deprecated
 	Set<Float> POSSIBLE_BAD_VALUES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(0.0f, 16.0f, 24.0f, 25.0f)));
 
 	@DefaultFinal

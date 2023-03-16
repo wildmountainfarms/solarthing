@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.program.pvoutput;
 
-import me.retrodaredevil.solarthing.misc.weather.TemperaturePacket;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 import me.retrodaredevil.solarthing.packets.identification.IdentifierFragment;
@@ -32,6 +31,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 public class PVOutputHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PVOutputHandler.class);
@@ -89,8 +90,9 @@ public class PVOutputHandler {
 		}
 		DataProvider.Result resultTemperatureCelsius = temperatureCelsiusProvider.getResult(latestPacketGroup);
 		if (resultTemperatureCelsius != null) {
+			long goodReadingStartDateMillis = latestPacketGroup.getDateMillis() - 60 * 60 * 1000;
 			float temperatureCelsius = resultTemperatureCelsius.getValue();
-			if (!resultTemperatureCelsius.isPossiblyBadData() || !TemperaturePacket.POSSIBLE_BAD_VALUES.contains(temperatureCelsius)) {
+			if (!resultTemperatureCelsius.isPossiblyBadData() || isGoodReading(temperatureCelsiusProvider, temperatureCelsius, packetGroupList, goodReadingStartDateMillis)) {
 				addStatusParametersBuilder.setTemperatureCelsius(temperatureCelsius);
 				LOGGER.debug("[status parameters] added temperature using " + resultTemperatureCelsius.getIdentifierFragment() + " from dateMillis: " + resultTemperatureCelsius.getDateMillis());
 			} else {
@@ -98,6 +100,31 @@ public class PVOutputHandler {
 			}
 		}
 		return addStatusParametersBuilder.build();
+	}
+	private static boolean isGoodReading(TemperatureCelsiusProvider temperatureCelsiusProvider, float temperatureCelsius, List<FragmentedPacketGroup> packetGroupList, long startDateMillis) {
+		SortedSet<Float> uniqueReadings = new TreeSet<>();
+		for (FragmentedPacketGroup packetGroup : packetGroupList) {
+			if (packetGroup.getDateMillis() < startDateMillis) {
+				continue;
+			}
+			DataProvider.Result resultTemperatureCelsius = temperatureCelsiusProvider.getResult(packetGroup);
+			if (resultTemperatureCelsius != null) {
+				uniqueReadings.add(resultTemperatureCelsius.getValue());
+			}
+		}
+		int removeAmount = uniqueReadings.size() / 7 + 1; // remove at least 1 set of outliers. For every 7 unique readings, remove another set
+		for (int i = 0; i < removeAmount; i++) {
+			// remove outliers
+			uniqueReadings.remove(uniqueReadings.first());
+			uniqueReadings.remove(uniqueReadings.last());
+		}
+		if (uniqueReadings.isEmpty()) {
+			// better safe than sorry
+			return false;
+		}
+		float firstReading = uniqueReadings.first();
+		float lastReading = uniqueReadings.last();
+		return temperatureCelsius > firstReading - 4.0f && temperatureCelsius < lastReading + 4.0f;
 	}
 	private static AddStatusParametersBuilder createStatusBuilder(ZoneId zoneId, long dateMillis) {
 		LocalDateTime localDateTime = Instant.ofEpochMilli(dateMillis).atZone(zoneId).toLocalDateTime();
