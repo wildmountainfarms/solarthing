@@ -116,7 +116,9 @@ public class PVOutputHandler {
 		for (int i = 0; i < removeAmount; i++) {
 			// remove outliers
 			uniqueReadings.remove(uniqueReadings.first());
-			uniqueReadings.remove(uniqueReadings.last());
+			if (!uniqueReadings.isEmpty()) { // need to make this check because it's possible that the size is 1 before removing the first element
+				uniqueReadings.remove(uniqueReadings.last());
+			}
 		}
 		if (uniqueReadings.isEmpty()) {
 			// better safe than sorry
