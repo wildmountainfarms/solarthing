@@ -5,7 +5,7 @@ buildscript {
         junit5PlatformVersion = '1.9.2'
 
         slf4jVersion = '2.0.6' // http://www.slf4j.org/download.html
-        log4jVersion = '2.19.0' // https://logging.apache.org/log4j/2.x/javadoc.html
+        log4jVersion = '2.20.0' // https://logging.apache.org/log4j/2.x/javadoc.html
         // Note: Since Jackson 2.14, Android SDK 26 is required
         // https://github.com/FasterXML/jackson/wiki/Jackson-Releases
         jacksonVersion = '2.14.1' // https://github.com/FasterXML/jackson-databind/tags
