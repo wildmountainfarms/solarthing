@@ -53,16 +53,12 @@ bootRun {
     workingDir = new File("../program/graphql")
 }
 
-task copyWebApp(type: Copy) {
-    // Note that this causes "Execution optimizations have been disabled for task" warnings.
-    //   These warnings can be ignored because we only care about the bootJar and bootRun tasks being correct.
-    //   This does, however, have the downside of optimizations being disabled for certain tasks.
-    from "$rootDir/web/build"
-    into "$rootDir/graphql/build/resources/main/static/."
+processResources {
+    dependsOn(":web:build")
+    from("$rootDir/web/build") {
+        into("static")
+    }
 }
-copyWebApp.dependsOn(":web:build")
-bootJar.dependsOn(copyWebApp)
-bootRun.dependsOn(copyWebApp)
 
 task generateSchema(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
