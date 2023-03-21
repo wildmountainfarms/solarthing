@@ -19,7 +19,6 @@ sourceCompatibility = JavaVersion.VERSION_11
 targetCompatibility = JavaVersion.VERSION_11
 
 version = '0.0.1-SNAPSHOT'
-//project.ext.mainClass = "me.retrodaredevil.solarthing.graphql.SolarThingApplication" // This isn't doing anything?
 
 compileJava {
     // TODO We don't need the -parameters compiler argument (I don't think), plus now that Java 11 is required for GraphQL, what does it do/is it needed if we did need it?
@@ -27,7 +26,6 @@ compileJava {
 }
 
 dependencies {
-//    implementation "com.fasterxml.jackson.module:jackson-module-jsonSchema:$jacksonVersion" // I don't remember why we needed this
     implementation('org.springframework.boot:spring-boot-starter-web') {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
     }
@@ -52,6 +50,24 @@ jar {
 bootRun {
     workingDir = new File("../program/graphql")
 }
+/*
+If we want to in the future, we can apply the 'war' plugin and configure the war task to be enabled here.
+We could then use bootWar to generate a war file to be used inside a tomcat server.
+ */
+
+/*
+If we want to in the future, we can configure this.
+However, configuring a buildpack (https://buildpacks.io/docs/operator-guide/create-a-builder/) is a learning curve.
+The default buildpack setup actually works perfectly, but compiling to multiple architectures (platforms)
+  is actually a pain in the ass to find documentation on.
+bootBuildImage {
+    // https://docs.spring.io/spring-boot/docs/current/gradle-plugin/reference/htmlsingle/#build-image
+    // docker buildx create --use --platform linux/386,linux/amd64,linux/arm/v7,linux/arm64/v7,linux/ppc64le,linux/s390x
+    // https://docs.spring.io/spring-boot/docs/current/gradle-plugin/reference/htmlsingle/#build-image.examples.custom-image-builder
+    def containerRegistry = "ghcr.io"
+    imageName = "$containerRegistry/wildmountainfarms/solarthing-server:latest"
+}
+*/
 
 processResources {
     dependsOn(":web:build")

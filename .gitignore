@@ -1,4 +1,5 @@
 # Custom stuff:
+/test/
 *.attach_pid*
 .~lock*
 *.log.gz

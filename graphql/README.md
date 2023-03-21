@@ -23,3 +23,14 @@ For testing your skills/syntax: https://graphql.org/swapi-graphql or https://nhz
 Use `./gradlew graphql:bootJar` or [./graphql_compile_and_move.sh](../graphql_compile_and_move.sh) in the root directory.
 
 Or `./gradlew graphql:bootRun` to run this
+
+### Future `Dockerfile`
+
+https://reflectoring.io/spring-boot-docker/
+
+When we create a `Dockerfile` from the boot jar, we will want to extract its layers.
+
+```shell
+java -Djarmode=layertools -jar ../graphql/build/libs/graphql-0.0.1-SNAPSHOT.jar extract
+# then copy the 4 folders to /app or something
+```

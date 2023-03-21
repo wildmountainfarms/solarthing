@@ -5,7 +5,8 @@
 * Packet for disk usage
 * Send packet when mate serial port hasn't output data for 30 seconds
 * Create Dockerfile and example docker-compose file
-  * We should use https://hub.docker.com/r/azul/zulu-openjdk
+  * We should use https://hub.docker.com/_/eclipse-temurin/tags?page=1&name=19-jre-jammy
+  * And for SolarThing server: https://hub.docker.com/_/tomcat/tags?page=1&name=jre17-temurin
 * Short term record packets for high/low battery voltage, FX inverter current, pv wattage, charging current, etc  
   * This would be very useful so that if packets are replaced there is still information on how
   high or low the battery voltage got or how high the load was
@@ -27,9 +28,6 @@ don't look like they're constantly disconnecting and reconnecting
 * Possibly refactor PacketListReceiver
   * Have a way to tell if a packet included in the packets list is important enough to warrant storing in the database.
     * Right now we do a bunch of packets.isEmpty() checks to see if we should continue adding packets, but there's probably a better way
-* Better way to update SNAPSHOT jar so that running SolarThing instances don't get mad
-  * We have a great setup for versioned SolarThing jar files, because running instances will still use
-  whatever jar solarthing.jar pointed them to originally, but this isn't the case when we actually change the jar it is pointing to
 * Backend Grafana plugin to allow commands to be sent
   * Might not actually need a backend plugin if we can just use the proxy instead
   * https://github.com/grafana/grafana/issues/12556
@@ -203,6 +201,10 @@ easy displaying in Grafana
 * Use https://github.com/tbroyer/gradle-errorprone-plugin
 * Add info about the state of CouchDB on the home page of SolarThing web
 * Add this to web: https://github.com/IvanGoncharov/graphql-voyager
+* Better way to update SNAPSHOT jar so that running SolarThing instances don't get mad
+  * We have a great setup for versioned SolarThing jar files, because running instances will still use
+    whatever jar solarthing.jar pointed them to originally, but this isn't the case when we actually change the jar it is pointing to
+  * Completed a while ago with SNAPSHOT-1 and SNAPSHOT-2 alternating
 
 ### Look into
 * Look into supporting Elasticsearch, MongoDB, Graphite

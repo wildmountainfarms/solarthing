@@ -50,6 +50,7 @@ jobs:
         # Prefix the list here with "+" to use these queries and those in the config file.
         # queries: ./path/to/local/query, your-org/your-repo/queries@main
 
+    # https://docs.github.com/en/actions/learn-github-actions/expressions
     - if: ${{ matrix.language == 'java' }}
       uses: actions/setup-node@v3
       with:
