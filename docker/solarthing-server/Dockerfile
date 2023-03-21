@@ -5,6 +5,8 @@ RUN java -Djarmode=layertools -jar application.jar extract
 
 
 FROM eclipse-temurin:19-jre-jammy
+LABEL org.opencontainers.image.source=https://github.com/wildmountainfarms/solarthing
+
 RUN ["mkdir", "/app"]
 WORKDIR "/app"
 COPY --from=builder dependencies/ ./
