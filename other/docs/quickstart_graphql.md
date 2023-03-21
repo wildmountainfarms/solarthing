@@ -13,7 +13,7 @@ cd /opt/solarthing/program/graphql
 
 Now copy the `application.properties` to the config directory:
 ```shell script
-cp ../../config_templates/graphql/application.properties config/
+cp ../../config_templates/server/application.properties config/
 ```
 
 Edit `application.properties`:
