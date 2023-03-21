@@ -29,7 +29,7 @@ jobs:
       - name: Install dependencies
         run: (cd web && npm install)
       - name: Build Boot Jar
-        run: ./gradlew graphql:bootJar
+        run: ./gradlew server:bootJar
 
       # https://github.com/marketplace/actions/docker-login
       - name: Log in to the Container registry
@@ -57,7 +57,7 @@ jobs:
           context: .
           file: docker/solarthing-server/Dockerfile
           build-args: |
-            BOOT_JAR=graphql/build/libs/graphql-0.0.1-SNAPSHOT.jar
+            BOOT_JAR=server/build/libs/server-0.0.1-SNAPSHOT.jar
           push: true
           platforms: linux/amd64,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/s390x
           tags: ${{ steps.meta.outputs.tags }}

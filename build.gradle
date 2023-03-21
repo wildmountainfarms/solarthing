@@ -272,7 +272,7 @@ project(":serviceapi"){
         annotationProcessor project(":process-annotations")
     }
 }
-project(":graphql"){
+project(":server"){
     apply plugin: 'java'
     dependencies {
         api project(":core")
