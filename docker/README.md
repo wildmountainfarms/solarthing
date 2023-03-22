@@ -8,5 +8,7 @@ So, the only Dockerfiles that should be used to build solarthing should be on th
 
 ```shell
 # run in solarthing root
-docker build -f docker/solarthing-server/Dockerfile --build-arg BOOT_JAR=server/build/libs/server-0.0.1-SNAPSHOT.jar --tag wildmountainfarms/solarthing-server:latest .
+docker build -f docker/solarthing-server/Dockerfile --build-arg JAR_LOCATION=server/build/libs/server-0.0.1-SNAPSHOT.jar --tag solarthing-server:latest .
+
+docker build -f docker/solarthing/Dockerfile --build-arg JAR_LOCATION=client/build/libs/client-0.0.1-SNAPSHOT-all.jar --tag solarthing:latest .
 ```
