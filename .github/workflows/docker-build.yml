@@ -59,8 +59,15 @@ jobs:
         uses: docker/metadata-action@v4.3.0
         with:
           images: ${{ env.REGISTRY }}/wildmountainfarms/${{ matrix.data.image-name }}
+          # expressions: https://docs.github.com/en/actions/learn-github-actions/expressions
           tags: |
-            type=raw,value=edge,enable=${{ github.ref == 'refs/heads/master' }}
+            # in our case {{major}} is actually a year, so it's not really signifying a major release
+            type=semver,pattern={{major}}.{{minor}}.{{patch}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest,priority=750,enable=${{ startsWith(github.ref, 'refs/tags/') && !contains(github.ref, 'rc') && !contains(github.ref, 'beta') }}
+            type=raw,value=beta,priority=750,enable=${{ startsWith(github.ref, 'refs/tags/') && (contains(github.ref, 'rc') || contains(github.ref, 'beta')) }}
+            type=edge,branch=master
+            type=sha,format=short
           # https://github.com/opencontainers/image-spec/blob/main/annotations.md#pre-defined-annotation-keys
           labels: |
             maintainer=retrodaredevil
