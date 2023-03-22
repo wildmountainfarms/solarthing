@@ -20,7 +20,7 @@ jobs:
           - image-name: solarthing
             display-name: "SolarThing"
             build-command: "client:shadowJar"
-            jar-location: "client/build/libs/client-0.0.1-SNAPSHOT.jar"
+            jar-location: "client/build/libs/client-0.0.1-SNAPSHOT-all.jar"
           - image-name: solarthing-server
             display-name: "SolarThing Server"
             build-command: "server:bootJar"
