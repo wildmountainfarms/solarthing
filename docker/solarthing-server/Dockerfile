@@ -6,10 +6,6 @@ RUN java -Djarmode=layertools -jar application.jar extract
 
 FROM eclipse-temurin:19-jre-jammy
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends tzdata && \
-    rm -rf /var/lib/apt/lists/*
-
 RUN ["mkdir", "/app"]
 WORKDIR "/app"
 RUN ["mkdir", "classes"]
