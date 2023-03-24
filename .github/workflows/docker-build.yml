@@ -67,7 +67,7 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}.{{patch}}
             type=semver,pattern={{major}}.{{minor}}
             type=raw,value=latest,priority=750,enable=${{ startsWith(github.ref, 'refs/tags/') && !contains(github.ref, 'rc') && !contains(github.ref, 'beta') }}
-            type=raw,value=beta,priority=750,enable=${{ startsWith(github.ref, 'refs/tags/') && (contains(github.ref, 'rc') || contains(github.ref, 'beta')) }}
+            type=raw,value=beta,priority=740,enable=${{ startsWith(github.ref, 'refs/tags/')}}
             type=edge,branch=master
             type=sha,format=short
           # https://github.com/opencontainers/image-spec/blob/main/annotations.md#pre-defined-annotation-keys

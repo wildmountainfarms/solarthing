@@ -1,6 +1,10 @@
 FROM eclipse-temurin:19-jre-jammy
 ARG JAR_LOCATION
 
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends tzdata && \
+    rm -rf /var/lib/apt/lists/*
+
 RUN ["mkdir", "/app"]
 WORKDIR "/app"
 COPY --chmod=0444 ${JAR_LOCATION} solarthing.jar
