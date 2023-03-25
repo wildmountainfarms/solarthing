@@ -13,6 +13,7 @@ import me.retrodaredevil.solarthing.config.request.modbus.ModbusDataRequester;
  */
 @JsonSubTypes({
 		@JsonSubTypes.Type(RaspberryPiCpuTemperatureDataRequester.class),
+		@JsonSubTypes.Type(CpuTemperatureDataRequester.class),
 		@JsonSubTypes.Type(W1TemperatureDataRequester.class),
 		@JsonSubTypes.Type(BatteryVoltageIODataRequester.class),
 		@JsonSubTypes.Type(PzemShuntDataRequester.class),

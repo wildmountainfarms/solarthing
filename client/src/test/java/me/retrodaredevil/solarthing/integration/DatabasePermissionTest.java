@@ -32,7 +32,7 @@ public class DatabasePermissionTest {
 		return PacketCollections.createFromPackets(
 				Instant.now(),
 				Arrays.asList(
-						new CelsiusCpuTemperaturePacket(20.2f),
+						new CelsiusCpuTemperaturePacket(null, 20.2f, null),
 						InstanceSourcePackets.create("default"),
 						InstanceFragmentIndicatorPackets.create(1)
 				),
