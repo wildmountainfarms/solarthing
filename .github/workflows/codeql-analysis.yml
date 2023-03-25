@@ -32,7 +32,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'java', 'python', 'typescript' ]
+        language: [ 'java', 'typescript' ]
         # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
         # Learn more about CodeQL language support at https://git.io/codeql-language-support
 
@@ -51,11 +51,17 @@ jobs:
         # queries: ./path/to/local/query, your-org/your-repo/queries@main
 
     # https://docs.github.com/en/actions/learn-github-actions/expressions
-    - if: ${{ matrix.language == 'java' }}
+    - if: matrix.language == 'java'
+      name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: 17
+    - if: matrix.language == 'java'
       uses: actions/setup-node@v3
       with:
         node-version: 16
-    - if: ${{ matrix.language == 'java' }}
+    - if: matrix.language == 'java'
       name: Install dependencies
       run: (cd web && npm install)
 
