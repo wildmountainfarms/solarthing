@@ -16,7 +16,7 @@ buildscript {
         okhttpVersion = "4.10.0" // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
         couchdbJavaVersion = '1.1.0'
 //        couchdbJavaVersion = "8ff00d2c490af49ca19b29a7852b72578a97fae8".substring(0, 10)
-        dockerComposePluginVersion = "0.16.11" // https://github.com/avast/gradle-docker-compose-plugin/releases
+        dockerComposePluginVersion = "0.16.12" // https://github.com/avast/gradle-docker-compose-plugin/releases
         errorpronePluginVersion = '3.0.1' // https://github.com/tbroyer/gradle-errorprone-plugin/releases
         errorproneCoreVersion = '2.18.0' // https://mvnrepository.com/artifact/com.google.errorprone/error_prone_core
         antlrVersion = "4.12.0" // https://github.com/antlr/antlr4/releases
