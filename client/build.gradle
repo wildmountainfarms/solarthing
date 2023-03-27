@@ -13,7 +13,7 @@ project.ext.mainClassName = "me.retrodaredevil.solarthing.program.SolarMain"
 dependencies {
     implementation "com.github.retrodaredevil.io-lib:jSerialComm:$ioLibVersion"
     // for InfluxDB 1.X
-    implementation 'org.influxdb:influxdb-java:2.22'
+    implementation 'org.influxdb:influxdb-java:2.23'
     // for InfluxDB 2.0 // https://github.com/influxdata/influxdb-client-java/releases
     implementation 'com.influxdb:influxdb-client-java:6.1.0'
 
