@@ -1,7 +1,5 @@
 package me.retrodaredevil.solarthing.rest.graphql;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import graphql.GraphQL;
 import graphql.schema.GraphQLSchema;
@@ -31,11 +29,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Collections;
@@ -51,7 +51,7 @@ public class GraphQLProvider {
 	private final CacheController cacheController;
 
 	@Value("${solarthing.config.solcast_file:config/solcast.json}")
-	private File solcastFile;
+	private Path solcastFile;
 
 	private GraphQL graphQL;
 
@@ -106,10 +106,9 @@ public class GraphQLProvider {
 		ObjectMapper objectMapper = JacksonUtil.defaultMapper();
 
 		SolcastConfig solcastConfig = null;
-		try {
-			solcastConfig = objectMapper.readValue(solcastFile, SolcastConfig.class);
-		} catch (JsonParseException | JsonMappingException e) {
-			throw new RuntimeException("Bad solcast JSON!", e);
+		try (InputStream inputStream = Files.newInputStream(solcastFile)) {
+			// TODO [Interpolate] Allow interpolated values
+			solcastConfig = objectMapper.readValue(inputStream, SolcastConfig.class);
 		} catch (IOException e) {
 			LOGGER.debug("No solcast config! Not using solcast!");
 		}

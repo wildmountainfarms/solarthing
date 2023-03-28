@@ -14,6 +14,8 @@ import me.retrodaredevil.solarthing.database.SolarThingDatabase;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.time.ZoneId;
 
 import static java.util.Objects.requireNonNull;
@@ -42,8 +44,10 @@ public class CommandHandler {
 			return null;
 		}
 		// TODO put some of this logic in the common module
-		try {
-			return CONFIG_MAPPER.readValue(command.getActionFile(), ActionNode.class);
+		try (InputStream inputStream = Files.newInputStream(command.getActionFile())){
+			// TODO [Interpolate]? We still need to decide how we want to allow the possibility
+			// TODO we want to allow NotationScript formatted files to be used
+			return CONFIG_MAPPER.readValue(inputStream, ActionNode.class);
 		} catch (IOException e) {
 			throw new RuntimeException("Could not json from file: " + command.getActionFile(), e);
 		}

@@ -6,7 +6,7 @@ import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -36,19 +36,19 @@ public class RestCommandConfig {
 
 	@JsonExplicit
 	public static class Command {
-		private final File actionFile;
+		private final Path actionFile;
 		/** The source ID that should be present in the InjectEnvironment or null to not include it.*/
 		private final @Nullable String sourceId;
 
 		@JsonCreator
 		public Command(
-				@JsonProperty(value = "action_file", required = true) File actionFile,
+				@JsonProperty(value = "action_file", required = true) Path actionFile,
 				@JsonProperty("source") @Nullable String sourceId) {
 			requireNonNull(this.actionFile = actionFile);
 			this.sourceId = sourceId;
 		}
 
-		public @NotNull File getActionFile() {
+		public @NotNull Path getActionFile() {
 			return actionFile;
 		}
 

@@ -3,9 +3,13 @@ package me.retrodaredevil.solarthing.program;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 
-import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.FileSystemNotFoundException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.FileTime;
 import java.time.Instant;
 
 @UtilityClass
@@ -17,7 +21,7 @@ public final class JarUtil {
 
 	public static Data getData() {
 		URI uri = getJarFileUri();
-		Long lastModified = getLastModified(uri);
+		Instant lastModified = getLastModified(uri);
 		return new Data(uri, lastModified);
 	}
 
@@ -30,43 +34,47 @@ public final class JarUtil {
 	}
 
 	public static String getJarFileName() {
-		return getData().getJarFileName();
+		return getData().getJarFileNameOrNull();
 	}
-	private static @Nullable Long getLastModified(URI uri) {
-		final File file;
+	private static @Nullable Instant getLastModified(URI uri) {
+		final Path path = pathOrNull(uri);
+		if (path == null) {
+			return null;
+		}
+		final FileTime time;
 		try {
-			file = new File(getJarFileUri());
-		} catch (IllegalArgumentException ex) {
+			time = Files.getLastModifiedTime(path);
+		} catch (IOException e) {
 			return null;
 		}
-		long value = file.lastModified();
-		if (value == 0) {
-			return null;
-		}
-		return value;
+		return time.toInstant();
 	}
+	private static Path pathOrNull(URI uri) {
+		try {
+			return Path.of(uri);
+		} catch (IllegalArgumentException | FileSystemNotFoundException e) {
+			return null;
+		}
+	}
+
 	public static class Data {
 		private final URI uri;
-		private final Long lastModified;
+		private final Instant lastModified;
 
-		private Data(URI uri, Long lastModified) {
+		private Data(URI uri, Instant lastModified) {
 			this.uri = uri;
 			this.lastModified = lastModified;
 		}
-		public String getJarFileName() {
-			String path = uri.getPath();
-			String[] split = path.split("/");
-			return split[split.length - 1];
-		}
-
-		public @Nullable Long getLastModified() {
-			return lastModified;
-		}
-		public @Nullable Instant getLastModifiedInstantOrNull() {
-			if (lastModified == null) {
+		public String getJarFileNameOrNull() {
+			final Path path = pathOrNull(uri);
+			if (path == null) {
 				return null;
 			}
-			return Instant.ofEpochMilli(lastModified);
+			return path.getFileName().toString();
+		}
+
+		public @Nullable Instant getLastModifiedInstantOrNull() {
+			return lastModified;
 		}
 	}
 }

@@ -16,9 +16,10 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Objects;
 
 @Component
@@ -26,7 +27,7 @@ public class CommonProvider {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CommonProvider.class);
 
 	@Value("${solarthing.config.database}")
-	private File databaseFile;
+	private Path databaseFile;
 	@Value("${solarthing.config.default_source:#{null}}")
 	private @Nullable String defaultSourceId;
 	@Value("${solarthing.config.default_fragment:#{null}}")
@@ -55,7 +56,7 @@ public class CommonProvider {
 	public void init() {
 		defaultInstanceOptions = DefaultInstanceOptions.create(getDefaultSourceId(), getDefaultFragmentId());
 		LOGGER.debug("Using defaultInstanceOptions=" + defaultInstanceOptions);
-		LOGGER.debug("Database file: " + databaseFile.getAbsolutePath());
+		LOGGER.debug("Database file: " + databaseFile.toAbsolutePath());
 		LOGGER.debug("Working directory: " + new File(".").getAbsolutePath());
 
 		ObjectMapper objectMapper = JacksonUtil.defaultMapper();
@@ -63,15 +64,10 @@ public class CommonProvider {
 				DatabaseSettings.class,
 				CouchDbDatabaseSettings.class
 		);
-		final FileInputStream reader;
-		try {
-			reader = new FileInputStream(databaseFile);
-		} catch (FileNotFoundException e) {
-			throw new RuntimeException(e);
-		}
 		final DatabaseConfig databaseConfig;
-		try {
-			databaseConfig = objectMapper.readValue(reader, DatabaseConfig.class);
+		try (InputStream inputStream = Files.newInputStream(databaseFile)) {
+			// TODO [Interpolate] consider using something like ConfigUtil to allow for interpolated values
+			databaseConfig = objectMapper.readValue(inputStream, DatabaseConfig.class);
 		} catch (IOException e) {
 			throw new RuntimeException("Couldn't parse data!", e);
 		}

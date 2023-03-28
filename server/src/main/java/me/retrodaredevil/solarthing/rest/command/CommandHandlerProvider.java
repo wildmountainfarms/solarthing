@@ -14,8 +14,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.ZoneId;
 import java.util.Collections;
 
@@ -25,7 +27,7 @@ public class CommandHandlerProvider {
 	private static final ObjectMapper SIMPLE_OBJECT_MAPPER = JacksonUtil.defaultMapper();
 
 	@Value("${solarthing.config.command_file:#{null}}")
-	private @Nullable File commandConfigurationFile;
+	private @Nullable Path commandConfigurationFile;
 
 	private final SolarThingDatabase solarThingDatabase;
 
@@ -46,8 +48,9 @@ public class CommandHandlerProvider {
 			config = new RestCommandConfig(Collections.emptyList(), Collections.emptyMap());
 			LOGGER.debug("No command configuration file. No one will be authorized to send commands.");
 		} else {
-			try {
-				config = SIMPLE_OBJECT_MAPPER.readValue(commandConfigurationFile, RestCommandConfig.class);
+			try (InputStream inputStream = Files.newInputStream(commandConfigurationFile)) {
+				// TODO [Interpolate] allow interpolated values in config file
+				config = SIMPLE_OBJECT_MAPPER.readValue(inputStream, RestCommandConfig.class);
 			} catch (IOException e) {
 				throw new RuntimeException("Could not read command configuration file", e);
 			}

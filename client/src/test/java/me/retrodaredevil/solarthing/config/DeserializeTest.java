@@ -22,9 +22,11 @@ import me.retrodaredevil.solarthing.config.databases.implementations.InfluxDbDat
 import me.retrodaredevil.solarthing.config.io.IOConfig;
 import me.retrodaredevil.solarthing.config.io.SerialIOConfig;
 import me.retrodaredevil.solarthing.config.options.ProgramOptions;
+import me.retrodaredevil.solarthing.exceptions.ConfigException;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
 import me.retrodaredevil.solarthing.program.ActionUtil;
+import me.retrodaredevil.solarthing.program.ConfigUtil;
 import me.retrodaredevil.solarthing.program.DatabaseConfig;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPackets;
@@ -34,8 +36,6 @@ import me.retrodaredevil.solarthing.util.JacksonUtil;
 import me.retrodaredevil.solarthing.util.ParsePacketAsciiDecimalDigitException;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -49,14 +49,14 @@ import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DeserializeTest {
-	private static final File SOLARTHING_ROOT = new File(".."); // Working directory for tests are the /client folder
-	private static final File BASE_CONFIG_DIRECTORY = new File(SOLARTHING_ROOT, "config_templates/base");
-	private static final File ACTION_JSON_CONFIG_DIRECTORY = new File(SOLARTHING_ROOT, "config_templates/actions");
-	private static final Path ACTION_NS_CONFIG_DIRECTORY = SOLARTHING_ROOT.toPath().resolve("config_templates/actions-ns");
-	private static final File DATABASE_CONFIG_DIRECTORY = new File(SOLARTHING_ROOT, "config_templates/databases");
-	private static final File IO_CONFIG_DIRECTORY = new File(SOLARTHING_ROOT, "config_templates/io");
+	private static final Path SOLARTHING_ROOT = Path.of(".."); // Working directory for tests are the /client folder
+	private static final Path BASE_CONFIG_DIRECTORY = SOLARTHING_ROOT.resolve("config_templates/base");
+	private static final Path ACTION_JSON_CONFIG_DIRECTORY = SOLARTHING_ROOT.resolve("config_templates/actions");
+	private static final Path ACTION_NS_CONFIG_DIRECTORY = SOLARTHING_ROOT.resolve("config_templates/actions-ns");
+	private static final Path DATABASE_CONFIG_DIRECTORY = SOLARTHING_ROOT.resolve("config_templates/databases");
+	private static final Path IO_CONFIG_DIRECTORY = SOLARTHING_ROOT.resolve("config_templates/io");
 
-	private static final FileFilter JSON_FILTER = file -> file.getName().endsWith(".json");
+	private static final DirectoryStream.Filter<? super Path> JSON_FILTER = path -> path.getFileName().toString().endsWith(".json");
 	private static final DirectoryStream.Filter<? super Path> NOTATION_SCRIPT_FILTER = path -> path.getFileName().toString().endsWith(".ns");
 
 	private static final ObjectMapper MAPPER = ActionUtil.registerActionNodes(DatabaseSettingsUtil.registerDatabaseSettings(JacksonUtil.defaultMapper()));
@@ -90,10 +90,12 @@ public class DeserializeTest {
 		assertTrue(config.getSettings() instanceof InfluxDbDatabaseSettings);
 	}
 
-	private File[] getJsonFiles(File directory) {
-		assertTrue(directory.isDirectory(), "Not directory! " + directory + " absolute: " + directory.getAbsolutePath());
-		File[] files = directory.listFiles(JSON_FILTER);
-		assertTrue(files.length >= 3);
+	private List<Path> getJsonFiles(Path directory) throws IOException {
+		List<Path> files = new ArrayList<>();
+		try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(directory, JSON_FILTER)) {
+			directoryStream.forEach(files::add);
+		}
+		assertTrue(files.size() >= 1);
 		return files;
 	}
 	private List<Path> getNotationScriptFiles(Path directory) throws IOException {
@@ -106,27 +108,27 @@ public class DeserializeTest {
 	}
 
 	@Test
-	void testAllBaseConfigs() {
-		for (File configFile : getJsonFiles(BASE_CONFIG_DIRECTORY)) {
+	void testAllBaseConfigs() throws IOException {
+		for (Path configFile : getJsonFiles(BASE_CONFIG_DIRECTORY)) {
 			try {
-				MAPPER.readValue(configFile, ProgramOptions.class);
-			} catch (IOException ex) {
+				ConfigUtil.readConfig(configFile, ProgramOptions.class, MAPPER);
+			} catch (ConfigException ex) {
 				fail("Failed parsing config: " + configFile, ex);
 			}
 		}
 	}
 	@Test
-	void testAllDatabases() {
-		for (File configFile : getJsonFiles(DATABASE_CONFIG_DIRECTORY)) {
+	void testAllDatabases() throws IOException {
+		for (Path configFile : getJsonFiles(DATABASE_CONFIG_DIRECTORY)) {
 			try {
-				MAPPER.readValue(configFile, DatabaseConfig.class);
-			} catch (IOException ex) {
+				ConfigUtil.readConfig(configFile, DatabaseConfig.class, MAPPER);
+			} catch (ConfigException ex) {
 				fail("Failed parsing config: " + configFile, ex);
 			}
 		}
 	}
 	@Test
-	void testJsonActions() {
+	void testJsonActions() throws IOException {
 		/*
 		Also note that mattermost stuff was here, so we may not need it after it was removed on 2021.05.13
 
@@ -138,14 +140,14 @@ public class DeserializeTest {
 		TODO in future, uncomment if https://github.com/FasterXML/jackson-databind/issues/3072 is implemented
 		 */
 
-		for (File configFile : getJsonFiles(ACTION_JSON_CONFIG_DIRECTORY)) {
-			if (configFile.getName().equals("message_sender.json")) {
-				// We cannot test this one because it tries to read the file "config/mattermost.json", and we currently don't have a mechanism to change that
+		for (Path configFile : getJsonFiles(ACTION_JSON_CONFIG_DIRECTORY)) {
+			if (configFile.endsWith("message_sender.json")) {
+				// We cannot test this one because it tries to read the file "config/slack.json", and we currently don't have a mechanism to change that
 				continue;
 			}
 			try {
-				MAPPER.readValue(configFile, ActionNode.class);
-			} catch (IOException ex) {
+				ConfigUtil.readConfig(configFile, ActionNode.class, MAPPER);
+			} catch (ConfigException ex) {
 				fail("Failed parsing config: " + configFile, ex);
 			}
 		}
@@ -162,35 +164,30 @@ public class DeserializeTest {
 		}
 	}
 	@Test
-	void testAllIO() {
+	void testAllIO() throws IOException {
 		ObjectMapper mapper = MAPPER.copy();
 		InjectableValues.Std iv = new InjectableValues.Std();
 		iv.addValue(SerialIOConfig.DEFAULT_SERIAL_CONFIG_KEY, new SerialConfigBuilder(9600));
 		mapper.setInjectableValues(iv);
 
-		for (File configFile : getJsonFiles(IO_CONFIG_DIRECTORY)) {
+		for (Path configFile : getJsonFiles(IO_CONFIG_DIRECTORY)) {
 			try {
-				mapper.readValue(configFile, IOConfig.class);
-			} catch (IOException ex) {
+				ConfigUtil.readConfig(configFile, IOConfig.class, mapper);
+			} catch (ConfigException ex) {
 				fail("Failed parsing config: " + configFile, ex);
 			}
 		}
 		{
 			// many users of SolarThing have come to rely on config_templates/io/default_linux_serial.json. Let's make sure it's always there for them
-			File file = new File(IO_CONFIG_DIRECTORY, "default_linux_serial.json");
-			assertTrue(file.exists(), "default_linux_serial.json doesn't exist!");
-			try {
-				mapper.readValue(file, IOConfig.class);
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
+			Path file = IO_CONFIG_DIRECTORY.resolve("default_linux_serial.json");
+			ConfigUtil.readConfig(file, IOConfig.class, mapper);
 		}
 	}
 
 	@Test
 	void testRunAlertGeneratorOffWhileAuxOn() throws IOException, ParsePacketAsciiDecimalDigitException, CheckSumException {
-		File file = new File(ACTION_JSON_CONFIG_DIRECTORY, "alert_generator_off_while_aux_on.json");
-		ActionNode jsonActionNode = MAPPER.readValue(file, ActionNode.class);
+		Path file = ACTION_JSON_CONFIG_DIRECTORY.resolve("alert_generator_off_while_aux_on.json");
+		ActionNode jsonActionNode = ConfigUtil.readConfig(file, ActionNode.class, MAPPER);
 
 		Path notationScriptPath = ACTION_NS_CONFIG_DIRECTORY.resolve("alert_generator_off_while_aux_on.ns");
 		ActionReference actionReference = new ActionReference(notationScriptPath, ActionFormat.NOTATION_SCRIPT);

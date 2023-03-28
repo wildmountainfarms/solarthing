@@ -87,6 +87,7 @@ public final class CommonActionUtil {
 		return objectMapper;
 	}
 	public static ActionNode readActionReference(ObjectMapper objectMapper, ActionReference actionReference) throws IOException {
+		// TODO We might consider supporting interpolating values (using ConfigUtil)
 		ActionFormat actionFormat = actionReference.getFormat();
 		if (actionFormat == ActionFormat.RAW_JSON) {
 			return objectMapper.readValue(Files.newInputStream(actionReference.getPath()), ActionNode.class);
