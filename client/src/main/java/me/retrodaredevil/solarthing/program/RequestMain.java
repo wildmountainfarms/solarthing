@@ -33,14 +33,14 @@ public class RequestMain {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RequestMain.class);
 
-	public static int startRequestProgram(RequestProgramOptions options, Path dataDirectory) throws Exception {
+	public static int startRequestProgram(RequestProgramOptions options, Path dataDirectory, boolean isValidate) throws Exception {
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Beginning request program");
-		AnalyticsManager analyticsManager = new AnalyticsManager(options.isAnalyticsEnabled(), dataDirectory);
+		AnalyticsManager analyticsManager = new AnalyticsManager(options.isAnalyticsEnabled() && !isValidate, dataDirectory);
 		analyticsManager.sendStartUp(ProgramType.REQUEST);
-		return startRequestProgram(options, analyticsManager, options.getPeriod(), options.getMinimumWait());
+		return startRequestProgram(options, analyticsManager, options.getPeriod(), options.getMinimumWait(), isValidate);
 	}
 
-	private static int startRequestProgram(RequestProgramOptions options, AnalyticsManager analyticsManager, Duration period, Duration minimumWait) throws Exception {
+	private static int startRequestProgram(RequestProgramOptions options, AnalyticsManager analyticsManager, Duration period, Duration minimumWait, boolean isValidate) throws Exception {
 		// Note this is very similar to code in OutbackMateMain and could eventually be refactored
 		EnvironmentUpdater[] environmentUpdaterReference = new EnvironmentUpdater[1];
 		PacketHandlerInit.Result handlersResult = PacketHandlerInit.initHandlers(
@@ -71,6 +71,9 @@ public class RequestMain {
 		dataRequesterResults.stream().map(DataRequesterResult::getStatusEndPacketListReceiver).forEachOrdered(packetListReceiverList::add);
 		packetListReceiverList.addAll(bundle.createDefaultPacketListReceivers());
 
+		if (isValidate) {
+			return 0;
+		}
 		return doRequest(new PacketListReceiverMultiplexer(packetListReceiverList), period, minimumWait);
 	}
 	private static int doRequest(PacketListReceiver packetListReceiver, Duration period, Duration minimumWait) {

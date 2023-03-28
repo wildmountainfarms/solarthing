@@ -49,8 +49,8 @@ public final class AutomationMain {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AutomationMain.class);
 
-	public static int startAutomation(AutomationProgramOptions options) throws IOException {
-		return startAutomation(ActionUtil.createActionNodeEntries(options), options, options.getPeriodMillis());
+	public static int startAutomation(AutomationProgramOptions options, boolean isValidate) throws IOException {
+		return startAutomation(ActionUtil.createActionNodeEntries(options), options, options.getPeriodMillis(), isValidate);
 	}
 
 	private static void queryAndFeed(MillisDatabase millisDatabase, ResourceManager<SimpleDatabaseCache> databaseCacheManager, boolean useEndDate) {
@@ -81,7 +81,7 @@ public final class AutomationMain {
 	}
 
 	@SuppressWarnings("InconsistentOverloads")
-	public static int startAutomation(List<ActionNodeEntry> originalActionNodeEntries, DatabaseTimeZoneOptionBase options, long periodMillis) {
+	public static int startAutomation(List<ActionNodeEntry> originalActionNodeEntries, DatabaseTimeZoneOptionBase options, long periodMillis, boolean isValidate) {
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Starting automation program.");
 		final CouchDbDatabaseSettings couchSettings;
 		try {
@@ -122,6 +122,10 @@ public final class AutomationMain {
 				.add(new AlterPacketsEnvironment(alterPacketsReference::get)) // access is thread safe if needed
 				.add(new AuthorizationEnvironment(new DatabaseDocumentKeyMap(authorizationPacketCache)))
 				.build();
+
+		if (isValidate) {
+			return 0;
+		}
 
 		ActionMultiplexer multiplexer = new Actions.ActionMultiplexerBuilder().build();
 		List<ActionNodeEntry> actionNodeEntries = new ArrayList<>(originalActionNodeEntries); // entries may be removed from this list

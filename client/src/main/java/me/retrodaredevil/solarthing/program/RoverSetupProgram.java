@@ -15,16 +15,16 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusConstan
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerControl_E02D;
 import me.retrodaredevil.solarthing.util.StringUtil;
 
+import java.nio.charset.Charset;
 import java.util.Scanner;
 
 @UtilityClass
 public final class RoverSetupProgram {
 	private RoverSetupProgram(){ throw new UnsupportedOperationException(); }
 
-	@SuppressWarnings("DefaultCharset")
 	public static int startRoverSetup(@Nullable MutableAddressModbusSlave slave, RoverReadTable read, RoverWriteTable write, Runnable reloadCache, Runnable reloadIO){
 		System.out.println("Starting rover setup! This is deprecated and will be removed in a future version!.");
-		Scanner scanner = new Scanner(System.in);
+		Scanner scanner = new Scanner(System.in, Charset.defaultCharset());
 		while (scanner.hasNextLine()) {
 			String command = scanner.nextLine();
 			String[] split = StringUtil.terminalSplit(command);

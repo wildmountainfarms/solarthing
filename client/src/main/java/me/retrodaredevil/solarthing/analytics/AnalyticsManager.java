@@ -59,6 +59,7 @@ public class AnalyticsManager {
 					.withTrackingId("UA-70767765-2")
 					.build();
 		} else {
+			// TODO when the --validate argument is present, this is always printed. Think about if we want to let the user know what the actual configuration is
 			LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Google Analytics is disabled");
 			googleAnalytics = null;
 		}

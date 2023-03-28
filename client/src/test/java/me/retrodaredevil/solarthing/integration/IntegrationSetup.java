@@ -18,12 +18,7 @@ public class IntegrationSetup {
 	private IntegrationSetup() { throw new UnsupportedOperationException(); }
 
 	public static void setup(CouchDbInstance instance) throws CouchDbException {
-		// Once we get Java 11 features, use OutputStream.nullOutputStream() instead
-		OutputStream nullOutputStream = new OutputStream() {
-			@Override
-			public void write(int i) {}
-		};
-		CouchDbSetupMain couchDbSetupMain = new CouchDbSetupMain(instance, new PrintStream(nullOutputStream), new IntegrationPrompt());
+		CouchDbSetupMain couchDbSetupMain = new CouchDbSetupMain(instance, new PrintStream(OutputStream.nullOutputStream()), new IntegrationPrompt());
 		int status = couchDbSetupMain.doCouchDbSetupMain();
 		assertEquals(0, status);
 	}

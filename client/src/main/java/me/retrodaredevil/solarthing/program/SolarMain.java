@@ -102,7 +102,6 @@ public final class SolarMain {
 				+ " Java version: " + System.getProperty("java.version");
 	}
 
-	@SuppressWarnings("DefaultCharset")
 	public static int doMainCommand(CommandOptions commandOptions, Path baseConfigFile) {
 		String user = System.getProperty("user.name");
 		if (!user.equals("solarthing")) {
@@ -134,15 +133,15 @@ public final class SolarMain {
 		final ProgramType programType = options.getProgramType();
 		try {
 			if(programType == ProgramType.MATE) {
-				return OutbackMateMain.connectMate((MateProgramOptions) options, dataDirectory);
+				return OutbackMateMain.connectMate((MateProgramOptions) options, dataDirectory, commandOptions.isValidate());
 			} else if(programType == ProgramType.ROVER_SETUP){
-				return RoverMain.connectRoverSetup((RoverSetupProgramOptions) options);
+				return RoverMain.connectRoverSetup((RoverSetupProgramOptions) options, commandOptions.isValidate());
 			} else if(programType == ProgramType.PVOUTPUT_UPLOAD){
-				return PVOutputUploadMain.startPVOutputUpload((PVOutputUploadProgramOptions) options, commandOptions, dataDirectory);
+				return PVOutputUploadMain.startPVOutputUpload((PVOutputUploadProgramOptions) options, commandOptions, dataDirectory, commandOptions.isValidate());
 			} else if(programType == ProgramType.REQUEST) {
-				return RequestMain.startRequestProgram((RequestProgramOptions) options, dataDirectory);
+				return RequestMain.startRequestProgram((RequestProgramOptions) options, dataDirectory, commandOptions.isValidate());
 			} else if(programType == ProgramType.AUTOMATION) {
-				return AutomationMain.startAutomation((AutomationProgramOptions) options);
+				return AutomationMain.startAutomation((AutomationProgramOptions) options, commandOptions.isValidate());
 			}
 			throw new AssertionError("Unknown program type... type=" + programType + " programOptions=" + options);
 		} catch (ConfigException e) {

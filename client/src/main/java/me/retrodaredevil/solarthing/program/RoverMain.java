@@ -22,16 +22,19 @@ public class RoverMain {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RoverMain.class);
 
 
-	public static int connectRoverSetup(RoverSetupProgramOptions options) {
-		return doRoverProgram(options, RoverSetupProgram::startRoverSetup);
+	public static int connectRoverSetup(RoverSetupProgramOptions options, boolean isValidate) {
+		return doRoverProgram(options, RoverSetupProgram::startRoverSetup, isValidate);
 	}
-	private static int doRoverProgram(RoverOption options, RoverProgramRunner runner) {
+	private static int doRoverProgram(RoverOption options, RoverProgramRunner runner, boolean isValidate) {
 		IOConfig ioConfig = ConfigUtil.parseIOConfig(options.getIOBundleFilePath(), RoverReadTable.SERIAL_CONFIG);
 		try(ReloadableIOBundle ioBundle = new ReloadableIOBundle(ioConfig::createIOBundle)) {
 			ModbusSlaveBus modbus = new IOModbusSlaveBus(ioBundle, new RtuDataEncoder(2000, 20, 4));
 			MutableAddressModbusSlave slave = new MutableAddressModbusSlave(options.getModbusAddress(), modbus);
 			RoverReadTable read = new RoverModbusSlaveRead(slave);
 			RoverWriteTable write = new RoverModbusSlaveWrite(slave);
+			if (isValidate) {
+				return 0;
+			}
 			return runner.doProgram(slave, read, write, () -> {}, ioBundle::reload);
 		} catch (Exception e) {
 			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)Got exception!", e);

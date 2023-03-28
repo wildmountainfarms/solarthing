@@ -25,6 +25,7 @@ import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbData
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 
 import java.io.PrintStream;
+import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
@@ -42,11 +43,9 @@ public class CouchDbSetupMain {
 		this.out = out;
 		this.prompt = prompt;
 	}
-	@SuppressWarnings("DefaultCharset")
 	public static CouchDbSetupMain createFrom(CouchDbDatabaseSettings settings) {
 		CouchDbInstance instance = CouchDbUtil.createInstance(settings.getCouchProperties(), settings.getOkHttpProperties());
-		// TODO when upgrade to Java 11, use Charset.defaultCharset() here for explicitness
-		Scanner scanner = new Scanner(System.in);
+		Scanner scanner = new Scanner(System.in, Charset.defaultCharset());
 		PrintStream out = System.out;
 		return new CouchDbSetupMain(instance, out, new ScannerPrompt(scanner));
 	}

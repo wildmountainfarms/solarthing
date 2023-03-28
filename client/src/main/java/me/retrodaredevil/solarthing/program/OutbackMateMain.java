@@ -46,7 +46,7 @@ public class OutbackMateMain {
 	private static final Collection<MateCommand> ALLOWED_COMMANDS = EnumSet.of(MateCommand.AUX_OFF, MateCommand.AUX_ON, MateCommand.USE, MateCommand.DROP);
 
 	@SuppressWarnings("SameReturnValue")
-	public static int connectMate(MateProgramOptions options, Path dataDirectory) throws Exception {
+	public static int connectMate(MateProgramOptions options, Path dataDirectory, boolean isValidate) throws Exception {
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Beginning mate program");
 		AnalyticsManager analyticsManager = new AnalyticsManager(options.isAnalyticsEnabled(), dataDirectory);
 		analyticsManager.sendStartUp(ProgramType.MATE);
@@ -103,6 +103,9 @@ public class OutbackMateMain {
 			dataRequesterResults.stream().map(DataRequesterResult::getStatusEndPacketListReceiver).forEachOrdered(packetListReceiverList::add);
 			packetListReceiverList.addAll(bundle.createDefaultPacketListReceivers());
 
+			if (isValidate) {
+				return 0;
+			}
 			return SolarMain.initReader(
 					requireNonNull(ioBundle.getInputStream()),
 					ioBundle::reload,

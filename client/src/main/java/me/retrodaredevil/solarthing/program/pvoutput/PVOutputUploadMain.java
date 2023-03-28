@@ -62,7 +62,7 @@ public class PVOutputUploadMain {
 
 
 	@SuppressWarnings({"SameReturnValue", "deprecation"})
-	public static int startPVOutputUpload(PVOutputUploadProgramOptions options, CommandOptions commandOptions, Path dataDirectory){
+	public static int startPVOutputUpload(PVOutputUploadProgramOptions options, CommandOptions commandOptions, Path dataDirectory, boolean isValidate){
 		final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd"); // Not thread safe, otherwise this would be a static field
 
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Starting PV Output upload program");
@@ -102,6 +102,9 @@ public class PVOutputUploadMain {
 				System.err.println("Unable to parser either from date or to date. Use the yyyy-MM-dd format");
 				return SolarThingConstants.EXIT_CODE_INVALID_OPTIONS;
 			}
+			if (isValidate) {
+				return 0;
+			}
 			return startRangeUpload(
 					fromDate, toDate,
 					options, database, handler, service, options.getZoneId()
@@ -110,9 +113,12 @@ public class PVOutputUploadMain {
 			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)You need to define both from and to, or define neither to do the normal PVOutput program!");
 			return SolarThingConstants.EXIT_CODE_INVALID_OPTIONS;
 		}
-		AnalyticsManager analyticsManager = new AnalyticsManager(options.isAnalyticsEnabled(), dataDirectory);
+		AnalyticsManager analyticsManager = new AnalyticsManager(options.isAnalyticsEnabled() && !isValidate, dataDirectory);
 		analyticsManager.sendStartUp(ProgramType.PVOUTPUT_UPLOAD);
 
+		if (isValidate) {
+			return 0;
+		}
 		return startRealTimeProgram(options, database, handler, service, options.getZoneId());
 	}
 	@SuppressWarnings("CatchAndPrintStackTrace")

@@ -19,6 +19,9 @@ public interface CommandOptions {
 	@Option(longName = "to", defaultToNull = true, description = "Use with --base and a pvoutput-upload program type")
 	String getPVOutputToDate();
 
+	@Option(longName = "validate", description = "When present, the program does not run but only validates the configuration.")
+	boolean isValidate();
+
 	@Unparsed(name = "LEGACY ARGUMENTS")
 	List<String> getLegacyOptionsRaw();
 

@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 
 import static java.util.Objects.requireNonNull;
 
@@ -16,13 +17,12 @@ public class SocketSimpleConnection implements SimpleConnection {
 	private final BufferedReader bufferedReader;
 	private final PrintWriter writer;
 
-	@SuppressWarnings("DefaultCharset")
 	public SocketSimpleConnection(Socket socket) throws IOException {
 		this.socket = socket;
 		InputStream inputStream = socket.getInputStream();
 		OutputStream outputStream = socket.getOutputStream();
-		bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-		writer = new PrintWriter(outputStream);
+		bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+		writer = new PrintWriter(outputStream, false, StandardCharsets.UTF_8);
 	}
 
 	@Override
