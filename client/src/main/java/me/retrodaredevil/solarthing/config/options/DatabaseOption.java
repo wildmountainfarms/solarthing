@@ -2,13 +2,13 @@ package me.retrodaredevil.solarthing.config.options;
 
 import me.retrodaredevil.solarthing.packets.collection.DefaultInstanceOptions;
 
-import java.io.File;
+import java.nio.file.Path;
 
 /**
  * Represents an option that makes requests to a database
  */
 public interface DatabaseOption extends TimeZoneOption {
-	File getDatabase();
+	Path getDatabaseFilePath();
 
 	String getSourceId();
 

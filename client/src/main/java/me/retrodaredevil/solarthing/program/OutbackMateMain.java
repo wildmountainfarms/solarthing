@@ -32,7 +32,7 @@ import me.retrodaredevil.solarthing.util.time.DailyIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -46,12 +46,12 @@ public class OutbackMateMain {
 	private static final Collection<MateCommand> ALLOWED_COMMANDS = EnumSet.of(MateCommand.AUX_OFF, MateCommand.AUX_ON, MateCommand.USE, MateCommand.DROP);
 
 	@SuppressWarnings("SameReturnValue")
-	public static int connectMate(MateProgramOptions options, File dataDirectory) throws Exception {
+	public static int connectMate(MateProgramOptions options, Path dataDirectory) throws Exception {
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Beginning mate program");
 		AnalyticsManager analyticsManager = new AnalyticsManager(options.isAnalyticsEnabled(), dataDirectory);
 		analyticsManager.sendStartUp(ProgramType.MATE);
-		LOGGER.debug("IO Bundle File: " + options.getIOBundleFile());
-		IOConfig ioConfig = ConfigUtil.parseIOConfig(options.getIOBundleFile(), OutbackConstants.MATE_CONFIG);
+		LOGGER.debug("IO Bundle File: " + options.getIOBundleFilePath());
+		IOConfig ioConfig = ConfigUtil.parseIOConfig(options.getIOBundleFilePath(), OutbackConstants.MATE_CONFIG);
 		try(ReloadableIOBundle ioBundle = new ReloadableIOBundle(ioConfig::createIOBundle)) {
 
 			// Note this is very similar to code in RequestMain and could eventually be refactored

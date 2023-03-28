@@ -42,8 +42,8 @@ import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
@@ -62,14 +62,14 @@ public class PVOutputUploadMain {
 
 
 	@SuppressWarnings({"SameReturnValue", "deprecation"})
-	public static int startPVOutputUpload(PVOutputUploadProgramOptions options, CommandOptions commandOptions, File dataDirectory){
+	public static int startPVOutputUpload(PVOutputUploadProgramOptions options, CommandOptions commandOptions, Path dataDirectory){
 		final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd"); // Not thread safe, otherwise this would be a static field
 
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Starting PV Output upload program");
 		ZoneId zoneId = options.getZoneId();
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Using time zone: {}", zoneId.getDisplayName(TextStyle.FULL, Locale.US)); // Use US local since I (retrodaredevil) am the one debugging
 		LOGGER.info("Using default instance options: " + options.getDefaultInstanceOptions());
-		DatabaseConfig databaseConfig = ConfigUtil.getDatabaseConfig(options.getDatabase());
+		DatabaseConfig databaseConfig = ConfigUtil.getDatabaseConfig(options.getDatabaseFilePath());
 		DatabaseType databaseType = databaseConfig.getType();
 		if(databaseType != CouchDbDatabaseSettings.TYPE){
 			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)Only CouchDb can be used for this program type right now!");

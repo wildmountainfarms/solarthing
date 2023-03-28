@@ -3,7 +3,11 @@ package me.retrodaredevil.solarthing.config.request.modbus;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import me.retrodaredevil.io.modbus.*;
+import me.retrodaredevil.io.modbus.IOModbusSlaveBus;
+import me.retrodaredevil.io.modbus.ImmutableAddressModbusSlave;
+import me.retrodaredevil.io.modbus.ModbusSlave;
+import me.retrodaredevil.io.modbus.ModbusSlaveBus;
+import me.retrodaredevil.io.modbus.RtuDataEncoder;
 import me.retrodaredevil.solarthing.actions.command.EnvironmentUpdater;
 import me.retrodaredevil.solarthing.actions.command.EnvironmentUpdaterMultiplexer;
 import me.retrodaredevil.solarthing.config.io.IOConfig;
@@ -15,7 +19,7 @@ import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiverMultiplexer;
 import me.retrodaredevil.solarthing.program.ConfigUtil;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,20 +30,20 @@ import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("modbus")
 public class ModbusDataRequester implements DataRequester {
-	private final File ioBundleFile;
+	private final Path ioBundleFile;
 	private final Map<Integer, ModbusRequester> addressToModbusRequesterMap;
 	private final long rtuInitialTimeoutMillis;
 	private final long rtuEndTimeoutMillis;
 
 	@JsonCreator
 	public ModbusDataRequester(
-			@JsonProperty(value = "io", required = true) File ioBundleFile,
+			@JsonProperty(value = "io", required = true) Path ioBundleFile,
 			@JsonProperty(value = "devices", required = true) Map<Integer, ModbusRequester> addressToModbusRequesterMap,
 			@JsonProperty("initial_timeout") String initialTimeoutDurationString,
 			@JsonProperty("end_timeout") String endTimeoutDurationString
 	) {
-		requireNonNull(this.ioBundleFile = ioBundleFile);
-		requireNonNull(this.addressToModbusRequesterMap = addressToModbusRequesterMap);
+		this.ioBundleFile = requireNonNull(ioBundleFile);
+		this.addressToModbusRequesterMap = requireNonNull(addressToModbusRequesterMap);
 		rtuInitialTimeoutMillis = initialTimeoutDurationString == null ? 2000 : Duration.parse(initialTimeoutDurationString).toMillis();
 		rtuEndTimeoutMillis = endTimeoutDurationString == null ? 40 : Duration.parse(endTimeoutDurationString).toMillis();
 	}

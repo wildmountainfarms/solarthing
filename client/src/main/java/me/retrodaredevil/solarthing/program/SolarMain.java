@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.program;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.lexicalscope.jewel.cli.ArgumentValidationException;
 import com.lexicalscope.jewel.cli.Cli;
 import com.lexicalscope.jewel.cli.CliFactory;
@@ -30,11 +29,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.EOFException;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Instant;
 import java.util.List;
 import java.util.Random;
@@ -105,7 +103,7 @@ public final class SolarMain {
 	}
 
 	@SuppressWarnings("DefaultCharset")
-	public static int doMainCommand(CommandOptions commandOptions, File baseConfigFile) {
+	public static int doMainCommand(CommandOptions commandOptions, Path baseConfigFile) {
 		String user = System.getProperty("user.name");
 		if (!user.equals("solarthing")) {
 			if (user.equals("root")) {
@@ -117,27 +115,20 @@ public final class SolarMain {
 		}
 
 		LOGGER.info("Using base configuration file: " + baseConfigFile);
-		final FileReader fileReader;
-		try {
-			// TODO when update to Java 11, set explicit charset
-			fileReader = new FileReader(baseConfigFile);
-		} catch(FileNotFoundException ex){
-			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)File not found", ex);
-			return SolarThingConstants.EXIT_CODE_CRASH;
-		}
 		final ProgramOptions options;
 		try {
-			options = ConfigUtil.MAPPER.readValue(fileReader, ProgramOptions.class);
-		} catch (IOException e) {
+			options = ConfigUtil.readConfig(baseConfigFile, ProgramOptions.class);
+		} catch (ConfigException e) {
 			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)Error while parsing ProgramOptions.", e);
-			if (e instanceof JsonParseException) {
-				LOGGER.error("Hey! Just wanted to let you know that the above error is just saying that your JSON is formatted incorrectly!");
-			}
 			return SolarThingConstants.EXIT_CODE_INVALID_CONFIG;
 		}
-		File dataDirectory = new File(".data");
-		if(!dataDirectory.mkdirs() && !dataDirectory.isDirectory()){
-			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)Unable to create data directory! dataDirectory=" + dataDirectory + " absolute=" + dataDirectory.getAbsolutePath());
+
+		// TODO consider allowing customization of .data path
+		Path dataDirectory = Path.of(".data");
+		try {
+			Files.createDirectories(dataDirectory);
+		} catch (IOException e) {
+			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)Unable to create data directory! dataDirectory=" + dataDirectory + " absolute=" + dataDirectory.toAbsolutePath());
 			return SolarThingConstants.EXIT_CODE_CRASH;
 		}
 		final ProgramType programType = options.getProgramType();
@@ -210,13 +201,13 @@ public final class SolarMain {
 			return SolarThingConstants.EXIT_CODE_INVALID_OPTIONS;
 		}
 		if (commandOptions.getBaseConfigFile() != null) {
-			return doMainCommand(commandOptions, commandOptions.getBaseConfigFile());
+			return doMainCommand(commandOptions, Path.of(commandOptions.getBaseConfigFile()));
 		}
 		if (commandOptions.getCouchDbSetupFile() != null) {
 			final DatabaseConfig config;
 			try {
-				config = ConfigUtil.MAPPER.readValue(commandOptions.getCouchDbSetupFile(), DatabaseConfig.class);
-			} catch (IOException e) {
+				config = ConfigUtil.readConfig(Path.of(commandOptions.getCouchDbSetupFile()), DatabaseConfig.class);
+			} catch (ConfigException e) {
 				e.printStackTrace();
 				System.err.println("Problem reading CouchDB database settings file.");
 				return SolarThingConstants.EXIT_CODE_INVALID_CONFIG;

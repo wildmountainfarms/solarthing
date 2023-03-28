@@ -9,12 +9,12 @@ import me.retrodaredevil.solarthing.program.ConfigUtil;
 import me.retrodaredevil.solarthing.solar.batteryvoltage.BatteryVoltageIOListUpdater;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverReadTable;
 
-import java.io.File;
+import java.nio.file.Path;
 
 @JsonTypeName("battery-voltage-io")
 @JsonExplicit
 public class BatteryVoltageIODataRequester implements DataRequester {
-	private final File ioBundleFile;
+	private final Path ioBundleFile;
 	private final int dataId;
 	private final double multiplier;
 	private final double invalidWhenBelow;
@@ -22,7 +22,7 @@ public class BatteryVoltageIODataRequester implements DataRequester {
 
 	@JsonCreator
 	public BatteryVoltageIODataRequester(
-			@JsonProperty(value = "io", required = true) File ioBundleFile,
+			@JsonProperty(value = "io", required = true) Path ioBundleFile,
 			@JsonProperty(value = "data_id", required = true) int dataId,
 			@JsonProperty("multiplier") Double multiplier,
 			@JsonProperty("divisor") Double divisor,

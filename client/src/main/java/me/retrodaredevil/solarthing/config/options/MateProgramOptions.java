@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Map;
 
@@ -21,7 +21,7 @@ public class MateProgramOptions extends PacketHandlingOptionBase implements IOBu
 	private boolean correctCheckSum = false;
 
 	@JsonProperty(value = "io", required = true)
-	private File io;
+	private Path io;
 
 	@JsonProperty("fx_warning_ignore")
 	private Map<Integer, Integer> fxWarningIgnoreMap;
@@ -37,7 +37,7 @@ public class MateProgramOptions extends PacketHandlingOptionBase implements IOBu
 
 
 	@Override
-	public File getIOBundleFile() {
+	public Path getIOBundleFilePath() {
 		return requireNonNull(io, "io is required!");
 	}
 

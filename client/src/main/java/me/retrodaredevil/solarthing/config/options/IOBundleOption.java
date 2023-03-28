@@ -1,14 +1,14 @@
 package me.retrodaredevil.solarthing.config.options;
 
 
-import java.io.File;
+import java.nio.file.Path;
 
 /**
  * Represents an option containing the path to a file that determines how the input and output is setup
  */
 public interface IOBundleOption extends ProgramOptions {
 	/**
-	 * @return The io file. May throw an exception in some cases (for instance if {@link RoverOption#getDummyFile()} != null)
+	 * @return The io file
 	 */
-	File getIOBundleFile();
+	Path getIOBundleFilePath();
 }

@@ -3,7 +3,6 @@ package me.retrodaredevil.solarthing.actions.message;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.Actions;
 import me.retrodaredevil.action.node.ActionNode;
@@ -15,13 +14,14 @@ import me.retrodaredevil.solarthing.config.message.MessageEventNode;
 import me.retrodaredevil.solarthing.database.cache.ProcessedPacketTracker;
 import me.retrodaredevil.solarthing.message.MessageSender;
 import me.retrodaredevil.solarthing.message.MessageSenderMultiplexer;
-import me.retrodaredevil.solarthing.packets.collection.*;
-import me.retrodaredevil.solarthing.util.JacksonUtil;
+import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
+import me.retrodaredevil.solarthing.packets.collection.InstancePacketGroup;
+import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
+import me.retrodaredevil.solarthing.program.ConfigUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
+import java.nio.file.Path;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,8 +34,6 @@ import static java.util.Objects.requireNonNull;
 @JsonTypeName("message-sender")
 public class MessageSenderActionNode implements ActionNode {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MessageSenderActionNode.class);
-
-	private static final ObjectMapper CONFIG_MAPPER = JacksonUtil.defaultMapper();
 
 	private final Map<String, MessageSender> messageSenderMap;
 	private final List<MessageEventNode> messageEventNodes;
@@ -53,7 +51,7 @@ public class MessageSenderActionNode implements ActionNode {
 			@JsonProperty("senders") Map<String, String> messageSenderFileMap,
 			@JsonProperty("events") List<MessageEventNode> messageEventNodes
 //			@JacksonInject(FileMapper.JACKSON_INJECT_IDENTIFIER) FileMapper fileMapper // TODO in future, add this back hoping that https://github.com/FasterXML/jackson-databind/issues/3072 gets implemented
-	) throws IOException {
+	) {
 		final Map<String, MessageSender> messageSenderMap = getMessageSenderMap(
 				messageSenderFileMap,
 //				fileMapper == null ? FileMapper.ONE_TO_ONE : fileMapper
@@ -61,14 +59,14 @@ public class MessageSenderActionNode implements ActionNode {
 		);
 		return new MessageSenderActionNode(messageSenderMap, messageEventNodes);
 	}
-	private static Map<String, MessageSender> getMessageSenderMap(Map<String, String> messageSenderFileMap, FileMapper fileMapper) throws IOException {
+	private static Map<String, MessageSender> getMessageSenderMap(Map<String, String> messageSenderFileMap, FileMapper fileMapper) {
 		requireNonNull(messageSenderFileMap);
 		requireNonNull(fileMapper);
 		Map<String, MessageSender> senderMap = new HashMap<>();
 		for (Map.Entry<String, String> entry : messageSenderFileMap.entrySet()) {
 			String key = entry.getKey();
-			File file = fileMapper.map(entry.getValue());
-			MessageSender sender = CONFIG_MAPPER.readValue(file, MessageSender.class);
+			Path file = fileMapper.map(entry.getValue());
+			MessageSender sender = ConfigUtil.readConfig(file, MessageSender.class);
 			senderMap.put(key, sender);
 		}
 		return senderMap;

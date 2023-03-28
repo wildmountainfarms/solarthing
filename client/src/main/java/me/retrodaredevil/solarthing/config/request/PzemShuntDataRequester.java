@@ -11,18 +11,18 @@ import me.retrodaredevil.solarthing.program.receiver.PzemShuntPacketListUpdater;
 import me.retrodaredevil.solarthing.solar.pzem.PzemShuntReadTable;
 import me.retrodaredevil.solarthing.solar.pzem.modbus.PzemShuntModbusSlaveRead;
 
-import java.io.File;
+import java.nio.file.Path;
 
 @JsonTypeName("pzem")
 @JsonExplicit
 public class PzemShuntDataRequester implements DataRequester {
-	private final File ioBundleFile;
+	private final Path ioBundleFile;
 	private final int dataId;
 	private final int modbusAddress;
 
 	@JsonCreator
 	public PzemShuntDataRequester(
-			@JsonProperty(value = "io", required = true) File ioBundleFile,
+			@JsonProperty(value = "io", required = true) Path ioBundleFile,
 			@JsonProperty(value = "data_id", required = true) int dataId,
 			@JsonProperty(value = "modbus", required = true) int modbusAddress) {
 		this.ioBundleFile = ioBundleFile;

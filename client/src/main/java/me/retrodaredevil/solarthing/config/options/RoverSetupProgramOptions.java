@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 
-import java.io.File;
+import java.nio.file.Path;
 
 import static java.util.Objects.requireNonNull;
 
@@ -14,7 +14,7 @@ public class RoverSetupProgramOptions implements ProgramOptions, RoverOption {
 	@JsonProperty("modbus")
 	private int modbusAddress = 1;
 	@JsonProperty(value = "io", required = true)
-	private File io;
+	private Path io;
 
 	@Override
 	public int getModbusAddress() {
@@ -22,7 +22,7 @@ public class RoverSetupProgramOptions implements ProgramOptions, RoverOption {
 	}
 
 	@Override
-	public File getIOBundleFile() {
+	public Path getIOBundleFilePath() {
 		return requireNonNull(io);
 	}
 

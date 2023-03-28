@@ -1,23 +1,11 @@
 package me.retrodaredevil.solarthing.config;
 
-import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public interface FileMapper {
-	File map(String fileName);
+	Path map(String fileName);
 
 	String JACKSON_INJECT_IDENTIFIER = "fileMapperJacksonInject";
-	FileMapper ONE_TO_ONE = File::new;
-
-	class ParentDirectory implements FileMapper {
-		private final File parentDirectory;
-
-		public ParentDirectory(File parentDirectory) {
-			this.parentDirectory = parentDirectory;
-		}
-
-		@Override
-		public File map(String fileName) {
-			return new File(parentDirectory, fileName);
-		}
-	}
+	FileMapper ONE_TO_ONE = Paths::get;
 }

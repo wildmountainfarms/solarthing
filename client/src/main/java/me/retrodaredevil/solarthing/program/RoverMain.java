@@ -26,7 +26,7 @@ public class RoverMain {
 		return doRoverProgram(options, RoverSetupProgram::startRoverSetup);
 	}
 	private static int doRoverProgram(RoverOption options, RoverProgramRunner runner) {
-		IOConfig ioConfig = ConfigUtil.parseIOConfig(options.getIOBundleFile(), RoverReadTable.SERIAL_CONFIG);
+		IOConfig ioConfig = ConfigUtil.parseIOConfig(options.getIOBundleFilePath(), RoverReadTable.SERIAL_CONFIG);
 		try(ReloadableIOBundle ioBundle = new ReloadableIOBundle(ioConfig::createIOBundle)) {
 			ModbusSlaveBus modbus = new IOModbusSlaveBus(ioBundle, new RtuDataEncoder(2000, 20, 4));
 			MutableAddressModbusSlave slave = new MutableAddressModbusSlave(options.getModbusAddress(), modbus);

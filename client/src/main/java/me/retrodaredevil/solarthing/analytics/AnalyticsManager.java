@@ -13,8 +13,9 @@ import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.UUID;
 
 public class AnalyticsManager {
@@ -25,13 +26,13 @@ public class AnalyticsManager {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AnalyticsManager.class);
 	private final GoogleAnalytics googleAnalytics;
 
-	public AnalyticsManager(boolean isEnabled, File dataDirectory) {
+	public AnalyticsManager(boolean isEnabled, Path dataDirectory) {
 		if (isEnabled) {
 			LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Google Analytics is ENABLED!");
-			File file = new File(dataDirectory, "analytics_data.json");
+			Path file = dataDirectory.resolve("analytics_data.json");
 			AnalyticsData analyticsData = null;
 			try {
-				analyticsData = MAPPER.readValue(file, AnalyticsData.class);
+				analyticsData = MAPPER.readValue(Files.newInputStream(file), AnalyticsData.class);
 			} catch (IOException e) {
 				LOGGER.debug(SolarThingConstants.NO_CONSOLE, "Couldn't read analytics data, but that's OK!", e);
 			}
@@ -39,7 +40,7 @@ public class AnalyticsManager {
 				analyticsData = new AnalyticsData(UUID.randomUUID());
 				LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Generated a new Analytics UUID");
 				try {
-					MAPPER.writeValue(file, analyticsData);
+					MAPPER.writeValue(Files.newOutputStream(file), analyticsData);
 				} catch (IOException e) {
 					LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Couldn't save analytics data!", e);
 				}

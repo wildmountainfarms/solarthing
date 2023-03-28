@@ -7,6 +7,7 @@ import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.config.request.DataRequester;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -19,7 +20,7 @@ abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements Pa
 
 	@JsonProperty
 	@JsonPropertyDescription("An array of strings that each represent a database configuration file relative to the program directory.")
-	private List<File> databases = null;
+	private List<Path> databases = null;
 	@JsonProperty(value = "source", required = true)
 	private String source = "default";
 	@JsonProperty(value = "fragment", required = true)
@@ -44,8 +45,8 @@ abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements Pa
 	private ActionConfig actionConfig = ActionConfig.EMPTY;
 
 	@Override
-	public final @NotNull List<File> getDatabaseConfigurationFiles() {
-		List<File> r = databases;
+	public final @NotNull List<Path> getDatabaseConfigurationFilePaths() {
+		List<Path> r = databases;
 		if(r == null){
 			return Collections.emptyList();
 		}

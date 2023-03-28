@@ -38,6 +38,8 @@ dependencies {
 
     implementation group: 'biz.paluch.logging', name: 'logstash-gelf', version: '1.15.0'
 
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-text
+    implementation group: 'org.apache.commons', name: 'commons-text', version: '1.10.0'
 }
 
 shadowJar {

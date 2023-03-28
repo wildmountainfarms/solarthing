@@ -21,7 +21,7 @@ import me.retrodaredevil.solarthing.util.TimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,7 +33,7 @@ public class RequestMain {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RequestMain.class);
 
-	public static int startRequestProgram(RequestProgramOptions options, File dataDirectory) throws Exception {
+	public static int startRequestProgram(RequestProgramOptions options, Path dataDirectory) throws Exception {
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Beginning request program");
 		AnalyticsManager analyticsManager = new AnalyticsManager(options.isAnalyticsEnabled(), dataDirectory);
 		analyticsManager.sendStartUp(ProgramType.REQUEST);
