@@ -26,9 +26,11 @@ echo Updating...
 chmod -R g+rw . || exit 1 # all files and directories get group read/write permissions
 find . -type d -exec chmod g+xs {} \; || exit 1 # When you create a file in any directory, its group should be that of its directory
 chown -R solarthing:solarthing . || exit 1
-git config --global --replace-all safe.directory /opt/solarthing || exit 1
+if ! git config --global --get-all safe.directory | grep -qx "$(pwd)"; then
+    git config --global --add safe.directory $(pwd) || echo "Could not add $(pwd) as safe directory for root user"
+fi
 # Run git config after so that there is no chance of permission errors
-git config --local core.sharedRepository group || exit 1
+git config --local core.sharedRepository group || (echo "Please report this error!"; exit 1)
 echo Done
 echo "Permissions for $(pwd) have been updated. Please run the following command without sudo. This will allow your user to access the repository easily."
 echo "  git config --global --add safe.directory /opt/solarthing"
