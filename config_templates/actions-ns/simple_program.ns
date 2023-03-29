@@ -1,0 +1,23 @@
+// queue is a type of action that takes a list of actions and executes those actions in sequence.
+queue {
+  print "Hello there"
+  // These are the same
+  print("Hello there")
+
+  // When passing an argument to a node without parenthesis, if you do not quote that argument it will be interpreted as a string.
+  print Hello
+
+  // parallel is a type of action that takes a list of actions and executes those actions in parallel
+  parallel {
+    queue {
+      // The wait action takes an ISO-8601 duration as its argument.
+      //   The action is effectively a timer, and becomes done once the given duration is up
+      wait PT5S
+      print "5 seconds are up!"
+    }
+    queue {
+      wait PT10S
+      print "10 seconds are up!"
+    }
+  }
+}
