@@ -44,9 +44,11 @@ import retrofit2.Retrofit;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,7 +65,6 @@ public class PVOutputUploadMain {
 
 	@SuppressWarnings({"SameReturnValue", "deprecation"})
 	public static int startPVOutputUpload(PVOutputUploadProgramOptions options, CommandOptions commandOptions, Path dataDirectory, boolean isValidate){
-		final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd"); // Not thread safe, otherwise this would be a static field
 
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Starting PV Output upload program");
 		ZoneId zoneId = options.getZoneId();
@@ -91,13 +92,13 @@ public class PVOutputUploadMain {
 		String toDateString = commandOptions.getPVOutputToDate();
 		if(fromDateString != null && toDateString != null) {
 			System.out.println("Starting range upload");
-			final SimpleDate fromDate;
-			final SimpleDate toDate;
+			final LocalDate fromDate;
+			final LocalDate toDate;
 			try {
 				// TODO Don't use SimpleDateFormat anymore and remove supress warnings for deprecation
-				fromDate = SimpleDate.fromDate(DATE_FORMAT.parse(fromDateString));
-				toDate = SimpleDate.fromDate(DATE_FORMAT.parse(toDateString));
-			} catch (ParseException e) {
+				fromDate = LocalDate.parse(fromDateString, DateTimeFormatter.ISO_LOCAL_DATE);
+				toDate = LocalDate.parse(toDateString, DateTimeFormatter.ISO_LOCAL_DATE);
+			} catch (DateTimeParseException e) {
 				e.printStackTrace();
 				System.err.println("Unable to parser either from date or to date. Use the yyyy-MM-dd format");
 				return SolarThingConstants.EXIT_CODE_INVALID_OPTIONS;
@@ -123,61 +124,57 @@ public class PVOutputUploadMain {
 	}
 	@SuppressWarnings("CatchAndPrintStackTrace")
 	private static int startRangeUpload(
-			SimpleDate fromDate, SimpleDate toDate,
+			LocalDate fromDate, LocalDate toDate,
 			PVOutputUploadProgramOptions options, SolarThingDatabase database,
 			PVOutputHandler handler, PVOutputService service, ZoneId zoneId
 	) {
 		List<AddOutputParameters> addOutputParameters = new ArrayList<>();
-		SimpleDate date = fromDate;
-		while(date.compareTo(toDate) <= 0) {
+		for(LocalDate date = fromDate; !date.isAfter(toDate); date = date.plusDays(1)) { // toDate is inclusive
 			System.out.println("Doing " + date);
-			SimpleDate tomorrow = date.tomorrow();
-			long dayStart = date.getDayStartDateMillis(zoneId);
-			long dayEnd = tomorrow.getDayStartDateMillis(zoneId);
+			Instant dayStart = date.atStartOfDay(zoneId).toInstant();
+			Instant dayEnd = date.plusDays(1).atStartOfDay(zoneId).toInstant();
 
 			List<? extends PacketGroup> rawPacketGroups = null;
 			try {
 				rawPacketGroups = database.getStatusDatabase().query(new MillisQueryBuilder()
-						.startKey(dayStart)
-						.endKey(dayEnd)
+						.startKey(dayStart.toEpochMilli())
+						.endKey(dayEnd.toEpochMilli())
 						.inclusiveEnd(false)
 						.build()
 				);
-				System.out.println("Got " + rawPacketGroups.size() + " packets for date: " + date.toPVOutputString());
+				System.out.println("Got " + rawPacketGroups.size() + " packets for date: " + date);
 			} catch (SolarThingDatabaseException e) {
 				e.printStackTrace();
-				System.err.println("Couldn't query packets. Skipping " + date.toPVOutputString());
+				System.err.println("Couldn't query packets. Skipping " + date);
 			}
 			if (rawPacketGroups != null) {
 				List<FragmentedPacketGroup> packetGroups = PacketUtil.getPacketGroups(options.getSourceId(), options.getDefaultInstanceOptions(), rawPacketGroups);
 
 				if (packetGroups != null) {
-					if (!handler.checkPackets(dayStart, packetGroups)) {
-						System.err.println("Unsuccessfully checked packets for " + date.toPVOutputString());
+					if (!handler.checkPackets(dayStart.toEpochMilli(), packetGroups)) {
+						System.err.println("Unsuccessfully checked packets for " + date);
 						try {
 							System.out.println(MAPPER.writeValueAsString(packetGroups.get(packetGroups.size() - 1)));
 						} catch (JsonProcessingException e) {
 							e.printStackTrace();
 						}
 					} else {
-						AddStatusParameters statusParameters = handler.getStatus(dayStart, packetGroups);
+						AddStatusParameters statusParameters = handler.getStatus(dayStart.toEpochMilli(), packetGroups);
 						AddOutputParametersBuilder outputParametersBuilder = new AddOutputParametersBuilder(statusParameters.getDate())
 								.setGenerated(statusParameters.getEnergyGeneration())
 								.setConsumption(statusParameters.getEnergyConsumption());
-						PVOutputHandler.setImportedExported(outputParametersBuilder, packetGroups, AccumulationConfig.createDefault(dayStart), options.isIncludeImport(), options.isIncludeExport());
+						PVOutputHandler.setImportedExported(outputParametersBuilder, packetGroups, AccumulationConfig.createDefault(dayStart.toEpochMilli()), options.isIncludeImport(), options.isIncludeExport());
 						AddOutputParameters outputParameters = outputParametersBuilder.build();
 						addOutputParameters.add(outputParameters);
-						System.out.println("Added parameters for " + date.toPVOutputString() + " to queue.");
+						System.out.println("Added parameters for " + date + " to queue.");
 						System.out.println("Generated: " + statusParameters.getEnergyGeneration());
 						System.out.println(Arrays.toString(outputParameters.toCsvArray()));
 						System.out.println(CsvUtil.toCsvString(outputParameters.toCsvArray()));
 					}
 				} else {
-					System.err.println("Didn't find any packets with source: " + options.getSourceId() + " for date: " + date.toPVOutputString());
+					System.err.println("Didn't find any packets with source: " + options.getSourceId() + " for date: " + date);
 				}
 			}
-
-			date = tomorrow;
 		}
 		System.out.println("Going to upload in batches of 30...");
 		for (int i = 0; i < addOutputParameters.size(); i += 30) {

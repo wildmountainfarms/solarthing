@@ -36,7 +36,7 @@ public final class InfluxDbDatabaseSettings implements DatabaseSettings {
 		this.okHttpProperties = requireNonNull(okHttpProperties);
 		this.databaseName = databaseName;
 		this.measurementName = measurementName;
-		this.frequentStatusRetentionPolicyList = Collections.unmodifiableList(new ArrayList<>(frequentRetentionPolicies));
+		this.frequentStatusRetentionPolicyList = List.copyOf(frequentRetentionPolicies);
 		this.eventRetentionPolicySetting = eventRetentionPolicySetting;
 	}
 

@@ -269,6 +269,7 @@ public class AlterManagerAction extends SimpleAction {
 	}
 
 
+	// TODO put thought into how to better design the alter manager program and SolarThing database replication
 	/**
 	 * @deprecated This method *probably* works perfectly fine, but it is untested against malicious data and the fact that we have to use this method itself shows
 	 *             how we are using this as a bandaid for the real problem: We need to be sure that the solarthing_open database is secure

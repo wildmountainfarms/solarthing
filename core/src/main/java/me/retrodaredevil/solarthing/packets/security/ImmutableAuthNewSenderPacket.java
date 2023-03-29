@@ -8,6 +8,8 @@ import me.retrodaredevil.solarthing.packets.security.crypto.KeyUtil;
 
 import java.security.PublicKey;
 
+import static java.util.Objects.requireNonNull;
+
 public final class ImmutableAuthNewSenderPacket implements AuthNewSenderPacket {
 
 	private final String sender;
@@ -19,8 +21,8 @@ public final class ImmutableAuthNewSenderPacket implements AuthNewSenderPacket {
 			@JsonProperty(value = "sender", required = true) String sender,
 			@JsonProperty(value = "publicKey", required = true) String publicKey
 	) throws InvalidKeyException {
-		this.sender = sender;
-		this.publicKey = publicKey;
+		this.sender = requireNonNull(sender);
+		this.publicKey = requireNonNull(publicKey);
 		publicKeyObject = KeyUtil.decodePublicKey(publicKey);
 	}
 

@@ -3,7 +3,6 @@ package me.retrodaredevil.solarthing.actions.command;
 import me.retrodaredevil.action.node.environment.InjectEnvironment;
 import me.retrodaredevil.solarthing.reason.ExecutionReason;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -13,7 +12,7 @@ public class EnvironmentUpdaterMultiplexer implements EnvironmentUpdater {
 	private final List<EnvironmentUpdater> environmentUpdaterList;
 
 	public EnvironmentUpdaterMultiplexer(Collection<? extends EnvironmentUpdater> environmentUpdaters) {
-		this.environmentUpdaterList = Collections.unmodifiableList(new ArrayList<>(environmentUpdaters));
+		this.environmentUpdaterList = List.copyOf(environmentUpdaters);
 	}
 	public EnvironmentUpdaterMultiplexer(EnvironmentUpdater... environmentUpdaters) {
 		this.environmentUpdaterList = Collections.unmodifiableList(Arrays.asList(environmentUpdaters));

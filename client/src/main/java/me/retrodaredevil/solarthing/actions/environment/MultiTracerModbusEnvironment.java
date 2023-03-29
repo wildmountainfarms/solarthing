@@ -11,7 +11,7 @@ public final class MultiTracerModbusEnvironment {
 	private final Map<Integer, TracerModbusEnvironment> map;
 
 	public MultiTracerModbusEnvironment(Map<Integer, TracerModbusEnvironment> map) {
-		this.map = Collections.unmodifiableMap(new HashMap<>(map));
+		this.map = Map.copyOf(map);
 	}
 	public MultiTracerModbusEnvironment() {
 		this.map = Collections.emptyMap();

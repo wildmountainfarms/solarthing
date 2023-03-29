@@ -28,8 +28,7 @@ public class SolarThingGraphQLMetaService {
 		int dataId = packetNode.getPacket().getDataId();
 		MetaDatabase metaDatabase = simpleQueryHandler.queryMeta();
 		for (TargetedMetaPacket targetedMetaPacket : metaDatabase.getMeta(packetNode.getDateMillis(), fragmentId)) {
-			if (targetedMetaPacket instanceof DataMetaPacket) {
-				DataMetaPacket dataMetaPacket = (DataMetaPacket) targetedMetaPacket;
+			if (targetedMetaPacket instanceof DataMetaPacket dataMetaPacket) {
 				if (dataMetaPacket.getDataId() == dataId) {
 					return dataMetaPacket;
 				}

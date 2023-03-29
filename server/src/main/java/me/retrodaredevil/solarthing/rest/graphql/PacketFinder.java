@@ -38,8 +38,7 @@ public class PacketFinder {
 			for (InstancePacketGroup instancePacketGroup : rawPackets) {
 				int fragmentId = instancePacketGroup.getFragmentId();
 				for (Packet packet : instancePacketGroup.getPackets()) {
-					if (packet instanceof Identifiable) {
-						Identifiable identifiable = (Identifiable) packet;
+					if (packet instanceof Identifiable identifiable) {
 						IdentifierFragment packetIdentifierFragment = IdentifierFragment.create(fragmentId, identifiable.getIdentifier());
 						cacheMap.putIfAbsent(packetIdentifierFragment, identifiable);
 					}

@@ -56,7 +56,7 @@ query {
       Time: dateMillis
       packet {
         productModelString
-        chargingStateName
+        solarModeName
         controllerTemperatureCelsius
       }
     }

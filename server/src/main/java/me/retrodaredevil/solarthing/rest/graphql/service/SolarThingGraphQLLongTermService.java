@@ -72,9 +72,7 @@ public class SolarThingGraphQLLongTermService {
 				if (result == null) {
 					result = packet;
 				} else {
-					@SuppressWarnings("unchecked")
-					IdentificationCacheDataPacket<ChargeControllerAccumulationDataCache> newResult = (IdentificationCacheDataPacket<ChargeControllerAccumulationDataCache>) result.combine(packet);
-					result = newResult;
+					result = result.combine(packet);
 				}
 			}
 			return result;

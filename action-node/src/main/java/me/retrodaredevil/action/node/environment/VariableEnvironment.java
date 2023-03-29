@@ -49,6 +49,7 @@ public class VariableEnvironment {
 		declaredActionMap.put(name, new DeclaredAction(actionEnvironment, actionNode));
 	}
 	public LockSet getLockSet(String name) {
+		// TODO lockSetMap is never updated, so a call to this method is guaranteed to result in a NoSuchElementException
 		if (!lockSetMap.containsKey(name)) {
 			if (outerVariableEnvironment == null) {
 				throw new NoSuchElementException("LockSet with name='" + name + "' not declared!");

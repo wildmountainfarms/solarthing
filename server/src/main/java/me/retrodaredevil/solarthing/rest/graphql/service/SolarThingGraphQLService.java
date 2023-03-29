@@ -183,6 +183,7 @@ public class SolarThingGraphQLService {
 		}
 		@GraphQLQuery
 		public @NotNull List<@NotNull PacketNode<TemperaturePacket>> temperature() {
+			// TODO the filtering of packets should not be based on POSSIBLE_BAD_VALUES, but should instead be based on sudden spikes in the data
 			List<PacketNode<TemperaturePacket>> packetNodes = packetGetter.getPackets(TemperaturePacket.class);
 			packetNodes.removeIf(node -> TemperaturePacket.POSSIBLE_BAD_VALUES.contains(node.getPacket().getTemperatureCelsius()));
 			return packetNodes;

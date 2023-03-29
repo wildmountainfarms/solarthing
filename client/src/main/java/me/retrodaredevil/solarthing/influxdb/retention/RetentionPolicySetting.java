@@ -60,6 +60,7 @@ public final class RetentionPolicySetting {
 		return ignoreUnsuccessfulCreate;
 	}
 
+	@SuppressWarnings({"FieldMayBeFinal", "CanBeFinal"})
 	@JsonPOJOBuilder
 	static class Builder {
 		@JsonProperty("name")

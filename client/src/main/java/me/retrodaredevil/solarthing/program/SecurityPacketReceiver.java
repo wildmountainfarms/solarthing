@@ -214,7 +214,7 @@ public class SecurityPacketReceiver {
 		}
 		LargeIntegrityPacket largeIntegrityPacket = (LargeIntegrityPacket) packet;
 		String sender = largeIntegrityPacket.getSender();
-		final String invalidSenderReason = sender == null ? "sender is null!" : SenderUtil.getInvalidSenderNameReason(sender);
+		final String invalidSenderReason = SenderUtil.getInvalidSenderNameReason(sender);
 		if(invalidSenderReason != null){
 			LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, invalidSenderReason);
 			reject(storedPacketGroup, SecurityRejectPacket.Reason.INVALID_DATA, invalidSenderReason);

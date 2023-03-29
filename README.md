@@ -8,7 +8,7 @@
 
 Stores solar data in a database to view on Android, Grafana, or PVOutput
 
-<p align="center">
+<p style="text-align: center;">
     <a href="#supported-products">Supported Products</a> &bull;
     <a href="https://solarthing.readthedocs.io/">Documentation</a> &bull;
     <a href="#features">Features</a> &bull;

@@ -7,6 +7,7 @@ import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePacket;
 
 import java.nio.file.Path;
 
+@SuppressWarnings("CanBeFinal")
 @JsonExplicit
 public abstract class DatabaseTimeZoneOptionBase extends TimeZoneOptionBase implements DatabaseOption, TimeZoneOption {
 

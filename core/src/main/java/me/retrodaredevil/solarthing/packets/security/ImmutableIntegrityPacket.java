@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 
+import static java.util.Objects.requireNonNull;
+
 public final class ImmutableIntegrityPacket implements IntegrityPacket {
 	private final String sender;
 	private final String encryptedData;
@@ -13,8 +15,8 @@ public final class ImmutableIntegrityPacket implements IntegrityPacket {
 			@JsonProperty(value = "sender", required = true) String sender,
 			@JsonProperty(value = "encryptedData", required = true) String encryptedData
 	) {
-		this.sender = sender;
-		this.encryptedData = encryptedData;
+		this.sender = requireNonNull(sender);
+		this.encryptedData = requireNonNull(encryptedData);
 	}
 
 	@Override

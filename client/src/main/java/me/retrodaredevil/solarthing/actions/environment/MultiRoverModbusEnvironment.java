@@ -10,7 +10,7 @@ public final class MultiRoverModbusEnvironment {
 	private final Map<Integer, RoverModbusEnvironment> map;
 
 	public MultiRoverModbusEnvironment(Map<Integer, RoverModbusEnvironment> map) {
-		this.map = Collections.unmodifiableMap(new HashMap<>(map));
+		this.map = Map.copyOf(map);
 	}
 	public MultiRoverModbusEnvironment() {
 		this.map = Collections.emptyMap();

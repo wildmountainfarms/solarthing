@@ -11,6 +11,7 @@ import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
+@SuppressWarnings({"FieldMayBeFinal", "CanBeFinal"})
 @JsonTypeName("mate")
 @JsonIgnoreProperties("allow_commands")
 public class MateProgramOptions extends PacketHandlingOptionBase implements IOBundleOption, ProgramOptions {

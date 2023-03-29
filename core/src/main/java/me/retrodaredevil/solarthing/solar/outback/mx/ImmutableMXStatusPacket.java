@@ -32,7 +32,7 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 
 	@JsonCreator
 	ImmutableMXStatusPacket(
-			@JsonProperty("packetVersion") Integer packetVersion,
+			@JsonProperty("packetVersion") @Nullable Integer packetVersion,
 			@JsonProperty(value = "address", required = true) int address, @JsonProperty(value = "chargerCurrent", required = true) int chargerCurrent, @JsonProperty(value = "pvCurrent", required = true) int pvCurrent, @JsonProperty(value = "inputVoltage", required = true) int inputVoltage,
 			@JsonProperty(value = "dailyKWH", required = true) float dailyKWH,
 			@JsonProperty(value = "ampChargerCurrent", required = true) float ampChargerCurrent,

@@ -49,11 +49,10 @@ public final class AnnotationUtil {
 		return getAnnotation(annotationClass, method, method.getDeclaringClass());
 	}
 	public static <T extends Annotation> T getAnnotation(Class<T> annotationClass, Member member) {
-		if (member instanceof Method) {
-			return getAnnotation(annotationClass, (Method) member);
+		if (member instanceof Method method) {
+			return getAnnotation(annotationClass, method);
 		}
-		if (member instanceof Field) {
-			Field field = (Field) member;
+		if (member instanceof Field field) {
 			return field.getAnnotation(annotationClass);
 		}
 		throw new UnsupportedOperationException("Unsupported type: " + member.getClass());

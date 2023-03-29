@@ -16,9 +16,6 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoField;
 import java.time.temporal.Temporal;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
 import java.util.Objects;
 
 /**
@@ -48,24 +45,9 @@ public final class SimpleDate implements Comparable<SimpleDate>, PVOutputString 
 	public static SimpleDate fromTemporal(Temporal instant){
 		return new SimpleDate(instant.get(ChronoField.YEAR), instant.get(ChronoField.MONTH_OF_YEAR), instant.get(ChronoField.DAY_OF_MONTH));
 	}
-	@Deprecated
-	public static SimpleDate fromDate(Date date) {
-		Calendar calendar = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
-		calendar.setTime(date);
-		return fromCalendar(calendar);
-	}
 	public static SimpleDate fromDateMillis(long dateMillis, ZoneId zoneId) {
 		LocalDateTime localDateTime = Instant.ofEpochMilli(dateMillis).atZone(zoneId).toLocalDateTime();
 		return fromTemporal(localDateTime);
-	}
-	@Deprecated
-	public Calendar toCalendar(TimeZone timeZone) {
-		Calendar calendar = new GregorianCalendar(timeZone);
-		// Java Calender stuff is between 0 and 11 for months
-		//noinspection MagicConstant
-		calendar.set(year, month - 1, day, 0, 0, 0);
-		calendar.set(Calendar.MILLISECOND, 0);
-		return calendar;
 	}
 	public LocalDate toLocalDate() {
 		return LocalDate.of(year, month, day);

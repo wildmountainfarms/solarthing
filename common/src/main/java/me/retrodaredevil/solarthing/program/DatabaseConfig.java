@@ -8,7 +8,6 @@ import me.retrodaredevil.solarthing.config.databases.DatabaseType;
 import me.retrodaredevil.solarthing.config.databases.IndividualSettings;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 @JsonExplicit
@@ -34,7 +33,7 @@ public final class DatabaseConfig {
 
 	public DatabaseConfig(DatabaseSettings settings, Map<String, IndividualSettings> frequencySettingsMap) {
 		this.settings = settings;
-		this.individualSettingsMap = Collections.unmodifiableMap(new HashMap<>(frequencySettingsMap));
+		this.individualSettingsMap = Map.copyOf(frequencySettingsMap);
 		type = settings.getDatabaseType().getName();
 	}
 

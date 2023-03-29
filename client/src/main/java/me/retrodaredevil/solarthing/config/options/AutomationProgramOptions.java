@@ -11,6 +11,7 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
+@SuppressWarnings("CanBeFinal")
 @JsonTypeName("automation")
 @JsonExplicit
 public class AutomationProgramOptions extends DatabaseTimeZoneOptionBase implements ActionsOption {

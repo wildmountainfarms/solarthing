@@ -6,6 +6,7 @@ import java.time.Duration;
 
 import static java.util.Objects.requireNonNull;
 
+@SuppressWarnings({"FieldMayBeFinal", "CanBeFinal"})
 public abstract class RequestProgramOptionsBase extends PacketHandlingOptionBase implements CommandOption, ActionsOption {
 
 	// When defined as a Duration, Jackson will parse numbers as second values for the duration

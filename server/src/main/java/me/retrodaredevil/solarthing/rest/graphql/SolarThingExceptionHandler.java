@@ -10,6 +10,8 @@ import me.retrodaredevil.solarthing.rest.exceptions.DatabaseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.CompletableFuture;
+
 public class SolarThingExceptionHandler implements DataFetcherExceptionHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SolarThingExceptionHandler.class);
 
@@ -19,19 +21,20 @@ public class SolarThingExceptionHandler implements DataFetcherExceptionHandler {
 	 */
 
 	@Override
-	public DataFetcherExceptionHandlerResult onException(DataFetcherExceptionHandlerParameters handlerParameters) {
+	public CompletableFuture<DataFetcherExceptionHandlerResult> handleException(DataFetcherExceptionHandlerParameters handlerParameters) {
+		return CompletableFuture.supplyAsync(() -> {
+			Throwable exception = handlerParameters.getException();
+			SourceLocation sourceLocation = handlerParameters.getSourceLocation();
+			ResultPath path = handlerParameters.getPath();
 
-		Throwable exception = handlerParameters.getException();
-		SourceLocation sourceLocation = handlerParameters.getSourceLocation();
-		ResultPath path = handlerParameters.getPath();
+			if (exception instanceof DatabaseException) { // this is the most common exception, usually caused by a timeout
+				LOGGER.info("Got database exception", exception);
+			} else {
+				LOGGER.warn("Got uncommon exception", exception);
+			}
 
-		if (exception instanceof DatabaseException) { // this is the most common exception, usually caused by a timeout
-			LOGGER.info("Got database exception", exception);
-		} else {
-			LOGGER.warn("Got uncommon exception", exception);
-		}
-
-		ExceptionWhileDataFetching error = new ExceptionWhileDataFetching(path, exception, sourceLocation);
-		return DataFetcherExceptionHandlerResult.newResult().error(error).build();
+			ExceptionWhileDataFetching error = new ExceptionWhileDataFetching(path, exception, sourceLocation);
+			return DataFetcherExceptionHandlerResult.newResult().error(error).build();
+		});
 	}
 }

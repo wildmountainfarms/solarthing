@@ -336,7 +336,7 @@ public class FlagCommandChatBotHandler implements ChatBotHandler {
 						String durationString = aliasSplit[1];
 						defaultDuration = TimeUtil.lenientParseDurationOrNull(durationString);
 						if (defaultDuration == null) {
-							messageSender.sendMessage("Invalid duration: " + defaultDuration);
+							messageSender.sendMessage("Invalid duration: " + durationString);
 							return true;
 						}
 					}

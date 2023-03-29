@@ -40,11 +40,7 @@ public class TemperatureEvent implements MessageEvent {
 			throw new IllegalArgumentException("Either celsius or fahrenheit must be defined!");
 		}
 		this.timeout = Duration.parse(timeoutDurationString);
-		if (temperatureType == null) {
-			this.temperatureType = TemperatureType.BATTERY;
-		} else {
-			this.temperatureType = temperatureType;
-		}
+		this.temperatureType = temperatureType == null ? TemperatureType.BATTERY : temperatureType;
 	}
 
 	@Override

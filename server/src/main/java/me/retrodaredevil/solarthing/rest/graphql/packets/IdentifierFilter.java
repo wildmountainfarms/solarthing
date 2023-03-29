@@ -28,24 +28,16 @@ public class IdentifierFilter implements PacketFilter {
 	@Override
 	public boolean keep(PacketNode<?> packetNode) {
 		Object packet = packetNode.getPacket();
-		if (packet instanceof Identifiable) {
-			if (acceptSupplementary && packet instanceof SupplementaryIdentifiable) {
-				SupplementaryIdentifiable supplementaryIdentifiable = (SupplementaryIdentifiable) packet;
-				if (supplementaryIdentifiable.getIdentifier().getSupplementaryTo().getRepresentation().equals(identifierRepresentation)) {
-					return true;
-				}
-			}
-			return ((Identifiable) packet).getIdentifier().getRepresentation().equals(identifierRepresentation);
+		if (packet instanceof Identifiable identifiable) {
+			return (acceptSupplementary
+					&& packet instanceof SupplementaryIdentifiable supplementaryIdentifiable
+					&& supplementaryIdentifiable.getIdentifier().getSupplementaryTo().getRepresentation().equals(identifierRepresentation))
+					|| identifiable.getIdentifier().getRepresentation().equals(identifierRepresentation);
 		}
-		switch (defaultAction) {
-			case KEEP:
-				return true;
-			case NO_KEEP:
-				return false;
-			case ERROR:
-				throw new IllegalArgumentException("packet in packetNode wasn't Identifiable! packetNode: " + packetNode);
-			default:
-				throw new AssertionError("unknown defaultAction=" + defaultAction);
-		}
+		return switch (defaultAction) {
+			case KEEP -> true;
+			case NO_KEEP -> false;
+			case ERROR -> throw new IllegalArgumentException("packet in packetNode wasn't Identifiable! packetNode: " + packetNode);
+		};
 	}
 }

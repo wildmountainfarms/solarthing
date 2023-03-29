@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 
-public class JacksonTestUtil {
+public class JacksonUtilTest {
 	@Test
 	void testDefaultMapper() throws JsonProcessingException {
 		ObjectMapper mapper = JacksonUtil.defaultMapper();

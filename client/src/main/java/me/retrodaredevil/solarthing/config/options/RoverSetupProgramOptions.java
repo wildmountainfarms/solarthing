@@ -8,6 +8,7 @@ import java.nio.file.Path;
 
 import static java.util.Objects.requireNonNull;
 
+@SuppressWarnings({"FieldMayBeFinal", "CanBeFinal"})
 @JsonTypeName("rover-setup")
 @JsonExplicit
 public class RoverSetupProgramOptions implements ProgramOptions, RoverOption {

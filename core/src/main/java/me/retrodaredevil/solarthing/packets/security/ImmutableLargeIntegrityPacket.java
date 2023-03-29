@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 
+import static java.util.Objects.requireNonNull;
+
 public class ImmutableLargeIntegrityPacket implements LargeIntegrityPacket {
 
 	private final String sender;
@@ -15,9 +17,9 @@ public class ImmutableLargeIntegrityPacket implements LargeIntegrityPacket {
 			@JsonProperty(value = "sender", required = true) String sender,
 			@JsonProperty(value = "encryptedHash", required = true) String encryptedHash,
 			@JsonProperty(value = "payload", required = true) String payload) {
-		this.sender = sender;
-		this.encryptedHash = encryptedHash;
-		this.payload = payload;
+		this.sender = requireNonNull(sender);
+		this.encryptedHash = requireNonNull(encryptedHash);
+		this.payload = requireNonNull(payload);
 	}
 
 	@Override

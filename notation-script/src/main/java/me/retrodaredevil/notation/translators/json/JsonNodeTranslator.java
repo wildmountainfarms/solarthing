@@ -77,8 +77,7 @@ public class JsonNodeTranslator implements NodeTranslator<JsonNode> {
 		}
 		Map<String, Argument> namedArguments = node.getNamedArguments();
 		Map<String, JsonNode> fieldMap = new HashMap<>();
-		namedArguments.entrySet()
-				.forEach(entry -> fieldMap.put(entry.getKey(), translateArgument(entry.getValue())));
+		namedArguments.forEach((key, value) -> fieldMap.put(key, translateArgument(value)));
 		return new ObjectNode(JsonNodeFactory.instance, fieldMap);
 	}
 

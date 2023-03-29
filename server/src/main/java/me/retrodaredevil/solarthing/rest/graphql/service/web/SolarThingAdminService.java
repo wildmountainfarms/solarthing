@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.rest.graphql.service.web;
 
-import graphql.AssertException;
 import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLMutation;
 import io.leangen.graphql.annotations.GraphQLQuery;
@@ -183,29 +182,14 @@ public class SolarThingAdminService {
 		}
 		@Override
 		public @NotNull DatabaseStatus getStatus(@NotNull SolarThingDatabaseType databaseType) {
-			final DatabaseSource source;
-			switch (requireNonNull(databaseType)) {
-				case STATUS:
-					source = database.getStatusDatabase().getDatabaseSource();
-					break;
-				case EVENT:
-					source = database.getEventDatabase().getDatabaseSource();
-					break;
-				case CLOSED:
-					source = database.getClosedDatabaseSource();
-					break;
-				case OPEN:
-					source = database.getOpenDatabase().getDatabaseSource();
-					break;
-				case CACHE:
-					source = database.getCacheDatabaseSource();
-					break;
-				case ALTER:
-					source = database.getAlterDatabase().getDatabaseSource();
-					break;
-				default:
-					throw new AssertException("Unknown database type: " + databaseType);
-			}
+			final DatabaseSource source = switch (requireNonNull(databaseType)) {
+				case STATUS -> database.getStatusDatabase().getDatabaseSource();
+				case EVENT -> database.getEventDatabase().getDatabaseSource();
+				case CLOSED -> database.getClosedDatabaseSource();
+				case OPEN -> database.getOpenDatabase().getDatabaseSource();
+				case CACHE -> database.getCacheDatabaseSource();
+				case ALTER -> database.getAlterDatabase().getDatabaseSource();
+			};
 			try {
 				boolean exists = source.exists();
 				if (!exists) {

@@ -85,7 +85,7 @@ public class CouchDbAlterDatabase implements AlterDatabase {
 			ObjectNode objectNode = (ObjectNode) jsonNode;
 			final StoredAlterPacket storedAlterPacket;
 			try {
-				storedAlterPacket = mapper.treeToValue(objectNode, StoredAlterPacket.class);;
+				storedAlterPacket = mapper.treeToValue(objectNode, StoredAlterPacket.class);
 			} catch (JsonProcessingException e) {
 				throw new SolarThingDatabaseException("Could not parse. JsonData: " + jsonData.getJson(), e);
 			}

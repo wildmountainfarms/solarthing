@@ -28,7 +28,7 @@ public class CacheController {
 			produces = "application/json"
 	)
 	public @NotNull List<@NotNull IdentificationCacheDataPacket<ChargeControllerAccumulationDataCache>> getChargeControllerAccumulation(String sourceId, long startMillis, long endMillis) {
-		final TypeReference<IdentificationCacheDataPacket<ChargeControllerAccumulationDataCache>> typeReference = new TypeReference<IdentificationCacheDataPacket<ChargeControllerAccumulationDataCache>>() {};
+		final TypeReference<IdentificationCacheDataPacket<ChargeControllerAccumulationDataCache>> typeReference = new TypeReference<>() {};
 		return cacheHandler.getCachesFromDateMillis(typeReference, ChargeControllerAccumulationDataCache.CACHE_NAME, sourceId, startMillis, endMillis);
 	}
 	@GetMapping(
@@ -36,7 +36,7 @@ public class CacheController {
 			produces = "application/json"
 	)
 	public @NotNull List<@NotNull IdentificationCacheDataPacket<FXAccumulationDataCache>> getFXAccumulation(String sourceId, long startMillis, long endMillis) {
-		final TypeReference<IdentificationCacheDataPacket<FXAccumulationDataCache>> typeReference = new TypeReference<IdentificationCacheDataPacket<FXAccumulationDataCache>>() {};
+		final TypeReference<IdentificationCacheDataPacket<FXAccumulationDataCache>> typeReference = new TypeReference<>() {};
 		return cacheHandler.getCachesFromDateMillis(typeReference, FXAccumulationDataCache.CACHE_NAME, sourceId, startMillis, endMillis);
 	}
 	@GetMapping(

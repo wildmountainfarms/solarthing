@@ -56,7 +56,7 @@ public class CelsiusCpuTemperaturePacket implements CpuTemperaturePacket {
 	}
 
 	@Override
-	public List<Core> getCores() {
+	public @NotNull List<Core> getCores() {
 		return cores;
 	}
 

@@ -143,9 +143,8 @@ public class SolarThingGraphQLDailyService {
 				long dateMillis = fragmentedPacketGroup.getDateMillis(); // we have a common dateMillis for each fragmented packet group
 				LocalDate date = Instant.ofEpochMilli(dateMillis).atZone(zoneId).toLocalDate();
 				for (Packet packet : fragmentedPacketGroup.getPackets()) {
-					if (packet instanceof DailyChargeController) {
+					if (packet instanceof DailyChargeController dailyChargeController) {
 						int fragmentId = fragmentedPacketGroup.getFragmentId(packet);
-						DailyChargeController dailyChargeController = (DailyChargeController) packet;
 						IdentifierFragment identifierFragment = IdentifierFragment.create(fragmentId, dailyChargeController.getIdentifier());
 						Map<IdentifierFragment, List<TimestampedPacket<DailyChargeController>>> identifierMap = map.computeIfAbsent(date, (_date) -> new HashMap<>());
 						identifierMap.computeIfAbsent(identifierFragment, (_identifier) -> new ArrayList<>()).add(new TimestampedPacket<>(dailyChargeController, dateMillis));
