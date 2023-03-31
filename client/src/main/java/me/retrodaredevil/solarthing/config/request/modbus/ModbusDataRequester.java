@@ -17,7 +17,7 @@ import me.retrodaredevil.solarthing.config.request.RequestObject;
 import me.retrodaredevil.solarthing.io.ReloadableIOBundle;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiverMultiplexer;
-import me.retrodaredevil.solarthing.program.ConfigUtil;
+import me.retrodaredevil.solarthing.config.ConfigUtil;
 
 import java.nio.file.Path;
 import java.time.Duration;

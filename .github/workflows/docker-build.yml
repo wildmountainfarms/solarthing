@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - dev
     tags:
       - 'v*'
 
@@ -27,6 +28,8 @@ jobs:
             display-name: "SolarThing Server"
             build-command: "server:bootJar"
             jar-location: "server/build/libs/server-0.0.1-SNAPSHOT.jar"
+    env:
+      platforms: ${{ github.ref == 'refs/heads/dev' && 'linux/amd64' || 'linux/amd64,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/s390x' }}
     steps:
       # https://github.com/marketplace/actions/checkout
       - name: Checkout repository
@@ -69,6 +72,7 @@ jobs:
             type=raw,value=latest,priority=750,enable=${{ startsWith(github.ref, 'refs/tags/') && !contains(github.ref, 'rc') && !contains(github.ref, 'beta') }}
             type=raw,value=beta,priority=740,enable=${{ startsWith(github.ref, 'refs/tags/')}}
             type=edge,branch=master
+            type=edge,value=dev,branch=dev
             type=sha,format=short
           # https://github.com/opencontainers/image-spec/blob/main/annotations.md#pre-defined-annotation-keys
           labels: |
@@ -94,6 +98,6 @@ jobs:
           build-args: |
             JAR_LOCATION=${{ matrix.data.jar-location }}
           push: true
-          platforms: linux/amd64,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/s390x
+          platforms: ${{ env.platforms }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

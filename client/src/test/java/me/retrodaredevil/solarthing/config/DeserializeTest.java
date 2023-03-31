@@ -22,11 +22,9 @@ import me.retrodaredevil.solarthing.config.databases.implementations.InfluxDbDat
 import me.retrodaredevil.solarthing.config.io.IOConfig;
 import me.retrodaredevil.solarthing.config.io.SerialIOConfig;
 import me.retrodaredevil.solarthing.config.options.ProgramOptions;
-import me.retrodaredevil.solarthing.exceptions.ConfigException;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
 import me.retrodaredevil.solarthing.program.ActionUtil;
-import me.retrodaredevil.solarthing.program.ConfigUtil;
 import me.retrodaredevil.solarthing.program.DatabaseConfig;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPackets;
@@ -111,7 +109,7 @@ public class DeserializeTest {
 	void testAllBaseConfigs() throws IOException {
 		for (Path configFile : getJsonFiles(BASE_CONFIG_DIRECTORY)) {
 			try {
-				ConfigUtil.readConfig(configFile, ProgramOptions.class, MAPPER);
+				CommonConfigUtil.readConfig(configFile, ProgramOptions.class, MAPPER);
 			} catch (ConfigException ex) {
 				fail("Failed parsing config: " + configFile, ex);
 			}
@@ -121,7 +119,7 @@ public class DeserializeTest {
 	void testAllDatabases() throws IOException {
 		for (Path configFile : getJsonFiles(DATABASE_CONFIG_DIRECTORY)) {
 			try {
-				ConfigUtil.readConfig(configFile, DatabaseConfig.class, MAPPER);
+				CommonConfigUtil.readConfig(configFile, DatabaseConfig.class, MAPPER);
 			} catch (ConfigException ex) {
 				fail("Failed parsing config: " + configFile, ex);
 			}
@@ -146,7 +144,7 @@ public class DeserializeTest {
 				continue;
 			}
 			try {
-				ConfigUtil.readConfig(configFile, ActionNode.class, MAPPER);
+				CommonConfigUtil.readConfig(configFile, ActionNode.class, MAPPER);
 			} catch (ConfigException ex) {
 				fail("Failed parsing config: " + configFile, ex);
 			}
@@ -172,7 +170,7 @@ public class DeserializeTest {
 
 		for (Path configFile : getJsonFiles(IO_CONFIG_DIRECTORY)) {
 			try {
-				ConfigUtil.readConfig(configFile, IOConfig.class, mapper);
+				CommonConfigUtil.readConfig(configFile, IOConfig.class, mapper);
 			} catch (ConfigException ex) {
 				fail("Failed parsing config: " + configFile, ex);
 			}
@@ -180,14 +178,14 @@ public class DeserializeTest {
 		{
 			// many users of SolarThing have come to rely on config_templates/io/default_linux_serial.json. Let's make sure it's always there for them
 			Path file = IO_CONFIG_DIRECTORY.resolve("default_linux_serial.json");
-			ConfigUtil.readConfig(file, IOConfig.class, mapper);
+			CommonConfigUtil.readConfig(file, IOConfig.class, mapper);
 		}
 	}
 
 	@Test
 	void testRunAlertGeneratorOffWhileAuxOn() throws IOException, ParsePacketAsciiDecimalDigitException, CheckSumException {
 		Path file = ACTION_JSON_CONFIG_DIRECTORY.resolve("alert_generator_off_while_aux_on.json");
-		ActionNode jsonActionNode = ConfigUtil.readConfig(file, ActionNode.class, MAPPER);
+		ActionNode jsonActionNode = CommonConfigUtil.readConfig(file, ActionNode.class, MAPPER);
 
 		Path notationScriptPath = ACTION_NS_CONFIG_DIRECTORY.resolve("alert_generator_off_while_aux_on.ns");
 		ActionReference actionReference = new ActionReference(notationScriptPath, ActionFormat.NOTATION_SCRIPT);

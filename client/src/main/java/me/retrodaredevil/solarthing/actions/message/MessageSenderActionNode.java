@@ -17,7 +17,7 @@ import me.retrodaredevil.solarthing.message.MessageSenderMultiplexer;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.InstancePacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
-import me.retrodaredevil.solarthing.program.ConfigUtil;
+import me.retrodaredevil.solarthing.config.ConfigUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

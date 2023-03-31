@@ -8,7 +8,7 @@ import me.retrodaredevil.action.Actions;
 import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.message.MessageSender;
-import me.retrodaredevil.solarthing.program.ConfigUtil;
+import me.retrodaredevil.solarthing.config.ConfigUtil;
 
 import java.nio.file.Path;
 

@@ -5,6 +5,7 @@ import me.retrodaredevil.io.modbus.ModbusSlaveBus;
 import me.retrodaredevil.io.modbus.RtuDataEncoder;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.Nullable;
+import me.retrodaredevil.solarthing.config.ConfigUtil;
 import me.retrodaredevil.solarthing.config.io.IOConfig;
 import me.retrodaredevil.solarthing.config.options.RoverOption;
 import me.retrodaredevil.solarthing.config.options.RoverSetupProgramOptions;

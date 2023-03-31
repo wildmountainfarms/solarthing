@@ -7,8 +7,9 @@ if [ "$USER" != "root" ]; then
   exit 1
 fi
 
-echo This updates the permission of all the files in the solarthing repository. Modifications will be made to the directory printed below:
+echo "This updates the permission of all the files in the solarthing repository. Modifications will be made to the directory printed below:"
 pwd || exit 1
+echo "NOTE: If the above directory is not /opt/solarthing, be careful! Make sure you know what you are doing"
 if [ "$#" -gt 0 ]; then
   if [ "$1" = "continue" ]; then
     echo continuing
@@ -33,7 +34,7 @@ fi
 git config --local core.sharedRepository group || (echo "Please report this error!"; exit 1)
 echo Done
 echo "Permissions for $(pwd) have been updated. Please run the following command without sudo. This will allow your user to access the repository easily."
-echo "  git config --global --add safe.directory /opt/solarthing"
+echo "  git config --global --add safe.directory $(pwd)"
 
 # If you screw something up while messing with permissions, this may help:
 # diff <(find . -perm /g+x -type f) <(find . -perm /o+x -type f) | grep \< | tr -d '< ' | sudo xargs chmod g-x

@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing.exceptions;
+package me.retrodaredevil.solarthing.config;
 
 /**
  * An exception caused by the user's configuration.
