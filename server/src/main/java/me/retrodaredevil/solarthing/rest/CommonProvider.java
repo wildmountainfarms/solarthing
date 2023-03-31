@@ -29,7 +29,7 @@ public class CommonProvider {
 
 	@Value("${solarthing.config.database}")
 	private Path databaseFile;
-	@Value("${solarthing.config.replicate:#{null}")
+	@Value("${solarthing.config.replicate:#{null}}")
 	private Path replicateDatabaseFile;
 	@Value("${solarthing.config.default_source:#{null}}")
 	private @Nullable String defaultSourceId;
