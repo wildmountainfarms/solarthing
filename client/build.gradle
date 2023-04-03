@@ -15,7 +15,7 @@ dependencies {
     // for InfluxDB 1.X
     implementation 'org.influxdb:influxdb-java:2.23'
     // for InfluxDB 2.0 // https://github.com/influxdata/influxdb-client-java/releases
-    implementation 'com.influxdb:influxdb-client-java:6.1.0'
+    implementation 'com.influxdb:influxdb-client-java:6.8.0'
 
     implementation "org.apache.logging.log4j:log4j-core:$log4jVersion" // used for our custom error handler, otherwise not a necessary dependency
     implementation "org.apache.logging.log4j:log4j-jcl:$log4jVersion" // commons logging bridge.
