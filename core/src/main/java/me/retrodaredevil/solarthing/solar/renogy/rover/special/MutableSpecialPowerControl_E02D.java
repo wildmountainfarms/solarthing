@@ -5,7 +5,7 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.ChargingMethod;
 public class MutableSpecialPowerControl_E02D implements SpecialPowerControl_E02D {
 	private int upper;
 	private int lower;
-	
+
 	public MutableSpecialPowerControl_E02D(int upper, int lower){
 		this.upper = upper;
 		this.lower = lower;
@@ -16,7 +16,7 @@ public class MutableSpecialPowerControl_E02D implements SpecialPowerControl_E02D
 	public MutableSpecialPowerControl_E02D(){
 		this(0, 0);
 	}
-	
+
 	public void setIntelligentPowerEnabled(boolean enabled){
 		if(enabled){
 			upper |= 0b10;
@@ -65,13 +65,13 @@ public class MutableSpecialPowerControl_E02D implements SpecialPowerControl_E02D
 	public void setIs24VSystem(boolean is24VSystem){
 		setSystemVoltage(is24VSystem ? SystemVoltage.V24 : SystemVoltage.V12);
 	}
-	
-	
+
+
 	@Override
 	public int getUpper() {
 		return upper;
 	}
-	
+
 	@Override
 	public int getLower() {
 		return lower;

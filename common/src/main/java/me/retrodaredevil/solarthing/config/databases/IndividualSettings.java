@@ -11,7 +11,7 @@ public final class IndividualSettings {
 	public IndividualSettings(@JsonUnwrapped FrequencySettings frequencySettings) {
 		this.frequencySettings = frequencySettings;
 	}
-	
+
 	public FrequencySettings getFrequencySettings() {
 		return frequencySettings;
 	}

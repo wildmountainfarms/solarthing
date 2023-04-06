@@ -10,10 +10,10 @@ final class ImmutableInstanceFragmentIndicatorPacket implements InstanceFragment
 	ImmutableInstanceFragmentIndicatorPacket(@JsonProperty(value = "fragmentId", required = true) int fragmentId) {
 		this.fragmentId = fragmentId;
 	}
-	
+
 	@Override
 	public int getFragmentId() {
 		return fragmentId;
 	}
-	
+
 }

@@ -50,6 +50,7 @@ spotless {
         toggleOffOn()
         removeUnusedImports()
         endWithNewline()
+        trimTrailingWhitespace()
     }
     format 'javaIndent', com.diffplug.gradle.spotless.JavaExtension, {
         target fileTree('.') {
@@ -59,29 +60,6 @@ spotless {
         toggleOffOn()
         indentWithTabs()
         toggleOffOn("/*", "*/") // It doesn't like tabs then a space, which are present in Javadocs, so just disable
-    }
-
-    format 'javaNewOnly', com.diffplug.gradle.spotless.JavaExtension, {
-        ratchetFrom 'origin/master'
-        target fileTree('.') {
-            include '**/*.java'
-            exclude '**/build/**', '**/build-*/**'
-        }
-        toggleOffOn()
-        trimTrailingWhitespace()
-        // https://github.com/diffplug/spotless/issues/649#issuecomment-738199681
-//        replaceRegex("No wildcard", "import\\s+[^\\*\\s]+\\*;(\\r\\n|\\r|\\n)", "\$1") // disables wildcard imports if we want
-        /*
-        Pattern pattern = Pattern.compile("import\\s+[^\\*\\s]+\\*;(\\r\\n|\\r|\\n)", Pattern.UNIX_LINES | Pattern.MULTILINE)
-        custom "No wildcard", { original ->
-            Matcher matcher = pattern.matcher(original)
-            if (matcher.find()) {
-                throw new AssertionError("Wildcard imports are not allowed")
-            }
-            return original
-        }
-         */
-
     }
 }
 
