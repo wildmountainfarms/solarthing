@@ -123,6 +123,7 @@ public class InMemoryDatabaseManager {
 
 		for (InMemoryReplicatorConfig replicatorConfig : InMemoryReplicatorConfig.values()) {
 			ReplicatorDocument replicatorDocument = replicatorConfig.createDocument(inMemoryCouch, externalCouch);
+			String documentId = replicatorConfig.getDocumentId();
 
 			JsonData jsonData;
 			try {

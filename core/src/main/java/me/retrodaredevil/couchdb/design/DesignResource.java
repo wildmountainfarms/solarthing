@@ -16,7 +16,7 @@ public enum DesignResource {
 	VIEW_JAVASCRIPT_SIMPLE_ALL_DOCS("view/simpleAllDocs.js"),
 
 	// Filter
-	FILTER_JAVASCRIPT_RECENT_PACKETS("filter/recent_packets_filter.js")
+	FILTER_JAVASCRIPT_RECENT_PACKETS("filter/last_24_hours.js")
 	;
 	/*
 	In IntelliJ to make the errors go away for those JavaScript files, go to Code > Analyze Code > Configure Current File Analysis,
