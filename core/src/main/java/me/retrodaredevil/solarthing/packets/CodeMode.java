@@ -8,7 +8,7 @@ public interface CodeMode extends Mode {
 	 * @return The code representing the mode
 	 */
 	int getValueCode();
-	
+
 
 	@Override
 	default boolean isActive(int valueCode){

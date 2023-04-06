@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 @JsonDeserialize(builder = FrequencySettings.Builder.class)
 public final class FrequencySettings {
-	
+
 	public static final FrequencySettings NORMAL_SETTINGS = new FrequencySettings(1, 0);
 
 	private final int throttleFactor;
@@ -22,11 +22,11 @@ public final class FrequencySettings {
 			throw new IllegalArgumentException("Initial skip factor must be >= 0");
 		}
 	}
-	
+
 	public int getThrottleFactor() {
 		return throttleFactor;
 	}
-	
+
 	public int getInitialSkipFactor() {
 		return initialSkipFactor;
 	}

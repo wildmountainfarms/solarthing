@@ -5,7 +5,7 @@ import static me.retrodaredevil.util.NumberUtil.checkRange;
 public interface UpperLower16Bit {
 	int getUpper();
 	int getLower();
-	
+
 	default int getCombined(){
 		return getCombined(getUpper(), getLower());
 	}
