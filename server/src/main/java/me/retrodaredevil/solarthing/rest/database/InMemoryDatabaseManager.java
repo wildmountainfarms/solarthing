@@ -5,11 +5,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.couchdb.CouchDbUtil;
 import me.retrodaredevil.couchdb.CouchProperties;
+import me.retrodaredevil.couchdb.CouchPropertiesBuilder;
 import me.retrodaredevil.couchdb.design.MutablePacketsDesign;
 import me.retrodaredevil.couchdbjava.CouchDbAuth;
 import me.retrodaredevil.couchdbjava.CouchDbConfig;
 import me.retrodaredevil.couchdbjava.CouchDbDatabase;
 import me.retrodaredevil.couchdbjava.CouchDbInstance;
+import me.retrodaredevil.couchdbjava.exception.CouchDbCodeException;
 import me.retrodaredevil.couchdbjava.exception.CouchDbException;
 import me.retrodaredevil.couchdbjava.exception.CouchDbUpdateConflictException;
 import me.retrodaredevil.couchdbjava.json.JsonData;
@@ -22,6 +24,7 @@ import me.retrodaredevil.couchdbjava.replicator.source.ReplicatorSource;
 import me.retrodaredevil.solarthing.SolarThingDatabaseType;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
+import okhttp3.HttpUrl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
@@ -116,13 +119,17 @@ public class InMemoryDatabaseManager {
 		config.test();
 		String portString = config.queryValue("httpd", "port"); // on CouchDB the section is chttpd, but here it is httpd
 		int inMemoryPort = Integer.parseInt(portString);
-		System.out.println(portString);
-		if (true) {
-			return;
-		}
+		// We could use the inMemoryCouch that we use to refer to it, but it's much better to have a localhost address
+		CouchProperties localInMemoryCouchProperties = new CouchPropertiesBuilder()
+				.setHttpUrl(new HttpUrl.Builder()
+						.scheme("http").host("localhost").port(inMemoryPort).build())
+				.setUsername(inMemoryCouch.getUsername())
+				.setPassword(inMemoryCouch.getPassword())
+				.build();
 
-		for (InMemoryReplicatorConfig replicatorConfig : InMemoryReplicatorConfig.values()) {
-			ReplicatorDocument replicatorDocument = replicatorConfig.createDocument(inMemoryCouch, externalCouch);
+//		for (InMemoryReplicatorConfig replicatorConfig : InMemoryReplicatorConfig.values()) {
+		for (InMemoryReplicatorConfig replicatorConfig : new InMemoryReplicatorConfig[] { InMemoryReplicatorConfig.STATUS_EXTERNAL_TO_IN_MEMORY }) {
+			ReplicatorDocument replicatorDocument = replicatorConfig.createDocument(localInMemoryCouchProperties, externalCouch);
 			String documentId = replicatorConfig.getDocumentId();
 
 			JsonData jsonData;
@@ -139,7 +146,23 @@ public class InMemoryDatabaseManager {
 					return;
 				}
 				String revision = replicator.getCurrentRevision(documentId); // ask the database for the revision so we can overwrite it
-				replicator.updateDocument(documentId, revision, jsonData);
+				try {
+					replicator.updateDocument(documentId, revision, jsonData);
+				} catch (CouchDbCodeException updateException) {
+					if (updateException.getCode() == 403) { //
+						LOGGER.info("(403) This replication document is likely triggered. documentId: " + documentId);
+					} else {
+						throw updateException;
+					}
+				}
+			} catch (CouchDbCodeException e) {
+				if (e.getCode() != 403) {
+					throw e;
+				}
+				LOGGER.info("(403) this replication document is likely triggered. documentId: " + documentId);
+				if (isReplicatorKnownToBeFullySetup) {
+					return;
+				}
 			}
 		}
 		isReplicatorKnownToBeFullySetup = true;

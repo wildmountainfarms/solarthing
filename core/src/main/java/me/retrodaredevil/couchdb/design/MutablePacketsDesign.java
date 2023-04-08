@@ -31,6 +31,11 @@ public class MutablePacketsDesign implements Design {
 	}
 
 	@Override
+	public Map<String, String> getFilters() {
+		return filters;
+	}
+
+	@Override
 	public String getValidateDocUpdate() {
 		return validateDocUpdate;
 	}

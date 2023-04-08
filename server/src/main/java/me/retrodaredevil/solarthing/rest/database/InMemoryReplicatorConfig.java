@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.rest.database;
 
+import com.fasterxml.jackson.databind.node.LongNode;
 import me.retrodaredevil.couchdb.CouchProperties;
 import me.retrodaredevil.couchdb.design.Design;
 import me.retrodaredevil.couchdb.design.DesignResource;
@@ -14,6 +15,7 @@ import me.retrodaredevil.solarthing.annotations.Nullable;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
@@ -67,21 +69,25 @@ public enum InMemoryReplicatorConfig {
 	}
 
 	public ReplicatorDocument createDocument(CouchProperties inMemoryCouch, CouchProperties externalCouch) {
+		// TODO remove these commented lines when I deem I won't use them
+		// yes, startMillis is a constant value after we put it in the database,
+		//   but remember this is an in memory database, so we really don't care if it retains
+		//   packets from this constant instant until it restarts.
+		//   It'll restart eventually and we also have a future plan of potentially removing old documents from the database with purge
+//		long startMillis = Instant.now().minus(Duration.ofHours(24)).toEpochMilli();
 		ReplicatorSource inMemoryDatabase = createSource(inMemoryCouch, databaseType.getName());
 		ReplicatorSource externalDatabase = createSource(externalCouch, databaseType.getName());
 		SimpleReplicatorDocument.Builder builder = SimpleReplicatorDocument.builder(
 						externalIsTarget ? inMemoryDatabase : externalDatabase,
 						externalIsTarget ? externalDatabase : inMemoryDatabase
 				)
+				.queryParameters(Map.of(
+						"limit", "10000",
+						"descending", "true"
+				))
 				.continuous();
 
 		return builder.build();
-	}
-	public @Nullable Design createFilterDesignDocument() {
-		if (duplicatePastDuration != null) {
-			return new RecentPacketsFilterDesign();
-		}
-		return null;
 	}
 
 	/**
@@ -99,26 +105,4 @@ public enum InMemoryReplicatorConfig {
 		return builder.build();
 	}
 
-	class RecentPacketsFilterDesign implements Design {
-
-		private final String recentPacketsFilter;
-
-		public RecentPacketsFilterDesign() {
-			requireNonNull(duplicatePastDuration);
-			String rawFunction = DesignResource.FILTER_JAVASCRIPT_RECENT_PACKETS.getAsString(StandardCharsets.UTF_8);
-			recentPacketsFilter = rawFunction.replaceAll("\\$\\$durationMillis\\$\\$", Long.toString(duplicatePastDuration.toMillis()));
-		}
-
-		@Override
-		public String getLanguage() {
-			return "javascript";
-		}
-
-		@Override
-		public Map<String, String> getFilters() {
-			return Map.of(
-					"recent", recentPacketsFilter
-			);
-		}
-	}
 }

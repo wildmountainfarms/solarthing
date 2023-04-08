@@ -137,7 +137,7 @@ public class CouchDbSetupMain {
 			database.putDocument("_design/packetFilters", jsonData);
 		} catch (CouchDbUpdateConflictException e) {
 			String revision = database.getCurrentRevision("_design/packetFilters");
-			database.updateDocument("_design/packets", revision, jsonData);
+			database.updateDocument("_design/packetFilters", revision, jsonData);
 			out.println("updated _design/packetFilters document on database: " + databaseType.getName());
 		}
 	}
