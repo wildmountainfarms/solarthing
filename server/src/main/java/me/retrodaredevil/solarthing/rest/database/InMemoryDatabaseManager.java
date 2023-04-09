@@ -21,8 +21,13 @@ import me.retrodaredevil.couchdbjava.replicator.ReplicatorDocument;
 import me.retrodaredevil.couchdbjava.replicator.SimpleReplicatorDocument;
 import me.retrodaredevil.couchdbjava.replicator.source.ObjectReplicatorSource;
 import me.retrodaredevil.couchdbjava.replicator.source.ReplicatorSource;
+import me.retrodaredevil.couchdbjava.request.ViewQuery;
+import me.retrodaredevil.couchdbjava.request.ViewQueryParams;
+import me.retrodaredevil.couchdbjava.request.ViewQueryParamsBuilder;
+import me.retrodaredevil.couchdbjava.response.ViewResponse;
 import me.retrodaredevil.solarthing.SolarThingDatabaseType;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
+import me.retrodaredevil.solarthing.couchdb.SolarThingCouchDb;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import okhttp3.HttpUrl;
 import org.slf4j.Logger;
@@ -34,6 +39,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
@@ -109,9 +117,10 @@ public class InMemoryDatabaseManager {
 	/**
 	 * @param inMemoryInstance The in memory database to set up replication on. This method assumes it has authorization applied to it
 	 * @param inMemoryCouch The {@link CouchProperties} of {@code inMemoryInstance}
-	 * @param externalCouch The {@link CouchProperties} of the target database
+	 * @param externalInstance The external database. This method assumes it has authorization applied to it
+	 * @param externalCouch The {@link CouchDbDatabaseSettings} of the target database
 	 */
-	private void setupReplicator(CouchDbInstance inMemoryInstance, CouchProperties inMemoryCouch, CouchProperties externalCouch) throws CouchDbException {
+	private void setupReplicator(CouchDbInstance inMemoryInstance, CouchProperties inMemoryCouch, CouchDbInstance externalInstance, CouchProperties externalCouch) throws CouchDbException {
 		CouchDbDatabase replicator = inMemoryInstance.getReplicatorDatabase();
 		replicator.createIfNotExists(); // On the PouchDB instance I've interacted with this database is already present, but let's just make sure
 
@@ -126,10 +135,32 @@ public class InMemoryDatabaseManager {
 				.setUsername(inMemoryCouch.getUsername())
 				.setPassword(inMemoryCouch.getPassword())
 				.build();
+		final ViewQuery millisNullLast24HoursViewQuery;
+		{
+			Instant instant24HoursAgo = Instant.now().minus(Duration.ofHours(24));
+			ViewQueryParams params = new ViewQueryParamsBuilder()
+					.startKey(instant24HoursAgo.toEpochMilli())
+					.build();
+			millisNullLast24HoursViewQuery = SolarThingCouchDb.createMillisNullView(params);
+		}
 
 //		for (InMemoryReplicatorConfig replicatorConfig : InMemoryReplicatorConfig.values()) {
 		for (InMemoryReplicatorConfig replicatorConfig : new InMemoryReplicatorConfig[] { InMemoryReplicatorConfig.STATUS_EXTERNAL_TO_IN_MEMORY }) {
-			ReplicatorDocument replicatorDocument = replicatorConfig.createDocument(localInMemoryCouchProperties, externalCouch);
+			SimpleReplicatorDocument.Builder replicatorDocumentBuilder = replicatorConfig.createDocumentBuilder(localInMemoryCouchProperties, externalCouch);
+			if (!replicatorConfig.isExternalIsTarget() && replicatorConfig.getDatabaseType().needsMillisView()) {
+				// replicating solarthing and solarthing_events to in memory database
+				// In this case we need to stop PouchDB from replicating all the documents.
+				// Ideally we would be able to just use descending=true with some sort of limit, but PouchDB doesn't support that in its replication
+				//   The other option would be to use a filter, but typical filters defined in design documents require processing ALL documents in a database
+				// So, this is the solution, and you have to trust me that its the best last resort solution
+				CouchDbDatabase database = externalInstance.getDatabase(replicatorConfig.getDatabaseType().getName());
+				ViewResponse viewResponse = database.queryView(millisNullLast24HoursViewQuery);
+				List<String> documentIds = viewResponse.getRows().stream().map(ViewResponse.DocumentEntry::getId).toList();
+				replicatorDocumentBuilder
+						.filter("_doc_ids")
+						.documentIds(documentIds);
+			}
+			ReplicatorDocument replicatorDocument = replicatorDocumentBuilder.build();
 			String documentId = replicatorConfig.getDocumentId();
 
 			JsonData jsonData;
@@ -178,8 +209,9 @@ public class InMemoryDatabaseManager {
 			CouchProperties inMemoryCouch = couchDbDatabaseSettings.getCouchProperties();
 			CouchProperties externalCouch = replicateCouchDbDatabaseSettings.getCouchProperties();
 			CouchDbInstance inMemoryInstance = CouchDbUtil.createInstance(inMemoryCouch, couchDbDatabaseSettings.getOkHttpProperties());
+			CouchDbInstance externalInstance = CouchDbUtil.createInstance(externalCouch, replicateCouchDbDatabaseSettings.getOkHttpProperties());
 			setupDatabase(inMemoryInstance);
-			setupReplicator(inMemoryInstance, inMemoryCouch, externalCouch);
+			setupReplicator(inMemoryInstance, inMemoryCouch, externalInstance, externalCouch);
 		}
 	}
 

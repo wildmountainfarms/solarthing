@@ -1,11 +1,7 @@
 package me.retrodaredevil.solarthing.rest.database;
 
-import com.fasterxml.jackson.databind.node.LongNode;
 import me.retrodaredevil.couchdb.CouchProperties;
-import me.retrodaredevil.couchdb.design.Design;
-import me.retrodaredevil.couchdb.design.DesignResource;
 import me.retrodaredevil.couchdbjava.CouchDbAuth;
-import me.retrodaredevil.couchdbjava.replicator.ReplicatorDocument;
 import me.retrodaredevil.couchdbjava.replicator.SimpleReplicatorDocument;
 import me.retrodaredevil.couchdbjava.replicator.source.ObjectReplicatorSource;
 import me.retrodaredevil.couchdbjava.replicator.source.ReplicatorSource;
@@ -13,10 +9,7 @@ import me.retrodaredevil.solarthing.SolarThingDatabaseType;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.time.Instant;
-import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
@@ -68,26 +61,20 @@ public enum InMemoryReplicatorConfig {
 				: "external_" + databaseType.getName() + "_into_this_" + databaseType.getName();
 	}
 
-	public ReplicatorDocument createDocument(CouchProperties inMemoryCouch, CouchProperties externalCouch) {
-		// TODO remove these commented lines when I deem I won't use them
-		// yes, startMillis is a constant value after we put it in the database,
-		//   but remember this is an in memory database, so we really don't care if it retains
-		//   packets from this constant instant until it restarts.
-		//   It'll restart eventually and we also have a future plan of potentially removing old documents from the database with purge
-//		long startMillis = Instant.now().minus(Duration.ofHours(24)).toEpochMilli();
+	/**
+	 * @param inMemoryCouch The {@link CouchProperties} the in memory database can use to refer to itself. {@link CouchProperties#getUri()} should be a localhost address.
+	 * @param externalCouch The external {@link CouchProperties} the in memory database can use to refer to the external database.
+	 * @return
+	 */
+	public SimpleReplicatorDocument.Builder createDocumentBuilder(CouchProperties inMemoryCouch, CouchProperties externalCouch) {
 		ReplicatorSource inMemoryDatabase = createSource(inMemoryCouch, databaseType.getName());
 		ReplicatorSource externalDatabase = createSource(externalCouch, databaseType.getName());
-		SimpleReplicatorDocument.Builder builder = SimpleReplicatorDocument.builder(
+
+		return SimpleReplicatorDocument.builder(
 						externalIsTarget ? inMemoryDatabase : externalDatabase,
 						externalIsTarget ? externalDatabase : inMemoryDatabase
 				)
-				.queryParameters(Map.of(
-						"limit", "10000",
-						"descending", "true"
-				))
 				.continuous();
-
-		return builder.build();
 	}
 
 	/**
