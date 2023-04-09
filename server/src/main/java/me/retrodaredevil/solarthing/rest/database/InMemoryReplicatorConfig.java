@@ -49,6 +49,8 @@ public enum InMemoryReplicatorConfig {
 
 	/**
 	 * Note: Only supported on databases where all documents have a {@code dateMillis} field.
+	 * <p>
+	 * Note: At the time of writing, it is safe to assume that {@link #isExternalIsTarget()} is false if this returns a non-null value. (The in memory database is the target here)
 	 * @return This duration represents how far back packets should be retrieved from
 	 */
 	public @Nullable Duration getDuplicatePastDuration() {

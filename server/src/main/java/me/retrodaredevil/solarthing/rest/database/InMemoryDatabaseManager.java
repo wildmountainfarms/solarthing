@@ -41,7 +41,9 @@ import org.springframework.stereotype.Component;
 import java.net.URI;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
@@ -135,30 +137,30 @@ public class InMemoryDatabaseManager {
 				.setUsername(inMemoryCouch.getUsername())
 				.setPassword(inMemoryCouch.getPassword())
 				.build();
-		final ViewQuery millisNullLast24HoursViewQuery;
-		{
-			Instant instant24HoursAgo = Instant.now().minus(Duration.ofHours(24));
-			ViewQueryParams params = new ViewQueryParamsBuilder()
-					.startKey(instant24HoursAgo.toEpochMilli())
-					.build();
-			millisNullLast24HoursViewQuery = SolarThingCouchDb.createMillisNullView(params);
-		}
 
-//		for (InMemoryReplicatorConfig replicatorConfig : InMemoryReplicatorConfig.values()) {
-		for (InMemoryReplicatorConfig replicatorConfig : new InMemoryReplicatorConfig[] { InMemoryReplicatorConfig.STATUS_EXTERNAL_TO_IN_MEMORY }) {
+		for (InMemoryReplicatorConfig replicatorConfig : InMemoryReplicatorConfig.values()) {
+//		for (InMemoryReplicatorConfig replicatorConfig : new InMemoryReplicatorConfig[] { InMemoryReplicatorConfig.STATUS_EXTERNAL_TO_IN_MEMORY }) {
 			SimpleReplicatorDocument.Builder replicatorDocumentBuilder = replicatorConfig.createDocumentBuilder(localInMemoryCouchProperties, externalCouch);
-			if (!replicatorConfig.isExternalIsTarget() && replicatorConfig.getDatabaseType().needsMillisView()) {
+			Duration duplicatePastDuration = replicatorConfig.getDuplicatePastDuration();
+			if (duplicatePastDuration != null) {
 				// replicating solarthing and solarthing_events to in memory database
 				// In this case we need to stop PouchDB from replicating all the documents.
 				// Ideally we would be able to just use descending=true with some sort of limit, but PouchDB doesn't support that in its replication
 				//   The other option would be to use a filter, but typical filters defined in design documents require processing ALL documents in a database
 				// So, this is the solution, and you have to trust me that its the best last resort solution
 				CouchDbDatabase database = externalInstance.getDatabase(replicatorConfig.getDatabaseType().getName());
+				Instant instant24HoursAgo = Instant.now().minus(duplicatePastDuration);
+				ViewQueryParams params = new ViewQueryParamsBuilder()
+						.descending() // get most recent first
+						.endKey(instant24HoursAgo.toEpochMilli())
+						.build();
+				ViewQuery millisNullLast24HoursViewQuery = SolarThingCouchDb.createMillisNullView(params);
 				ViewResponse viewResponse = database.queryView(millisNullLast24HoursViewQuery);
 				List<String> documentIds = viewResponse.getRows().stream().map(ViewResponse.DocumentEntry::getId).toList();
 				replicatorDocumentBuilder
 						.filter("_doc_ids")
 						.documentIds(documentIds);
+				LOGGER.info("Using " + documentIds.size() + " document IDs as a restraint for replication config: " + replicatorConfig);
 			}
 			ReplicatorDocument replicatorDocument = replicatorDocumentBuilder.build();
 			String documentId = replicatorConfig.getDocumentId();
