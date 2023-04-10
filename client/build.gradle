@@ -23,7 +23,7 @@ dependencies {
     implementation 'com.brsanthu:google-analytics-java:2.0.0'
 
     // https://github.com/slackapi/java-slack-sdk/releases
-    implementation 'com.slack.api:slack-api-client:1.22.2'
+    implementation 'com.slack.api:slack-api-client:1.29.1'
     // https://mvnrepository.com/artifact/org.java-websocket/Java-WebSocket
     implementation 'org.java-websocket:Java-WebSocket:1.5.3'
 
