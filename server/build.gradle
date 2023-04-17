@@ -34,7 +34,7 @@ dependencies {
     implementation 'com.graphql-java:graphql-java-spring-boot-starter-webmvc:2.0'
 
 //    implementation 'com.graphql-java:graphql-java:14.0' graphql-spqr adds this dependency
-    implementation 'io.leangen.graphql:spqr:0.12.1' // https://github.com/leangen/graphql-spqr/releases
+    implementation 'io.leangen.graphql:spqr:0.12.2' // https://github.com/leangen/graphql-spqr/releases
 
     // Although we don't need this dependency, we need to bump the version so that couchdb has the version it needs
     api group: 'com.squareup.okhttp3', name: 'okhttp', version: "$okhttpVersion"
