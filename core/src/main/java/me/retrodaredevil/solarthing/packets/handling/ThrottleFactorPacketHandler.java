@@ -17,7 +17,7 @@ public class ThrottleFactorPacketHandler implements PacketHandler {
 	 */
 	public ThrottleFactorPacketHandler(PacketHandler packetHandler, FrequencySettings frequencySettings) {
 		this.packetHandler = requireNonNull(packetHandler);
-		this.frequencySettings = frequencySettings;
+		this.frequencySettings = requireNonNull(frequencySettings);
 	}
 
 	@Override

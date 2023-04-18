@@ -11,9 +11,10 @@ import me.retrodaredevil.solarthing.config.databases.DatabaseType;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.config.io.IOConfig;
 import me.retrodaredevil.solarthing.config.io.SerialIOConfig;
+import me.retrodaredevil.solarthing.config.options.DatabaseConfigSettings;
 import me.retrodaredevil.solarthing.config.options.DatabaseOption;
 import me.retrodaredevil.solarthing.config.options.PacketHandlingOption;
-import me.retrodaredevil.solarthing.program.DatabaseConfig;
+import me.retrodaredevil.solarthing.config.databases.DatabaseConfig;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 
 import java.io.IOException;
@@ -28,12 +29,18 @@ public final class ConfigUtil {
 	static final ObjectMapper MAPPER = DatabaseSettingsUtil.registerDatabaseSettings(JacksonUtil.defaultMapper());
 	/** A mapper to use only if you are using it to parse JSON and are not using it for deserialization. */
 
+	public static List<DatabaseConfig> resolveConfigs(DatabaseConfigSettings databaseConfigSettings) {
+		return databaseConfigSettings.resolveConfigs(MAPPER);
+	}
 
+	@Deprecated
 	public static List<DatabaseConfig> getDatabaseConfigs(PacketHandlingOption options){
 		List<Path> files = options.getDatabaseConfigurationFilePaths();
 		List<DatabaseConfig> r = new ArrayList<>();
 		for(Path file : files){
-			r.add(readDatabaseConfig(file));
+			DatabaseConfig config = readDatabaseConfig(file)
+					.resolveExternal(MAPPER);
+			r.add(config);
 		}
 		return r;
 	}
@@ -87,8 +94,8 @@ public final class ConfigUtil {
 		DatabaseConfig databaseConfig = readDatabaseConfig(options.getDatabaseFilePath());
 		DatabaseType databaseType = databaseConfig.getType();
 		if(databaseType != CouchDbDatabaseSettings.TYPE){
-			throw new IllegalArgumentException("Only CouchDb can be used for this program type right now!");
+			throw new ConfigException("Only CouchDb can be used for this program type right now!");
 		}
-		return (CouchDbDatabaseSettings) databaseConfig.getSettings();
+		return (CouchDbDatabaseSettings) databaseConfig.requireDatabaseSettings();
 	}
 }

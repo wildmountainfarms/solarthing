@@ -110,7 +110,7 @@ public class OutbackMateMain {
 			return SolarMain.initReader(
 					requireNonNull(ioBundle.getInputStream()),
 					ioBundle::reload,
-					new MatePacketCreator49(MateProgramOptions.getIgnoreCheckSum(options)),
+					new MatePacketCreator49(options.getIgnoreCheckSum()),
 					new TimedPacketReceiver(
 							Duration.ofMillis(250),
 							new PacketListReceiverMultiplexer(packetListReceiverList),

@@ -1,0 +1,40 @@
+{
+  "type": "request",
+  "source": "default",
+  "fragment": 3,
+  "unique": 30,
+  "database_config": {
+    "databases": [
+      {
+        "settings": {
+          "inherit": false,
+          "packet_upload": {
+            "throttle_factor": 3,
+            "initial_skip": 3
+          }
+        },
+        "type": "couchdb",
+        "config": {
+          "url": "http://localhost:5984",
+          "username": "admin",
+          "password": "relax"
+        }
+      },
+      {
+        "settings": {
+          "inherit": false,
+          "command_download": {
+            "throttle_factor": 3,
+            "initial_skip": 3
+          }
+        },
+        "external": "configs/couchdb.json"
+      }
+    ]
+  },
+  "request": [
+    {
+      "type": "cpu-temp", "processors": 1
+    }
+  ]
+}

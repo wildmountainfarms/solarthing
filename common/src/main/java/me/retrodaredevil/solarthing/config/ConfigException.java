@@ -14,6 +14,9 @@ public class ConfigException extends RuntimeException {
 		super(message, cause);
 		this.userMessage = userMessage;
 	}
+	public ConfigException(String message) {
+		this(message, null);
+	}
 
 	public String getUserMessage() {
 		return userMessage;

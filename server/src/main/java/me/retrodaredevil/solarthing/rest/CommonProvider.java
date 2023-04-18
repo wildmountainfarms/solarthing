@@ -7,7 +7,7 @@ import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.packets.collection.DefaultInstanceOptions;
 import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePacket;
-import me.retrodaredevil.solarthing.program.DatabaseConfig;
+import me.retrodaredevil.solarthing.config.databases.DatabaseConfig;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,9 +17,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 
@@ -70,7 +67,7 @@ public class CommonProvider {
 		);
 		{
 			DatabaseConfig databaseConfig = CommonConfigUtil.readConfig(databaseFile, DatabaseConfig.class, objectMapper);
-			DatabaseSettings databaseSettings = databaseConfig.getSettings();
+			DatabaseSettings databaseSettings = databaseConfig.requireDatabaseSettings();
 			if (!(databaseSettings instanceof CouchDbDatabaseSettings)) {
 				throw new UnsupportedOperationException("Only CouchDB is supported right now!");
 			}
@@ -78,7 +75,7 @@ public class CommonProvider {
 		}
 		if (replicateDatabaseFile != null) {
 			DatabaseConfig databaseConfig = CommonConfigUtil.readConfig(replicateDatabaseFile, DatabaseConfig.class, objectMapper);
-			DatabaseSettings databaseSettings = databaseConfig.getSettings();
+			DatabaseSettings databaseSettings = databaseConfig.requireDatabaseSettings();
 			if(!(databaseSettings instanceof CouchDbDatabaseSettings)) {
 				throw new UnsupportedOperationException("Only CouchDB is supported right now!");
 			}

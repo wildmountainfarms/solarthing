@@ -17,7 +17,7 @@ import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 import me.retrodaredevil.solarthing.program.CommandOptions;
 import me.retrodaredevil.solarthing.config.ConfigUtil;
-import me.retrodaredevil.solarthing.program.DatabaseConfig;
+import me.retrodaredevil.solarthing.config.databases.DatabaseConfig;
 import me.retrodaredevil.solarthing.program.PacketUtil;
 import me.retrodaredevil.solarthing.program.pvoutput.provider.TemperatureCelsiusProvider;
 import me.retrodaredevil.solarthing.program.pvoutput.provider.VoltageProvider;
@@ -76,7 +76,7 @@ public class PVOutputUploadMain {
 			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)Only CouchDb can be used for this program type right now!");
 			return SolarThingConstants.EXIT_CODE_INVALID_CONFIG;
 		}
-		CouchDbDatabaseSettings couchDbDatabaseSettings = (CouchDbDatabaseSettings) databaseConfig.getSettings();
+		CouchDbDatabaseSettings couchDbDatabaseSettings = (CouchDbDatabaseSettings) databaseConfig.requireDatabaseSettings();
 		SolarThingDatabase database = CouchDbSolarThingDatabase.create(CouchDbUtil.createInstance(couchDbDatabaseSettings.getCouchProperties(), couchDbDatabaseSettings.getOkHttpProperties()));
 
 		OkHttpClient client = PVOutputOkHttpUtil.configure(new OkHttpClient.Builder(), options.getApiKey(), options.getSystemId())

@@ -25,7 +25,7 @@ import me.retrodaredevil.solarthing.config.options.ProgramOptions;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
 import me.retrodaredevil.solarthing.program.ActionUtil;
-import me.retrodaredevil.solarthing.program.DatabaseConfig;
+import me.retrodaredevil.solarthing.config.databases.DatabaseConfig;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPackets;
 import me.retrodaredevil.solarthing.util.CheckSumException;
@@ -85,7 +85,7 @@ public class DeserializeTest {
 				"}";
 		mapper.registerSubtypes(DatabaseSettings.class, InfluxDbDatabaseSettings.class);
 		DatabaseConfig config = mapper.readValue(json, DatabaseConfig.class);
-		assertTrue(config.getSettings() instanceof InfluxDbDatabaseSettings);
+		assertTrue(config.requireDatabaseSettings() instanceof InfluxDbDatabaseSettings);
 	}
 
 	private List<Path> getJsonFiles(Path directory) throws IOException {
