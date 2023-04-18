@@ -7,7 +7,6 @@ import me.retrodaredevil.couchdb.CouchDbUtil;
 import me.retrodaredevil.couchdb.CouchProperties;
 import me.retrodaredevil.couchdb.CouchPropertiesBuilder;
 import me.retrodaredevil.couchdb.design.MutablePacketsDesign;
-import me.retrodaredevil.couchdbjava.CouchDbAuth;
 import me.retrodaredevil.couchdbjava.CouchDbConfig;
 import me.retrodaredevil.couchdbjava.CouchDbDatabase;
 import me.retrodaredevil.couchdbjava.CouchDbInstance;
@@ -19,8 +18,6 @@ import me.retrodaredevil.couchdbjava.json.StringJsonData;
 import me.retrodaredevil.couchdbjava.json.jackson.CouchDbJacksonUtil;
 import me.retrodaredevil.couchdbjava.replicator.ReplicatorDocument;
 import me.retrodaredevil.couchdbjava.replicator.SimpleReplicatorDocument;
-import me.retrodaredevil.couchdbjava.replicator.source.ObjectReplicatorSource;
-import me.retrodaredevil.couchdbjava.replicator.source.ReplicatorSource;
 import me.retrodaredevil.couchdbjava.request.ViewQuery;
 import me.retrodaredevil.couchdbjava.request.ViewQueryParams;
 import me.retrodaredevil.couchdbjava.request.ViewQueryParamsBuilder;
@@ -38,12 +35,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.net.URI;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 

@@ -11,7 +11,6 @@ import me.retrodaredevil.solarthing.annotations.Nullable;
 import java.net.URI;
 import java.time.Duration;
 
-import static java.util.Objects.requireNonNull;
 
 /**
  * Represents the replication configs needed when setting up an in memory database
