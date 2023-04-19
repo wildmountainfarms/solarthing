@@ -88,9 +88,8 @@ public class InMemoryDatabaseManager {
 				try {
 					database.putDocument("_design/packets", jsonData);
 				} catch (CouchDbUpdateConflictException e) {
-//					String revision = database.getCurrentRevision("_design/packets"); // cannot use this because PouchDB has a weird ETag value
+					// must get getDocument() and not getCurrentRevision() because PouchDB does not support getCurrentRevision()
 					JsonData existingJsonData = database.getDocument("_design/packets").getJsonData();
-					// TODO this does not work. We should fix it in couchdbjava
 					final JsonNode jsonNode;
 					try {
 						jsonNode = CouchDbJacksonUtil.getNodeFrom(existingJsonData);
@@ -132,8 +131,8 @@ public class InMemoryDatabaseManager {
 				.setPassword(inMemoryCouch.getPassword())
 				.build();
 
+		boolean haveWeConfirmedThatReplicatorIsProbablySetupThisIteration = false;
 		for (InMemoryReplicatorConfig replicatorConfig : InMemoryReplicatorConfig.values()) {
-//		for (InMemoryReplicatorConfig replicatorConfig : new InMemoryReplicatorConfig[] { InMemoryReplicatorConfig.STATUS_EXTERNAL_TO_IN_MEMORY }) {
 			SimpleReplicatorDocument.Builder replicatorDocumentBuilder = replicatorConfig.createDocumentBuilder(localInMemoryCouchProperties, externalCouch);
 			Duration duplicatePastDuration = replicatorConfig.getDuplicatePastDuration();
 			if (duplicatePastDuration != null) {
@@ -141,7 +140,7 @@ public class InMemoryDatabaseManager {
 				// In this case we need to stop PouchDB from replicating all the documents.
 				// Ideally we would be able to just use descending=true with some sort of limit, but PouchDB doesn't support that in its replication
 				//   The other option would be to use a filter, but typical filters defined in design documents require processing ALL documents in a database
-				// So, this is the solution, and you have to trust me that its the best last resort solution
+				// So, this is the solution, and you have to trust me that it is the best last resort solution
 				CouchDbDatabase database = externalInstance.getDatabase(replicatorConfig.getDatabaseType().getName());
 				Instant instant24HoursAgo = Instant.now().minus(duplicatePastDuration);
 				ViewQueryParams params = new ViewQueryParamsBuilder()
@@ -156,43 +155,48 @@ public class InMemoryDatabaseManager {
 						.documentIds(documentIds);
 				LOGGER.info("Using " + documentIds.size() + " document IDs as a restraint for replication config: " + replicatorConfig);
 			}
-			ReplicatorDocument replicatorDocument = replicatorDocumentBuilder.build();
-			String documentId = replicatorConfig.getDocumentId();
+			if (!haveWeConfirmedThatReplicatorIsProbablySetupThisIteration || duplicatePastDuration != null) {
+				ReplicatorDocument replicatorDocument = replicatorDocumentBuilder.build();
+				String documentId = replicatorConfig.getDocumentId();
 
-			JsonData jsonData;
-			try {
-				jsonData = new StringJsonData(MAPPER.writeValueAsString(replicatorDocument));
-			} catch (JsonProcessingException e) {
-				throw new RuntimeException("This should not happen", e);
-			}
-			try {
-				replicator.putDocument(documentId, jsonData);
-			} catch (CouchDbUpdateConflictException e) {
-				if (isReplicatorKnownToBeFullySetup) {
-					// If we have confirmed before that the replicator is set up, then we can be confident that it's still setup.
-					return;
-				}
-				// do not use getCurrentRevision() because that will fail on PouchDB
-				String revision = replicator.getDocument(documentId).getRevision(); // ask the database for the revision so we can overwrite it
+				JsonData jsonData;
 				try {
-					replicator.updateDocument(documentId, revision, jsonData);
-				} catch (CouchDbCodeException updateException) {
-					if (updateException.getCode() == 403) { //
-						LOGGER.info("(403) This replication document is likely triggered. documentId: " + documentId);
+					jsonData = new StringJsonData(MAPPER.writeValueAsString(replicatorDocument));
+				} catch (JsonProcessingException e) {
+					throw new RuntimeException("This should not happen", e);
+				}
+				try {
+					replicator.putDocument(documentId, jsonData);
+					isReplicatorKnownToBeFullySetup = false; // if we successfully upload this document, then the replicator is not already fully setup
+				} catch (CouchDbUpdateConflictException e) {
+					if (isReplicatorKnownToBeFullySetup) {
+						haveWeConfirmedThatReplicatorIsProbablySetupThisIteration = true;
+						// If we have confirmed before that the replicator is set up, then we can be confident that it's still setup.
 					} else {
-						throw updateException;
+						// do not use getCurrentRevision() because that will fail on PouchDB
+						String revision = replicator.getDocument(documentId).getRevision(); // ask the database for the revision so we can overwrite it
+						try {
+							replicator.updateDocument(documentId, revision, jsonData);
+						} catch (CouchDbCodeException updateException) {
+							if (updateException.getCode() == 403) { //
+								LOGGER.debug("(403) This replication document is likely triggered. documentId: " + documentId);
+							} else {
+								throw updateException;
+							}
+						}
 					}
-				}
-			} catch (CouchDbCodeException e) {
-				if (e.getCode() != 403) {
-					throw e;
-				}
-				LOGGER.info("(403) this replication document is likely triggered. documentId: " + documentId);
-				if (isReplicatorKnownToBeFullySetup) {
-					return;
+				} catch (CouchDbCodeException e) {
+					if (e.getCode() != 403) {
+						throw e;
+					}
+					LOGGER.debug("(403) this replication document is likely triggered. documentId: " + documentId);
+					if (isReplicatorKnownToBeFullySetup) {
+						haveWeConfirmedThatReplicatorIsProbablySetupThisIteration = true;
+					}
 				}
 			}
 		}
+		// Note that although we have isReplicatorKnownToBeFullySetup, we don't return in the above loop because we need to constantly duplicate packets from last 24 hours
 		isReplicatorKnownToBeFullySetup = true;
 	}
 

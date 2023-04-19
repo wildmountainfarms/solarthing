@@ -58,7 +58,7 @@ public enum InMemoryReplicatorConfig {
 
 	public String getDocumentId() {
 		return externalIsTarget
-				? "this_" + databaseType.getName() + "into_external_" + databaseType.getName()
+				? "this_" + databaseType.getName() + "_into_external_" + databaseType.getName()
 				: "external_" + databaseType.getName() + "_into_this_" + databaseType.getName();
 	}
 
