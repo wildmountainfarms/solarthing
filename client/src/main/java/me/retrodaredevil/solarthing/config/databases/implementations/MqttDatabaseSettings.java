@@ -40,6 +40,11 @@ public class MqttDatabaseSettings implements DatabaseSettings {
 	}
 
 	@Override
+	public String toString() {
+		return "MQTT " + broker;
+	}
+
+	@Override
 	public DatabaseType getDatabaseType() {
 		return TYPE;
 	}

@@ -19,6 +19,11 @@ public final class PostDatabaseSettings implements DatabaseSettings {
 	}
 
 	@Override
+	public String toString() {
+		return "Post " + url;
+	}
+
+	@Override
 	public DatabaseType getDatabaseType() {
 		return TYPE;
 	}

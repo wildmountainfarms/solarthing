@@ -86,6 +86,7 @@ public class PacketHandlerInit {
 			FrequencySettings statusFrequencySettings = config.requireDatabaseUsageSettings().getPacketUploadFrequencySettings();
 
 			if (statusFrequencySettings != null) {
+				LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Packets will be uploaded to database: " + config.requireDatabaseSettings().toString());
 				if (CouchDbDatabaseSettings.TYPE.equals(config.getType())) {
 					CouchDbDatabaseSettings settings = (CouchDbDatabaseSettings) config.requireDatabaseSettings();
 					CouchDbInstance instance = CouchDbUtil.createInstance(settings.getCouchProperties(), settings.getOkHttpProperties());
@@ -169,6 +170,8 @@ public class PacketHandlerInit {
 							new AsyncPacketHandlerWrapper(new MqttPacketSaver(settings.getBroker(), client, settings.getUsername(), settings.getPassword(), settings.getTopicFormat(), settings.isRetain(), sourceId, fragmentId)),
 							statusFrequencySettings
 					));
+				} else {
+					LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Never mind. That database is not fully implemented. database: " + config.requireDatabaseSettings());
 				}
 			}
 		}

@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.program;
 import me.retrodaredevil.couchdb.CouchDbUtil;
 import me.retrodaredevil.couchdbjava.CouchDbInstance;
 import me.retrodaredevil.solarthing.PacketGroupReceiver;
+import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.commands.packets.open.CommandOpenPacket;
 import me.retrodaredevil.solarthing.config.databases.DatabaseConfig;
@@ -16,6 +17,8 @@ import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseExcepti
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.collection.StoredPacketGroup;
 import me.retrodaredevil.solarthing.packets.handling.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,6 +27,7 @@ import java.util.List;
 @UtilityClass
 public class CommandUtil {
 	private CommandUtil() { throw new UnsupportedOperationException(); }
+	private static final Logger LOGGER = LoggerFactory.getLogger(CommandUtil.class);
 
 	/**
 	 * Gets packet handlers that will download requested commands
@@ -43,6 +47,7 @@ public class CommandUtil {
 				FrequencySettings frequencySettings = config.requireDatabaseUsageSettings().getCommandDownloadFrequencySettings();
 				// If frequencySettings is null, then we must have explicitly disallowed command download from this database config
 				if (frequencySettings != null) {
+					LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Commands will be downloaded from database: " + settings);
 					PacketHandler packetHandler = new PacketHandler() {
 						private final SecurityPacketReceiver securityPacketReceiver = new SecurityPacketReceiver(
 								DatabaseDocumentKeyMap.createFromDatabase(database),
