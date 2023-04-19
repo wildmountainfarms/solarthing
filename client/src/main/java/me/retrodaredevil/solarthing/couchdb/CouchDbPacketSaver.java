@@ -9,6 +9,7 @@ import me.retrodaredevil.couchdbjava.exception.CouchDbUpdateConflictException;
 import me.retrodaredevil.couchdbjava.json.JsonData;
 import me.retrodaredevil.couchdbjava.json.StringJsonData;
 import me.retrodaredevil.couchdbjava.response.DocumentResponse;
+import me.retrodaredevil.couchdbjava.tag.DocumentEntityTag;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
@@ -27,6 +28,8 @@ public class CouchDbPacketSaver implements PacketHandler {
 	/** A map of document IDs to the current revision of that document or null if we ignore conflicts */
 	private final Map<String, String> idMap;
 	private final CouchDbDatabase database;
+	/** We assume this is true until proven otherwise */
+	private boolean headRequestGivesRevisionETag = true;
 
 	/**
 	 * If {@code ignoreConflicts} is true, then when a conflict is found, no exception will be thrown.
@@ -75,7 +78,18 @@ public class CouchDbPacketSaver implements PacketHandler {
 				return;
 			}
 			try {
-				String actualRev = database.getCurrentRevision(id);
+				String actualRev = null;
+				if (headRequestGivesRevisionETag) {
+					DocumentEntityTag eTag = database.getCurrentETag(id);
+					if (eTag.isRevision()) {
+						actualRev = eTag.getValue();
+					} else {
+						headRequestGivesRevisionETag = false;
+					}
+				}
+				if (actualRev == null) {
+					actualRev = database.getDocument(id).getRevision();
+				}
 				idMap.put(id, actualRev);
 				LOGGER.debug("We were able to get the actual Revision ID for id=" + id + " actual rev=" + actualRev);
 			} catch(CouchDbException revEx){

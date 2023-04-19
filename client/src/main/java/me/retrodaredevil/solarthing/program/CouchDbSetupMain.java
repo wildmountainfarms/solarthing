@@ -93,6 +93,54 @@ public class CouchDbSetupMain {
 		}
 
 	}
+	private void addPacketsDesign(SolarThingDatabaseType databaseType, CouchDbDatabase database) throws CouchDbException {
+		out.println("Adding packets design to database " + databaseType.getName());
+		MutablePacketsDesign design = new MutablePacketsDesign();
+		if (databaseType.needsMillisView()) {
+			out.println("This database will have the millisNull view");
+			design.addMillisNullView();
+		}
+		if (databaseType.needsSimpleAllDocsView()) {
+			out.println("This database will have the simpleAllDocs view");
+			design.addSimpleAllDocsView();
+		}
+		if (databaseType.needsReadonlyValidateFunction()) {
+			out.println("This database will be readonly");
+			design.setReadonlyAuth();
+		}
+		final JsonData jsonData;
+		try {
+			jsonData = new StringJsonData(MAPPER.writeValueAsString(design));
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException("Couldn't serialize json! Report this!", e);
+		}
+		try {
+			database.putDocument("_design/packets", jsonData);
+		} catch (CouchDbUpdateConflictException e) {
+			String revision = database.getCurrentRevision("_design/packets");
+			database.updateDocument("_design/packets", revision, jsonData);
+			out.println("updated _design/packets document on database: " + databaseType.getName());
+		}
+	}
+
+	private void addPacketFiltersDesign(SolarThingDatabaseType databaseType, CouchDbDatabase database) throws CouchDbException {
+		MutablePacketsDesign packetFiltersDesign = new MutablePacketsDesign();
+		packetFiltersDesign.addLast24HoursFilter();
+
+		final JsonData jsonData;
+		try {
+			jsonData = new StringJsonData(MAPPER.writeValueAsString(packetFiltersDesign));
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException("Couldn't serialize json! Report this!", e);
+		}
+		try {
+			database.putDocument("_design/packetFilters", jsonData);
+		} catch (CouchDbUpdateConflictException e) {
+			String revision = database.getCurrentRevision("_design/packetFilters");
+			database.updateDocument("_design/packetFilters", revision, jsonData);
+			out.println("updated _design/packetFilters document on database: " + databaseType.getName());
+		}
+	}
 
 	public int doCouchDbSetupMain() throws CouchDbException {
 		out.println("You will now setup your CouchDB instance! Some databases will be automatically created (enter)");
@@ -135,33 +183,11 @@ public class CouchDbSetupMain {
 		for (SolarThingDatabaseType databaseType : SolarThingDatabaseType.values()) {
 			CouchDbDatabase database = instance.getDatabase(databaseType.getName());
 			if (databaseType.needsAnyViews()) {
-				out.println("Adding packets design to database " + databaseType.getName());
-				MutablePacketsDesign design = new MutablePacketsDesign();
-				if (databaseType.needsMillisView()) {
-					out.println("This database will have the millisNull view");
-					design.addMillisNullView();
-				}
-				if (databaseType.needsSimpleAllDocsView()) {
-					out.println("This database will have the simpleAllDocs view");
-					design.addSimpleAllDocsView();
-				}
-				if (databaseType.needsReadonlyValidateFunction()) {
-					out.println("This database will be readonly");
-					design.setReadonlyAuth();
-				}
-				final JsonData jsonData;
-				try {
-					jsonData = new StringJsonData(MAPPER.writeValueAsString(design));
-				} catch (JsonProcessingException e) {
-					throw new RuntimeException("Couldn't serialize json! Report this!", e);
-				}
-				try {
-					database.putDocument("_design/packets", jsonData);
-				} catch (CouchDbUpdateConflictException e) {
-					String revision = database.getCurrentRevision("_design/packets");
-					database.updateDocument("_design/packets", revision, jsonData);
-					out.println("updated _design/packets document on database: " + databaseType.getName());
-				}
+				addPacketsDesign(databaseType, database);
+			}
+			if (databaseType.needsMillisView()) {
+				// if it needs millisNull, it must have a dateMillis field so we can add _design/packetFilters
+				addPacketFiltersDesign(databaseType, database);
 			}
 			out.println("Configuring security for database " + databaseType.getName());
 			DatabaseSecurity oldSecurity = database.getSecurity();

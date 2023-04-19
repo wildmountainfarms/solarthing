@@ -2,11 +2,12 @@ package me.retrodaredevil.solarthing.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.solarthing.annotations.Nullable;
+import me.retrodaredevil.solarthing.config.CommonConfigUtil;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.packets.collection.DefaultInstanceOptions;
 import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePacket;
-import me.retrodaredevil.solarthing.program.DatabaseConfig;
+import me.retrodaredevil.solarthing.config.databases.DatabaseConfig;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,9 +17,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 
@@ -28,6 +26,8 @@ public class CommonProvider {
 
 	@Value("${solarthing.config.database}")
 	private Path databaseFile;
+	@Value("${solarthing.config.replicate:#{null}}")
+	private Path replicateDatabaseFile;
 	@Value("${solarthing.config.default_source:#{null}}")
 	private @Nullable String defaultSourceId;
 	@Value("${solarthing.config.default_fragment:#{null}}")
@@ -35,6 +35,7 @@ public class CommonProvider {
 
 	private DefaultInstanceOptions defaultInstanceOptions;
 	private CouchDbDatabaseSettings couchDbDatabaseSettings;
+	private CouchDbDatabaseSettings replicateCouchDbDatabaseSettings;
 
 
 	private String getDefaultSourceId() {
@@ -64,18 +65,22 @@ public class CommonProvider {
 				DatabaseSettings.class,
 				CouchDbDatabaseSettings.class
 		);
-		final DatabaseConfig databaseConfig;
-		try (InputStream inputStream = Files.newInputStream(databaseFile)) {
-			// TODO [Interpolate] consider using something like ConfigUtil to allow for interpolated values
-			databaseConfig = objectMapper.readValue(inputStream, DatabaseConfig.class);
-		} catch (IOException e) {
-			throw new RuntimeException("Couldn't parse data!", e);
+		{
+			DatabaseConfig databaseConfig = CommonConfigUtil.readConfig(databaseFile, DatabaseConfig.class, objectMapper);
+			DatabaseSettings databaseSettings = databaseConfig.requireDatabaseSettings();
+			if (!(databaseSettings instanceof CouchDbDatabaseSettings)) {
+				throw new UnsupportedOperationException("Only CouchDB is supported right now!");
+			}
+			couchDbDatabaseSettings = (CouchDbDatabaseSettings) databaseSettings;
 		}
-		DatabaseSettings databaseSettings = databaseConfig.getSettings();
-		if(!(databaseSettings instanceof CouchDbDatabaseSettings)) {
-			throw new UnsupportedOperationException("Only CouchDB is supported right now!");
+		if (replicateDatabaseFile != null) {
+			DatabaseConfig databaseConfig = CommonConfigUtil.readConfig(replicateDatabaseFile, DatabaseConfig.class, objectMapper);
+			DatabaseSettings databaseSettings = databaseConfig.requireDatabaseSettings();
+			if(!(databaseSettings instanceof CouchDbDatabaseSettings)) {
+				throw new UnsupportedOperationException("Only CouchDB is supported right now!");
+			}
+			replicateCouchDbDatabaseSettings = (CouchDbDatabaseSettings) databaseSettings;
 		}
-		couchDbDatabaseSettings = (CouchDbDatabaseSettings) databaseSettings;
 	}
 
 	@Bean
@@ -86,6 +91,10 @@ public class CommonProvider {
 	@Bean
 	public CouchDbDatabaseSettings couchDbDatabaseSettings() {
 		return couchDbDatabaseSettings;
+	}
+	@Bean
+	public CouchDbDatabaseSettings replicateCouchDbDatabaseSettings() {
+		return replicateCouchDbDatabaseSettings;
 	}
 
 }

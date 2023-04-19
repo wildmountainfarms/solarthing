@@ -16,8 +16,8 @@ import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseExcepti
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 import me.retrodaredevil.solarthing.program.CommandOptions;
-import me.retrodaredevil.solarthing.program.ConfigUtil;
-import me.retrodaredevil.solarthing.program.DatabaseConfig;
+import me.retrodaredevil.solarthing.config.ConfigUtil;
+import me.retrodaredevil.solarthing.config.databases.DatabaseConfig;
 import me.retrodaredevil.solarthing.program.PacketUtil;
 import me.retrodaredevil.solarthing.program.pvoutput.provider.TemperatureCelsiusProvider;
 import me.retrodaredevil.solarthing.program.pvoutput.provider.VoltageProvider;
@@ -70,13 +70,13 @@ public class PVOutputUploadMain {
 		ZoneId zoneId = options.getZoneId();
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Using time zone: {}", zoneId.getDisplayName(TextStyle.FULL, Locale.US)); // Use US local since I (retrodaredevil) am the one debugging
 		LOGGER.info("Using default instance options: " + options.getDefaultInstanceOptions());
-		DatabaseConfig databaseConfig = ConfigUtil.getDatabaseConfig(options.getDatabaseFilePath());
+		DatabaseConfig databaseConfig = ConfigUtil.readDatabaseConfig(options.getDatabaseFilePath());
 		DatabaseType databaseType = databaseConfig.getType();
 		if(databaseType != CouchDbDatabaseSettings.TYPE){
 			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)Only CouchDb can be used for this program type right now!");
 			return SolarThingConstants.EXIT_CODE_INVALID_CONFIG;
 		}
-		CouchDbDatabaseSettings couchDbDatabaseSettings = (CouchDbDatabaseSettings) databaseConfig.getSettings();
+		CouchDbDatabaseSettings couchDbDatabaseSettings = (CouchDbDatabaseSettings) databaseConfig.requireDatabaseSettings();
 		SolarThingDatabase database = CouchDbSolarThingDatabase.create(CouchDbUtil.createInstance(couchDbDatabaseSettings.getCouchProperties(), couchDbDatabaseSettings.getOkHttpProperties()));
 
 		OkHttpClient client = PVOutputOkHttpUtil.configure(new OkHttpClient.Builder(), options.getApiKey(), options.getSystemId())

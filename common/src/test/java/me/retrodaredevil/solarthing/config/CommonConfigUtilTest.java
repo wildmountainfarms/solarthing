@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing.program;
+package me.retrodaredevil.solarthing.config;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.io.JsonEOFException;
@@ -12,7 +12,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ConfigUtilTest {
+class CommonConfigUtilTest {
 
 	@Test
 	void testJacksonExceptions() {
@@ -32,10 +32,10 @@ class ConfigUtilTest {
 		// Setting system properties in tests are never a good practice,
 		//   but it's OK here because the key of the property being set is only ever used here.
 		System.setProperty("test-property-ConfigUtilTest", "asdf");
-		assertEquals("hello asdf", ConfigUtil.INTERPOLATOR.replace("hello ${sys:test-property-ConfigUtilTest}"));
+		assertEquals("hello asdf", CommonConfigUtil.INTERPOLATOR.replace("hello ${sys:test-property-ConfigUtilTest}"));
 
 		JsonNode jsonNode = new ObjectMapper().readTree("{ \"a\": \"${sys:test-property-ConfigUtilTest}\", \"b\": 2, \"c\": \"My string\" }");
-		JsonNode newNode = ConfigUtil.interpolate(jsonNode);
+		JsonNode newNode = CommonConfigUtil.interpolate(jsonNode);
 		assertTrue(newNode.isObject());
 		assertEquals(3, newNode.size());
 		assertEquals("asdf", newNode.get("a").asText());
@@ -46,7 +46,7 @@ class ConfigUtilTest {
 	void testRandomRetrieval() {
 		// This method isn't exactly for asserting anything, it's just to understand what the INTERPOLATOR is capable of.
 		// Remember the working directory is implicitly client/
-		final String text = ConfigUtil.INTERPOLATOR.replace("Base64 Decoder:        ${base64Decoder:SGVsbG9Xb3JsZCE=}\n" +
+		final String text = CommonConfigUtil.INTERPOLATOR.replace("Base64 Decoder:        ${base64Decoder:SGVsbG9Xb3JsZCE=}\n" +
 				"Base64 Encoder:        ${base64Encoder:HelloWorld!}\n" +
 				"Java Constant:         ${const:java.awt.event.KeyEvent.VK_ESCAPE}\n" +
 				"Date:                  ${date:yyyy-MM-dd}\n" +
@@ -63,6 +63,6 @@ class ConfigUtilTest {
 				"URL Content (HTTPS):   ${url:UTF-8:https://www.apache.org}\n" +
 				"URL Content (File):    ${url:UTF-8:file:///${sys:user.dir}/src/test/resources/document.properties}\n");
 		System.out.println(text);
-		System.out.println(ConfigUtil.INTERPOLATOR.replace("${urlEncoder:${file:UTF-8:../config_templates/io/default_linux_serial.json}}"));
+		System.out.println(CommonConfigUtil.INTERPOLATOR.replace("${urlEncoder:${file:UTF-8:../config_templates/io/default_linux_serial.json}}"));
 	}
 }

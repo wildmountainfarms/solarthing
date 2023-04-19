@@ -14,8 +14,8 @@ buildscript {
         shadowVersion = '7.1.2' // https://github.com/johnrengelman/shadow/releases // only works on gradle 7
         ioLibVersion = '2.3.0' // https://github.com/retrodaredevil/io-lib/releases
         okhttpVersion = "4.10.0" // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
-        couchdbJavaVersion = '1.1.0'
-//        couchdbJavaVersion = "8ff00d2c490af49ca19b29a7852b72578a97fae8".substring(0, 10)
+//        couchdbJavaVersion = '1.1.0'
+        couchdbJavaVersion = "4f9b16c4bceacdb5ad8eb63d051aa6ef1d2b1684".substring(0, 10)
         dockerComposePluginVersion = "0.16.12" // https://github.com/avast/gradle-docker-compose-plugin/releases
         errorpronePluginVersion = '3.0.1' // https://github.com/tbroyer/gradle-errorprone-plugin/releases
         errorproneCoreVersion = '2.18.0' // https://mvnrepository.com/artifact/com.google.errorprone/error_prone_core
@@ -122,7 +122,7 @@ subprojects {
             disable("ComparableType") // different Identifiers need to be able to be compared to each other, so we disable this for now.
             disable("DoNotClaimAnnotations") // TODO figure how how to make our annotation processor more "correct"
 //            disable("ReturnValueIgnored") // remove this once this is fixed: https://github.com/google/error-prone/issues/3292
-            disable("UnusedMethod") // This is useful, but has this issue: https://github.com/google/error-prone/issues/3144
+            disable("UnusedMethod") // This is useful, but has this issue: https://github.com/google/error-prone/issues/3144 // issue is now "completed", but annotations not customizable for
             disable("InlineMeSuggester") // Wrong when annotated by annotations, and I don't need this feature
             disable("EmptyCatch") // This is a great warning, but IntelliJ wants ignored exceptions to be named "ignored" and ErrorProne wants "ok"...
             disable("FutureReturnValueIgnored") // For "send and forget" stuff, this is really annoying

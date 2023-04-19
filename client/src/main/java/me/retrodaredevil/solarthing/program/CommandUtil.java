@@ -3,9 +3,10 @@ package me.retrodaredevil.solarthing.program;
 import me.retrodaredevil.couchdb.CouchDbUtil;
 import me.retrodaredevil.couchdbjava.CouchDbInstance;
 import me.retrodaredevil.solarthing.PacketGroupReceiver;
+import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.commands.packets.open.CommandOpenPacket;
-import me.retrodaredevil.solarthing.config.databases.IndividualSettings;
+import me.retrodaredevil.solarthing.config.databases.DatabaseConfig;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.config.options.PacketHandlingOption;
 import me.retrodaredevil.solarthing.database.DatabaseDocumentKeyMap;
@@ -16,6 +17,8 @@ import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseExcepti
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.collection.StoredPacketGroup;
 import me.retrodaredevil.solarthing.packets.handling.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,6 +27,7 @@ import java.util.List;
 @UtilityClass
 public class CommandUtil {
 	private CommandUtil() { throw new UnsupportedOperationException(); }
+	private static final Logger LOGGER = LoggerFactory.getLogger(CommandUtil.class);
 
 	/**
 	 * Gets packet handlers that will download requested commands
@@ -36,37 +40,41 @@ public class CommandUtil {
 		final List<PacketHandler> commandRequesterHandlerList = new ArrayList<>(); // Handlers to request and get new commands to send (This may block the current thread). (This doesn't actually handle packets)
 		for(DatabaseConfig config : databaseConfigs){
 			if(CouchDbDatabaseSettings.TYPE.equals(config.getType())){
-				CouchDbDatabaseSettings settings = (CouchDbDatabaseSettings) config.getSettings();
+				CouchDbDatabaseSettings settings = (CouchDbDatabaseSettings) config.requireDatabaseSettings();
 				CouchDbInstance instance = CouchDbUtil.createInstance(settings.getCouchProperties(), settings.getOkHttpProperties());
 				SolarThingDatabase database = CouchDbSolarThingDatabase.create(instance);
 
-				IndividualSettings individualSettings = config.getIndividualSettingsOrDefault(Constants.DATABASE_COMMAND_DOWNLOAD_ID, null);
-				FrequencySettings frequencySettings = individualSettings != null ? individualSettings.getFrequencySettings() : FrequencySettings.NORMAL_SETTINGS;
-				PacketHandler packetHandler = new PacketHandler() {
-					private final SecurityPacketReceiver securityPacketReceiver = new SecurityPacketReceiver(
-							DatabaseDocumentKeyMap.createFromDatabase(database),
-							packetGroupReceiver,
-							new SecurityPacketReceiver.InstanceTargetPredicate(options.getSourceId(), options.getFragmentId()),
-							Collections.singleton(CommandOpenPacket.class),
-							System.currentTimeMillis(),
-							options.getFragmentId(),
-							options.getSourceId(),
-							database.getEventDatabase()
-					);
-					@Override
-					public void handle(PacketCollection packetCollection) throws PacketHandleException {
-						final List<StoredPacketGroup> packetGroups;
-						try {
-							packetGroups = database.getOpenDatabase().query(new MillisQueryBuilder().startKey(System.currentTimeMillis() - 5 * 60 * 1000).build());
-						} catch (SolarThingDatabaseException e) {
-							throw new PacketHandleException(e);
+				FrequencySettings frequencySettings = config.requireDatabaseUsageSettings().getCommandDownloadFrequencySettings();
+				// If frequencySettings is null, then we must have explicitly disallowed command download from this database config
+				if (frequencySettings != null) {
+					LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Commands will be downloaded from database: " + settings);
+					PacketHandler packetHandler = new PacketHandler() {
+						private final SecurityPacketReceiver securityPacketReceiver = new SecurityPacketReceiver(
+								DatabaseDocumentKeyMap.createFromDatabase(database),
+								packetGroupReceiver,
+								new SecurityPacketReceiver.InstanceTargetPredicate(options.getSourceId(), options.getFragmentId()),
+								Collections.singleton(CommandOpenPacket.class),
+								System.currentTimeMillis(),
+								options.getFragmentId(),
+								options.getSourceId(),
+								database.getEventDatabase()
+						);
+
+						@Override
+						public void handle(PacketCollection packetCollection) throws PacketHandleException {
+							final List<StoredPacketGroup> packetGroups;
+							try {
+								packetGroups = database.getOpenDatabase().query(new MillisQueryBuilder().startKey(System.currentTimeMillis() - 5 * 60 * 1000).build());
+							} catch (SolarThingDatabaseException e) {
+								throw new PacketHandleException(e);
+							}
+							securityPacketReceiver.receivePacketGroups(packetGroups);
 						}
-						securityPacketReceiver.receivePacketGroups(packetGroups);
-					}
-				};
-				commandRequesterHandlerList.add(new ThrottleFactorPacketHandler(new AsyncPacketHandlerWrapper(new PrintPacketHandleExceptionWrapper(
-						packetHandler
-				)), frequencySettings));
+					};
+					commandRequesterHandlerList.add(new ThrottleFactorPacketHandler(new AsyncPacketHandlerWrapper(new PrintPacketHandleExceptionWrapper(
+							packetHandler
+					)), frequencySettings));
+				}
 			}
 		}
 		return commandRequesterHandlerList;

@@ -23,3 +23,12 @@ For testing your skills/syntax: https://graphql.org/swapi-graphql or https://nhz
 Use `./gradlew server:bootJar` or [./graphql_compile_and_move.sh](../graphql_compile_and_move.sh) in the root directory.
 
 Or `./gradlew server:bootRun` to run this
+
+#### Building docker image locally
+Pushing to GitHub may automatically build a docker image depending on what branch you pushed to,
+but sometimes iterating is faster by creating an image locally.
+
+```shell
+./gradlew server:bootJar
+docker build -f docker/solarthing-server/Dockerfile --build-arg JAR_LOCATION=server/build/libs/server-0.0.1-SNAPSHOT.jar --tag solarthing-server .
+```

@@ -4,23 +4,29 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
+import me.retrodaredevil.solarthing.config.databases.DatabaseConfig;
 import me.retrodaredevil.solarthing.config.request.DataRequester;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
 @SuppressWarnings({"FieldCanBeLocal", "CanBeFinal"})
 abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements PacketHandlingOption, ActionsOption, CommandOption, AnalyticsOption {
-//	private static final Logger LOGGER = LoggerFactory.getLogger(PacketHandlingOptionBase.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PacketHandlingOptionBase.class);
 
 	@JsonProperty
 	@JsonPropertyDescription("An array of strings that each represent a database configuration file relative to the program directory.")
 	private List<Path> databases = null;
+	@JsonProperty("database_config")
+	private DatabaseConfigSettings databaseConfigSettings = null;
 	@JsonProperty(value = "source", required = true)
 	private String source = "default";
 	@JsonProperty(value = "fragment", required = true)
@@ -44,6 +50,7 @@ abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements Pa
 	@JsonProperty("action_config")
 	private ActionConfig actionConfig = ActionConfig.EMPTY;
 
+	@Deprecated
 	@Override
 	public final @NotNull List<Path> getDatabaseConfigurationFilePaths() {
 		List<Path> r = databases;
@@ -51,6 +58,19 @@ abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements Pa
 			return Collections.emptyList();
 		}
 		return r;
+	}
+
+	@Override
+	public @NotNull DatabaseConfigSettings getDatabaseConfigSettings() {
+		if (databaseConfigSettings == null) {
+			if(databases == null){
+				return DatabaseConfigSettings.EMPTY;
+			}
+			LOGGER.warn("(Deprecated) Do not use the databases property! Use database_config instead!");
+			List<DatabaseConfig> databaseConfigs = databases.stream().map(DatabaseConfig::fromExternal).collect(Collectors.toList());
+			return new DatabaseConfigSettings(databaseConfigs);
+		}
+		return databaseConfigSettings;
 	}
 
 	@Override

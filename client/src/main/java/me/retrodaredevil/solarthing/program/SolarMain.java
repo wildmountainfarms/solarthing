@@ -9,10 +9,12 @@ import me.retrodaredevil.couchdbjava.exception.CouchDbException;
 import me.retrodaredevil.couchdbjava.response.ErrorResponse;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
+import me.retrodaredevil.solarthing.config.ConfigUtil;
+import me.retrodaredevil.solarthing.config.databases.DatabaseConfig;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.config.options.*;
-import me.retrodaredevil.solarthing.exceptions.ConfigException;
+import me.retrodaredevil.solarthing.config.ConfigException;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.HourIntervalPacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
@@ -211,7 +213,7 @@ public final class SolarMain {
 				System.err.println("Problem reading CouchDB database settings file.");
 				return SolarThingConstants.EXIT_CODE_INVALID_CONFIG;
 			}
-			DatabaseSettings settings = config.getSettings();
+			DatabaseSettings settings = config.requireDatabaseSettings();
 			if (!(settings instanceof CouchDbDatabaseSettings)) {
 				System.err.println("Must be CouchDB database settings!");
 				return SolarThingConstants.EXIT_CODE_INVALID_CONFIG;

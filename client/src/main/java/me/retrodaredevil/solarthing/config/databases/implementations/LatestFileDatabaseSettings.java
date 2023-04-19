@@ -19,6 +19,12 @@ public final class LatestFileDatabaseSettings implements DatabaseSettings {
 	public LatestFileDatabaseSettings(@JsonProperty(value = "file", required = true) File file) {
 		this.file = file;
 	}
+
+	@Override
+	public String toString() {
+		return "Latest " + file;
+	}
+
 	public File getFile(){
 		return file;
 	}

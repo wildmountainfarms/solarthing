@@ -9,6 +9,7 @@ import java.nio.file.Path;
  */
 public interface DatabaseOption extends TimeZoneOption {
 	Path getDatabaseFilePath();
+	// TODO allow for DatabaseConfig to be specified in this file
 
 	String getSourceId();
 

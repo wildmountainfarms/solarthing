@@ -8,4 +8,6 @@ targetCompatibility = JavaVersion.VERSION_11
 version = '0.0.1-SNAPSHOT'
 
 dependencies {
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-text
+    implementation group: 'org.apache.commons', name: 'commons-text', version: '1.10.0'
 }

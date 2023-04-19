@@ -41,6 +41,11 @@ public final class InfluxDbDatabaseSettings implements DatabaseSettings {
 	}
 
 	@Override
+	public String toString() {
+		return "InfluxDB1.X " + influxProperties.getUrl();
+	}
+
+	@Override
 	public DatabaseType getDatabaseType() {
 		return TYPE;
 	}

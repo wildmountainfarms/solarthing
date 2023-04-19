@@ -5,6 +5,7 @@ import java.util.Map;
 
 public class MutablePacketsDesign implements Design {
 	private final Map<String, View> views = new HashMap<>();
+	private final Map<String, String> filters = new HashMap<>();
 	private String validateDocUpdate = null;
 
 	public MutablePacketsDesign addMillisNullView() {
@@ -19,10 +20,19 @@ public class MutablePacketsDesign implements Design {
 		this.validateDocUpdate = DesignResource.VALIDATE_JAVASCRIPT_READONLY_AUTH.getAsString();
 		return this;
 	}
+	public MutablePacketsDesign addLast24HoursFilter() {
+		filters.put("last24Hours", DesignResource.FILTER_JAVASCRIPT_RECENT_PACKETS.getAsString());
+		return this;
+	}
 
 	@Override
 	public Map<String, View> getViews() {
 		return views;
+	}
+
+	@Override
+	public Map<String, String> getFilters() {
+		return filters;
 	}
 
 	@Override

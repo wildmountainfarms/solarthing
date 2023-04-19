@@ -34,21 +34,14 @@ public final class CouchDbUtil {
 	public static CouchDbInstance createInstance(CouchProperties couchProperties, OkHttpClient okHttpClient) {
 
 		final OkHttpAuthHandler authHandler;
-		String username = couchProperties.getUsername();
-		String password = couchProperties.getPassword();
-		if (username != null) {
-			if (password == null) {
-				throw new IllegalArgumentException("If username isn't null, then password cannot be null!");
-			}
-			if (couchProperties.useBasicAuth()) {
-				authHandler = new BasicAuthHandler(CouchDbAuth.create(username, password));
+		CouchDbAuth auth = couchProperties.getAuth();
+		if (auth.usesAuth()) {
+			if (couchProperties.forceBasicAuth()) {
+				authHandler = new BasicAuthHandler(auth);
 			} else {
-				authHandler = new CookieAuthHandler(username, password);
+				authHandler = new CookieAuthHandler(auth.getUsername(), auth.getPassword());
 			}
 		} else {
-			if (password != null) {
-				throw new IllegalArgumentException("If username is null, then you shouldn't have a password set!");
-			}
 			authHandler = new BasicAuthHandler(CouchDbAuth.createNoAuth());
 		}
 

@@ -10,6 +10,7 @@ import me.retrodaredevil.solarthing.commands.command.CommandProvider;
 import me.retrodaredevil.solarthing.commands.command.CommandProviderMultiplexer;
 import me.retrodaredevil.solarthing.commands.command.SourcedCommand;
 import me.retrodaredevil.solarthing.commands.packets.status.AvailableCommandsListUpdater;
+import me.retrodaredevil.solarthing.config.ConfigUtil;
 import me.retrodaredevil.solarthing.config.io.IOConfig;
 import me.retrodaredevil.solarthing.config.options.MateProgramOptions;
 import me.retrodaredevil.solarthing.config.options.ProgramType;
@@ -109,7 +110,7 @@ public class OutbackMateMain {
 			return SolarMain.initReader(
 					requireNonNull(ioBundle.getInputStream()),
 					ioBundle::reload,
-					new MatePacketCreator49(MateProgramOptions.getIgnoreCheckSum(options)),
+					new MatePacketCreator49(options.getIgnoreCheckSum()),
 					new TimedPacketReceiver(
 							Duration.ofMillis(250),
 							new PacketListReceiverMultiplexer(packetListReceiverList),

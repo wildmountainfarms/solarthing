@@ -5,12 +5,14 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.couchdb.CouchProperties;
+import me.retrodaredevil.couchdbjava.CouchDbAuth;
 import me.retrodaredevil.okhttp3.OkHttpProperties;
 import me.retrodaredevil.solarthing.jackson.UnwrappedDeserializer;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.DatabaseType;
 import me.retrodaredevil.solarthing.config.databases.SimpleDatabaseType;
+import okhttp3.HttpUrl;
 
 import static java.util.Objects.requireNonNull;
 
@@ -28,6 +30,16 @@ public final class CouchDbDatabaseSettings implements DatabaseSettings {
 	public CouchDbDatabaseSettings(CouchProperties couchProperties, OkHttpProperties okHttpProperties) {
 		this.couchProperties = couchProperties;
 		this.okHttpProperties = okHttpProperties;
+	}
+
+	@Override
+	public String toString() {
+		HttpUrl.Builder builder = couchProperties.getHttpUrl().newBuilder();
+		CouchDbAuth auth = couchProperties.getAuth();
+		if (auth.getUsername() != null) {
+			builder.username(auth.getUsername());
+		}
+		return "CouchDB " + builder;
 	}
 
 	public CouchProperties getCouchProperties() {

@@ -1,8 +1,11 @@
 package me.retrodaredevil.couchdb;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import okhttp3.HttpUrl;
+
+import java.net.URI;
 
 import static java.util.Objects.requireNonNull;
 
@@ -24,25 +27,35 @@ class ImmutableCouchProperties implements CouchProperties {
 		return url;
 	}
 
+	@JsonProperty("url") // JsonProperty to work with UnwrappedDeserializer
 	@Override
-	public @NotNull String getUrl() {
-		return url.toString();
+	public @NotNull URI getUri() {
+		return url.uri();
 	}
 
-	@NotNull
-	@Override public String getProtocol() { return url.scheme(); }
 
-	@NotNull
-	@Override public String getHost() { return url.host(); }
 
-	@Override public String getPath() { return url.encodedPath(); }
-
-	@Override public int getPort() { return url.port(); }
-
+	@JsonProperty("username") // JsonProperty to work with UnwrappedDeserializer
 	@Override public String getUsername() { return username; }
 
+	@JsonProperty("password") // JsonProperty to work with UnwrappedDeserializer
 	@Override public String getPassword() { return password; }
 
+	@JsonProperty("basic_auth") // JsonProperty to work with UnwrappedDeserializer
 	@Override
-	public boolean useBasicAuth() { return basicAuth; }
+	public boolean forceBasicAuth() { return basicAuth; }
+
+
+
+	// methods below here should be removed eventually, but are here so that when
+	//   UnwrappedDeserializer tries to serialize this it can see that these values exist
+	// TODO find a better solution than using UnwrappedDeserializer
+	@JsonProperty("protocol")
+	private String getProtocol() { return url.scheme(); }
+	@JsonProperty("host")
+	private String getHost() { return url.host(); }
+	@JsonProperty("path")
+	private String getPath() { return url.encodedPath(); }
+	@JsonProperty("port")
+	private int getPort() { return url.port(); }
 }
