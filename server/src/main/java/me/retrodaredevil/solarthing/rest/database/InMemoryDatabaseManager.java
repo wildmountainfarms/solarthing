@@ -172,17 +172,16 @@ public class InMemoryDatabaseManager {
 					if (isReplicatorKnownToBeFullySetup) {
 						haveWeConfirmedThatReplicatorIsProbablySetupThisIteration = true;
 						// If we have confirmed before that the replicator is set up, then we can be confident that it's still setup.
-					} else {
-						// do not use getCurrentRevision() because that will fail on PouchDB
-						String revision = replicator.getDocument(documentId).getRevision(); // ask the database for the revision so we can overwrite it
-						try {
-							replicator.updateDocument(documentId, revision, jsonData);
-						} catch (CouchDbCodeException updateException) {
-							if (updateException.getCode() == 403) { //
-								LOGGER.debug("(403) This replication document is likely triggered. documentId: " + documentId);
-							} else {
-								throw updateException;
-							}
+					}
+					// do not use getCurrentRevision() because that will fail on PouchDB
+					String revision = replicator.getDocument(documentId).getRevision(); // ask the database for the revision so we can overwrite it
+					try {
+						replicator.updateDocument(documentId, revision, jsonData);
+					} catch (CouchDbCodeException updateException) {
+						if (updateException.getCode() == 403) { //
+							LOGGER.debug("(403) This replication document is likely triggered. documentId: " + documentId);
+						} else {
+							throw updateException;
 						}
 					}
 				} catch (CouchDbCodeException e) {
