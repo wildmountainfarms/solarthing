@@ -11,6 +11,11 @@ public interface MillisDatabase {
 
 	UpdateToken uploadPacketCollection(PacketCollection packetCollection, UpdateToken updateToken) throws SolarThingDatabaseException;
 	VersionedPacket<StoredPacketGroup> getPacketCollection(String documentId) throws SolarThingDatabaseException;
+
+	/**
+	 * @deprecated  This method was implemented a while back for completeness's sake. Know that internally this may not work with PouchDB
+	 */
+	@Deprecated
 	UpdateToken getCurrentUpdateToken(String documentId) throws SolarThingDatabaseException;
 
 	DatabaseSource getDatabaseSource();

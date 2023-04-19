@@ -119,6 +119,7 @@ public class CouchDbMillisDatabase implements MillisDatabase {
 		return jsonDataToStoredPacketGroup(jsonData);
 	}
 
+	@Deprecated
 	@Override
 	public UpdateToken getCurrentUpdateToken(String documentId) throws SolarThingDatabaseException {
 		try {

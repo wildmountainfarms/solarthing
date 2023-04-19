@@ -172,7 +172,8 @@ public class InMemoryDatabaseManager {
 					// If we have confirmed before that the replicator is set up, then we can be confident that it's still setup.
 					return;
 				}
-				String revision = replicator.getCurrentRevision(documentId); // ask the database for the revision so we can overwrite it
+				// do not use getCurrentRevision() because that will fail on PouchDB
+				String revision = replicator.getDocument(documentId).getRevision(); // ask the database for the revision so we can overwrite it
 				try {
 					replicator.updateDocument(documentId, revision, jsonData);
 				} catch (CouchDbCodeException updateException) {
