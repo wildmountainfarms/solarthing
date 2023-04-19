@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.config.options;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.config.databases.DatabaseConfig;
@@ -66,7 +67,7 @@ abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements Pa
 			if(databases == null){
 				return DatabaseConfigSettings.EMPTY;
 			}
-			LOGGER.warn("(Deprecated) Do not use the databases property! Use database_config instead!");
+			LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "(Deprecated) Do not use the databases property! Use database_config instead!");
 			List<DatabaseConfig> databaseConfigs = databases.stream().map(DatabaseConfig::fromExternal).collect(Collectors.toList());
 			return new DatabaseConfigSettings(databaseConfigs);
 		}
