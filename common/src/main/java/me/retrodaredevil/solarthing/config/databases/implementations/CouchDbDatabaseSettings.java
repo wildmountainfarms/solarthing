@@ -14,8 +14,6 @@ import me.retrodaredevil.solarthing.config.databases.DatabaseType;
 import me.retrodaredevil.solarthing.config.databases.SimpleDatabaseType;
 import okhttp3.HttpUrl;
 
-import java.net.URI;
-
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("couchdb")
