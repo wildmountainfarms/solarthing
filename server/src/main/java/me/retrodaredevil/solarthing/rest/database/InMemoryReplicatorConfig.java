@@ -71,11 +71,16 @@ public enum InMemoryReplicatorConfig {
 		ReplicatorSource inMemoryDatabase = createSource(inMemoryCouch, databaseType.getName());
 		ReplicatorSource externalDatabase = createSource(externalCouch, databaseType.getName());
 
-		return SimpleReplicatorDocument.builder(
+		SimpleReplicatorDocument.Builder builder =  SimpleReplicatorDocument.builder(
 						externalIsTarget ? inMemoryDatabase : externalDatabase,
 						externalIsTarget ? externalDatabase : inMemoryDatabase
-				)
-				.continuous();
+				);
+		// do not make it continuous if we are replication a certain duration.
+		//   I have found that if you do make it continuous, the replication will remain triggered, which will not allow it to be updated
+		if (duplicatePastDuration == null) {
+			builder.continuous();
+		}
+		return builder;
 	}
 
 	/**
