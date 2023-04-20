@@ -142,13 +142,13 @@ public class InMemoryDatabaseManager {
 				//   The other option would be to use a filter, but typical filters defined in design documents require processing ALL documents in a database
 				// So, this is the solution, and you have to trust me that it is the best last resort solution
 				CouchDbDatabase database = externalInstance.getDatabase(replicatorConfig.getDatabaseType().getName());
-				Instant instant24HoursAgo = Instant.now().minus(duplicatePastDuration);
+				Instant replicationStartInstant = Instant.now().minus(duplicatePastDuration);
 				ViewQueryParams params = new ViewQueryParamsBuilder()
 						.descending() // get most recent first
-						.endKey(instant24HoursAgo.toEpochMilli())
+						.endKey(replicationStartInstant.toEpochMilli())
 						.build();
-				ViewQuery millisNullLast24HoursViewQuery = SolarThingCouchDb.createMillisNullView(params);
-				ViewResponse viewResponse = database.queryView(millisNullLast24HoursViewQuery);
+				ViewQuery millisNullViewFromReplicationStart = SolarThingCouchDb.createMillisNullView(params);
+				ViewResponse viewResponse = database.queryView(millisNullViewFromReplicationStart);
 				List<String> documentIds = viewResponse.getRows().stream().map(ViewResponse.DocumentEntry::getId).toList();
 				replicatorDocumentBuilder
 						.filter("_doc_ids")
@@ -195,22 +195,30 @@ public class InMemoryDatabaseManager {
 				}
 			}
 		}
-		// Note that although we have isReplicatorKnownToBeFullySetup, we don't return in the above loop because we need to constantly duplicate packets from last 24 hours
+		// Note that although we have isReplicatorKnownToBeFullySetup, we don't return in the above loop because we need to constantly duplicate packets from last X hours
 		isReplicatorKnownToBeFullySetup = true;
 	}
 
-	@Scheduled(fixedDelayString = "PT20S")
+	@Scheduled(fixedDelayString = "PT20S", initialDelayString = "PT2S")
 	@Async
-	public void setupInMemoryDatabase() throws CouchDbException {
+	public void setupInMemoryDatabases() throws CouchDbException {
 		if (replicateCouchDbDatabaseSettings != null) {
 			// if replicateCouchDbDatabaseSettings is not null, then we assume that couchDbDatabaseSettings refers to
 			//   a database that is stored in memory. As such, we need to make sure it is fully setup and is able to replicate to replicateCouchDbDatabaseSettings
 			// Unlike configuring a normal CouchDB instance, we are not going to configure any non-admin users. We just assume the credentials provided are admin.
 			CouchProperties inMemoryCouch = couchDbDatabaseSettings.getCouchProperties();
+			CouchDbInstance inMemoryInstance = CouchDbUtil.createInstance(inMemoryCouch, couchDbDatabaseSettings.getOkHttpProperties());
+			setupDatabase(inMemoryInstance);
+		}
+	}
+	@Scheduled(fixedDelayString = "PT90S", initialDelayString = "PT10S")
+	@Async
+	public void setupInMemoryReplicator() throws CouchDbException {
+		if (replicateCouchDbDatabaseSettings != null) {
+			CouchProperties inMemoryCouch = couchDbDatabaseSettings.getCouchProperties();
 			CouchProperties externalCouch = replicateCouchDbDatabaseSettings.getCouchProperties();
 			CouchDbInstance inMemoryInstance = CouchDbUtil.createInstance(inMemoryCouch, couchDbDatabaseSettings.getOkHttpProperties());
 			CouchDbInstance externalInstance = CouchDbUtil.createInstance(externalCouch, replicateCouchDbDatabaseSettings.getOkHttpProperties());
-			setupDatabase(inMemoryInstance);
 			setupReplicator(inMemoryInstance, inMemoryCouch, externalInstance, externalCouch);
 		}
 	}

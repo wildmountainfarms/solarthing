@@ -17,10 +17,10 @@ import java.time.Duration;
  */
 public enum InMemoryReplicatorConfig {
 	STATUS_IN_MEMORY_TO_EXTERNAL(SolarThingDatabaseType.STATUS, true, null),
-	STATUS_EXTERNAL_TO_IN_MEMORY(SolarThingDatabaseType.STATUS, false, Duration.ofHours(24)),
+	STATUS_EXTERNAL_TO_IN_MEMORY(SolarThingDatabaseType.STATUS, false, Duration.ofHours(10)),
 
 	EVENT_IN_MEMORY_TO_EXTERNAL(SolarThingDatabaseType.EVENT, true, null),
-	EVENT_EXTERNAL_TO_IN_MEMORY(SolarThingDatabaseType.EVENT, false, Duration.ofHours(24)),
+	EVENT_EXTERNAL_TO_IN_MEMORY(SolarThingDatabaseType.EVENT, false, Duration.ofHours(10)),
 
 	CLOSED_EXTERNAL_TO_IN_MEMORY(SolarThingDatabaseType.CLOSED, false, null),
 	;
