@@ -198,6 +198,20 @@ public class InMemoryDatabaseManager {
 		// Note that although we have isReplicatorKnownToBeFullySetup, we don't return in the above loop because we need to constantly duplicate packets from last X hours
 		isReplicatorKnownToBeFullySetup = true;
 	}
+	private void compactDatabase(CouchDbInstance inMemoryInstance) throws CouchDbException {
+		for (SolarThingDatabaseType databaseType : new SolarThingDatabaseType[]{
+				SolarThingDatabaseType.STATUS,
+				SolarThingDatabaseType.EVENT,
+				// no open
+				SolarThingDatabaseType.CLOSED,
+				// no alter
+				SolarThingDatabaseType.CACHE,
+		}) {
+			CouchDbDatabase database = inMemoryInstance.getDatabase(databaseType.getName());
+			database.compact();
+		}
+		LOGGER.debug("Compacted all databases");
+	}
 
 	@Scheduled(fixedDelayString = "PT20S", initialDelayString = "PT2S")
 	@Async
@@ -220,6 +234,15 @@ public class InMemoryDatabaseManager {
 			CouchDbInstance inMemoryInstance = CouchDbUtil.createInstance(inMemoryCouch, couchDbDatabaseSettings.getOkHttpProperties());
 			CouchDbInstance externalInstance = CouchDbUtil.createInstance(externalCouch, replicateCouchDbDatabaseSettings.getOkHttpProperties());
 			setupReplicator(inMemoryInstance, inMemoryCouch, externalInstance, externalCouch);
+		}
+	}
+	@Scheduled(fixedDelayString = "PT5M", initialDelayString = "PT1M")
+	@Async
+	public void compactInMemoryDatabases() throws CouchDbException {
+		if (replicateCouchDbDatabaseSettings != null) {
+			CouchProperties inMemoryCouch = couchDbDatabaseSettings.getCouchProperties();
+			CouchDbInstance inMemoryInstance = CouchDbUtil.createInstance(inMemoryCouch, couchDbDatabaseSettings.getOkHttpProperties());
+			compactDatabase(inMemoryInstance);
 		}
 	}
 
