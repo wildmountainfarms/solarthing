@@ -13,7 +13,7 @@ buildscript {
         retrofitVersion = "2.9.0" // https://github.com/square/retrofit/tags
         shadowVersion = '7.1.2' // https://github.com/johnrengelman/shadow/releases // only works on gradle 7
         ioLibVersion = '2.3.0' // https://github.com/retrodaredevil/io-lib/releases
-        okhttpVersion = "4.10.0" // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
+        okhttpVersion = "4.11.0" // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
 //        couchdbJavaVersion = '1.1.0'
         couchdbJavaVersion = "cf377882a0a85ce1ff37b5bcc23a5389d900d66f".substring(0, 10)
         dockerComposePluginVersion = "0.16.12" // https://github.com/avast/gradle-docker-compose-plugin/releases
