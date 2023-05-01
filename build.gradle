@@ -8,7 +8,7 @@ buildscript {
         log4jVersion = '2.20.0' // https://logging.apache.org/log4j/2.x/javadoc.html
         // Note: Since Jackson 2.14, Android SDK 26 is required
         // https://github.com/FasterXML/jackson/wiki/Jackson-Releases
-        jacksonVersion = '2.14.2' // https://github.com/FasterXML/jackson-databind/tags
+        jacksonVersion = '2.15.0' // https://github.com/FasterXML/jackson-databind/tags
         // retrofit is why we need allow-opens. context: https://stackoverflow.com/questions/60915381/retrofit2-maven-project-illegal-reflective-access-warning // https://github.com/square/retrofit/issues/3341
         retrofitVersion = "2.9.0" // https://github.com/square/retrofit/tags
         shadowVersion = '7.1.2' // https://github.com/johnrengelman/shadow/releases // only works on gradle 7
