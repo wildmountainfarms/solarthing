@@ -61,7 +61,7 @@ jobs:
       # https://github.com/marketplace/actions/docker-metadata-action
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@v4.5.0
+        uses: docker/metadata-action@v4.6.0
         with:
           images: ${{ env.REGISTRY }}/wildmountainfarms/${{ matrix.data.image-name }}
           # expressions: https://docs.github.com/en/actions/learn-github-actions/expressions
