@@ -129,7 +129,8 @@ and also react to messages that have been fully processed (request successfully 
   * We will have to delete old documents from PouchDB so that RAM usage doesn't get too high
   * Use filters to not sync deleted documents: https://docs.couchdb.org/en/stable/ddocs/ddocs.html#filterfun
   * Or alternatively, just [purge](https://docs.couchdb.org/en/stable/api/database/misc.html#db-purge) the documents. This would probably work better as "it's like the document doesn't even exist"
-
+* Disable `/tmp/hsperfdata_solarthing` directory creation 
+  * https://stackoverflow.com/questions/76327/how-can-i-prevent-java-from-creating-hsperfdata-files
   
 ### Completed
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)

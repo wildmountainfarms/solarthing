@@ -1,8 +1,9 @@
 plugins {
     id "com.github.node-gradle.node" version "3.5.1"
 }
+jar.enabled = false
 
-task appNpmBuild(type: NpmTask) {
+tasks.register('appNpmBuild', NpmTask) {
     // This commented code does not work because react-scripts spawns a node process itself internally and that fails because it doesn't see this PATH for some reason
     // Here's a command that will come in useful if we ever get this working again
     //   echo "NODE_BIN=$(whereis npm | sed "s/npm: //" | sed "s/\/npm$//")" >> "gradle.properties"
@@ -13,8 +14,26 @@ task appNpmBuild(type: NpmTask) {
     }*/
     environment.put("NODE_ENV", "development")
     args = ["run", "build"]
+
+    // Manual caching configuration:https://docs.gradle.org/current/userguide/build_cache.html#using_the_runtime_api
+    // I have configured caching here specifically because most things in :server will run processResources, which depends on this task
+    outputs.cacheIf { true }
+
+    inputs.dir(file("src"))
+            .withPropertyName("src")
+            .withPathSensitivity(PathSensitivity.RELATIVE)
+    inputs.dir(file("public"))
+            .withPropertyName("public")
+            .withPathSensitivity(PathSensitivity.RELATIVE)
+
+    inputs.files("package.json", "package-lock.json", "tsconfig.json", "codegen.yml")
+            .withPropertyName("configFiles")
+            .withPathSensitivity(PathSensitivity.RELATIVE)
+
+    outputs.dir(buildDir)
+            .withPropertyName("buildDir")
 }
-task generateCode(type: NpmTask) {
+tasks.register('generateCode', NpmTask) {
     args = ["run", "graphql:codegen"]
     dependsOn(":server:generateSchema")
 }

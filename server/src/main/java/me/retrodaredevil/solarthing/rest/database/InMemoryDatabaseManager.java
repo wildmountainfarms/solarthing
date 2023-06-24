@@ -29,6 +29,7 @@ import me.retrodaredevil.solarthing.util.JacksonUtil;
 import okhttp3.HttpUrl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -56,9 +57,10 @@ public class InMemoryDatabaseManager {
 
 	public InMemoryDatabaseManager(
 			CouchDbDatabaseSettings couchDbDatabaseSettings,
-			CouchDbDatabaseSettings replicateCouchDbDatabaseSettings) {
+			ObjectProvider<CouchDbDatabaseSettings> replicateCouchDbDatabaseSettings) {
+		// we must use an ObjectProvider because a null value is valid, but Spring handles null beans as not being present: https://stackoverflow.com/questions/49044770/change-in-how-spring-5-handles-null-beans
 		this.couchDbDatabaseSettings = requireNonNull(couchDbDatabaseSettings);
-		this.replicateCouchDbDatabaseSettings = replicateCouchDbDatabaseSettings;
+		this.replicateCouchDbDatabaseSettings = replicateCouchDbDatabaseSettings.getIfAvailable();
 	}
 
 	private void setupDatabase(CouchDbInstance inMemoryInstance) throws CouchDbException {

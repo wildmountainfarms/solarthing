@@ -6,6 +6,8 @@ This module is used for the web application bundled with the `graphql` program.
 If you have a local NPM install, run these commands:
 
 ```shell
+ln -s "$(which node)" /usr/local/bin/node
+ln -s "$(which npm)" /usr/local/bin/npm
 ```
 
 ### Info

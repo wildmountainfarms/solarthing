@@ -32,6 +32,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-log4j2'
     // https://mvnrepository.com/artifact/com.graphql-java/graphql-java-spring-boot-starter-webmvc
     implementation 'com.graphql-java:graphql-java-spring-boot-starter-webmvc:2.0'
+//    testImplementation 'org.springframework:spring-test'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
 
 //    implementation 'com.graphql-java:graphql-java:14.0' graphql-spqr adds this dependency
     implementation 'io.leangen.graphql:spqr:0.12.2' // https://github.com/leangen/graphql-spqr/releases
@@ -76,7 +80,7 @@ processResources {
     }
 }
 
-task generateSchema(type: JavaExec) {
+tasks.register('generateSchema', JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     // Used to generate schema to file
     mainClass = "me.retrodaredevil.solarthing.rest.graphql.OutputSchemaMain"

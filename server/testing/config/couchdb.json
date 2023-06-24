@@ -1,0 +1,6 @@
+{
+  "type": "couchdb",
+  "config": {
+    "url": "http://localhost:5984"
+  }
+}
