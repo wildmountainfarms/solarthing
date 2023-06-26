@@ -13,16 +13,20 @@ import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePacket;
 import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePackets;
 import me.retrodaredevil.solarthing.packets.instance.InstanceTargetPacket;
 import me.retrodaredevil.solarthing.packets.security.ImmutableLargeIntegrityPacket;
-import me.retrodaredevil.solarthing.packets.security.crypto.*;
+import me.retrodaredevil.solarthing.packets.security.crypto.Encrypt;
+import me.retrodaredevil.solarthing.packets.security.crypto.EncryptException;
+import me.retrodaredevil.solarthing.packets.security.crypto.HashUtil;
+import me.retrodaredevil.solarthing.packets.security.crypto.InvalidKeyException;
+import me.retrodaredevil.solarthing.packets.security.crypto.KeyUtil;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.crypto.Cipher;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.security.KeyPair;
 import java.security.PrivateKey;
@@ -44,7 +48,7 @@ public class CommandManager {
 	private final Supplier<KeyPair> keyPairSupplier;
 	private final String sender;
 
-	public CommandManager(File keyDirectory, String sender) {
+	public CommandManager(Path keyDirectory, String sender) {
 		this(() -> getKeyPairFromDirectory(keyDirectory), sender);
 	}
 	public CommandManager(Supplier<KeyPair> keyPairSupplier, String sender) {
@@ -59,13 +63,13 @@ public class CommandManager {
 		return keyPairSupplier.get();
 	}
 
-	public static KeyPair getKeyPairFromDirectory(File keyDirectory) {
-		File publicKeyFile = new File(keyDirectory, ".publickey");
-		File privateKeyFile = new File(keyDirectory, ".privatekey");
+	public static KeyPair getKeyPairFromDirectory(Path keyDirectory) {
+		Path publicKeyFile = keyDirectory.resolve(".publickey");
+		Path privateKeyFile = keyDirectory.resolve(".privatekey");
 		KeyPair keyPair;
 		try {
-			PublicKey publicKey = KeyUtil.decodePublicKey(Files.readAllBytes(publicKeyFile.toPath()));
-			PrivateKey privateKey = KeyUtil.decodePrivateKey(Files.readAllBytes(privateKeyFile.toPath()));
+			PublicKey publicKey = KeyUtil.decodePublicKey(Files.readAllBytes(publicKeyFile));
+			PrivateKey privateKey = KeyUtil.decodePrivateKey(Files.readAllBytes(privateKeyFile));
 			keyPair = new KeyPair(publicKey, privateKey);
 		} catch (IOException | InvalidKeyException e) {
 			if (e instanceof NoSuchFileException) {
@@ -75,14 +79,14 @@ public class CommandManager {
 			}
 			keyPair = KeyUtil.generateKeyPair();
 			try {
-				//noinspection ResultOfMethodCallIgnored
-				keyDirectory.mkdirs(); // we don't care what the result of this is, we'll catch the exception if something goes wrong
-				Files.write(publicKeyFile.toPath(), keyPair.getPublic().getEncoded(), StandardOpenOption.CREATE);
-				Files.write(privateKeyFile.toPath(), keyPair.getPrivate().getEncoded(), StandardOpenOption.CREATE);
+				Files.createDirectories(keyDirectory);
+				Files.write(publicKeyFile, keyPair.getPublic().getEncoded(), StandardOpenOption.CREATE);
+				Files.write(privateKeyFile, keyPair.getPrivate().getEncoded(), StandardOpenOption.CREATE);
 			} catch (IOException ioException) {
 				// TODO use more specific exception here
 				throw new RuntimeException("Error writing keys", ioException);
 			}
+			LOGGER.info("Generated new key pair in directory: " + keyDirectory + ". Public key below:\n" + KeyUtil.encodePublicKey(keyPair.getPublic()));
 		}
 		return requireNonNull(keyPair);
 	}

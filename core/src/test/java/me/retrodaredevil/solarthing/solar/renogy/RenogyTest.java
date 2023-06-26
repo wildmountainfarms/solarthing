@@ -13,15 +13,13 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.special.MutableSpecialPow
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 
-import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.*;
 
 final class RenogyTest {
-	private static final File DIRECTORY_ROVER = new File(PacketTestUtil.SOLARTHING_ROOT, "testing/packets/rover");
+	private static final Path DIRECTORY_ROVER = PacketTestUtil.SOLARTHING_ROOT.resolve("testing/packets/rover");
 
 	@Test
 	void temperatureConvertTest(){
@@ -179,15 +177,8 @@ final class RenogyTest {
 
 
 	@Test
-	void testRoverExisting() throws IOException {
-		assertTrue(DIRECTORY_ROVER.isDirectory());
-
-		ObjectMapper mapper = JacksonUtil.defaultMapper();
-
-		for (File file : requireNonNull(DIRECTORY_ROVER.listFiles())) {
-			SolarStatusPacket packet = mapper.readValue(file, SolarStatusPacket.class);
-			assertTrue(packet instanceof RoverStatusPacket, "Got packet: " + packet);
-		}
+	void testRoverExisting() {
+		PacketTestUtil.testDirectory(DIRECTORY_ROVER, SolarStatusPacket.class, packet -> packet instanceof RoverStatusPacket);
 	}
 
 }

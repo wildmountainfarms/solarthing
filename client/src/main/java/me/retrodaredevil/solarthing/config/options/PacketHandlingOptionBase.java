@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.config.options;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
@@ -10,9 +11,7 @@ import me.retrodaredevil.solarthing.config.request.DataRequester;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,8 +45,6 @@ abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements Pa
 	@JsonProperty(AnalyticsOption.PROPERTY_NAME)
 	private boolean isAnalyticsEnabled = AnalyticsOption.DEFAULT_IS_ANALYTICS_ENABLED;
 
-	@JsonProperty("actions")
-	private List<File> actionNodeFiles = new ArrayList<>();
 	@JsonProperty("action_config")
 	private ActionConfig actionConfig = ActionConfig.EMPTY;
 
@@ -112,9 +109,11 @@ abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements Pa
 		return isAnalyticsEnabled;
 	}
 
-	@Override
-	public final List<File> getActionNodeFiles() {
-		return requireNonNull(actionNodeFiles, "You cannot use a null value for the actions property! Use an empty array or leave it undefined.");
+	@JsonSetter("actions")
+	private void setActionNodeFiles(List<String> actionNodeFiles) {
+		LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Deprecated) Please use action_config configuration instead of actions!");
+		// TODO use a different exception here
+		throw new RuntimeException("Migration required! You must now use action_config instead of actions to configure actions!");
 	}
 
 	@Override

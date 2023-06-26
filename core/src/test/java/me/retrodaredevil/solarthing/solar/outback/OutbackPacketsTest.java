@@ -1,7 +1,6 @@
 package me.retrodaredevil.solarthing.solar.outback;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.solarthing.PacketTestUtil;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacket;
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacket;
@@ -16,24 +15,26 @@ import me.retrodaredevil.solarthing.solar.outback.fx.extra.ImmutableDailyFXPacke
 import me.retrodaredevil.solarthing.solar.outback.mx.AuxMode;
 import me.retrodaredevil.solarthing.solar.outback.mx.ChargerMode;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPacket;
-import me.retrodaredevil.solarthing.solar.outback.mx.event.*;
+import me.retrodaredevil.solarthing.solar.outback.mx.event.ImmutableMXAuxModeChangePacket;
+import me.retrodaredevil.solarthing.solar.outback.mx.event.ImmutableMXChargerModeChangePacket;
+import me.retrodaredevil.solarthing.solar.outback.mx.event.ImmutableMXErrorModeChangePacket;
+import me.retrodaredevil.solarthing.solar.outback.mx.event.MXAuxModeChangePacket;
+import me.retrodaredevil.solarthing.solar.outback.mx.event.MXChargerModeChangePacket;
+import me.retrodaredevil.solarthing.solar.outback.mx.event.MXErrorModeChangePacket;
 import me.retrodaredevil.solarthing.util.CheckSumException;
 import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
-import me.retrodaredevil.solarthing.util.JacksonUtil;
 import me.retrodaredevil.solarthing.util.ParsePacketAsciiDecimalDigitException;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Collections;
 
-import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class OutbackPacketsTest {
-	private static final File DIRECTORY_FX = new File(PacketTestUtil.SOLARTHING_ROOT, "testing/packets/fx");
-	private static final File DIRECTORY_MX = new File(PacketTestUtil.SOLARTHING_ROOT, "testing/packets/mx");
+	private static final Path DIRECTORY_FX = PacketTestUtil.SOLARTHING_ROOT.resolve("testing/packets/fx");
+	private static final Path DIRECTORY_MX = PacketTestUtil.SOLARTHING_ROOT.resolve("testing/packets/mx");
 
 	@Test
 	void test() throws JsonProcessingException, ParsePacketAsciiDecimalDigitException, CheckSumException {
@@ -93,20 +94,8 @@ public class OutbackPacketsTest {
 	}
 
 	@Test
-	void testExistingPackets() throws IOException {
-		assertTrue(DIRECTORY_FX.isDirectory());
-		assertTrue(DIRECTORY_MX.isDirectory());
-
-		ObjectMapper mapper = JacksonUtil.defaultMapper();
-
-		for (File file : requireNonNull(DIRECTORY_FX.listFiles())) {
-			SolarStatusPacket packet = mapper.readValue(file, SolarStatusPacket.class);
-			assertTrue(packet instanceof FXStatusPacket);
-		}
-
-		for (File file : requireNonNull(DIRECTORY_MX.listFiles())) {
-			SolarStatusPacket packet = mapper.readValue(file, SolarStatusPacket.class);
-			assertTrue(packet instanceof MXStatusPacket);
-		}
+	void testExistingPackets() {
+		PacketTestUtil.testDirectory(DIRECTORY_FX, SolarStatusPacket.class, packet -> packet instanceof FXStatusPacket);
+		PacketTestUtil.testDirectory(DIRECTORY_MX, SolarStatusPacket.class, packet -> packet instanceof MXStatusPacket);
 	}
 }

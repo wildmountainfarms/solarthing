@@ -13,15 +13,15 @@ import me.retrodaredevil.solarthing.rest.cache.CacheHandler;
 import me.retrodaredevil.solarthing.rest.graphql.solcast.SolcastConfig;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collections;
 
 public class OutputSchemaMain {
 	private OutputSchemaMain() { throw new UnsupportedOperationException(); }
 	public static void main(String[] args) {
-		File outputFile = new File(args[0]);
+		Path outputFile = Path.of(args[0]);
 
 		CouchDbDatabaseSettings couchDbDatabaseSettings = new CouchDbDatabaseSettings(
 				new CouchPropertiesBuilder("http", "localhost", 5984, null, null).build(),
@@ -42,7 +42,7 @@ public class OutputSchemaMain {
 		).print(schema);
 
 		try {
-			Files.writeString(outputFile.toPath(), schemaString);
+			Files.writeString(outputFile, schemaString);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

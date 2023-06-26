@@ -3,11 +3,11 @@ package me.retrodaredevil.solarthing.rest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.config.CommonConfigUtil;
+import me.retrodaredevil.solarthing.config.databases.DatabaseConfig;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.packets.collection.DefaultInstanceOptions;
 import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePacket;
-import me.retrodaredevil.solarthing.config.databases.DatabaseConfig;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +16,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.io.File;
 import java.nio.file.Path;
 import java.util.Objects;
 
@@ -58,7 +57,7 @@ public class CommonProvider {
 		defaultInstanceOptions = DefaultInstanceOptions.create(getDefaultSourceId(), getDefaultFragmentId());
 		LOGGER.debug("Using defaultInstanceOptions=" + defaultInstanceOptions);
 		LOGGER.debug("Database file: " + databaseFile.toAbsolutePath());
-		LOGGER.debug("Working directory: " + new File(".").getAbsolutePath());
+		LOGGER.debug("Working directory: " + Path.of(".").toAbsolutePath());
 
 		ObjectMapper objectMapper = JacksonUtil.defaultMapper();
 		objectMapper.getSubtypeResolver().registerSubtypes(

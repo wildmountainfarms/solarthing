@@ -9,15 +9,12 @@ import me.retrodaredevil.solarthing.solar.tracer.event.ImmutableTracerChargingEq
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.io.IOException;
+import java.nio.file.Path;
 
-import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TracerTest {
-	private static final File DIRECTORY_TRACER = new File(PacketTestUtil.SOLARTHING_ROOT, "testing/packets/tracer");
+	private static final Path DIRECTORY_TRACER = PacketTestUtil.SOLARTHING_ROOT.resolve("testing/packets/tracer");
 
 	@Test
 	void test() throws JsonProcessingException {
@@ -73,14 +70,7 @@ public class TracerTest {
 	}
 
 	@Test
-	void testTracerExisting() throws IOException {
-		assertTrue(DIRECTORY_TRACER.isDirectory());
-
-		ObjectMapper mapper = JacksonUtil.defaultMapper();
-
-		for (File file : requireNonNull(DIRECTORY_TRACER.listFiles())) {
-			SolarStatusPacket packet = mapper.readValue(file, SolarStatusPacket.class);
-			assertTrue(packet instanceof TracerStatusPacket, "Got packet: " + packet);
-		}
+	void testTracerExisting() {
+		PacketTestUtil.testDirectory(DIRECTORY_TRACER, SolarStatusPacket.class, packet -> packet instanceof TracerStatusPacket);
 	}
 }

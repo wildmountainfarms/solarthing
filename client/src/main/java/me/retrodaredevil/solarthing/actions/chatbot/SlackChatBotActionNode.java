@@ -22,7 +22,7 @@ import me.retrodaredevil.solarthing.message.implementations.SlackMessageSender;
 import me.retrodaredevil.solarthing.util.sync.ResourceManager;
 import okhttp3.OkHttpClient;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.time.ZoneId;
 import java.util.Arrays;
@@ -51,7 +51,7 @@ public class SlackChatBotActionNode implements ActionNode {
 	private final String channelId;
 	private final Map<String, List<String>> permissionMap;
 	private final String sender;
-	private final File keyDirectory;
+	private final Path keyDirectory;
 
 	public SlackChatBotActionNode(
 			String appToken,
@@ -59,7 +59,7 @@ public class SlackChatBotActionNode implements ActionNode {
 			String channelId,
 			Map<String, List<String>> permissionMap,
 			String sender,
-			File keyDirectory
+			Path keyDirectory
 	) {
 		this.appToken = appToken;
 		this.authToken = authToken;

@@ -43,7 +43,6 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -63,8 +62,8 @@ public class PVOutputUploadMain {
 	// TODO Make this an action for the automation program
 
 
-	@SuppressWarnings({"SameReturnValue", "deprecation"})
-	public static int startPVOutputUpload(PVOutputUploadProgramOptions options, CommandOptions commandOptions, Path dataDirectory, boolean isValidate){
+	@SuppressWarnings({"SameReturnValue"})
+	public static int startPVOutputUpload(PVOutputUploadProgramOptions options, CommandOptions commandOptions, boolean isValidate){
 
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Starting PV Output upload program");
 		ZoneId zoneId = options.getZoneId();
@@ -114,12 +113,12 @@ public class PVOutputUploadMain {
 			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)You need to define both from and to, or define neither to do the normal PVOutput program!");
 			return SolarThingConstants.EXIT_CODE_INVALID_OPTIONS;
 		}
-		AnalyticsManager analyticsManager = new AnalyticsManager(options.isAnalyticsEnabled() && !isValidate, dataDirectory);
-		analyticsManager.sendStartUp(ProgramType.PVOUTPUT_UPLOAD);
+		AnalyticsManager analyticsManager = new AnalyticsManager(options.isAnalyticsEnabled());
 
 		if (isValidate) {
 			return 0;
 		}
+		analyticsManager.sendStartUp(ProgramType.PVOUTPUT_UPLOAD);
 		return startRealTimeProgram(options, database, handler, service, options.getZoneId());
 	}
 	@SuppressWarnings("CatchAndPrintStackTrace")

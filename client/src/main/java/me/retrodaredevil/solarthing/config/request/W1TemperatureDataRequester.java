@@ -5,16 +5,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.misc.weather.W1TemperatureListUpdater;
 
-import java.io.File;
+import java.nio.file.Path;
 
 @JsonTypeName("w1-temperature")
 public class W1TemperatureDataRequester implements DataRequester {
-	private final File directory;
+	private final Path directory;
 	private final int dataId;
 
 	@JsonCreator
 	public W1TemperatureDataRequester(
-			@JsonProperty(value = "directory", required = true) File directory,
+			@JsonProperty(value = "directory", required = true) Path directory,
 			@JsonProperty(value = "data_id", required = true) int dataId
 	) {
 		this.directory = directory;

@@ -20,7 +20,7 @@ import me.retrodaredevil.solarthing.packets.collection.PacketCollectionCreator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.instance.InstanceTargetPackets;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -52,7 +52,7 @@ public class SendEncryptedActionNode implements ActionNode {
 
 	@JsonCreator
 	public static SendEncryptedActionNode create(
-			@JsonProperty(value = "directory", required = true) File keyDirectory,
+			@JsonProperty(value = "directory", required = true) Path keyDirectory,
 			@JsonProperty(value = "sender", required = true) String sender,
 			@JsonProperty(value = "targets", required = true) List<Integer> fragmentIdTargets,
 			@JsonProperty(value = "data", required = true) CommandOpenProvider data

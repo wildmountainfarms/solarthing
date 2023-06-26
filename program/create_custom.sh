@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+echo "Hey! This script is deprecated"
+
 BASEDIR=$(dirname "$0")
 cd "$BASEDIR" || exit 1
 if [ "$#" -eq 0 ]; then

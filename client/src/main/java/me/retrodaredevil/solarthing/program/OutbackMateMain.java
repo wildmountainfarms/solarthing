@@ -33,7 +33,6 @@ import me.retrodaredevil.solarthing.util.time.DailyIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.file.Path;
 import java.time.Duration;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -47,10 +46,9 @@ public class OutbackMateMain {
 	private static final Collection<MateCommand> ALLOWED_COMMANDS = EnumSet.of(MateCommand.AUX_OFF, MateCommand.AUX_ON, MateCommand.USE, MateCommand.DROP);
 
 	@SuppressWarnings("SameReturnValue")
-	public static int connectMate(MateProgramOptions options, Path dataDirectory, boolean isValidate) throws Exception {
+	public static int connectMate(MateProgramOptions options, boolean isValidate) throws Exception {
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Beginning mate program");
-		AnalyticsManager analyticsManager = new AnalyticsManager(options.isAnalyticsEnabled(), dataDirectory);
-		analyticsManager.sendStartUp(ProgramType.MATE);
+		AnalyticsManager analyticsManager = new AnalyticsManager(options.isAnalyticsEnabled());
 		LOGGER.debug("IO Bundle File: " + options.getIOBundleFilePath());
 		IOConfig ioConfig = ConfigUtil.parseIOConfig(options.getIOBundleFilePath(), OutbackConstants.MATE_CONFIG);
 		try(ReloadableIOBundle ioBundle = new ReloadableIOBundle(ioConfig::createIOBundle)) {
@@ -107,6 +105,7 @@ public class OutbackMateMain {
 			if (isValidate) {
 				return 0;
 			}
+			analyticsManager.sendStartUp(ProgramType.MATE);
 			return SolarMain.initReader(
 					requireNonNull(ioBundle.getInputStream()),
 					ioBundle::reload,

@@ -8,11 +8,11 @@ import me.retrodaredevil.solarthing.util.TimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 public class W1TemperatureListUpdater implements PacketListReceiver {
@@ -22,17 +22,17 @@ public class W1TemperatureListUpdater implements PacketListReceiver {
 	/** Allow this many degrees celsius to be read below and above the min and max temperature respectively */
 	private static final float LENIENT_TEMP_CELSIUS = 20.0f;
 
-	private final File slaveFile;
-	private final File nameFile;
+	private final Path slaveFile;
+	private final Path nameFile;
 
 	private final int dataId;
 
-	public W1TemperatureListUpdater(File directory, int dataId) {
-		slaveFile = new File(directory, "w1_slave");
-		nameFile = new File(directory, "name");
+	public W1TemperatureListUpdater(Path directory, int dataId) {
+		slaveFile = directory.resolve("w1_slave");
+		nameFile = directory.resolve("name");
 		this.dataId = dataId;
 
-		if (!directory.isDirectory()) {
+		if (!Files.isDirectory(directory)) {
 			LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "file: " + directory + " is not a directory! Program will continue. (Maybe it will connect later)");
 		}
 	}
@@ -52,7 +52,7 @@ public class W1TemperatureListUpdater implements PacketListReceiver {
 		}
 		final List<String> lines;
 		try {
-			lines = Files.readAllLines(slaveFile.toPath(), StandardCharsets.UTF_8);
+			lines = Files.readAllLines(slaveFile, StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			LOGGER.error("Could not read slave file for name=" + name, e);
 			return;
@@ -107,7 +107,7 @@ public class W1TemperatureListUpdater implements PacketListReceiver {
 		packets.add(new CelsiusTemperaturePacket(dataId, new W1Source(name), temperatureCelsius));
 		LOGGER.debug("Read temperature " + temperatureCelsius + "C from " + name + " in " + TimeUtil.nanosToSecondsString(timeTakenNanos) + " seconds");
 	}
-	private static String readContents(File file) throws IOException {
-		return new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
+	private static String readContents(Path file) throws IOException {
+		return new String(Files.readAllBytes(file), StandardCharsets.UTF_8);
 	}
 }

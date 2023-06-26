@@ -21,7 +21,6 @@ import me.retrodaredevil.solarthing.util.TimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.file.Path;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,10 +32,9 @@ public class RequestMain {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RequestMain.class);
 
-	public static int startRequestProgram(RequestProgramOptions options, Path dataDirectory, boolean isValidate) throws Exception {
+	public static int startRequestProgram(RequestProgramOptions options, boolean isValidate) throws Exception {
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Beginning request program");
-		AnalyticsManager analyticsManager = new AnalyticsManager(options.isAnalyticsEnabled() && !isValidate, dataDirectory);
-		analyticsManager.sendStartUp(ProgramType.REQUEST);
+		AnalyticsManager analyticsManager = new AnalyticsManager(options.isAnalyticsEnabled());
 		return startRequestProgram(options, analyticsManager, options.getPeriod(), options.getMinimumWait(), isValidate);
 	}
 
@@ -74,6 +72,7 @@ public class RequestMain {
 		if (isValidate) {
 			return 0;
 		}
+		analyticsManager.sendStartUp(ProgramType.REQUEST);
 		return doRequest(new PacketListReceiverMultiplexer(packetListReceiverList), period, minimumWait);
 	}
 	private static int doRequest(PacketListReceiver packetListReceiver, Duration period, Duration minimumWait) {

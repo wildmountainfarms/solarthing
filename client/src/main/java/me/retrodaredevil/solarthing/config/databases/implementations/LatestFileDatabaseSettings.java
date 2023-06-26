@@ -7,16 +7,16 @@ import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.DatabaseType;
 import me.retrodaredevil.solarthing.config.databases.SimpleDatabaseType;
 
-import java.io.File;
+import java.nio.file.Path;
 
 @JsonTypeName("latest")
 public final class LatestFileDatabaseSettings implements DatabaseSettings {
 	public static final DatabaseType TYPE = new SimpleDatabaseType("latest");
 
-	private final File file;
+	private final Path file;
 
 	@JsonCreator
-	public LatestFileDatabaseSettings(@JsonProperty(value = "file", required = true) File file) {
+	public LatestFileDatabaseSettings(@JsonProperty(value = "file", required = true) Path file) {
 		this.file = file;
 	}
 
@@ -25,7 +25,7 @@ public final class LatestFileDatabaseSettings implements DatabaseSettings {
 		return "Latest " + file;
 	}
 
-	public File getFile(){
+	public Path getFile(){
 		return file;
 	}
 

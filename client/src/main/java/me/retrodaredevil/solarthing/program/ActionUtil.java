@@ -2,12 +2,12 @@ package me.retrodaredevil.solarthing.program;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.action.node.ActionNode;
-import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.actions.CommonActionUtil;
 import me.retrodaredevil.solarthing.actions.chatbot.WrappedSlackChatBotActionNode;
 import me.retrodaredevil.solarthing.actions.command.ExecutingCommandFeedbackActionNode;
 import me.retrodaredevil.solarthing.actions.command.FlagActionNode;
 import me.retrodaredevil.solarthing.actions.command.WrappedAlterManagerActionNode;
+import me.retrodaredevil.solarthing.actions.config.ActionReference;
 import me.retrodaredevil.solarthing.actions.homeassistant.HomeAssistantActionNode;
 import me.retrodaredevil.solarthing.actions.mate.MateCommandActionNode;
 import me.retrodaredevil.solarthing.actions.mate.MateCommandWaitActionNode;
@@ -21,8 +21,6 @@ import me.retrodaredevil.solarthing.actions.solcast.SolcastActionNode;
 import me.retrodaredevil.solarthing.actions.tracer.TracerLoadActionNode;
 import me.retrodaredevil.solarthing.actions.tracer.modbus.TracerModbusActionNode;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
-import me.retrodaredevil.solarthing.actions.config.ActionFormat;
-import me.retrodaredevil.solarthing.actions.config.ActionReference;
 import me.retrodaredevil.solarthing.config.options.ActionConfig;
 import me.retrodaredevil.solarthing.config.options.ActionsOption;
 import me.retrodaredevil.solarthing.config.options.CommandOption;
@@ -31,7 +29,6 @@ import org.jetbrains.annotations.Contract;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -87,17 +84,7 @@ public final class ActionUtil {
 
 	public static List<ActionNodeEntry> createActionNodeEntries(ActionsOption options) throws IOException {
 		List<ActionNodeEntry> actionNodeEntries = new ArrayList<>();
-		for (File file : options.getActionNodeFiles()) {
-			// We hardcode RAW_JSON here because getActionNodeFiles() is a legacy configuration,
-			//   so this for loop can be removed eventually in the future
-			ActionNode actionNode = CommonActionUtil.readActionReference(CONFIG_MAPPER, new ActionReference(file.toPath(), ActionFormat.RAW_JSON));
-			actionNodeEntries.add(new ActionNodeEntry(actionNode, false));
-		}
-		if (!actionNodeEntries.isEmpty()) {
-			LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "(Deprecated) Please use action_config configuration instead of actions!");
-		}
-		ActionConfig actionConfig = options.getActionConfig();
-		for (ActionConfig.Entry entry : actionConfig.getEntries()) {
+		for (ActionConfig.Entry entry : options.getActionConfig().getEntries()) {
 			ActionNode actionNode = CommonActionUtil.readActionReference(CONFIG_MAPPER, entry.getActionReference());
 			boolean runOnce = entry.isRunOnce();
 			actionNodeEntries.add(new ActionNodeEntry(actionNode, runOnce));

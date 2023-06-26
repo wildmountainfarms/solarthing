@@ -9,28 +9,28 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
 import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.LocalRoverModbusSlave;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 @JsonTypeName("rover")
 public class DummyRoverModbusSlave implements DummyModbusSlave {
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
 
-	private final File file;
+	private final Path file;
 
 	@JsonCreator
-	public DummyRoverModbusSlave(@JsonProperty("file") File file) {
+	public DummyRoverModbusSlave(@JsonProperty("file") Path file) {
 		this.file = file;
 	}
 
 	@Override
 	public ModbusSlave createModbusSlave() {
-		final FileInputStream fileInputStream;
+		final InputStream fileInputStream;
 		try {
-			fileInputStream = new FileInputStream(file);
-		} catch (FileNotFoundException e) {
+			fileInputStream = Files.newInputStream(file);
+		} catch (IOException e) {
 			throw new RuntimeException("The dummy file was not found!", e);
 		}
 		final RoverStatusPacket roverStatusPacket;

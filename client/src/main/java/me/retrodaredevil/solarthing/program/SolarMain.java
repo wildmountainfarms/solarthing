@@ -9,12 +9,12 @@ import me.retrodaredevil.couchdbjava.exception.CouchDbException;
 import me.retrodaredevil.couchdbjava.response.ErrorResponse;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
+import me.retrodaredevil.solarthing.config.ConfigException;
 import me.retrodaredevil.solarthing.config.ConfigUtil;
 import me.retrodaredevil.solarthing.config.databases.DatabaseConfig;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.config.options.*;
-import me.retrodaredevil.solarthing.config.ConfigException;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.HourIntervalPacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.List;
@@ -124,24 +123,18 @@ public final class SolarMain {
 			return SolarThingConstants.EXIT_CODE_INVALID_CONFIG;
 		}
 
-		// TODO consider allowing customization of .data path
-		Path dataDirectory = Path.of(".data");
-		try {
-			Files.createDirectories(dataDirectory);
-		} catch (IOException e) {
-			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)Unable to create data directory! dataDirectory=" + dataDirectory + " absolute=" + dataDirectory.toAbsolutePath());
-			return SolarThingConstants.EXIT_CODE_CRASH;
-		}
+		// Note we used to have the creation of the .data directory here. We may consider adding it back in the future should we need it
+
 		final ProgramType programType = options.getProgramType();
 		try {
 			if(programType == ProgramType.MATE) {
-				return OutbackMateMain.connectMate((MateProgramOptions) options, dataDirectory, commandOptions.isValidate());
+				return OutbackMateMain.connectMate((MateProgramOptions) options, commandOptions.isValidate());
 			} else if(programType == ProgramType.ROVER_SETUP){
 				return RoverMain.connectRoverSetup((RoverSetupProgramOptions) options, commandOptions.isValidate());
 			} else if(programType == ProgramType.PVOUTPUT_UPLOAD){
-				return PVOutputUploadMain.startPVOutputUpload((PVOutputUploadProgramOptions) options, commandOptions, dataDirectory, commandOptions.isValidate());
+				return PVOutputUploadMain.startPVOutputUpload((PVOutputUploadProgramOptions) options, commandOptions, commandOptions.isValidate());
 			} else if(programType == ProgramType.REQUEST) {
-				return RequestMain.startRequestProgram((RequestProgramOptions) options, dataDirectory, commandOptions.isValidate());
+				return RequestMain.startRequestProgram((RequestProgramOptions) options, commandOptions.isValidate());
 			} else if(programType == ProgramType.AUTOMATION) {
 				return AutomationMain.startAutomation((AutomationProgramOptions) options, commandOptions.isValidate());
 			}

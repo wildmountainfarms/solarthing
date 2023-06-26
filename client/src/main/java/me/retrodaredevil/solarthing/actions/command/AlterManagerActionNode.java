@@ -5,22 +5,27 @@ import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.AlterPacketsProvider;
-import me.retrodaredevil.solarthing.actions.environment.*;
+import me.retrodaredevil.solarthing.actions.environment.AlterPacketsEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.AuthorizationEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.OpenDatabaseCacheEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.SolarThingDatabaseEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.SourceIdEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.TimeZoneEnvironment;
 import me.retrodaredevil.solarthing.commands.util.CommandManager;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
 import me.retrodaredevil.solarthing.database.cache.DatabaseCache;
 
-import java.io.File;
+import java.nio.file.Path;
 
 public class AlterManagerActionNode implements ActionNode {
 
 	private final String sender;
-	private final File keyDirectory;
+	private final Path keyDirectory;
 	private final int fragmentId;
 
 	public AlterManagerActionNode(
 			@JsonProperty(value = "sender", required = true) String sender,
-			@JsonProperty(value = "key_directory", required = true) File keyDirectory,
+			@JsonProperty(value = "key_directory", required = true) Path keyDirectory,
 			@JsonProperty(value = "fragment", required = true) int fragmentId) {
 		this.sender = sender;
 		this.keyDirectory = keyDirectory;

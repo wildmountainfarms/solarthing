@@ -7,7 +7,7 @@ import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.convenient.SingleActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 
-import java.io.File;
+import java.nio.file.Path;
 
 /**
  * Providing a fragment for something in the automation program is not something you would be expecting to see.
@@ -20,7 +20,7 @@ public class WrappedAlterManagerActionNode implements ActionNode {
 
 	public WrappedAlterManagerActionNode(
 			@JsonProperty(value = "sender", required = true) String sender,
-			@JsonProperty(value = "key_directory", required = true) File keyDirectory,
+			@JsonProperty(value = "key_directory", required = true) Path keyDirectory,
 			@JsonProperty(value = "fragment", required = true) int fragmentId
 	) {
 		actionNode = SingleActionNode.create(new AlterManagerActionNode(sender, keyDirectory, fragmentId));
