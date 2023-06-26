@@ -2,7 +2,12 @@
   "type": "automation",
   "database": "../config/couchdb.json",
   "source": "default",
-  "actions": [
-    "config/actions/your_action.json"
-  ]
+  "action_config": {
+    "entries": [
+      {
+        "path": "config/actions/your_action.json",
+        "format": "RAW_JSON"
+      }
+    ]
+  }
 }
