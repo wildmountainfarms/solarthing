@@ -11,7 +11,7 @@ buildscript {
         jacksonVersion = '2.15.2' // https://github.com/FasterXML/jackson-databind/tags
         // retrofit is why we need allow-opens. context: https://stackoverflow.com/questions/60915381/retrofit2-maven-project-illegal-reflective-access-warning // https://github.com/square/retrofit/issues/3341
         retrofitVersion = "2.9.0" // https://github.com/square/retrofit/tags
-        shadowVersion = '7.1.2' // https://github.com/johnrengelman/shadow/releases // only works on gradle 7
+        shadowVersion = '8.1.1' // https://github.com/johnrengelman/shadow/releases
         ioLibVersion = '2.3.0' // https://github.com/retrodaredevil/io-lib/releases
         okhttpVersion = "4.11.0" // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
 //        couchdbJavaVersion = '1.1.0'
@@ -298,6 +298,6 @@ project(":action-lang"){
 }
 
 wrapper {
-    gradleVersion = '7.4.2'
+    gradleVersion = '8.1.1'
     distributionType = Wrapper.DistributionType.ALL
 }

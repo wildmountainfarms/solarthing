@@ -8,7 +8,7 @@ import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 @Component
 public class CacheHandlerProvider {
