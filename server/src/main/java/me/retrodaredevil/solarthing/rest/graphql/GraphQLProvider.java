@@ -7,6 +7,7 @@ import io.leangen.graphql.GraphQLSchemaGenerator;
 import io.leangen.graphql.generator.mapping.common.NonNullMapper;
 import io.leangen.graphql.metadata.strategy.query.ResolverBuilder;
 import io.leangen.graphql.metadata.strategy.value.jackson.JacksonValueMapperFactory;
+import jakarta.annotation.PostConstruct;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.packets.collection.DefaultInstanceOptions;
@@ -26,9 +27,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.graphql.execution.GraphQlSource;
 import org.springframework.stereotype.Component;
 
-import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
@@ -156,8 +157,9 @@ public class GraphQLProvider {
 
 
 	@Bean
-	public GraphQL graphQL() {
-		return graphQL;
+	public GraphQlSource graphQlSource() {
+		return new SimpleGraphQlSource(graphQL, graphQL.getGraphQLSchema());
 	}
-
+	private record SimpleGraphQlSource(GraphQL graphQl, GraphQLSchema schema) implements GraphQlSource{
+	}
 }

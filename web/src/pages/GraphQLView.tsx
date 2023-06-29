@@ -22,7 +22,6 @@ export default function GraphQLView() {
       <div className={styles.contentDiv}>
         <Voyager
           introspection={introspectionProvider}
-          workerURI={process.env.PUBLIC_URL + '/voyager.worker.js'}
         />
       </div>
     </Layout>
