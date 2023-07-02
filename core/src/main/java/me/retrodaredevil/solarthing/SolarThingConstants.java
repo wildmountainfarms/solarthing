@@ -69,6 +69,9 @@ public final class SolarThingConstants {
 	/** Not used yet but we have this defined in solarthing.service.template */
 	@Deprecated
 	public static final int EXIT_CODE_RESTART_NEEDED_UNUSED_2 = 212;
+	/** Used only by bash scripts to download/launch SolarThing. This is not defined in the legacy template, but will be defined in the newer one.*/
+	@Deprecated
+	public static final int EXIT_CODE_DOWNLOAD_FAILED = 213;
 
 	public static final class Links {
 		private Links() { throw new UnsupportedOperationException(); }

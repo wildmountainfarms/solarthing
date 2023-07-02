@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-echo "Hey! This script is deprecated"
+echo "Hey! This script is deprecated. It still works fine, though. This is just a warning this may not support future SolarThing versions."
 
 BASEDIR=$(dirname "$0")
 cd "$BASEDIR" || exit 1
