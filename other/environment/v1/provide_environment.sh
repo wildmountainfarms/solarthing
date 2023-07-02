@@ -5,29 +5,29 @@ fi
 
 latest_release() {
 
-  if ! JSON_DATA="$(curl -sS https://api.github.com/repos/wildmountainfarms/solarthing/releases/latest)"; then
+  if ! json_data="$(curl -sS https://api.github.com/repos/wildmountainfarms/solarthing/releases/latest)"; then
     # If the exit code is not 0, then error information was printed to stderr.
     return 1
   fi
-  TAG_NAME_JSON="$(echo "$JSON_DATA" | jq '.tag_name')"
-  if [ "$TAG_NAME_JSON" = "null" ]; then
-    ERROR_MESSAGE_JSON="$(echo "$JSON_DATA" | jq '.message')"
-    if [ "$ERROR_MESSAGE" = "null" ]; then
+  tag_name_json="$(echo "$json_data" | jq '.tag_name')"
+  if [ "$tag_name_json" = "null" ]; then
+    error_message_json="$(echo "$json_data" | jq '.message')"
+    if [ "$error_message_json" = "null" ]; then
       echo "Unknown error. Printing JSON" >&2
-      echo "$JSON_DATA" >&2
+      echo "$json_data" >&2
     else
-      ERROR_MESSAGE="$(echo "$ERROR_MESSAGE_JSON" | jq -r)"
-      echo "Got error: $ERROR_MESSAGE" >&2
+      error_message="$(echo "$error_message_json" | jq -r .)"
+      echo "Got error: $error_message" >&2
     fi
     return 1
   fi
-  TAG_NAME="$(echo "$TAG_NAME_JSON" | jq -r)"
-  RELEASE="$(echo "$TAG_NAME" | cut -c 2-)"
-  if [ -z "$RELEASE" ]; then
+  tag_name="$(echo "$tag_name_json" | jq -r .)"
+  release="$(echo "$tag_name" | cut -c 2-)"
+  if [ -z "$release" ]; then
     return 1
   fi
 
-  echo "$RELEASE"
+  echo "$release"
 }
 download() {
   # arguments: 1:version
