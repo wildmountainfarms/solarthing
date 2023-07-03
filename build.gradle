@@ -28,7 +28,7 @@ buildscript {
 
 
 plugins {
-    id 'com.diffplug.spotless' version '6.18.0' // https://search.maven.org/search?q=a:spotless-plugin-gradle
+    id 'com.diffplug.spotless' version '6.19.0' // https://search.maven.org/search?q=a:spotless-plugin-gradle
     id 'net.ltgt.errorprone' version "$errorpronePluginVersion"
 }
 
