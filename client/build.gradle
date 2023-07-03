@@ -36,7 +36,7 @@ dependencies {
     implementation 'info.debatty:java-string-similarity:2.0.0'
 
     // TODO do we need this dependency?
-    implementation group: 'biz.paluch.logging', name: 'logstash-gelf', version: '1.15.0'
+    implementation group: 'biz.paluch.logging', name: 'logstash-gelf', version: '1.15.1'
 
 }
 
