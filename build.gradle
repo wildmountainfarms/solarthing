@@ -1,7 +1,7 @@
 
 buildscript {
     ext {
-        junit5Version = '5.9.2' // https://junit.org/junit5/
+        junit5Version = '5.9.3' // https://junit.org/junit5/
         junit5PlatformVersion = '1.9.3'
 
         slf4jVersion = '2.0.6' // http://www.slf4j.org/download.html
