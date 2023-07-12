@@ -97,6 +97,8 @@ jobs:
           file: docker/${{ matrix.data.image-name }}/Dockerfile
           build-args: |
             JAR_LOCATION=${{ matrix.data.jar-location }}
+            COMMIT_HASH=${{ github.sha }}
+            VERSION=${{ github.ref#refs/(tags|heads)/v? }}
           push: true
           platforms: ${{ env.platforms }}
           tags: ${{ steps.meta.outputs.tags }}

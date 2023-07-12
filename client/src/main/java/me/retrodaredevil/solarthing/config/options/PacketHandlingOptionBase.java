@@ -22,7 +22,7 @@ import static java.util.Objects.requireNonNull;
 abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements PacketHandlingOption, ActionsOption, CommandOption, AnalyticsOption {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PacketHandlingOptionBase.class);
 
-	@JsonProperty
+	@JsonProperty("databases")
 	@JsonPropertyDescription("An array of strings that each represent a database configuration file relative to the program directory.")
 	private List<Path> databases = null;
 	@JsonProperty("database_config")
@@ -31,7 +31,7 @@ abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements Pa
 	private String source = "default";
 	@JsonProperty(value = "fragment", required = true)
 	private int fragment;
-	@JsonProperty
+	@JsonProperty("unique")
 	private Integer unique = null;
 	@JsonProperty("short")
 	private boolean isShortId = true;

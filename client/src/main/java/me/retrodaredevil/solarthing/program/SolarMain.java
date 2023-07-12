@@ -105,7 +105,7 @@ public final class SolarMain {
 
 	public static int doMainCommand(CommandOptions commandOptions, Path baseConfigFile) {
 		String user = System.getProperty("user.name");
-		if (!user.equals("solarthing")) {
+		if (!"solarthing".equals(user) && !SolarThingEnvironment.isRunningInDocker()) {
 			if (user.equals("root")) {
 				LOGGER.warn("Running as root user!");
 				System.out.println("\n\nHey! We noticed you are running as root! Instead of\n  sudo ./run.sh\nPlease do\n  sudo -u solarthing ./run.sh\n instead.\n");
@@ -235,9 +235,13 @@ public final class SolarMain {
 	private static int outputVersion() {
 		JarUtil.Data data = JarUtil.getData();
 		Instant lastModified = data.getLastModifiedInstantOrNull();
+		String commitHash = SolarThingEnvironment.getGitCommitHash();
+		String version = SolarThingEnvironment.getVersion();
 		System.out.println("SolarThing made by Lavender Shannon\n" +
 				"Jar: " + data.getJarFileNameOrNull() + "\n" +
 				"Jar last modified: " + (lastModified == null ? "unknown" : lastModified.toString()) + "\n" +
+				(commitHash == null ? "" : "Commit hash: " + commitHash) +
+				(version == null ? "" : "Version: " + version) +
 				"Java version: " + System.getProperty("java.version"));
 		return 0;
 	}
