@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.List;
@@ -115,6 +116,10 @@ public final class SolarMain {
 		}
 
 		LOGGER.info("Using base configuration file: " + baseConfigFile);
+		if (Files.notExists(baseConfigFile)) {
+			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)Base configuration file does not exist!");
+			return SolarThingConstants.EXIT_CODE_INVALID_CONFIG;
+		}
 		final ProgramOptions options;
 		try {
 			options = ConfigUtil.readConfig(baseConfigFile, ProgramOptions.class);
