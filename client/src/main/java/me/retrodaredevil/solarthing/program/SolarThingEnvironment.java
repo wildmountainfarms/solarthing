@@ -13,8 +13,8 @@ public final class SolarThingEnvironment {
 	public static @Nullable String getGitCommitHash() {
 		return emptyToNull(System.getenv("COMMIT_HASH"));
 	}
-	public static @Nullable String getVersion() {
-		return emptyToNull(System.getenv("VERSION"));
+	public static @Nullable String getRef() {
+		return emptyToNull(System.getenv("REF"));
 	}
 	private static String emptyToNull(String s) {
 		if (s.isEmpty()) {

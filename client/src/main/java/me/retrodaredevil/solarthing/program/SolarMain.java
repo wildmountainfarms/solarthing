@@ -236,12 +236,12 @@ public final class SolarMain {
 		JarUtil.Data data = JarUtil.getData();
 		Instant lastModified = data.getLastModifiedInstantOrNull();
 		String commitHash = SolarThingEnvironment.getGitCommitHash();
-		String version = SolarThingEnvironment.getVersion();
+		String ref = SolarThingEnvironment.getRef();
 		System.out.println("SolarThing made by Lavender Shannon\n" +
 				"Jar: " + data.getJarFileNameOrNull() + "\n" +
 				"Jar last modified: " + (lastModified == null ? "unknown" : lastModified.toString()) + "\n" +
 				(commitHash == null ? "" : "Commit hash: " + commitHash) +
-				(version == null ? "" : "Version: " + version) +
+				(ref == null ? "" : "Ref: " + ref) +
 				"Java version: " + System.getProperty("java.version"));
 		return 0;
 	}

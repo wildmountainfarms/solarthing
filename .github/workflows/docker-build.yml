@@ -98,7 +98,7 @@ jobs:
           build-args: |
             JAR_LOCATION=${{ matrix.data.jar-location }}
             COMMIT_HASH=${{ github.sha }}
-            VERSION=${{ github.ref#refs/(tags|heads)/v? }}
+            REF=${{ github.ref }}
           push: true
           platforms: ${{ env.platforms }}
           tags: ${{ steps.meta.outputs.tags }}

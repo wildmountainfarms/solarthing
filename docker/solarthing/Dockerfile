@@ -1,14 +1,14 @@
 FROM eclipse-temurin:19-jre-jammy
 ARG JAR_LOCATION
 ARG COMMIT_HASH=""
-ARG VERSION=""
+ARG REF=""
 
 RUN ["mkdir", "/app"]
 WORKDIR "/app"
 COPY --chmod=0444 ${JAR_LOCATION} solarthing.jar
 ENV DOCKER=""
 ENV COMMIT_HASH="$COMMIT_HASH"
-ENV VERSION="$VERSION"
+ENV REF="$REF"
 
 # Currently this entry point does not need any allow opens.
 #   The default raw_solarthing will run solarthing.jar with `--add-opens=java.base/java.lang.invoke=ALL-UNNAMED`
