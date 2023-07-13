@@ -1,4 +1,4 @@
-export SOLARTHING_VERSION="2023.2.0"
+export SOLARTHING_VERSION="2023.4.0"
 
 if [ -n "${SOLARTHING_VERSION_OVERRIDE+x}" ]; then
   echo Using override

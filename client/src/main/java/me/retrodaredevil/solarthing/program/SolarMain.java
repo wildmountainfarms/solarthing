@@ -182,7 +182,7 @@ public final class SolarMain {
 	}
 
 	private static int doMain(String[] args){
-		String logMessage = "Beginning main. Jar: " + getJarInfo();
+		String logMessage = "Beginning main. " + getJarInfo();
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "[LOG] " + logMessage);
 		System.out.println("[stdout] " + logMessage);
 		System.err.println("[stderr] " + logMessage);
