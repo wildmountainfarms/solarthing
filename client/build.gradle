@@ -24,7 +24,7 @@ dependencies {
     // https://github.com/slackapi/java-slack-sdk/releases
     implementation 'com.slack.api:slack-api-client:1.31.0'
     // https://mvnrepository.com/artifact/org.java-websocket/Java-WebSocket
-    implementation 'org.java-websocket:Java-WebSocket:1.5.3'
+    implementation 'org.java-websocket:Java-WebSocket:1.5.4'
 
     // https://mvnrepository.com/artifact/com.lexicalscope.jewelcli/jewelcli
     implementation group: 'com.lexicalscope.jewelcli', name: 'jewelcli', version: '0.8.9'
