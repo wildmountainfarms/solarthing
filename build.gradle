@@ -1,10 +1,10 @@
 
 buildscript {
     ext {
-        junit5Version = '5.9.2' // https://junit.org/junit5/
-        junit5PlatformVersion = '1.9.3'
+        junit5Version = '5.10.0' // https://junit.org/junit5/
+        junit5PlatformVersion = '1.10.0'
 
-        slf4jVersion = '2.0.6' // http://www.slf4j.org/download.html
+        slf4jVersion = '2.0.7' // http://www.slf4j.org/download.html
         log4jVersion = '2.20.0' // https://logging.apache.org/log4j/2.x/javadoc.html
         // Note: Since Jackson 2.14, Android SDK 26 is required
         // https://github.com/FasterXML/jackson/wiki/Jackson-Releases
@@ -16,9 +16,9 @@ buildscript {
         okhttpVersion = "4.11.0" // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
 //        couchdbJavaVersion = '1.1.0'
         couchdbJavaVersion = "cf377882a0a85ce1ff37b5bcc23a5389d900d66f".substring(0, 10)
-        dockerComposePluginVersion = "0.16.12" // https://github.com/avast/gradle-docker-compose-plugin/releases
+        dockerComposePluginVersion = "0.17.4" // https://github.com/avast/gradle-docker-compose-plugin/releases
         errorpronePluginVersion = '3.1.0' // https://github.com/tbroyer/gradle-errorprone-plugin/releases
-        errorproneCoreVersion = '2.20.0' // https://mvnrepository.com/artifact/com.google.errorprone/error_prone_core
+        errorproneCoreVersion = '2.21.1' // https://mvnrepository.com/artifact/com.google.errorprone/error_prone_core
         antlrVersion = "4.13.0" // https://github.com/antlr/antlr4/releases
     }
     dependencies {
@@ -28,7 +28,7 @@ buildscript {
 
 
 plugins {
-    id 'com.diffplug.spotless' version '6.18.0' // https://search.maven.org/search?q=a:spotless-plugin-gradle
+    id 'com.diffplug.spotless' version '6.21.0' // https://mvnrepository.com/artifact/com.diffplug.spotless/spotless-plugin-gradle
     id 'net.ltgt.errorprone' version "$errorpronePluginVersion"
 }
 
@@ -121,7 +121,7 @@ subprojects {
             disable("InvalidLink") // So many times this is wrong. #equals(Object) is a valid link!
             disable("ComparableType") // different Identifiers need to be able to be compared to each other, so we disable this for now.
             disable("DoNotClaimAnnotations") // TODO figure how how to make our annotation processor more "correct"
-//            disable("ReturnValueIgnored") // remove this once this is fixed: https://github.com/google/error-prone/issues/3292
+//            disable("ReturnValueIgnored") // remove this once this is fixed: https://github.com/google/error-prone/issues/3292 // TODO can we enable this now?
             disable("UnusedMethod") // This is useful, but has this issue: https://github.com/google/error-prone/issues/3144 // issue is now "completed", but annotations not customizable for
             disable("InlineMeSuggester") // Wrong when annotated by annotations, and I don't need this feature
             disable("EmptyCatch") // This is a great warning, but IntelliJ wants ignored exceptions to be named "ignored" and ErrorProne wants "ok"...

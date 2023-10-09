@@ -131,7 +131,8 @@ and also react to messages that have been fully processed (request successfully 
   * Or alternatively, just [purge](https://docs.couchdb.org/en/stable/api/database/misc.html#db-purge) the documents. This would probably work better as "it's like the document doesn't even exist"
 * Disable `/tmp/hsperfdata_solarthing` directory creation 
   * https://stackoverflow.com/questions/76327/how-can-i-prevent-java-from-creating-hsperfdata-files
-  
+* Use https://animejs.com/ to make cool animations and diagrams for demonstrating the different components of SolarThing
+
 ### Completed
 * Provide option/configuration for multiple MATEs (maybe using multiple databases with an id at the end? i.e.: solarthing-1, solarthing-2 or commands-1, commands-2)
     * Done by using fragmented packets. Will be stored in the same database but uses InstancePackets to indicate source and fragment ids
