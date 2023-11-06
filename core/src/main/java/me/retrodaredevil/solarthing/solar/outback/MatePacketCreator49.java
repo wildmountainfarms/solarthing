@@ -45,7 +45,7 @@ public class MatePacketCreator49 extends StartEndTextPacketCreator {
 		} else {
 			throw new PacketCreationException("Ascii value: " + value + " not supported. (from: '" + new String(bytes) + "')");
 		}
-		LOGGER.debug("Created outback packet address=" + r.getAddress());
+		LOGGER.trace("Created outback packet address=" + r.getAddress());
 		return Collections.singleton(r);
 	}
 

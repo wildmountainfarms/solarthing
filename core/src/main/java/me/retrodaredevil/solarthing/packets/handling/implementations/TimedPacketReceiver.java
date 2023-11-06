@@ -71,7 +71,7 @@ public class TimedPacketReceiver implements RawPacketReceiver {
 					} else {
 						// In the future, we will remove the summary marker, but this has never had logging around it before,
 						//   so we want to understand it better, hence the summary importance.
-						LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Was going to send off " + packetList.size() + " packets to packetListReceiver, but stale=true!");
+						LOGGER.info("Was going to send off " + packetList.size() + " packets to packetListReceiver, but stale=true!");
 					}
 				} finally {
 					packetList.clear();

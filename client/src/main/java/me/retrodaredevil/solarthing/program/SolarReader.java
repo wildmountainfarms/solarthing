@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.program;
 
+import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.creation.PacketCreationException;
 import me.retrodaredevil.solarthing.packets.creation.TextPacketCreator;
@@ -65,7 +66,8 @@ public class SolarReader {
 			newPackets = creator.add(s.toCharArray());
 		} catch (PacketCreationException e) {
 			String debugString = OutbackUtil.escapeOutputtedMateData(s);
-			LOGGER.warn("Got a garbled packet! got: '" + debugString + "'", e);
+			LOGGER.info("Got a garbled packet");
+			LOGGER.debug(SolarThingConstants.NO_CONSOLE, "Garbled packet is: '" + debugString + "'", e);
 			rawPacketReceiver.updateGarbledData();
 			return true;
 		}

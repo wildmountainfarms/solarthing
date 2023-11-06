@@ -16,7 +16,7 @@ public final class MXStatusPackets {
 	private MXStatusPackets(){ throw new UnsupportedOperationException(); }
 
 	@SuppressWarnings("Duplicates")
-	public static ImmutableMXStatusPacket createFromChars(char[] chars, IgnoreCheckSum ignoreCheckSum) throws CheckSumException, ParsePacketAsciiDecimalDigitException {
+	public static MXStatusPacket createFromChars(char[] chars, IgnoreCheckSum ignoreCheckSum) throws CheckSumException, ParsePacketAsciiDecimalDigitException {
 		// Start of Status Page
 		final int address = ((int) chars[1]) - 65; // if it is "A" then address would be 0
 		final int addressChksum = address + 17; // if "A" -> 0 -> ascii 17 (device control 1) weird but that's how it is.
@@ -64,7 +64,7 @@ public final class MXStatusPackets {
 			dailyAHOnes = toInt(chars, 40);
 			// , UNUSED UNUSED
 		} else { // we must be on old firmware
-			LOGGER.debug("We must be on old firmware. 41st char(index=40): '" + char41 + "'");
+			LOGGER.trace("We must be on old firmware. 41st char(index=40): '" + char41 + "'");
 			char char37 = chars[36];
 			if(Character.isDigit(char37)){
 				// if we get inside this if statement, we know the packet is incorrect and data may be incorrect

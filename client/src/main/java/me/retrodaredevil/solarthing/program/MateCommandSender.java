@@ -61,7 +61,7 @@ public class MateCommandSender implements OnDataReceive {
 				onCommandExecute.onCommandExecute(sourcedCommand);
 			}
 		} else if (firstData) {
-			LOGGER.info("Not going to (possibly) send commands now because stale=true!");
+			LOGGER.debug("Not going to (possibly) send commands now because stale=true!");
 		}
 	}
 }

@@ -15,6 +15,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * NOTE: Once this class has been instantiated, there is no way to stop the thread that has been created.
+ * <p>
+ * This class functions by retrying any packet upload where calling {@link PacketHandler#handle(PacketCollection)} results in a {@link PacketHandleException}.
+ */
 public class AsyncRetryingPacketHandler implements PacketHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AsyncRetryingPacketHandler.class);
 

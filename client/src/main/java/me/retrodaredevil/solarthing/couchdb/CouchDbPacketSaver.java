@@ -11,6 +11,7 @@ import me.retrodaredevil.couchdbjava.json.StringJsonData;
 import me.retrodaredevil.couchdbjava.response.DocumentResponse;
 import me.retrodaredevil.couchdbjava.tag.DocumentEntityTag;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
+import me.retrodaredevil.solarthing.packets.handling.CommonPacketHandleException;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
@@ -95,10 +96,10 @@ public class CouchDbPacketSaver implements PacketHandler {
 			} catch(CouchDbException revEx){
 				LOGGER.debug("Unable to get the actual Revision ID for id=" + id, revEx);
 			}
-			throw new PacketHandleException("Conflict while saving something to couchdb. id=" + id + " rev=" + revision + ". This usually means we put a packet in the database, but we weren't able to cache its rev id.", ex);
+			throw new CommonPacketHandleException("Conflict while saving something to couchdb. id=" + id + " rev=" + revision + ". This usually means we put a packet in the database, but we weren't able to cache its rev id.", ex);
 		} catch(CouchDbException ex){
 			if (ex.getCause() instanceof IOException) {
-				throw new PacketHandleException("We got a DbAccessException probably meaning we couldn't reach the database.", ex);
+				throw new CommonPacketHandleException("We got a DbAccessException probably meaning we couldn't reach the database.", ex);
 			} else {
 				throw new PacketHandleException("Got a DbAccessException without IOException as a cause. Something must be wrong.", ex);
 			}

@@ -20,6 +20,9 @@ public class PrintPacketHandleExceptionWrapper implements PacketHandler {
 	public void handle(PacketCollection packetCollection) {
 		try {
 			packetHandler.handle(packetCollection);
+		} catch (CommonPacketHandleException e) {
+			LOGGER.debug("Caught a common packet handle exception with message: " + e.getMessage());
+			LOGGER.debug(SolarThingConstants.NO_CONSOLE, "Stacktrace of above exception", e);
 		} catch (PacketHandleException e) {
 			LOGGER.error("Caught PacketHandleException from " + packetHandler + ". Message: " + e.getMessage() + ". (More info in log file)");
 			LOGGER.debug(SolarThingConstants.NO_CONSOLE, "Caught PacketHandleException from " + packetHandler, e);

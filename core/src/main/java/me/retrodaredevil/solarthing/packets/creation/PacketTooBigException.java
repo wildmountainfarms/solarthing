@@ -8,15 +8,4 @@ public class PacketTooBigException extends PacketCreationException {
 		super(message);
 	}
 
-	public PacketTooBigException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
-	public PacketTooBigException(Throwable cause) {
-		super(cause);
-	}
-
-	public PacketTooBigException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-		super(message, cause, enableSuppression, writableStackTrace);
-	}
 }
