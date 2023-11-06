@@ -84,18 +84,25 @@ public class ModbusListUpdaterWrapper implements PacketListReceiver {
 				isTimeout = true;
 				// These messages will hopefully help people with problems fix it faster.
 				if (hasBeenSuccessful) {
-					LOGGER.info(SolarThingConstants.NO_REMOTE, "\n\nHey! We noticed you got a ModbusTimeoutException after getting this to work.\n" +
+					LOGGER.debug(SolarThingConstants.NO_REMOTE, "\n\nHey! We noticed you got a ModbusTimeoutException after getting this to work.\n" +
 							"This is likely a fluke and hopefully this message isn't printed a bunch of times. If it is not a fluke, you may want to check your cable.\n");
 				} else {
 					LOGGER.info(SolarThingConstants.NO_REMOTE, "\n\nHey! We noticed you got a ModbusTimeoutException.\n" +
 							"This is likely a problem with your cable. SolarThing is communicating fine with your serial adapter, but it cannot reach the device.\n" +
 							"Make sure the cable you have has the correct pinout, and feel free to open an issue at https://github.com/wildmountainfarms/solarthing/issues if you need help.\n");
 				}
+				if (extraFeatures.contains(Feature.DEBUG_MODBUS_TIMEOUT)) {
+					LOGGER.debug("Got a modbus timeout. Message: " + e.getMessage()); // we don't need to log the stacktrace, so the exception is not logged
+				} else {
+					LOGGER.error("Got a modbus timeout. Message: " + e.getMessage()); // we don't need to log the stacktrace, so the exception is not logged
+				}
 			} else if (e instanceof ParsedResponseException) {
+				// we don't need to log the stacktrace here as long as we log the message of the error
 				ParsedResponseException parsedResponseException = (ParsedResponseException) e;
 				ModbusMessage message = parsedResponseException.getResponse();
 				String hexFunctionCode = String.format("%02X", message.getFunctionCode());
 				LOGGER.info("Communication with device working well. Got this response back: function code=0x" + hexFunctionCode + " data='" + dataToSplitHex(message.getByteData()) + "' feel free to open issue at https://github.com/wildmountainfarms/solarthing/issues/");
+				LOGGER.error("Modbus parsed response exception: " + e.getMessage());
 				if (logType == LogType.ROVER) {
 					if (e instanceof ErrorCodeException) {
 						int code = ((ErrorCodeException) e).getExceptionCode();
@@ -107,19 +114,19 @@ public class ModbusListUpdaterWrapper implements PacketListReceiver {
 						} else if (error == ExceptionCodeError.READ_EXCEPTION_TOO_MANY_REGISTERS_TO_READ) {
 							LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "This error should never happen because we never request to read too many registers. Please report this.");
 						} else if (error == ExceptionCodeError.READ_EXCEPTION_CANNOT_READ_MULTIPLE_REGISTERS) {
-							LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "This error is unexpected. To attempt to fix this yourself, please visit: https://solarthing.readthedocs.io/en/latest/rover/bulk-request.html to disable bulk request. Please report this anyway, as it should never happen.");
+							LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "This error is unexpected. To attempt to fix this yourself, please visit: https://solarthing.readthedocs.io/en/latest/config/file/base-json/request/modbus/rover/bulk-request.html to disable bulk request. Please report this anyway, as it should never happen.");
 						}
 					}
 				}
 			} else if (e instanceof RawResponseException) {
 				byte[] data = ((RawResponseException) e).getRawData();
-				LOGGER.info("Got part of a response back. (Maybe timed out halfway through?) data='" + dataToSplitHex(data) + "' Feel free to open an issue at https://github.com/wildmountainfarms/solarthing/issues/");
-			}
-			if (isTimeout && extraFeatures.contains(Feature.DEBUG_MODBUS_TIMEOUT)) {
-				LOGGER.debug("Modbus exception", e);
+				LOGGER.info("Got part of a response back. (Maybe timed out halfway through?) data='" + dataToSplitHex(data) + "' Feel free to open an issue at https://github.com/wildmountainfarms/solarthing/issues/", e);
 			} else {
 				LOGGER.error("Modbus exception", e);
 			}
+
+			LOGGER.trace("Tracing the modbus runtime exception", e); // good chance that we did not actually log the stacktrace, so let's put a trace here for the worst case scenario of us needing to turn this on
+
 			if (isTimeout) {
 				successReporter.reportTimeout();
 			} else {

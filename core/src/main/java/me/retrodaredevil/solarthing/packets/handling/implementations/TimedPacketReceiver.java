@@ -1,7 +1,6 @@
 package me.retrodaredevil.solarthing.packets.handling.implementations;
 
 import me.retrodaredevil.solarthing.OnDataReceive;
-import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.packets.handling.RawPacketReceiver;
