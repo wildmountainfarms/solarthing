@@ -16,7 +16,7 @@ jobs:
         run: |
           tag_name="${{ github.event.release.tag_name }}"
           version=$(echo "$tag_name" | sed "s/v//")
-          echo "::set-output name=version::$version"
+          echo "version=$version" >> $GITHUB_OUTPUT
   release:
     name: Upload Release Assets
     runs-on: ubuntu-latest
