@@ -1,5 +1,6 @@
 ### Individual documentation
-[Solar readme](solar/README.md)
+
+WARNING! This page is outdated. Please see: https://solarthing.readthedocs.io
 
 ### Line count
 ```shell

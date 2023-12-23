@@ -1,6 +1,8 @@
 # History
 This program started in the summer of 2017.
 
+NOTE: This page should be moved to https://solarthing.readthedocs.io in the future.
+
 ### Inspiration
 [@eidolon1138](https://github.com/eidolon1138) is the one who originally came up with the idea to collect data from his Outback Mate device. He helped
 set up the database and [@retrodaredevil](https://github.com/retrodaredevil) did the rest. Eventually [@retrodaredevil](https://github.com/retrodaredevil) created an android app making it much

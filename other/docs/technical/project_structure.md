@@ -1,5 +1,9 @@
 # Project Structure
 
+WARNING! This page is outdated. Please see: https://solarthing.readthedocs.io
+
+TODO: In the future we should migrate information on this page to somewhere in the SolarThing documentation.
+
 ### [core](../../../core)
 * A gradle subproject
 * Contains core code used in all other subprojects
@@ -9,12 +13,9 @@
 ### [serviceapi](../../../serviceapi)
 * A gradle subproject
 * An API for https://pvoutput.org and for https://emoncms.org
-### [graphql](../../../graphql)
+### [server](../../../server)
 * A gradle subproject
 * A subprogram that exposes a CouchDB database as a GraphQL Server.
-### [json-datasource](../../../json-datasource) (WIP)
-* A gradle subproject
-* A subprogram that is a REST interface that exposes SolarThing data from CouchDB to Grafana
 
 ---
 

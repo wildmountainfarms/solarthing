@@ -1,4 +1,7 @@
 # Detailed Solar Implementation
+
+WARNING! This page is outdated. Please see: https://solarthing.readthedocs.io
+
 Some information about how this program works with solar products.
 
 Ready to get started? Go to the **[QUICKSTART](../docs/quickstart.md)**!
