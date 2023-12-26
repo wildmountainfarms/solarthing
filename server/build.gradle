@@ -74,6 +74,10 @@ bootBuildImage {
 */
 
 processResources {
+    // TODO this dependsOn(":web:build") is also run for the generateSchema task,
+    //   which can cause errors when :web:build may give errors.
+    //   This is not ideal, especially when graphql.ts needs to be updated because it contains errors.
+    //   If you have a problem with generateSchema in the future, consider temporarily commenting this line
     dependsOn(":web:build")
     from("$rootDir/web/build") {
         into("static")

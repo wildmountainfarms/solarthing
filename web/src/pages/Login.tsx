@@ -9,7 +9,7 @@ export default function Login() {
   const [databaseAuth, setDatabaseAuth] = useDatabaseAuth();
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const { status, data, error, isLoading, isSuccess, refetch } = useLoginQuery(graphQLClient, { username, password }, { refetchOnWindowFocus: false, enabled: false});
+  const { status, data, error, isFetching, isSuccess, refetch } = useLoginQuery(graphQLClient, { username, password }, { refetchOnWindowFocus: false, enabled: false});
   function submitLogin() {
     refetch().then(value => {
       if (value.isSuccess && !error) {
@@ -21,7 +21,7 @@ export default function Login() {
   return <>
     <Layout>
       <div className={styles.contentDiv}>
-        { isLoading
+        { isFetching
           ? <>
             <p>Logging In...</p>
           </>

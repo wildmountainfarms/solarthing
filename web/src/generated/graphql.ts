@@ -6,37 +6,37 @@ export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
+export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 
 function fetcher<TData, TVariables>(client: GraphQLClient, query: string, variables?: TVariables, headers?: RequestInit['headers']) {
   return async (): Promise<TData> => client.request<TData, TVariables>(query, variables, headers);
 }
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: string;
-  String: string;
-  Boolean: boolean;
-  Int: number;
-  Float: number;
+  ID: { input: string; output: string; }
+  String: { input: string; output: string; }
+  Boolean: { input: boolean; output: boolean; }
+  Int: { input: number; output: number; }
+  Float: { input: number; output: number; }
   /** Base64-encoded binary */
-  Base64String: any;
-  /** Built-in java.math.BigDecimal */
-  BigDecimal: any;
+  Base64String: { input: any; output: any; }
+  /** An arbitrary precision signed decimal */
+  BigDecimal: { input: any; output: any; }
   /** Built-in scalar representing an amount of time */
-  Duration: any;
+  Duration: { input: any; output: any; }
   /** Built-in scalar representing an instant in time */
-  Instant: any;
+  Instant: { input: any; output: any; }
   /** Built-in scalar representing a local date-time */
-  LocalDateTime: any;
+  LocalDateTime: { input: any; output: any; }
   /** Built-in scalar representing a local time */
-  LocalTime: any;
-  /** Long type */
-  Long: any;
+  LocalTime: { input: any; output: any; }
+  /** A 64-bit signed integer */
+  Long: { input: any; output: any; }
   /** Built-in scalar for dynamic values */
-  ObjectScalar: any;
-  /** Built-in Short as Int */
-  Short: any;
-  /** Use SPQR's SchemaPrinter to remove this from SDL */
-  UNREPRESENTABLE: any;
+  ObjectScalar: { input: any; output: any; }
+  /** A 16-bit signed integer */
+  Short: { input: any; output: any; }
 };
 
 export enum ACMode {
@@ -47,15 +47,15 @@ export enum ACMode {
 
 export type ActivePeriod = {
   __typename?: 'ActivePeriod';
-  active: Scalars['Boolean'];
-  activeNow: Scalars['Boolean'];
+  active: Scalars['Boolean']['output'];
+  activeNow: Scalars['Boolean']['output'];
   packetType: ActivePeriodType;
-  uniqueString: Scalars['String'];
+  uniqueString: Scalars['String']['output'];
 };
 
 
 export type ActivePeriodactiveArgs = {
-  dateMillis: Scalars['Long'];
+  dateMillis: Scalars['Long']['input'];
 };
 
 export enum ActivePeriodType {
@@ -71,14 +71,14 @@ export enum AlterPacketType {
 export type AuthNewSenderPacket = {
   __typename?: 'AuthNewSenderPacket';
   packetType: SecurityPacketType;
-  publicKey: Scalars['String'];
-  sender: Scalars['String'];
+  publicKey: Scalars['String']['output'];
+  sender: Scalars['String']['output'];
 };
 
 export type AuthorizedSender = {
   __typename?: 'AuthorizedSender';
   data: PermissionObject;
-  sender: Scalars['String'];
+  sender: Scalars['String']['output'];
 };
 
 export enum AuxMode {
@@ -99,19 +99,19 @@ export enum AuxMode {
 export type BasicChargeController = {
   __typename?: 'BasicChargeController';
   /** The battery voltage */
-  batteryVoltage: Scalars['Float'];
-  chargingCurrent: Scalars['BigDecimal'];
+  batteryVoltage: Scalars['Float']['output'];
+  chargingCurrent: Scalars['BigDecimal']['output'];
   chargingMode: SolarMode;
-  chargingPower: Scalars['BigDecimal'];
+  chargingPower: Scalars['BigDecimal']['output'];
   identifier: Identifier;
   identityInfo: IdentityInfo;
-  pvCurrent: Scalars['BigDecimal'];
-  pvVoltage: Scalars['BigDecimal'];
-  pvWattage: Scalars['BigDecimal'];
+  pvCurrent: Scalars['BigDecimal']['output'];
+  pvVoltage: Scalars['BigDecimal']['output'];
+  pvWattage: Scalars['BigDecimal']['output'];
   solarMode: SolarMode;
-  solarModeName: Scalars['String'];
+  solarModeName: Scalars['String']['output'];
   solarModeType: SolarModeType;
-  solarModeTypeDisplayName: Scalars['String'];
+  solarModeTypeDisplayName: Scalars['String']['output'];
 };
 
 export enum BatteryDetection {
@@ -133,19 +133,19 @@ export enum BatteryType {
 export type BatteryVoltage = {
   __typename?: 'BatteryVoltage';
   /** The battery voltage */
-  batteryVoltage: Scalars['Float'];
+  batteryVoltage: Scalars['Float']['output'];
   identifier: Identifier;
   identityInfo: IdentityInfo;
 };
 
 export type ChargeControllerAccumulationDataCache = {
   __typename?: 'ChargeControllerAccumulationDataCache';
-  firstDateMillis?: Maybe<Scalars['Long']>;
-  generationKWH: Scalars['Float'];
+  firstDateMillis?: Maybe<Scalars['Long']['output']>;
+  generationKWH: Scalars['Float']['output'];
   identifier: Identifier;
-  lastDateMillis?: Maybe<Scalars['Long']>;
-  unknownGenerationKWH: Scalars['Float'];
-  unknownStartDateMillis?: Maybe<Scalars['Long']>;
+  lastDateMillis?: Maybe<Scalars['Long']['output']>;
+  unknownGenerationKWH: Scalars['Float']['output'];
+  unknownStartDateMillis?: Maybe<Scalars['Long']['output']>;
 };
 
 export enum ChargerMode {
@@ -196,122 +196,131 @@ export enum ChargingStatus {
   NO_CHARGING = 'NO_CHARGING'
 }
 
+export type Core = {
+  __typename?: 'Core';
+  number: Scalars['Int']['output'];
+  temperatureCelsius: Scalars['Float']['output'];
+  temperatureFahrenheit: Scalars['Float']['output'];
+};
+
 export type CpuTemperaturePacket = {
   __typename?: 'CpuTemperaturePacket';
-  cpuTemperatureCelsius: Scalars['Float'];
-  cpuTemperatureFahrenheit: Scalars['Float'];
+  cores: Array<Maybe<Core>>;
+  cpuTemperatureCelsius: Scalars['Float']['output'];
+  cpuTemperatureFahrenheit: Scalars['Float']['output'];
   identifier: Identifier;
   identityInfo: IdentityInfo;
   packetType: DevicePacketType;
+  packetVersion?: Maybe<Scalars['Int']['output']>;
 };
 
 export type DailyChargeController = {
   __typename?: 'DailyChargeController';
-  dailyAH: Scalars['Int'];
+  dailyAH: Scalars['Int']['output'];
   dailyAHSupport: Support;
-  dailyKWH: Scalars['Float'];
+  dailyKWH: Scalars['Float']['output'];
   identifier: Identifier;
   identityInfo: IdentityInfo;
-  startDateMillis?: Maybe<Scalars['Long']>;
+  startDateMillis?: Maybe<Scalars['Long']['output']>;
 };
 
 export type DailyEnergy = {
   __typename?: 'DailyEnergy';
-  dailyKWH: Scalars['Float'];
-  dayStart: Scalars['Long'];
+  dailyKWH: Scalars['Float']['output'];
+  dayStart: Scalars['Long']['output'];
 };
 
 export type DailyFXPacket = {
   __typename?: 'DailyFXPacket';
-  acModeValues: Array<Scalars['Int']>;
+  acModeValues: Array<Scalars['Int']['output']>;
   acModes: Array<ACMode>;
   /** The address of the port that this device is plugged in to. If 0, this is plugged in to the mate */
-  address: Scalars['Int'];
-  buyKWH: Scalars['Float'];
-  chargerKWH: Scalars['Float'];
+  address: Scalars['Int']['output'];
+  buyKWH: Scalars['Float']['output'];
+  chargerKWH: Scalars['Float']['output'];
   /** The maximum battery voltage for the day. Note this may reset at a different time compared to min battery voltage for the day. */
-  dailyMaxBatteryVoltage: Scalars['Float'];
+  dailyMaxBatteryVoltage: Scalars['Float']['output'];
   /** The minimum battery voltage for the day. Note this may reset at a different time compared to max battery voltage for the day. */
-  dailyMinBatteryVoltage: Scalars['Float'];
+  dailyMinBatteryVoltage: Scalars['Float']['output'];
   /** @deprecated Field no longer supported */
-  errorModeValue: Scalars['Int'];
+  errorModeValue: Scalars['Int']['output'];
   errorModes: Array<FXErrorMode>;
-  hasError: Scalars['Boolean'];
+  hasError: Scalars['Boolean']['output'];
   identifier: KnownSupplementaryIdentifier_OutbackIdentifier;
   identityInfo: IdentityInfo;
-  inverterKWH: Scalars['Float'];
-  is230V: Scalars['Boolean'];
-  isAuxOn: Scalars['Boolean'];
+  inverterKWH: Scalars['Float']['output'];
+  is230V: Scalars['Boolean']['output'];
+  isAuxOn: Scalars['Boolean']['output'];
   miscModes: Array<MiscMode>;
-  miscValue: Scalars['Int'];
-  operationalModeValues: Array<Scalars['Int']>;
+  miscValue: Scalars['Int']['output'];
+  operationalModeValues: Array<Scalars['Int']['output']>;
   operationalModes: Array<OperationalMode>;
   packetType: SolarExtraPacketType;
-  sellKWH: Scalars['Float'];
-  startDateMillis?: Maybe<Scalars['Long']>;
-  warningModeValue: Scalars['Int'];
+  sellKWH: Scalars['Float']['output'];
+  startDateMillis?: Maybe<Scalars['Long']['output']>;
+  warningModeValue: Scalars['Int']['output'];
   warningModes: Array<WarningMode>;
 };
 
 export type DataIdentifier = {
   __typename?: 'DataIdentifier';
-  dataId: Scalars['Int'];
+  dataId: Scalars['Int']['output'];
   /** A string representation of this identifier */
-  representation: Scalars['String'];
+  representation: Scalars['String']['output'];
 };
 
 export type DataMetaPacket = {
   __typename?: 'DataMetaPacket';
-  dataId: Scalars['Int'];
-  dataIdString: Scalars['String'];
-  description: Scalars['String'];
+  dataId: Scalars['Int']['output'];
+  dataIdString: Scalars['String']['output'];
+  description: Scalars['String']['output'];
   identifier: DataIdentifier;
   identityInfo: IdentityInfo;
-  location: Scalars['String'];
-  name: Scalars['String'];
+  location: Scalars['String']['output'];
+  name: Scalars['String']['output'];
   packetType: TargetedMetaPacketType;
 };
 
 export type DataNode_Double = {
   __typename?: 'DataNode_Double';
-  data: Scalars['Float'];
-  dateMillis: Scalars['Long'];
-  fragmentId: Scalars['Int'];
-  fragmentIdString?: Maybe<Scalars['String']>;
+  data: Scalars['Float']['output'];
+  dateMillis: Scalars['Long']['output'];
+  fragmentId: Scalars['Int']['output'];
+  fragmentIdString?: Maybe<Scalars['String']['output']>;
   identifiable: Identifiable;
-  sourceId: Scalars['String'];
+  sourceId: Scalars['String']['output'];
 };
 
 export type DataNode_FXChargingPacket = {
   __typename?: 'DataNode_FXChargingPacket';
   data: FXChargingPacket;
-  dateMillis: Scalars['Long'];
-  fragmentId: Scalars['Int'];
-  fragmentIdString?: Maybe<Scalars['String']>;
+  dateMillis: Scalars['Long']['output'];
+  fragmentId: Scalars['Int']['output'];
+  fragmentIdString?: Maybe<Scalars['String']['output']>;
   identifiable: Identifiable;
-  sourceId: Scalars['String'];
+  sourceId: Scalars['String']['output'];
 };
 
 export type DataNode_Float = {
   __typename?: 'DataNode_Float';
-  data: Scalars['Float'];
-  dateMillis: Scalars['Long'];
-  fragmentId: Scalars['Int'];
-  fragmentIdString?: Maybe<Scalars['String']>;
+  data: Scalars['Float']['output'];
+  dateMillis: Scalars['Long']['output'];
+  fragmentId: Scalars['Int']['output'];
+  fragmentIdString?: Maybe<Scalars['String']['output']>;
   identifiable: Identifiable;
-  sourceId: Scalars['String'];
+  sourceId: Scalars['String']['output'];
 };
 
 export type DatabaseAuthorization = {
   __typename?: 'DatabaseAuthorization';
-  cookie: Scalars['String'];
-  expiresAt: Scalars['Long'];
-  url: Scalars['String'];
+  cookie: Scalars['String']['output'];
+  expiresAt: Scalars['Long']['output'];
+  url: Scalars['String']['output'];
 };
 
 export type DatabaseAuthorizationInput = {
-  cookie: Scalars['String'];
-  url: Scalars['String'];
+  cookie: Scalars['String']['input'];
+  url: Scalars['String']['input'];
 };
 
 export enum DatabaseStatus {
@@ -354,9 +363,9 @@ export enum DcdcErrorMode {
 
 export type DeviceInfoPacket = {
   __typename?: 'DeviceInfoPacket';
-  deviceDescription: Scalars['String'];
-  deviceLocation: Scalars['String'];
-  deviceName: Scalars['String'];
+  deviceDescription: Scalars['String']['output'];
+  deviceLocation: Scalars['String']['output'];
+  deviceName: Scalars['String']['output'];
   packetType: TargetedMetaPacketType;
 };
 
@@ -366,15 +375,15 @@ export enum DevicePacketType {
 
 export type DeviceSource = {
   __typename?: 'DeviceSource';
-  name?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']['output']>;
 };
 
 export type DualTemperature = {
   __typename?: 'DualTemperature';
-  batteryTemperatureCelsius: Scalars['BigDecimal'];
-  batteryTemperatureFahrenheit: Scalars['Float'];
-  controllerTemperatureCelsius: Scalars['BigDecimal'];
-  controllerTemperatureFahrenheit: Scalars['Float'];
+  batteryTemperatureCelsius: Scalars['BigDecimal']['output'];
+  batteryTemperatureFahrenheit: Scalars['Float']['output'];
+  controllerTemperatureCelsius: Scalars['BigDecimal']['output'];
+  controllerTemperatureFahrenheit: Scalars['Float']['output'];
   identifier: Identifier;
   identityInfo: IdentityInfo;
 };
@@ -392,27 +401,27 @@ export enum ExecutionReasonType {
 export type FXACModeChangePacket = {
   __typename?: 'FXACModeChangePacket';
   acMode: ACMode;
-  acModeName: Scalars['String'];
-  acModeValue: Scalars['Int'];
+  acModeName: Scalars['String']['output'];
+  acModeValue: Scalars['Int']['output'];
   /** The address of the port that this device is plugged in to. If 0, this is plugged in to the mate */
-  address: Scalars['Int'];
+  address: Scalars['Int']['output'];
   identifier: KnownSupplementaryIdentifier_OutbackIdentifier;
   identityInfo: IdentityInfo;
   packetType: SolarEventPacketType;
   previousACMode?: Maybe<ACMode>;
-  previousACModeName?: Maybe<Scalars['String']>;
-  previousACModeValue?: Maybe<Scalars['Int']>;
+  previousACModeName?: Maybe<Scalars['String']['output']>;
+  previousACModeValue?: Maybe<Scalars['Int']['output']>;
 };
 
 export type FXAuxStateChangePacket = {
   __typename?: 'FXAuxStateChangePacket';
   /** The address of the port that this device is plugged in to. If 0, this is plugged in to the mate */
-  address: Scalars['Int'];
+  address: Scalars['Int']['output'];
   identifier: KnownSupplementaryIdentifier_OutbackIdentifier;
   identityInfo: IdentityInfo;
-  isAuxActive: Scalars['Boolean'];
+  isAuxActive: Scalars['Boolean']['output'];
   packetType: SolarEventPacketType;
-  wasAuxActive?: Maybe<Scalars['Boolean']>;
+  wasAuxActive?: Maybe<Scalars['Boolean']['output']>;
 };
 
 export enum FXChargingMode {
@@ -428,14 +437,14 @@ export enum FXChargingMode {
 export type FXChargingPacket = {
   __typename?: 'FXChargingPacket';
   /** The address of the port that this device is plugged in to. If 0, this is plugged in to the mate */
-  address: Scalars['Int'];
+  address: Scalars['Int']['output'];
   fxChargingMode?: Maybe<FXChargingMode>;
-  remainingAbsorbTimeMillis: Scalars['Long'];
-  remainingEqualizeTimeMillis: Scalars['Long'];
-  remainingFloatTimeMillis: Scalars['Long'];
-  totalAbsorbTimeMillis: Scalars['Long'];
-  totalEqualizeTimeMillis: Scalars['Long'];
-  totalFloatTimeMillis: Scalars['Long'];
+  remainingAbsorbTimeMillis: Scalars['Long']['output'];
+  remainingEqualizeTimeMillis: Scalars['Long']['output'];
+  remainingFloatTimeMillis: Scalars['Long']['output'];
+  totalAbsorbTimeMillis: Scalars['Long']['output'];
+  totalEqualizeTimeMillis: Scalars['Long']['output'];
+  totalFloatTimeMillis: Scalars['Long']['output'];
 };
 
 export enum FXErrorMode {
@@ -452,74 +461,74 @@ export enum FXErrorMode {
 export type FXOperationalModeChangePacket = {
   __typename?: 'FXOperationalModeChangePacket';
   /** The address of the port that this device is plugged in to. If 0, this is plugged in to the mate */
-  address: Scalars['Int'];
+  address: Scalars['Int']['output'];
   identifier: KnownSupplementaryIdentifier_OutbackIdentifier;
   identityInfo: IdentityInfo;
   operationalMode?: Maybe<OperationalMode>;
-  operationalModeName: Scalars['String'];
-  operationalModeValue: Scalars['Int'];
+  operationalModeName: Scalars['String']['output'];
+  operationalModeValue: Scalars['Int']['output'];
   packetType: SolarEventPacketType;
   previousOperationalMode?: Maybe<OperationalMode>;
-  previousOperationalModeName?: Maybe<Scalars['String']>;
-  previousOperationalModeValue?: Maybe<Scalars['Int']>;
+  previousOperationalModeName?: Maybe<Scalars['String']['output']>;
+  previousOperationalModeValue?: Maybe<Scalars['Int']['output']>;
 };
 
 /** Status packet for FX devices */
 export type FXStatusPacket = {
   __typename?: 'FXStatusPacket';
-  acMode: Scalars['Int'];
-  acModeName: Scalars['String'];
+  acMode: Scalars['Int']['output'];
+  acModeName: Scalars['String']['output'];
   /** The address of the port that this device is plugged in to. If 0, this is plugged in to the mate */
-  address: Scalars['Int'];
+  address: Scalars['Int']['output'];
   /** The battery voltage */
-  batteryVoltage: Scalars['Float'];
-  buyCurrent: Scalars['Float'];
-  buyCurrentRaw: Scalars['Int'];
-  buyWattage: Scalars['Int'];
-  chargerCurrent: Scalars['Float'];
-  chargerCurrentRaw: Scalars['Int'];
-  chargerWattage: Scalars['Int'];
-  chksum: Scalars['Int'];
-  errorMode: Scalars['Int'];
+  batteryVoltage: Scalars['Float']['output'];
+  buyCurrent: Scalars['Float']['output'];
+  buyCurrentRaw: Scalars['Int']['output'];
+  buyWattage: Scalars['Int']['output'];
+  chargerCurrent: Scalars['Float']['output'];
+  chargerCurrentRaw: Scalars['Int']['output'];
+  chargerWattage: Scalars['Int']['output'];
+  chksum: Scalars['Int']['output'];
+  errorMode: Scalars['Int']['output'];
   errorModes: Array<FXErrorMode>;
-  errorsString: Scalars['String'];
-  hasError: Scalars['Boolean'];
+  errorsString: Scalars['String']['output'];
+  hasError: Scalars['Boolean']['output'];
   identifier: OutbackIdentifier;
   identityInfo: IdentityInfo;
-  inputVoltage: Scalars['Int'];
-  inputVoltageRaw: Scalars['Int'];
-  inverterCurrent: Scalars['Float'];
-  inverterCurrentRaw: Scalars['Int'];
-  inverterWattage: Scalars['Int'];
-  is230V: Scalars['Boolean'];
-  isAuxOn: Scalars['Boolean'];
-  misc: Scalars['Int'];
+  inputVoltage: Scalars['Int']['output'];
+  inputVoltageRaw: Scalars['Int']['output'];
+  inverterCurrent: Scalars['Float']['output'];
+  inverterCurrentRaw: Scalars['Int']['output'];
+  inverterWattage: Scalars['Int']['output'];
+  is230V: Scalars['Boolean']['output'];
+  isAuxOn: Scalars['Boolean']['output'];
+  misc: Scalars['Int']['output'];
   miscModes: Array<MiscMode>;
-  miscModesString: Scalars['String'];
-  operatingMode: Scalars['Int'];
-  operatingModeName: Scalars['String'];
+  miscModesString: Scalars['String']['output'];
+  operatingMode: Scalars['Int']['output'];
+  operatingModeName: Scalars['String']['output'];
   operationalMode: OperationalMode;
-  outputVoltage: Scalars['Int'];
-  outputVoltageRaw: Scalars['Int'];
+  outputVoltage: Scalars['Int']['output'];
+  outputVoltageRaw: Scalars['Int']['output'];
   packetType: SolarStatusPacketType;
-  packetVersion?: Maybe<Scalars['Int']>;
-  passThruWattage: Scalars['Int'];
-  powerUsageWattage: Scalars['Int'];
-  sellCurrent: Scalars['Float'];
-  sellCurrentRaw: Scalars['Int'];
-  sellWattage: Scalars['Int'];
-  solarModeName: Scalars['String'];
+  packetVersion?: Maybe<Scalars['Int']['output']>;
+  passThruWattage: Scalars['Int']['output'];
+  powerUsageWattage: Scalars['Int']['output'];
+  sellCurrent: Scalars['Float']['output'];
+  sellCurrentRaw: Scalars['Int']['output'];
+  sellWattage: Scalars['Int']['output'];
+  solarModeName: Scalars['String']['output'];
   solarModeType: SolarModeType;
-  solarModeTypeDisplayName: Scalars['String'];
-  warningMode: Scalars['Int'];
+  solarModeTypeDisplayName: Scalars['String']['output'];
+  warningMode: Scalars['Int']['output'];
   warningModes: Array<WarningMode>;
-  warnings: Scalars['String'];
+  warnings: Scalars['String']['output'];
 };
 
 export type FlagData = {
   __typename?: 'FlagData';
   activePeriod?: Maybe<ActivePeriod>;
-  flagName?: Maybe<Scalars['String']>;
+  flagName?: Maybe<Scalars['String']['output']>;
 };
 
 export type FlagPacket = {
@@ -531,49 +540,49 @@ export type FlagPacket = {
 
 export type FlatData = {
   __typename?: 'FlatData';
-  batteryVoltage?: Maybe<Scalars['Float']>;
+  batteryVoltage?: Maybe<Scalars['Float']['output']>;
   chargeController?: Maybe<FlatDataChargeController>;
   /** Returns a comma separated string of the names of connected devices */
-  deviceInfoString: Scalars['String'];
+  deviceInfoString: Scalars['String']['output'];
   /** Returns the errors if there are any, empty string if no errors. Errors are formatted with device first, then error description */
-  errorsString: Scalars['String'];
+  errorsString: Scalars['String']['output'];
   fx?: Maybe<FlatDataFX>;
   /** Returns a string representing the operating modes of all the devices */
-  operatingModeString: Scalars['String'];
+  operatingModeString: Scalars['String']['output'];
 };
 
 export type FlatDataChargeController = {
   __typename?: 'FlatDataChargeController';
-  chargerWattage: Scalars['Float'];
-  pvWattage: Scalars['Float'];
+  chargerWattage: Scalars['Float']['output'];
+  pvWattage: Scalars['Float']['output'];
 };
 
 export type FlatDataFX = {
   __typename?: 'FlatDataFX';
   /** The buy wattage from the AC being used by the FX(s) */
-  acBuyWattage: Scalars['Float'];
+  acBuyWattage: Scalars['Float']['output'];
   /** The charging wattage from the AC being used by the FX(s) */
-  acChargeWattage: Scalars['Float'];
+  acChargeWattage: Scalars['Float']['output'];
   acMode: ACMode;
-  loadWattage: Scalars['Float'];
-  miscModesString: Scalars['String'];
+  loadWattage: Scalars['Float']['output'];
+  miscModesString: Scalars['String']['output'];
   /** Returns the warnings if there are any, empty string if no errors. Errors are formatted with device first, then error description */
-  warningsString: Scalars['String'];
+  warningsString: Scalars['String']['output'];
 };
 
 export type Forecast = {
   __typename?: 'Forecast';
-  energyGenerationEstimate: Scalars['Float'];
-  period?: Maybe<Scalars['Duration']>;
-  period_end?: Maybe<Scalars['Instant']>;
-  period_midpoint?: Maybe<Scalars['Instant']>;
-  period_start?: Maybe<Scalars['Instant']>;
-  pv_estimate: Scalars['Float'];
-  pv_estimate10: Scalars['Float'];
-  pv_estimate10_watts: Scalars['Float'];
-  pv_estimate90: Scalars['Float'];
-  pv_estimate90_watts: Scalars['Float'];
-  pv_estimate_watts: Scalars['Float'];
+  energyGenerationEstimate: Scalars['Float']['output'];
+  period?: Maybe<Scalars['Duration']['output']>;
+  period_end?: Maybe<Scalars['Instant']['output']>;
+  period_midpoint?: Maybe<Scalars['Instant']['output']>;
+  period_start?: Maybe<Scalars['Instant']['output']>;
+  pv_estimate: Scalars['Float']['output'];
+  pv_estimate10: Scalars['Float']['output'];
+  pv_estimate10_watts: Scalars['Float']['output'];
+  pv_estimate90: Scalars['Float']['output'];
+  pv_estimate90_watts: Scalars['Float']['output'];
+  pv_estimate_watts: Scalars['Float']['output'];
 };
 
 export type Identifiable = {
@@ -584,35 +593,35 @@ export type Identifiable = {
 
 export type IdentificationCacheDataPacket_ChargeControllerAccumulationDataCache = {
   __typename?: 'IdentificationCacheDataPacket_ChargeControllerAccumulationDataCache';
-  _id?: Maybe<Scalars['String']>;
-  cacheName: Scalars['String'];
+  _id?: Maybe<Scalars['String']['output']>;
+  cacheName: Scalars['String']['output'];
   nodes?: Maybe<Array<Maybe<IdentificationCacheNode_ChargeControllerAccumulationDataCache>>>;
-  periodDurationMillis: Scalars['Long'];
-  periodStartDateMillis: Scalars['Long'];
-  sourceId: Scalars['String'];
+  periodDurationMillis: Scalars['Long']['output'];
+  periodStartDateMillis: Scalars['Long']['output'];
+  sourceId: Scalars['String']['output'];
 };
 
 export type IdentificationCacheNode_ChargeControllerAccumulationDataCache = {
   __typename?: 'IdentificationCacheNode_ChargeControllerAccumulationDataCache';
   data: ChargeControllerAccumulationDataCache;
-  fragmentId: Scalars['Int'];
+  fragmentId: Scalars['Int']['output'];
 };
 
 /** Contains a representation that is unique across all packets in a particular fragment */
 export type Identifier = {
   __typename?: 'Identifier';
   /** A string representation of this identifier */
-  representation: Scalars['String'];
+  representation: Scalars['String']['output'];
 };
 
 /** Contains info used to show human readable identifiers */
 export type IdentityInfo = {
   __typename?: 'IdentityInfo';
-  displayName?: Maybe<Scalars['String']>;
-  name: Scalars['String'];
-  shortName: Scalars['String'];
+  displayName?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  shortName: Scalars['String']['output'];
   stripExtra?: Maybe<IdentityInfo>;
-  suffix: Scalars['String'];
+  suffix: Scalars['String']['output'];
 };
 
 export enum InputVoltageStatus {
@@ -625,14 +634,14 @@ export enum InputVoltageStatus {
 export type KnownSupplementaryIdentifier_OutbackIdentifier = {
   __typename?: 'KnownSupplementaryIdentifier_OutbackIdentifier';
   /** A string representation of this identifier */
-  representation: Scalars['String'];
+  representation: Scalars['String']['output'];
   supplementaryTo: OutbackIdentifier;
 };
 
 export type KnownSupplementaryIdentifier_RoverIdentifier = {
   __typename?: 'KnownSupplementaryIdentifier_RoverIdentifier';
   /** A string representation of this identifier */
-  representation: Scalars['String'];
+  representation: Scalars['String']['output'];
   supplementaryTo: RoverIdentifier;
 };
 
@@ -644,25 +653,25 @@ export enum LoadTimingControlSelection {
 export type MXAuxModeChangePacket = {
   __typename?: 'MXAuxModeChangePacket';
   /** The address of the port that this device is plugged in to. If 0, this is plugged in to the mate */
-  address: Scalars['Int'];
+  address: Scalars['Int']['output'];
   identifier: KnownSupplementaryIdentifier_OutbackIdentifier;
   identityInfo: IdentityInfo;
   packetType: SolarEventPacketType;
-  previousRawAuxModeValue?: Maybe<Scalars['Int']>;
-  rawAuxModeValue: Scalars['Int'];
+  previousRawAuxModeValue?: Maybe<Scalars['Int']['output']>;
+  rawAuxModeValue: Scalars['Int']['output'];
 };
 
 export type MXChargerModeChangePacket = {
   __typename?: 'MXChargerModeChangePacket';
   /** The address of the port that this device is plugged in to. If 0, this is plugged in to the mate */
-  address: Scalars['Int'];
-  chargerModeValue: Scalars['Int'];
-  chargingModeName: Scalars['String'];
+  address: Scalars['Int']['output'];
+  chargerModeValue: Scalars['Int']['output'];
+  chargingModeName: Scalars['String']['output'];
   identifier: KnownSupplementaryIdentifier_OutbackIdentifier;
   identityInfo: IdentityInfo;
   packetType: SolarEventPacketType;
-  previousChargerModeValue?: Maybe<Scalars['Int']>;
-  previousChargingModeName?: Maybe<Scalars['String']>;
+  previousChargerModeValue?: Maybe<Scalars['Int']['output']>;
+  previousChargingModeName?: Maybe<Scalars['String']['output']>;
 };
 
 export enum MXErrorMode {
@@ -674,10 +683,10 @@ export enum MXErrorMode {
 export type MXRawDayEndPacket = {
   __typename?: 'MXRawDayEndPacket';
   /** The address of the port that this device is plugged in to. If 0, this is plugged in to the mate */
-  address: Scalars['Int'];
-  dailyAH: Scalars['Int'];
+  address: Scalars['Int']['output'];
+  dailyAH: Scalars['Int']['output'];
   dailyAHSupport: Support;
-  dailyKWH: Scalars['Float'];
+  dailyKWH: Scalars['Float']['output'];
   identifier: KnownSupplementaryIdentifier_OutbackIdentifier;
   identityInfo: IdentityInfo;
   packetType: SolarEventPacketType;
@@ -686,38 +695,38 @@ export type MXRawDayEndPacket = {
 export type MXStatusPacket = {
   __typename?: 'MXStatusPacket';
   /** The address of the port that this device is plugged in to. If 0, this is plugged in to the mate */
-  address: Scalars['Int'];
+  address: Scalars['Int']['output'];
   /** @deprecated Field no longer supported */
-  ampChargerCurrent: Scalars['Float'];
-  auxBitActive: Scalars['Boolean'];
+  ampChargerCurrent: Scalars['Float']['output'];
+  auxBitActive: Scalars['Boolean']['output'];
   auxMode?: Maybe<AuxMode>;
-  auxModeValue: Scalars['Int'];
-  auxModeValueRaw: Scalars['Int'];
+  auxModeValue: Scalars['Int']['output'];
+  auxModeValueRaw: Scalars['Int']['output'];
   /** The battery voltage */
-  batteryVoltage: Scalars['Float'];
+  batteryVoltage: Scalars['Float']['output'];
   /** @deprecated Field no longer supported */
-  chargerCurrent: Scalars['Int'];
-  chargerMode: Scalars['Int'];
-  chargingCurrent: Scalars['BigDecimal'];
+  chargerCurrent: Scalars['Int']['output'];
+  chargerMode: Scalars['Int']['output'];
+  chargingCurrent: Scalars['BigDecimal']['output'];
   chargingMode: ChargerMode;
-  chargingPower: Scalars['Float'];
-  chksum: Scalars['Int'];
-  dailyAH: Scalars['Int'];
+  chargingPower: Scalars['Float']['output'];
+  chksum: Scalars['Int']['output'];
+  dailyAH: Scalars['Int']['output'];
   dailyAHSupport: Support;
-  dailyKWH: Scalars['Float'];
-  errorMode: Scalars['Int'];
+  dailyKWH: Scalars['Float']['output'];
+  errorMode: Scalars['Int']['output'];
   errorModes: Array<MXErrorMode>;
-  hasError: Scalars['Boolean'];
+  hasError: Scalars['Boolean']['output'];
   identifier: OutbackIdentifier;
   identityInfo: IdentityInfo;
   packetType: SolarStatusPacketType;
-  packetVersion?: Maybe<Scalars['Int']>;
-  pvCurrent: Scalars['Int'];
-  pvVoltage: Scalars['Int'];
-  pvWattage: Scalars['Int'];
-  solarModeName: Scalars['String'];
+  packetVersion?: Maybe<Scalars['Int']['output']>;
+  pvCurrent: Scalars['Int']['output'];
+  pvVoltage: Scalars['Int']['output'];
+  pvWattage: Scalars['Int']['output'];
+  solarModeName: Scalars['String']['output'];
   solarModeType: SolarModeType;
-  solarModeTypeDisplayName: Scalars['String'];
+  solarModeTypeDisplayName: Scalars['String']['output'];
 };
 
 export enum MateCommand {
@@ -756,38 +765,38 @@ export enum Month {
 
 export type MonthDay = {
   __typename?: 'MonthDay';
-  dayOfMonth: Scalars['Int'];
+  dayOfMonth: Scalars['Int']['output'];
   month?: Maybe<Month>;
-  monthValue: Scalars['Int'];
+  monthValue: Scalars['Int']['output'];
 };
 
 /** Mutation root */
 export type Mutation = {
   __typename?: 'Mutation';
-  addAuthorizedSender: Scalars['Boolean'];
-  removeAuthorizedSender: Scalars['Boolean'];
+  addAuthorizedSender: Scalars['Boolean']['output'];
+  removeAuthorizedSender: Scalars['Boolean']['output'];
 };
 
 
 /** Mutation root */
 export type MutationaddAuthorizedSenderArgs = {
-  allowReplace?: InputMaybe<Scalars['Boolean']>;
+  allowReplace?: InputMaybe<Scalars['Boolean']['input']>;
   authorization: DatabaseAuthorizationInput;
-  publicKey: Scalars['String'];
-  sender: Scalars['String'];
+  publicKey: Scalars['String']['input'];
+  sender: Scalars['String']['input'];
 };
 
 
 /** Mutation root */
 export type MutationremoveAuthorizedSenderArgs = {
   authorization: DatabaseAuthorizationInput;
-  sender: Scalars['String'];
+  sender: Scalars['String']['input'];
 };
 
 export type OperatingSettingBundle = {
   __typename?: 'OperatingSettingBundle';
-  durationHours: Scalars['Int'];
-  operatingPowerPercentage: Scalars['Int'];
+  durationHours: Scalars['Int']['output'];
+  operatingPowerPercentage: Scalars['Int']['output'];
 };
 
 export enum OperationalMode {
@@ -810,313 +819,313 @@ export enum OperationalMode {
 export type OutbackIdentifier = {
   __typename?: 'OutbackIdentifier';
   /** The address of the port that this device is plugged in to. If 0, this is plugged in to the mate */
-  address: Scalars['Int'];
+  address: Scalars['Int']['output'];
   /** A string representation of this identifier */
-  representation: Scalars['String'];
+  representation: Scalars['String']['output'];
 };
 
 export type PVCurrentAndVoltage = {
   __typename?: 'PVCurrentAndVoltage';
   identifier: Identifier;
   identityInfo: IdentityInfo;
-  pvCurrent: Scalars['BigDecimal'];
-  pvVoltage: Scalars['BigDecimal'];
-  pvWattage: Scalars['BigDecimal'];
+  pvCurrent: Scalars['BigDecimal']['output'];
+  pvVoltage: Scalars['BigDecimal']['output'];
+  pvWattage: Scalars['BigDecimal']['output'];
 };
 
 export type PacketNode_BasicChargeController = {
   __typename?: 'PacketNode_BasicChargeController';
-  dateMillis: Scalars['Long'];
+  dateMillis: Scalars['Long']['output'];
   fragmentDeviceInfo?: Maybe<DeviceInfoPacket>;
   /** The fragment the packet was from */
-  fragmentId: Scalars['Int'];
-  fragmentIdString: Scalars['String'];
+  fragmentId: Scalars['Int']['output'];
+  fragmentIdString: Scalars['String']['output'];
   packet: BasicChargeController;
   /** The Source ID the packet was from */
-  sourceId: Scalars['String'];
+  sourceId: Scalars['String']['output'];
 };
 
 export type PacketNode_BatteryVoltage = {
   __typename?: 'PacketNode_BatteryVoltage';
-  dateMillis: Scalars['Long'];
+  dateMillis: Scalars['Long']['output'];
   fragmentDeviceInfo?: Maybe<DeviceInfoPacket>;
   /** The fragment the packet was from */
-  fragmentId: Scalars['Int'];
-  fragmentIdString: Scalars['String'];
+  fragmentId: Scalars['Int']['output'];
+  fragmentIdString: Scalars['String']['output'];
   packet: BatteryVoltage;
   /** The Source ID the packet was from */
-  sourceId: Scalars['String'];
+  sourceId: Scalars['String']['output'];
 };
 
 export type PacketNode_CpuTemperaturePacket = {
   __typename?: 'PacketNode_CpuTemperaturePacket';
-  dateMillis: Scalars['Long'];
+  dateMillis: Scalars['Long']['output'];
   fragmentDeviceInfo?: Maybe<DeviceInfoPacket>;
   /** The fragment the packet was from */
-  fragmentId: Scalars['Int'];
-  fragmentIdString: Scalars['String'];
+  fragmentId: Scalars['Int']['output'];
+  fragmentIdString: Scalars['String']['output'];
   packet: CpuTemperaturePacket;
   /** The Source ID the packet was from */
-  sourceId: Scalars['String'];
+  sourceId: Scalars['String']['output'];
 };
 
 export type PacketNode_DailyChargeController = {
   __typename?: 'PacketNode_DailyChargeController';
-  dateMillis: Scalars['Long'];
+  dateMillis: Scalars['Long']['output'];
   fragmentDeviceInfo?: Maybe<DeviceInfoPacket>;
   /** The fragment the packet was from */
-  fragmentId: Scalars['Int'];
-  fragmentIdString: Scalars['String'];
+  fragmentId: Scalars['Int']['output'];
+  fragmentIdString: Scalars['String']['output'];
   packet: DailyChargeController;
   /** The Source ID the packet was from */
-  sourceId: Scalars['String'];
+  sourceId: Scalars['String']['output'];
 };
 
 export type PacketNode_DailyFXPacket = {
   __typename?: 'PacketNode_DailyFXPacket';
-  dateMillis: Scalars['Long'];
+  dateMillis: Scalars['Long']['output'];
   fragmentDeviceInfo?: Maybe<DeviceInfoPacket>;
   /** The fragment the packet was from */
-  fragmentId: Scalars['Int'];
-  fragmentIdString: Scalars['String'];
+  fragmentId: Scalars['Int']['output'];
+  fragmentIdString: Scalars['String']['output'];
   packet: DailyFXPacket;
   /** The Source ID the packet was from */
-  sourceId: Scalars['String'];
+  sourceId: Scalars['String']['output'];
 };
 
 export type PacketNode_DualTemperature = {
   __typename?: 'PacketNode_DualTemperature';
-  dateMillis: Scalars['Long'];
+  dateMillis: Scalars['Long']['output'];
   fragmentDeviceInfo?: Maybe<DeviceInfoPacket>;
   /** The fragment the packet was from */
-  fragmentId: Scalars['Int'];
-  fragmentIdString: Scalars['String'];
+  fragmentId: Scalars['Int']['output'];
+  fragmentIdString: Scalars['String']['output'];
   packet: DualTemperature;
   /** The Source ID the packet was from */
-  sourceId: Scalars['String'];
+  sourceId: Scalars['String']['output'];
 };
 
 export type PacketNode_FXACModeChangePacket = {
   __typename?: 'PacketNode_FXACModeChangePacket';
-  dateMillis: Scalars['Long'];
+  dateMillis: Scalars['Long']['output'];
   fragmentDeviceInfo?: Maybe<DeviceInfoPacket>;
   /** The fragment the packet was from */
-  fragmentId: Scalars['Int'];
-  fragmentIdString: Scalars['String'];
+  fragmentId: Scalars['Int']['output'];
+  fragmentIdString: Scalars['String']['output'];
   packet: FXACModeChangePacket;
   /** The Source ID the packet was from */
-  sourceId: Scalars['String'];
+  sourceId: Scalars['String']['output'];
 };
 
 export type PacketNode_FXAuxStateChangePacket = {
   __typename?: 'PacketNode_FXAuxStateChangePacket';
-  dateMillis: Scalars['Long'];
+  dateMillis: Scalars['Long']['output'];
   fragmentDeviceInfo?: Maybe<DeviceInfoPacket>;
   /** The fragment the packet was from */
-  fragmentId: Scalars['Int'];
-  fragmentIdString: Scalars['String'];
+  fragmentId: Scalars['Int']['output'];
+  fragmentIdString: Scalars['String']['output'];
   packet: FXAuxStateChangePacket;
   /** The Source ID the packet was from */
-  sourceId: Scalars['String'];
+  sourceId: Scalars['String']['output'];
 };
 
 export type PacketNode_FXOperationalModeChangePacket = {
   __typename?: 'PacketNode_FXOperationalModeChangePacket';
-  dateMillis: Scalars['Long'];
+  dateMillis: Scalars['Long']['output'];
   fragmentDeviceInfo?: Maybe<DeviceInfoPacket>;
   /** The fragment the packet was from */
-  fragmentId: Scalars['Int'];
-  fragmentIdString: Scalars['String'];
+  fragmentId: Scalars['Int']['output'];
+  fragmentIdString: Scalars['String']['output'];
   packet: FXOperationalModeChangePacket;
   /** The Source ID the packet was from */
-  sourceId: Scalars['String'];
+  sourceId: Scalars['String']['output'];
 };
 
 export type PacketNode_FXStatusPacket = {
   __typename?: 'PacketNode_FXStatusPacket';
-  dateMillis: Scalars['Long'];
+  dateMillis: Scalars['Long']['output'];
   fragmentDeviceInfo?: Maybe<DeviceInfoPacket>;
   /** The fragment the packet was from */
-  fragmentId: Scalars['Int'];
-  fragmentIdString: Scalars['String'];
+  fragmentId: Scalars['Int']['output'];
+  fragmentIdString: Scalars['String']['output'];
   packet: FXStatusPacket;
   /** The Source ID the packet was from */
-  sourceId: Scalars['String'];
+  sourceId: Scalars['String']['output'];
 };
 
 export type PacketNode_MXAuxModeChangePacket = {
   __typename?: 'PacketNode_MXAuxModeChangePacket';
-  dateMillis: Scalars['Long'];
+  dateMillis: Scalars['Long']['output'];
   fragmentDeviceInfo?: Maybe<DeviceInfoPacket>;
   /** The fragment the packet was from */
-  fragmentId: Scalars['Int'];
-  fragmentIdString: Scalars['String'];
+  fragmentId: Scalars['Int']['output'];
+  fragmentIdString: Scalars['String']['output'];
   packet: MXAuxModeChangePacket;
   /** The Source ID the packet was from */
-  sourceId: Scalars['String'];
+  sourceId: Scalars['String']['output'];
 };
 
 export type PacketNode_MXChargerModeChangePacket = {
   __typename?: 'PacketNode_MXChargerModeChangePacket';
-  dateMillis: Scalars['Long'];
+  dateMillis: Scalars['Long']['output'];
   fragmentDeviceInfo?: Maybe<DeviceInfoPacket>;
   /** The fragment the packet was from */
-  fragmentId: Scalars['Int'];
-  fragmentIdString: Scalars['String'];
+  fragmentId: Scalars['Int']['output'];
+  fragmentIdString: Scalars['String']['output'];
   packet: MXChargerModeChangePacket;
   /** The Source ID the packet was from */
-  sourceId: Scalars['String'];
+  sourceId: Scalars['String']['output'];
 };
 
 export type PacketNode_MXRawDayEndPacket = {
   __typename?: 'PacketNode_MXRawDayEndPacket';
-  dateMillis: Scalars['Long'];
+  dateMillis: Scalars['Long']['output'];
   fragmentDeviceInfo?: Maybe<DeviceInfoPacket>;
   /** The fragment the packet was from */
-  fragmentId: Scalars['Int'];
-  fragmentIdString: Scalars['String'];
+  fragmentId: Scalars['Int']['output'];
+  fragmentIdString: Scalars['String']['output'];
   packet: MXRawDayEndPacket;
   /** The Source ID the packet was from */
-  sourceId: Scalars['String'];
+  sourceId: Scalars['String']['output'];
 };
 
 export type PacketNode_MXStatusPacket = {
   __typename?: 'PacketNode_MXStatusPacket';
-  dateMillis: Scalars['Long'];
+  dateMillis: Scalars['Long']['output'];
   fragmentDeviceInfo?: Maybe<DeviceInfoPacket>;
   /** The fragment the packet was from */
-  fragmentId: Scalars['Int'];
-  fragmentIdString: Scalars['String'];
+  fragmentId: Scalars['Int']['output'];
+  fragmentIdString: Scalars['String']['output'];
   packet: MXStatusPacket;
   /** The Source ID the packet was from */
-  sourceId: Scalars['String'];
+  sourceId: Scalars['String']['output'];
 };
 
 export type PacketNode_PVCurrentAndVoltage = {
   __typename?: 'PacketNode_PVCurrentAndVoltage';
-  dateMillis: Scalars['Long'];
+  dateMillis: Scalars['Long']['output'];
   fragmentDeviceInfo?: Maybe<DeviceInfoPacket>;
   /** The fragment the packet was from */
-  fragmentId: Scalars['Int'];
-  fragmentIdString: Scalars['String'];
+  fragmentId: Scalars['Int']['output'];
+  fragmentIdString: Scalars['String']['output'];
   packet: PVCurrentAndVoltage;
   /** The Source ID the packet was from */
-  sourceId: Scalars['String'];
+  sourceId: Scalars['String']['output'];
 };
 
 export type PacketNode_PzemShuntStatusPacket = {
   __typename?: 'PacketNode_PzemShuntStatusPacket';
-  dateMillis: Scalars['Long'];
+  dateMillis: Scalars['Long']['output'];
   fragmentDeviceInfo?: Maybe<DeviceInfoPacket>;
   /** The fragment the packet was from */
-  fragmentId: Scalars['Int'];
-  fragmentIdString: Scalars['String'];
+  fragmentId: Scalars['Int']['output'];
+  fragmentIdString: Scalars['String']['output'];
   packet: PzemShuntStatusPacket;
   /** The Source ID the packet was from */
-  sourceId: Scalars['String'];
+  sourceId: Scalars['String']['output'];
 };
 
 export type PacketNode_RoverChargingStateChangePacket = {
   __typename?: 'PacketNode_RoverChargingStateChangePacket';
-  dateMillis: Scalars['Long'];
+  dateMillis: Scalars['Long']['output'];
   fragmentDeviceInfo?: Maybe<DeviceInfoPacket>;
   /** The fragment the packet was from */
-  fragmentId: Scalars['Int'];
-  fragmentIdString: Scalars['String'];
+  fragmentId: Scalars['Int']['output'];
+  fragmentIdString: Scalars['String']['output'];
   packet: RoverChargingStateChangePacket;
   /** The Source ID the packet was from */
-  sourceId: Scalars['String'];
+  sourceId: Scalars['String']['output'];
 };
 
 export type PacketNode_RoverStatusPacket = {
   __typename?: 'PacketNode_RoverStatusPacket';
-  dateMillis: Scalars['Long'];
+  dateMillis: Scalars['Long']['output'];
   fragmentDeviceInfo?: Maybe<DeviceInfoPacket>;
   /** The fragment the packet was from */
-  fragmentId: Scalars['Int'];
-  fragmentIdString: Scalars['String'];
+  fragmentId: Scalars['Int']['output'];
+  fragmentIdString: Scalars['String']['output'];
   packet: RoverStatusPacket;
   /** The Source ID the packet was from */
-  sourceId: Scalars['String'];
+  sourceId: Scalars['String']['output'];
 };
 
 export type PacketNode_SolarDevice = {
   __typename?: 'PacketNode_SolarDevice';
-  dateMillis: Scalars['Long'];
+  dateMillis: Scalars['Long']['output'];
   fragmentDeviceInfo?: Maybe<DeviceInfoPacket>;
   /** The fragment the packet was from */
-  fragmentId: Scalars['Int'];
-  fragmentIdString: Scalars['String'];
+  fragmentId: Scalars['Int']['output'];
+  fragmentIdString: Scalars['String']['output'];
   packet: SolarDevice;
   /** The Source ID the packet was from */
-  sourceId: Scalars['String'];
+  sourceId: Scalars['String']['output'];
 };
 
 export type PacketNode_SuccessMateCommandPacket = {
   __typename?: 'PacketNode_SuccessMateCommandPacket';
-  dateMillis: Scalars['Long'];
+  dateMillis: Scalars['Long']['output'];
   fragmentDeviceInfo?: Maybe<DeviceInfoPacket>;
   /** The fragment the packet was from */
-  fragmentId: Scalars['Int'];
-  fragmentIdString: Scalars['String'];
+  fragmentId: Scalars['Int']['output'];
+  fragmentIdString: Scalars['String']['output'];
   packet: SuccessMateCommandPacket;
   /** The Source ID the packet was from */
-  sourceId: Scalars['String'];
+  sourceId: Scalars['String']['output'];
 };
 
 export type PacketNode_TemperaturePacket = {
   __typename?: 'PacketNode_TemperaturePacket';
-  dateMillis: Scalars['Long'];
+  dateMillis: Scalars['Long']['output'];
   fragmentDeviceInfo?: Maybe<DeviceInfoPacket>;
   /** The fragment the packet was from */
-  fragmentId: Scalars['Int'];
-  fragmentIdString: Scalars['String'];
+  fragmentId: Scalars['Int']['output'];
+  fragmentIdString: Scalars['String']['output'];
   meta?: Maybe<DataMetaPacket>;
   packet: TemperaturePacket;
   /** The Source ID the packet was from */
-  sourceId: Scalars['String'];
+  sourceId: Scalars['String']['output'];
 };
 
 export type PacketNode_TracerStatusPacket = {
   __typename?: 'PacketNode_TracerStatusPacket';
-  dateMillis: Scalars['Long'];
+  dateMillis: Scalars['Long']['output'];
   fragmentDeviceInfo?: Maybe<DeviceInfoPacket>;
   /** The fragment the packet was from */
-  fragmentId: Scalars['Int'];
-  fragmentIdString: Scalars['String'];
+  fragmentId: Scalars['Int']['output'];
+  fragmentIdString: Scalars['String']['output'];
   packet: TracerStatusPacket;
   /** The Source ID the packet was from */
-  sourceId: Scalars['String'];
+  sourceId: Scalars['String']['output'];
 };
 
 export type PermissionObject = {
   __typename?: 'PermissionObject';
   /** @deprecated Field no longer supported */
-  fragments?: Maybe<Scalars['ObjectScalar']>;
-  publicKey?: Maybe<Scalars['String']>;
+  fragments?: Maybe<Scalars['ObjectScalar']['output']>;
+  publicKey?: Maybe<Scalars['String']['output']>;
 };
 
 export type PzemShuntStatusPacket = {
   __typename?: 'PzemShuntStatusPacket';
-  currentAmps: Scalars['Float'];
-  currentValueRaw: Scalars['Int'];
-  dataId: Scalars['Int'];
-  dataIdString: Scalars['String'];
-  energyKWH: Scalars['Float'];
-  energyValueRaw: Scalars['Int'];
-  energyWattHours: Scalars['Int'];
-  highVoltageAlarmStatus: Scalars['Int'];
+  currentAmps: Scalars['Float']['output'];
+  currentValueRaw: Scalars['Int']['output'];
+  dataId: Scalars['Int']['output'];
+  dataIdString: Scalars['String']['output'];
+  energyKWH: Scalars['Float']['output'];
+  energyValueRaw: Scalars['Int']['output'];
+  energyWattHours: Scalars['Int']['output'];
+  highVoltageAlarmStatus: Scalars['Int']['output'];
   identifier: DataIdentifier;
   identityInfo: IdentityInfo;
-  isHighVoltageAlarm: Scalars['Boolean'];
-  isLowVoltageAlarm: Scalars['Boolean'];
-  lowVoltageAlarmStatus: Scalars['Int'];
-  modbusAddress: Scalars['Int'];
+  isHighVoltageAlarm: Scalars['Boolean']['output'];
+  isLowVoltageAlarm: Scalars['Boolean']['output'];
+  lowVoltageAlarmStatus: Scalars['Int']['output'];
+  modbusAddress: Scalars['Int']['output'];
   packetType: SolarStatusPacketType;
-  powerValueRaw: Scalars['Int'];
-  powerWatts: Scalars['Float'];
-  voltage: Scalars['Float'];
-  voltageValueRaw: Scalars['Int'];
+  powerValueRaw: Scalars['Int']['output'];
+  powerWatts: Scalars['Float']['output'];
+  voltage: Scalars['Float']['output'];
+  voltageValueRaw: Scalars['Int']['output'];
 };
 
 /** Query root */
@@ -1145,129 +1154,129 @@ export type Query = {
   /** Query the latest collection of status packets on or before the 'to' timestamp. */
   queryStatusLast: SolarThingStatusQuery;
   systemStatus?: Maybe<DatabaseSystemStatus>;
-  username?: Maybe<Scalars['String']>;
+  username?: Maybe<Scalars['String']['output']>;
 };
 
 
 /** Query root */
 export type QuerydatabaseAuthorizeArgs = {
-  password: Scalars['String'];
-  username: Scalars['String'];
+  password: Scalars['String']['input'];
+  username: Scalars['String']['input'];
 };
 
 
 /** Query root */
 export type QueryqueryAlterArgs = {
-  sourceId: Scalars['String'];
+  sourceId: Scalars['String']['input'];
 };
 
 
 /** Query root */
 export type QueryqueryBatteryEstimateArgs = {
-  duration?: InputMaybe<Scalars['Duration']>;
-  sourceId?: InputMaybe<Scalars['String']>;
-  to: Scalars['Long'];
+  duration?: InputMaybe<Scalars['Duration']['input']>;
+  sourceId?: InputMaybe<Scalars['String']['input']>;
+  to: Scalars['Long']['input'];
 };
 
 
 /** Query root */
 export type QueryqueryBatteryRecordArgs = {
-  from: Scalars['Long'];
-  sourceId?: InputMaybe<Scalars['String']>;
-  to: Scalars['Long'];
+  from: Scalars['Long']['input'];
+  sourceId?: InputMaybe<Scalars['String']['input']>;
+  to: Scalars['Long']['input'];
 };
 
 
 /** Query root */
 export type QueryqueryEventArgs = {
-  from: Scalars['Long'];
-  includeUnknownChangePackets?: InputMaybe<Scalars['Boolean']>;
-  sourceId?: InputMaybe<Scalars['String']>;
-  to: Scalars['Long'];
+  from: Scalars['Long']['input'];
+  includeUnknownChangePackets?: InputMaybe<Scalars['Boolean']['input']>;
+  sourceId?: InputMaybe<Scalars['String']['input']>;
+  to: Scalars['Long']['input'];
 };
 
 
 /** Query root */
 export type QueryqueryEventFragmentArgs = {
-  fragmentId: Scalars['Int'];
-  from: Scalars['Long'];
-  includeUnknownChangePackets?: InputMaybe<Scalars['Boolean']>;
-  to: Scalars['Long'];
+  fragmentId: Scalars['Int']['input'];
+  from: Scalars['Long']['input'];
+  includeUnknownChangePackets?: InputMaybe<Scalars['Boolean']['input']>;
+  to: Scalars['Long']['input'];
 };
 
 
 /** Query root */
 export type QueryqueryEventIdentifierArgs = {
-  acceptSupplementary?: InputMaybe<Scalars['Boolean']>;
-  fragmentId: Scalars['Int'];
-  from: Scalars['Long'];
-  identifier: Scalars['String'];
-  includeUnknownChangePackets?: InputMaybe<Scalars['Boolean']>;
-  to: Scalars['Long'];
+  acceptSupplementary?: InputMaybe<Scalars['Boolean']['input']>;
+  fragmentId: Scalars['Int']['input'];
+  from: Scalars['Long']['input'];
+  identifier: Scalars['String']['input'];
+  includeUnknownChangePackets?: InputMaybe<Scalars['Boolean']['input']>;
+  to: Scalars['Long']['input'];
 };
 
 
 /** Query root */
 export type QueryqueryFXChargingArgs = {
-  fragmentId: Scalars['Int'];
-  from: Scalars['Long'];
-  to: Scalars['Long'];
+  fragmentId: Scalars['Int']['input'];
+  from: Scalars['Long']['input'];
+  to: Scalars['Long']['input'];
 };
 
 
 /** Query root */
 export type QueryqueryFullDayArgs = {
-  from: Scalars['Long'];
-  sourceId?: InputMaybe<Scalars['String']>;
-  to: Scalars['Long'];
-  useCache?: InputMaybe<Scalars['Boolean']>;
+  from: Scalars['Long']['input'];
+  sourceId?: InputMaybe<Scalars['String']['input']>;
+  to: Scalars['Long']['input'];
+  useCache?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 
 /** Query root */
 export type QueryqueryLongTermMillisArgs = {
-  from: Scalars['Long'];
-  sourceId?: InputMaybe<Scalars['String']>;
-  to: Scalars['Long'];
+  from: Scalars['Long']['input'];
+  sourceId?: InputMaybe<Scalars['String']['input']>;
+  to: Scalars['Long']['input'];
 };
 
 
 /** Query root */
 export type QueryqueryLongTermMonthArgs = {
   month?: InputMaybe<Month>;
-  sourceId?: InputMaybe<Scalars['String']>;
-  year: Scalars['Int'];
+  sourceId?: InputMaybe<Scalars['String']['input']>;
+  year: Scalars['Int']['input'];
 };
 
 
 /** Query root */
 export type QueryquerySolcastArgs = {
-  from: Scalars['Long'];
-  sourceId: Scalars['String'];
-  to: Scalars['Long'];
+  from: Scalars['Long']['input'];
+  sourceId: Scalars['String']['input'];
+  to: Scalars['Long']['input'];
 };
 
 
 /** Query root */
 export type QueryquerySolcastDayArgs = {
-  sourceId: Scalars['String'];
-  to: Scalars['Long'];
+  sourceId: Scalars['String']['input'];
+  to: Scalars['Long']['input'];
 };
 
 
 /** Query root */
 export type QueryqueryStatusArgs = {
-  from: Scalars['Long'];
-  sourceId?: InputMaybe<Scalars['String']>;
-  to: Scalars['Long'];
+  from: Scalars['Long']['input'];
+  sourceId?: InputMaybe<Scalars['String']['input']>;
+  to: Scalars['Long']['input'];
 };
 
 
 /** Query root */
 export type QueryqueryStatusLastArgs = {
-  reversed?: InputMaybe<Scalars['Boolean']>;
-  sourceId?: InputMaybe<Scalars['String']>;
-  to: Scalars['Long'];
+  reversed?: InputMaybe<Scalars['Boolean']['input']>;
+  sourceId?: InputMaybe<Scalars['String']['input']>;
+  to: Scalars['Long']['input'];
 };
 
 
@@ -1289,13 +1298,13 @@ export enum RoverBatteryType {
 export type RoverChargingStateChangePacket = {
   __typename?: 'RoverChargingStateChangePacket';
   chargingMode: ChargingState;
-  chargingStateValue: Scalars['Int'];
+  chargingStateValue: Scalars['Int']['output'];
   identifier: KnownSupplementaryIdentifier_RoverIdentifier;
   identityInfo: IdentityInfo;
-  number: Scalars['Int'];
+  number: Scalars['Int']['output'];
   packetType: SolarEventPacketType;
   previousChargingMode?: Maybe<ChargingState>;
-  previousChargingStateValue?: Maybe<Scalars['Int']>;
+  previousChargingStateValue?: Maybe<Scalars['Int']['output']>;
 };
 
 export enum RoverErrorMode {
@@ -1318,139 +1327,139 @@ export enum RoverErrorMode {
 
 export type RoverIdentifier = {
   __typename?: 'RoverIdentifier';
-  number: Scalars['Int'];
+  number: Scalars['Int']['output'];
   /** A string representation of this identifier */
-  representation: Scalars['String'];
+  representation: Scalars['String']['output'];
 };
 
 /** Status packet for Rover and Rover-like devices */
 export type RoverStatusPacket = {
   __typename?: 'RoverStatusPacket';
   /** The state of charge of the battery. (A number from 0 to 100). Note this is not usually accurate. */
-  batteryCapacitySOC: Scalars['Int'];
-  batteryFullChargesCount: Scalars['Int'];
-  batteryOverDischargesCount: Scalars['Int'];
-  batteryTemperatureCelsius: Scalars['Int'];
-  batteryTemperatureFahrenheit: Scalars['Float'];
-  batteryTemperatureRaw: Scalars['Int'];
-  batteryType?: Maybe<RoverBatteryType>;
-  batteryTypeValue: Scalars['Int'];
+  batteryCapacitySOC: Scalars['Int']['output'];
+  batteryFullChargesCount: Scalars['Int']['output'];
+  batteryOverDischargesCount: Scalars['Int']['output'];
+  batteryTemperatureCelsius: Scalars['Int']['output'];
+  batteryTemperatureFahrenheit: Scalars['Float']['output'];
+  batteryTemperatureRaw: Scalars['Int']['output'];
+  batteryType: RoverBatteryType;
+  batteryTypeValue: Scalars['Int']['output'];
   /** The battery voltage */
-  batteryVoltage: Scalars['Float'];
-  boostChargingRecoveryVoltageRaw: Scalars['Int'];
-  boostChargingTimeRaw: Scalars['Int'];
-  boostChargingVoltageRaw: Scalars['Int'];
-  chargingAmpHoursOfBatteryCount: Scalars['Int'];
-  chargingCurrent: Scalars['Float'];
+  batteryVoltage: Scalars['Float']['output'];
+  boostChargingRecoveryVoltageRaw: Scalars['Int']['output'];
+  boostChargingTimeRaw: Scalars['Int']['output'];
+  boostChargingVoltageRaw: Scalars['Int']['output'];
+  chargingAmpHoursOfBatteryCount: Scalars['Int']['output'];
+  chargingCurrent: Scalars['Float']['output'];
   chargingMode: ChargingState;
-  chargingPower: Scalars['Int'];
-  chargingState: Scalars['Int'];
-  chargingVoltageLimitRaw: Scalars['Int'];
+  chargingPower: Scalars['Int']['output'];
+  chargingState: Scalars['Int']['output'];
+  chargingVoltageLimitRaw: Scalars['Int']['output'];
   /** The modbus address of the device */
-  controllerDeviceAddress: Scalars['Int'];
-  controllerTemperatureCelsius: Scalars['Int'];
-  controllerTemperatureFahrenheit: Scalars['Float'];
-  controllerTemperatureRaw: Scalars['Int'];
-  cumulativeKWH: Scalars['Float'];
-  cumulativeKWHConsumption: Scalars['Float'];
-  dailyAH: Scalars['Int'];
-  dailyAHDischarging: Scalars['Int'];
-  dailyKWH: Scalars['Float'];
-  dailyKWHConsumption: Scalars['Float'];
+  controllerDeviceAddress: Scalars['Int']['output'];
+  controllerTemperatureCelsius: Scalars['Int']['output'];
+  controllerTemperatureFahrenheit: Scalars['Float']['output'];
+  controllerTemperatureRaw: Scalars['Int']['output'];
+  cumulativeKWH: Scalars['Float']['output'];
+  cumulativeKWHConsumption: Scalars['Float']['output'];
+  dailyAH: Scalars['Int']['output'];
+  dailyAHDischarging: Scalars['Int']['output'];
+  dailyKWH: Scalars['Float']['output'];
+  dailyKWHConsumption: Scalars['Float']['output'];
   /** The maximum battery voltage for the day. Note this may reset at a different time compared to min battery voltage for the day. */
-  dailyMaxBatteryVoltage: Scalars['Float'];
-  dailyMaxChargingCurrent: Scalars['Float'];
-  dailyMaxChargingPower: Scalars['Int'];
-  dailyMaxDischargingCurrent: Scalars['Float'];
-  dailyMaxDischargingPower: Scalars['Int'];
+  dailyMaxBatteryVoltage: Scalars['Float']['output'];
+  dailyMaxChargingCurrent: Scalars['Float']['output'];
+  dailyMaxChargingPower: Scalars['Int']['output'];
+  dailyMaxDischargingCurrent: Scalars['Float']['output'];
+  dailyMaxDischargingPower: Scalars['Int']['output'];
   /** The minimum battery voltage for the day. Note this may reset at a different time compared to max battery voltage for the day. */
-  dailyMinBatteryVoltage: Scalars['Float'];
+  dailyMinBatteryVoltage: Scalars['Float']['output'];
   dcdcErrorModes: Array<DcdcErrorMode>;
   /** The DcdcErrorMode or an empty list if this is not a DCDC charge controller */
   dcdcErrorModesOrEmpty: Array<DcdcErrorMode>;
-  dischargingAmpHoursOfBatteryCount: Scalars['Int'];
-  dischargingLimitVoltageRaw: Scalars['Int'];
-  endOfChargeSOC: Scalars['Int'];
-  endOfDischargeSOC: Scalars['Int'];
-  equalizingChargingIntervalRaw: Scalars['Int'];
-  equalizingChargingTimeRaw: Scalars['Int'];
-  equalizingChargingVoltageRaw: Scalars['Int'];
-  errorMode: Scalars['Int'];
+  dischargingAmpHoursOfBatteryCount: Scalars['Int']['output'];
+  dischargingLimitVoltageRaw: Scalars['Int']['output'];
+  endOfChargeSOC: Scalars['Int']['output'];
+  endOfDischargeSOC: Scalars['Int']['output'];
+  equalizingChargingIntervalRaw: Scalars['Int']['output'];
+  equalizingChargingTimeRaw: Scalars['Int']['output'];
+  equalizingChargingVoltageRaw: Scalars['Int']['output'];
+  errorMode: Scalars['Int']['output'];
   errorModes: Array<SimpleRoverErrorMode>;
-  floatingChargingVoltageRaw: Scalars['Int'];
-  generatorCurrent: Scalars['Float'];
-  generatorPower: Scalars['Int'];
-  generatorVoltage: Scalars['Float'];
+  floatingChargingVoltageRaw: Scalars['Int']['output'];
+  generatorCurrent: Scalars['Float']['output'];
+  generatorPower: Scalars['Int']['output'];
+  generatorVoltage: Scalars['Float']['output'];
   hardwareVersion?: Maybe<Version>;
-  hardwareVersionValue: Scalars['Int'];
-  hasError: Scalars['Boolean'];
-  hasLoad: Scalars['Boolean'];
+  hardwareVersionValue: Scalars['Int']['output'];
+  hasError: Scalars['Boolean']['output'];
+  hasLoad: Scalars['Boolean']['output'];
   identifier: RoverIdentifier;
   identityInfo: IdentityInfo;
-  isDcdc: Scalars['Boolean'];
-  ledLoadCurrentRaw?: Maybe<Scalars['Int']>;
-  ledLoadCurrentSettingRaw: Scalars['Int'];
+  isDcdc: Scalars['Boolean']['output'];
+  ledLoadCurrentRaw?: Maybe<Scalars['Int']['output']>;
+  ledLoadCurrentSettingRaw: Scalars['Int']['output'];
   /** Usually does not represent any meaningful value */
-  lightControlDelayMinutes: Scalars['Int'];
+  lightControlDelayMinutes: Scalars['Int']['output'];
   /** Usually does not represent any meaningful value */
-  lightControlVoltage: Scalars['Int'];
-  loadCurrent: Scalars['Float'];
-  loadPower: Scalars['Int'];
-  loadVoltage: Scalars['Float'];
-  loadWorkingMode: Scalars['Int'];
-  maxVoltage: Scalars['Int'];
+  lightControlVoltage: Scalars['Int']['output'];
+  loadCurrent: Scalars['Float']['output'];
+  loadPower: Scalars['Int']['output'];
+  loadVoltage: Scalars['Float']['output'];
+  loadWorkingMode: Scalars['Int']['output'];
+  maxVoltage: Scalars['Int']['output'];
   /** Nominal battery capacity in AH. Usually this is not accurate. */
-  nominalBatteryCapacity: Scalars['Int'];
-  number: Scalars['Int'];
-  operatingDaysCount: Scalars['Int'];
+  nominalBatteryCapacity: Scalars['Int']['output'];
+  number: Scalars['Int']['output'];
+  operatingDaysCount: Scalars['Int']['output'];
   operatingMorningOn?: Maybe<OperatingSettingBundle>;
   operatingStage1?: Maybe<OperatingSettingBundle>;
   operatingStage2?: Maybe<OperatingSettingBundle>;
   operatingStage3?: Maybe<OperatingSettingBundle>;
-  overDischargeRecoveryVoltageRaw: Scalars['Int'];
-  overDischargeTimeDelaySeconds: Scalars['Int'];
-  overDischargeVoltageRaw: Scalars['Int'];
-  overVoltageThresholdRaw: Scalars['Int'];
+  overDischargeRecoveryVoltageRaw: Scalars['Int']['output'];
+  overDischargeTimeDelaySeconds: Scalars['Int']['output'];
+  overDischargeVoltageRaw: Scalars['Int']['output'];
+  overVoltageThresholdRaw: Scalars['Int']['output'];
   packetType: SolarStatusPacketType;
-  packetVersion?: Maybe<Scalars['Int']>;
-  productModelEncoded?: Maybe<Scalars['Base64String']>;
-  productModelString: Scalars['String'];
+  packetVersion?: Maybe<Scalars['Int']['output']>;
+  productModelEncoded?: Maybe<Scalars['Base64String']['output']>;
+  productModelString: Scalars['String']['output'];
   /** The product serial number. Note that is not always unique as devices' serial numbers can accidentally be reset. */
-  productSerialNumber: Scalars['Int'];
-  productType: Scalars['Int'];
-  pvCurrent: Scalars['Float'];
-  pvVoltage: Scalars['Float'];
-  pvWattage: Scalars['BigDecimal'];
-  ratedChargingCurrent: Scalars['Int'];
-  ratedDischargingCurrent: Scalars['Int'];
-  recognizedVoltage: Scalars['Int'];
+  productSerialNumber: Scalars['Int']['output'];
+  productType: Scalars['Int']['output'];
+  pvCurrent: Scalars['Float']['output'];
+  pvVoltage: Scalars['Float']['output'];
+  pvWattage: Scalars['BigDecimal']['output'];
+  ratedChargingCurrent: Scalars['Int']['output'];
+  ratedDischargingCurrent: Scalars['Int']['output'];
+  recognizedVoltage: Scalars['Int']['output'];
   roverErrorModes: Array<RoverErrorMode>;
   /** The RoverErrorModes or an empty list if this is a DCDC charge controller */
   roverErrorModesOrEmpty: Array<RoverErrorMode>;
   sensed1?: Maybe<SensingBundle>;
   sensed2?: Maybe<SensingBundle>;
   sensed3?: Maybe<SensingBundle>;
-  sensingTimeDelayRaw?: Maybe<Scalars['Int']>;
+  sensingTimeDelayRaw?: Maybe<Scalars['Int']['output']>;
   softwareVersion: Version;
-  softwareVersionValue: Scalars['Int'];
-  solarModeName: Scalars['String'];
+  softwareVersionValue: Scalars['Int']['output'];
+  solarModeName: Scalars['String']['output'];
   solarModeType: SolarModeType;
-  solarModeTypeDisplayName: Scalars['String'];
+  solarModeTypeDisplayName: Scalars['String']['output'];
   specialPowerControlE02D?: Maybe<SpecialPowerControl_E02D>;
-  specialPowerControlE02DRaw?: Maybe<Scalars['Int']>;
+  specialPowerControlE02DRaw?: Maybe<Scalars['Int']['output']>;
   specialPowerControlE021?: Maybe<SpecialPowerControl_E021>;
-  specialPowerControlE021Raw: Scalars['Int'];
-  streetLightValue: Scalars['Int'];
-  systemVoltageSetting: Scalars['Int'];
-  temperatureCompensationFactorRaw: Scalars['Int'];
-  underVoltageWarningLevelRaw: Scalars['Int'];
+  specialPowerControlE021Raw: Scalars['Int']['output'];
+  streetLightValue: Scalars['Int']['output'];
+  systemVoltageSetting: Scalars['Int']['output'];
+  temperatureCompensationFactorRaw: Scalars['Int']['output'];
+  underVoltageWarningLevelRaw: Scalars['Int']['output'];
 };
 
 export type ScheduledCommandData = {
   __typename?: 'ScheduledCommandData';
-  commandName: Scalars['String'];
-  scheduledTimeMillis: Scalars['Long'];
-  targetFragmentIds: Array<Maybe<Scalars['Int']>>;
+  commandName: Scalars['String']['output'];
+  scheduledTimeMillis: Scalars['Long']['output'];
+  targetFragmentIds: Array<Maybe<Scalars['Int']['output']>>;
 };
 
 export type ScheduledCommandPacket = {
@@ -1468,44 +1477,44 @@ export enum SecurityPacketType {
 
 export type SensingBundle = {
   __typename?: 'SensingBundle';
-  powerWithNoPeopleSensedRaw: Scalars['Int'];
-  powerWithPeopleSensedRaw: Scalars['Int'];
-  workingHoursRaw: Scalars['Int'];
+  powerWithNoPeopleSensedRaw: Scalars['Int']['output'];
+  powerWithPeopleSensedRaw: Scalars['Int']['output'];
+  workingHoursRaw: Scalars['Int']['output'];
 };
 
 export type SimpleEstimatedActual = {
   __typename?: 'SimpleEstimatedActual';
-  energyGenerationEstimate: Scalars['Float'];
-  period?: Maybe<Scalars['Duration']>;
-  period_end?: Maybe<Scalars['Instant']>;
-  period_midpoint?: Maybe<Scalars['Instant']>;
-  period_start?: Maybe<Scalars['Instant']>;
-  pv_estimate: Scalars['Float'];
-  pv_estimate_watts: Scalars['Float'];
+  energyGenerationEstimate: Scalars['Float']['output'];
+  period?: Maybe<Scalars['Duration']['output']>;
+  period_end?: Maybe<Scalars['Instant']['output']>;
+  period_midpoint?: Maybe<Scalars['Instant']['output']>;
+  period_start?: Maybe<Scalars['Instant']['output']>;
+  pv_estimate: Scalars['Float']['output'];
+  pv_estimate_watts: Scalars['Float']['output'];
 };
 
 export type SimpleNode_AuthNewSenderPacket = {
   __typename?: 'SimpleNode_AuthNewSenderPacket';
   data: AuthNewSenderPacket;
-  dateMillis: Scalars['Long'];
+  dateMillis: Scalars['Long']['output'];
 };
 
 export type SimpleNode_FlatData = {
   __typename?: 'SimpleNode_FlatData';
   data: FlatData;
-  dateMillis: Scalars['Long'];
+  dateMillis: Scalars['Long']['output'];
 };
 
 export type SimpleNode_Float = {
   __typename?: 'SimpleNode_Float';
-  data: Scalars['Float'];
-  dateMillis: Scalars['Long'];
+  data: Scalars['Float']['output'];
+  dateMillis: Scalars['Long']['output'];
 };
 
 export type SimpleRoverErrorMode = {
   __typename?: 'SimpleRoverErrorMode';
-  maskValue: Scalars['Int'];
-  modeName: Scalars['String'];
+  maskValue: Scalars['Int']['output'];
+  modeName: Scalars['String']['output'];
 };
 
 export type SolarDevice = {
@@ -1513,9 +1522,9 @@ export type SolarDevice = {
   identifier: Identifier;
   identityInfo: IdentityInfo;
   solarMode: SolarMode;
-  solarModeName: Scalars['String'];
+  solarModeName: Scalars['String']['output'];
   solarModeType: SolarModeType;
-  solarModeTypeDisplayName: Scalars['String'];
+  solarModeTypeDisplayName: Scalars['String']['output'];
 };
 
 export enum SolarEventPacketType {
@@ -1547,7 +1556,7 @@ export enum SolarExtraPacketType {
 
 export type SolarMode = {
   __typename?: 'SolarMode';
-  modeName: Scalars['String'];
+  modeName: Scalars['String']['output'];
   solarModeType: SolarModeType;
 };
 
@@ -1585,7 +1594,7 @@ export enum SolarStatusPacketType {
 
 export type SolarThingAlterQuery = {
   __typename?: 'SolarThingAlterQuery';
-  activeFlagStrings: Array<Scalars['String']>;
+  activeFlagStrings: Array<Scalars['String']['output']>;
   activeFlags: Array<FlagPacket>;
   flags: Array<FlagPacket>;
   scheduledCommands: Array<ScheduledCommandPacket>;
@@ -1593,12 +1602,12 @@ export type SolarThingAlterQuery = {
 
 
 export type SolarThingAlterQueryactiveFlagsArgs = {
-  dateMillis: Scalars['Long'];
+  dateMillis: Scalars['Long']['input'];
 };
 
 
 export type SolarThingAlterQueryflagsArgs = {
-  mustBeActive?: InputMaybe<Scalars['Boolean']>;
+  mustBeActive?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type SolarThingBatteryEstimate = {
@@ -1608,7 +1617,7 @@ export type SolarThingBatteryEstimate = {
 
 
 export type SolarThingBatteryEstimatequeryEstimateArgs = {
-  ratio: Scalars['Float'];
+  ratio: Scalars['Float']['input'];
 };
 
 export type SolarThingBatteryRecordQuery = {
@@ -1673,7 +1682,7 @@ export type SolarThingSolcastDayQuery = {
 
 
 export type SolarThingSolcastDayQueryqueryEnergyEstimateArgs = {
-  offset?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type SolarThingSolcastQuery = {
@@ -1685,7 +1694,7 @@ export type SolarThingSolcastQuery = {
 
 
 export type SolarThingSolcastQueryqueryForecastsArgs = {
-  includePast?: InputMaybe<Scalars['Boolean']>;
+  includePast?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type SolarThingStatusQuery = {
@@ -1712,47 +1721,47 @@ export type SolarThingStatusQuery = {
 export type SpecialPowerControl_E02D = {
   __typename?: 'SpecialPowerControl_E02D';
   batteryType?: Maybe<BatteryType>;
-  batteryTypeValueCode: Scalars['Int'];
+  batteryTypeValueCode: Scalars['Int']['output'];
   chargingMethod?: Maybe<ChargingMethod_E02D>;
-  chargingMethodValueCode: Scalars['Int'];
-  combined: Scalars['Int'];
-  combinedShort: Scalars['Short'];
-  formattedInfo?: Maybe<Scalars['String']>;
-  is24VSystem: Scalars['Boolean'];
-  isEachNightOnEnabled: Scalars['Boolean'];
-  isIntelligentPowerEnabled: Scalars['Boolean'];
-  isLithiumBattery: Scalars['Boolean'];
-  isNoChargingBelow0CEnabled: Scalars['Boolean'];
-  lower: Scalars['Int'];
-  rawChargingMethodValueCode: Scalars['Int'];
+  chargingMethodValueCode: Scalars['Int']['output'];
+  combined: Scalars['Int']['output'];
+  combinedShort: Scalars['Short']['output'];
+  formattedInfo?: Maybe<Scalars['String']['output']>;
+  is24VSystem: Scalars['Boolean']['output'];
+  isEachNightOnEnabled: Scalars['Boolean']['output'];
+  isIntelligentPowerEnabled: Scalars['Boolean']['output'];
+  isLithiumBattery: Scalars['Boolean']['output'];
+  isNoChargingBelow0CEnabled: Scalars['Boolean']['output'];
+  lower: Scalars['Int']['output'];
+  rawChargingMethodValueCode: Scalars['Int']['output'];
   systemVoltage?: Maybe<SystemVoltage>;
-  systemVoltageValueCode: Scalars['Int'];
-  upper: Scalars['Int'];
+  systemVoltageValueCode: Scalars['Int']['output'];
+  upper: Scalars['Int']['output'];
 };
 
 export type SpecialPowerControl_E021 = {
   __typename?: 'SpecialPowerControl_E021';
   chargingMethod?: Maybe<ChargingMethod_E021>;
-  chargingMethodValueCode: Scalars['Int'];
-  combined: Scalars['Int'];
-  combinedShort: Scalars['Short'];
-  formattedInfo?: Maybe<Scalars['String']>;
-  isChargingModeControlledByVoltage: Scalars['Boolean'];
-  isEachNightOnEnabled: Scalars['Boolean'];
-  isNoChargingBelow0CEnabled: Scalars['Boolean'];
-  isSpecialPowerControlEnabled: Scalars['Boolean'];
-  lower: Scalars['Int'];
-  upper: Scalars['Int'];
+  chargingMethodValueCode: Scalars['Int']['output'];
+  combined: Scalars['Int']['output'];
+  combinedShort: Scalars['Short']['output'];
+  formattedInfo?: Maybe<Scalars['String']['output']>;
+  isChargingModeControlledByVoltage: Scalars['Boolean']['output'];
+  isEachNightOnEnabled: Scalars['Boolean']['output'];
+  isNoChargingBelow0CEnabled: Scalars['Boolean']['output'];
+  isSpecialPowerControlEnabled: Scalars['Boolean']['output'];
+  lower: Scalars['Int']['output'];
+  upper: Scalars['Int']['output'];
 };
 
 export type SuccessMateCommandPacket = {
   __typename?: 'SuccessMateCommandPacket';
   command: MateCommand;
-  commandName: Scalars['String'];
+  commandName: Scalars['String']['output'];
   executionReason?: Maybe<ExecutionReason>;
   packetType: MateCommandFeedbackPacketType;
-  packetVersion?: Maybe<Scalars['Int']>;
-  source: Scalars['String'];
+  packetVersion?: Maybe<Scalars['Int']['output']>;
+  source: Scalars['String']['output'];
 };
 
 export enum Support {
@@ -1775,14 +1784,14 @@ export enum TargetedMetaPacketType {
 
 export type TemperaturePacket = {
   __typename?: 'TemperaturePacket';
-  dataId: Scalars['Int'];
-  dataIdString: Scalars['String'];
+  dataId: Scalars['Int']['output'];
+  dataIdString: Scalars['String']['output'];
   identifier: DataIdentifier;
   identityInfo: IdentityInfo;
   packetType: WeatherPacketType;
   source: DeviceSource;
-  temperatureCelsius: Scalars['Float'];
-  temperatureFahrenheit: Scalars['Float'];
+  temperatureCelsius: Scalars['Float']['output'];
+  temperatureFahrenheit: Scalars['Float']['output'];
 };
 
 export enum TracerBatteryTemperatureStatus {
@@ -1813,152 +1822,152 @@ export enum TracerChargingType {
 
 export type TracerIdentifier = {
   __typename?: 'TracerIdentifier';
-  number: Scalars['Int'];
+  number: Scalars['Int']['output'];
   /** A string representation of this identifier */
-  representation: Scalars['String'];
+  representation: Scalars['String']['output'];
 };
 
 export type TracerStatusPacket = {
   __typename?: 'TracerStatusPacket';
-  ambientTemperatureCelsius: Scalars['Float'];
-  batteryCapacityAmpHours: Scalars['Int'];
+  ambientTemperatureCelsius: Scalars['Float']['output'];
+  batteryCapacityAmpHours: Scalars['Int']['output'];
   batteryDetection: BatteryDetection;
   batteryManagementMode: BatteryManagementMode;
-  batteryManagementModeValue: Scalars['Int'];
-  batteryRatedVoltageCode: Scalars['Int'];
-  batterySOC: Scalars['Int'];
-  batteryStatusValue: Scalars['Int'];
-  batteryTemperatureCelsius: Scalars['Float'];
-  batteryTemperatureCelsius331D: Scalars['Float'];
-  batteryTemperatureFahrenheit: Scalars['Float'];
+  batteryManagementModeValue: Scalars['Int']['output'];
+  batteryRatedVoltageCode: Scalars['Int']['output'];
+  batterySOC: Scalars['Int']['output'];
+  batteryStatusValue: Scalars['Int']['output'];
+  batteryTemperatureCelsius: Scalars['Float']['output'];
+  batteryTemperatureCelsius331D: Scalars['Float']['output'];
+  batteryTemperatureFahrenheit: Scalars['Float']['output'];
   batteryTemperatureStatus: TracerBatteryTemperatureStatus;
-  batteryTemperatureWarningLowerLimit: Scalars['Float'];
-  batteryTemperatureWarningUpperLimit: Scalars['Float'];
+  batteryTemperatureWarningLowerLimit: Scalars['Float']['output'];
+  batteryTemperatureWarningUpperLimit: Scalars['Float']['output'];
   batteryType: TracerBatteryType;
-  batteryTypeValue: Scalars['Int'];
+  batteryTypeValue: Scalars['Int']['output'];
   /** The battery voltage */
-  batteryVoltage: Scalars['Float'];
+  batteryVoltage: Scalars['Float']['output'];
   batteryVoltageStatus: TracerBatteryVoltageStatus;
-  boostDurationMinutes: Scalars['Int'];
-  boostReconnectVoltage: Scalars['Float'];
-  boostVoltage: Scalars['Float'];
-  carbonDioxideReductionTons: Scalars['Float'];
-  chargingCurrent: Scalars['Float'];
-  chargingEquipmentStatusValue: Scalars['Int'];
-  chargingLimitVoltage: Scalars['Float'];
+  boostDurationMinutes: Scalars['Int']['output'];
+  boostReconnectVoltage: Scalars['Float']['output'];
+  boostVoltage: Scalars['Float']['output'];
+  carbonDioxideReductionTons: Scalars['Float']['output'];
+  chargingCurrent: Scalars['Float']['output'];
+  chargingEquipmentStatusValue: Scalars['Int']['output'];
+  chargingLimitVoltage: Scalars['Float']['output'];
   chargingMode: ChargingStatus;
-  chargingPercentage: Scalars['Int'];
-  chargingPower: Scalars['Float'];
+  chargingPercentage: Scalars['Int']['output'];
+  chargingPower: Scalars['Float']['output'];
   chargingStatus: ChargingStatus;
-  chargingStatusName: Scalars['String'];
+  chargingStatusName: Scalars['String']['output'];
   chargingType: TracerChargingType;
-  chargingTypeValue: Scalars['Int'];
+  chargingTypeValue: Scalars['Int']['output'];
   clockMonthDay: MonthDay;
-  clockSolarThing: Scalars['LocalDateTime'];
-  clockTime: Scalars['LocalTime'];
-  clockYearNumber: Scalars['Int'];
-  controllerTemperatureCelsius: Scalars['Float'];
-  controllerTemperatureFahrenheit: Scalars['Float'];
-  cumulativeKWH: Scalars['Float'];
-  cumulativeKWHConsumption: Scalars['Float'];
-  dailyKWH: Scalars['Float'];
-  dailyKWHConsumption: Scalars['Float'];
+  clockSolarThing: Scalars['LocalDateTime']['output'];
+  clockTime: Scalars['LocalTime']['output'];
+  clockYearNumber: Scalars['Int']['output'];
+  controllerTemperatureCelsius: Scalars['Float']['output'];
+  controllerTemperatureFahrenheit: Scalars['Float']['output'];
+  cumulativeKWH: Scalars['Float']['output'];
+  cumulativeKWHConsumption: Scalars['Float']['output'];
+  dailyKWH: Scalars['Float']['output'];
+  dailyKWHConsumption: Scalars['Float']['output'];
   /** The maximum battery voltage for the day. Note this may reset at a different time compared to min battery voltage for the day. */
-  dailyMaxBatteryVoltage: Scalars['Float'];
-  dailyMaxInputVoltage: Scalars['Float'];
+  dailyMaxBatteryVoltage: Scalars['Float']['output'];
+  dailyMaxInputVoltage: Scalars['Float']['output'];
   /** The minimum battery voltage for the day. Note this may reset at a different time compared to max battery voltage for the day. */
-  dailyMinBatteryVoltage: Scalars['Float'];
-  dailyMinInputVoltage: Scalars['Float'];
-  dayPVVoltageThreshold: Scalars['Float'];
-  dischargingLimitVoltage: Scalars['Float'];
-  dischargingPercentage: Scalars['Int'];
-  equalizationChargingCycleDays: Scalars['Int'];
-  equalizationVoltage: Scalars['Float'];
-  equalizeDurationMinutes: Scalars['Int'];
+  dailyMinBatteryVoltage: Scalars['Float']['output'];
+  dailyMinInputVoltage: Scalars['Float']['output'];
+  dayPVVoltageThreshold: Scalars['Float']['output'];
+  dischargingLimitVoltage: Scalars['Float']['output'];
+  dischargingPercentage: Scalars['Int']['output'];
+  equalizationChargingCycleDays: Scalars['Int']['output'];
+  equalizationVoltage: Scalars['Float']['output'];
+  equalizeDurationMinutes: Scalars['Int']['output'];
   errorModes: Array<ChargingEquipmentError>;
-  floatVoltage: Scalars['Float'];
-  hasError: Scalars['Boolean'];
-  highVoltageDisconnect: Scalars['Float'];
+  floatVoltage: Scalars['Float']['output'];
+  hasError: Scalars['Boolean']['output'];
+  highVoltageDisconnect: Scalars['Float']['output'];
   identifier: TracerIdentifier;
   identityInfo: IdentityInfo;
   inputVoltageStatus: InputVoltageStatus;
-  insideControllerTemperatureCelsius: Scalars['Float'];
-  insideControllerTemperatureFahrenheit: Scalars['Float'];
-  insideControllerTemperatureWarningUpperLimit: Scalars['Float'];
-  insideControllerTemperatureWarningUpperLimitRecover: Scalars['Float'];
-  isBatteryInternalResistanceAbnormal: Scalars['Boolean'];
-  isBatteryWrongIdentificationForRatedVoltage: Scalars['Boolean'];
-  isInsideControllerOverTemperature: Scalars['Boolean'];
-  isLoadForcedOn: Scalars['Boolean'];
-  isLoadOn: Scalars['Boolean'];
-  isLoadOnByDefaultInManualMode: Scalars['Boolean'];
-  isLoadTestModeEnabled: Scalars['Boolean'];
-  isManualLoadControlOn: Scalars['Boolean'];
-  isNight: Scalars['Boolean'];
-  isRunning: Scalars['Boolean'];
-  lengthOfNight: Scalars['Duration'];
-  lengthOfNightRaw: Scalars['Int'];
-  lightSignalStartupDelayTime: Scalars['Int'];
-  lightSignalTurnOffDelayTime: Scalars['Int'];
-  lineImpedance: Scalars['Float'];
-  loadControlModeValue: Scalars['Int'];
-  loadCurrent: Scalars['Float'];
-  loadPower: Scalars['Float'];
+  insideControllerTemperatureCelsius: Scalars['Float']['output'];
+  insideControllerTemperatureFahrenheit: Scalars['Float']['output'];
+  insideControllerTemperatureWarningUpperLimit: Scalars['Float']['output'];
+  insideControllerTemperatureWarningUpperLimitRecover: Scalars['Float']['output'];
+  isBatteryInternalResistanceAbnormal: Scalars['Boolean']['output'];
+  isBatteryWrongIdentificationForRatedVoltage: Scalars['Boolean']['output'];
+  isInsideControllerOverTemperature: Scalars['Boolean']['output'];
+  isLoadForcedOn: Scalars['Boolean']['output'];
+  isLoadOn: Scalars['Boolean']['output'];
+  isLoadOnByDefaultInManualMode: Scalars['Boolean']['output'];
+  isLoadTestModeEnabled: Scalars['Boolean']['output'];
+  isManualLoadControlOn: Scalars['Boolean']['output'];
+  isNight: Scalars['Boolean']['output'];
+  isRunning: Scalars['Boolean']['output'];
+  lengthOfNight: Scalars['Duration']['output'];
+  lengthOfNightRaw: Scalars['Int']['output'];
+  lightSignalStartupDelayTime: Scalars['Int']['output'];
+  lightSignalTurnOffDelayTime: Scalars['Int']['output'];
+  lineImpedance: Scalars['Float']['output'];
+  loadControlModeValue: Scalars['Int']['output'];
+  loadCurrent: Scalars['Float']['output'];
+  loadPower: Scalars['Float']['output'];
   loadTimingControlSelection: LoadTimingControlSelection;
-  loadTimingControlSelectionValue: Scalars['Int'];
-  loadVoltage: Scalars['Float'];
-  lowVoltageDisconnect: Scalars['Float'];
-  lowVoltageReconnect: Scalars['Float'];
-  monthlyKWH: Scalars['Float'];
-  monthlyKWHConsumption: Scalars['Float'];
-  netBatteryCurrent: Scalars['Float'];
-  nightPVVoltageThreshold: Scalars['Float'];
-  number: Scalars['Int'];
-  overVoltageReconnect: Scalars['Float'];
+  loadTimingControlSelectionValue: Scalars['Int']['output'];
+  loadVoltage: Scalars['Float']['output'];
+  lowVoltageDisconnect: Scalars['Float']['output'];
+  lowVoltageReconnect: Scalars['Float']['output'];
+  monthlyKWH: Scalars['Float']['output'];
+  monthlyKWHConsumption: Scalars['Float']['output'];
+  netBatteryCurrent: Scalars['Float']['output'];
+  nightPVVoltageThreshold: Scalars['Float']['output'];
+  number: Scalars['Int']['output'];
+  overVoltageReconnect: Scalars['Float']['output'];
   packetType: SolarStatusPacketType;
-  packetVersion?: Maybe<Scalars['Int']>;
-  powerComponentTemperatureCelsius: Scalars['Float'];
-  powerComponentTemperatureWarningUpperLimit: Scalars['Float'];
-  powerComponentTemperatureWarningUpperLimitRecover: Scalars['Float'];
-  pvCurrent: Scalars['Float'];
-  pvVoltage: Scalars['Float'];
-  pvWattage: Scalars['Float'];
-  ratedInputCurrent: Scalars['Int'];
-  ratedInputPower: Scalars['Int'];
-  ratedInputVoltage: Scalars['Int'];
-  ratedLoadOutputCurrent: Scalars['Int'];
-  ratedOutputCurrent: Scalars['Int'];
-  ratedOutputPower: Scalars['Int'];
-  ratedOutputVoltage: Scalars['Int'];
-  realBatteryRatedVoltageValue: Scalars['Int'];
-  remoteBatteryTemperatureCelsius: Scalars['Float'];
-  secondMinuteHourDayMonthYearRaw: Scalars['Long'];
-  solarModeName: Scalars['String'];
+  packetVersion?: Maybe<Scalars['Int']['output']>;
+  powerComponentTemperatureCelsius: Scalars['Float']['output'];
+  powerComponentTemperatureWarningUpperLimit: Scalars['Float']['output'];
+  powerComponentTemperatureWarningUpperLimitRecover: Scalars['Float']['output'];
+  pvCurrent: Scalars['Float']['output'];
+  pvVoltage: Scalars['Float']['output'];
+  pvWattage: Scalars['Float']['output'];
+  ratedInputCurrent: Scalars['Int']['output'];
+  ratedInputPower: Scalars['Int']['output'];
+  ratedInputVoltage: Scalars['Int']['output'];
+  ratedLoadOutputCurrent: Scalars['Int']['output'];
+  ratedOutputCurrent: Scalars['Int']['output'];
+  ratedOutputPower: Scalars['Int']['output'];
+  ratedOutputVoltage: Scalars['Int']['output'];
+  realBatteryRatedVoltageValue: Scalars['Int']['output'];
+  remoteBatteryTemperatureCelsius: Scalars['Float']['output'];
+  secondMinuteHourDayMonthYearRaw: Scalars['Long']['output'];
+  solarModeName: Scalars['String']['output'];
   solarModeType: SolarModeType;
-  solarModeTypeDisplayName: Scalars['String'];
-  temperatureCompensationCoefficient: Scalars['Int'];
-  turnOffTiming1?: Maybe<Scalars['LocalTime']>;
-  turnOffTiming1Raw: Scalars['Long'];
-  turnOffTiming2?: Maybe<Scalars['LocalTime']>;
-  turnOffTiming2Raw: Scalars['Long'];
-  turnOnTiming1?: Maybe<Scalars['LocalTime']>;
-  turnOnTiming1Raw: Scalars['Long'];
-  turnOnTiming2?: Maybe<Scalars['LocalTime']>;
-  turnOnTiming2Raw: Scalars['Long'];
-  underVoltageRecover: Scalars['Float'];
-  underVoltageWarning: Scalars['Float'];
-  workingTimeLength1Raw: Scalars['Int'];
-  workingTimeLength2Raw: Scalars['Int'];
-  yearlyKWH: Scalars['Float'];
-  yearlyKWHConsumption: Scalars['Float'];
+  solarModeTypeDisplayName: Scalars['String']['output'];
+  temperatureCompensationCoefficient: Scalars['Int']['output'];
+  turnOffTiming1?: Maybe<Scalars['LocalTime']['output']>;
+  turnOffTiming1Raw: Scalars['Long']['output'];
+  turnOffTiming2?: Maybe<Scalars['LocalTime']['output']>;
+  turnOffTiming2Raw: Scalars['Long']['output'];
+  turnOnTiming1?: Maybe<Scalars['LocalTime']['output']>;
+  turnOnTiming1Raw: Scalars['Long']['output'];
+  turnOnTiming2?: Maybe<Scalars['LocalTime']['output']>;
+  turnOnTiming2Raw: Scalars['Long']['output'];
+  underVoltageRecover: Scalars['Float']['output'];
+  underVoltageWarning: Scalars['Float']['output'];
+  workingTimeLength1Raw: Scalars['Int']['output'];
+  workingTimeLength2Raw: Scalars['Int']['output'];
+  yearlyKWH: Scalars['Float']['output'];
+  yearlyKWHConsumption: Scalars['Float']['output'];
 };
 
 export type Version = {
   __typename?: 'Version';
-  major: Scalars['Int'];
-  minor: Scalars['Int'];
-  patch: Scalars['Int'];
-  representation?: Maybe<Scalars['String']>;
+  major: Scalars['Int']['output'];
+  minor: Scalars['Int']['output'];
+  patch: Scalars['Int']['output'];
+  representation?: Maybe<Scalars['String']['output']>;
 };
 
 export enum WarningMode {
@@ -1982,8 +1991,8 @@ export type AuthorizedQueryVariables = Exact<{ [key: string]: never; }>;
 export type AuthorizedQuery = { __typename?: 'Query', authorizedSenders: Array<{ __typename?: 'AuthorizedSender', sender: string, data: { __typename?: 'PermissionObject', publicKey?: string | null } }>, authRequests: Array<{ __typename?: 'SimpleNode_AuthNewSenderPacket', dateMillis: any, data: { __typename?: 'AuthNewSenderPacket', sender: string, publicKey: string } }> };
 
 export type ClassicQueryVariables = Exact<{
-  sourceId: Scalars['String'];
-  currentTimeMillis: Scalars['Long'];
+  sourceId: Scalars['String']['input'];
+  currentTimeMillis: Scalars['Long']['input'];
 }>;
 
 
@@ -1995,16 +2004,16 @@ export type DatabaseStatusQueryVariables = Exact<{ [key: string]: never; }>;
 export type DatabaseStatusQuery = { __typename?: 'Query', systemStatus?: { __typename?: 'DatabaseSystemStatus', status: DatabaseStatus, event: DatabaseStatus, open: DatabaseStatus, closed: DatabaseStatus, alter: DatabaseStatus, cache: DatabaseStatus } | null };
 
 export type HomeQueryVariables = Exact<{
-  sourceId: Scalars['String'];
-  currentTimeMillis: Scalars['Long'];
+  sourceId: Scalars['String']['input'];
+  currentTimeMillis: Scalars['Long']['input'];
 }>;
 
 
 export type HomeQuery = { __typename?: 'Query', queryStatusLast: { __typename?: 'SolarThingStatusQuery', batteryVoltageAverage: Array<{ __typename?: 'SimpleNode_Float', data: number, dateMillis: any }> } };
 
 export type LoginQueryVariables = Exact<{
-  username: Scalars['String'];
-  password: Scalars['String'];
+  username: Scalars['String']['input'];
+  password: Scalars['String']['input'];
 }>;
 
 
@@ -2018,8 +2027,8 @@ export type LoginInfoQueryVariables = Exact<{
 export type LoginInfoQuery = { __typename?: 'Query', username?: string | null };
 
 export type AddAuthorizedSenderMutationVariables = Exact<{
-  sender: Scalars['String'];
-  publicKey: Scalars['String'];
+  sender: Scalars['String']['input'];
+  publicKey: Scalars['String']['input'];
   authorization: DatabaseAuthorizationInput;
 }>;
 
@@ -2027,7 +2036,7 @@ export type AddAuthorizedSenderMutationVariables = Exact<{
 export type AddAuthorizedSenderMutation = { __typename?: 'Mutation', addAuthorizedSender: boolean };
 
 export type DeleteAuthorizedSenderMutationVariables = Exact<{
-  sender: Scalars['String'];
+  sender: Scalars['String']['input'];
   authorization: DatabaseAuthorizationInput;
 }>;
 

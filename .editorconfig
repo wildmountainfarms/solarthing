@@ -32,7 +32,7 @@ indent_style = space
 indent_size = 4
 
 # *.ns is for NotationScript
-[{*.js, *.css, *.ts, *.tsx, *.jsx, *.graphql, *.ns}]
+[{*.js,*.css,*.ts,*.tsx,*.jsx,*.graphql,*.ns}]
 indent_style = space
 indent_size = 2
 

@@ -35,6 +35,7 @@ tasks.register('appNpmBuild', NpmTask) {
 }
 tasks.register('generateCode', NpmTask) {
     args = ["run", "graphql:codegen"]
+    // TODO (as commented in server/build.gradle), this dependsOn may cause :web:build to run, which is not always ideal
     dependsOn(":server:generateSchema")
 }
 
