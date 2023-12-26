@@ -1,3 +1,5 @@
+NOTE: This is outdated and this file will be deleted soon! See: https://solarthing.readthedocs.io/en/latest/misc/history.html
+
 # History
 This program started in the summer of 2017.
 
@@ -8,8 +10,8 @@ NOTE: This page should be moved to https://solarthing.readthedocs.io in the futu
 set up the database and [@retrodaredevil](https://github.com/retrodaredevil) did the rest. Eventually [@retrodaredevil](https://github.com/retrodaredevil) created an android app making it much
 more convenient than a website.
 
-[@retrodaredevil](https://github.com/retrodaredevil) came up with the idea of the outhouse status when he walked all the way out to the outhouse only to find
-that it was occupied! He walked all the way back inside, then went back out a few minutes later. He knew that something
+[@retrodaredevil](https://github.com/retrodaredevil) came up with the idea of the outhouse status when she walked all the way out to the outhouse only to find
+that it was occupied! She walked all the way back inside, then went back out a few minutes later. She knew that something
 had to be done about this first world problem.
 
 

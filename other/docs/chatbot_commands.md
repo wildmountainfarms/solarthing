@@ -1,3 +1,5 @@
+NOTE: This documentation is outdated. It currently has no corresponding page on https://solarthing.readthedocs.io
+
 ### Chatbot Commands
 WIP for the possibility of how a chatbot could work
 

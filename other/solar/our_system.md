@@ -1,3 +1,5 @@
+NOTE: This is outdated! See: https://solarthing.readthedocs.io/en/latest/misc/wildmountainfarms/system.html
+
 ## Our System
 This file just has some values for Wild Mountain Farms solar panel system so I don't forget them.
 
