@@ -20,6 +20,7 @@ buildscript {
         errorpronePluginVersion = '3.1.0' // https://github.com/tbroyer/gradle-errorprone-plugin/releases
         errorproneCoreVersion = '2.24.1' // https://mvnrepository.com/artifact/com.google.errorprone/error_prone_core
         antlrVersion = "4.13.1" // https://github.com/antlr/antlr4/releases
+        cyclonedxGradleVersion = "1.8.2" // https://github.com/CycloneDX/cyclonedx-gradle-plugin/releases
     }
     dependencies {
         classpath "com.avast.gradle:gradle-docker-compose-plugin:$dockerComposePluginVersion"
@@ -30,6 +31,7 @@ buildscript {
 plugins {
     id 'com.diffplug.spotless' version '6.22.0' // https://mvnrepository.com/artifact/com.diffplug.spotless/spotless-plugin-gradle
     id 'net.ltgt.errorprone' version "$errorpronePluginVersion"
+    id 'org.cyclonedx.bom' version "$cyclonedxGradleVersion"
 }
 
 version "0.0.1-SNAPSHOT"
@@ -84,6 +86,7 @@ subprojects {
     apply plugin: 'java-library'
     apply plugin: 'maven-publish'
     apply plugin: 'net.ltgt.errorprone'
+    apply plugin: 'org.cyclonedx.bom'
     repositories {
         maven { url "https://jitpack.io" }
         maven { url "https://repo.maven.apache.org/maven2" }
@@ -205,6 +208,14 @@ subprojects {
                 from project.components.java
             }
         }
+    }
+    cyclonedxBom {
+        includeConfigs = ["runtimeClasspath"]
+//        skipProjects = [rootProject.name]
+        projectType = "application"
+        schemaVersion = "1.5" // https://cyclonedx.org/docs/1.5/json
+        outputName = "bom"
+        outputFormat = "json"
     }
 }
 project(":core"){
