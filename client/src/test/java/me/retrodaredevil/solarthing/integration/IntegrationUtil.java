@@ -16,14 +16,14 @@ public final class IntegrationUtil {
 
 	public static final CouchDbAuth DEFAULT_ADMIN_AUTH = CouchDbAuth.create("admin", "password");
 
-	public static CouchDbInstance createCouchDbInstance(CouchDbAuth auth) {
-		return createCouchDbInstance(auth, false);
+	public static CouchDbInstance createCouchDbInstance(DatabaseService databaseService, CouchDbAuth auth) {
+		return createCouchDbInstance(databaseService, auth, false);
 	}
-	public static CouchDbInstance createDebugCouchDbInstance(CouchDbAuth auth) {
-		return createCouchDbInstance(auth, true);
+	public static CouchDbInstance createDebugCouchDbInstance(DatabaseService databaseService, CouchDbAuth auth) {
+		return createCouchDbInstance(databaseService, auth, true);
 	}
 
-	private static CouchDbInstance createCouchDbInstance(CouchDbAuth auth, boolean debug) {
+	private static CouchDbInstance createCouchDbInstance(DatabaseService databaseService, CouchDbAuth auth, boolean debug) {
 		OkHttpClient.Builder builder = new OkHttpClient.Builder();
 		if (debug){
 			builder.addInterceptor(new HttpLoggingInterceptor(System.out::println).setLevel(HttpLoggingInterceptor.Level.BODY));
@@ -32,8 +32,8 @@ public final class IntegrationUtil {
 				builder.build(),
 				new HttpUrl.Builder()
 						.scheme("http")
-						.host("localhost")
-						.port(5984)
+						.host(databaseService.getHost())
+						.port(databaseService.getPort())
 						.build(),
 				new BasicAuthHandler(auth)
 		);

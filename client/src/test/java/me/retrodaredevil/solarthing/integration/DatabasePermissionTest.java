@@ -15,7 +15,8 @@ import me.retrodaredevil.solarthing.packets.collection.PacketCollections;
 import me.retrodaredevil.solarthing.packets.instance.InstanceFragmentIndicatorPackets;
 import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePackets;
 import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -41,13 +42,15 @@ public class DatabasePermissionTest {
 		);
 	}
 
-	@Test
-	void test() throws CouchDbException, SolarThingDatabaseException {
-		IntegrationSetup.setup(IntegrationUtil.createCouchDbInstance(IntegrationUtil.DEFAULT_ADMIN_AUTH));
+
+	@ParameterizedTest
+	@MethodSource("me.retrodaredevil.solarthing.integration.DatabaseService#all")
+	void test(DatabaseService databaseService) throws CouchDbException, SolarThingDatabaseException {
+		IntegrationSetup.setup(IntegrationUtil.createCouchDbInstance(databaseService, IntegrationUtil.DEFAULT_ADMIN_AUTH));
 
 		{
 			// No auth
-			CouchDbInstance noAuthInstance = IntegrationUtil.createCouchDbInstance(CouchDbAuth.createNoAuth());
+			CouchDbInstance noAuthInstance = IntegrationUtil.createCouchDbInstance(databaseService, CouchDbAuth.createNoAuth());
 			SolarThingDatabase database = CouchDbSolarThingDatabase.create(noAuthInstance);
 			database.getStatusDatabase().query(new MillisQueryBuilder().startKey(System.currentTimeMillis()).build()); // anyone can query status
 			database.getEventDatabase().query(new MillisQueryBuilder().startKey(System.currentTimeMillis()).build()); // anyone can query events
@@ -69,7 +72,7 @@ public class DatabasePermissionTest {
 		}
 		{
 			// Uploader user
-			CouchDbInstance uploaderInstance = IntegrationUtil.createCouchDbInstance(IntegrationUtil.getAuthFor(SolarThingDatabaseType.UserType.UPLOADER));
+			CouchDbInstance uploaderInstance = IntegrationUtil.createCouchDbInstance(databaseService, IntegrationUtil.getAuthFor(SolarThingDatabaseType.UserType.UPLOADER));
 			SolarThingDatabase database = CouchDbSolarThingDatabase.create(uploaderInstance);
 
 			PacketCollection packetCollection = createSimplePacketCollection();
@@ -78,7 +81,7 @@ public class DatabasePermissionTest {
 		}
 		{
 			// Manager user
-			CouchDbInstance managerInstance = IntegrationUtil.createCouchDbInstance(IntegrationUtil.getAuthFor(SolarThingDatabaseType.UserType.MANAGER));
+			CouchDbInstance managerInstance = IntegrationUtil.createCouchDbInstance(databaseService, IntegrationUtil.getAuthFor(SolarThingDatabaseType.UserType.MANAGER));
 			SolarThingDatabase database = CouchDbSolarThingDatabase.create(managerInstance);
 
 			PacketCollection packetCollection = createSimplePacketCollection();

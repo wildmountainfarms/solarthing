@@ -10,6 +10,7 @@ buildscript {
         // https://github.com/FasterXML/jackson/wiki/Jackson-Releases
         jacksonVersion = '2.16.1' // https://github.com/FasterXML/jackson-databind/tags
         // retrofit is why we need allow-opens. context: https://stackoverflow.com/questions/60915381/retrofit2-maven-project-illegal-reflective-access-warning // https://github.com/square/retrofit/issues/3341
+        //   Note that after Java 14, this isn't a problem, so I'm not inclined to keep having add-opens because of retrofit
         retrofitVersion = "2.9.0" // https://github.com/square/retrofit/tags
         shadowVersion = '8.1.1' // https://github.com/johnrengelman/shadow/releases
         ioLibVersion = '2.3.0' // https://github.com/retrodaredevil/io-lib/releases
@@ -105,11 +106,6 @@ subprojects {
     }
     test {
         useJUnitPlatform()
-        if(JavaVersion.current() >= JavaVersion.VERSION_1_9) {
-            // If we don't have this, we get warnings for something about retrofit2.Platform
-            //   - likely solcast action node
-            jvmArgs "--add-opens=java.base/java.lang.invoke=ALL-UNNAMED"
-        }
     }
     tasks.withType(JavaCompile).configureEach {
         options.errorprone {
@@ -235,14 +231,10 @@ project(":client"){
             excludeTags 'integration'
         }
     }
-    task integration(type: Test) {
+    tasks.register('integration', Test) {
         // In the future, we can use the Test Suite feature rather than doing this manually: https://docs.gradle.org/7.3.1/userguide/jvm_test_suite_plugin.html
         useJUnitPlatform {
             includeTags 'integration'
-        }
-        if(JavaVersion.current() >= JavaVersion.VERSION_1_9) {
-            // If we don't have this, we get warnings for something about retrofit2.Platform
-            jvmArgs "--add-opens=java.base/java.lang.invoke=ALL-UNNAMED"
         }
     }
     dockerCompose {
