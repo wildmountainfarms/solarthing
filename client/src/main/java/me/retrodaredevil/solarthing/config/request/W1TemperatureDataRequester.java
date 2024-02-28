@@ -7,6 +7,8 @@ import me.retrodaredevil.solarthing.misc.weather.W1TemperatureListUpdater;
 
 import java.nio.file.Path;
 
+import static java.util.Objects.requireNonNull;
+
 @JsonTypeName("w1-temperature")
 public class W1TemperatureDataRequester implements DataRequester {
 	private final Path directory;
@@ -17,9 +19,8 @@ public class W1TemperatureDataRequester implements DataRequester {
 			@JsonProperty(value = "directory", required = true) Path directory,
 			@JsonProperty(value = "data_id", required = true) int dataId
 	) {
-		this.directory = directory;
+		this.directory = requireNonNull(directory);
 		this.dataId = dataId;
-		// TODO add required property
 	}
 
 	@Override

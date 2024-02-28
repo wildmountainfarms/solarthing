@@ -275,13 +275,14 @@ public class SolarThingGraphQLDailyService {
 		}
 	}
 
-	@GraphQLQuery
+	@GraphQLQuery(description = "Queries each day present in the from..to time range. Optionally leave from as null to guarantee a query for a single day only.")
 	public SolarThingFullDayStatusQuery queryFullDay(
-			@GraphQLArgument(name = "from", description = DESCRIPTION_FROM) long from, @GraphQLArgument(name = "to", description = DESCRIPTION_TO) long to,
+			@GraphQLArgument(name = "from", description = "The epoch millis value that will be used to determine the starting day. Set to null to guarantee a query of a single day.") @Nullable Long from,
+			@GraphQLArgument(name = "to", description = "The epoch millis value that will be used to determine the ending day.") long to,
 			@GraphQLArgument(name = "sourceId", description = DESCRIPTION_OPTIONAL_SOURCE) @Nullable String sourceId,
 			@GraphQLArgument(name = "useCache", defaultValue = "false") boolean useCache){
 
-		LocalDate fromDate = Instant.ofEpochMilli(from).atZone(zoneId).toLocalDate();
+		LocalDate fromDate = Instant.ofEpochMilli(from == null ? to : from).atZone(zoneId).toLocalDate();
 		LocalDate toDate = Instant.ofEpochMilli(to).atZone(zoneId).toLocalDate();
 		long queryStart = fromDate.atStartOfDay(zoneId).toInstant().toEpochMilli();
 		long queryEnd = toDate.plusDays(1).atStartOfDay(zoneId).toInstant().toEpochMilli() - 1;
