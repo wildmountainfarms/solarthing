@@ -1,7 +1,9 @@
 package me.retrodaredevil.solarthing.config;
 
+import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -81,7 +83,26 @@ public class CommonConfigUtil {
 		if (jacksonIOException.getMessage().contains("end-of-input")) {
 			throw new ConfigException("Invalid JSON in file: " + fileRepresentation + " (check formatting)", jacksonIOException);
 		}
-		throw new ConfigException("Couldn't parse data from file: " + fileRepresentation + " Please make sure your JSON is correct.", jacksonIOException);
+		if (jacksonIOException instanceof DatabindException) {
+			if (jacksonIOException instanceof UnrecognizedPropertyException) {
+				String internalMessage = jacksonIOException.getMessage();
+				final String property;
+				if (internalMessage != null && internalMessage.startsWith("Unrecognized field \"")) {
+					String[] splitMessage = internalMessage.split("\"", 3);
+					if (splitMessage.length == 3) {
+						property = splitMessage[1];
+					} else {
+						property = null;
+					}
+				} else {
+					property = null;
+				}
+				String extraMessage = property != null ? " Unrecognized property: " + property : "";
+				throw new ConfigException("Unrecognized config property in file: " + fileRepresentation + " Please make sure you don't have any typos." + extraMessage, jacksonIOException);
+			}
+			throw new ConfigException("Couldn't parse data from file: " + fileRepresentation + " Please make sure all your properties are correct", jacksonIOException);
+		}
+		throw new ConfigException("Couldn't parse data from file: " + fileRepresentation + " Please make sure your JSON is formatted correctly.", jacksonIOException);
 	}
 
 	public static <T> T readConfig(Path file, Class<T> clazz, ObjectMapper objectMapper) {

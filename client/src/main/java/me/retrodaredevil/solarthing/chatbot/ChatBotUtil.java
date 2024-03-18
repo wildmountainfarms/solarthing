@@ -4,6 +4,7 @@ import info.debatty.java.stringsimilarity.JaroWinkler;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.function.Function;
 
 @UtilityClass
@@ -13,7 +14,7 @@ public final class ChatBotUtil {
 	private static final double SIMILARITY_CONSTANT = 0.86;
 
 	public static double similarity(String s1, String s2) {
-		return MATCHER.similarity(s1.toLowerCase(), s2.toLowerCase());
+		return MATCHER.similarity(s1.toLowerCase(Locale.ENGLISH), s2.toLowerCase(Locale.ENGLISH));
 	}
 	public static boolean isSimilar(String s1, String s2) {
 		return similarity(s1, s2) > SIMILARITY_CONSTANT;

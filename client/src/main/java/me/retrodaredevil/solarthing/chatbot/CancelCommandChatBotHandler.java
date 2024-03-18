@@ -25,6 +25,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -116,7 +117,7 @@ public class CancelCommandChatBotHandler implements ChatBotHandler {
 
 	@Override
 	public boolean handleMessage(Message message, MessageSender messageSender) {
-		String text = message.getText().toLowerCase();
+		String text = message.getText().toLowerCase(Locale.ENGLISH);
 		String[] split = text.split(" ");
 		if (split.length == 0) {
 			return false;

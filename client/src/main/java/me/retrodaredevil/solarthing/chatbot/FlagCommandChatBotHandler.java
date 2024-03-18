@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -259,7 +260,7 @@ public class FlagCommandChatBotHandler implements ChatBotHandler {
 	@Override
 	public boolean handleMessage(Message message, MessageSender messageSender) {
 		String text = message.getText();
-		String lowerText = text.toLowerCase();
+		String lowerText = text.toLowerCase(Locale.ENGLISH);
 		String[] split = lowerText.split(" ");
 		if (split.length == 0) {
 			return false;

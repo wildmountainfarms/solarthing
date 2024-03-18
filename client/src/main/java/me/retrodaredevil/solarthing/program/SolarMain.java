@@ -125,6 +125,7 @@ public final class SolarMain {
 			options = ConfigUtil.readConfig(baseConfigFile, ProgramOptions.class);
 		} catch (ConfigException e) {
 			LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "(Fatal)Error while parsing ProgramOptions.", e);
+			LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Hey! The error you got above might be scary, but this message might be helpful:\n\n" + e.getMessage());
 			return SolarThingConstants.EXIT_CODE_INVALID_CONFIG;
 		}
 

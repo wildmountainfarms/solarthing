@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
@@ -117,7 +118,7 @@ public class HeartbeatCommandChatBotHandler implements ChatBotHandler {
 	@Override
 	public boolean handleMessage(Message message, MessageSender messageSender) {
 		String text = message.getText();
-		String lowerText = text.toLowerCase();
+		String lowerText = text.toLowerCase(Locale.ENGLISH);
 		String[] split = lowerText.split(" ");
 		if (split.length == 0) {
 			return false;

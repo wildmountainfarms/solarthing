@@ -8,6 +8,7 @@ import java.text.Format;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
+import java.util.Locale;
 
 @UtilityClass
 public class TimeUtil {
@@ -35,7 +36,7 @@ public class TimeUtil {
 	}
 
 	public static String informalDurationToFormal(String informalDuration) {
-		String formalDuration = informalDuration.toUpperCase()
+		String formalDuration = informalDuration.toUpperCase(Locale.ENGLISH)
 				.replaceAll("SECONDS|SECOND", "S")
 				.replaceAll("MINUTES|MINUTE", "M")
 				.replaceAll("HOURS|HOUR", "H")

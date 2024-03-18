@@ -16,6 +16,7 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerContr
 import me.retrodaredevil.solarthing.util.StringUtil;
 
 import java.nio.charset.Charset;
+import java.util.Locale;
 import java.util.Scanner;
 
 @UtilityClass
@@ -38,7 +39,7 @@ public final class RoverSetupProgram {
 				break;
 			case 1:
 				// display data
-				String request = split[0].toLowerCase();
+				String request = split[0].toLowerCase(Locale.ENGLISH);
 				switch(request){
 					case "maxvoltage":
 						System.out.println(read.getMaxVoltage().getModeName());
@@ -286,8 +287,8 @@ public final class RoverSetupProgram {
 				break;
 			case 2:
 				// set most data
-				String toSet = split[1].toLowerCase();
-				switch(split[0].toLowerCase()) {
+				String toSet = split[1].toLowerCase(Locale.ENGLISH);
+				switch(split[0].toLowerCase(Locale.ENGLISH)) {
 					case "factoryreset":
 						if(toSet.equals("!!")){
 							write.factoryReset();

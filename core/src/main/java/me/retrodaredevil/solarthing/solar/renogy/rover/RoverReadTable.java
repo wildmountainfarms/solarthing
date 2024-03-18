@@ -464,7 +464,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	int getErrorModeValue();
 	@ValidSinceVersion(version = RoverStatusPacket.Version.CORRECT_TWO_REGISTER)
 	@Override
-	default @NotNull Collection<@NotNull ? extends SimpleRoverErrorMode> getErrorModes(){
+	default @NotNull Collection<? extends @NotNull SimpleRoverErrorMode> getErrorModes(){
 		if (isDcdc()) {
 			return getDcdcErrorModes();
 		}

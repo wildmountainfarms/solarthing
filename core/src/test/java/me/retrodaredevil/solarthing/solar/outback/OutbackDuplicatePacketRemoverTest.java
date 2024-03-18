@@ -86,7 +86,7 @@ class OutbackDuplicatePacketRemoverTest {
 			}
 
 			@Override
-			public @NotNull Collection<@NotNull ? extends BitmaskMode> getErrorModes() {
+			public @NotNull Collection<? extends @NotNull BitmaskMode> getErrorModes() {
 				throw new UnsupportedOperationException();
 			}
 		};

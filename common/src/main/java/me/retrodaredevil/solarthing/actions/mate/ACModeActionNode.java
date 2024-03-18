@@ -16,6 +16,8 @@ import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Locale;
+
 @JsonTypeName("acmode")
 public class ACModeActionNode implements ActionNode {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ACModeActionNode.class);
@@ -32,7 +34,7 @@ public class ACModeActionNode implements ActionNode {
 		this.not = not;
 	}
 	private static ACMode parseMode(String modeName) {
-		modeName = modeName.replaceAll(" ", "").toLowerCase();
+		modeName = modeName.replaceAll(" ", "").toLowerCase(Locale.ENGLISH);
 		switch (modeName) {
 			case "noac":
 				return ACMode.NO_AC;
