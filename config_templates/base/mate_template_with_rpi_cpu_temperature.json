@@ -8,6 +8,9 @@
   ],
   "io": "../../config_templates/io/default_linux_serial.json",
   "request": [
-    { "type": "rpi-cpu-temp" }
+    {
+      "type": "cpu-temp",
+      "processors": 1
+    }
   ]
 }

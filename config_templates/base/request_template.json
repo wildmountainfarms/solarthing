@@ -8,7 +8,8 @@
   ],
   "request": [
     {
-      "type": "rpi-cpu-temp"
+      "type": "cpu-temp",
+      "processors": 1
     },
     {
       "type": "w1-temperature",
