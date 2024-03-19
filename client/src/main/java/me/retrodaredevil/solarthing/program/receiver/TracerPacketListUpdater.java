@@ -66,7 +66,8 @@ public class TracerPacketListUpdater implements PacketListReceiver {
 				desiredTime = Instant.now().atZone(zone).toLocalDateTime();
 			}
 			if (Duration.between(currentTime, desiredTime).abs().compareTo(tracerClockOptions.getDurationThreshold()) > 0) {
-				LOGGER.info("Going to update time to " + desiredTime + " from " + currentTime);
+				// Logging both as summary is important because we want to be able to see the time in the summary logs
+				LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Going to update time to " + desiredTime + " from " + currentTime);
 				write.setSolarThingLocalDateTime(desiredTime);
 				LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Success updating time!");
 			}

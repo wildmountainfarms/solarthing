@@ -25,6 +25,7 @@ import me.retrodaredevil.solarthing.packets.instance.InstanceFragmentIndicatorPa
 import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePackets;
 import me.retrodaredevil.solarthing.program.action.RunActionMain;
 import me.retrodaredevil.solarthing.program.check.CheckMain;
+import me.retrodaredevil.solarthing.program.couchdb.CouchDbSetupMain;
 import me.retrodaredevil.solarthing.program.pvoutput.PVOutputUploadMain;
 import org.apache.logging.log4j.LogManager;
 import org.slf4j.Logger;

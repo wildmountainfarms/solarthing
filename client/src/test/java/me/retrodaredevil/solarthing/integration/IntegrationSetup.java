@@ -6,7 +6,7 @@ import me.retrodaredevil.solarthing.SolarThingDatabaseType;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
-import me.retrodaredevil.solarthing.program.CouchDbSetupMain;
+import me.retrodaredevil.solarthing.program.couchdb.CouchDbSetupMain;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -27,6 +27,11 @@ public class IntegrationSetup {
 
 		@Override
 		public void promptContinue() {
+		}
+
+		@Override
+		public @Nullable String promptContinueOrCustomCommand() {
+			return null;
 		}
 
 		@Override

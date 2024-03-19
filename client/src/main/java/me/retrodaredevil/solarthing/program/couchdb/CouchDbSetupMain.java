@@ -1,4 +1,4 @@
-package me.retrodaredevil.solarthing.program;
+package me.retrodaredevil.solarthing.program.couchdb;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -144,7 +144,13 @@ public class CouchDbSetupMain {
 
 	public int doCouchDbSetupMain() throws CouchDbException {
 		out.println("You will now setup your CouchDB instance! Some databases will be automatically created (enter)");
-		prompt.promptContinue();
+		String customCommand = prompt.promptContinueOrCustomCommand();
+		if (customCommand != null) {
+			if ("wmf-custom-2024-03-18".equals(customCommand)) {
+				return new CustomWmfCouchDbEdit20240318(instance, out, prompt).doCustom();
+			}
+			return 1;
+		}
 
 		for (SolarThingDatabaseType databaseType : SolarThingDatabaseType.values()) {
 			createDatabase(databaseType.getName());
@@ -233,6 +239,7 @@ public class CouchDbSetupMain {
 	}
 	public interface Prompt {
 		void promptContinue();
+		@Nullable String promptContinueOrCustomCommand();
 		@Nullable String promptUserName(SolarThingDatabaseType.UserType userType);
 		@NotNull String promptUserPassword(SolarThingDatabaseType.UserType userType);
 	}
@@ -247,6 +254,12 @@ public class CouchDbSetupMain {
 		@Override
 		public void promptContinue() {
 			scanner.nextLine();
+		}
+
+		@Override
+		public @Nullable String promptContinueOrCustomCommand() {
+			String r = scanner.nextLine();
+			return r.isEmpty() ? null : r;
 		}
 
 		@Override
