@@ -44,13 +44,13 @@ initramfs_update_command=(
   "<You need to install and run an update initramfs implementation now>"
 )
 
-if type update-initramfs 1>/dev/null; then
+if type update-initramfs; then
   initramfs_update_command=(
     update-initramfs
     -u
   )
   echo "Found update-initramfs"
-elif type update-tirfs 1>/dev/null; then
+elif type update-tirfs; then
   initramfs_update_command=(update-tirfs)
   echo "Found update-tirfs"
 else
@@ -99,10 +99,6 @@ if [ $dkms_remove_exit_code -eq 3 ]; then
   echo "xr_usb_serial_common is not currently installed. No need to remove"
 elif [ $dkms_remove_exit_code -eq 1 ]; then
   # Exit codes and messages here: https://github.com/dell/dkms/issues/306
-  if echo "$dkms_remove_output" | grep "Your kernel headers for kernel" >/dev/null; then
-    echo "You need to install kernel modules!"
-    exit 1
-  fi
   if echo "$dkms_remove_output" | grep "must be root" >/dev/null; then
     echo "You need to run this command as root!"
     exit 1
@@ -129,7 +125,7 @@ cp -a "$WORK_DIR/xr_usb_serial_common-1a" /usr/src/
 echo -e "\tAdding module..."
 dkms add -m xr_usb_serial_common -v 1a
 echo -e "\tBuilding module..."
-dkms build -m xr_usb_serial_common -v 1a
+dkms build -m xr_usb_serial_common -v 1a || (echo -e "\nBuilding failed. Please make sure you have headers for your system installed (e.i. sudo apt install raspberrypi-kernel-headers)"; exit 1)
 echo -e "\tInstalling module"
 dkms install -m xr_usb_serial_common -v 1a
 echo "Blacklisting cdc-acm by creating file /etc/modprobe.d/blacklist-cdc-acm.conf"
@@ -137,3 +133,5 @@ echo blacklist cdc-acm > /etc/modprobe.d/blacklist-cdc-acm.conf || echo "Failed 
 
 echo "Going to update initramfs"
 "${initramfs_update_command[@]}"
+
+echo "Successfully installed! Please restart your device for these changes to take effect."

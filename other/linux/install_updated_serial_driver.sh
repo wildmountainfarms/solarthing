@@ -2,6 +2,13 @@
 BASEDIR=$(dirname "$0")
 cd "$BASEDIR" || exit 1
 
+# This script is deprecated. See
+# https://solarthing.readthedocs.io/en/latest/quickstart/serial-port/hardware/tracer/rs485-port.html
+# You should instead use install_tracer_serial_driver.sh
+
+echo "This script is deprecated. Please follow the updated instructions here: https://solarthing.readthedocs.io/en/latest/quickstart/serial-port/hardware/tracer/rs485-port.html"
+echo
+
 echo "This will edit config files on your system to disable cdc-acm "
 echo "Only run this script if you need RS485 support for your EPEver tracer. DO NOT RUN OTHERWISE. THIS DOES NOT MAGICALLY FIX YOUR CABLE NOT WORKING."
 printf "(Press enter to continue)"
