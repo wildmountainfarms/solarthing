@@ -6,10 +6,16 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * Design resources are files used to create design documents for CouchDB.
+ * <p>
+ * Some of these design documents are validate functions: <a href="https://docs.couchdb.org/en/stable/ddocs/ddocs.html#validate-document-update-functions">Validate Document Update Functions</a>.
+ *
+ */
 public enum DesignResource {
 	// Validate
 	VALIDATE_JAVASCRIPT_READONLY_AUTH("validation/readonly_auth.js"),
-	VALIDATE_JAVASCRIPT_UPLOAD_ONLY("validation/upload_only.js"),
+	VALIDATE_JAVASCRIPT_SOLARTHING_OPEN_VALIDATE("validation/solarthing_open_validation.js"),
 
 	// View
 	VIEW_JAVASCRIPT_MILLIS_NULL("view/millisNull.js"),

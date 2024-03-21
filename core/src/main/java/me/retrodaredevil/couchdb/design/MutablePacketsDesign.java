@@ -20,6 +20,10 @@ public class MutablePacketsDesign implements Design {
 		this.validateDocUpdate = DesignResource.VALIDATE_JAVASCRIPT_READONLY_AUTH.getAsString();
 		return this;
 	}
+	public MutablePacketsDesign setSolarThingOpenValidate() {
+		this.validateDocUpdate = DesignResource.VALIDATE_JAVASCRIPT_SOLARTHING_OPEN_VALIDATE.getAsString();
+		return this;
+	}
 	public MutablePacketsDesign addLast24HoursFilter() {
 		filters.put("last24Hours", DesignResource.FILTER_JAVASCRIPT_RECENT_PACKETS.getAsString());
 		return this;

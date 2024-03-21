@@ -90,7 +90,9 @@ public enum SolarThingDatabaseType {
 		return this == CLOSED;
 	}
 	public @NotNull Set<UserType> getUsersWithWritePermission() {
-		if (this == CLOSED) { // This database is readonly by all
+		if (this == CLOSED || this == OPEN) { // This database is readonly by all
+			// closed is readonly by all users
+			// open already has permissive upload ability, so we don't need any user to get admin access
 			return Collections.emptySet();
 		}
 		if (this == CACHE || this == ALTER) {

@@ -104,7 +104,10 @@ public class CouchDbSetupMain {
 			out.println("This database will have the simpleAllDocs view");
 			design.addSimpleAllDocsView();
 		}
-		if (databaseType.needsReadonlyValidateFunction()) {
+		if (databaseType == SolarThingDatabaseType.OPEN) {
+			out.println("This database will not allow editing of documents after they are uploaded.");
+			design.setSolarThingOpenValidate();
+		} else if (databaseType.needsReadonlyValidateFunction()) {
 			out.println("This database will be readonly");
 			design.setReadonlyAuth();
 		}
