@@ -280,6 +280,7 @@ public class SolarThingGraphQLDailyService {
 			@GraphQLArgument(name = "from", description = "The epoch millis value that will be used to determine the starting day. Set to null to guarantee a query of a single day.") @Nullable Long from,
 			@GraphQLArgument(name = "to", description = "The epoch millis value that will be used to determine the ending day.") long to,
 			@GraphQLArgument(name = "sourceId", description = DESCRIPTION_OPTIONAL_SOURCE) @Nullable String sourceId,
+			@GraphQLArgument(name = "fragmentId", description = DESCRIPTION_OPTIONAL_FRAGMENT_ID) @Nullable Integer fragmentId,
 			@GraphQLArgument(name = "useCache", defaultValue = "false") boolean useCache){
 
 		LocalDate fromDate = Instant.ofEpochMilli(from == null ? to : from).atZone(zoneId).toLocalDate();
@@ -292,7 +293,8 @@ public class SolarThingGraphQLDailyService {
 			List<? extends InstancePacketGroup> packets = simpleQueryHandler.queryStatus(
 					queryStart,
 					queryEnd,
-					sourceId
+					sourceId,
+					fragmentId
 			);
 			return new SimpleSolarThingFullDayStatusQuery(new BasicPacketGetter(packets, PacketFilter.KEEP_ALL), simpleQueryHandler.sortPackets(packets, sourceId));
 		}

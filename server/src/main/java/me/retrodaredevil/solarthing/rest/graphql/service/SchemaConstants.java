@@ -11,6 +11,7 @@ public final class SchemaConstants {
 	public static final String DESCRIPTION_TO = "The maximum time in milliseconds since the epoch to get data from.";
 	public static final String DESCRIPTION_OPTIONAL_SOURCE = "The Source ID to include packets from, or null to include packets from multiple sources.";
 	public static final String DESCRIPTION_REQUIRED_SOURCE = "The Source ID to include packets from.";
-	public static final String DESCRIPTION_FRAGMENT_ID = "The fragment ID to include data from.";
+	public static final String DESCRIPTION_OPTIONAL_FRAGMENT_ID = "The fragment ID to include data from.";
+	public static final String DESCRIPTION_REQUIRED_FRAGMENT_ID = "The fragment ID to include data from.";
 
 }

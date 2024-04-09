@@ -53,7 +53,8 @@ public class SolarThingGraphQLFXService {
 		}
 
 		long startTime = from - 3 * 60 * 60 * 1000; // 3 hours back
-		List<? extends InstancePacketGroup> packets = simpleQueryHandler.queryStatus(startTime, to, null);
+		// Don't filter on fragmentId here. Even though we are provided with one, we still want data from other fragments as those might have temperature sensor data
+		List<? extends InstancePacketGroup> packets = simpleQueryHandler.queryStatus(startTime, to, null, null);
 
 		// We make masterIdIgnoreDistance null because we will only be using fragmentId as the master fragment ID
 		Map<String, List<FragmentedPacketGroup>> map = PacketGroups.sortPackets( // separate based on source ID

@@ -73,16 +73,34 @@ public class SolarThingGraphQLService {
 	@GraphQLQuery(description = "Query status packets in the specified time range.")
 	public @NotNull SolarThingStatusQuery queryStatus(
 			@GraphQLArgument(name = "from", description = DESCRIPTION_FROM) long from, @GraphQLArgument(name = "to", description = DESCRIPTION_TO) long to,
-			@GraphQLArgument(name = "sourceId", description = DESCRIPTION_OPTIONAL_SOURCE) @Nullable String sourceId){
-		List<? extends InstancePacketGroup> packets = simpleQueryHandler.queryStatus(from, to, sourceId);
+			@GraphQLArgument(name = "sourceId", description = DESCRIPTION_OPTIONAL_SOURCE) @Nullable String sourceId,
+			@GraphQLArgument(name = "fragmentId", description = DESCRIPTION_OPTIONAL_FRAGMENT_ID) @Nullable Integer fragmentId
+	){
+		List<? extends InstancePacketGroup> packets = simpleQueryHandler.queryStatus(from, to, sourceId, fragmentId);
 		return new SolarThingStatusQuery(new BasicPacketGetter(packets, PacketFilter.KEEP_ALL), simpleQueryHandler.sortPackets(packets, sourceId), simpleQueryHandler);
+	}
+	@GraphQLQuery(description = "Queries status packets in the specified time range while only including the specified identifier in the specified fragment")
+	public @NotNull SolarThingStatusQuery queryStatusIdentifier(
+			@GraphQLArgument(name = "from", description = DESCRIPTION_FROM) long from, @GraphQLArgument(name = "to", description = DESCRIPTION_TO) long to,
+			@GraphQLArgument(name = "fragmentId", description = DESCRIPTION_REQUIRED_FRAGMENT_ID) int fragmentId,
+			@GraphQLArgument(name = "identifier") @NotNull String identifierRepresentation,
+			@GraphQLArgument(name = "acceptSupplementary", defaultValue = "true") boolean acceptSupplementary
+	) {
+		// null source ID because each fragment ID is unique, even over multiple sources
+		List<? extends InstancePacketGroup> packets = simpleQueryHandler.queryStatus(from, to, null, fragmentId);
+		return new SolarThingStatusQuery(
+				new BasicPacketGetter(packets, new IdentifierFilter(identifierRepresentation, acceptSupplementary)),
+				simpleQueryHandler.sortPackets(packets, null),
+				simpleQueryHandler
+		);
 	}
 	@GraphQLQuery(description = "Query the latest collection of status packets on or before the 'to' timestamp.")
 	public @NotNull SolarThingStatusQuery queryStatusLast(
 			@GraphQLArgument(name = "to", description = DESCRIPTION_TO) long to,
 			@GraphQLArgument(name = "sourceId", description = DESCRIPTION_OPTIONAL_SOURCE) @Nullable String sourceId,
+			@GraphQLArgument(name = "fragmentId", description = DESCRIPTION_OPTIONAL_FRAGMENT_ID) @Nullable Integer fragmentId,
 			@GraphQLArgument(name = "reversed", defaultValue = "false", description = "If set to true, the returned list will be reversed. Useful to set to true if you want the very latest packet to be first.") boolean reversed){
-		List<? extends InstancePacketGroup> packets = simpleQueryHandler.queryStatus(to - SolarThingConstants.LATEST_PACKETS_DURATION.toMillis(), to, sourceId);
+		List<? extends InstancePacketGroup> packets = simpleQueryHandler.queryStatus(to - SolarThingConstants.LATEST_PACKETS_DURATION.toMillis(), to, sourceId, fragmentId);
 		List<InstancePacketGroup> lastPackets = new ArrayList<>();
 		for(List<InstancePacketGroup> packetGroups : PacketGroups.mapFragments(packets).values()) {
 			lastPackets.add(packetGroups.get(packetGroups.size() - 1));
@@ -98,31 +116,33 @@ public class SolarThingGraphQLService {
 	public @NotNull SolarThingEventQuery queryEvent(
 			@GraphQLArgument(name = "from", description = DESCRIPTION_FROM) long from, @GraphQLArgument(name = "to", description = DESCRIPTION_TO) long to,
 			@GraphQLArgument(name = "sourceId", description = DESCRIPTION_OPTIONAL_SOURCE) @Nullable String sourceId,
+			@GraphQLArgument(name = "fragmentId", description = DESCRIPTION_OPTIONAL_FRAGMENT_ID) @Nullable Integer fragmentId,
 			@GraphQLArgument(name = "includeUnknownChangePackets", defaultValue = "false", description = DESCRIPTION_INCLUDE_UNKNOWN_CHANGE) boolean includeUnknownChangePackets
 	) {
-		return new SolarThingEventQuery(new BasicPacketGetter(simpleQueryHandler.queryEvent(from, to, sourceId), new UnknownChangePacketsFilter(includeUnknownChangePackets)));
+		return new SolarThingEventQuery(new BasicPacketGetter(simpleQueryHandler.queryEvent(from, to, sourceId, fragmentId), new UnknownChangePacketsFilter(includeUnknownChangePackets)));
 	}
 	@GraphQLQuery(description = "Queries events in the specified time range while only including the specified identifier in the specified fragment")
 	public @NotNull SolarThingEventQuery queryEventIdentifier(
 			@GraphQLArgument(name = "from", description = DESCRIPTION_FROM) long from, @GraphQLArgument(name = "to", description = DESCRIPTION_TO) long to,
-			@GraphQLArgument(name = "fragmentId", description = DESCRIPTION_FRAGMENT_ID) int fragmentId,
+			@GraphQLArgument(name = "fragmentId", description = DESCRIPTION_REQUIRED_FRAGMENT_ID) int fragmentId,
 			@GraphQLArgument(name = "identifier") @NotNull String identifierRepresentation,
 			@GraphQLArgument(name = "includeUnknownChangePackets", defaultValue = "false", description = DESCRIPTION_INCLUDE_UNKNOWN_CHANGE) boolean includeUnknownChangePackets,
 			@GraphQLArgument(name = "acceptSupplementary", defaultValue = "true") boolean acceptSupplementary
 	) {
 		return new SolarThingEventQuery(new BasicPacketGetter(
-				simpleQueryHandler.queryEvent(from, to, null), // null source ID because each fragment ID is unique, even over multiple sources
-				new PacketFilterMultiplexer(Arrays.asList(new FragmentFilter(fragmentId), new IdentifierFilter(identifierRepresentation, acceptSupplementary), new UnknownChangePacketsFilter(includeUnknownChangePackets)))
+				simpleQueryHandler.queryEvent(from, to, null, fragmentId), // null source ID because each fragment ID is unique, even over multiple sources
+				new PacketFilterMultiplexer(Arrays.asList(new IdentifierFilter(identifierRepresentation, acceptSupplementary), new UnknownChangePacketsFilter(includeUnknownChangePackets)))
 		));
 	}
-	@GraphQLQuery(description = "Queries events in the specified time range while only including the specified fragment")
+	@Deprecated(forRemoval = true)
+	@GraphQLQuery(description = "Queries events in the specified time range while only including the specified fragment. Deprecated: Use queryEvent instead")
 	public @NotNull SolarThingEventQuery queryEventFragment(
 			@GraphQLArgument(name = "from", description = DESCRIPTION_FROM) long from, @GraphQLArgument(name = "to", description = DESCRIPTION_TO) long to,
-			@GraphQLArgument(name = "fragmentId", description = DESCRIPTION_FRAGMENT_ID) int fragmentId,
+			@GraphQLArgument(name = "fragmentId", description = DESCRIPTION_REQUIRED_FRAGMENT_ID) int fragmentId,
 			@GraphQLArgument(name = "includeUnknownChangePackets", defaultValue = "false", description = DESCRIPTION_INCLUDE_UNKNOWN_CHANGE) boolean includeUnknownChangePackets
 	) {
 		return new SolarThingEventQuery(new BasicPacketGetter(
-				simpleQueryHandler.queryEvent(from, to, null),
+				simpleQueryHandler.queryEvent(from, to, null, null), // pass null as a fragmentId here because this is deprecated and might as well not change anything until this is removed
 				new PacketFilterMultiplexer(Arrays.asList(new FragmentFilter(fragmentId), new UnknownChangePacketsFilter(includeUnknownChangePackets)))
 		));
 	}
