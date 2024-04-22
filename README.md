@@ -8,13 +8,15 @@
 
 Stores solar data in a database to view on Android, Grafana, or PVOutput
 
-<p style="text-align: center;">
-    <a href="#supported-products">Supported Products</a> &bull;
-    <a href="https://solarthing.readthedocs.io/">Documentation</a> &bull;
-    <a href="#features">Features</a> &bull;
-    <a href="#supported-databases">Supported Databases</a> &bull;
-    <a href="#examples">Examples</a>
-</p>
+View full documentation at https://solarthing.readthedocs.io/
+
+Contents
+
+* [Supported Products](#supported-products)
+* [Features](#features)
+* [Viewing Your Data](#viewing-your-data)
+* [Supported Databases](#supported-databases)
+* [Screenshots and Examples](#screenshots-and-examples)
 
 ## Supported Products
 * **Outback MATEs** (FX Inverter, MX/FM Charge Controller)
@@ -41,29 +43,49 @@ Ready to install? Use the [Quickstart](https://solarthing.readthedocs.io/en/late
 * Can [report CPU temperature](https://solarthing.readthedocs.io/en/latest/config/file/base-json/request/cpu-temperature.html).
 * Runs inside a Docker container
 
-## Supported Databases
-* CouchDB
-  * Allows for [SolarThing Android](https://github.com/wildmountainfarms/solarthing-android) and [SolarThing Server](https://solarthing.readthedocs.io/en/latest/quickstart/data/solarthing-server/index.html) to function
-  * Used for PVOutput data collection
-* GraphQL
-  * Allows use of CouchDB SolarThing data with Grafana
-  * Supplements the CouchDB database
-* InfluxDB
-  * Simplest to set up with Grafana
+
+## Viewing Your Data
+
+* Grafana (recommended)
+  * Use SolarThing Server (with CouchDB) alongside [Wild GraphQL Data Source](https://grafana.com/grafana/plugins/retrodaredevil-wildgraphql-datasource/)
+  * Alternatively, configure SolarThing to upload to InfluxDB for viewing of statistics in Grafana
+* [SolarThing Android](https://play.google.com/store/apps/details?id=me.retrodaredevil.solarthing.android)
+  * SolarThing Android connects directly to CouchDB to display data in a persistent notification
 * [PVOutput.org](https://pvoutput.org)
-  * Allows for viewing of data on [pvoutput.org](https://pvoutput.org)
-  * Requires CouchDB to be set up
+  * Upload your data to CouchDB, then let SolarThing upload the data inside your database to PVOutput!
+
+If you are wondering how to set up SolarThing to view your data, you can head here: https://solarthing.readthedocs.io/en/latest/quickstart/data/index.html
+
+## Supported Databases
+
+* CouchDB
+  * **Recommended** database and best supported database for SolarThing
+  * Used with [Wild GraphQL Data Source](https://grafana.com/grafana/plugins/retrodaredevil-wildgraphql-datasource/) to view data in Grafana
+  * Used with SolarThing Android to view data in the Android app
+  * Used as intermediate storage before data is aggregated and uploaded to PVOutput
+* InfluxDB
+  * Upload statistics to InfluxDB and view them in your visualization tool of choice (Grafana is an option)
 * REST API
   * With the "post" database, all packets can be posted to a URL endpoint, useful for REST APIs
 
 
-## Examples
-PVOutput Wild Mountain Farms: [PVOutput System](https://pvoutput.org/intraday.jsp?sid=72206) and 
+## Screenshots and Examples
+
+You can get data in [Grafana](https://github.com/grafana/grafana) via **CouchDB+SolarThing Server** or via InfluxDB (InfluxDB not recommended).
+
+Grafana is customizable. Rearrange graphs and make it how you want!
+Pre-made Grafana dashboards are coming soon.
+
+![alt text](other/docs/grafana-screenshot-2024-04-21.png "SolarThing with Grafana")
+
+---
+
+PVOutput Wild Mountain Farms: [PVOutput System](https://pvoutput.org/intraday.jsp?sid=72206) and
 [PVOutput SolarThing Teams](https://pvoutput.org/listteam.jsp?tid=1528)
 
 ---
 
-SolarThing Android: [Github](https://github.com/wildmountainfarms/solarthing-android)
+SolarThing Android: [GitHub](https://github.com/wildmountainfarms/solarthing-android)
 |
 [Google Play](https://play.google.com/store/apps/details?id=me.retrodaredevil.solarthing.android)
 
@@ -71,35 +93,6 @@ SolarThing Android displays data in a persistent notification that updates at a 
 ![alt text](other/docs/solarthing-android-notification-screenshot-1.jpg "SolarThing Android Notification")
 <hr/>
 
-You can get data in [Grafana](https://github.com/grafana/grafana) via InfluxDB or via CouchDB+SolarThing GraphQL.
-
-Grafana is very customizable. Rearrange graphs and make it how you want!
-![alt text](other/docs/grafana-screenshot-1.png "SolarThing with Grafana")
-
----
-
-### Usage at Wild Mountain Farms
-We monitor an Outback MATE2, Renogy Rover PG 40A, EPEver Tracer2210AN (20A) using a Raspberry Pi 3.
-Each device has its own instance of SolarThing running. Each instance uploads data to CouchDB. CouchDB, Grafana,
-and SolarThing GraphQL run on a separate "NAS" computer. This NAS runs the automation and pvoutput programs.
-The automation program handles the sending of Slack messages for low battery notifications.
-
-## Database Setup
-* [CouchDB setup](https://solarthing.readthedocs.io/en/latest/quickstart/config/database/couchdb.html)<br/>
-  * Used for SolarThing Android, and SolarThing Server
-* [InfluxDB 2.0 setup](https://solarthing.readthedocs.io/en/latest/quickstart/config/database/influxdb2.html)<br/>
-  * Used for direct Grafana queries
-
-## [Developer Use](other/docs/developer_use.md)
-## [Contributing](CONTRIBUTING.md)
-## [Updating](https://solarthing.readthedocs.io/en/latest/updating.html)
-
-## Configuration
-This uses all JSON for configuring everything. The files you edit are all in one place unless you decide to move them.
-
-See [configuration](https://solarthing.readthedocs.io/en/latest/configuration.html) to see how to set them up
-
-## [SolarThing Alternatives](https://solarthing.readthedocs.io/en/latest/misc/alternatives.html)
 
 ## Suggestions?
 If you have suggestions on how to improve the documentation or have a feature request, I'd love to
