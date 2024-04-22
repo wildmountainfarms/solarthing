@@ -5,6 +5,7 @@ import me.retrodaredevil.couchdb.CouchDbUtil;
 import me.retrodaredevil.couchdbjava.CouchDbInstance;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.NotNull;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.database.MillisDatabase;
 import me.retrodaredevil.solarthing.database.MillisQuery;
@@ -15,13 +16,17 @@ import me.retrodaredevil.solarthing.database.VersionedPacket;
 import me.retrodaredevil.solarthing.database.couchdb.CouchDbSolarThingDatabase;
 import me.retrodaredevil.solarthing.database.exception.NotFoundSolarThingDatabaseException;
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
+import me.retrodaredevil.solarthing.packets.collection.DefaultInstanceOptions;
+import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
+import me.retrodaredevil.solarthing.packets.collection.InstancePacketGroup;
+import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
+import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
+import me.retrodaredevil.solarthing.packets.collection.parsing.PacketParsingErrorHandler;
+import me.retrodaredevil.solarthing.rest.exceptions.DatabaseException;
 import me.retrodaredevil.solarthing.type.alter.StoredAlterPacket;
 import me.retrodaredevil.solarthing.type.closed.meta.DefaultMetaDatabase;
 import me.retrodaredevil.solarthing.type.closed.meta.EmptyMetaDatabase;
 import me.retrodaredevil.solarthing.type.closed.meta.MetaDatabase;
-import me.retrodaredevil.solarthing.packets.collection.*;
-import me.retrodaredevil.solarthing.packets.collection.parsing.PacketParsingErrorHandler;
-import me.retrodaredevil.solarthing.rest.exceptions.DatabaseException;
 import me.retrodaredevil.solarthing.type.closed.meta.RootMetaPacket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +36,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -89,7 +93,7 @@ public class SimpleQueryHandler {
 	 * @param sourceId The source ID or null. If null, the returned List may contain packet groups from multiple sources
 	 * @return The resulting packets
 	 */
-	private List<? extends InstancePacketGroup> queryPackets(MillisDatabase database, long from, long to, String sourceId) {
+	private List<? extends InstancePacketGroup> queryPackets(MillisDatabase database, long from, long to, @Nullable String sourceId, @Nullable Integer fragmentId) {
 
 		MillisQuery millisQuery = new MillisQueryBuilder()
 				.startKey(from)
@@ -148,21 +152,21 @@ public class SimpleQueryHandler {
 			}
 			return Collections.emptyList();
 		}
-		if (sourceId == null) {
-			return PacketGroups.parseToInstancePacketGroups(rawPacketGroups, defaultInstanceOptions);
-		}
-		Map<String, List<InstancePacketGroup>> map = PacketGroups.parsePackets(rawPacketGroups, defaultInstanceOptions);
-		if(map.containsKey(sourceId)){
-			List<InstancePacketGroup> instancePacketGroupList = map.get(sourceId);
-			return PacketGroups.orderByFragment(instancePacketGroupList);
-		}
-		throw new NoSuchElementException("No element with sourceId: '" + sourceId + "' available keys are: " + map.keySet());
+		// Note: Before 2024-04-05 this method would throw a NoSuchElementException if no packets were found under a given Source ID
+		//   Additionally PacketGroups.orderByFragment() was used to order the result ONLY IF a Source ID was provided.
+		//   This behavior of this method has changed since then, which may have unintended effects.
+		//   I really don't know if the ordering by Fragment ID was necessary, and I also don't think we really need that exception to be thrown.
+		return rawPacketGroups.stream()
+				.map(packetGroup -> PacketGroups.parseToInstancePacketGroup(packetGroup, defaultInstanceOptions))
+				.filter(instancePacketGroup -> sourceId == null || instancePacketGroup.getSourceId().equals(sourceId))
+				.filter(instancePacketGroup -> fragmentId == null || instancePacketGroup.getFragmentId() == fragmentId)
+				.toList();
 	}
-	public List<? extends InstancePacketGroup> queryStatus(long from, long to, String sourceId) {
-		return queryPackets(database.getStatusDatabase(), from, to, sourceId);
+	public List<? extends InstancePacketGroup> queryStatus(long from, long to, @Nullable String sourceId, @Nullable Integer fragmentId) {
+		return queryPackets(database.getStatusDatabase(), from, to, sourceId, fragmentId);
 	}
-	public List<? extends InstancePacketGroup> queryEvent(long from, long to, String sourceId) {
-		return queryPackets(database.getEventDatabase(), from, to, sourceId);
+	public List<? extends InstancePacketGroup> queryEvent(long from, long to, @Nullable String sourceId, @Nullable Integer fragmentId) {
+		return queryPackets(database.getEventDatabase(), from, to, sourceId, fragmentId);
 	}
 
 	public MetaDatabase queryMeta() {

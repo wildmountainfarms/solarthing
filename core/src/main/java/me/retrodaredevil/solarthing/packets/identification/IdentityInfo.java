@@ -19,7 +19,7 @@ public interface IdentityInfo {
 	// Note the JsonProperty annotations are for GraphQL. These are not meant to be serialized and saved to a database
 
 	@JsonProperty("displayName")
-	default String getDisplayName() { // FX 1, MX 2, Rover 40A
+	default @NotNull String getDisplayName() { // FX 1, MX 2, Rover 40A
 		String suffix = getSuffix();
 		if (suffix.isEmpty()) {
 			return getName();

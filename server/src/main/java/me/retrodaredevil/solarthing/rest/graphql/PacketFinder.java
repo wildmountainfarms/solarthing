@@ -33,7 +33,7 @@ public class PacketFinder {
 		}
 	}
 	private void updateWithRange(long queryStart, long queryEnd) {
-		List<? extends InstancePacketGroup> rawPackets = simpleQueryHandler.queryStatus(queryStart, queryEnd, null);
+		List<? extends InstancePacketGroup> rawPackets = simpleQueryHandler.queryStatus(queryStart, queryEnd, null, null);
 		synchronized (cacheMap) {
 			for (InstancePacketGroup instancePacketGroup : rawPackets) {
 				int fragmentId = instancePacketGroup.getFragmentId();
