@@ -1,4 +1,8 @@
-## Installing Java 11 on RPi1 or RPi0
+## Installing Java 11 on RPi1 or RPi0 (**Outdated Documentation**)
+
+NOTE: This page was originally created so that people could install Java 11 on RPi1 or RPi0.
+SolarThing no longer supports these devices!
+
 If you have an RPi1 or RPi0, they both have ARMv6 processors, so you need to install Java 11 differently.
 
 NOTE: You don't have to use Java 11. Using Java 8 with SolarThing is perfectly fine. **Go [here](./installing_java.md)
