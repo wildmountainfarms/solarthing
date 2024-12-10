@@ -145,7 +145,9 @@ public class SlackChatBotAction extends SimpleAction {
 		LOGGER.debug("Got a message! type: " + eventsApiEnvelope.getType() + " payload: " + eventsApiEnvelope.getPayload());
 		if ("events_api".equals(eventsApiEnvelope.getType())) {
 			JsonObject payload = eventsApiEnvelope.getPayload().getAsJsonObject();
+			// https://api.slack.com/events/message
 			JsonObject message = payload.getAsJsonObject("event");
+			// TODO create a hash of this message
 			if (message.get("bot_id") != null) {
 				LOGGER.debug("Got a message from a bot! Ignoring.");
 				return;

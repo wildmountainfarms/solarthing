@@ -26,8 +26,12 @@ dependencies {
     // https://mvnrepository.com/artifact/org.java-websocket/Java-WebSocket
     implementation 'org.java-websocket:Java-WebSocket:1.5.5'
 
+    // TODO Remove jewelcli dependency and transition to commons-cli
     // https://mvnrepository.com/artifact/com.lexicalscope.jewelcli/jewelcli
     implementation group: 'com.lexicalscope.jewelcli', name: 'jewelcli', version: '0.8.9'
+
+    // https://mvnrepository.com/artifact/commons-cli/commons-cli
+    implementation group: 'commons-cli', name: 'commons-cli', version: '1.9.0'
 
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
     // https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-jul

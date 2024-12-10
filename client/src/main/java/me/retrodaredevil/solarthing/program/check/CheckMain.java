@@ -21,7 +21,7 @@ import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.packets.handling.implementations.TimedPacketReceiver;
-import me.retrodaredevil.solarthing.program.SolarReader;
+import me.retrodaredevil.solarthing.program.subprogram.run.SolarReader;
 import me.retrodaredevil.solarthing.program.modbus.MutableAddressModbusSlave;
 import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
 import me.retrodaredevil.solarthing.solar.outback.MatePacketCreator49;
