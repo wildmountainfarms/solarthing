@@ -9,8 +9,4 @@ cd "$BASEDIR" || exit 1
 export SOLARTHING_ROOT="../.."
 source ../.scripts/use_sdkman_if_available.sh # requires bash
 
-if java --add-opens 2>&1 | grep 'requires modules' >/dev/null; then
-  java --add-opens java.base/java.lang.reflect=ALL-UNNAMED --add-opens java.base/java.lang.invoke=ALL-UNNAMED -jar ../solarthing-graphql.jar --spring.config.location=config/application.properties
-else
-  java -jar ../solarthing-graphql.jar --spring.config.location=config/application.properties
-fi
+java -jar ../solarthing-graphql.jar --spring.config.location=config/application.properties

@@ -29,7 +29,7 @@ import me.retrodaredevil.solarthing.packets.security.crypto.DecryptException;
 import me.retrodaredevil.solarthing.packets.security.crypto.InvalidKeyException;
 import me.retrodaredevil.solarthing.packets.security.crypto.KeyUtil;
 import me.retrodaredevil.solarthing.packets.security.crypto.PublicKeyLookUp;
-import me.retrodaredevil.solarthing.program.SecurityPacketReceiver;
+import me.retrodaredevil.solarthing.program.subprogram.run.SecurityPacketReceiver;
 import me.retrodaredevil.solarthing.reason.ExecutionReason;
 import me.retrodaredevil.solarthing.reason.OpenSourceExecutionReason;
 import me.retrodaredevil.solarthing.type.alter.AlterPacket;

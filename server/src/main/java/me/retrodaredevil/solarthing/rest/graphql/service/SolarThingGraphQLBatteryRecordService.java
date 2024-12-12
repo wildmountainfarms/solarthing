@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -99,6 +100,9 @@ public class SolarThingGraphQLBatteryRecordService {
 
 		@GraphQLQuery
 		public @NotNull List<@NotNull DataNode<Double>> queryEstimate(@GraphQLArgument(name = "ratio") double ratio) {
+			if (data.isEmpty()) {
+				return Collections.emptyList();
+			}
 			var first = data.get(0);
 			var last = data.get(data.size() - 1);
 

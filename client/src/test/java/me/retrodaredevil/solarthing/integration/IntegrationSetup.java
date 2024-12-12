@@ -6,7 +6,7 @@ import me.retrodaredevil.solarthing.SolarThingDatabaseType;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
-import me.retrodaredevil.solarthing.program.couchdb.CouchDbSetupMain;
+import me.retrodaredevil.solarthing.program.subprogram.run.couchdb.CouchDbSetupMain;
 
 import java.io.OutputStream;
 import java.io.PrintStream;

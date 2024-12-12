@@ -1,10 +1,10 @@
-FROM eclipse-temurin:19-jre-jammy as builder
+FROM ghcr.io/retrodaredevil/lavender-jre:21-ubuntu-jammy as builder
 ARG JAR_LOCATION
 COPY ${JAR_LOCATION} application.jar
 RUN java -Djarmode=layertools -jar application.jar extract
 
 
-FROM eclipse-temurin:19-jre-jammy
+FROM ghcr.io/retrodaredevil/lavender-jre:21-ubuntu-jammy
 
 RUN ["mkdir", "/solarthing"]
 WORKDIR "/solarthing"

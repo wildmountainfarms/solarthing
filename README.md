@@ -48,6 +48,7 @@ Ready to install? Use the [Quickstart](https://solarthing.readthedocs.io/en/late
 
 * Grafana (recommended)
   * Use SolarThing Server (with CouchDB) alongside [Wild GraphQL Data Source](https://grafana.com/grafana/plugins/retrodaredevil-wildgraphql-datasource/)
+    * Documentation: https://solarthing.readthedocs.io/en/latest/quickstart/data/solarthing-server/index.html
   * Alternatively, configure SolarThing to upload to InfluxDB for viewing of statistics in Grafana
 * [SolarThing Android](https://play.google.com/store/apps/details?id=me.retrodaredevil.solarthing.android)
   * SolarThing Android connects directly to CouchDB to display data in a persistent notification

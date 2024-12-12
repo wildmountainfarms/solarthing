@@ -6,10 +6,10 @@ import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.identification.IdentifierFragmentMatcher;
 import me.retrodaredevil.solarthing.packets.identification.IdentifierRepFragment;
-import me.retrodaredevil.solarthing.program.pvoutput.provider.PacketVoltageProvider;
-import me.retrodaredevil.solarthing.program.pvoutput.provider.PacketTemperatureCelsiusProvider;
-import me.retrodaredevil.solarthing.program.pvoutput.provider.TemperatureCelsiusProvider;
-import me.retrodaredevil.solarthing.program.pvoutput.provider.VoltageProvider;
+import me.retrodaredevil.solarthing.program.subprogram.pvoutput.provider.PacketVoltageProvider;
+import me.retrodaredevil.solarthing.program.subprogram.pvoutput.provider.PacketTemperatureCelsiusProvider;
+import me.retrodaredevil.solarthing.program.subprogram.pvoutput.provider.TemperatureCelsiusProvider;
+import me.retrodaredevil.solarthing.program.subprogram.pvoutput.provider.VoltageProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
