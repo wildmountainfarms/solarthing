@@ -53,7 +53,7 @@ public class CacheController {
 			path = "/" + TemperatureRecordDataCache.CACHE_NAME,
 			produces = "application/json"
 	)
-	public @NotNull List<@NotNull IdentificationCacheDataPacket<TemperatureRecordDataCache>> getTemperatureCelsius(String sourceId, long startMillis, long endMillis) {
+	public @NotNull List<@NotNull IdentificationCacheDataPacket<TemperatureRecordDataCache>> getTemperatureRecord(String sourceId, long startMillis, long endMillis) {
 		final TypeReference<IdentificationCacheDataPacket<TemperatureRecordDataCache>> typeReference = new TypeReference<>() {};
 		return cacheHandler.getCachesFromDateMillis(typeReference, TemperatureRecordDataCache.CACHE_NAME, sourceId, startMillis, endMillis);
 	}
