@@ -3,25 +3,25 @@ buildscript {
     ext {
         junit5Version = '5.10.1' // https://junit.org/junit5/
         junit5PlatformVersion = '1.10.1'
+        // For some reason IntelliJ doesn't like these new versions I have commented out. TODO look at this
+//        junit5Version = '5.11.3' // https://junit.org/junit5/
+//        junit5PlatformVersion = '1.11.3'
 
-        slf4jVersion = '2.0.11' // http://www.slf4j.org/download.html
-        log4jVersion = '2.22.0' // https://logging.apache.org/log4j/2.x/javadoc.html
+        slf4jVersion = '2.0.16' // http://www.slf4j.org/download.html
+        log4jVersion = '2.24.2' // https://logging.apache.org/log4j/2.x/release-notes.html
         // Note: Since Jackson 2.14, Android SDK 26 is required
         // https://github.com/FasterXML/jackson/wiki/Jackson-Releases
-        jacksonVersion = '2.16.1' // https://github.com/FasterXML/jackson-databind/tags
-        retrofitVersion = "2.9.0" // https://github.com/square/retrofit/tags
+        jacksonVersion = '2.18.2' // https://github.com/FasterXML/jackson-databind/tags
+        retrofitVersion = "2.11.0" // https://github.com/square/retrofit/tags
         shadowVersion = '8.1.1' // https://github.com/johnrengelman/shadow/releases
         ioLibVersion = '2.3.0' // https://github.com/retrodaredevil/io-lib/releases
         okhttpVersion = "4.12.0" // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
-//        couchdbJavaVersion = '1.1.0'
-        couchdbJavaVersion = "cf377882a0a85ce1ff37b5bcc23a5389d900d66f".substring(0, 10)
-        dockerComposePluginVersion = "0.17.6" // https://github.com/avast/gradle-docker-compose-plugin/releases
-        errorpronePluginVersion = '3.1.0' // https://github.com/tbroyer/gradle-errorprone-plugin/releases
-        errorproneCoreVersion = '2.24.1' // https://mvnrepository.com/artifact/com.google.errorprone/error_prone_core
-        antlrVersion = "4.13.1" // https://github.com/antlr/antlr4/releases
-    }
-    dependencies {
-        classpath "com.avast.gradle:gradle-docker-compose-plugin:$dockerComposePluginVersion"
+        couchdbJavaVersion = '1.1.2'
+//        couchdbJavaVersion = "8582268195".substring(0, 10)
+        dockerComposePluginVersion = "0.17.11" // https://github.com/avast/gradle-docker-compose-plugin/releases
+        errorpronePluginVersion = '4.1.0' // https://github.com/tbroyer/gradle-errorprone-plugin/releases
+        errorproneCoreVersion = '2.36.0' // https://mvnrepository.com/artifact/com.google.errorprone/error_prone_core
+        antlrVersion = "4.13.2" // https://github.com/antlr/antlr4/releases
     }
 }
 
@@ -29,6 +29,7 @@ buildscript {
 plugins {
     id 'com.diffplug.spotless' version '6.22.0' // https://mvnrepository.com/artifact/com.diffplug.spotless/spotless-plugin-gradle
     id 'net.ltgt.errorprone' version "$errorpronePluginVersion"
+    id "com.avast.gradle.docker-compose" version "$dockerComposePluginVersion"
 }
 
 version "0.0.1-SNAPSHOT"
@@ -288,6 +289,6 @@ project(":action-lang"){
 }
 
 wrapper {
-    gradleVersion = '8.6'
+    gradleVersion = '8.11.1'
     distributionType = Wrapper.DistributionType.ALL
 }
