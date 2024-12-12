@@ -39,5 +39,4 @@ tasks.register('generateCode', NpmTask) {
     dependsOn(":server:generateSchema")
 }
 
-// TODO uncomment
-//assemble.dependsOn(appNpmBuild)
+assemble.dependsOn(appNpmBuild)
