@@ -50,8 +50,6 @@ public final class ActionUtil {
 				RoverModbusActionNode.class,
 				RoverLoadActionNode.class,
 				RoverBoostSetActionNode.class,
-				// RoverBoostVoltageActionNode commented out until we confirm that replacing it works as intended
-//				RoverBoostVoltageActionNode.class,
 
 				TracerModbusActionNode.class,
 				TracerLoadActionNode.class,
