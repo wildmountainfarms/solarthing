@@ -41,6 +41,7 @@ public class CustomWmfCouchDbEdit20240318 {
 	);
 	private final CouchDbInstance instance;
 	private final PrintStream out;
+	@SuppressWarnings("FieldCanBeLocal") // we suppress this warning because this class should probably be removed at some point
 	private final CouchDbSetupMain.Prompt prompt;
 
 	public CustomWmfCouchDbEdit20240318(CouchDbInstance instance, PrintStream out, CouchDbSetupMain.Prompt prompt) {

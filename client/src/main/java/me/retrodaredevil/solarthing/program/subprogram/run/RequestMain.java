@@ -34,10 +34,10 @@ public class RequestMain {
 	public static int startRequestProgram(RequestProgramOptions options, boolean isValidate) throws Exception {
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Beginning request program");
 		AnalyticsManager analyticsManager = new AnalyticsManager(options.isAnalyticsEnabled());
-		return startRequestProgram(options, analyticsManager, options.getPeriod(), options.getMinimumWait(), isValidate);
+		return startRequestProgram(options, isValidate, analyticsManager, options.getPeriod(), options.getMinimumWait());
 	}
 
-	private static int startRequestProgram(RequestProgramOptions options, AnalyticsManager analyticsManager, Duration period, Duration minimumWait, boolean isValidate) throws Exception {
+	private static int startRequestProgram(RequestProgramOptions options, boolean isValidate, AnalyticsManager analyticsManager, Duration period, Duration minimumWait) throws Exception {
 		// Note this is very similar to code in OutbackMateMain and could eventually be refactored
 		EnvironmentUpdater[] environmentUpdaterReference = new EnvironmentUpdater[1];
 		PacketHandlerInit.Result handlersResult = PacketHandlerInit.initHandlers(

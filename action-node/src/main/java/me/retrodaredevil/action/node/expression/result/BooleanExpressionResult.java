@@ -14,6 +14,10 @@ public enum BooleanExpressionResult implements ExpressionResult {
 		return value;
 	}
 
+	public BooleanExpressionResult not() {
+		return this == TRUE ? FALSE : TRUE;
+	}
+
 	public static BooleanExpressionResult get(boolean result) {
 		return result ? TRUE : FALSE;
 	}

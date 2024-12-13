@@ -1,0 +1,21 @@
+queue {
+  race {
+    racer(all : eq(const(5), const(5.0))) : print("5 = 5.0!")
+    racer(pass) : print("This should not happen!")
+  }
+  race {
+    racer(all : eq(const(4), const(5.0))) : print("4 = 5.0! (bad)")
+    racer(all : not : eq(const(4), const(5.0))) : print("4 != 5.0!")
+    racer(pass) : print("This should not happen!")
+  }
+
+  race {
+    racer(all : eq(const("hello"), const hello)) : print("hello = hello")
+    racer(pass) : print("This should not happen!")
+  }
+  race {
+    racer(all : eq(const("Hello"), const hello)) : print("Hello = hello (bad)")
+    racer(all : not : eq(const("Hello"), const hello)) : print("Hello != hello")
+    racer(pass) : print("This should not happen!")
+  }
+}

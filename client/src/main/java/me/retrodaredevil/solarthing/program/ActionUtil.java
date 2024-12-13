@@ -14,7 +14,6 @@ import me.retrodaredevil.solarthing.actions.mate.MateCommandWaitActionNode;
 import me.retrodaredevil.solarthing.actions.message.MessageSenderActionNode;
 import me.retrodaredevil.solarthing.actions.message.SendMessageActionNode;
 import me.retrodaredevil.solarthing.actions.rover.RoverBoostSetActionNode;
-import me.retrodaredevil.solarthing.actions.rover.RoverBoostVoltageActionNode;
 import me.retrodaredevil.solarthing.actions.rover.RoverLoadActionNode;
 import me.retrodaredevil.solarthing.actions.rover.modbus.RoverModbusActionNode;
 import me.retrodaredevil.solarthing.actions.solcast.SolcastActionNode;
@@ -51,7 +50,8 @@ public final class ActionUtil {
 				RoverModbusActionNode.class,
 				RoverLoadActionNode.class,
 				RoverBoostSetActionNode.class,
-				RoverBoostVoltageActionNode.class,
+				// RoverBoostVoltageActionNode commented out until we confirm that replacing it works as intended
+//				RoverBoostVoltageActionNode.class,
 
 				TracerModbusActionNode.class,
 				TracerLoadActionNode.class,

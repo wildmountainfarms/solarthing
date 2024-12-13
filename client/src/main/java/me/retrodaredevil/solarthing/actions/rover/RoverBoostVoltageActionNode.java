@@ -11,7 +11,7 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Deprecated
+@Deprecated(forRemoval = true)
 @JsonTypeName("roverboostvoltage")
 public class RoverBoostVoltageActionNode implements ActionNode {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RoverBoostVoltageActionNode.class);

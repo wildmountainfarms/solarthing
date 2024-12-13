@@ -10,9 +10,9 @@ import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
  * some properties may not be useful.
  * Usually many of these properties become more useful for the shorter periods of time that are focused on.
  *
- * @param identifier
- * @param averageChargerWattage
- * @param averageBuyWattage
+ * @param identifier TODO
+ * @param averageChargerWattage TODO
+ * @param averageBuyWattage TODO
  * @deprecated Not yet implemented
  */
 @Deprecated

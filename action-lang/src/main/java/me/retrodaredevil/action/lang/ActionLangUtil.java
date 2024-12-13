@@ -41,6 +41,8 @@ public final class ActionLangUtil {
 		// expressions
 		configMap.put("const", builder.copy().args("value").build());
 		configMap.put("str", builder.copy().linkedNode("expression").build());
+		configMap.put("eq", builder.copy().args("lhs", "rhs").build());
+		configMap.put("not", builder.copy().linkedNode("expression").build());
 		configMap.put("ref", builder.copy().args("name").build());
 		configMap.put("eval", builder.copy().args("name").build());
 		configMap.put("join", builder.copy().linkedNode("expression").build());
