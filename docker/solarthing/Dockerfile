@@ -1,7 +1,13 @@
-FROM ghcr.io/retrodaredevil/lavender-jre:21-ubuntu-jammy
+FROM ghcr.io/retrodaredevil/lavender-jre:21-ubuntu-noble
 ARG JAR_LOCATION
 ARG COMMIT_HASH=""
 ARG REF=""
+
+# Install netcat because users may want to run nc to access configuration server
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends netcat-openbsd && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN ["mkdir", "/solarthing"]
 COPY --chmod=0444 ${JAR_LOCATION} /solarthing/solarthing.jar

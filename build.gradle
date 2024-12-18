@@ -169,7 +169,7 @@ subprojects {
             error("PackageLocation")
 //            warn("ParameterMissingNullable") // This is useful. Maybe uncomment if we become more religious about use of @Nullable
             error("PrivateConstructorForUtilityClass") // not completely ideal for spring classes with static initialization
-            warn("RemoveUnusedImports")
+            warn("RemoveUnusedImports") // Only a warning because https://github.com/antlr/antlr4/issues/2568 and https://github.com/google/error-prone/issues/463
 //            warn("ReturnMissingNullable") // Useful onlyl if we become more religious about use of @Nullable
             warn("ReturnsNullCollection")
             warn("SwitchDefault")
