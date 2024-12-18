@@ -74,8 +74,7 @@ public class HomeAssistantActionNode implements ActionNode {
 				int fragmentId = packetGroup.getFragmentId(packet);
 				String sourceId = packetGroup.getSourceId(packet);
 				String nameBase = "solarthing_" + sourceId + "_" + fragmentId + "_";
-				if (packet instanceof FXStatusPacket) {
-					FXStatusPacket fx = (FXStatusPacket) packet;
+				if (packet instanceof FXStatusPacket fx) {
 					nameBase += "fx_" + fx.getAddress() + "_";
 					calls.add(service.updateSensor(
 							nameBase + "acmode",

@@ -84,7 +84,7 @@ public class FlagCommandChatBotHandler implements ChatBotHandler {
 					.map(versionedPacket -> versionedPacket.getPacket().getPacket())
 					.filter(packet -> packet instanceof FlagPacket)
 					.map(packet -> ((FlagPacket) packet).getFlagData())
-					.collect(Collectors.toList());
+					.toList();
 			if (flagDataList.isEmpty()) {
 				messageSender.sendMessage("There are no flags set.");
 			} else {

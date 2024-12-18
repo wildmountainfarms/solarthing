@@ -144,9 +144,7 @@ public class AlterManagerAction extends SimpleAction {
 			for (VersionedPacket<StoredAlterPacket> versionedPacket : alterPackets) {
 
 				AlterPacket packet = versionedPacket.getPacket().getPacket();
-				if (packet instanceof ScheduledCommandPacket) {
-					ScheduledCommandPacket scheduledCommandPacket = (ScheduledCommandPacket) packet;
-
+				if (packet instanceof ScheduledCommandPacket scheduledCommandPacket) {
 					ScheduledCommandData data = scheduledCommandPacket.getData();
 					if (data.getScheduledTimeMillis() <= now.toEpochMilli()) {
 						if (now.toEpochMilli() - data.getScheduledTimeMillis() > Duration.ofMinutes(5).toMillis()) {
@@ -155,12 +153,10 @@ public class AlterManagerAction extends SimpleAction {
 							doSendCommand(versionedPacket, scheduledCommandPacket);
 						}
 					}
-				} else if (packet instanceof FlagPacket) {
-					FlagPacket flagPacket = (FlagPacket) packet;
+				} else if (packet instanceof FlagPacket flagPacket) {
 					FlagData data = flagPacket.getFlagData();
 					ActivePeriod activePeriod = data.getActivePeriod();
-					if (activePeriod instanceof TimeRangeActivePeriod) { // We only try to "manage" flags that use this type of ActivePeriod
-						TimeRangeActivePeriod period = (TimeRangeActivePeriod) activePeriod;
+					if (activePeriod instanceof TimeRangeActivePeriod period) { // We only try to "manage" flags that use this type of ActivePeriod
 						TimeRange timeRange = period.getTimeRange();
 						Instant endTime = timeRange.getEndTime();
 						if (endTime != null && endTime.compareTo(now) < 0) {
@@ -192,8 +188,7 @@ public class AlterManagerAction extends SimpleAction {
 		List<StoredAlterPacket> storedAlterPacketsToUpload = new ArrayList<>();
 		List<DeleteAlterPacket> deleteAlterPackets = new ArrayList<>();
 		for (Packet packet : packetGroup.getPackets()) {
-			if (packet instanceof ScheduleCommandPacket) {
-				ScheduleCommandPacket scheduleCommandPacket = (ScheduleCommandPacket) packet;
+			if (packet instanceof ScheduleCommandPacket scheduleCommandPacket) {
 				ScheduledCommandData data = scheduleCommandPacket.getData();
 				ExecutionReason executionReason = new OpenSourceExecutionReason(new OpenSource(
 						sender,

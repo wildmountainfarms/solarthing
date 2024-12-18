@@ -40,8 +40,7 @@ public class GeneratorUnusedAlertEvent extends GracePeriodTimeoutEvent {
 		// We use a for loop here instead of just the "master" FX packet because it's possible for the voltage
 		//    on one FX to be greater than another, so we want to check to see if this applied to *any* FXs
 		for (Packet packet : current.getPackets()) {
-			if (packet instanceof FXStatusPacket) {
-				FXStatusPacket fx = (FXStatusPacket) packet;
+			if (packet instanceof FXStatusPacket fx) {
 				boolean is230 = fx.is230V();
 				int lowThreshold = is230 && lowRaw ? 2 * lowThresholdVoltage : lowThresholdVoltage;
 				int inputVoltage = fx.getInputVoltage();

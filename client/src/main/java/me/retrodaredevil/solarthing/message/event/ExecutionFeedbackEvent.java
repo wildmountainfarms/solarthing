@@ -16,8 +16,7 @@ public class ExecutionFeedbackEvent implements MessageEvent {
 	@Override
 	public void runForEvent(MessageSender sender, InstancePacketGroup packetGroup) {
 		for (Packet packet : packetGroup.getPackets()) {
-			if (packet instanceof ExecutionFeedbackPacket) {
-				ExecutionFeedbackPacket executionFeedbackPacket = (ExecutionFeedbackPacket) packet;
+			if (packet instanceof ExecutionFeedbackPacket executionFeedbackPacket) {
 				sender.sendMessage(executionFeedbackPacket.getMessage());
 			}
 		}

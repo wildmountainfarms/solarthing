@@ -260,9 +260,8 @@ public class SolarThingGraphQLService {
 				}
 				int temperatureCelsius = Math.round(batteryTemperatureCelsius.floatValue()) + (fxChargingTemperatureAdjustPacket == null ? 0 : fxChargingTemperatureAdjustPacket.getTemperatureAdjustCelsius());
 				for (Packet packet : packetGroup.getPackets()) {
-					if (packet instanceof BatteryVoltage) {
+					if (packet instanceof BatteryVoltage batteryVoltagePacket) {
 						int fragmentId = packetGroup.getFragmentId(packet);
-						BatteryVoltage batteryVoltagePacket = (BatteryVoltage) packet;
 						float batteryVoltage = batteryVoltagePacket.getBatteryVoltage();
 						float compensated = BatteryUtil.getOutbackCompensatedBatteryVoltage(batteryVoltage, temperatureCelsius);
 						long dateMillis = packetGroup.getDateMillisOrKnown(packet);

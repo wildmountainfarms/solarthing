@@ -47,8 +47,7 @@ public class HeartbeatCommandChatBotHandler implements ChatBotHandler {
 					.forEach(instancePacketGroup -> {
 						long dateMillis = instancePacketGroup.getDateMillis();
 						for (Packet packet : instancePacketGroup.getPackets()) {
-							if (packet instanceof HeartbeatPacket) {
-								HeartbeatPacket heartbeatPacket = (HeartbeatPacket) packet;
+							if (packet instanceof HeartbeatPacket heartbeatPacket) {
 								HeartbeatIdentifier identifier = new HeartbeatIdentifier(heartbeatPacket.getData().getIdentifier(), instancePacketGroup.getFragmentId());
 								HeartbeatNode node = new HeartbeatNode(dateMillis, heartbeatPacket);
 								map.put(identifier, node);

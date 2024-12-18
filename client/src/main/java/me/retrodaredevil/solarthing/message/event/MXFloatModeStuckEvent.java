@@ -46,8 +46,7 @@ public class MXFloatModeStuckEvent implements MessageEvent {
 	@Override
 	public void run(MessageSender sender, FragmentedPacketGroup previous, FragmentedPacketGroup current) {
 		for (Packet previousPacket : previous.getPackets()) {
-			if (previousPacket instanceof MXStatusPacket) {
-				MXStatusPacket previousMX = (MXStatusPacket) previousPacket;
+			if (previousPacket instanceof MXStatusPacket previousMX) {
 				KnownIdentifierFragment<OutbackIdentifier> identifierFragment = IdentifierFragment.create(previous.getFragmentId(previousPacket), previousMX.getIdentifier());
 				MXStatusPacket currentMX = null;
 				for (Packet currentPacket : current.getPackets()) {
