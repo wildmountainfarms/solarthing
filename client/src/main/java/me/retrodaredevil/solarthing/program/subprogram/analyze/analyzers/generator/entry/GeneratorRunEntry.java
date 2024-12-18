@@ -17,6 +17,11 @@ import java.time.Instant;
  */
 public record GeneratorRunEntry(
 		Instant startTime,
-		Instant endTime
+		Instant endTime,
+		GeneratorStatistics wholeStatistics
+//		GeneratorStatistics acUseStatistics,
+//		List<GeneratorStatistics> acUseStatisticList,
+//		List<GeneratorStatistics> acDropStatistics,
+//		Map<OperationalMode, List<GeneratorStatistics>> operationalModeToStatisticsMap
 ) {
 }

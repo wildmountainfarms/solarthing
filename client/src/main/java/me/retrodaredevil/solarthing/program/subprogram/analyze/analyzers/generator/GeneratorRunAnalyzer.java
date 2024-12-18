@@ -7,6 +7,8 @@ import me.retrodaredevil.solarthing.packets.collection.StoredPacketGroup;
 import me.retrodaredevil.solarthing.program.subprogram.analyze.Analyzer;
 import me.retrodaredevil.solarthing.program.subprogram.analyze.DataChunk;
 import me.retrodaredevil.solarthing.program.subprogram.analyze.analyzers.generator.entry.GeneratorRunEntry;
+import me.retrodaredevil.solarthing.program.subprogram.analyze.analyzers.generator.entry.GeneratorStatistics;
+import me.retrodaredevil.solarthing.program.subprogram.analyze.statistics.fx.FXStatisticAnalysis;
 import me.retrodaredevil.solarthing.solar.outback.fx.ACMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 
@@ -39,9 +41,15 @@ public class GeneratorRunAnalyzer implements Analyzer<GeneratorRunEntry> {
 	private GeneratorRunEntry analyzeRow(List<InstancePacketGroup> packets) {
 		var first = packets.get(0);
 		var last = packets.get(packets.size() - 1);
+		Instant startTime = Instant.ofEpochMilli(first.getDateMillis());
+		Instant endTime = Instant.ofEpochMilli(last.getDateMillis());
 		return new GeneratorRunEntry(
-				Instant.ofEpochMilli(first.getDateMillis()),
-				Instant.ofEpochMilli(last.getDateMillis())
+				startTime,
+				endTime,
+				new GeneratorStatistics(
+						startTime, endTime,
+						FXStatisticAnalysis.analyze(packets)
+				)
 		);
 	}
 

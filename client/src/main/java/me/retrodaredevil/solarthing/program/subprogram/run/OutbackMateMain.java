@@ -40,7 +40,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
@@ -68,7 +67,7 @@ public class OutbackMateMain {
 			PacketListReceiverHandlerBundle bundle = handlersResult.getBundle();
 			List<DataRequesterResult> dataRequesterResults = options.getDataRequesterList().stream()
 					.map(dataRequester -> dataRequester.create(new RequestObject(bundle.getEventHandler().getPacketListReceiverAccepter())))
-					.collect(Collectors.toList());
+					.toList();
 
 
 			List<PacketListReceiver> packetListReceiverList = new ArrayList<>(Arrays.asList(

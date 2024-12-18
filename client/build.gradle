@@ -42,6 +42,8 @@ dependencies {
     // TODO do we need this dependency?
     implementation group: 'biz.paluch.logging', name: 'logstash-gelf', version: '1.15.1'
 
+    // https://mvnrepository.com/artifact/com.google.guava/guava
+    implementation group: 'com.google.guava', name: 'guava', version: '33.3.1-jre'
 }
 
 shadowJar {

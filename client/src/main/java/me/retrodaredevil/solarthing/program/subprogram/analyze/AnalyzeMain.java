@@ -12,6 +12,8 @@ import me.retrodaredevil.solarthing.database.couchdb.CouchDbSolarThingDatabase;
 import me.retrodaredevil.solarthing.packets.collection.DefaultInstanceOptions;
 import me.retrodaredevil.solarthing.program.subprogram.analyze.analyzers.generator.GeneratorRunAnalyzer;
 import me.retrodaredevil.solarthing.program.subprogram.analyze.analyzers.generator.entry.GeneratorRunEntry;
+import me.retrodaredevil.solarthing.program.subprogram.analyze.analyzers.generator.entry.GeneratorStatistics;
+import me.retrodaredevil.solarthing.program.subprogram.analyze.statistics.fx.FXStatisticCollection;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -30,6 +32,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class AnalyzeMain {
 	private AnalyzeMain() { throw new UnsupportedOperationException(); }
@@ -112,7 +115,18 @@ public final class AnalyzeMain {
 		try {
 			List<GeneratorRunEntry> rows = executor.analyze(startTime, endTime);
 			for (GeneratorRunEntry entry : rows) {
-				System.out.println("Entry:  Start: " + entry.startTime().atZone(zoneId) + " End: " + entry.endTime().atZone(zoneId) + " duration: " + Duration.between(entry.startTime(), entry.endTime()));
+				GeneratorStatistics stats = entry.wholeStatistics();
+				String details = stats.getFXAddresses().stream()
+						.sorted()
+						.map(address -> {
+							FXStatisticCollection fxStats = stats.getStatistics(address);
+
+							return "\n\tFX" + address
+									+ "  Voltage: mean: " + fxStats.stats().inputVoltageRaw().mean() + " upper 99%: " + fxStats.percentiles().inputVoltageRaw().p99() + " lower 1%: " + fxStats.percentiles().inputVoltageRaw().p1()
+									;
+						})
+						.collect(Collectors.joining(""));
+				System.out.println("Entry:  Start: " + entry.startTime().atZone(zoneId) + " End: " + entry.endTime().atZone(zoneId) + " duration: " + Duration.between(entry.startTime(), entry.endTime()) + details);
 			}
 		} catch (AnalysisException e) {
 			e.getCause().printStackTrace(System.err);
