@@ -68,11 +68,11 @@ public class SolarThingGraphQLExtensions {
 		return "" + identifiable.getDataId();
 	}
 	@GraphQLQuery
-	public @NotNull boolean isActive(@GraphQLContext ActivePeriod activePeriod, @GraphQLArgument(name = "dateMillis") long dateMillis) {
+	public boolean isActive(@GraphQLContext ActivePeriod activePeriod, @GraphQLArgument(name = "dateMillis") long dateMillis) {
 		return activePeriod.isActive(dateMillis);
 	}
 	@GraphQLQuery
-	public @NotNull boolean isActiveNow(@GraphQLContext ActivePeriod activePeriod) {
+	public boolean isActiveNow(@GraphQLContext ActivePeriod activePeriod) {
 		return activePeriod.isActive(Instant.now());
 	}
 }

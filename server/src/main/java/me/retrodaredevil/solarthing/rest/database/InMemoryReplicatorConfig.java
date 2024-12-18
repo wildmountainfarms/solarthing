@@ -65,16 +65,16 @@ public enum InMemoryReplicatorConfig {
 	/**
 	 * @param inMemoryCouch The {@link CouchProperties} the in memory database can use to refer to itself. {@link CouchProperties#getUri()} should be a localhost address.
 	 * @param externalCouch The external {@link CouchProperties} the in memory database can use to refer to the external database.
-	 * @return
+	 * @return A {@link SimpleReplicatorDocument.Builder} that has the source/target set automatically based on {@link #externalIsTarget}
 	 */
 	public SimpleReplicatorDocument.Builder createDocumentBuilder(CouchProperties inMemoryCouch, CouchProperties externalCouch) {
 		ReplicatorSource inMemoryDatabase = createSource(inMemoryCouch, databaseType.getName());
 		ReplicatorSource externalDatabase = createSource(externalCouch, databaseType.getName());
 
-		SimpleReplicatorDocument.Builder builder =  SimpleReplicatorDocument.builder(
-						externalIsTarget ? inMemoryDatabase : externalDatabase,
-						externalIsTarget ? externalDatabase : inMemoryDatabase
-				);
+		SimpleReplicatorDocument.Builder builder = SimpleReplicatorDocument.builder(
+				externalIsTarget ? inMemoryDatabase : externalDatabase,
+				externalIsTarget ? externalDatabase : inMemoryDatabase
+		);
 		// do not make it continuous if we are replication a certain duration.
 		//   I have found that if you do make it continuous, the replication will remain triggered, which will not allow it to be updated
 		if (duplicatePastDuration == null) {

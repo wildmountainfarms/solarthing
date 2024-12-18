@@ -232,10 +232,9 @@ public class SolarThingGraphQLService {
 			MetaDatabase metaDatabase = simpleQueryHandler.queryMeta();
 			FXChargingTemperatureAdjustPacket fxChargingTemperatureAdjustPacket = null;
 			// Depending on the date, there could be different configurations. So, this just gets the date of the last packet
-			long currentConfigurationDateMillis = sortedPackets.get(sortedPackets.size() - 1).getDateMillis();
+			long currentConfigurationDateMillis = sortedPackets.getLast().getDateMillis();
 			for (BasicMetaPacket basicMetaPacket : metaDatabase.getMeta(currentConfigurationDateMillis)) {
-				if (basicMetaPacket instanceof TargetMetaPacket) {
-					TargetMetaPacket targetMetaPacket = (TargetMetaPacket) basicMetaPacket;
+				if (basicMetaPacket instanceof TargetMetaPacket targetMetaPacket) {
 					for (TargetedMetaPacket targetedMetaPacket : targetMetaPacket.getPackets()) {
 						if (targetedMetaPacket.getPacketType() == TargetedMetaPacketType.FX_CHARGING_TEMPERATURE_ADJUST) {
 							fxChargingTemperatureAdjustPacket = (FXChargingTemperatureAdjustPacket) targetedMetaPacket;
@@ -280,8 +279,7 @@ public class SolarThingGraphQLService {
 				float sum = 0;
 				int count = 0;
 				for (Packet packet : packetGroup.getPackets()) {
-					if (packet instanceof BatteryVoltage) {
-						BatteryVoltage batteryVoltagePacket = (BatteryVoltage) packet;
+					if (packet instanceof BatteryVoltage batteryVoltagePacket) {
 						float batteryVoltage = batteryVoltagePacket.getBatteryVoltage();
 						sum += batteryVoltage;
 						count++;

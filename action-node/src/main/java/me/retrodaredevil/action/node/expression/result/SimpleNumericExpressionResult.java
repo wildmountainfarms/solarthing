@@ -1,7 +1,5 @@
 package me.retrodaredevil.action.node.expression.result;
 
-import java.util.Objects;
-
 import static java.util.Objects.requireNonNull;
 
 final class SimpleNumericExpressionResult implements NumericExpressionResult {
@@ -27,6 +25,6 @@ final class SimpleNumericExpressionResult implements NumericExpressionResult {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(number.doubleValue());
+		return Double.hashCode(number.doubleValue());
 	}
 }
