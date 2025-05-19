@@ -85,7 +85,7 @@ jobs:
             org.opencontainers.image.documentation=https://solarthing.readthedocs.io/en/latest/
             org.opencontainers.image.url=https://solarthing.readthedocs.io/en/latest/
             org.opencontainers.image.authors=retrodaredevil
-            org.opencontainers.image.base.name=docker.io/eclipse-temurin:19-jre-jammy
+            org.opencontainers.image.base.name=ghcr.io/retrodaredevil/lavender-jre:21-ubuntu-noble
       # https://github.com/marketplace/actions/docker-setup-buildx
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3

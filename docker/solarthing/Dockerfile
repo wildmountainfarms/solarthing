@@ -1,3 +1,4 @@
+# NOTE: When updating base image, be sure to update the label in docker-build.yml for base image
 FROM ghcr.io/retrodaredevil/lavender-jre:21-ubuntu-noble
 ARG JAR_LOCATION
 ARG COMMIT_HASH=""

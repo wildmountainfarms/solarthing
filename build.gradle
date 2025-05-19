@@ -101,7 +101,7 @@ subprojects {
 
         // https://mvnrepository.com/artifact/com.google.code.findbugs/jsr305
         implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
-        implementation 'org.jetbrains:annotations:24.0.1' // https://search.maven.org/search?q=g:org.jetbrains%20AND%20a:annotations
+        implementation 'org.jetbrains:annotations:24.0.1' // https://github.com/JetBrains/java-annotations/releases
     }
     test {
         useJUnitPlatform()

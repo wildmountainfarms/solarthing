@@ -8,6 +8,9 @@ import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 
+/**
+ * @implSpec This class is immutable and thread safe
+ */
 @JsonIgnoreProperties(value = { // ignore convenience fields that may sometimes be present (all of these fields were eventually removed)
 		"operatingModeName", "errors", "acModeName", "miscModes", "warnings",
 		"batteryVoltageString"
