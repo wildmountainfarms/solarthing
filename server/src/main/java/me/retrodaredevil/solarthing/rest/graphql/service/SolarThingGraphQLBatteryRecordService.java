@@ -3,7 +3,6 @@ package me.retrodaredevil.solarthing.rest.graphql.service;
 import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLQuery;
 import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 import me.retrodaredevil.solarthing.packets.identification.IdentifierFragment;
 import me.retrodaredevil.solarthing.packets.identification.SourceIdentifierFragment;
