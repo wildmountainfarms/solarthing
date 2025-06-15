@@ -47,12 +47,11 @@ public class CommonConfigUtil {
 			return arrayNode;
 		} else if (node.isObject()) {
 			ObjectNode objectNode = new ObjectNode(JsonNodeFactory.instance);
-			for (Iterator<Map.Entry<String, JsonNode>> it = node.fields(); it.hasNext(); ) {
-				Map.Entry<String, JsonNode> entry = it.next();
+			node.propertyStream().forEach(entry -> {
 				String newKey = INTERPOLATOR.replace(entry.getKey());
 				JsonNode newValue = interpolate(entry.getValue());
 				objectNode.set(newKey, newValue);
-			}
+			});
 			return objectNode;
 		} else if (node.isTextual()) {
 			return new TextNode(INTERPOLATOR.replace(node.asText()));

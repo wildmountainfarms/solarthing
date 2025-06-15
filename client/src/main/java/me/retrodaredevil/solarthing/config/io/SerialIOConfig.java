@@ -79,21 +79,12 @@ public class SerialIOConfig implements IOConfig {
 			if(parity == null) return;
 
 			setParity(Parity.EVEN);
-			switch(parity){
-				case "none":
-					setParity(Parity.NONE);
-					break;
-				case "odd":
-					setParity(Parity.ODD);
-					break;
-				case "mark":
-					setParity(Parity.MARK);
-					break;
-				case "space":
-					setParity(Parity.SPACE);
-					break;
-				default:
-					throw new IllegalArgumentException("Unsupported parity=" + parity);
+			switch (parity) {
+				case "none" -> setParity(Parity.NONE);
+				case "odd" -> setParity(Parity.ODD);
+				case "mark" -> setParity(Parity.MARK);
+				case "space" -> setParity(Parity.SPACE);
+				default -> throw new IllegalArgumentException("Unsupported parity=" + parity);
 			}
 		}
 

@@ -62,30 +62,31 @@ public class DeserializeTest {
 	@Test
 	void testInfluxDb1() throws JsonProcessingException {
 		ObjectMapper mapper = JacksonUtil.defaultMapper();
-		String json = "{\n" +
-				"  \"type\": \"influxdb\",\n" +
-				"  \"config\": {\n" +
-				"    \"url\": \"http://localhost:8086\",\n" +
-				"    \"username\": \"root\",\n" +
-				"    \"password\": \"root\",\n" +
-				"    \"database\": \"default_database\",\n" +
-				"    \"measurement\": null,\n" +
-				"\n" +
-				"    \"status_retention_policies\": [\n" +
-				"      {\n" +
-				"        \"frequency\": 120,\n" +
-				"        \"name\": \"autogen\"\n" +
-				"      }\n" +
-				"    ],\n" +
-				"\n" +
-				"    \"event_retention_policy\": {\n" +
-				"      \"name\": \"autogen\"\n" +
-				"    }\n" +
-				"  }\n" +
-				"}";
+		String json = """
+				{
+				  "type": "influxdb",
+				  "config": {
+				    "url": "http://localhost:8086",
+				    "username": "root",
+				    "password": "root",
+				    "database": "default_database",
+				    "measurement": null,
+
+				    "status_retention_policies": [
+				      {
+				        "frequency": 120,
+				        "name": "autogen"
+				      }
+				    ],
+
+				    "event_retention_policy": {
+				      "name": "autogen"
+				    }
+				  }
+				}""";
 		mapper.registerSubtypes(DatabaseSettings.class, InfluxDbDatabaseSettings.class);
 		DatabaseConfig config = mapper.readValue(json, DatabaseConfig.class);
-		assertTrue(config.requireDatabaseSettings() instanceof InfluxDbDatabaseSettings);
+		assertInstanceOf(InfluxDbDatabaseSettings.class, config.requireDatabaseSettings());
 	}
 
 	private List<Path> getJsonFiles(Path directory) throws IOException {

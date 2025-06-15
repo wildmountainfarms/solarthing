@@ -54,8 +54,7 @@ public final class PointUtil {
 	}
 	public static Set<Map.Entry<String, ValueNode>> flattenJsonObject(ObjectNode object, String separator) {
 		Map<String, ValueNode> r = new LinkedHashMap<>();
-		for (Iterator<Map.Entry<String, JsonNode>> it = object.fields(); it.hasNext(); ) {
-			Map.Entry<String, JsonNode> entry = it.next();
+		object.propertyStream().forEach(entry -> {
 			String key = entry.getKey();
 			JsonNode element = entry.getValue();
 			if (element.isValueNode() && !element.isNull()) {
@@ -67,7 +66,7 @@ public final class PointUtil {
 				}
 			}
 			// ignore nulls and arrays
-		}
+		});
 		return r.entrySet();
 	}
 }

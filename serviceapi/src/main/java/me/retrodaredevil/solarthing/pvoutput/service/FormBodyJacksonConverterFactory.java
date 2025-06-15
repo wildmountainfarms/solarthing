@@ -31,16 +31,16 @@ public class FormBodyJacksonConverterFactory extends Converter.Factory {
 			}
 			FormBody.Builder formBuilder = new FormBody.Builder();
 			ObjectNode object = (ObjectNode) node;
-			for (Iterator<Map.Entry<String, JsonNode>> it = object.fields(); it.hasNext(); ) {
-				Map.Entry<String, JsonNode> field = it.next();
+			object.propertyStream().forEach(field -> {
 				String key = field.getKey();
 				JsonNode fieldNode = field.getValue();
 				if(!fieldNode.isValueNode()){
+					// TODO should this be an exception or at least a log message?
 					System.out.println("key=" + key + " fieldNode is not a value node! fieldNode=" + fieldNode);
-					continue;
+				} else {
+					formBuilder.add(key, fieldNode.asText());
 				}
-				formBuilder.add(key, fieldNode.asText());
-			}
+			});
 			return formBuilder.build();
 		};
 	}

@@ -120,6 +120,9 @@ subprojects {
             disable("FutureReturnValueIgnored") // For "send and forget" stuff, this is really annoying
             disable("UnusedVariable") // We are OK with this most of the time
             disable("CanonicalDuration") // I will specify my durations in whatever units I please
+            disable("AssignmentExpression") // TODO stop doing requireNonNull(this.asdf = asdf);
+            disable("PatternMatchingInstanceof") // TODO reenable and use pattern matching instanceof
+
 
             error("MissingOverride")
 

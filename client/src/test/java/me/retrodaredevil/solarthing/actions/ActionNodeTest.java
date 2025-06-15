@@ -35,14 +35,15 @@ class ActionNodeTest {
 	}
 	@Test
 	void testDeclaration() throws JsonProcessingException {
-		String json = "{\n" +
-				"  \"type\": \"race\",\n" +
-				"  \"racers\": [\n" +
-				"    [{ \"type\": \"waitms\", \"wait\": 500}, { \"type\": \"log\", \"message\": \"500ms finished first!\"}],\n" +
-				"    [{ \"type\": \"waitms\", \"wait\": 200}, { \"type\": \"log\", \"message\": \"200ms finished first!\"}],\n" +
-				"    [{ \"type\": \"waitms\", \"wait\": 1000}, { \"type\": \"log\", \"message\": \"1000ms finished first!\"}]\n" +
-				"  ]\n" +
-				"}";
+		String json = """
+				{
+				  "type": "race",
+				  "racers": [
+				    [{ "type": "waitms", "wait": 500}, { "type": "log", "message": "500ms finished first!"}],
+				    [{ "type": "waitms", "wait": 200}, { "type": "log", "message": "200ms finished first!"}],
+				    [{ "type": "waitms", "wait": 1000}, { "type": "log", "message": "1000ms finished first!"}]
+				  ]
+				}""";
 		ActionNode actionNode = MAPPER.readValue(json, ActionNode.class);
 		Action action = actionNode.createAction(createEnvironment());
 		do {

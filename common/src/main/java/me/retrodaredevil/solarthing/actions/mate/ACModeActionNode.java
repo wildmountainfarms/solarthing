@@ -35,15 +35,12 @@ public class ACModeActionNode implements ActionNode {
 	}
 	private static ACMode parseMode(String modeName) {
 		modeName = modeName.replaceAll(" ", "").toLowerCase(Locale.ENGLISH);
-		switch (modeName) {
-			case "noac":
-				return ACMode.NO_AC;
-			case "acdrop":
-				return ACMode.AC_DROP;
-			case "acuse":
-				return ACMode.AC_USE;
-		}
-		throw new IllegalArgumentException("ACMode: '" + modeName + "' does not exist!");
+		return switch (modeName) {
+			case "noac" -> ACMode.NO_AC;
+			case "acdrop" -> ACMode.AC_DROP;
+			case "acuse" -> ACMode.AC_USE;
+			default -> throw new IllegalArgumentException("ACMode: '" + modeName + "' does not exist!");
+		};
 	}
 
 	@Override

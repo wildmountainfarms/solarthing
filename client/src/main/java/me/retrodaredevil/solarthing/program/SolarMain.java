@@ -42,23 +42,19 @@ public final class SolarMain {
 		String firstArg = args[0];
 		String[] subArgs = new String[args.length - 1];
 		System.arraycopy(args, 1, subArgs, 0, args.length - 1);
-		switch (firstArg) {
-			case "run":
-				return RunMain.runMain(subArgs);
-			case "version":
-				return outputVersion();
-			case "action":
-				return RunActionMain.runAction(subArgs);
-			case "check":
-				return CheckMain.doCheck(subArgs);
-			case "analyze":
-				return AnalyzeMain.analyze(subArgs);
-			default:
+		return switch (firstArg) {
+			case "run" -> RunMain.runMain(subArgs);
+			case "version" -> outputVersion();
+			case "action" -> RunActionMain.runAction(subArgs);
+			case "check" -> CheckMain.doCheck(subArgs);
+			case "analyze" -> AnalyzeMain.analyze(subArgs);
+			default -> {
 				System.err.println("Unknown argument: " + firstArg + "\n" +
 						"Previous SolarThing versions allowed the running of SolarThing without the 'run' prefix.\n" +
 						"Adding 'run' may fix your problem.");
-				return 1;
-		}
+				yield 1;
+			}
+		};
 	}
 
 	public static void main(String[] args) {

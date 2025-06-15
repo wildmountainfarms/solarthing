@@ -18,19 +18,17 @@ public class AnalyticsTimer {
 	}
 	public void onSend() {
 		long nowNanos = System.nanoTime();
-		switch(requireNonNull(state)) {
-			case SEND_FIRST:
+		switch (requireNonNull(state)) {
+			case SEND_FIRST -> {
 				state = State.SEND_ONE_HOUR;
 				nextSendNanos = nowNanos + Duration.ofMinutes(60).toNanos();
 				startTimeNanos = nowNanos;
-				break;
-			case SEND_ONE_HOUR:
-			case SEND_DAILY:
+			}
+			case SEND_ONE_HOUR, SEND_DAILY -> {
 				state = State.SEND_DAILY;
 				nextSendNanos = nowNanos + Duration.ofHours(20).toNanos();
-				break;
-			default:
-				throw new AssertionError("Unknown state: " + state);
+			}
+			default -> throw new AssertionError("Unknown state: " + state);
 		}
 	}
 	private enum State {

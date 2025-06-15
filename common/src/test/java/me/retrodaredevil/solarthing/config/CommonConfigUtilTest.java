@@ -46,22 +46,24 @@ class CommonConfigUtilTest {
 	void testRandomRetrieval() {
 		// This method isn't exactly for asserting anything, it's just to understand what the INTERPOLATOR is capable of.
 		// Remember the working directory is implicitly client/
-		final String text = CommonConfigUtil.INTERPOLATOR.replace("Base64 Decoder:        ${base64Decoder:SGVsbG9Xb3JsZCE=}\n" +
-				"Base64 Encoder:        ${base64Encoder:HelloWorld!}\n" +
-				"Java Constant:         ${const:java.awt.event.KeyEvent.VK_ESCAPE}\n" +
-				"Date:                  ${date:yyyy-MM-dd}\n" +
-				"DNS:                   ${dns:address|apache.org}\n" +
-				"Environment Variable:  ${env:USERNAME}\n" +
-				"File Content:          ${file:UTF-8:../config_templates/io/default_linux_serial.json}\n" +
-				"Java:                  ${java:version}\n" +
-				"Localhost:             ${localhost:canonical-name}\n" +
-				"Script:                ${script:javascript:3 + 4}\n" +
-				"System Property:       ${sys:user.dir}\n" +
-				"URL Decoder:           ${urlDecoder:Hello%20World%21}\n" +
-				"URL Encoder:           ${urlEncoder:Hello World!}\n" +
-				"URL Content (HTTP):    ${url:UTF-8:http://www.apache.org}\n" +
-				"URL Content (HTTPS):   ${url:UTF-8:https://www.apache.org}\n" +
-				"URL Content (File):    ${url:UTF-8:file:///${sys:user.dir}/src/test/resources/document.properties}\n");
+		final String text = CommonConfigUtil.INTERPOLATOR.replace("""
+				Base64 Decoder:        ${base64Decoder:SGVsbG9Xb3JsZCE=}
+				Base64 Encoder:        ${base64Encoder:HelloWorld!}
+				Java Constant:         ${const:java.awt.event.KeyEvent.VK_ESCAPE}
+				Date:                  ${date:yyyy-MM-dd}
+				DNS:                   ${dns:address|apache.org}
+				Environment Variable:  ${env:USERNAME}
+				File Content:          ${file:UTF-8:../config_templates/io/default_linux_serial.json}
+				Java:                  ${java:version}
+				Localhost:             ${localhost:canonical-name}
+				Script:                ${script:javascript:3 + 4}
+				System Property:       ${sys:user.dir}
+				URL Decoder:           ${urlDecoder:Hello%20World%21}
+				URL Encoder:           ${urlEncoder:Hello World!}
+				URL Content (HTTP):    ${url:UTF-8:http://www.apache.org}
+				URL Content (HTTPS):   ${url:UTF-8:https://www.apache.org}
+				URL Content (File):    ${url:UTF-8:file:///${sys:user.dir}/src/test/resources/document.properties}
+				""");
 		System.out.println(text);
 		System.out.println(CommonConfigUtil.INTERPOLATOR.replace("${urlEncoder:${file:UTF-8:../config_templates/io/default_linux_serial.json}}"));
 	}
