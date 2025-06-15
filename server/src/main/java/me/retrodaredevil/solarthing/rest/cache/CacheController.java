@@ -27,7 +27,7 @@ public class CacheController {
 			path = "/" + ChargeControllerAccumulationDataCache.CACHE_NAME,
 			produces = "application/json"
 	)
-	public @NotNull List<@NotNull IdentificationCacheDataPacket<ChargeControllerAccumulationDataCache>> getChargeControllerAccumulation(String sourceId, long startMillis, long endMillis) {
+	public @NotNull List<@NotNull IdentificationCacheDataPacket<ChargeControllerAccumulationDataCache>> getChargeControllerAccumulation(@NotNull String sourceId, long startMillis, long endMillis) {
 		final TypeReference<IdentificationCacheDataPacket<ChargeControllerAccumulationDataCache>> typeReference = new TypeReference<>() {};
 		return cacheHandler.getCachesFromDateMillis(typeReference, ChargeControllerAccumulationDataCache.CACHE_NAME, sourceId, startMillis, endMillis);
 	}
@@ -35,7 +35,7 @@ public class CacheController {
 			path = "/" + FXAccumulationDataCache.CACHE_NAME,
 			produces = "application/json"
 	)
-	public @NotNull List<@NotNull IdentificationCacheDataPacket<FXAccumulationDataCache>> getFXAccumulation(String sourceId, long startMillis, long endMillis) {
+	public @NotNull List<@NotNull IdentificationCacheDataPacket<FXAccumulationDataCache>> getFXAccumulation(@NotNull String sourceId, long startMillis, long endMillis) {
 		final TypeReference<IdentificationCacheDataPacket<FXAccumulationDataCache>> typeReference = new TypeReference<>() {};
 		return cacheHandler.getCachesFromDateMillis(typeReference, FXAccumulationDataCache.CACHE_NAME, sourceId, startMillis, endMillis);
 	}
@@ -43,7 +43,7 @@ public class CacheController {
 			path = "/" + BatteryRecordDataCache.CACHE_NAME,
 			produces = "application/json"
 	)
-	public @NotNull List<@NotNull IdentificationCacheDataPacket<BatteryRecordDataCache>> getBatteryRecord(String sourceId, long startMillis, long endMillis) {
+	public @NotNull List<@NotNull IdentificationCacheDataPacket<BatteryRecordDataCache>> getBatteryRecord(@NotNull String sourceId, long startMillis, long endMillis) {
 		final TypeReference<IdentificationCacheDataPacket<BatteryRecordDataCache>> typeReference = new TypeReference<>() {};
 		return cacheHandler.getCachesFromDateMillis(typeReference, BatteryRecordDataCache.CACHE_NAME, sourceId, startMillis, endMillis);
 	}

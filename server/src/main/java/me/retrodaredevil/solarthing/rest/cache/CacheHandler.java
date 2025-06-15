@@ -90,13 +90,13 @@ public class CacheHandler {
 		long currentPeriodNumber = getPeriodNumber(System.currentTimeMillis());
 		return currentPeriodNumber - 2; // We cannot get data from the current period, and we cannot get data from the previous period
 	}
-	public <T extends CacheDataPacket> List<T> getCachesFromDateMillis(TypeReference<T> typeReference, String cacheName, String sourceId, long startMillis, long endMillis) {
+	public <T extends CacheDataPacket> List<T> getCachesFromDateMillis(@NotNull TypeReference<T> typeReference, @NotNull String cacheName, @NotNull String sourceId, long startMillis, long endMillis) {
 		if (endMillis < startMillis) {
 			throw new IllegalArgumentException("endMillis cannot be less than startMillis! startMillis: " + startMillis + " endMillis: " + endMillis);
 		}
 		return getCaches(typeReference, cacheName, sourceId, getPeriodNumber(startMillis), getPeriodNumber(endMillis));
 	}
-	public <T extends CacheDataPacket> @NotNull List<T> getCaches(TypeReference<T> typeReference, String cacheName, String sourceId, long startPeriodNumber, long endPeriodNumber) {
+	public <T extends CacheDataPacket> @NotNull List<T> getCaches(@NotNull TypeReference<T> typeReference, @NotNull String cacheName, @NotNull String sourceId, long startPeriodNumber, long endPeriodNumber) {
 		requireNonNull(typeReference);
 		requireNonNull(cacheName);
 		requireNonNull(sourceId, "The source cannot be null!");
@@ -141,7 +141,7 @@ public class CacheHandler {
 		}
 		return revisionNode.asText();
 	}
-	private <T extends CacheDataPacket> List<T> queryOrCalculateCaches(TypeReference<T> typeReference, String cacheName, String sourceId, long startPeriodNumber, long endPeriodNumber) {
+	private <T extends CacheDataPacket> List<T> queryOrCalculateCaches(@NotNull TypeReference<T> typeReference, @NotNull String cacheName, @NotNull String sourceId, long startPeriodNumber, long endPeriodNumber) {
 		List<String> documentIds = new ArrayList<>(); // the document IDs needed to return data
 		Map<String, Long> documentIdPeriodNumberMap = new HashMap<>(); // a map from a document ID to a period number
 

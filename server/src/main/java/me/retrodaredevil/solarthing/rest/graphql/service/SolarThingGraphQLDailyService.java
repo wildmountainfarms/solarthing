@@ -59,13 +59,21 @@ public class SolarThingGraphQLDailyService {
 	}
 
 	public interface SolarThingFullDayStatusQuery {
+		/**
+		 * Good for a graph of daily kWh for all devices over time (with all devices resetting at the start of the day in the configured time zone)
+		 */
 		@GraphQLQuery(description = "Gives a list of a list entries. Each entry can be grouped by their identifier as entries may represent different devices")
 		@NotNull List<@NotNull DataNode<Float>> dailyKWH();
 
+		/**
+		 * Good for a graph of daily kWh over time. (This sums the daily kWh of all devices)
+		 */
 		@GraphQLQuery(description = "Gives a list of entries where each entry is a sum of the daily kWh at that instant in time for the day at that time.")
 		@NotNull List<@NotNull SimpleNode<Float>> dailyKWHSum();
 
 		/**
+		 * Good for a bar graph where each bar represents a device's daily kWh for that day. This is also the most efficient query if you are just interested in the daily kWh for the current day for all devices
+		 *
 		 * @return A list of {@link SimpleNode}s where each node is a different day
 		 */
 		@GraphQLQuery(description = "Gives entries where each entry is timestamped at the start of a certain day and its value represents the daily kWh of that device for that day. (Results can be grouped by their identifiers as there may be different devices)")
@@ -195,6 +203,7 @@ public class SolarThingGraphQLDailyService {
 
 		public CacheSolarThingFullDayStatusQuery(List<IdentificationCacheDataPacket<ChargeControllerAccumulationDataCache>> chargeControllerData) {
 			this.chargeControllerData = chargeControllerData;
+			// NOTE: although we could move the instantiation to the enclosing class, we actually want this PacketFinder cache to be short-lived
 			packetFinder = new PacketFinder(simpleQueryHandler);
 		}
 
@@ -229,6 +238,7 @@ public class SolarThingGraphQLDailyService {
 
 		@Override
 		public @NotNull List<@NotNull SimpleNode<Float>> dailyKWHSum() {
+			// TODO implement this! This is one of the things stopping us from making the cache implementation the default
 			throw new UnsupportedOperationException();
 		}
 
@@ -288,6 +298,10 @@ public class SolarThingGraphQLDailyService {
 		long queryStart = fromDate.atStartOfDay(zoneId).toInstant().toEpochMilli();
 		long queryEnd = toDate.plusDays(1).atStartOfDay(zoneId).toInstant().toEpochMilli() - 1;
 		if (useCache) {
+			// TODO We should support null source IDs when using the cache
+			requireNonNull(sourceId, "sourceId is null!");
+			// TODO we should perform fragmentId filtering
+			// Ideally we can make this the default eventually
 			return new CacheSolarThingFullDayStatusQuery(cacheController.getChargeControllerAccumulation(sourceId, queryStart, queryEnd));
 		} else {
 			List<? extends InstancePacketGroup> packets = simpleQueryHandler.queryStatus(
