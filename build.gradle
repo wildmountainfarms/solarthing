@@ -1,33 +1,29 @@
 
 buildscript {
     ext {
-        junit5Version = '5.10.1' // https://junit.org/junit5/
-        junit5PlatformVersion = '1.10.1'
-        // For some reason IntelliJ doesn't like these new versions I have commented out. TODO look at this
-//        junit5Version = '5.11.3' // https://junit.org/junit5/
-//        junit5PlatformVersion = '1.11.3'
+        junit5Version = '5.13.1' // https://junit.org/junit5/
 
-        slf4jVersion = '2.0.16' // http://www.slf4j.org/download.html
-        log4jVersion = '2.24.2' // https://logging.apache.org/log4j/2.x/release-notes.html
+        slf4jVersion = '2.0.17' // http://www.slf4j.org/download.html
+        log4jVersion = '2.24.3' // https://logging.apache.org/log4j/2.x/release-notes.html
         // Note: Since Jackson 2.14, Android SDK 26 is required
         // https://github.com/FasterXML/jackson/wiki/Jackson-Releases
-        jacksonVersion = '2.18.2' // https://github.com/FasterXML/jackson-databind/tags
-        retrofitVersion = "2.11.0" // https://github.com/square/retrofit/tags
-        shadowVersion = '8.1.1' // https://github.com/johnrengelman/shadow/releases
-        ioLibVersion = '2.3.0' // https://github.com/retrodaredevil/io-lib/releases
+        jacksonVersion = '2.19.1' // https://github.com/FasterXML/jackson-databind/tags
+        retrofitVersion = "3.0.0" // https://github.com/square/retrofit/tags
+        shadowVersion = '8.3.6' // https://github.com/GradleUp/shadow/releases
+        ioLibVersion = '2.3.0' // https://github.com/retrodaredevil/io-lib/releases // TODO update this to update jSerialComm version
         okhttpVersion = "4.12.0" // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
         couchdbJavaVersion = '1.1.2'
 //        couchdbJavaVersion = "8582268195".substring(0, 10)
-        dockerComposePluginVersion = "0.17.11" // https://github.com/avast/gradle-docker-compose-plugin/releases
-        errorpronePluginVersion = '4.1.0' // https://github.com/tbroyer/gradle-errorprone-plugin/releases
-        errorproneCoreVersion = '2.36.0' // https://mvnrepository.com/artifact/com.google.errorprone/error_prone_core
+        dockerComposePluginVersion = "0.17.12" // https://github.com/avast/gradle-docker-compose-plugin/releases
+        errorpronePluginVersion = '4.2.0' // https://github.com/tbroyer/gradle-errorprone-plugin/releases
+        errorproneCoreVersion = '2.38.0' // https://mvnrepository.com/artifact/com.google.errorprone/error_prone_core
         antlrVersion = "4.13.2" // https://github.com/antlr/antlr4/releases
     }
 }
 
 
 plugins {
-    id 'com.diffplug.spotless' version '6.22.0' // https://mvnrepository.com/artifact/com.diffplug.spotless/spotless-plugin-gradle
+    id 'com.diffplug.spotless' version '7.0.4' // https://mvnrepository.com/artifact/com.diffplug.spotless/spotless-plugin-gradle
     id 'net.ltgt.errorprone' version "$errorpronePluginVersion"
     id "com.avast.gradle.docker-compose" version "$dockerComposePluginVersion"
 }
@@ -93,15 +89,16 @@ subprojects {
         errorprone "com.google.errorprone:error_prone_core:$errorproneCoreVersion"
         errorprone "com.google.errorprone:error_prone_annotations:$errorproneCoreVersion"
 
-        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit5Version
-        testImplementation "org.junit.jupiter:junit-jupiter-params:$junit5Version"
-        testImplementation "org.junit.platform:junit-platform-commons:$junit5PlatformVersion"
-        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: junit5Version
-        testImplementation 'com.tngtech.archunit:archunit:1.0.1' // https://github.com/TNG/ArchUnit/releases
+        // https://junit.org/junit5/docs/current/user-guide/#running-tests-build-gradle
+        testImplementation(platform("org.junit:junit-bom:$junit5Version"))
+        testImplementation("org.junit.jupiter:junit-jupiter")
+        testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+        testImplementation 'com.tngtech.archunit:archunit:1.3.2' // https://github.com/TNG/ArchUnit/releases
 
         // https://mvnrepository.com/artifact/com.google.code.findbugs/jsr305
         implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
-        implementation 'org.jetbrains:annotations:24.0.1' // https://github.com/JetBrains/java-annotations/releases
+        implementation 'org.jetbrains:annotations:26.0.2' // https://github.com/JetBrains/java-annotations/releases
     }
     test {
         useJUnitPlatform()
@@ -158,7 +155,7 @@ subprojects {
 //            warn("FieldCanBeFinal") // Useful on everything but :client module, because of the usages of @JsonProperty on mutable fields.
             warn("FieldCanBeLocal")
             warn("FieldCanBeStatic")
-//            warn("FieldMissingNullable") // There are many private fields where this is easy enough to tell
+//            warn("FieldMissingNullable") // There are many private fields where this is easy enough to tell // TODO enable this at some point (yay nullability annotations)
             warn("ForEachIterable")
             warn("LambdaFunctionalInterface")
 //            warn("MethodCanBeStatic") // TODO Very, very useful, but I don't need this warning in tests

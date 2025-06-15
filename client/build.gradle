@@ -1,5 +1,5 @@
 plugins {
-    id 'com.github.johnrengelman.shadow' version "$shadowVersion"
+    id 'com.gradleup.shadow' version "$shadowVersion"
     id 'java'
 }
 
@@ -22,9 +22,9 @@ dependencies {
     implementation "org.apache.logging.log4j:log4j-slf4j2-impl:$log4jVersion"
 
     // https://github.com/slackapi/java-slack-sdk/releases
-    implementation "com.slack.api:slack-api-client:1.38.0"
+    implementation "com.slack.api:slack-api-client:1.45.3"
     // https://mvnrepository.com/artifact/org.java-websocket/Java-WebSocket
-    implementation "org.java-websocket:Java-WebSocket:1.5.5"
+    implementation "org.java-websocket:Java-WebSocket:1.6.0"
 
     // TODO Remove jewelcli dependency and transition to commons-cli
     // https://mvnrepository.com/artifact/com.lexicalscope.jewelcli/jewelcli
@@ -42,8 +42,8 @@ dependencies {
     // TODO do we need this dependency?
     implementation "biz.paluch.logging:logstash-gelf:1.15.1"
 
-    // https://mvnrepository.com/artifact/com.google.guava/guava
-    implementation "com.google.guava:guava:33.3.1-jre"
+    // https://mvnrepository.com/artifact/com.google.guava/guava // used for com.google.common.math
+    implementation "com.google.guava:guava:33.4.8-jre"
 }
 
 shadowJar {
