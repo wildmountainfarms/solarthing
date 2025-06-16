@@ -11,8 +11,6 @@ import retrofit2.Retrofit;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.Iterator;
-import java.util.Map;
 
 public class FormBodyJacksonConverterFactory extends Converter.Factory {
 	private final ObjectMapper mapper;

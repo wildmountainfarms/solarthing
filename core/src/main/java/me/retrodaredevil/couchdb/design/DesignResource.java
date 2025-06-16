@@ -31,10 +31,10 @@ public enum DesignResource {
 	/*
 	TODO Add IntelliJ gradle plugin and auto configure some settings in .idea/workspace.xml
 	<component name="HighlightingSettingsPerFile">
-	  <setting file="file://$PROJECT_DIR$/core/src/main/resources/me/retrodaredevil/couchdb/design/validation/readonly_auth.js" root0="SKIP_HIGHLIGHTING" />
-	  <setting file="file://$PROJECT_DIR$/core/src/main/resources/me/retrodaredevil/couchdb/design/validation/upload_only.js" root0="SKIP_HIGHLIGHTING" />
-	  <setting file="file://$PROJECT_DIR$/core/src/main/resources/me/retrodaredevil/couchdb/design/view/millisNull.js" root0="SKIP_HIGHLIGHTING" />
-	  <setting file="file://$PROJECT_DIR$/core/src/main/resources/me/retrodaredevil/couchdb/design/view/simpleAllDocs.js" root0="SKIP_HIGHLIGHTING" />
+	<setting file="file://$PROJECT_DIR$/core/src/main/resources/me/retrodaredevil/couchdb/design/validation/readonly_auth.js" root0="SKIP_HIGHLIGHTING" />
+	<setting file="file://$PROJECT_DIR$/core/src/main/resources/me/retrodaredevil/couchdb/design/validation/upload_only.js" root0="SKIP_HIGHLIGHTING" />
+	<setting file="file://$PROJECT_DIR$/core/src/main/resources/me/retrodaredevil/couchdb/design/view/millisNull.js" root0="SKIP_HIGHLIGHTING" />
+	<setting file="file://$PROJECT_DIR$/core/src/main/resources/me/retrodaredevil/couchdb/design/view/simpleAllDocs.js" root0="SKIP_HIGHLIGHTING" />
 	</component>
 	*/
 	private final String fileName;

@@ -53,9 +53,11 @@ spotless {
             include '**/*.java'
             exclude '**/build/**', '**/build-*/**'
         }
-        toggleOffOn()
-        indentWithTabs()
-        toggleOffOn("/*", "*/") // It doesn't like tabs then a space, which are present in Javadocs, so just disable
+        leadingSpacesToTabs()
+//        toggleOffOn()
+//        toggleOffOn("/*", "*/") // It doesn't like tabs then a space, which are present in Javadocs, so just disable
+        // NOTE: Only one toggleOffOn is supported
+        toggleOffOn("\"\"\"", "\"\"\"")
     }
 }
 
