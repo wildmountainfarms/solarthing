@@ -108,6 +108,7 @@ subprojects {
     tasks.withType(JavaCompile).configureEach {
         options.errorprone {
 //            disableWarningsInGeneratedCode = true // doesn't seem to work
+            excludedPaths = ".*/generated-src/.*"
             disable("MissingSummary") // Our JavaDocs don't need to be perfect
             disable("StringSplitter") // Yes String.split(String) has surprising behavior, but we know how to be careful.
             disable("EqualsGetClass") // Most of the time we prefer that equality checks don't evaluate to true for subclasses
@@ -291,6 +292,6 @@ project(":action-lang"){
 }
 
 wrapper {
-    gradleVersion = '8.11.1'
+    gradleVersion = '8.14.2'
     distributionType = Wrapper.DistributionType.ALL
 }

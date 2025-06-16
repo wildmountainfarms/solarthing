@@ -2,7 +2,7 @@ buildscript {
     ext {
         // https://github.com/spring-projects/spring-boot/wiki#release-notes
         // https://github.com/spring-projects/spring-boot/releases
-        springBootVersion = '3.1.5'
+        springBootVersion = '3.5.0'
     }
     repositories {
         mavenCentral()
@@ -15,8 +15,10 @@ apply plugin: 'java'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
-sourceCompatibility = JavaVersion.VERSION_21
-targetCompatibility = JavaVersion.VERSION_21
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
 
 version = '0.0.1-SNAPSHOT'
 
