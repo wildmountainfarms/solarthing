@@ -10,6 +10,9 @@ import java.util.List;
 
 @JsonDeserialize(as = DefaultIdentificationCacheDataPacket.class)
 public interface IdentificationCacheDataPacket<T extends IdentificationCacheData> extends CacheDataPacket {
+	/**
+	 * @return A list of nodes where each node represents a single fragment and its data
+	 */
 	@JsonProperty("nodes")
 	List<IdentificationCacheNode<T>> getNodes();
 

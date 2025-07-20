@@ -10,6 +10,7 @@ import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 import org.apache.commons.text.StringEscapeUtils;
 import org.jetbrains.annotations.Contract;
 
+import javax.annotation.CheckReturnValue;
 import java.util.Collection;
 
 @UtilityClass
@@ -19,6 +20,7 @@ public final class OutbackUtil {
 	 * @param packets A collection of packets containing {@link SolarStatusPacket}s. Other types of packets will be ignored
 	 * @return The {@link FXStatusPacket} from {@code packetCollection} or null if there were no FX packets in {@code packetCollection}
 	 */
+	@CheckReturnValue
 	@Contract(pure = true)
 	public static FXStatusPacket getMasterFX(Collection<? extends Packet> packets){
 		FXStatusPacket fx = null;
@@ -40,6 +42,7 @@ public final class OutbackUtil {
 	 * @param packetGroup The packet collection containing {@link SolarStatusPacket}s. Other types of packets will be ignored
 	 * @return The {@link FXStatusPacket} from {@code packetCollection} or null if there were no FX packets in {@code packetCollection}
 	 */
+	@CheckReturnValue
 	@Contract(pure = true)
 	public static @Nullable FXStatusPacket getMasterFX(PacketGroup packetGroup){
 		return getMasterFX(packetGroup.getPackets());

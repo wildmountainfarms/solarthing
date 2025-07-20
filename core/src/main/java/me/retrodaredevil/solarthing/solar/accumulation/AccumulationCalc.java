@@ -7,6 +7,7 @@ import me.retrodaredevil.solarthing.solar.accumulation.value.AccumulationValueFa
 import me.retrodaredevil.solarthing.solar.common.DailyData;
 import org.jetbrains.annotations.Contract;
 
+import javax.annotation.CheckReturnValue;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
 public final class AccumulationCalc {
 	private AccumulationCalc() { throw new UnsupportedOperationException(); }
 
+	@CheckReturnValue
 	@Contract(pure = true)
 	public static <T extends DailyData, U extends AccumulationValue<U>> U getSumTotal(
 			Collection<? extends List<? extends AccumulationPair<? extends T>>> dailyPairListCollection,
@@ -26,6 +28,7 @@ public final class AccumulationCalc {
 		}
 		return total;
 	}
+	@CheckReturnValue
 	@Contract(pure = true)
 	public static <T extends DailyData, U extends AccumulationValue<U>> U getTotal(
 			List<? extends AccumulationPair<? extends T>> accumulationPairs, TotalGetter<T, U> totalGetter,
@@ -50,6 +53,7 @@ public final class AccumulationCalc {
 	 * @param packets For each packet, an associated {@link SumNode} is present in the returned list
 	 * @param <T> The type of the packet that is being used to calculate the total
 	 */
+	@CheckReturnValue
 	@Contract(pure = true)
 	public static <T extends DailyData, U extends AccumulationValue<U>> List<SumNode<U>> getTotals(
 			List<? extends AccumulationPair<T>> accumulationPairs, TotalGetter<T, U> totalGetter, List<? extends TimestampedPacket<T>> packets,

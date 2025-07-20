@@ -9,6 +9,7 @@ import me.retrodaredevil.solarthing.packets.identification.IdentifierFragment;
 import me.retrodaredevil.solarthing.solar.common.DailyData;
 import org.jetbrains.annotations.Contract;
 
+import javax.annotation.CheckReturnValue;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +24,7 @@ public final class AccumulationUtil {
 	 * @param isFirst Should be true when the first and end packets are part of the first chunk of data from a certain day.
 	 *                Helps determine if the first packet needs to be interpreted as data from today or from yesterday.
 	 */
+	@CheckReturnValue
 	@Contract(pure = true)
 	private static <T extends DailyData> AccumulationPair<T> createAccumulationPair(boolean isFirst, TimestampedPacket<T> firstPacket, TimestampedPacket<T> endPacket, AccumulationConfig accumulationConfig) {
 		final AccumulationPair.StartPacketType startPacketType;
@@ -37,6 +39,7 @@ public final class AccumulationUtil {
 		}
 		return new AccumulationPair<>(firstPacket, endPacket, startPacketType);
 	}
+	@CheckReturnValue
 	@Contract(pure = true)
 	public static <T extends DailyData> List<AccumulationPair<T>> getAccumulationPairs(List<? extends TimestampedPacket<T>> packets, AccumulationConfig accumulationConfig) {
 		List<AccumulationPair<T>> r = new ArrayList<>();
@@ -61,6 +64,7 @@ public final class AccumulationUtil {
 		}
 		return r;
 	}
+	@CheckReturnValue
 	@Contract(pure = true)
 	public static <T extends DailyData> Map<IdentifierFragment, List<AccumulationPair<T>>> getAccumulationPairs(Map<IdentifierFragment, List<TimestampedPacket<T>>> packetMap, AccumulationConfig accumulationConfig) {
 		Map<IdentifierFragment, List<AccumulationPair<T>>> r = new HashMap<>(packetMap.size());
@@ -70,6 +74,7 @@ public final class AccumulationUtil {
 		return r;
 	}
 	@SuppressWarnings("unchecked")
+	@CheckReturnValue
 	@Contract(pure = true)
 	public static <T extends Identifiable> Map<IdentifierFragment, List<TimestampedPacket<T>>> mapPackets(Class<T> clazz, List<? extends FragmentedPacketGroup> packetGroups) {
 		Map<IdentifierFragment, List<TimestampedPacket<T>>> packetMap = new HashMap<>();

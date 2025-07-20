@@ -8,6 +8,7 @@ import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePacket;
 import me.retrodaredevil.solarthing.packets.instance.InstanceTargetPacket;
 import org.jetbrains.annotations.Contract;
 
+import javax.annotation.CheckReturnValue;
 import java.util.*;
 
 import static java.util.Objects.requireNonNull;
@@ -88,6 +89,7 @@ public final class PacketGroups {
 	/**
 	 * Uses {@link #parseToInstancePacketGroup(PacketGroup, DefaultInstanceOptions)} and asserts that the given {@code group} has both fragment ID and source ID present
 	 */
+	@CheckReturnValue
 	@Contract(pure = true)
 	public static InstancePacketGroup parseToInstancePacketGroupRequireNoDefaults(PacketGroup group){
 		InstancePacketGroup r = parseToInstancePacketGroup(group, DefaultInstanceOptions.REQUIRE_NO_DEFAULTS);
@@ -101,6 +103,7 @@ public final class PacketGroups {
 	 * @param defaultInstanceOptions The default instance options
 	 * @return A list of {@link InstancePacketGroup}s.
 	 */
+	@CheckReturnValue
 	@Contract(pure = true)
 	public static List<InstancePacketGroup> parseToInstancePacketGroups(Collection<? extends PacketGroup> groups, DefaultInstanceOptions defaultInstanceOptions) {
 		List<InstancePacketGroup> r = new ArrayList<>();
@@ -117,6 +120,7 @@ public final class PacketGroups {
 	 * @param defaultInstanceOptions The default instance options
 	 * @return A map of a list of {@link InstancePacketGroup}s where each key in the map is a different source ID.
 	 */
+	@CheckReturnValue
 	@Contract(pure = true)
 	public static Map<String, List<InstancePacketGroup>> parsePackets(Collection<? extends PacketGroup> groups, DefaultInstanceOptions defaultInstanceOptions){
 		Map<String, List<InstancePacketGroup>> map = new HashMap<>();
@@ -130,10 +134,12 @@ public final class PacketGroups {
 		return map;
 	}
 
+	@CheckReturnValue
 	@Contract(pure = true)
 	public static Map<String, List<FragmentedPacketGroup>> sortPackets(Collection<? extends PacketGroup> groups, DefaultInstanceOptions defaultInstanceOptions, long maxTimeDistance, Long masterIdIgnoreDistance){
 		return sortPackets(groups, defaultInstanceOptions, maxTimeDistance, masterIdIgnoreDistance, FragmentUtil.DEFAULT_FRAGMENT_ID_COMPARATOR);
 	}
+	@CheckReturnValue
 	@Contract(pure = true)
 	public static Map<String, List<FragmentedPacketGroup>> sortPackets(Collection<? extends PacketGroup> groups, DefaultInstanceOptions defaultInstanceOptions, long maxTimeDistance, Long masterIdIgnoreDistance, Comparator<Integer> fragmentIdComparator){
 		Map<String, List<InstancePacketGroup>> map = parsePackets(groups, defaultInstanceOptions);
@@ -156,6 +162,7 @@ public final class PacketGroups {
 	 * @param masterIdIgnoreDistance The amount of time in milliseconds to allow no master ID packet until it falls through to the next ID, or null. If null, it's the same as being infinite.
 	 * @return A list of the merged packets
 	 */
+	@CheckReturnValue
 	@Contract(pure = true)
 	public static List<FragmentedPacketGroup> mergePackets(List<? extends InstancePacketGroup> instancePacketGroups, long maxTimeDistance, Long masterIdIgnoreDistance, Comparator<Integer> fragmentIdComparator){
 		if (instancePacketGroups.isEmpty()) {

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import javax.annotation.CheckReturnValue;
 import java.lang.annotation.*;
 
 /**
@@ -14,6 +15,7 @@ import java.lang.annotation.*;
 @Inherited
 @JacksonAnnotationsInside
 @JsonIgnore // ignore convenience fields by default
+@CheckReturnValue
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ConvenienceField {
 	/** Used to document when a particular field became annotated with @ConvenienceField so that people know what version it was removed from the serialized packet */
