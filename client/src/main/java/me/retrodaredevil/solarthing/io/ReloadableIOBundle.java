@@ -17,6 +17,13 @@ public class ReloadableIOBundle implements IOBundle {
 		public int read() throws IOException {
 			throw new NotInitializedIOException("IO not initialized!");
 		}
+
+		@Override
+		public int available() {
+			// This is used to determine whether we can read.
+			//   We hard-code this to 1 to encourage users of this IO bundle to attempt to read
+			return 1;
+		}
 	}, new OutputStream() {
 		@Override
 		public void write(int i) throws IOException {

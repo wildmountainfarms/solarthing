@@ -143,6 +143,7 @@ public class OutbackMateMain {
 				} catch (IOException e) {
 					LOGGER.error("Got IOException!", e);
 					Thread.sleep(500);
+					// TODO we might want to reload more frequently in the case of no data coming in after a while
 					reloadIO.run();
 					LOGGER.debug("Reloaded IO bundle");
 					Thread.sleep(1000);
