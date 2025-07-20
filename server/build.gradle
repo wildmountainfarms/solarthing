@@ -2,7 +2,8 @@ buildscript {
     ext {
         // https://github.com/spring-projects/spring-boot/wiki#release-notes
         // https://github.com/spring-projects/spring-boot/releases
-        springBootVersion = '3.5.0'
+        // NOTE: When upgrading this, check if docker/solarthing-server/Dockerfile needs changes
+        springBootVersion = '3.5.3'
     }
     repositories {
         mavenCentral()
