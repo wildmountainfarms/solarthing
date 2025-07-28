@@ -40,7 +40,7 @@ import static java.util.Objects.requireNonNull;
 public class InfluxDb2PacketSaver implements PacketHandler {
 //	private static final Logger LOGGER = LoggerFactory.getLogger(InfluxDbPacketSaver.class);
 	private static final Logger INFLUX_LOGGER = LoggerFactory.getLogger("org.influxdb");
-	private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.defaultMapper();
+	private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.includeConvenienceFields(JacksonUtil.defaultMapper());
 
 
 	private final InfluxDBClient client;
