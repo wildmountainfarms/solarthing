@@ -8,6 +8,7 @@ import me.retrodaredevil.solarthing.actions.command.ExecutingCommandFeedbackActi
 import me.retrodaredevil.solarthing.actions.command.FlagActionNode;
 import me.retrodaredevil.solarthing.actions.command.WrappedAlterManagerActionNode;
 import me.retrodaredevil.solarthing.actions.config.ActionReference;
+import me.retrodaredevil.solarthing.actions.file.WriteTextActionNode;
 import me.retrodaredevil.solarthing.actions.homeassistant.HomeAssistantActionNode;
 import me.retrodaredevil.solarthing.actions.mate.MateCommandActionNode;
 import me.retrodaredevil.solarthing.actions.mate.MateCommandWaitActionNode;
@@ -56,6 +57,8 @@ public final class ActionUtil {
 
 				HomeAssistantActionNode.class,
 				SolcastActionNode.class,
+
+				WriteTextActionNode.class,
 
 				MessageSenderActionNode.class,
 				SendMessageActionNode.class,
