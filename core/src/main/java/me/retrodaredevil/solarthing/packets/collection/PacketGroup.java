@@ -2,8 +2,10 @@ package me.retrodaredevil.solarthing.packets.collection;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
+import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.Packet;
 
+import java.time.Instant;
 import java.util.List;
 
 @JsonExplicit
@@ -21,6 +23,10 @@ public interface PacketGroup {
 	 */
 	@JsonProperty("dateMillis")
 	long getDateMillis();
+
+	default @NotNull Instant getTimestamp() {
+		return Instant.ofEpochMilli(getDateMillis());
+	}
 
 	/**
 	 * @param packet The packet to get the date millis from

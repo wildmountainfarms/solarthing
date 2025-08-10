@@ -33,6 +33,7 @@ import me.retrodaredevil.solarthing.program.ActionUtil;
 import me.retrodaredevil.solarthing.program.PacketUtil;
 import me.retrodaredevil.solarthing.type.alter.StoredAlterPacket;
 import me.retrodaredevil.solarthing.type.closed.authorization.AuthorizationPacket;
+import me.retrodaredevil.solarthing.util.TimeRange;
 import me.retrodaredevil.solarthing.util.sync.BasicResourceManager;
 import me.retrodaredevil.solarthing.util.sync.ReadWriteResourceManager;
 import me.retrodaredevil.solarthing.util.sync.ResourceManager;
@@ -42,6 +43,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.time.Clock;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -151,7 +153,16 @@ public final class AutomationMain {
 			}
 			authorizationPacketCache.updateIfNeeded(); // we have auto update turned off, so we have to call this
 
-			List<FragmentedPacketGroup> statusPacketGroups = PacketUtil.getPacketGroups(options.getSourceId(), options.getDefaultInstanceOptions(), statusDatabaseCache.getAllCachedPackets());
+
+
+			// Note: If you don't have a startTime and just compute all the data, you'll get log messages like these -- showing how inefficient processing 25 hours worth of data is
+			//   2025-08-10 12:53:42.433 [main] DEBUG me.retrodaredevil.solarthing.database.cache.SimplePacketCache - Packet is the same since the last request
+			//   2025-08-10 12:54:16.852 [main] DEBUG me.retrodaredevil.solarthing.program.subprogram.automation.AutomationMain - There are 0 active actions
+			Instant startTime = clock.instant().minus(Duration.ofMinutes(20));
+			List<StoredPacketGroup> cachedPackets = statusDatabaseCache.createCachedPacketsInRangeStream(TimeRange.createAfter(startTime), false)
+					.toList();
+
+			List<FragmentedPacketGroup> statusPacketGroups = PacketUtil.getPacketGroups(options.getSourceId(), options.getDefaultInstanceOptions(), cachedPackets);
 			if (statusPacketGroups != null) {
 				FragmentedPacketGroup statusPacketGroup = statusPacketGroups.get(statusPacketGroups.size() - 1);
 				latestPacketGroupReference.set(statusPacketGroup);
