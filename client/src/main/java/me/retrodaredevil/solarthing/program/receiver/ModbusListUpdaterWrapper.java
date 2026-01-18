@@ -92,7 +92,7 @@ public class ModbusListUpdaterWrapper implements PacketListReceiver {
 							"Make sure the cable you have has the correct pinout, and feel free to open an issue at https://github.com/wildmountainfarms/solarthing/issues if you need help.\n");
 				}
 				if (extraFeatures.contains(Feature.DEBUG_MODBUS_TIMEOUT)) {
-					LOGGER.debug("Got a modbus timeout. Message: " + e.getMessage()); // we don't need to log the stacktrace, so the exception is not logged
+					LOGGER.debug("Got a modbus timeout. Message: " + e.getMessage(), e);
 				} else {
 					LOGGER.error("Got a modbus timeout. Message: " + e.getMessage()); // we don't need to log the stacktrace, so the exception is not logged
 				}

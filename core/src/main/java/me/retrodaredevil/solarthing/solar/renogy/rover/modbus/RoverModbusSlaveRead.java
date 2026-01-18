@@ -417,6 +417,10 @@ public class RoverModbusSlaveRead extends AbstractModbusRead implements RoverRea
 
 	static final ReadHoldingRegisters SENSING_TIME_DELAY = new ReadHoldingRegisters(0xE02B, 1);
 	@Override public @Nullable Integer getSensingTimeDelayRaw() {
+		if (true) {
+			// temporary until https://github.com/wildmountainfarms/solarthing/issues/239 is resolved
+			return null;
+		}
 		try {
 			return oneRegister(SENSING_TIME_DELAY);
 		} catch (ErrorCodeException ex) {

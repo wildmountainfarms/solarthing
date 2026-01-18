@@ -50,7 +50,8 @@ public interface RoverStatusPacket extends RenogyPacket, RoverReadTable, PacketW
 		/** Version to indicate that there may also be charging state change events in the events database. Should only be present for a short period of time on WMF's database*/
 		public static final int ADDED_CHARGING_STATE_EVENT = 6;
 		public static final int ADDED_ERROR_MODE_EVENT = 7;
-		public static final int LATEST = ADDED_ERROR_MODE_EVENT;
+		public static final int ROVER_TEST_2026_01_17 = 8;
+		public static final int LATEST = ROVER_TEST_2026_01_17;
 	}
 
 	@DefaultFinal
