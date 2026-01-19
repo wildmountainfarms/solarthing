@@ -7,7 +7,7 @@ buildscript {
         log4jVersion = '2.24.3' // https://logging.apache.org/log4j/2.x/release-notes.html
         // Note: Since Jackson 2.14, Android SDK 26 is required
         // https://github.com/FasterXML/jackson/wiki/Jackson-Releases
-        jacksonVersion = '2.19.1' // https://github.com/FasterXML/jackson-databind/tags
+        jacksonVersion = '2.21.0' // https://github.com/FasterXML/jackson-databind/tags
         retrofitVersion = "3.0.0" // https://github.com/square/retrofit/tags
         shadowVersion = '8.3.6' // https://github.com/GradleUp/shadow/releases
         ioLibVersion = '2.3.0' // https://github.com/retrodaredevil/io-lib/releases // TODO update this to update jSerialComm version
