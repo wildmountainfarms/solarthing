@@ -16,7 +16,7 @@ buildscript {
 //        couchdbJavaVersion = "8582268195".substring(0, 10)
         dockerComposePluginVersion = "0.17.12" // https://github.com/avast/gradle-docker-compose-plugin/releases
         errorpronePluginVersion = '4.2.0' // https://github.com/tbroyer/gradle-errorprone-plugin/releases
-        errorproneCoreVersion = '2.38.0' // https://mvnrepository.com/artifact/com.google.errorprone/error_prone_core
+        errorproneCoreVersion = '2.46.0' // https://mvnrepository.com/artifact/com.google.errorprone/error_prone_core
         antlrVersion = "4.13.2" // https://github.com/antlr/antlr4/releases
     }
 }
