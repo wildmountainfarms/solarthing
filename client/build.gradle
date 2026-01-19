@@ -45,7 +45,7 @@ dependencies {
     implementation "biz.paluch.logging:logstash-gelf:1.15.1"
 
     // https://mvnrepository.com/artifact/com.google.guava/guava // used for com.google.common.math
-    implementation "com.google.guava:guava:33.4.8-jre"
+    implementation "com.google.guava:guava:33.5.0-jre"
 }
 
 shadowJar {
