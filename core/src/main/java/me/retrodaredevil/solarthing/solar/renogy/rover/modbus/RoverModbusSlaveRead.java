@@ -394,6 +394,10 @@ public class RoverModbusSlaveRead extends AbstractModbusRead implements RoverRea
 		return oneRegister(SPECIAL_POWER_CONTROL_E021);
 	}
 	@Override public @Nullable Integer getWorkingHoursRaw(Sensing sensing) {
+		if (true) {
+			// temporary until https://github.com/wildmountainfarms/solarthing/issues/239 is resolved
+			return null;
+		}
 		try {
 			return oneRegister(new ReadHoldingRegisters(sensing.getWorkingHoursRegister(), 1));
 		} catch (ErrorCodeException ex) {
@@ -401,6 +405,10 @@ public class RoverModbusSlaveRead extends AbstractModbusRead implements RoverRea
 		}
 	}
 	@Override public @Nullable Integer getPowerWithPeopleSensedRaw(Sensing sensing) {
+		if (true) {
+			// temporary until https://github.com/wildmountainfarms/solarthing/issues/239 is resolved
+			return null;
+		}
 		try {
 			return oneRegister(new ReadHoldingRegisters(sensing.getPowerWithPeopleSensedRegister(), 1));
 		} catch (ErrorCodeException ex) {
@@ -408,6 +416,10 @@ public class RoverModbusSlaveRead extends AbstractModbusRead implements RoverRea
 		}
 	}
 	@Override public @Nullable Integer getPowerWithNoPeopleSensedRaw(Sensing sensing) {
+		if (true) {
+			// temporary until https://github.com/wildmountainfarms/solarthing/issues/239 is resolved
+			return null;
+		}
 		try {
 			return oneRegister(new ReadHoldingRegisters(sensing.getPowerWithNoPeopleSensedRegister(), 1));
 		} catch (ErrorCodeException ex) {

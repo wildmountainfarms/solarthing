@@ -686,6 +686,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 		Integer workingHoursRaw = getWorkingHoursRaw(sensing);
 		Integer powerWithPeopleSensedRaw = getPowerWithPeopleSensedRaw(sensing);
 		Integer powerWithNoPeopleSensedRaw = getPowerWithNoPeopleSensedRaw(sensing);
+		// TODO short-circuit these checks
 		if (workingHoursRaw == null || powerWithPeopleSensedRaw == null || powerWithNoPeopleSensedRaw == null) {
 			return null;
 		}
