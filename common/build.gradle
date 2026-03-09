@@ -1,5 +1,5 @@
 plugins {
-    id 'java'
+    id "java"
 }
 
 java {
@@ -7,9 +7,9 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 
-version = '0.0.1-SNAPSHOT'
+version = "0.0.1-SNAPSHOT"
 
 dependencies {
     // https://mvnrepository.com/artifact/org.apache.commons/commons-text
-    implementation group: 'org.apache.commons', name: 'commons-text', version: '1.13.1'
+    implementation("org.apache.commons:commons-text:1.13.1")
 }

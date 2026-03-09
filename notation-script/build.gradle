@@ -1,9 +1,9 @@
 plugins {
-    id 'java'
-    id 'antlr'
+    id "java"
+    id "antlr"
 }
 
-version = '0.0.1-SNAPSHOT'
+version = "0.0.1-SNAPSHOT"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_11
@@ -14,8 +14,8 @@ dependencies {
     // https://github.com/antlr/antlr4/releases
     antlr "org.antlr:antlr4:$antlrVersion"
 
-    api "com.fasterxml.jackson.core:jackson-annotations:$jacksonAnnotationsVersion"
-    api "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+    api("com.fasterxml.jackson.core:jackson-annotations:$jacksonAnnotationsVersion")
+    api("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
 }
 compileJava {
 //    options.compilerArgs << "-XepExcludedPaths:.*/build/generated-src/.*" // for antlr generated folder to remove errorprone warnings from ANTLR
