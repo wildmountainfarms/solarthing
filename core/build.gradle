@@ -20,7 +20,7 @@ dependencies {
     api group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion
 
     api "com.fasterxml.jackson.core:jackson-core:$jacksonVersion"
-    api "com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion"
+    api "com.fasterxml.jackson.core:jackson-annotations:$jacksonAnnotationsVersion"
     api "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
 
     api "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion" // heartbeat data uses java time stuff and serviceapi uses this

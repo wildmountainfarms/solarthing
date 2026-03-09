@@ -3,7 +3,7 @@ buildscript {
         // https://github.com/spring-projects/spring-boot/wiki#release-notes
         // https://github.com/spring-projects/spring-boot/releases
         // NOTE: When upgrading this, check if docker/solarthing-server/Dockerfile needs changes
-        springBootVersion = '3.5.3'
+        springBootVersion = '3.5.11'
     }
     repositories {
         mavenCentral()
@@ -48,7 +48,7 @@ dependencies {
 
     // This is necessary to bump the jackson version to whatever SolarThing is using
     api "com.fasterxml.jackson.core:jackson-core:$jacksonVersion"
-    api "com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion"
+    api "com.fasterxml.jackson.core:jackson-annotations:$jacksonAnnotationsVersion"
     api "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
 }
 jar {

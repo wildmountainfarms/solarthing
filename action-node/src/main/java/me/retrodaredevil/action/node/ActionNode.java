@@ -14,6 +14,7 @@ import me.retrodaredevil.action.node.expression.action.node.VariableAssignExpres
 import me.retrodaredevil.action.node.expression.action.node.VariableInitActionNode;
 import me.retrodaredevil.action.node.expression.action.node.VariableInitExpressionActionNode;
 import me.retrodaredevil.action.node.scope.ScopeActionNode;
+import org.jspecify.annotations.NullMarked;
 
 @JsonSubTypes({
 		@JsonSubTypes.Type(QueueActionNode.class),
@@ -44,6 +45,7 @@ import me.retrodaredevil.action.node.scope.ScopeActionNode;
 		@JsonSubTypes.Type(VariableAssignExpressionActionNode.class),
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
+@NullMarked
 public interface ActionNode {
 	/**
 	 * Creates an {@link Action} gives an {@link ActionEnvironment}.

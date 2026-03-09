@@ -1,8 +1,10 @@
 package me.retrodaredevil.solarthing.actions.message;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.annotation.OptBoolean;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.Actions;
 import me.retrodaredevil.action.node.ActionNode;
@@ -18,6 +20,8 @@ import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.InstancePacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
 import me.retrodaredevil.solarthing.config.ConfigUtil;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,18 +31,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("message-sender")
+@NullMarked
 public class MessageSenderActionNode implements ActionNode {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MessageSenderActionNode.class);
 
 	private final Map<String, MessageSender> messageSenderMap;
 	private final List<MessageEventNode> messageEventNodes;
 
-	private FragmentedPacketGroup last = null;
+	private @Nullable FragmentedPacketGroup last = null;
 	private final ProcessedPacketTracker eventProcessedPacketTracker = new ProcessedPacketTracker();
 
 	public MessageSenderActionNode(Map<String, MessageSender> messageSenderMap, List<MessageEventNode> messageEventNodes) {
@@ -49,13 +53,12 @@ public class MessageSenderActionNode implements ActionNode {
 	@JsonCreator
 	public static MessageSenderActionNode create(
 			@JsonProperty("senders") Map<String, String> messageSenderFileMap,
-			@JsonProperty("events") List<MessageEventNode> messageEventNodes
-//			@JacksonInject(FileMapper.JACKSON_INJECT_IDENTIFIER) FileMapper fileMapper // TODO in future, add this back hoping that https://github.com/FasterXML/jackson-databind/issues/3072 gets implemented
+			@JsonProperty("events") List<MessageEventNode> messageEventNodes,
+			@JacksonInject(value = FileMapper.JACKSON_INJECT_IDENTIFIER, optional = OptBoolean.TRUE) @Nullable FileMapper fileMapper
 	) {
 		final Map<String, MessageSender> messageSenderMap = getMessageSenderMap(
 				messageSenderFileMap,
-//				fileMapper == null ? FileMapper.ONE_TO_ONE : fileMapper
-				FileMapper.ONE_TO_ONE
+				fileMapper == null ? FileMapper.ONE_TO_ONE : fileMapper
 		);
 		return new MessageSenderActionNode(messageSenderMap, messageEventNodes);
 	}
@@ -111,7 +114,7 @@ public class MessageSenderActionNode implements ActionNode {
 			long afterDateMillis = Instant.now().minusSeconds(60).toEpochMilli(); // Only process stuff from the last minute
 			List<InstancePacketGroup> unhandledEventInstancePacketGroups = eventProcessedPacketTracker.getUnprocessedPackets(eventDatabaseCacheEnvironment.getEventDatabaseCacheManager(), afterDateMillis).stream()
 					.map(PacketGroups::parseToInstancePacketGroupRequireNoDefaults)
-					.collect(Collectors.toList());
+					.toList();
 
 			for (MessageEventNode messageEventNode : messageEventNodes) {
 				MessageSender sender = getMessageSenderFrom(messageEventNode);
