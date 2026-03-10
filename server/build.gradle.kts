@@ -1,20 +1,10 @@
-buildscript {
-    ext {
-        // https://github.com/spring-projects/spring-boot/wiki#release-notes
-        // https://github.com/spring-projects/spring-boot/releases
-        // NOTE: When upgrading this, check if docker/solarthing-server/Dockerfile needs changes
-        springBootVersion = "3.5.11"
-    }
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-    }
+plugins {
+    id("buildlogic.java-common-conventions")
+
+	alias(libs.plugins.spring.boot)
+	alias(libs.plugins.spring.dependency.management)
+	`java-library`
 }
-apply plugin: "java"
-apply plugin: "org.springframework.boot"
-apply plugin: "io.spring.dependency-management"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_21
@@ -23,40 +13,48 @@ java {
 
 version = "0.0.1-SNAPSHOT"
 
-compileJava {
+tasks.named<JavaCompile>("compileJava") {
     // TODO We don't need the -parameters compiler argument (I don't think), plus now that Java 11 is required for GraphQL, what does it do/is it needed if we did need it?
-    options.compilerArgs << "-parameters" // we don't want to use have to put @GraphQLArgument everywhere
+    options.compilerArgs.add("-parameters") // we don't want to use have to put @GraphQLArgument everywhere
 }
 
 dependencies {
+    api(project(":core"))
+    api(project(":common"))
+    api(project(":serviceapi"))
+    annotationProcessor(project(":process-annotations"))
+
     implementation("org.springframework.boot:spring-boot-starter-web") {
-        exclude group: "org.springframework.boot", module: "spring-boot-starter-logging"
+        exclude(group = "org.springframework.boot", module = "spring-boot-starter-logging")
     }
     implementation("org.springframework.boot:spring-boot-starter-log4j2")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
-        exclude group: "org.springframework.boot", module: "spring-boot-starter-logging"
+        exclude(group = "org.springframework.boot", module = "spring-boot-starter-logging")
     }
     implementation("org.springframework.boot:spring-boot-starter-graphql") {
-        exclude group: "org.springframework.boot", module: "spring-boot-starter-logging"
+        exclude(group = "org.springframework.boot", module = "spring-boot-starter-logging")
     }
 
-//    implementation("com.graphql-java:graphql-java:14.0") graphql-spqr adds this dependency
+    //    implementation("com.graphql-java:graphql-java:14.0") graphql-spqr adds this dependency
     implementation("io.leangen.graphql:spqr:0.12.4") // https://github.com/leangen/graphql-spqr/releases
 
     // Although we don't need this dependency, we need to bump the version so that couchdb has the version it needs
-    api("com.squareup.okhttp3:okhttp:$okhttpVersion")
+    api(libs.okhttp)
 
     // This is necessary to bump the jackson version to whatever SolarThing is using
-    api("com.fasterxml.jackson.core:jackson-core:$jacksonVersion")
-    api("com.fasterxml.jackson.core:jackson-annotations:$jacksonAnnotationsVersion")
-    api("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
+    api(libs.jackson.core)
+    api(libs.jackson.annotations)
+    api(libs.jackson.databind)
 }
-jar {
+
+tasks.named<Jar>("jar") {
     enabled = true
 }
-bootRun {
-    workingDir = new File("../program/graphql")
+
+tasks.bootRun {
+    workingDir = file("../program/graphql")
 }
+
 /*
 If we want to in the future, we can apply the 'war' plugin and configure the war task to be enabled here.
 We could then use bootWar to generate a war file to be used inside a tomcat server.
@@ -76,7 +74,7 @@ bootBuildImage {
 }
 */
 
-processResources {
+tasks.named<ProcessResources>("processResources") {
     // TODO this dependsOn(":web:build") is also run for the generateSchema task,
     //   which can cause errors when :web:build may give errors.
     //   This is not ideal, especially when graphql.ts needs to be updated because it contains errors.
@@ -87,10 +85,10 @@ processResources {
     }
 }
 
-tasks.register("generateSchema", JavaExec) {
-    classpath = sourceSets.main.runtimeClasspath
+tasks.register<JavaExec>("generateSchema") {
+    classpath = sourceSets.main.get().runtimeClasspath
     // Used to generate schema to file
-    mainClass = "me.retrodaredevil.solarthing.rest.graphql.OutputSchemaMain"
+    mainClass.set("me.retrodaredevil.solarthing.rest.graphql.OutputSchemaMain")
     // workingDir is implicitly /graphql
-    args = ["../web/schema.graphqls"]
+    args("../web/schema.graphqls")
 }

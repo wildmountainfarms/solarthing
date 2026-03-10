@@ -2,9 +2,10 @@ package me.retrodaredevil.solarthing.rest;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.graphql.servlet.GraphQlWebMvcAutoConfiguration;
+//import org.springframework.boot.autoconfigure.graphql.servlet.GraphQlWebMvcAutoConfiguration;
 
-@SpringBootApplication(exclude = {GraphQlWebMvcAutoConfiguration.class})
+//@SpringBootApplication(exclude = {GraphQlWebMvcAutoConfiguration.class})
+@SpringBootApplication
 public class SolarThingGraphQLApplication {
 
 	public SolarThingGraphQLApplication() {

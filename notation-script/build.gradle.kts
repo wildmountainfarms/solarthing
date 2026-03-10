@@ -1,6 +1,6 @@
 plugins {
-    id "java"
-    id "antlr"
+    id("antlr")
+    id("buildlogic.java-common-conventions")
 }
 
 version = "0.0.1-SNAPSHOT"
@@ -11,18 +11,20 @@ java {
 }
 
 dependencies {
-    // https://github.com/antlr/antlr4/releases
-    antlr "org.antlr:antlr4:$antlrVersion"
+    annotationProcessor(project(":process-annotations"))
 
-    api("com.fasterxml.jackson.core:jackson-annotations:$jacksonAnnotationsVersion")
-    api("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
+    // https://github.com/antlr/antlr4/releases
+    antlr(libs.antlr4)
+
+    api(libs.jackson.annotations)
+    api(libs.jackson.databind)
 }
-compileJava {
+//compileJava {
 //    options.compilerArgs << "-XepExcludedPaths:.*/build/generated-src/.*" // for antlr generated folder to remove errorprone warnings from ANTLR
-}
-generateGrammarSource {
+//}
+tasks.generateGrammarSource {
     maxHeapSize = "64m"
-    arguments += [
-            "-visitor", "-long-messages",
-    ]
+	arguments.addAll(listOf(
+		"-visitor", "-long-messages",
+	))
 }

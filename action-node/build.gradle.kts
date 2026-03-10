@@ -1,5 +1,6 @@
 plugins {
-    id "java"
+    id("buildlogic.java-common-conventions")
+	`java-library`
 }
 
 version = "0.0.1-SNAPSHOT"
@@ -10,7 +11,9 @@ java {
 }
 
 dependencies {
+    annotationProcessor(project(":process-annotations"))
+
     api("com.github.retrodaredevil:action-lib:v1.3.1")
-    api("com.fasterxml.jackson.core:jackson-annotations:$jacksonAnnotationsVersion")
-    api("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
+    api(libs.jackson.annotations)
+    api(libs.jackson.databind)
 }

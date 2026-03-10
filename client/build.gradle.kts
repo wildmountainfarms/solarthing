@@ -1,6 +1,8 @@
 plugins {
-    id "com.gradleup.shadow" version "$shadowVersion"
-    id "java"
+    alias(libs.plugins.shadow)
+	alias(libs.plugins.gradle.docker.compose)
+    id("buildlogic.java-common-conventions")
+	`java-library`
 }
 
 java {
@@ -10,18 +12,21 @@ java {
 
 version "0.0.1-SNAPSHOT"
 
-project.ext.mainClassName = "me.retrodaredevil.solarthing.program.SolarMain"
-
 dependencies {
-    implementation("com.github.retrodaredevil.io-lib:jSerialComm:$ioLibVersion")
+    api(project(":core"))
+    api(project(":common"))
+    api(project(":serviceapi"))
+    annotationProcessor(project(":process-annotations"))
+
+    implementation(libs.io.lib.jserialcomm)
     // for InfluxDB 1.X
     implementation("org.influxdb:influxdb-java:2.23")
     // for InfluxDB 2.0 // https://github.com/influxdata/influxdb-client-java/releases
     implementation("com.influxdb:influxdb-client-java:6.10.0")
 
-    implementation("org.apache.logging.log4j:log4j-core:$log4jVersion") // used for our custom error handler, otherwise not a necessary dependency
-    implementation("org.apache.logging.log4j:log4j-jcl:$log4jVersion") // commons logging bridge.
-    implementation("org.apache.logging.log4j:log4j-slf4j2-impl:$log4jVersion")
+    implementation(libs.log4j.core) // used for our custom error handler, otherwise not a necessary dependency
+    implementation(libs.log4j.jcl) // commons logging bridge.
+    implementation(libs.log4j.slf4j2.impl)
 
     // https://github.com/slackapi/java-slack-sdk/releases
     implementation("com.slack.api:slack-api-client:1.45.3")
@@ -37,7 +42,7 @@ dependencies {
 
     implementation("org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5")
     // https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-jul
-    implementation("org.apache.logging.log4j:log4j-jul:$log4jVersion")
+    implementation(libs.log4j.jul)
 
     implementation("info.debatty:java-string-similarity:2.0.0")
 
@@ -48,11 +53,31 @@ dependencies {
     implementation("com.google.guava:guava:33.4.8-jre")
 }
 
-shadowJar {
+tasks.shadowJar {
     mergeServiceFiles()
     manifest {
-        attributes "Main-Class": project.mainClassName
-        attributes "Multi-Release": true
+		attributes(
+			mapOf(
+				"Main-Class" to "me.retrodaredevil.solarthing.program.SolarMain",
+				"Multi-Release" to "true"
+			)
+		)
     }
 }
 
+tasks.named<Test>("test") {
+    useJUnitPlatform {
+        excludeTags("integration")
+    }
+}
+val integration = tasks.register<Test>("integration") {
+    // In the future, we can use the Test Suite feature rather than doing this manually: https://docs.gradle.org/7.3.1/userguide/jvm_test_suite_plugin.html
+    useJUnitPlatform {
+        includeTags("integration")
+    }
+}
+
+dockerCompose {
+    useComposeFiles = listOf("../testing/couchdb-compose.yml")
+    isRequiredBy(integration)
+}

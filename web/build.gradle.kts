@@ -1,10 +1,15 @@
+import com.github.gradle.node.npm.task.NpmTask
+import org.gradle.api.tasks.PathSensitivity
+
 plugins {
     // https://github.com/node-gradle/gradle-node-plugin/releases
-    id "com.github.node-gradle.node" version "7.1.0"
-    id "base"
+    id("com.github.node-gradle.node") version "7.1.0"
+    id("base")
+
+    id("buildlogic.common-conventions")
 }
 
-tasks.register("appNpmBuild", NpmTask) {
+val appNpmBuild = tasks.register<NpmTask>("appNpmBuild") {
     // This commented code does not work because react-scripts spawns a node process itself internally and that fails because it doesn't see this PATH for some reason
     // Here's a command that will come in useful if we ever get this working again
     //   echo "NODE_BIN=$(whereis npm | sed "s/npm: //" | sed "s/\/npm$//")" >> "gradle.properties"
@@ -13,29 +18,31 @@ tasks.register("appNpmBuild", NpmTask) {
         // environment is defined in NpmTask
         environment.put("PATH", newPath)
     }*/
-    environment.put("NODE_ENV", "development")
-    args = ["run", "build"]
+	environment.put("NODE_ENV", "development")
+//    environment["NODE_ENV"] = "development"
+    args.set(listOf("run", "build"))
 
     // Manual caching configuration:https://docs.gradle.org/current/userguide/build_cache.html#using_the_runtime_api
     // I have configured caching here specifically because most things in :server will run processResources, which depends on this task
     outputs.cacheIf { true }
 
     inputs.dir(file("src"))
-            .withPropertyName("src")
-            .withPathSensitivity(PathSensitivity.RELATIVE)
+        .withPropertyName("src")
+        .withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.dir(file("public"))
-            .withPropertyName("public")
-            .withPathSensitivity(PathSensitivity.RELATIVE)
+        .withPropertyName("public")
+        .withPathSensitivity(PathSensitivity.RELATIVE)
 
     inputs.files("package.json", "package-lock.json", "tsconfig.json", "codegen.yml")
-            .withPropertyName("configFiles")
-            .withPathSensitivity(PathSensitivity.RELATIVE)
+        .withPropertyName("configFiles")
+        .withPathSensitivity(PathSensitivity.RELATIVE)
 
     // hard code web/build build directory
     outputs.dir("build")
 }
-tasks.register("generateCode", NpmTask) {
-    args = ["run", "graphql:codegen"]
+
+tasks.register<NpmTask>("generateCode") {
+    args.set(listOf("run", "graphql:codegen"))
     // TODO (as commented in server/build.gradle), this dependsOn may cause :web:build to run, which is not always ideal
     dependsOn(":server:generateSchema")
 }
