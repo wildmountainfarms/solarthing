@@ -8,7 +8,7 @@ java {
 	targetCompatibility = JavaVersion.VERSION_11
 }
 
-version "0.0.1-SNAPSHOT"
+version = "0.0.1-SNAPSHOT"
 
 dependencies {
 	api(project(":core"))
