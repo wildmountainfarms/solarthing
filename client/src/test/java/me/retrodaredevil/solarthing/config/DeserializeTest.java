@@ -64,25 +64,25 @@ public class DeserializeTest {
 		ObjectMapper mapper = JacksonUtil.defaultMapper();
 		String json = """
 				{
-				  "type": "influxdb",
-				  "config": {
-				    "url": "http://localhost:8086",
-				    "username": "root",
-				    "password": "root",
-				    "database": "default_database",
-				    "measurement": null,
+				"type": "influxdb",
+				"config": {
+					"url": "http://localhost:8086",
+					"username": "root",
+					"password": "root",
+					"database": "default_database",
+					"measurement": null,
 
-				    "status_retention_policies": [
-				      {
-				        "frequency": 120,
-				        "name": "autogen"
-				      }
-				    ],
+					"status_retention_policies": [
+					{
+						"frequency": 120,
+						"name": "autogen"
+					}
+					],
 
-				    "event_retention_policy": {
-				      "name": "autogen"
-				    }
-				  }
+					"event_retention_policy": {
+					"name": "autogen"
+					}
+				}
 				}""";
 		mapper.registerSubtypes(DatabaseSettings.class, InfluxDbDatabaseSettings.class);
 		DatabaseConfig config = mapper.readValue(json, DatabaseConfig.class);
