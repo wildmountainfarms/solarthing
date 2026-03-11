@@ -1,7 +1,10 @@
 package me.retrodaredevil.notation;
 
+import org.jspecify.annotations.NullMarked;
+
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public final class NumberArgument implements Argument {
 	private final Number value;
 

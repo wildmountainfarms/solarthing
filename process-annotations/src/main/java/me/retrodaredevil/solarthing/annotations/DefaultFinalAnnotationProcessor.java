@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.annotations;
 
 import com.google.auto.service.AutoService;
+import org.jspecify.annotations.NullMarked;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
@@ -10,9 +11,12 @@ import javax.tools.Diagnostic;
 import java.util.HashSet;
 import java.util.Set;
 
+import static java.util.Objects.requireNonNull;
+
 @SupportedAnnotationTypes({"java.lang.Override", "me.retrodaredevil.solarthing.annotations.DefaultFinal"})
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 @AutoService(Processor.class)
+@NullMarked
 public class DefaultFinalAnnotationProcessor extends AbstractProcessor {
 	@Override
 	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnvironment) {
@@ -33,7 +37,7 @@ public class DefaultFinalAnnotationProcessor extends AbstractProcessor {
 			}
 			for (Element methodElement : roundEnvironment.getElementsAnnotatedWith(annotation)) {
 				ExecutableElement method = (ExecutableElement) methodElement;
-				TypeElement classElement = (TypeElement) methodElement.getEnclosingElement();
+				TypeElement classElement = (TypeElement) requireNonNull(methodElement.getEnclosingElement(), "getEnclosingElement()");
 				for (TypeMirror superInterfaceMirror : classElement.getInterfaces()) {
 					TypeElement superInterface = (TypeElement) processingEnv.getTypeUtils().asElement(superInterfaceMirror);
 					for (Element superMethodElement : superInterface.getEnclosedElements()) {

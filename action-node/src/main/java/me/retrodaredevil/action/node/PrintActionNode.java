@@ -11,6 +11,7 @@ import me.retrodaredevil.action.node.expression.ExpressionConvert;
 import me.retrodaredevil.action.node.expression.node.ExpressionNode;
 import me.retrodaredevil.action.node.expression.result.StringExpressionResult;
 import me.retrodaredevil.action.node.expression.type.PrimitiveExpressionType;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.io.PrintStream;
@@ -19,6 +20,7 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("print")
+@NullMarked
 public class PrintActionNode implements ActionNode {
 	private final PrintStream printStream;
 	private final @Nullable String message;
@@ -28,7 +30,7 @@ public class PrintActionNode implements ActionNode {
 	public PrintActionNode(
 			@JsonProperty(value = "message") String message,
 			@JsonProperty(value = "expression") @Nullable ExpressionNode expressionNode,
-			@JsonProperty("stderr") Boolean stderr
+			@JsonProperty("stderr") @Nullable Boolean stderr
 	) {
 		if (expressionNode == null) {
 			this.message = requireNonNull(message);

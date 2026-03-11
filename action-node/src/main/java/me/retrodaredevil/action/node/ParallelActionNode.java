@@ -6,12 +6,14 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.Actions;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("parallel")
+@NullMarked
 public class ParallelActionNode implements ActionNode {
 	private final List<ActionNode> actionNodes;
 

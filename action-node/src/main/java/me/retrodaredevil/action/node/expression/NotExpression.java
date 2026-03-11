@@ -1,12 +1,14 @@
 package me.retrodaredevil.action.node.expression;
 
 import me.retrodaredevil.action.node.expression.result.BooleanExpressionResult;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class NotExpression implements BooleanExpression {
 	private final Expression expression;
 

@@ -6,8 +6,10 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.action.node.environment.VariableEnvironment;
 import me.retrodaredevil.action.node.expression.Expression;
+import org.jspecify.annotations.NullMarked;
 
 @JsonTypeName("ref")
+@NullMarked
 public class VariableReferenceExpressionNode implements ExpressionNode {
 	private final String variableName;
 

@@ -6,19 +6,22 @@ import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.SimpleAction;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.action.node.environment.VariableEnvironment;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("lock")
+@NullMarked
 public class LockActionNode implements ActionNode {
 	private final String lockName;
-	private final String lockSetName;
+	private final @Nullable String lockSetName;
 	private final boolean unlock;
 
 	public LockActionNode(
 			@JsonProperty(value = "name", required = true) String lockName,
-			@JsonProperty("set") String lockSetName,
-			@JsonProperty("unlock") Boolean unlock
+			@JsonProperty("set") @Nullable String lockSetName,
+			@JsonProperty("unlock") @Nullable Boolean unlock
 	) {
 		this.lockName = requireNonNull(lockName);
 		this.lockSetName = lockSetName;
@@ -28,7 +31,7 @@ public class LockActionNode implements ActionNode {
 	@Override
 	public Action createAction(ActionEnvironment actionEnvironment) {
 		return new SimpleAction(false) {
-			VariableEnvironment.LockSet lockSet;
+			VariableEnvironment.@Nullable LockSet lockSet;
 			@Override
 			protected void onStart() {
 				super.onStart();
@@ -42,6 +45,7 @@ public class LockActionNode implements ActionNode {
 			@Override
 			protected void onUpdate() {
 				super.onUpdate();
+				requireNonNull(lockSet, "lockSet not initialized");
 				if (unlock) {
 					setDone(true);
 					lockSet.unlock(lockName);

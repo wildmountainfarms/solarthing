@@ -1,11 +1,14 @@
 package me.retrodaredevil.notation.translators.json;
 
+import org.jspecify.annotations.NullMarked;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class SimpleConfigurationProvider implements ConfigurationProvider {
 	private final NodeConfiguration defaultConfiguration;
 	private final Map<String, NodeConfiguration> configurationMap;

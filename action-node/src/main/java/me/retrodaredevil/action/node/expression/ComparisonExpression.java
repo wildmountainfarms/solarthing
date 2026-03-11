@@ -3,6 +3,7 @@ package me.retrodaredevil.action.node.expression;
 import com.fasterxml.jackson.annotation.JsonValue;
 import me.retrodaredevil.action.node.expression.result.BooleanExpressionResult;
 import me.retrodaredevil.action.node.expression.result.NumericExpressionResult;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Essentially this is a numeric binary expression, but is currently only used upon comparisons between numeric types.
  */
+@NullMarked
 public class ComparisonExpression implements BooleanExpression {
 	private final Expression lhs;
 	private final Expression rhs;

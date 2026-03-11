@@ -6,10 +6,12 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.action.node.expression.BooleanExpression;
 import me.retrodaredevil.action.node.expression.ComparisonExpression;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("comparison")
+@NullMarked
 public class ComparisonExpressionNode implements ExpressionNode {
 	private final ExpressionNode lhs;
 	private final ExpressionNode rhs;

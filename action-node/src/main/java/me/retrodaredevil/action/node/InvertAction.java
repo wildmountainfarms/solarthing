@@ -2,9 +2,11 @@ package me.retrodaredevil.action.node;
 
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.SimpleAction;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class InvertAction extends SimpleAction {
 	private final Action action;
 	protected InvertAction(Action action) {

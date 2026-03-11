@@ -109,14 +109,14 @@ tasks.withType<JavaCompile>().configureEach {
 	options.errorprone {
 		disableWarningsInGeneratedCode = true
 
-		excludedPaths = ".*/build/generated/.*"
+		excludedPaths = ".*/build/generated.*/.*"
 		check("NullAway", CheckSeverity.ERROR)
 		option("NullAway:OnlyNullMarked", "true") // @NullMarked annotation required for anything to happen
 		// https://github.com/uber/NullAway/wiki/JSpecify-Support#jspecify-mode
 		option("NullAway:JSpecifyMode", "true")
 		option("NullAway:AcknowledgeRestrictiveAnnotations", "true") // annotations in non-NullMarked code are used by NullAway
 		// https://github.com/uber/NullAway/wiki/JSpecify-Support#requireexplicitnullmarking-checker
-		// TODO enable
+		// TODO reenable - some subprojects are fully compliant, but not all
 //		error("RequireExplicitNullMarking")
 
 		// TODO update errors

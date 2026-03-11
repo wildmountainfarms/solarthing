@@ -9,10 +9,12 @@ import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.action.node.environment.VariableEnvironment;
 import me.retrodaredevil.action.node.expression.Expression;
 import me.retrodaredevil.action.node.expression.node.ExpressionNode;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("init")
+@NullMarked
 public class InitVariableActionNode implements ActionNode {
 	private final String variableName;
 	private final ExpressionNode expressionNode;

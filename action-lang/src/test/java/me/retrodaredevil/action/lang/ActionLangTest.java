@@ -16,12 +16,14 @@ import me.retrodaredevil.action.node.environment.InjectEnvironment;
 import me.retrodaredevil.action.node.environment.NanoTimeProviderEnvironment;
 import me.retrodaredevil.action.node.environment.VariableEnvironment;
 import org.antlr.v4.runtime.CharStreams;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.time.Duration;
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class ActionLangTest {
 
 	private static final ObjectMapper MAPPER = new ObjectMapper();

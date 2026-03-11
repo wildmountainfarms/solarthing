@@ -3,11 +3,13 @@ package me.retrodaredevil.action.lang;
 import me.retrodaredevil.notation.translators.json.CustomNodeConfiguration;
 import me.retrodaredevil.notation.translators.json.NodeConfiguration;
 import me.retrodaredevil.notation.translators.json.SimpleNodeConfiguration;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+@NullMarked
 public final class ActionLangUtil {
 	private ActionLangUtil() { throw new UnsupportedOperationException(); }
 

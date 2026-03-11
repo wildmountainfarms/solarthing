@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.action.node.expression.Expression;
 import me.retrodaredevil.action.node.expression.result.ExpressionResult;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("concat")
+@NullMarked
 public class ConcatExpressionNode implements ExpressionNode {
 	private final List<ExpressionNode> expressionNodes;
 

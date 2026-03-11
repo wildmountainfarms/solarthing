@@ -8,10 +8,12 @@ import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.action.node.expression.action.AllAction;
 import me.retrodaredevil.action.node.expression.node.ExpressionNode;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("any")
+@NullMarked
 public class AnyActionNode implements ActionNode {
 	private final ExpressionNode expression;
 

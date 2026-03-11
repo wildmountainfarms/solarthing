@@ -7,12 +7,14 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.Actions;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @JsonTypeName("queue")
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
+@NullMarked
 public class QueueActionNode implements ActionNode {
 	private final List<ActionNode> actionNodes;
 

@@ -5,10 +5,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("invert")
+@NullMarked
 public class InvertActionNode implements ActionNode {
 	private final ActionNode actionNode;
 

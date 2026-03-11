@@ -2,12 +2,14 @@ package me.retrodaredevil.action.node;
 
 import me.retrodaredevil.action.SimpleAction;
 import me.retrodaredevil.action.node.util.NanoTimeProvider;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.time.Duration;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class WaitAction extends SimpleAction {
 	private final NanoTimeProvider nanoTimeProvider;
 	private final Duration waitDuration;

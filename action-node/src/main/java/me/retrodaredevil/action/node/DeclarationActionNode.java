@@ -8,6 +8,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.action.node.scope.ScopeActionNode;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,6 +20,7 @@ import static java.util.Objects.requireNonNull;
 
 @JsonDeserialize(builder = DeclarationActionNode.Builder.class)
 @JsonTypeName("declaration")
+@NullMarked
 public class DeclarationActionNode implements ActionNode {
 	private final ActionNode mainDeclaration;
 	private final Map<String, ActionNode> declarations;
@@ -36,8 +39,9 @@ public class DeclarationActionNode implements ActionNode {
 		).createAction(actionEnvironment);
 	}
 	static class Builder {
+		// nullable for initialization purposes
 		@JsonProperty(value = "main", required = true)
-		private ActionNode mainDeclaration;
+		private @Nullable ActionNode mainDeclaration;
 		private final Map<String, ActionNode> declarations = new HashMap<>();
 		@JsonAnySetter
 		public void setActionNode(String name, ActionNode actionNode) {
@@ -45,7 +49,10 @@ public class DeclarationActionNode implements ActionNode {
 		}
 
 		DeclarationActionNode build() {
-			return new DeclarationActionNode(mainDeclaration, declarations);
+			return new DeclarationActionNode(
+					requireNonNull(mainDeclaration, "main cannot be null"),
+					declarations
+			);
 		}
 	}
 }

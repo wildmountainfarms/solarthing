@@ -3,9 +3,11 @@ package me.retrodaredevil.action.node.expression;
 import me.retrodaredevil.action.node.expression.result.BooleanExpressionResult;
 import me.retrodaredevil.action.node.expression.type.ExpressionType;
 import me.retrodaredevil.action.node.expression.type.PrimitiveExpressionType;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
 
+@NullMarked
 public interface BooleanExpression extends TypedExpression<BooleanExpressionResult> {
 	static BooleanExpression createConstant(List<? extends BooleanExpressionResult> values) {
 		return () -> values;

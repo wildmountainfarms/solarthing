@@ -1,7 +1,9 @@
 package me.retrodaredevil.action.node.environment;
 
 import me.retrodaredevil.action.node.util.NanoTimeProvider;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public class NanoTimeProviderEnvironment {
 	private final NanoTimeProvider nanoTimeProvider;
 

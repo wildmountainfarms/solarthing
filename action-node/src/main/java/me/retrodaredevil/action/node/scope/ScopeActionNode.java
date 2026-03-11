@@ -7,10 +7,12 @@ import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.action.node.environment.VariableEnvironment;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("scope")
+@NullMarked
 public class ScopeActionNode implements ActionNode {
 
 	private final ActionNode actionNode;

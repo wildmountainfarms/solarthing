@@ -8,6 +8,8 @@ import me.retrodaredevil.action.node.expression.Expression;
 import me.retrodaredevil.action.node.expression.ExpressionConvert;
 import me.retrodaredevil.action.node.expression.StringExpression;
 import me.retrodaredevil.action.node.expression.result.StringExpressionResult;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,6 +18,7 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("join")
+@NullMarked
 public class JoinStringExpressionNode implements ExpressionNode {
 	private final ExpressionNode expressionNode;
 	private final ExpressionNode separatorNode;
@@ -23,7 +26,7 @@ public class JoinStringExpressionNode implements ExpressionNode {
 	@JsonCreator
 	public JoinStringExpressionNode(
 			@JsonProperty(value = "expression", required = true) ExpressionNode expressionNode,
-			@JsonProperty("separator") ExpressionNode separatorNode
+			@JsonProperty("separator") @Nullable ExpressionNode separatorNode
 	) {
 		this.expressionNode = requireNonNull(expressionNode);
 		this.separatorNode = separatorNode == null

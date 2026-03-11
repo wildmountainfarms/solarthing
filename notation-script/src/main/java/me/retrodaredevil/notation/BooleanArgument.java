@@ -1,5 +1,8 @@
 package me.retrodaredevil.notation;
 
+import org.jspecify.annotations.NullMarked;
+
+@NullMarked
 public enum BooleanArgument implements Argument {
 	TRUE(true),
 	FALSE(false),

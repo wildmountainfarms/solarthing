@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.annotations;
 
 import com.google.auto.service.AutoService;
+import org.jspecify.annotations.NullMarked;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
@@ -12,9 +13,12 @@ import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import static java.util.Objects.requireNonNull;
+
 @SupportedAnnotationTypes({"me.retrodaredevil.solarthing.annotations.SerializeNameDefinedInBase"})
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 @AutoService(Processor.class)
+@NullMarked
 public class SerializeNameDefinedInBaseAnnotationProcessor extends AbstractProcessor {
 
 	private void processMethods(Set<Element> serializeNameDefinedInBaseMethodSet, ExecutableElement method, TypeElement classElement) {
@@ -57,7 +61,7 @@ public class SerializeNameDefinedInBaseAnnotationProcessor extends AbstractProce
 
 		for (Element methodElement : roundEnvironment.getElementsAnnotatedWith(annotation)) {
 			ExecutableElement method = (ExecutableElement) methodElement;
-			TypeElement classElement = (TypeElement) methodElement.getEnclosingElement();
+			TypeElement classElement = requireNonNull((TypeElement) methodElement.getEnclosingElement(), "getEnclosingElement()");
 			processMethodAndClass(serializeNameDefinedInBaseMethodSet, method, classElement);
 		}
 

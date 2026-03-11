@@ -15,6 +15,7 @@ import me.retrodaredevil.notation.Node;
 import me.retrodaredevil.notation.NodeTranslator;
 import me.retrodaredevil.notation.NumberArgument;
 import me.retrodaredevil.notation.StringArgument;
+import org.jspecify.annotations.NullMarked;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class JsonNodeTranslator implements NodeTranslator<JsonNode> {
 
 	private final ConfigurationProvider configurationProvider;

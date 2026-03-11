@@ -1,7 +1,10 @@
 package me.retrodaredevil.notation.antlr;
 
+import org.jspecify.annotations.NullMarked;
+
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public final class SyntaxError {
 	private final int line;
 	private final int charPositionInLine;

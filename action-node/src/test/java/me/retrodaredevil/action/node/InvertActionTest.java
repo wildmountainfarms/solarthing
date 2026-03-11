@@ -2,10 +2,12 @@ package me.retrodaredevil.action.node;
 
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.Actions;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@NullMarked
 class InvertActionTest {
 
 	@Test

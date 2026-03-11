@@ -2,10 +2,12 @@ package me.retrodaredevil.action.node.expression;
 
 import me.retrodaredevil.action.node.expression.result.BooleanExpressionResult;
 import me.retrodaredevil.action.node.expression.result.ExpressionResult;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@NullMarked
 public class EqualsExpression implements BooleanExpression {
 	private final Expression lhs;
 	private final Expression rhs;

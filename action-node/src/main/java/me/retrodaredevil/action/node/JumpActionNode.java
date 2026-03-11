@@ -6,6 +6,7 @@ import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.Actions;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.action.node.environment.VariableEnvironment;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 
@@ -13,6 +14,7 @@ import static java.util.Objects.requireNonNull;
  * Similar to {@link CallActionNode}, except whatever scope this is called from is used to create the action
  */
 @JsonTypeName("jump")
+@NullMarked
 public class JumpActionNode implements ActionNode {
 	private final String name;
 	public JumpActionNode(@JsonProperty("name") String name) {

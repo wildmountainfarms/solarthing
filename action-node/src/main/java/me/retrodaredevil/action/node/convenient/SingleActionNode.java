@@ -8,6 +8,7 @@ import me.retrodaredevil.action.Actions;
 import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.action.node.environment.VariableEnvironment;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.UUID;
@@ -21,6 +22,7 @@ import static java.util.Objects.requireNonNull;
  * Using this is easier than using a "race", a "lock", a "queue", an "unlock", and a "pass" together.
  */
 @JsonTypeName("single")
+@NullMarked
 public class SingleActionNode implements ActionNode {
 	private final ActionNode actionNode;
 	private final String lockName;

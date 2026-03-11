@@ -1,9 +1,12 @@
 package me.retrodaredevil.notation.antlr;
 
+import org.jspecify.annotations.NullMarked;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@NullMarked
 public class SyntaxException extends Exception {
 	private final List<SyntaxError> syntaxErrors;
 

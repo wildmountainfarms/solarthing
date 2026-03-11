@@ -3,10 +3,12 @@ package me.retrodaredevil.action.node.expression.action;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.action.node.expression.ComparisonExpression;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@NullMarked
 class ComparisonActionTest {
 
 	@Test

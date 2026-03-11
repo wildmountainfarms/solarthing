@@ -1,7 +1,11 @@
 package me.retrodaredevil.action.node.expression.result;
 
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
+
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 final class SimpleNumericExpressionResult implements NumericExpressionResult {
 	private final Number number;
 
@@ -15,7 +19,7 @@ final class SimpleNumericExpressionResult implements NumericExpressionResult {
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(@Nullable Object o) {
 		if (this == o) return true;
 		if (!(o instanceof NumericExpressionResult)) return false;
 		NumericExpressionResult that = (NumericExpressionResult) o;

@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.annotations;
 
 import com.google.auto.service.AutoService;
+import org.jspecify.annotations.NullMarked;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
@@ -14,6 +15,7 @@ import java.util.Set;
 @SupportedAnnotationTypes({"me.retrodaredevil.solarthing.annotations.UtilityClass"})
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 @AutoService(Processor.class)
+@NullMarked
 public class UtilityClassAnnotationProcessor extends AbstractProcessor {
 	@Override
 	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnvironment) {

@@ -1,5 +1,6 @@
 package me.retrodaredevil.notation.translators.json;
 
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -11,15 +12,16 @@ import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class SimpleNodeConfiguration implements NodeConfiguration {
 	private final String identifierFieldKey;
-	private final String identifierFieldValueOverride;
+	private final @Nullable String identifierFieldValueOverride;
 	private final List<String> positionalArgumentFieldNames;
 	private final Map<String, String> namedArgumentRenameMap;
-	private final String subNodesFieldKey;
-	private final String linkedNodeFieldKey;
+	private final @Nullable String subNodesFieldKey;
+	private final @Nullable String linkedNodeFieldKey;
 
-	public SimpleNodeConfiguration(String identifierFieldKey, String identifierFieldValueOverride, List<String> positionalArgumentFieldNames, Map<String, String> namedArgumentRenameMap, String subNodesFieldKey, String linkedNodeFieldKey) {
+	public SimpleNodeConfiguration(String identifierFieldKey, @Nullable String identifierFieldValueOverride, List<String> positionalArgumentFieldNames, Map<String, String> namedArgumentRenameMap, @Nullable String subNodesFieldKey, @Nullable String linkedNodeFieldKey) {
 		if (positionalArgumentFieldNames.contains(identifierFieldKey)) {
 			throw new IllegalArgumentException("The identifierFieldKey cannot be in positionalArgumentFieldNames");
 		}
@@ -41,7 +43,7 @@ public class SimpleNodeConfiguration implements NodeConfiguration {
 	public String getIdentifierFieldKey() {
 		return identifierFieldKey;
 	}
-	public String getIdentifierFieldValueOverride() {
+	public @Nullable String getIdentifierFieldValueOverride() {
 		return identifierFieldValueOverride;
 	}
 
@@ -53,11 +55,11 @@ public class SimpleNodeConfiguration implements NodeConfiguration {
 		return namedArgumentRenameMap;
 	}
 
-	public String getSubNodesFieldKey() {
+	public @Nullable String getSubNodesFieldKey() {
 		return subNodesFieldKey;
 	}
 
-	public String getLinkedNodeFieldKey() {
+	public @Nullable String getLinkedNodeFieldKey() {
 		return linkedNodeFieldKey;
 	}
 

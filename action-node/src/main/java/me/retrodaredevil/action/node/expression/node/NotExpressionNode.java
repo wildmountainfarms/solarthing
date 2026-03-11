@@ -6,10 +6,12 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.action.node.expression.Expression;
 import me.retrodaredevil.action.node.expression.NotExpression;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("not")
+@NullMarked
 public class NotExpressionNode implements ExpressionNode {
 	private final ExpressionNode expressionNode;
 

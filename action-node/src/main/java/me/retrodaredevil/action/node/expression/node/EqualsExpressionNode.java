@@ -6,10 +6,12 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.action.node.expression.EqualsExpression;
 import me.retrodaredevil.action.node.expression.Expression;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("eq")
+@NullMarked
 public class EqualsExpressionNode implements ExpressionNode {
 	private final ExpressionNode lhs;
 	private final ExpressionNode rhs;

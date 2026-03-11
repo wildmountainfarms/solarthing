@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.action.node.expression.Expression;
+import org.jspecify.annotations.NullMarked;
 
 @JsonSubTypes({
 		@JsonSubTypes.Type(ComparisonExpressionNode.class),
@@ -16,6 +17,7 @@ import me.retrodaredevil.action.node.expression.Expression;
 		@JsonSubTypes.Type(ConcatExpressionNode.class),
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
+@NullMarked
 public interface ExpressionNode {
 	Expression createExpression(ActionEnvironment actionEnvironment);
 }

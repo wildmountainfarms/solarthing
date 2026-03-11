@@ -8,12 +8,14 @@ import me.retrodaredevil.action.node.expression.Expression;
 import me.retrodaredevil.action.node.expression.result.BooleanExpressionResult;
 import me.retrodaredevil.action.node.expression.result.NumericExpressionResult;
 import me.retrodaredevil.action.node.expression.result.StringExpressionResult;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("str")
+@NullMarked
 public class ToStringExpressionNode implements ExpressionNode {
 	private final ExpressionNode expressionNode;
 

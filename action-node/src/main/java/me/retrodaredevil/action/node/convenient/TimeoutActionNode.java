@@ -8,6 +8,7 @@ import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.action.node.environment.NanoTimeProviderEnvironment;
 import me.retrodaredevil.action.node.util.NanoTimeProvider;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.time.Duration;
@@ -16,6 +17,7 @@ import java.time.Duration;
  * Only executes the given action every given duration. This {@link ActionNode} has state.
  */
 @JsonTypeName("timeout")
+@NullMarked
 public class TimeoutActionNode implements ActionNode {
 
 	private final long timeoutNanos;

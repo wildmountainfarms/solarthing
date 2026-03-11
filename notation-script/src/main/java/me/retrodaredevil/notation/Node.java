@@ -1,5 +1,8 @@
 package me.retrodaredevil.notation;
 
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -8,19 +11,20 @@ import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public final class Node implements Argument {
 	private final String identifier;
 	private final List<Argument> arguments;
 	private final Map<String, Argument> namedArguments;
 	private final List<Node> subNodes;
-	private final Node linkedNode;
+	private final @Nullable Node linkedNode;
 
-	public Node(String identifier, List<Argument> arguments, Map<String, Argument> namedArguments, List<Node> subNodes, Node linkedNode) {
+	public Node(String identifier, List<Argument> arguments, Map<String, Argument> namedArguments, List<Node> subNodes, @Nullable Node linkedNode) {
 		this.identifier = requireNonNull(identifier);
 		this.arguments = Collections.unmodifiableList(new ArrayList<>(arguments));
 		this.namedArguments = Collections.unmodifiableMap(new LinkedHashMap<>(namedArguments));
 		this.subNodes = Collections.unmodifiableList(new ArrayList<>(subNodes));
-		this.linkedNode = linkedNode; // may be null
+		this.linkedNode = linkedNode;
 	}
 
 	public String getIdentifier() {
@@ -37,7 +41,7 @@ public final class Node implements Argument {
 		return subNodes;
 	}
 	/** @return The linked node or null if not present*/
-	public Node getLinkedNode() {
+	public @Nullable Node getLinkedNode() {
 		return linkedNode;
 	}
 

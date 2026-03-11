@@ -1,10 +1,12 @@
 package me.retrodaredevil.action.node.expression;
 
 import me.retrodaredevil.action.node.expression.result.ExpressionResult;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@NullMarked
 public final class ExpressionConvert {
 	private ExpressionConvert() { throw new UnsupportedOperationException(); }
 

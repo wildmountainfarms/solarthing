@@ -4,6 +4,7 @@ import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.node.expression.action.AllAction;
 import me.retrodaredevil.action.node.expression.result.BooleanExpressionResult;
 import me.retrodaredevil.action.node.expression.result.NumericExpressionResult;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -12,6 +13,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@NullMarked
 class ExpressionTest {
 
 	private static boolean evaluateSingleBoolean(BooleanExpression expression) {

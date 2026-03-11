@@ -12,6 +12,7 @@ import me.retrodaredevil.action.node.expression.TypedExpression;
 import me.retrodaredevil.action.node.expression.result.BooleanExpressionResult;
 import me.retrodaredevil.action.node.expression.result.NumericExpressionResult;
 import me.retrodaredevil.action.node.expression.result.StringExpressionResult;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("const")
+@NullMarked
 public class ConstantExpressionNode implements ExpressionNode {
 	private final TypedExpression<?> expression;
 

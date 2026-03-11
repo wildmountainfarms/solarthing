@@ -3,10 +3,12 @@ package me.retrodaredevil.notation.antlr;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@NullMarked
 public class ParseErrorListener extends BaseErrorListener {
 
 	private final List<SyntaxError> syntaxErrors = new ArrayList<>();

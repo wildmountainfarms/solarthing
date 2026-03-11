@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.action.node.environment.NanoTimeProviderEnvironment;
+import org.jspecify.annotations.NullMarked;
 
 import java.time.Duration;
 
@@ -13,6 +14,7 @@ import java.time.Duration;
  * Uses the ISO-8601 standard to declare how long to wait
  */
 @JsonTypeName("wait")
+@NullMarked
 public class WaitIsoActionNode implements ActionNode {
 	private final Duration duration;
 

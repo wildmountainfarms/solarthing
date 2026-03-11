@@ -6,10 +6,12 @@ import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.Actions;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.action.node.environment.VariableEnvironment;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("call")
+@NullMarked
 public class CallActionNode implements ActionNode {
 	private final String name;
 	public CallActionNode(@JsonProperty("name") String name) {

@@ -5,10 +5,12 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.action.node.environment.NanoTimeProviderEnvironment;
+import org.jspecify.annotations.NullMarked;
 
 import java.time.Duration;
 
 @JsonTypeName("waitms")
+@NullMarked
 public class WaitMillisActionNode implements ActionNode {
 	private final long wait;
 

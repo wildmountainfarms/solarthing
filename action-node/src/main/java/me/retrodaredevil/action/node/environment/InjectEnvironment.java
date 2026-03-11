@@ -1,5 +1,8 @@
 package me.retrodaredevil.action.node.environment;
 
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,6 +14,7 @@ import java.util.function.Supplier;
  * Once created, an {@link InjectEnvironment} is immutable and thread safe. Values returned by {@link #get(Class)} should be immutable and thread safe,
  * but data within that data may not be thread safe.
  */
+@NullMarked
 public class InjectEnvironment {
 	private final Map<Class<?>, Object> map;
 
@@ -18,7 +22,7 @@ public class InjectEnvironment {
 		this.map = Collections.unmodifiableMap(new HashMap<>(map));
 	}
 
-	public <T> T getOrNull(Class<T> clazz) {
+	public <T> @Nullable T getOrNull(Class<T> clazz) {
 		return clazz.cast(map.get(clazz));
 	}
 

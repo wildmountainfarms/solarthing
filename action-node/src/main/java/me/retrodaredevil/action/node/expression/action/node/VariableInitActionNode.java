@@ -10,18 +10,21 @@ import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.action.node.environment.VariableEnvironment;
 import me.retrodaredevil.action.node.expression.Expression;
 import me.retrodaredevil.action.node.expression.node.ExpressionNode;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("init")
+@NullMarked
 public class VariableInitActionNode implements ActionNode {
 	private final String variableName;
-	private final ExpressionNode expressionNode;
+	private final @Nullable ExpressionNode expressionNode;
 
 	@JsonCreator
 	public VariableInitActionNode(
 			@JsonProperty(value = "name", required = true) String variableName,
-			@JsonProperty(value = "expression") ExpressionNode expressionNode) {
+			@JsonProperty(value = "expression") @Nullable ExpressionNode expressionNode) {
 		this.variableName = requireNonNull(variableName);
 		this.expressionNode = expressionNode;
 	}

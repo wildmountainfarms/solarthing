@@ -5,11 +5,13 @@ import me.retrodaredevil.action.node.expression.Expression;
 import me.retrodaredevil.action.node.expression.ExpressionConvert;
 import me.retrodaredevil.action.node.expression.result.BooleanExpressionResult;
 import me.retrodaredevil.action.node.expression.type.PrimitiveExpressionType;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class AllAction extends SimpleAction {
 	private final Expression expression;
 	private final boolean any;

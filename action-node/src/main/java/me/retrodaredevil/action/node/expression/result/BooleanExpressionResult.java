@@ -1,5 +1,8 @@
 package me.retrodaredevil.action.node.expression.result;
 
+import org.jspecify.annotations.NullMarked;
+
+@NullMarked
 public enum BooleanExpressionResult implements ExpressionResult {
 	TRUE(true),
 	FALSE(false),

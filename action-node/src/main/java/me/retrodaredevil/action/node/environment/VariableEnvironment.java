@@ -4,17 +4,19 @@ import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.expression.Expression;
 import me.retrodaredevil.action.node.expression.type.ExpressionType;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class VariableEnvironment {
 	private final Map<String, DeclaredAction> declaredActionMap = new HashMap<>();
 	private final Map<String, LockSet> lockSetMap = new HashMap<>();
 	/** A map of variable name to variable. Note null values are allowed, and represent a variable declared, but not initialized*/
-	private final Map<String, Variable> variableMap = new HashMap<>();
+	private final Map<String, @Nullable Variable> variableMap = new HashMap<>();
 	private final @Nullable VariableEnvironment outerVariableEnvironment;
 	/** The global lockset, which is only initialized when there is no outer variable environment*/
 	private final @Nullable LockSet globalLockSet;
@@ -85,7 +87,7 @@ public class VariableEnvironment {
 	 * @param name The name of the variable
 	 * @param expression The expression or null
 	 */
-	public void initializeVariable(String name, Expression expression) {
+	public void initializeVariable(String name, @Nullable Expression expression) {
 		if (variableMap.containsKey(name)) {
 			throw new IllegalStateException("Variable with name='" + name + "' already exists in this scope!");
 		}
@@ -144,7 +146,7 @@ public class VariableEnvironment {
 		}
 	}
 	public static final class Variable {
-		private final ExpressionType type;
+		private final @Nullable ExpressionType type;
 		private Expression expression;
 
 		public Variable(Expression expression) {
@@ -153,7 +155,7 @@ public class VariableEnvironment {
 			this.expression = expression;
 		}
 
-		public ExpressionType getType() {
+		public @Nullable ExpressionType getType() {
 			return type;
 		}
 

@@ -1,10 +1,13 @@
 package me.retrodaredevil.notation;
 
+import org.jspecify.annotations.NullMarked;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@NullMarked
 public final class ArrayArgument implements Argument {
 	private final List<Argument> values;
 

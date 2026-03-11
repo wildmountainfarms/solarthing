@@ -1,5 +1,8 @@
 package me.retrodaredevil.action.node.environment;
 
+import org.jspecify.annotations.NullMarked;
+
+@NullMarked
 public class ActionEnvironment {
 	private final VariableEnvironment variableEnvironment;
 	private final InjectEnvironment injectEnvironment;

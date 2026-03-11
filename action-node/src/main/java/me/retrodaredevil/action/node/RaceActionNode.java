@@ -5,12 +5,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.action.*;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 @JsonTypeName("race")
+@NullMarked
 public class RaceActionNode implements ActionNode {
 	private final List<RaceNode> raceNodes;
 
@@ -45,15 +48,16 @@ public class RaceActionNode implements ActionNode {
 		private final Map<RaceNode, Action> raceNodeConditionActionMap = new LinkedHashMap<>();
 		private final ActionEnvironment actionEnvironment;
 
-		private Action nextAction;
+		private @Nullable Action nextAction;
 
 		public RaceAction(ActionEnvironment actionEnvironment) {
 			super(false);
 			this.actionEnvironment = actionEnvironment;
 		}
 
+		// TODO add JSpecify to action-lib
 		@Override
-		public Action getNextAction() {
+		public @Nullable Action getNextAction() {
 			return nextAction;
 		}
 
