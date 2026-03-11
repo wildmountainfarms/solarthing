@@ -1,10 +1,10 @@
 package me.retrodaredevil.solarthing.solar.outback.fx;
 
 
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.CodeMode;
 import me.retrodaredevil.solarthing.solar.common.SolarMode;
 import me.retrodaredevil.solarthing.solar.common.SolarModeType;
+import org.jspecify.annotations.NonNull;
 
 import static me.retrodaredevil.solarthing.solar.common.SolarModeType.*;
 
@@ -86,7 +86,7 @@ public enum OperationalMode implements CodeMode, SolarMode { // one must be acti
 	}
 
 	@Override
-	public @NotNull String getModeName() {
+	public @NonNull String getModeName() {
 		return name;
 	}
 
@@ -96,7 +96,7 @@ public enum OperationalMode implements CodeMode, SolarMode { // one must be acti
 	}
 
 	@Override
-	public @NotNull SolarModeType getSolarModeType() {
+	public @NonNull SolarModeType getSolarModeType() {
 		return solarModeType;
 	}
 }

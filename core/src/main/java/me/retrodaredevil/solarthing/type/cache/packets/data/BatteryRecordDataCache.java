@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -42,7 +42,7 @@ public class BatteryRecordDataCache extends BaseAccumulationDataCache {
 	}
 
 	@JsonProperty("record")
-	public @Nullable BatteryRecordDataCache.Record getRecord() {
+	public BatteryRecordDataCache.@Nullable Record getRecord() {
 		return record;
 	}
 
@@ -91,7 +91,7 @@ public class BatteryRecordDataCache extends BaseAccumulationDataCache {
 
 	@JsonProperty("identifier")
 	@Override
-	public @NotNull Identifier getIdentifier() {
+	public @NonNull Identifier getIdentifier() {
 		return identifier;
 	}
 

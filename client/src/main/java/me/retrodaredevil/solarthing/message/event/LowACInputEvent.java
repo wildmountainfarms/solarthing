@@ -3,11 +3,11 @@ package me.retrodaredevil.solarthing.message.event;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.message.MessageSender;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.solar.outback.OutbackUtil;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
+import org.jspecify.annotations.Nullable;
 
 @JsonTypeName("lowacinput")
 public class LowACInputEvent extends GracePeriodTimeoutEvent {

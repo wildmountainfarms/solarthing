@@ -2,14 +2,14 @@ package me.retrodaredevil.solarthing.solar.outback.fx.event;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.identification.DefaultSupplementaryIdentifier;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.packets.identification.KnownSupplementaryIdentifier;
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXIdentityInfo;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 public class ImmutableFXErrorModeChangePacket implements FXErrorModeChangePacket {
 
@@ -47,12 +47,12 @@ public class ImmutableFXErrorModeChangePacket implements FXErrorModeChangePacket
 	}
 
 	@Override
-	public @NotNull KnownSupplementaryIdentifier<OutbackIdentifier> getIdentifier() {
+	public @NonNull KnownSupplementaryIdentifier<OutbackIdentifier> getIdentifier() {
 		return identifier;
 	}
 
 	@Override
-	public @NotNull IdentityInfo getIdentityInfo() {
+	public @NonNull IdentityInfo getIdentityInfo() {
 		return identityInfo;
 	}
 

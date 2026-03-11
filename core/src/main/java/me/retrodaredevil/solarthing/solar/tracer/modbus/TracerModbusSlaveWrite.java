@@ -3,11 +3,11 @@ package me.retrodaredevil.solarthing.solar.tracer.modbus;
 import me.retrodaredevil.io.modbus.ModbusSlave;
 import me.retrodaredevil.io.modbus.handling.WriteMultipleRegisters;
 import me.retrodaredevil.io.modbus.handling.WriteSingleCoil;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.solar.tracer.TracerWriteTable;
 import me.retrodaredevil.solarthing.solar.tracer.batteryconfig.TracerBatteryConfig;
 import me.retrodaredevil.solarthing.solar.tracer.mode.*;
 import me.retrodaredevil.solarthing.solar.util.AbstractModbusWrite;
+import org.jspecify.annotations.NonNull;
 
 import static me.retrodaredevil.io.modbus.ModbusMessages.get8BitDataFrom16BitArray;
 
@@ -247,12 +247,12 @@ public class TracerModbusSlaveWrite extends AbstractModbusWrite implements Trace
 	}
 
 	@Override
-	public void setBatteryDetection(@NotNull BatteryDetection batteryDetection) {
+	public void setBatteryDetection(@NonNull BatteryDetection batteryDetection) {
 		write(0x9067, batteryDetection.getValueCode());
 	}
 
 	@Override
-	public void setLoadTimingControlSelection(@NotNull LoadTimingControlSelection loadTimingControlSelection) {
+	public void setLoadTimingControlSelection(@NonNull LoadTimingControlSelection loadTimingControlSelection) {
 		write(0x9069, loadTimingControlSelection.getValueCode());
 	}
 
@@ -283,7 +283,7 @@ public class TracerModbusSlaveWrite extends AbstractModbusWrite implements Trace
 	}
 
 	@Override
-	public void setBatteryManagementMode(@NotNull BatteryManagementMode batteryManagementMode) {
+	public void setBatteryManagementMode(@NonNull BatteryManagementMode batteryManagementMode) {
 		write(0x9070, batteryManagementMode.getValueCode());
 	}
 

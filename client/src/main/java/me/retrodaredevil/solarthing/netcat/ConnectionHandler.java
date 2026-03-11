@@ -1,7 +1,7 @@
 package me.retrodaredevil.solarthing.netcat;
 
-import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.io.EOFException;
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ public class ConnectionHandler {
 		this.netCatServerHandler = netCatServerHandler;
 	}
 
-	public void handleRequests(Function<? super @NotNull String, @Nullable String> function) {
+	public void handleRequests(Function<? super @NonNull String, @Nullable String> function) {
 		while (true) {
 			SimpleConnection connection = netCatServerHandler.poll();
 			if (connection == null) break;

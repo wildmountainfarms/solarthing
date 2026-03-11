@@ -1,6 +1,6 @@
 package me.retrodaredevil.solarthing.util;
 
-import me.retrodaredevil.solarthing.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.time.Instant;
 import java.util.Objects;

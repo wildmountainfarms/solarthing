@@ -6,11 +6,11 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.PacketWithVersion;
 import me.retrodaredevil.solarthing.reason.ExecutionReason;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 @JsonTypeName("MATE_COMMAND_SUCCESS")
 @JsonDeserialize(as = ImmutableSuccessMateCommandPacket.class)
@@ -22,7 +22,7 @@ public interface SuccessMateCommandPacket extends MateCommandFeedbackPacket, Pac
 
 	@DefaultFinal
 	@Override
-	default @NotNull MateCommandFeedbackPacketType getPacketType() {
+	default @NonNull MateCommandFeedbackPacketType getPacketType() {
 		return MateCommandFeedbackPacketType.MATE_COMMAND_SUCCESS;
 	}
 
@@ -31,7 +31,7 @@ public interface SuccessMateCommandPacket extends MateCommandFeedbackPacket, Pac
 	 * @return The {@link MateCommand} that was successfully sent to the MATE
 	 */
 	@JsonProperty("command")
-	@NotNull MateCommand getCommand();
+	@NonNull MateCommand getCommand();
 
 	/**
 	 * Should be serialized as "source"
@@ -50,7 +50,7 @@ public interface SuccessMateCommandPacket extends MateCommandFeedbackPacket, Pac
 	 * @return The string representing the source of the command
 	 */
 	@JsonProperty("source")
-	@NotNull String getSource();
+	@NonNull String getSource();
 
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	@JsonProperty("executionReason")

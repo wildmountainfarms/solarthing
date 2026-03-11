@@ -2,7 +2,7 @@ package me.retrodaredevil.solarthing.config.request;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import me.retrodaredevil.solarthing.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.time.Duration;
 import java.time.ZoneId;
@@ -32,7 +32,7 @@ public class TracerClockOptions {
 		}
 	}
 
-	public @NotNull Duration getDurationThreshold() {
+	public @NonNull Duration getDurationThreshold() {
 		return durationThreshold;
 	}
 

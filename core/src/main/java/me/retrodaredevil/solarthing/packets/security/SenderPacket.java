@@ -1,8 +1,8 @@
 package me.retrodaredevil.solarthing.packets.security;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.Packet;
+import org.jspecify.annotations.NonNull;
 
 public interface SenderPacket extends Packet {
 
@@ -12,6 +12,6 @@ public interface SenderPacket extends Packet {
 	 * @return The sender of this packet
 	 */
 	@JsonProperty("sender")
-	@NotNull String getSender();
+	@NonNull String getSender();
 
 }

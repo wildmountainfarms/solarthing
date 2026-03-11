@@ -2,10 +2,10 @@ package me.retrodaredevil.solarthing.solar.tracer;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.packets.identification.NumberedIdentifier;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 public class ImmutableTracerStatusPacket implements TracerStatusPacket {
 	private final @Nullable Integer packetVersion;
@@ -219,8 +219,8 @@ public class ImmutableTracerStatusPacket implements TracerStatusPacket {
 	public @Nullable Integer getPacketVersion() {
 		return packetVersion;
 	}
-	@Override public @NotNull TracerIdentifier getIdentifier() { return identifier; }
-	@Override public @NotNull IdentityInfo getIdentityInfo() { return identityInfo; }
+	@Override public @NonNull TracerIdentifier getIdentifier() { return identifier; }
+	@Override public @NonNull IdentityInfo getIdentityInfo() { return identityInfo; }
 	@Override
 	public int getNumber() {
 		return identifier.getNumber();
@@ -234,19 +234,19 @@ public class ImmutableTracerStatusPacket implements TracerStatusPacket {
 	@Override public int getRatedOutputPower() { return ratedOutputPower; }
 	@Override public int getChargingTypeValue() { return chargingTypeValue; }
 	@Override public int getRatedLoadOutputCurrent() { return ratedLoadOutputCurrent; }
-	@Override public @NotNull Float getPVVoltage() { return inputVoltage; }
-	@Override public @NotNull Float getPVCurrent() { return pvCurrent; }
-	@Override public @NotNull Float getPVWattage() { return pvWattage; }
+	@Override public @NonNull Float getPVVoltage() { return inputVoltage; }
+	@Override public @NonNull Float getPVCurrent() { return pvCurrent; }
+	@Override public @NonNull Float getPVWattage() { return pvWattage; }
 
 	@Override public float getBatteryVoltage() { return batteryVoltage; }
-	@Override public @NotNull Float getChargingCurrent() { return chargingCurrent; }
-	@Override public @NotNull Float getChargingPower() { return chargingPower; }
+	@Override public @NonNull Float getChargingCurrent() { return chargingCurrent; }
+	@Override public @NonNull Float getChargingPower() { return chargingPower; }
 
 	@Override public float getLoadVoltage() { return loadVoltage; }
 	@Override public float getLoadCurrent() { return loadCurrent; }
 	@Override public float getLoadPower() { return loadPower; }
 
-	@Override public @NotNull Float getBatteryTemperatureCelsius() { return batteryTemperatureCelsius; }
+	@Override public @NonNull Float getBatteryTemperatureCelsius() { return batteryTemperatureCelsius; }
 	@Override public float getInsideControllerTemperatureCelsius() { return insideControllerTemperatureCelsius; }
 	@Override public float getPowerComponentTemperatureCelsius() { return powerComponentTemperatureCelsius; }
 	@Override public int getBatterySOC() { return batterySOC; }

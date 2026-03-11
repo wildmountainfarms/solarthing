@@ -3,8 +3,8 @@ package me.retrodaredevil.solarthing.rest.command;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -48,7 +48,7 @@ public class RestCommandConfig {
 			this.sourceId = sourceId;
 		}
 
-		public @NotNull Path getActionFile() {
+		public @NonNull Path getActionFile() {
 			return actionFile;
 		}
 

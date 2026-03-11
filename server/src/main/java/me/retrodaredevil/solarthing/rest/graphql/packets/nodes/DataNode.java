@@ -2,8 +2,8 @@ package me.retrodaredevil.solarthing.rest.graphql.packets.nodes;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
+import org.jspecify.annotations.NonNull;
 
 import static java.util.Objects.requireNonNull;
 
@@ -19,7 +19,7 @@ public final class DataNode<T> implements Comparable<DataNode<?>> {
 	private final String sourceId;
 	private final int fragmentId;
 
-	public DataNode(@NotNull T data, @NotNull Identifiable identifiable, long dateMillis, @NotNull String sourceId, int fragmentId) {
+	public DataNode(@NonNull T data, @NonNull Identifiable identifiable, long dateMillis, @NonNull String sourceId, int fragmentId) {
 		this.data = requireNonNull(data);
 		this.identifiable = requireNonNull(identifiable);
 		this.dateMillis = dateMillis;
@@ -28,11 +28,11 @@ public final class DataNode<T> implements Comparable<DataNode<?>> {
 	}
 
 	@JsonProperty("data")
-	public @NotNull T getData() {
+	public @NonNull T getData() {
 		return data;
 	}
 	@JsonProperty("identifiable")
-	public @NotNull Identifiable getIdentifiable() {
+	public @NonNull Identifiable getIdentifiable() {
 		return identifiable;
 	}
 
@@ -42,7 +42,7 @@ public final class DataNode<T> implements Comparable<DataNode<?>> {
 	}
 
 	@JsonProperty("sourceId")
-	public @NotNull String getSourceId() {
+	public @NonNull String getSourceId() {
 		return sourceId;
 	}
 

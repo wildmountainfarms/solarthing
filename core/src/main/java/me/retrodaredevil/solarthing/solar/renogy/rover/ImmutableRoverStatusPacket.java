@@ -3,10 +3,10 @@ package me.retrodaredevil.solarthing.solar.renogy.rover;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.packets.identification.NumberedIdentifier;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 @JsonIgnoreProperties(value = {"productModelString", "hardwareVersionString", "softwareVersionString", "streetLightBrightness", "streetLightOn", "chargingStateName", "errors", "batteryTypeName", "loadWorkingModeName"}, allowGetters = true)
 public class ImmutableRoverStatusPacket implements RoverStatusPacket {
@@ -216,12 +216,12 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	}
 
 	@Override
-	public @NotNull RoverIdentifier getIdentifier() {
+	public @NonNull RoverIdentifier getIdentifier() {
 		return identifier;
 	}
 
 	@Override
-	public @NotNull IdentityInfo getIdentityInfo() {
+	public @NonNull IdentityInfo getIdentityInfo() {
 		return identityInfo;
 	}
 
@@ -281,7 +281,7 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	}
 
 	@Override
-	public @NotNull Float getChargingCurrent() {
+	public @NonNull Float getChargingCurrent() {
 		return chargingCurrent;
 	}
 
@@ -310,20 +310,20 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 		return loadPower;
 	}
 
-	@NotNull
+	@NonNull
 	@Override
 	public Float getPVVoltage() {
 		return inputVoltage;
 	}
 
-	@NotNull
+	@NonNull
 	@Override
 	public Float getPVCurrent() {
 		return pvCurrent;
 	}
 
 	@Override
-	public @NotNull Integer getChargingPower() {
+	public @NonNull Integer getChargingPower() {
 		return chargingPower;
 	}
 

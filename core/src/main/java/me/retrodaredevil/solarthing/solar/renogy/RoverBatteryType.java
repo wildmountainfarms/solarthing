@@ -1,9 +1,9 @@
 package me.retrodaredevil.solarthing.solar.renogy;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.CodeMode;
 import me.retrodaredevil.solarthing.solar.renogy.rover.annotations.DcdcOnly;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -54,7 +54,7 @@ public enum RoverBatteryType implements CodeMode {
 	}
 
 	@Override
-	public @NotNull String getModeName() {
+	public @NonNull String getModeName() {
 		return name;
 	}
 

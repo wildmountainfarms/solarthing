@@ -6,14 +6,14 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.ChangePacket;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.event.SupplementarySolarEventPacket;
 import me.retrodaredevil.solarthing.solar.renogy.rover.ChargingState;
 import me.retrodaredevil.solarthing.solar.renogy.rover.SupplementaryRoverPacket;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 @JsonDeserialize(as = ImmutableRoverChargingStateChangePacket.class)
 @JsonTypeName("ROVER_CHARGING_STATE_CHANGE")
@@ -22,7 +22,7 @@ public interface RoverChargingStateChangePacket extends SupplementarySolarEventP
 
 	@DefaultFinal
 	@Override
-	default @NotNull SolarEventPacketType getPacketType() {
+	default @NonNull SolarEventPacketType getPacketType() {
 		return SolarEventPacketType.ROVER_CHARGING_STATE_CHANGE;
 	}
 
@@ -38,7 +38,7 @@ public interface RoverChargingStateChangePacket extends SupplementarySolarEventP
 	}
 
 	@GraphQLInclude("chargingMode")
-	default @NotNull ChargingState getChargingMode() {
+	default @NonNull ChargingState getChargingMode() {
 		return Modes.getActiveMode(ChargingState.class, getChargingStateValue());
 	}
 	@GraphQLInclude("previousChargingMode")

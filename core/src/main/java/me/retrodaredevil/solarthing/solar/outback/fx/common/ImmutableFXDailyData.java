@@ -2,13 +2,13 @@ package me.retrodaredevil.solarthing.solar.outback.fx.common;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifier;
 import me.retrodaredevil.solarthing.packets.identification.UnknownSupplementaryIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXIdentityInfo;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Collection;
 
@@ -61,12 +61,12 @@ public class ImmutableFXDailyData implements FXDailyData {
 	}
 
 	@Override
-	public @NotNull Identifier getIdentifier() {
+	public @NonNull Identifier getIdentifier() {
 		return identifier;
 	}
 
 	@Override
-	public @NotNull IdentityInfo getIdentityInfo() {
+	public @NonNull IdentityInfo getIdentityInfo() {
 		return identityInfo;
 	}
 
@@ -88,10 +88,10 @@ public class ImmutableFXDailyData implements FXDailyData {
 	@Override public float getBuyKWH() { return buyKWH; }
 	@Override public float getSellKWH() { return sellKWH; }
 
-	@Override public @NotNull Collection<@NotNull Integer> getOperationalModeValues() { return operationalModeValues; }
+	@Override public @NonNull Collection<@NonNull Integer> getOperationalModeValues() { return operationalModeValues; }
 	@Deprecated
 	@Override public int getErrorModeValue() { return errorModeValue; }
 	@Override public int getWarningModeValue() { return warningModeValue; }
 	@Override public int getMiscValue() { return miscValue; }
-	@Override public @NotNull Collection<@NotNull Integer> getACModeValues() { return acModeValues; }
+	@Override public @NonNull Collection<@NonNull Integer> getACModeValues() { return acModeValues; }
 }

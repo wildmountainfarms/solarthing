@@ -2,8 +2,8 @@ package me.retrodaredevil.solarthing.type.event.feedback;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.reason.ExecutionReason;
+import org.jspecify.annotations.NonNull;
 
 import static java.util.Objects.requireNonNull;
 
@@ -23,17 +23,17 @@ public class ImmutableExecutionFeedbackPacket implements ExecutionFeedbackPacket
 	}
 
 	@Override
-	public @NotNull String getMessage() {
+	public @NonNull String getMessage() {
 		return message;
 	}
 
 	@Override
-	public @NotNull String getCategory() {
+	public @NonNull String getCategory() {
 		return category;
 	}
 
 	@Override
-	public @NotNull ExecutionReason getExecutionReason() {
+	public @NonNull ExecutionReason getExecutionReason() {
 		return executionReason;
 	}
 }

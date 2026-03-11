@@ -1,9 +1,9 @@
 package me.retrodaredevil.solarthing.message.event;
 
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.message.MessageSender;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.util.TimeUtil;
+import org.jspecify.annotations.Nullable;
 
 import java.time.Duration;
 

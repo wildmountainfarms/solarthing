@@ -2,7 +2,6 @@ package me.retrodaredevil.solarthing.commands.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.commands.packets.open.CommandOpenPacket;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
@@ -19,6 +18,7 @@ import me.retrodaredevil.solarthing.packets.security.crypto.HashUtil;
 import me.retrodaredevil.solarthing.packets.security.crypto.InvalidKeyException;
 import me.retrodaredevil.solarthing.packets.security.crypto.KeyUtil;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

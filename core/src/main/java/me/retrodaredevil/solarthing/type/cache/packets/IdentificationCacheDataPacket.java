@@ -2,8 +2,8 @@ package me.retrodaredevil.solarthing.type.cache.packets;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.type.cache.packets.data.IdentificationCacheData;
+import org.jspecify.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 
 import java.util.List;

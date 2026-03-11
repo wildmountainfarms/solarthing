@@ -12,8 +12,8 @@ import me.retrodaredevil.solarthing.solar.event.SupplementarySolarEventPacket;
 import me.retrodaredevil.solarthing.solar.outback.OutbackData;
 import me.retrodaredevil.solarthing.solar.outback.SupplementaryOutbackPacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.AuxMode;
-import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 @JsonDeserialize(as = ImmutableMXAuxModeChangePacket.class)
 @JsonTypeName("MXFM_AUX_MODE_CHANGE")
@@ -21,7 +21,7 @@ import me.retrodaredevil.solarthing.annotations.Nullable;
 public interface MXAuxModeChangePacket extends SupplementarySolarEventPacket, SupplementaryOutbackPacket, OutbackData, ChangePacket {
 	@DefaultFinal
 	@Override
-	default @NotNull SolarEventPacketType getPacketType(){
+	default @NonNull SolarEventPacketType getPacketType(){
 		return SolarEventPacketType.MXFM_AUX_MODE_CHANGE;
 	}
 
@@ -33,7 +33,7 @@ public interface MXAuxModeChangePacket extends SupplementarySolarEventPacket, Su
 	default int getAuxModeValue() {
 		return AuxMode.getActualValueCode(getRawAuxModeValue());
 	}
-	default @NotNull AuxMode getAuxMode(){ return Modes.getActiveMode(AuxMode.class, getAuxModeValue());}
+	default @NonNull AuxMode getAuxMode(){ return Modes.getActiveMode(AuxMode.class, getAuxModeValue());}
 	default boolean isAuxBitActive(){ return AuxMode.isAuxModeActive(getRawAuxModeValue()); }
 
 	default @Nullable Integer getPreviousAuxModeValue(){

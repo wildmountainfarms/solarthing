@@ -4,8 +4,6 @@ import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLMutation;
 import io.leangen.graphql.annotations.GraphQLQuery;
 import me.retrodaredevil.solarthing.SolarThingDatabaseType;
-import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.database.DatabaseSource;
 import me.retrodaredevil.solarthing.database.MillisQueryBuilder;
 import me.retrodaredevil.solarthing.database.SessionInfo;
@@ -23,6 +21,8 @@ import me.retrodaredevil.solarthing.rest.graphql.packets.nodes.SimpleNode;
 import me.retrodaredevil.solarthing.rest.graphql.service.web.authorization.AuthorizedSender;
 import me.retrodaredevil.solarthing.type.closed.authorization.AuthorizationPacket;
 import me.retrodaredevil.solarthing.type.closed.authorization.PermissionObject;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -44,7 +44,7 @@ public class SolarThingAdminService {
 	}
 
 	@GraphQLQuery
-	public @NotNull DatabaseAuthorization databaseAuthorize(@NotNull String username, @NotNull String password) {
+	public @NonNull DatabaseAuthorization databaseAuthorize(@NonNull String username, @NonNull String password) {
 		return databaseProvider.authorize(username, password);
 	}
 
@@ -61,7 +61,7 @@ public class SolarThingAdminService {
 	}
 
 	@GraphQLQuery
-	public @NotNull List<@NotNull AuthorizedSender> authorizedSenders() {
+	public @NonNull List<@NonNull AuthorizedSender> authorizedSenders() {
 		final AuthorizationPacket authorizationPacket;
 		try {
 			authorizationPacket = databaseProvider.getDatabase(null).queryAuthorized().getPacket();
@@ -75,7 +75,7 @@ public class SolarThingAdminService {
 		}).collect(Collectors.toList());
 	}
 	@GraphQLQuery
-	public @NotNull List<@NotNull SimpleNode<AuthNewSenderPacket>> authRequests() {
+	public @NonNull List<@NonNull SimpleNode<AuthNewSenderPacket>> authRequests() {
 		Instant startTime = Instant.now().minus(Duration.ofHours(4));
 		final List<StoredPacketGroup> rawPackets;
 		try {
@@ -107,7 +107,7 @@ public class SolarThingAdminService {
 		}
 	}
 	@GraphQLMutation
-	public void removeAuthorizedSender(@NotNull DatabaseAuthorization authorization, @NotNull String sender) {
+	public void removeAuthorizedSender(@NonNull DatabaseAuthorization authorization, @NonNull String sender) {
 		SolarThingDatabase database = databaseProvider.getDatabase(authorization);
 		VersionedPacket<AuthorizationPacket> versionedPacket = queryAuthorizationPacket(database, sender);
 		Map<String, PermissionObject> originalSenderPermissions = versionedPacket.getPacket().getSenderPermissions();
@@ -124,7 +124,7 @@ public class SolarThingAdminService {
 		}
 	}
 	@GraphQLMutation
-	public void addAuthorizedSender(@NotNull DatabaseAuthorization authorization, @NotNull String sender, @NotNull String publicKey, @GraphQLArgument(name = "allowReplace", defaultValue = "false") boolean allowReplace) {
+	public void addAuthorizedSender(@NonNull DatabaseAuthorization authorization, @NonNull String sender, @NonNull String publicKey, @GraphQLArgument(name = "allowReplace", defaultValue = "false") boolean allowReplace) {
 		{
 			String invalidSenderReason = SenderUtil.getInvalidSenderNameReason(sender);
 			if (invalidSenderReason != null) {
@@ -169,7 +169,7 @@ public class SolarThingAdminService {
 	}
 	public interface DatabaseSystemStatus {
 		@GraphQLQuery(name = "getStatus")
-		@NotNull DatabaseStatus getStatus(@GraphQLArgument(name = "type") @NotNull SolarThingDatabaseType databaseType);
+		@NonNull DatabaseStatus getStatus(@GraphQLArgument(name = "type") @NonNull SolarThingDatabaseType databaseType);
 	}
 
 	private static class SolarThingDatabaseSystemStatus implements DatabaseSystemStatus {
@@ -181,7 +181,7 @@ public class SolarThingAdminService {
 			// TODO maybe consider removing authentication from database or make this work when authenticated or when unauthenticated
 		}
 		@Override
-		public @NotNull DatabaseStatus getStatus(@NotNull SolarThingDatabaseType databaseType) {
+		public @NonNull DatabaseStatus getStatus(@NonNull SolarThingDatabaseType databaseType) {
 			final DatabaseSource source = switch (requireNonNull(databaseType)) {
 				case STATUS -> database.getStatusDatabase().getDatabaseSource();
 				case EVENT -> database.getEventDatabase().getDatabaseSource();

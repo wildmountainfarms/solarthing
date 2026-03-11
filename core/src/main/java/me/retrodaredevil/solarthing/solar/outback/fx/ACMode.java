@@ -1,8 +1,8 @@
 package me.retrodaredevil.solarthing.solar.outback.fx;
 
 
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.CodeMode;
+import org.jspecify.annotations.NonNull;
 
 /**
  * The AC Mode for the FX
@@ -30,7 +30,7 @@ public enum ACMode implements CodeMode { // one must be active
 	}
 
 	@Override
-	public @NotNull String getModeName() {
+	public @NonNull String getModeName() {
 		return name;
 	}
 }

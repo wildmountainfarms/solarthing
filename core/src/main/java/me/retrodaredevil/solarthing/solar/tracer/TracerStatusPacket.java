@@ -5,12 +5,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.packets.PacketWithVersion;
 import me.retrodaredevil.solarthing.packets.identification.NumberedIdentifiable;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacket;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
+import org.jspecify.annotations.NonNull;
 
 @JsonExplicit
 @JsonTypeName("TRACER_STATUS")
@@ -28,12 +28,12 @@ public interface TracerStatusPacket extends TracerReadTable, SolarStatusPacket, 
 	}
 
 	@Override
-	default @NotNull SolarStatusPacketType getPacketType() {
+	default @NonNull SolarStatusPacketType getPacketType() {
 		return SolarStatusPacketType.TRACER_STATUS;
 	}
 
 	@Override
-	@NotNull TracerIdentifier getIdentifier();
+	@NonNull TracerIdentifier getIdentifier();
 
 	@JsonInclude(JsonInclude.Include.NON_DEFAULT) // won't include 0
 	@JsonProperty("number")

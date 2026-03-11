@@ -1,7 +1,7 @@
 package me.retrodaredevil.solarthing.packets.collection;
 
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.Packet;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Represents a {@link FragmentedPacketGroup} where each packet has the same fragment id.
@@ -28,7 +28,7 @@ public interface InstancePacketGroup extends FragmentedPacketGroup, SourcedPacke
 
 	@Deprecated
 	@Override
-	default @NotNull String getSourceId(Packet packet) {
+	default @NonNull String getSourceId(Packet packet) {
 		return getSourceId();
 	}
 

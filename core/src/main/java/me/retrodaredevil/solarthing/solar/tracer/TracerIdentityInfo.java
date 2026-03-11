@@ -1,8 +1,8 @@
 package me.retrodaredevil.solarthing.solar.tracer;
 
-import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 public class TracerIdentityInfo implements IdentityInfo {
 	private final @Nullable Integer ratedChargingCurrent;
@@ -15,12 +15,12 @@ public class TracerIdentityInfo implements IdentityInfo {
 	}
 
 	@Override
-	public @NotNull String getName() {
+	public @NonNull String getName() {
 		return "Tracer";
 	}
 
 	@Override
-	public @NotNull String getSuffix() {
+	public @NonNull String getSuffix() {
 		if (ratedChargingCurrent != null) {
 			return ratedChargingCurrent + "A";
 		}
@@ -28,7 +28,7 @@ public class TracerIdentityInfo implements IdentityInfo {
 	}
 
 	@Override
-	public @NotNull String getShortName() {
+	public @NonNull String getShortName() {
 		return "TCR";
 	}
 

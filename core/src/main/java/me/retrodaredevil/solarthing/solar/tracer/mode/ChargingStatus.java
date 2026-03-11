@@ -1,9 +1,9 @@
 package me.retrodaredevil.solarthing.solar.tracer.mode;
 
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.CodeMode;
 import me.retrodaredevil.solarthing.solar.common.SolarMode;
 import me.retrodaredevil.solarthing.solar.common.SolarModeType;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Charging status represents the current mode of the charge controller. However, while in any of these modes, (except {@link #NO_CHARGING},
@@ -31,12 +31,12 @@ public enum ChargingStatus implements CodeMode, SolarMode {
 	}
 
 	@Override
-	public @NotNull String getModeName() {
+	public @NonNull String getModeName() {
 		return name;
 	}
 
 	@Override
-	public @NotNull SolarModeType getSolarModeType() {
+	public @NonNull SolarModeType getSolarModeType() {
 		return solarModeType;
 	}
 }

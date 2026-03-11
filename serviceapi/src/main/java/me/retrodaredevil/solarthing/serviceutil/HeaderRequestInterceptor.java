@@ -2,7 +2,7 @@ package me.retrodaredevil.solarthing.serviceutil;
 
 import okhttp3.Interceptor;
 import okhttp3.Response;
-import me.retrodaredevil.solarthing.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.io.IOException;
 
@@ -15,9 +15,9 @@ public class HeaderRequestInterceptor implements Interceptor {
 		this.value = value;
 	}
 
-	@NotNull
+	@NonNull
 	@Override
-	public Response intercept(@NotNull Chain chain) throws IOException {
+	public Response intercept(@NonNull Chain chain) throws IOException {
 		return chain.proceed(chain.request().newBuilder()
 				.header(name, value)
 				.build()

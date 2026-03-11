@@ -2,10 +2,10 @@ package me.retrodaredevil.solarthing.solar.renogy.rover.special;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.CodeMode;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.solar.renogy.rover.ChargingMethod;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Represents the special power control values of register 0xE021.
@@ -92,7 +92,7 @@ public interface SpecialPowerControl_E021 extends UpperLower16Bit {
 		}
 
 		@Override
-		public @NotNull String getModeName() {
+		public @NonNull String getModeName() {
 			return chargingMethod.getModeName();
 		}
 	}

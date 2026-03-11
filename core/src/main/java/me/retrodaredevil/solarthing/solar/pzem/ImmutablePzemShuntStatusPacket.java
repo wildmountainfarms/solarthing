@@ -2,9 +2,9 @@ package me.retrodaredevil.solarthing.solar.pzem;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.misc.common.DataIdentifier;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
+import org.jspecify.annotations.NonNull;
 
 public class ImmutablePzemShuntStatusPacket implements PzemShuntStatusPacket {
 	private final DataIdentifier identifier;
@@ -41,12 +41,12 @@ public class ImmutablePzemShuntStatusPacket implements PzemShuntStatusPacket {
 		);
 	}
 	@Override
-	public @NotNull DataIdentifier getIdentifier() {
+	public @NonNull DataIdentifier getIdentifier() {
 		return identifier;
 	}
 
 	@Override
-	public @NotNull IdentityInfo getIdentityInfo() {
+	public @NonNull IdentityInfo getIdentityInfo() {
 		return identityInfo;
 	}
 

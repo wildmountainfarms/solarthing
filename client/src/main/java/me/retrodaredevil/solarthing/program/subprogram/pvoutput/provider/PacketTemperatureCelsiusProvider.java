@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.misc.source.W1Source;
 import me.retrodaredevil.solarthing.misc.weather.TemperaturePacket;
 import me.retrodaredevil.solarthing.packets.Packet;
@@ -15,6 +14,7 @@ import me.retrodaredevil.solarthing.packets.identification.IdentifierFragmentMat
 import me.retrodaredevil.solarthing.packets.identification.IdentifierRepFragment;
 import me.retrodaredevil.solarthing.solar.common.BatteryTemperature;
 import me.retrodaredevil.solarthing.solar.common.ControllerTemperature;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 

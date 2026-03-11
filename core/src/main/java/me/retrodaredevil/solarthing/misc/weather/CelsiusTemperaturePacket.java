@@ -3,10 +3,10 @@ package me.retrodaredevil.solarthing.misc.weather;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.misc.common.DataIdentifier;
 import me.retrodaredevil.solarthing.misc.source.DeviceSource;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
+import org.jspecify.annotations.NonNull;
 
 import static java.util.Objects.requireNonNull;
 
@@ -44,12 +44,12 @@ public class CelsiusTemperaturePacket implements TemperaturePacket {
 	}
 
 	@Override
-	public @NotNull DataIdentifier getIdentifier() {
+	public @NonNull DataIdentifier getIdentifier() {
 		return identifier;
 	}
 
 	@Override
-	public @NotNull IdentityInfo getIdentityInfo() {
+	public @NonNull IdentityInfo getIdentityInfo() {
 		return identityInfo;
 	}
 
@@ -59,7 +59,7 @@ public class CelsiusTemperaturePacket implements TemperaturePacket {
 	}
 
 	@Override
-	public @NotNull DeviceSource getDeviceSource() {
+	public @NonNull DeviceSource getDeviceSource() {
 		return deviceSource;
 	}
 }

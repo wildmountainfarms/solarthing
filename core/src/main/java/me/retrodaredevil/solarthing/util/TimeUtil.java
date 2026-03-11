@@ -1,7 +1,7 @@
 package me.retrodaredevil.solarthing.util;
 
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
+import org.jspecify.annotations.Nullable;
 
 import java.text.DecimalFormat;
 import java.text.Format;

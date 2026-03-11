@@ -1,7 +1,7 @@
 package me.retrodaredevil.solarthing.packets.collection;
 
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.Packet;
+import org.jspecify.annotations.NonNull;
 
 import java.util.*;
 
@@ -46,7 +46,7 @@ class ImmutableFragmentedPacketGroup extends ImmutablePacketGroup implements Fra
 	}
 
 	@Override
-	public @NotNull String getSourceId(Packet packet) {
+	public @NonNull String getSourceId(Packet packet) {
 		return requireNonNull(sourceIdMap.get(packet));
 	}
 

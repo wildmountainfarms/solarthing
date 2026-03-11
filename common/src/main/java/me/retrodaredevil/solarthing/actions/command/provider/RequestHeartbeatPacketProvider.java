@@ -3,10 +3,10 @@ package me.retrodaredevil.solarthing.actions.command.provider;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.commands.packets.open.CommandOpenPacket;
 import me.retrodaredevil.solarthing.commands.packets.open.ImmutableRequestHeartbeatPacket;
 import me.retrodaredevil.solarthing.type.event.feedback.HeartbeatData;
+import org.jspecify.annotations.NonNull;
 
 import java.util.UUID;
 
@@ -22,7 +22,7 @@ public class RequestHeartbeatPacketProvider implements CommandOpenProvider {
 	}
 
 	@Override
-	public @NotNull CommandOpenPacket get() {
+	public @NonNull CommandOpenPacket get() {
 		return new ImmutableRequestHeartbeatPacket(heartbeatData, UUID.randomUUID());
 	}
 }

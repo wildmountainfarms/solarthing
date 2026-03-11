@@ -1,7 +1,7 @@
 package me.retrodaredevil.solarthing.solar.renogy;
 
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.CodeMode;
+import org.jspecify.annotations.NonNull;
 
 /**
  * The product type
@@ -27,7 +27,7 @@ public enum ProductType implements CodeMode {
 	}
 
 	@Override
-	public @NotNull String getModeName() {
+	public @NonNull String getModeName() {
 		return name;
 	}
 }

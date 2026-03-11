@@ -3,8 +3,8 @@ package me.retrodaredevil.solarthing.type.cache.packets;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.type.cache.packets.data.IdentificationCacheData;
+import org.jspecify.annotations.NonNull;
 
 import static java.util.Objects.requireNonNull;
 
@@ -16,7 +16,7 @@ public class IdentificationCacheNode<T extends IdentificationCacheData> {
 	@JsonCreator
 	public IdentificationCacheNode(
 			@JsonProperty(value = "fragmentId", required = true) int fragmentId,
-			@JsonProperty(value = "data", required = true) @NotNull T data) {
+			@JsonProperty(value = "data", required = true) @NonNull T data) {
 		this.fragmentId = fragmentId;
 		this.data = requireNonNull(data);
 	}
@@ -25,5 +25,5 @@ public class IdentificationCacheNode<T extends IdentificationCacheData> {
 	public int getFragmentId() { return fragmentId; }
 
 	@JsonProperty("data")
-	public @NotNull T getData() { return data; }
+	public @NonNull T getData() { return data; }
 }

@@ -5,11 +5,11 @@ import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.misc.common.DataIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverIdentifier;
 import me.retrodaredevil.solarthing.solar.tracer.TracerIdentifier;
+import org.jspecify.annotations.NonNull;
 
 /**
  * All {@link Identifier}s have their {@link #equals(Object)} and {@link #hashCode()} methods implemented so
@@ -41,6 +41,6 @@ public interface Identifier {
 	 */
 	@GraphQLInclude("representation")
 	@JsonPropertyDescription("A string representation of this identifier")
-	@NotNull String getRepresentation();
+	@NonNull String getRepresentation();
 
 }

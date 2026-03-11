@@ -1,6 +1,6 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover;
 
-import me.retrodaredevil.solarthing.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Represents different error modes supported by the Renogy Rover
@@ -42,7 +42,7 @@ public enum RoverErrorMode implements SimpleRoverErrorMode {
 	}
 
 	@Override
-	public @NotNull String getModeName() {
+	public @NonNull String getModeName() {
 		return name;
 	}
 }

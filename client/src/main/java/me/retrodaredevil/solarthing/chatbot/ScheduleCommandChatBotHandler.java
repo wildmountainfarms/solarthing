@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.chatbot;
 
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.commands.packets.open.ImmutableScheduleCommandPacket;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
@@ -10,6 +9,7 @@ import me.retrodaredevil.solarthing.packets.collection.PacketCollectionCreator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.type.alter.packets.ScheduledCommandData;
 import me.retrodaredevil.solarthing.util.TimeUtil;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -136,7 +136,7 @@ public class ScheduleCommandChatBotHandler implements ChatBotHandler {
 	}
 
 	@Override
-	public @NotNull List<String> getHelpLines(Message helpMessage) {
+	public @NonNull List<String> getHelpLines(Message helpMessage) {
 		if (canScheduleAnyCommands(helpMessage)) {
 			return Collections.singletonList(SHORT_USAGE);
 		}

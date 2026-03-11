@@ -2,7 +2,7 @@ package me.retrodaredevil.solarthing.config.options;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import me.retrodaredevil.solarthing.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An enum that represents different options that can be easily enabled

@@ -3,9 +3,9 @@ package me.retrodaredevil.solarthing.solar.outback.fx.charge;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 public class ImmutableFXChargingPacket implements FXChargingPacket {
 	private final int address;
@@ -22,7 +22,7 @@ public class ImmutableFXChargingPacket implements FXChargingPacket {
 
 
 	public ImmutableFXChargingPacket(
-			@NotNull OutbackIdentifier outbackIdentifier,
+			@NonNull OutbackIdentifier outbackIdentifier,
 			@Nullable FXChargingMode fxChargingMode,
 			long remainingAbsorbTimeMillis,
 			long remainingFloatTimeMillis,

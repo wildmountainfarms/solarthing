@@ -1,9 +1,9 @@
 package me.retrodaredevil.solarthing.config.options;
 
-import me.retrodaredevil.solarthing.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.time.ZoneId;
 
 public interface TimeZoneOption extends ProgramOptions {
-	@NotNull ZoneId getZoneId();
+	@NonNull ZoneId getZoneId();
 }

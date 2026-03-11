@@ -1,8 +1,8 @@
 package me.retrodaredevil.solarthing.solar.outback.fx;
 
 
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.BitmaskMode;
+import org.jspecify.annotations.NonNull;
 
 /**
  * The misc modes for the FX
@@ -31,7 +31,7 @@ public enum MiscMode implements BitmaskMode {
 	}
 
 	@Override
-	public @NotNull String getModeName() {
+	public @NonNull String getModeName() {
 		return name;
 	}
 	@Override

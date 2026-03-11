@@ -3,10 +3,10 @@ package me.retrodaredevil.solarthing.solar.outback.fx;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @implSpec This class is immutable and thread safe
@@ -113,7 +113,7 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 	}
 
 	@Override
-	public @NotNull IdentityInfo getIdentityInfo() {
+	public @NonNull IdentityInfo getIdentityInfo() {
 		return identityInfo;
 	}
 
@@ -223,7 +223,7 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 	}
 
 	@Override
-	public @NotNull OutbackIdentifier getIdentifier() {
+	public @NonNull OutbackIdentifier getIdentifier() {
 		return identifier;
 	}
 

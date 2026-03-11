@@ -1,7 +1,7 @@
 package me.retrodaredevil.solarthing.packets.collection;
 
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.Packet;
+import org.jspecify.annotations.NonNull;
 
 import java.util.*;
 
@@ -30,7 +30,7 @@ class ImmutableInstancePacketGroup implements InstancePacketGroup {
 	}
 
 	@Override
-	public @NotNull String getSourceId() {
+	public @NonNull String getSourceId() {
 		return sourceId;
 	}
 

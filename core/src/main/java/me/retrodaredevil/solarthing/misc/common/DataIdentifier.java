@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Objects;
 
@@ -20,7 +20,7 @@ public final class DataIdentifier implements Identifier {
 	}
 
 	@Override
-	public @NotNull String getRepresentation() {
+	public @NonNull String getRepresentation() {
 		return "DataIdentifier(dataId=" + dataId + ")";
 	}
 

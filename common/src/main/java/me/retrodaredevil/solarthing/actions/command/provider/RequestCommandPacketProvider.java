@@ -3,9 +3,9 @@ package me.retrodaredevil.solarthing.actions.command.provider;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.commands.packets.open.CommandOpenPacket;
 import me.retrodaredevil.solarthing.commands.packets.open.ImmutableRequestCommandPacket;
+import org.jspecify.annotations.NonNull;
 
 import static java.util.Objects.requireNonNull;
 
@@ -20,7 +20,7 @@ public class RequestCommandPacketProvider implements CommandOpenProvider {
 	}
 
 	@Override
-	public @NotNull CommandOpenPacket get() {
+	public @NonNull CommandOpenPacket get() {
 		return new ImmutableRequestCommandPacket(commandName);
 	}
 }

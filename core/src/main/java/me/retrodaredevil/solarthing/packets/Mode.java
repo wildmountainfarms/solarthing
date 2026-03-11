@@ -2,7 +2,7 @@ package me.retrodaredevil.solarthing.packets;
 
 import com.fasterxml.jackson.annotation.JsonClassDescription;
 import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
-import me.retrodaredevil.solarthing.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * A mode represents the status of something. Mode values are usually defined in enums
@@ -11,5 +11,5 @@ import me.retrodaredevil.solarthing.annotations.NotNull;
 public interface Mode {
 	boolean isActive(int code);
 	@GraphQLInclude("modeName")
-	@NotNull String getModeName();
+	@NonNull String getModeName();
 }

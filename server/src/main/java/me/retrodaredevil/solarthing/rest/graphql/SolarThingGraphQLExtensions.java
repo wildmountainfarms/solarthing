@@ -3,8 +3,6 @@ package me.retrodaredevil.solarthing.rest.graphql;
 import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLContext;
 import io.leangen.graphql.annotations.GraphQLQuery;
-import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.misc.common.DataIdentifiable;
 import me.retrodaredevil.solarthing.solar.outback.command.packets.SuccessMateCommandPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.ACMode;
@@ -16,6 +14,8 @@ import me.retrodaredevil.solarthing.solar.outback.mx.event.MXChargerModeChangePa
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
 import me.retrodaredevil.solarthing.solar.tracer.TracerStatusPacket;
 import me.retrodaredevil.solarthing.type.alter.flag.ActivePeriod;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.time.Instant;
 
@@ -31,7 +31,7 @@ public class SolarThingGraphQLExtensions {
 	}
 
 	@GraphQLQuery(name = "acModeName")
-	public @NotNull String getACModeName(@GraphQLContext FXACModeChangePacket fxACModeChangePacket) {
+	public @NonNull String getACModeName(@GraphQLContext FXACModeChangePacket fxACModeChangePacket) {
 		return fxACModeChangePacket.getACMode().getModeName();
 	}
 	@GraphQLQuery(name = "previousACModeName")
@@ -40,7 +40,7 @@ public class SolarThingGraphQLExtensions {
 		return acMode == null ? null : acMode.getModeName();
 	}
 	@GraphQLQuery(name = "operationalModeName")
-	public @NotNull String getOperationalModeName(@GraphQLContext FXOperationalModeChangePacket fxOperationalModeChangePacket) {
+	public @NonNull String getOperationalModeName(@GraphQLContext FXOperationalModeChangePacket fxOperationalModeChangePacket) {
 		return fxOperationalModeChangePacket.getOperationalMode().getModeName();
 	}
 	@GraphQLQuery(name = "previousOperationalModeName")
@@ -49,7 +49,7 @@ public class SolarThingGraphQLExtensions {
 		return operationalMode == null ? null : operationalMode.getModeName();
 	}
 	@GraphQLQuery(name = "chargingModeName")
-	public @NotNull String getChargingModeName(@GraphQLContext MXChargerModeChangePacket mxChargerModeChangePacket) {
+	public @NonNull String getChargingModeName(@GraphQLContext MXChargerModeChangePacket mxChargerModeChangePacket) {
 		return mxChargerModeChangePacket.getChargingMode().getModeName();
 	}
 	@GraphQLQuery(name = "previousChargingModeName")
@@ -59,12 +59,12 @@ public class SolarThingGraphQLExtensions {
 	}
 
 	@GraphQLQuery(name = "commandName")
-	public @NotNull String getCommandName(@GraphQLContext SuccessMateCommandPacket successMateCommandPacket) {
+	public @NonNull String getCommandName(@GraphQLContext SuccessMateCommandPacket successMateCommandPacket) {
 		return successMateCommandPacket.getCommand().getCommandName();
 	}
 
 	@GraphQLQuery(name = "dataIdString")
-	public @NotNull String getDataIdString(@GraphQLContext DataIdentifiable identifiable) {
+	public @NonNull String getDataIdString(@GraphQLContext DataIdentifiable identifiable) {
 		return "" + identifiable.getDataId();
 	}
 	@GraphQLQuery

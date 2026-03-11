@@ -1,7 +1,7 @@
 package me.retrodaredevil.solarthing.solar.outback.mx;
 
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.BitmaskMode;
+import org.jspecify.annotations.NonNull;
 
 /**
  * NOTE: Error modes are only implemented on MX versions greater than 5.11 and on FLEXmax80 and FLEXmax60s.
@@ -25,7 +25,7 @@ public enum MXErrorMode implements BitmaskMode {
 	}
 
 	@Override
-	public @NotNull String getModeName() {
+	public @NonNull String getModeName() {
 		return name;
 	}
 

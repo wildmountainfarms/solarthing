@@ -8,7 +8,6 @@ import io.leangen.graphql.generator.mapping.common.NonNullMapper;
 import io.leangen.graphql.metadata.strategy.query.ResolverBuilder;
 import io.leangen.graphql.metadata.strategy.value.jackson.JacksonValueMapperFactory;
 import jakarta.annotation.PostConstruct;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.packets.collection.DefaultInstanceOptions;
 import me.retrodaredevil.solarthing.rest.cache.CacheController;
@@ -23,6 +22,7 @@ import me.retrodaredevil.solarthing.rest.graphql.service.web.DefaultDatabaseProv
 import me.retrodaredevil.solarthing.rest.graphql.service.web.SolarThingAdminService;
 import me.retrodaredevil.solarthing.rest.graphql.solcast.SolcastConfig;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -75,7 +75,7 @@ public class GraphQLProvider {
 
 		String[] nonNullAnnotations = (String[]) field.get(null);
 		String[] newAnnotations = Arrays.copyOf(nonNullAnnotations, nonNullAnnotations.length + 1);
-		newAnnotations[newAnnotations.length - 1] = NotNull.class.getName();
+		newAnnotations[newAnnotations.length - 1] = NonNull.class.getName();
 		field.set(null, newAnnotations);
 	}
 	@SuppressWarnings("unchecked")
@@ -94,7 +94,7 @@ public class GraphQLProvider {
 			throw new RuntimeException(e);
 		}
 		Set<Class<? extends Annotation>> newAnnotations = new HashSet<>(nonNullAnnotations);
-		newAnnotations.add(NotNull.class);
+		newAnnotations.add(NonNull.class);
 		try {
 			field.set(nonNullMapper, newAnnotations);
 		} catch (IllegalAccessException e) {
@@ -124,7 +124,7 @@ public class GraphQLProvider {
 				.build();
 	}
 
-	static GraphQLSchemaGenerator createGraphQLSchemaGenerator(ObjectMapper objectMapper, CouchDbDatabaseSettings couchDbDatabaseSettings, DefaultInstanceOptions defaultInstanceOptions, @NotNull SolcastConfig solcastConfig, CacheController cacheController) {
+	static GraphQLSchemaGenerator createGraphQLSchemaGenerator(ObjectMapper objectMapper, CouchDbDatabaseSettings couchDbDatabaseSettings, DefaultInstanceOptions defaultInstanceOptions, @NonNull SolcastConfig solcastConfig, CacheController cacheController) {
 		JacksonValueMapperFactory jacksonValueMapperFactory = JacksonValueMapperFactory.builder()
 				.withPrototype(objectMapper)
 				.build();

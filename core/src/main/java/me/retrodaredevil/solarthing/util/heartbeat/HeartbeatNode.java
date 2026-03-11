@@ -1,7 +1,7 @@
 package me.retrodaredevil.solarthing.util.heartbeat;
 
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.type.event.feedback.HeartbeatPacket;
+import org.jspecify.annotations.NonNull;
 
 import static java.util.Objects.requireNonNull;
 
@@ -21,7 +21,7 @@ public final class HeartbeatNode {
 		return dateMillis;
 	}
 
-	public @NotNull HeartbeatPacket getHeartbeatPacket() {
+	public @NonNull HeartbeatPacket getHeartbeatPacket() {
 		return heartbeatPacket;
 	}
 }

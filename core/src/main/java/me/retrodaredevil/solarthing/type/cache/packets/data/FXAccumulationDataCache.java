@@ -3,7 +3,6 @@ package me.retrodaredevil.solarthing.type.cache.packets.data;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifier;
 import me.retrodaredevil.solarthing.solar.accumulation.value.AccumulationValue;
@@ -12,6 +11,7 @@ import me.retrodaredevil.solarthing.solar.outback.OutbackData;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.FXAccumulationData;
 import me.retrodaredevil.solarthing.solar.outback.fx.extra.DailyFXPacket;
+import org.jspecify.annotations.NonNull;
 
 import static java.util.Objects.requireNonNull;
 
@@ -77,7 +77,7 @@ public class FXAccumulationDataCache extends BaseAccumulationDataCache implement
 	}
 
 	@Override
-	public @NotNull OutbackIdentifier getIdentifier() {
+	public @NonNull OutbackIdentifier getIdentifier() {
 		return identifier;
 	}
 
@@ -87,12 +87,12 @@ public class FXAccumulationDataCache extends BaseAccumulationDataCache implement
 	}
 
 	@JsonProperty("mainData")
-	public @NotNull Data getMainData() {
+	public @NonNull Data getMainData() {
 		return mainData;
 	}
 
 	@JsonProperty("unknownData")
-	public @NotNull Data getUnknownData() {
+	public @NonNull Data getUnknownData() {
 		return unknownData;
 	}
 

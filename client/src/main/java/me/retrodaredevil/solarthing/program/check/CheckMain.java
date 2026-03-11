@@ -16,8 +16,6 @@ import me.retrodaredevil.io.serial.JSerialIOBundle;
 import me.retrodaredevil.io.serial.SerialConfig;
 import me.retrodaredevil.io.serial.SerialPortException;
 import me.retrodaredevil.solarthing.SolarThingConstants;
-import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.packets.handling.implementations.TimedPacketReceiver;
@@ -32,6 +30,8 @@ import me.retrodaredevil.solarthing.solar.tracer.TracerReadTable;
 import me.retrodaredevil.solarthing.solar.tracer.modbus.TracerModbusSlaveRead;
 import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -99,7 +99,7 @@ public class CheckMain {
 			return parsedData[0];
 		}
 	}
-	private static boolean doModbus(@NotNull String port, int startingAddress, boolean scan, boolean debugTable, SerialConfig serialConfig, Function<ModbusSlave, BatteryVoltage> slaveToReadTable) throws SerialPortException {
+	private static boolean doModbus(@NonNull String port, int startingAddress, boolean scan, boolean debugTable, SerialConfig serialConfig, Function<ModbusSlave, BatteryVoltage> slaveToReadTable) throws SerialPortException {
 		System.out.println("Going to open serial port using default serial configuration...");
 		try(JSerialIOBundle ioBundle = JSerialIOBundle.createPort(port, serialConfig)) {
 			System.out.println("Successfully opened serial port...");
@@ -141,14 +141,14 @@ public class CheckMain {
 			return false;
 		}
 	}
-	private static boolean scanForRover(@NotNull String port, int modbusAddress, boolean scan, boolean debugTable) throws SerialPortException {
+	private static boolean scanForRover(@NonNull String port, int modbusAddress, boolean scan, boolean debugTable) throws SerialPortException {
 		return doModbus(port, modbusAddress, scan, debugTable, RoverReadTable.SERIAL_CONFIG, RoverModbusSlaveRead::new);
 	}
-	private static boolean scanForTracer(@NotNull String port, int modbusAddress, boolean scan, boolean debugTable) throws SerialPortException {
+	private static boolean scanForTracer(@NonNull String port, int modbusAddress, boolean scan, boolean debugTable) throws SerialPortException {
 		return doModbus(port, modbusAddress, scan, debugTable, TracerReadTable.SERIAL_CONFIG, TracerModbusSlaveRead::new);
 	}
 
-	private static int doForOptions(@NotNull String port, @Nullable String type, @Nullable Integer modbusAddress, boolean scan, boolean debugTable) throws SerialPortException {
+	private static int doForOptions(@NonNull String port, @Nullable String type, @Nullable Integer modbusAddress, boolean scan, boolean debugTable) throws SerialPortException {
 		if (type == null) {
 			if (scan) {
 				System.err.println("Scan is not supported when searching through all possible options");

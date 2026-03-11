@@ -1,8 +1,8 @@
 package me.retrodaredevil.solarthing.packets.instance;
 
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.Packet;
+import org.jspecify.annotations.NonNull;
 
 public interface SourcedPacket extends Packet {
-	@NotNull String getSourceId();
+	@NonNull String getSourceId();
 }

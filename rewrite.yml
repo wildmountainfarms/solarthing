@@ -1,0 +1,11 @@
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: me.retrodaredevil.rewrite.SolarThingNullabilityAnnotations
+displayName: SolarThing Nullability Annotations
+recipeList:
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: me.retrodaredevil.solarthing.annotations.Nullable
+      newFullyQualifiedTypeName: org.jspecify.annotations.Nullable
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: me.retrodaredevil.solarthing.annotations.NotNull
+      newFullyQualifiedTypeName: org.jspecify.annotations.NonNull

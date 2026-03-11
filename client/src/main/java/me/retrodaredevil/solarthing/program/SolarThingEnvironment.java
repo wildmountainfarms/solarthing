@@ -1,7 +1,7 @@
 package me.retrodaredevil.solarthing.program;
 
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
+import org.jspecify.annotations.Nullable;
 
 @UtilityClass
 public final class SolarThingEnvironment {

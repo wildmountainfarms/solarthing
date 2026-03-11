@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.misc.common.SourcedData;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,7 +26,7 @@ public interface TemperaturePacket extends WeatherPacket, SourcedData {
 
 	@DefaultFinal
 	@Override
-	default @NotNull WeatherPacketType getPacketType() {
+	default @NonNull WeatherPacketType getPacketType() {
 		return WeatherPacketType.TEMPERATURE;
 	}
 	@JsonProperty("temperatureCelsius")

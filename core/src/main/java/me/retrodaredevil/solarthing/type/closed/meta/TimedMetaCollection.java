@@ -3,8 +3,8 @@ package me.retrodaredevil.solarthing.type.closed.meta;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.util.TimeRange;
+import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 import java.util.Objects;
@@ -48,7 +48,7 @@ public class TimedMetaCollection {
 		return timeRange.getEndTimeMillis();
 	}
 	@JsonProperty("packets")
-	public @NotNull List<BasicMetaPacket> getPackets() {
+	public @NonNull List<BasicMetaPacket> getPackets() {
 		return packets;
 	}
 

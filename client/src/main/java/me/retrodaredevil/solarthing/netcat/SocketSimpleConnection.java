@@ -1,7 +1,7 @@
 package me.retrodaredevil.solarthing.netcat;
 
-import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +48,7 @@ public class SocketSimpleConnection implements SimpleConnection {
 	}
 
 	@Override
-	public void send(@NotNull String line) {
+	public void send(@NonNull String line) {
 		LOGGER.info("Sending " + line);
 		requireNonNull(line);
 		writer.println(line);

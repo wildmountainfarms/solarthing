@@ -5,12 +5,12 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.support.Support;
 import me.retrodaredevil.solarthing.solar.common.AccumulatedChargeController;
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.event.SupplementarySolarEventPacket;
 import me.retrodaredevil.solarthing.solar.outback.SupplementaryOutbackPacket;
+import org.jspecify.annotations.NonNull;
 
 @JsonTypeName("MXFM_RAW_DAY_END")
 @JsonDeserialize(as = ImmutableMXRawDayEndPacket.class)
@@ -18,12 +18,12 @@ import me.retrodaredevil.solarthing.solar.outback.SupplementaryOutbackPacket;
 public interface MXRawDayEndPacket extends SupplementarySolarEventPacket, AccumulatedChargeController, SupplementaryOutbackPacket {
 	@DefaultFinal
 	@Override
-	default @NotNull SolarEventPacketType getPacketType(){
+	default @NonNull SolarEventPacketType getPacketType(){
 		return SolarEventPacketType.MXFM_RAW_DAY_END;
 	}
 
 	@JsonProperty("dailyAHSupport")
 	@Override
-	@NotNull Support getDailyAHSupport();
+	@NonNull Support getDailyAHSupport();
 
 }

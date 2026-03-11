@@ -1,6 +1,6 @@
 package me.retrodaredevil.solarthing.packets.identification;
 
-import me.retrodaredevil.solarthing.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Objects;
 
@@ -15,14 +15,14 @@ public class DefaultSupplementaryIdentifier<T extends Identifier> implements Kno
 		this.supplementaryType = requireNonNull(supplementaryType);
 	}
 
-	@NotNull
+	@NonNull
 	@Override
 	public T getSupplementaryTo() {
 		return identifier;
 	}
 
 	@Override
-	public @NotNull String getRepresentation() {
+	public @NonNull String getRepresentation() {
 		return "SupplementaryIdentifier(identifier=" + identifier + ", supplementaryType=" + supplementaryType + ")";
 	}
 

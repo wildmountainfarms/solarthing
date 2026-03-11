@@ -4,12 +4,12 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.SerializeNameDefinedInBase;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.packets.identification.NumberedIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverIdentifier;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Objects;
 
@@ -37,7 +37,7 @@ public final class TracerIdentifier implements NumberedIdentifier, Comparable<Id
 	}
 
 	@Override
-	public @NotNull String getRepresentation() {
+	public @NonNull String getRepresentation() {
 		if (number != NumberedIdentifier.DEFAULT_NUMBER) {
 			return "TracerIdentifier(number=" + number + ")";
 		}
@@ -63,7 +63,7 @@ public final class TracerIdentifier implements NumberedIdentifier, Comparable<Id
 	}
 
 	@Override
-	public int compareTo(@NotNull Identifier o) {
+	public int compareTo(@NonNull Identifier o) {
 		if(o instanceof TracerIdentifier){
 			return Integer.compare(number, ((TracerIdentifier) o).number);
 		}

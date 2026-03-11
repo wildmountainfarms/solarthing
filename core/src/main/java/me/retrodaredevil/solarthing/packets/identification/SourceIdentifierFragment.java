@@ -1,10 +1,10 @@
 package me.retrodaredevil.solarthing.packets.identification;
 
-import me.retrodaredevil.solarthing.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 public interface SourceIdentifierFragment {
-	@NotNull String getSourceId();
-	@NotNull IdentifierFragment getIdentifierFragment();
+	@NonNull String getSourceId();
+	@NonNull IdentifierFragment getIdentifierFragment();
 
 	static <T extends Identifier> KnownSourceIdentifierFragment<T> create(String sourceId, KnownIdentifierFragment<T> identifierFragment) {
 		return new SourceIdentifierFragmentBase<>(sourceId, identifierFragment);

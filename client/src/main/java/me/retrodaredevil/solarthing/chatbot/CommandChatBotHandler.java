@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.chatbot;
 
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.commands.CommandInfo;
 import me.retrodaredevil.solarthing.commands.packets.open.ImmutableRequestCommandPacket;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
@@ -10,6 +9,7 @@ import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionCreator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.instance.InstanceTargetPackets;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,7 +69,7 @@ public class CommandChatBotHandler implements ChatBotHandler {
 	}
 
 	@Override
-	public @NotNull List<String> getHelpLines(Message helpMessage) {
+	public @NonNull List<String> getHelpLines(Message helpMessage) {
 		List<AvailableCommand> availableCommands = commandHelper.getAllowedCommands(helpMessage);
 		return availableCommands.stream()
 				.map(availableCommand -> '"' + availableCommand.getCommandInfo().getDisplayName() + "\" (" + availableCommand.getFragmentId() + ") -- " + availableCommand.getCommandInfo().getDescription())

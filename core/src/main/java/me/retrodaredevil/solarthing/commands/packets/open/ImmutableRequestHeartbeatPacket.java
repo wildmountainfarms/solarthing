@@ -2,8 +2,8 @@ package me.retrodaredevil.solarthing.commands.packets.open;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.type.event.feedback.HeartbeatData;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -23,17 +23,17 @@ public class ImmutableRequestHeartbeatPacket implements RequestHeartbeatPacket {
 	}
 
 	@Override
-	public @NotNull HeartbeatData getData() {
+	public @NonNull HeartbeatData getData() {
 		return heartbeatData;
 	}
 
 	@Override
-	public @NotNull UUID getUniqueRequestId() {
+	public @NonNull UUID getUniqueRequestId() {
 		return uniqueRequestId;
 	}
 
 	@Override
-	public @NotNull String getUniqueString() {
+	public @NonNull String getUniqueString() {
 		return "RequestHeartbeatPacket(data=" + heartbeatData.getUniqueString() + ", uniqueRequestId=" + uniqueRequestId + ")";
 	}
 

@@ -1,9 +1,9 @@
 package me.retrodaredevil.solarthing.solar.outback.fx.charge;
 
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.solar.BatteryUtil;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.OperationalMode;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 

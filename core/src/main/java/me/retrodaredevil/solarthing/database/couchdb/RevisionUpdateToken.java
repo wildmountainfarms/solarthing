@@ -4,10 +4,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.database.UpdateToken;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.collection.StoredIdentifier;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Objects;
 
@@ -29,7 +29,7 @@ public class RevisionUpdateToken implements UpdateToken {
 	}
 
 	@Override
-	public @NotNull StoredIdentifier toStoredIdentifier(@NotNull PacketCollection packetCollection) {
+	public @NonNull StoredIdentifier toStoredIdentifier(@NonNull PacketCollection packetCollection) {
 		return new CouchDbStoredIdentifier(packetCollection.getDateMillis(), packetCollection.getDbId(), revision);
 	}
 

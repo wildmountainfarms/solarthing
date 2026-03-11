@@ -2,7 +2,7 @@ package me.retrodaredevil.solarthing.commands.packets.open;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import me.retrodaredevil.solarthing.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Objects;
 
@@ -19,12 +19,12 @@ public class ImmutableRequestCommandPacket implements RequestCommandPacket {
 	}
 
 	@Override
-	public @NotNull String getCommandName() {
+	public @NonNull String getCommandName() {
 		return commandName;
 	}
 
 	@Override
-	public @NotNull String getUniqueString() {
+	public @NonNull String getUniqueString() {
 		return "RequestCommandPacket(commandName=" + commandName + ")";
 	}
 

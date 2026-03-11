@@ -5,13 +5,13 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.ChangePacket;
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.event.SupplementarySolarEventPacket;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
 import me.retrodaredevil.solarthing.solar.renogy.rover.SupplementaryRoverPacket;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Represents a change in {@link RoverStatusPacket#getErrorModeValue()}. Note that this class does not contain
@@ -25,7 +25,7 @@ public interface RoverErrorModeChangePacket extends SupplementarySolarEventPacke
 
 	@DefaultFinal
 	@Override
-	default @NotNull SolarEventPacketType getPacketType() {
+	default @NonNull SolarEventPacketType getPacketType() {
 		return SolarEventPacketType.ROVER_ERROR_MODE_CHANGE;
 	}
 

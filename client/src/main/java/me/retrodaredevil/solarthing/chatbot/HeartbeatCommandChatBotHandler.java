@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.chatbot;
 
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.database.cache.DatabaseCache;
 import me.retrodaredevil.solarthing.message.MessageSender;
 import me.retrodaredevil.solarthing.packets.Packet;
@@ -12,6 +11,7 @@ import me.retrodaredevil.solarthing.util.TimeUtil;
 import me.retrodaredevil.solarthing.util.heartbeat.HeartbeatIdentifier;
 import me.retrodaredevil.solarthing.util.heartbeat.HeartbeatNode;
 import me.retrodaredevil.solarthing.util.sync.ResourceManager;
+import org.jspecify.annotations.NonNull;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -130,7 +130,7 @@ public class HeartbeatCommandChatBotHandler implements ChatBotHandler {
 	}
 
 	@Override
-	public @NotNull List<String> getHelpLines(Message helpMessage) {
+	public @NonNull List<String> getHelpLines(Message helpMessage) {
 		return Arrays.asList(
 				"heartbeat"
 		);

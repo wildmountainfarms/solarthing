@@ -1,6 +1,6 @@
 package me.retrodaredevil.solarthing.commands.command;
 
-import me.retrodaredevil.solarthing.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;

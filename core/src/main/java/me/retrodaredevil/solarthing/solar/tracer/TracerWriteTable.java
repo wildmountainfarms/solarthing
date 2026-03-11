@@ -2,9 +2,9 @@ package me.retrodaredevil.solarthing.solar.tracer;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.solar.tracer.batteryconfig.TracerBatteryConfig;
 import me.retrodaredevil.solarthing.solar.tracer.mode.*;
+import org.jspecify.annotations.NonNull;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -122,8 +122,8 @@ public interface TracerWriteTable {
 	 */
 	@JsonProperty("batteryDetection")
 	@JsonAlias("batteryRatedVoltageCode")
-	void setBatteryDetection(@NotNull BatteryDetection batteryDetection);
-	void setLoadTimingControlSelection(@NotNull LoadTimingControlSelection loadTimingControlSelection);
+	void setBatteryDetection(@NonNull BatteryDetection batteryDetection);
+	void setLoadTimingControlSelection(@NonNull LoadTimingControlSelection loadTimingControlSelection);
 	@JsonProperty("isLoadOnByDefaultInManualMode")
 	void setLoadOnByDefaultInManualMode(boolean isLoadOnByDefaultInManualMode); // 0x906A
 	@JsonProperty("equalizeDurationMinutes")
@@ -134,7 +134,7 @@ public interface TracerWriteTable {
 	void setDischargingPercentage(int dischargingPercentage);
 	@JsonProperty("chargingPercentage")
 	void setChargingPercentage(int chargingPercentage);
-	void setBatteryManagementMode(@NotNull BatteryManagementMode batteryManagementMode);
+	void setBatteryManagementMode(@NonNull BatteryManagementMode batteryManagementMode);
 
 	/**
 	 * @param isManualLoadControlOn Turns the load on or off if this is in {@link LoadControlMode#MANUAL_CONTROL}

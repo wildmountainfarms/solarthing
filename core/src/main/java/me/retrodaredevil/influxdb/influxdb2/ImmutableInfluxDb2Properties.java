@@ -2,8 +2,8 @@ package me.retrodaredevil.influxdb.influxdb2;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 public class ImmutableInfluxDb2Properties implements InfluxDb2Properties {
 	private final String url;
@@ -36,7 +36,7 @@ public class ImmutableInfluxDb2Properties implements InfluxDb2Properties {
 
 
 	@Override
-	public @NotNull String getUrl() {
+	public @NonNull String getUrl() {
 		return url;
 	}
 
@@ -56,7 +56,7 @@ public class ImmutableInfluxDb2Properties implements InfluxDb2Properties {
 	}
 
 	@Override
-	public @NotNull String getOrg() {
+	public @NonNull String getOrg() {
 		return org;
 	}
 }

@@ -2,8 +2,8 @@ package me.retrodaredevil.solarthing.type.event.feedback;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.reason.ExecutionReason;
+import org.jspecify.annotations.NonNull;
 
 import static java.util.Objects.requireNonNull;
 
@@ -20,12 +20,12 @@ public class ImmutableHeartbeatPacket implements HeartbeatPacket {
 	}
 
 	@Override
-	public @NotNull HeartbeatData getData() {
+	public @NonNull HeartbeatData getData() {
 		return data;
 	}
 
 	@Override
-	public @NotNull ExecutionReason getExecutionReason() {
+	public @NonNull ExecutionReason getExecutionReason() {
 		return executionReason;
 	}
 }

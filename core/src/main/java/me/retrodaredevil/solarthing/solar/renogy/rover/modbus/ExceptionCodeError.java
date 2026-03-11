@@ -1,6 +1,6 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover.modbus;
 
-import me.retrodaredevil.solarthing.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public enum ExceptionCodeError {
 	READ_EXCEPTION_UNSUPPORTED_FUNCTION_CODE(1),

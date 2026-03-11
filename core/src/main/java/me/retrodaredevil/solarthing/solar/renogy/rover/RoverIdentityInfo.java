@@ -1,8 +1,8 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover;
 
-import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 public class RoverIdentityInfo implements IdentityInfo {
 	private final @Nullable Integer ratedChargingCurrent;
@@ -14,7 +14,7 @@ public class RoverIdentityInfo implements IdentityInfo {
 	}
 
 	@Override
-	public @NotNull String getName() {
+	public @NonNull String getName() {
 		if (roverVariant == RoverVariant.DCDC) {
 			return "DCDC";
 		}
@@ -42,7 +42,7 @@ public class RoverIdentityInfo implements IdentityInfo {
 	}
 
 	@Override
-	public @NotNull String getSuffix() {
+	public @NonNull String getSuffix() {
 		if (ratedChargingCurrent == null) {
 			return "";
 		}
@@ -50,7 +50,7 @@ public class RoverIdentityInfo implements IdentityInfo {
 	}
 
 	@Override
-	public @NotNull String getShortName() {
+	public @NonNull String getShortName() {
 
 		if (roverVariant == RoverVariant.DCDC) {
 			return "DCC";

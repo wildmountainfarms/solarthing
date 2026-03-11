@@ -5,8 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-
-import me.retrodaredevil.solarthing.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * This packet is used to indicate that multiple {@link me.retrodaredevil.solarthing.packets.collection.PacketCollection}s
@@ -22,7 +21,7 @@ public interface InstanceFragmentIndicatorPacket extends InstancePacket {
 
 	@DefaultFinal
 	@Override
-	default @NotNull InstancePacketType getPacketType(){
+	default @NonNull InstancePacketType getPacketType(){
 		return InstancePacketType.FRAGMENT_INDICATOR;
 	}
 

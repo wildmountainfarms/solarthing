@@ -211,22 +211,25 @@ tasks.withType<JavaCompile>().configureEach {
 rewrite {
 	failOnDryRunResults = true
 	isExportDatatables = true
+	configFile = project.rootProject.file("rewrite.yml")
 
 	// https://docs.openrewrite.org/recipes/java/removeobjectsisnull
 	activeRecipe("org.openrewrite.java.RemoveObjectsIsNull")
+
+	activeRecipe("me.retrodaredevil.rewrite.SolarThingNullabilityAnnotations")
 
 	// https://docs.openrewrite.org/recipes/java/removeunusedimports
 	// We decide against RemoveUnusedImports, because it does not check imports exclusively used within Javadocs
 	// activeRecipe("org.openrewrite.java.RemoveUnusedImports")
 
 	// https://docs.openrewrite.org/recipes/java/migrate/lang/switchcasereturnstoswitchexpression
-	activeRecipe("org.openrewrite.java.jspecify.MigrateToJSpecify")
+//	activeRecipe("org.openrewrite.java.jspecify.MigrateToJSpecify")
 	// https://docs.openrewrite.org/recipes/java/shortenfullyqualifiedtypereferences
 	activeRecipe("org.openrewrite.java.ShortenFullyQualifiedTypeReferences")
 
 	// Lots of static analysis
-	activeRecipe("org.openrewrite.staticanalysis.RemoveExtraSemicolons")
-	activeRecipe("org.openrewrite.staticanalysis.AnnotateNullableParameters") // if you check for null, it should be @Nullable
+//	activeRecipe("org.openrewrite.staticanalysis.RemoveExtraSemicolons")
+//	activeRecipe("org.openrewrite.staticanalysis.AnnotateNullableParameters") // if you check for null, it should be @Nullable
 
 	// TODO add more
 }

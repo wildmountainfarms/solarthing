@@ -19,10 +19,10 @@ import me.retrodaredevil.couchdbjava.response.DocumentData;
 import me.retrodaredevil.couchdbjava.security.DatabaseSecurity;
 import me.retrodaredevil.couchdbjava.security.SecurityGroup;
 import me.retrodaredevil.solarthing.SolarThingDatabaseType;
-import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.io.PrintStream;
 import java.nio.charset.Charset;
@@ -244,7 +244,7 @@ public class CouchDbSetupMain {
 		void promptContinue();
 		@Nullable String promptContinueOrCustomCommand();
 		@Nullable String promptUserName(SolarThingDatabaseType.UserType userType);
-		@NotNull String promptUserPassword(SolarThingDatabaseType.UserType userType);
+		@NonNull String promptUserPassword(SolarThingDatabaseType.UserType userType);
 	}
 	public static class ScannerPrompt implements Prompt {
 
@@ -275,7 +275,7 @@ public class CouchDbSetupMain {
 		}
 
 		@Override
-		public @NotNull String promptUserPassword(SolarThingDatabaseType.UserType userType) {
+		public @NonNull String promptUserPassword(SolarThingDatabaseType.UserType userType) {
 			return scanner.nextLine();
 		}
 	}

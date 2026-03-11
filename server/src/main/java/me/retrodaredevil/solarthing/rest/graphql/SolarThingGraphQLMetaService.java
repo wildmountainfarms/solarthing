@@ -2,12 +2,12 @@ package me.retrodaredevil.solarthing.rest.graphql;
 
 import io.leangen.graphql.annotations.GraphQLContext;
 import io.leangen.graphql.annotations.GraphQLQuery;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.rest.graphql.packets.nodes.PacketNode;
 import me.retrodaredevil.solarthing.rest.graphql.packets.nodes.SimplePacketNode;
 import me.retrodaredevil.solarthing.type.closed.meta.DeviceInfoPacket;
 import me.retrodaredevil.solarthing.type.closed.meta.MetaDatabase;
 import me.retrodaredevil.solarthing.type.closed.meta.TargetedMetaPacket;
+import org.jspecify.annotations.Nullable;
 import me.retrodaredevil.solarthing.misc.common.DataIdentifiable;
 import me.retrodaredevil.solarthing.misc.common.meta.DataMetaPacket;
 import me.retrodaredevil.solarthing.misc.weather.TemperaturePacket;

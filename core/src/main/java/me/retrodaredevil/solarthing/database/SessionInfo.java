@@ -1,6 +1,6 @@
 package me.retrodaredevil.solarthing.database;
 
-import me.retrodaredevil.solarthing.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public final class SessionInfo {
 	private final String username;

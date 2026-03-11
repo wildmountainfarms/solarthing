@@ -2,7 +2,6 @@ package me.retrodaredevil.solarthing.rest.graphql.service;
 
 import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLQuery;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 import me.retrodaredevil.solarthing.packets.identification.IdentifierFragment;
 import me.retrodaredevil.solarthing.packets.identification.SourceIdentifierFragment;
@@ -13,6 +12,7 @@ import me.retrodaredevil.solarthing.rest.graphql.packets.nodes.DataNode;
 import me.retrodaredevil.solarthing.type.cache.packets.IdentificationCacheDataPacket;
 import me.retrodaredevil.solarthing.type.cache.packets.IdentificationCacheNode;
 import me.retrodaredevil.solarthing.type.cache.packets.data.BatteryRecordDataCache;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +48,7 @@ public class SolarThingGraphQLBatteryRecordService {
 		}
 
 		@GraphQLQuery
-		public @NotNull List<@NotNull DataNode<Double>> averageBatteryVoltage() {
+		public @NonNull List<@NonNull DataNode<Double>> averageBatteryVoltage() {
 			List<DataNode<Double>> r = new ArrayList<>();
 			for (var cache : data) {
 				long midpointMillis = cache.getPeriodStartDateMillis() + cache.getPeriodDurationMillis() / 2;
@@ -98,7 +98,7 @@ public class SolarThingGraphQLBatteryRecordService {
 		}
 
 		@GraphQLQuery
-		public @NotNull List<@NotNull DataNode<Double>> queryEstimate(@GraphQLArgument(name = "ratio") double ratio) {
+		public @NonNull List<@NonNull DataNode<Double>> queryEstimate(@GraphQLArgument(name = "ratio") double ratio) {
 			if (data.isEmpty()) {
 				return Collections.emptyList();
 			}
@@ -187,19 +187,19 @@ public class SolarThingGraphQLBatteryRecordService {
 
 
 	@GraphQLQuery
-	public @NotNull SolarThingBatteryRecordQuery queryBatteryRecord(
+	public @NonNull SolarThingBatteryRecordQuery queryBatteryRecord(
 			@GraphQLArgument(name = "from", description = DESCRIPTION_FROM) long from, @GraphQLArgument(name = "to", description = DESCRIPTION_TO) long to,
-			@GraphQLArgument(name = "sourceId", description = DESCRIPTION_REQUIRED_SOURCE) @NotNull String sourceId
+			@GraphQLArgument(name = "sourceId", description = DESCRIPTION_REQUIRED_SOURCE) @NonNull String sourceId
 	) {
 		List<IdentificationCacheDataPacket<BatteryRecordDataCache>> list = cacheController.getBatteryRecord(sourceId, from, to);
 		return new SolarThingBatteryRecordQuery(list);
 	}
 
 	@GraphQLQuery
-	public @NotNull SolarThingBatteryEstimate queryBatteryEstimate(
+	public @NonNull SolarThingBatteryEstimate queryBatteryEstimate(
 			@GraphQLArgument(name = "to", description = DESCRIPTION_TO) long to,
-			@GraphQLArgument(name = "sourceId", description = DESCRIPTION_REQUIRED_SOURCE) @NotNull String sourceId,
-			@GraphQLArgument(name = "duration", description = DESCRIPTION_TO) @NotNull Duration duration
+			@GraphQLArgument(name = "sourceId", description = DESCRIPTION_REQUIRED_SOURCE) @NonNull String sourceId,
+			@GraphQLArgument(name = "duration", description = DESCRIPTION_TO) @NonNull Duration duration
 			) {
 		long from = to - duration.toMillis();
 		List<IdentificationCacheDataPacket<BatteryRecordDataCache>> list = cacheController.getBatteryRecord(sourceId, from, to);

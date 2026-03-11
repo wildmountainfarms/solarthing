@@ -4,10 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import me.retrodaredevil.solarthing.SolarThingConstants;
-import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.config.databases.DatabaseConfig;
 import me.retrodaredevil.solarthing.config.request.DataRequester;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +50,7 @@ abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements Pa
 
 	@Deprecated
 	@Override
-	public final @NotNull List<Path> getDatabaseConfigurationFilePaths() {
+	public final @NonNull List<Path> getDatabaseConfigurationFilePaths() {
 		List<Path> r = databases;
 		if(r == null){
 			return Collections.emptyList();
@@ -59,7 +59,7 @@ abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements Pa
 	}
 
 	@Override
-	public @NotNull DatabaseConfigSettings getDatabaseConfigSettings() {
+	public @NonNull DatabaseConfigSettings getDatabaseConfigSettings() {
 		if (databaseConfigSettings == null) {
 			if(databases == null){
 				return DatabaseConfigSettings.EMPTY;
@@ -72,7 +72,7 @@ abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements Pa
 	}
 
 	@Override
-	public final @NotNull String getSourceId() {
+	public final @NonNull String getSourceId() {
 		return SourceIdValidator.validateSourceId(source);
 	}
 
@@ -92,7 +92,7 @@ abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements Pa
 	}
 
 	@Override
-	public final @NotNull List<DataRequester> getDataRequesterList() {
+	public final @NonNull List<DataRequester> getDataRequesterList() {
 		List<DataRequester> r = dataRequesterList;
 		if (r == null) {
 			return Collections.emptyList();

@@ -1,8 +1,8 @@
 package me.retrodaredevil.solarthing.packets.identification;
 
-import me.retrodaredevil.solarthing.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 public interface SupplementaryIdentifiable extends Identifiable {
 	@Override
-	@NotNull SupplementaryIdentifier getIdentifier();
+	@NonNull SupplementaryIdentifier getIdentifier();
 }

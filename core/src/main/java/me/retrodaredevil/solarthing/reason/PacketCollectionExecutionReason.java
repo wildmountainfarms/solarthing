@@ -3,7 +3,7 @@ package me.retrodaredevil.solarthing.reason;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import me.retrodaredevil.solarthing.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Objects;
 
@@ -24,12 +24,12 @@ public class PacketCollectionExecutionReason implements ExecutionReason {
 	}
 
 	@Override
-	public @NotNull ExecutionReasonType getPacketType() {
+	public @NonNull ExecutionReasonType getPacketType() {
 		return ExecutionReasonType.PACKET_COLLECTION;
 	}
 
 	@Override
-	public @NotNull String getUniqueString() {
+	public @NonNull String getUniqueString() {
 		return "PacketCollectionExecutionReason(dateMillis=" + dateMillis + ")";
 	}
 

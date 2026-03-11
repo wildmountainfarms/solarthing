@@ -1,7 +1,7 @@
 package me.retrodaredevil.solarthing.io;
 
 import me.retrodaredevil.io.IOBundle;
-import me.retrodaredevil.solarthing.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +31,7 @@ public class ReloadableIOBundle implements IOBundle {
 		}
 	});
 	private final IOBundleCreator creator;
-	private @NotNull IOBundle ioBundle = BLANK_IO_BUNDLE;
+	private @NonNull IOBundle ioBundle = BLANK_IO_BUNDLE;
 
 	public ReloadableIOBundle(IOBundleCreator creator) {
 		this.creator = creator;

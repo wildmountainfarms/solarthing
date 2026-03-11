@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.solar;
 
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
@@ -8,6 +7,7 @@ import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPacket;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
 import me.retrodaredevil.solarthing.solar.tracer.TracerStatusPacket;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 

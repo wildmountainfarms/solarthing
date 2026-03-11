@@ -4,12 +4,12 @@ import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 import me.retrodaredevil.solarthing.solar.outback.fx.WarningMode;
+import org.jspecify.annotations.NonNull;
 
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import java.util.Set;
 
 public interface FXWarningReporter extends Identifiable {
 	int getWarningModeValue();
 	@GraphQLInclude("warningModes")
-	default @NotNull Set<@NotNull WarningMode> getWarningModes(){ return Modes.getActiveModes(WarningMode.class, getWarningModeValue()); }
+	default @NonNull Set<@NonNull WarningMode> getWarningModes(){ return Modes.getActiveModes(WarningMode.class, getWarningModeValue()); }
 }

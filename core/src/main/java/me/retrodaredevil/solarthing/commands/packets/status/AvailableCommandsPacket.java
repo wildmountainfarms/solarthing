@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.commands.CommandInfo;
+import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ import java.util.List;
 public interface AvailableCommandsPacket extends CommandStatusPacket {
 	@DefaultFinal
 	@Override
-	default @NotNull CommandStatusPacketType getPacketType() {
+	default @NonNull CommandStatusPacketType getPacketType() {
 		return CommandStatusPacketType.AVAILABLE_COMMANDS;
 	}
 

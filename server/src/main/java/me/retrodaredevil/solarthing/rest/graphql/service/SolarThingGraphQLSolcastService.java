@@ -3,8 +3,6 @@ package me.retrodaredevil.solarthing.rest.graphql.service;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLQuery;
-import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.type.cache.packets.IdentificationCacheDataPacket;
 import me.retrodaredevil.solarthing.type.cache.packets.IdentificationCacheNode;
 import me.retrodaredevil.solarthing.type.cache.packets.data.ChargeControllerAccumulationDataCache;
@@ -19,6 +17,8 @@ import me.retrodaredevil.solarthing.solcast.common.SimpleEstimatedActual;
 import me.retrodaredevil.solarthing.solcast.rooftop.EstimatedActualCache;
 import me.retrodaredevil.solarthing.solcast.rooftop.EstimatedActualRetriever;
 import okhttp3.OkHttpClient;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import retrofit2.Retrofit;
@@ -71,7 +71,7 @@ public class SolarThingGraphQLSolcastService {
 	@GraphQLQuery
 	public @Nullable SolarThingSolcastQuery querySolcast(
 			@GraphQLArgument(name = "from", description = DESCRIPTION_FROM) long from, @GraphQLArgument(name = "to", description = DESCRIPTION_TO) long to,
-			@GraphQLArgument(name = "sourceId") @NotNull String sourceId){
+			@GraphQLArgument(name = "sourceId") @NonNull String sourceId){
 		SolcastHandler handler = sourceHandlerMap.get(sourceId);
 		if (handler == null) {
 			// TODO consider if there's a better way to indicate that the given source is not supported
@@ -83,7 +83,7 @@ public class SolarThingGraphQLSolcastService {
 	@GraphQLQuery
 	public @Nullable SolarThingSolcastDayQuery querySolcastDay(
 			@GraphQLArgument(name = "to", description = "Used to determine what day to query. Should be set similar to other 'to' arguments.") long to,
-			@GraphQLArgument(name = "sourceId") @NotNull String sourceId){
+			@GraphQLArgument(name = "sourceId") @NonNull String sourceId){
 		SolcastHandler handler = sourceHandlerMap.get(sourceId);
 		if (handler == null) {
 			return null;
@@ -104,11 +104,11 @@ public class SolarThingGraphQLSolcastService {
 		}
 
 		@GraphQLQuery
-		public @NotNull List<@NotNull SimpleEstimatedActual> queryEstimateActuals() throws IOException {
+		public @NonNull List<@NonNull SimpleEstimatedActual> queryEstimateActuals() throws IOException {
 			return handler.cache.getEstimatedActuals(from, to, true);
 		}
 		@GraphQLQuery
-		public @NotNull List<@NotNull Forecast> queryForecasts(@GraphQLArgument(name = "includePast", defaultValue = "false") boolean includePast) throws IOException {
+		public @NonNull List<@NonNull Forecast> queryForecasts(@GraphQLArgument(name = "includePast", defaultValue = "false") boolean includePast) throws IOException {
 			long now = System.currentTimeMillis();
 			if (!includePast && to < now) {
 				return Collections.emptyList(); // they don't want past data, but their constants are for past data
@@ -117,7 +117,7 @@ public class SolarThingGraphQLSolcastService {
 			return handler.cache.getForecasts(start, to, true);
 		}
 		@GraphQLQuery
-		public @NotNull List<@NotNull DailyEnergy> queryDailyEnergyEstimates() throws IOException {
+		public @NonNull List<@NonNull DailyEnergy> queryDailyEnergyEstimates() throws IOException {
 			LocalDate startDate = Instant.ofEpochMilli(from).atZone(zoneId).toLocalDate();
 			LocalDate endDate = Instant.ofEpochMilli(to).atZone(zoneId).toLocalDate();
 			// Note that this call to getEstimatedActuals() has a good chance of requesting past data depending on what startDate is.
@@ -172,7 +172,7 @@ public class SolarThingGraphQLSolcastService {
 			this.cacheController = cacheController;
 		}
 		@GraphQLQuery(description = "Queries the kWh generation estimate for a certain day. offset of 0 is today, 1 is tomorrow, -1 is yesterday")
-		public @NotNull DailyEnergy queryEnergyEstimate(@GraphQLArgument(name = "offset", defaultValue = "0") int offsetDays) throws IOException {
+		public @NonNull DailyEnergy queryEnergyEstimate(@GraphQLArgument(name = "offset", defaultValue = "0") int offsetDays) throws IOException {
 			/*
 			This is the query the WMF's Grafana uses frequently.
 			If the cacheController is not null, past data will be retrieved from the cache, rather than from Solcast.

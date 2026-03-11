@@ -5,8 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-
-import me.retrodaredevil.solarthing.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 @JsonTypeName("SOURCE")
 @JsonDeserialize(as = ImmutableInstanceSourcePacket.class)
@@ -17,7 +16,7 @@ public interface InstanceSourcePacket extends InstancePacket, SourcedPacket {
 
 	@DefaultFinal
 	@Override
-	default @NotNull InstancePacketType getPacketType(){
+	default @NonNull InstancePacketType getPacketType(){
 		return InstancePacketType.SOURCE;
 	}
 
@@ -27,5 +26,5 @@ public interface InstanceSourcePacket extends InstancePacket, SourcedPacket {
 	 */
 	@JsonProperty("sourceId")
 	@Override
-	@NotNull String getSourceId();
+	@NonNull String getSourceId();
 }

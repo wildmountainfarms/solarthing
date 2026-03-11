@@ -4,8 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.couchdb.CouchDbUtil;
 import me.retrodaredevil.couchdbjava.CouchDbInstance;
 import me.retrodaredevil.solarthing.SolarThingConstants;
-import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.database.MillisDatabase;
 import me.retrodaredevil.solarthing.database.MillisQuery;
@@ -28,6 +26,8 @@ import me.retrodaredevil.solarthing.type.closed.meta.DefaultMetaDatabase;
 import me.retrodaredevil.solarthing.type.closed.meta.EmptyMetaDatabase;
 import me.retrodaredevil.solarthing.type.closed.meta.MetaDatabase;
 import me.retrodaredevil.solarthing.type.closed.meta.RootMetaPacket;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -201,7 +201,7 @@ public class SimpleQueryHandler {
 		return new DefaultMetaDatabase(metadata.getPacket());
 	}
 
-	public List<VersionedPacket<StoredAlterPacket>> queryAlter(@NotNull String sourceId) {
+	public List<VersionedPacket<StoredAlterPacket>> queryAlter(@NonNull String sourceId) {
 		requireNonNull(sourceId);
 		try {
 			return database.getAlterDatabase().queryAll(sourceId);

@@ -6,13 +6,13 @@ import me.retrodaredevil.io.serial.SerialConfig;
 import me.retrodaredevil.io.serial.SerialConfigBuilder;
 import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.SerializeNameDefinedInBase;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.packets.support.Support;
 import me.retrodaredevil.solarthing.solar.common.*;
 import me.retrodaredevil.solarthing.solar.tracer.batteryconfig.TracerBatteryConfig;
 import me.retrodaredevil.solarthing.solar.tracer.mode.*;
+import org.jspecify.annotations.NonNull;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -29,7 +29,7 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 			.build();
 
 	@Override
-	default @NotNull ChargingStatus getChargingMode() {
+	default @NonNull ChargingStatus getChargingMode() {
 		// In the future, if we figure out if there's a way to tell if the tracer is actually in one of these modes rather than just in Bulk, we may
 		//   consider creating another enum representing that possibility
 		return getChargingStatus();
@@ -49,7 +49,7 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 	@Override
 	default int getDailyAH() { return 0; }
 	@Override
-	default @NotNull Support getDailyAHSupport() { return Support.NOT_SUPPORTED; }
+	default @NonNull Support getDailyAHSupport() { return Support.NOT_SUPPORTED; }
 
 	@JsonProperty("ratedInputVoltage")
 	int getRatedInputVoltage();
@@ -76,7 +76,7 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 	@JsonProperty("chargingTypeValue")
 	int getChargingTypeValue(); // 0x3008
 	@GraphQLInclude("chargingType")
-	default @NotNull TracerChargingType getChargingType() { return Modes.getActiveMode(TracerChargingType.class, getChargingTypeValue()); }
+	default @NonNull TracerChargingType getChargingType() { return Modes.getActiveMode(TracerChargingType.class, getChargingTypeValue()); }
 
 	@JsonProperty("ratedLoadOutputCurrent")
 	int getRatedLoadOutputCurrent();
@@ -85,14 +85,14 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 
 	@SerializeNameDefinedInBase
 	@Override
-	@NotNull Float getPVVoltage(); // 0x3100
+	@NonNull Float getPVVoltage(); // 0x3100
 	@SerializeNameDefinedInBase
 	@Override
-	@NotNull Float getPVCurrent();
+	@NonNull Float getPVCurrent();
 
 	@JsonProperty("pvWattage")
 	@Override
-	@NotNull Float getPVWattage();
+	@NonNull Float getPVWattage();
 
 	@SerializeNameDefinedInBase
 	@Override
@@ -100,11 +100,11 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 
 	@JsonProperty("chargingCurrent")
 	@Override
-	@NotNull Float getChargingCurrent();
+	@NonNull Float getChargingCurrent();
 	// Page 2
 	@JsonProperty("chargingPower")
 	@Override
-	@NotNull Float getChargingPower();
+	@NonNull Float getChargingPower();
 
 	@JsonProperty("loadVoltage")
 	float getLoadVoltage();
@@ -124,10 +124,10 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 	 */
 	@JsonProperty("batteryTemperatureCelsius")
 	@Override
-	@NotNull Float getBatteryTemperatureCelsius(); // 0x3110
+	@NonNull Float getBatteryTemperatureCelsius(); // 0x3110
 
 	@Override
-	default @NotNull Float getControllerTemperatureCelsius() {
+	default @NonNull Float getControllerTemperatureCelsius() {
 		return getInsideControllerTemperatureCelsius();
 	}
 
@@ -169,9 +169,9 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 	@GraphQLInclude("isBatteryWrongIdentificationForRatedVoltage")
 	default boolean isBatteryWrongIdentificationForRatedVoltage() { return ((getBatteryStatusValue() >> 15) & 1) != 0; } // check bit15
 	@GraphQLInclude("batteryVoltageStatus")
-	default @NotNull TracerBatteryVoltageStatus getBatteryVoltageStatus() { return Modes.getActiveMode(TracerBatteryVoltageStatus.class, getBatteryVoltageStatusValue()); }
+	default @NonNull TracerBatteryVoltageStatus getBatteryVoltageStatus() { return Modes.getActiveMode(TracerBatteryVoltageStatus.class, getBatteryVoltageStatusValue()); }
 	@GraphQLInclude("batteryTemperatureStatus")
-	default @NotNull TracerBatteryTemperatureStatus getBatteryTemperatureStatus() { return Modes.getActiveMode(TracerBatteryTemperatureStatus.class, getBatteryTemperatureStatusValue()); }
+	default @NonNull TracerBatteryTemperatureStatus getBatteryTemperatureStatus() { return Modes.getActiveMode(TracerBatteryTemperatureStatus.class, getBatteryTemperatureStatusValue()); }
 
 	// **charging equipment status stuff**
 
@@ -231,18 +231,18 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 	int getBatteryTypeValue(); // 0x9000
 	@GraphQLInclude("batteryType")
 	@Override
-	default @NotNull TracerBatteryType getBatteryType() { return Modes.getActiveMode(TracerBatteryType.class, getBatteryTypeValue()); }
+	default @NonNull TracerBatteryType getBatteryType() { return Modes.getActiveMode(TracerBatteryType.class, getBatteryTypeValue()); }
 	// 0x9001 to 0x900E defined in TracerBatteryConfig
 
 	/** @return 48 bit number representing a real time clock. Low 8 bits represent seconds, ..., high 8 bits represent year */
 	@JsonProperty("secondMinuteHourDayMonthYearRaw")
 	long getSecondMinuteHourDayMonthYearRaw();
 	@GraphQLInclude("clockTime")
-	default @NotNull LocalTime getClockTime() {
+	default @NonNull LocalTime getClockTime() {
 		return TracerUtil.extractTracer48BitRawInstantToLocalTime(getSecondMinuteHourDayMonthYearRaw());
 	}
 	@GraphQLInclude("clockMonthDay")
-	default @NotNull MonthDay getClockMonthDay() {
+	default @NonNull MonthDay getClockMonthDay() {
 		return TracerUtil.extractTracer48BitRawInstantToMonthDay(getSecondMinuteHourDayMonthYearRaw());
 	}
 	@GraphQLInclude("clockYearNumber")
@@ -254,7 +254,7 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 	 * A non-standard method that returns a {@link LocalDateTime} where the year 2021 is internally represented as 21
 	 */
 	@GraphQLInclude("clockSolarThing")
-	default @NotNull LocalDateTime getSolarThingLocalDateTime() {
+	default @NonNull LocalDateTime getSolarThingLocalDateTime() {
 		return getClockTime().atDate(getClockMonthDay().atYear(getClockYearNumber() + 2000));
 	}
 
@@ -312,16 +312,16 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 	@JsonProperty("lengthOfNightRaw")
 	int getLengthOfNightRaw();
 	@GraphQLInclude("lengthOfNight")
-	default @NotNull Duration getLengthOfNight() { return TracerUtil.convertTracerDurationRawToDuration(getLengthOfNightRaw()); }
+	default @NonNull Duration getLengthOfNight() { return TracerUtil.convertTracerDurationRawToDuration(getLengthOfNightRaw()); }
 
 	@JsonProperty("batteryRatedVoltageCode")
 	int getBatteryRatedVoltageCode();
 	@GraphQLInclude("batteryDetection")
-	default @NotNull BatteryDetection getBatteryDetection() { return Modes.getActiveMode(BatteryDetection.class, getBatteryRatedVoltageCode()); }
+	default @NonNull BatteryDetection getBatteryDetection() { return Modes.getActiveMode(BatteryDetection.class, getBatteryRatedVoltageCode()); }
 	@JsonProperty("loadTimingControlSelectionValue")
 	int getLoadTimingControlSelectionValue();
 	@GraphQLInclude("loadTimingControlSelection")
-	default @NotNull LoadTimingControlSelection getLoadTimingControlSelection() { return Modes.getActiveMode(LoadTimingControlSelection.class, getLoadTimingControlSelectionValue()); }
+	default @NonNull LoadTimingControlSelection getLoadTimingControlSelection() { return Modes.getActiveMode(LoadTimingControlSelection.class, getLoadTimingControlSelectionValue()); }
 	@JsonProperty("isLoadOnByDefaultInManualMode")
 	boolean isLoadOnByDefaultInManualMode(); // 0x906A
 	@JsonProperty("equalizeDurationMinutes")
@@ -337,7 +337,7 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 	@JsonProperty("batteryManagementModeValue")
 	int getBatteryManagementModeValue();
 	@GraphQLInclude("batteryManagementMode")
-	default @NotNull BatteryManagementMode getBatteryManagementMode() { return Modes.getActiveMode(BatteryManagementMode.class, getBatteryManagementModeValue()); }
+	default @NonNull BatteryManagementMode getBatteryManagementMode() { return Modes.getActiveMode(BatteryManagementMode.class, getBatteryManagementModeValue()); }
 
 	@JsonProperty("isManualLoadControlOn")
 	boolean isManualLoadControlOn();

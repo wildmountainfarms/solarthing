@@ -1,7 +1,6 @@
 package me.retrodaredevil.solarthing;
 
-
-import me.retrodaredevil.solarthing.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A helper class to create and parse the source string

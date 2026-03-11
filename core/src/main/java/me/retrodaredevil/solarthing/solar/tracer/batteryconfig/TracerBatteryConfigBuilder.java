@@ -1,8 +1,8 @@
 package me.retrodaredevil.solarthing.solar.tracer.batteryconfig;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.solar.tracer.mode.TracerBatteryType;
+import org.jspecify.annotations.NonNull;
 
 public class TracerBatteryConfigBuilder implements TracerBatteryConfig {
 	private TracerBatteryType tracerBatteryType;
@@ -30,7 +30,7 @@ public class TracerBatteryConfigBuilder implements TracerBatteryConfig {
 	}
 
 
-	@Override public @NotNull TracerBatteryType getBatteryType() { return tracerBatteryType; }
+	@Override public @NonNull TracerBatteryType getBatteryType() { return tracerBatteryType; }
 	@JsonProperty("batteryType")
 	public void setTracerBatteryType(TracerBatteryType tracerBatteryType) {
 		this.tracerBatteryType = tracerBatteryType;

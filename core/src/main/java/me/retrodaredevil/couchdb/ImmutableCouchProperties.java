@@ -2,8 +2,8 @@ package me.retrodaredevil.couchdb;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import okhttp3.HttpUrl;
+import org.jspecify.annotations.NonNull;
 
 import java.net.URI;
 
@@ -23,13 +23,13 @@ class ImmutableCouchProperties implements CouchProperties {
 	}
 
 	@Override
-	public @NotNull HttpUrl getHttpUrl() {
+	public @NonNull HttpUrl getHttpUrl() {
 		return url;
 	}
 
 	@JsonProperty("url") // JsonProperty to work with UnwrappedDeserializer
 	@Override
-	public @NotNull URI getUri() {
+	public @NonNull URI getUri() {
 		return url.uri();
 	}
 

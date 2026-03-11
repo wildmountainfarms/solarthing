@@ -1,6 +1,6 @@
 package me.retrodaredevil.solarthing.actions.environment;
 
-import me.retrodaredevil.solarthing.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.HashMap;

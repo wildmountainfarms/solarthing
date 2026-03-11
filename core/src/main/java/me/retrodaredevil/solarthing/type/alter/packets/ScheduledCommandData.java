@@ -3,8 +3,8 @@ package me.retrodaredevil.solarthing.type.alter.packets;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.util.UniqueStringRepresentation;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,12 +35,12 @@ public final class ScheduledCommandData implements UniqueStringRepresentation {
 	}
 
 	@JsonProperty("commandName")
-	public @NotNull String getCommandName() {
+	public @NonNull String getCommandName() {
 		return commandName;
 	}
 
 	@JsonProperty("targetFragmentIds")
-	public @NotNull Collection<Integer> getTargetFragmentIds() {
+	public @NonNull Collection<Integer> getTargetFragmentIds() {
 		return targetFragmentIds;
 	}
 
@@ -58,7 +58,7 @@ public final class ScheduledCommandData implements UniqueStringRepresentation {
 	}
 
 	@Override
-	public @NotNull String getUniqueString() {
+	public @NonNull String getUniqueString() {
 		return "ScheduledCommandData(" +
 				"scheduledTimeMillis=" + scheduledTimeMillis +
 				", commandName='" + commandName + '\'' +

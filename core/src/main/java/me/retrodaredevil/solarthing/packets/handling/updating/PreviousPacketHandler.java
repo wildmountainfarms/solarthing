@@ -1,7 +1,7 @@
 package me.retrodaredevil.solarthing.packets.handling.updating;
 
 import me.retrodaredevil.solarthing.packets.Packet;
-import me.retrodaredevil.solarthing.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonClassDescription;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * The point of this class is to be a very volatile way to represent the name of a device.
@@ -19,7 +19,7 @@ public interface IdentityInfo {
 	// Note the JsonProperty annotations are for GraphQL. These are not meant to be serialized and saved to a database
 
 	@JsonProperty("displayName")
-	default @NotNull String getDisplayName() { // FX 1, MX 2, Rover 40A
+	default @NonNull String getDisplayName() { // FX 1, MX 2, Rover 40A
 		String suffix = getSuffix();
 		if (suffix.isEmpty()) {
 			return getName();
@@ -33,16 +33,16 @@ public interface IdentityInfo {
 	}
 
 	@JsonProperty("name")
-	@NotNull String getName(); // FX
+	@NonNull String getName(); // FX
 
 	/**
 	 * @return The suffix or a blank string
 	 */
 	@JsonProperty("suffix")
-	@NotNull String getSuffix(); // 1
+	@NonNull String getSuffix(); // 1
 
 	@JsonProperty("shortName")
-	@NotNull String getShortName(); // FX, RV, WND, DCC
+	@NonNull String getShortName(); // FX, RV, WND, DCC
 
 	/**
 	 * This is useful if you want to display the name of something, but one place has extra information and the other does not. For instance,

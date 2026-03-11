@@ -1,11 +1,11 @@
 package me.retrodaredevil.solarthing.util;
 
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;

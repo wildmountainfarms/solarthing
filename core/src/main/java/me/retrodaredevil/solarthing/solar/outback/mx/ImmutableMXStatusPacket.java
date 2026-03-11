@@ -3,11 +3,11 @@ package me.retrodaredevil.solarthing.solar.outback.mx;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.packets.support.Support;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 @JsonIgnoreProperties(value = {
 		"auxModeName", "errors", "chargerModeName",
@@ -66,7 +66,7 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 	}
 
 	@Override
-	public @NotNull IdentityInfo getIdentityInfo() {
+	public @NonNull IdentityInfo getIdentityInfo() {
 		return identityInfo;
 	}
 
@@ -76,7 +76,7 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 	}
 
 	@Override
-	public @NotNull OutbackIdentifier getIdentifier() {
+	public @NonNull OutbackIdentifier getIdentifier() {
 		return identifier;
 	}
 
@@ -86,13 +86,13 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 		return chargerCurrent;
 	}
 
-	@NotNull
+	@NonNull
 	@Override
 	public Integer getPVCurrent() {
 		return pvCurrent;
 	}
 
-	@NotNull
+	@NonNull
 	@Override
 	public Integer getPVVoltage() {
 		return inputVoltage;
@@ -136,7 +136,7 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 		return dailyAH;
 	}
 
-	@NotNull
+	@NonNull
 	@Override
 	public Support getDailyAHSupport() {
 		return dailyAHSupport;

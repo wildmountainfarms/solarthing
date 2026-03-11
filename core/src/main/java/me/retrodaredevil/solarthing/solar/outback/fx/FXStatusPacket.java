@@ -14,6 +14,7 @@ import me.retrodaredevil.solarthing.solar.common.SolarMode;
 import me.retrodaredevil.solarthing.solar.outback.OutbackStatusPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.FXMiscReporter;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.FXWarningReporter;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Set;
 
@@ -35,12 +36,12 @@ public interface FXStatusPacket extends OutbackStatusPacket, BatteryVoltage, FXW
 
 	@DefaultFinal
 	@Override
-	default @NotNull SolarStatusPacketType getPacketType(){
+	default @NonNull SolarStatusPacketType getPacketType(){
 		return SolarStatusPacketType.FX_STATUS;
 	}
 
 	@Override
-	default @NotNull SolarMode getSolarMode() {
+	default @NonNull SolarMode getSolarMode() {
 		return getOperationalMode();
 	}
 
@@ -97,7 +98,7 @@ public interface FXStatusPacket extends OutbackStatusPacket, BatteryVoltage, FXW
 	@JsonProperty("operatingMode")
 	int getOperationalModeValue();
 	@GraphQLInclude("operationalMode")
-	default @NotNull OperationalMode getOperationalMode(){ return Modes.getActiveMode(OperationalMode.class, getOperationalModeValue()); }
+	default @NonNull OperationalMode getOperationalMode(){ return Modes.getActiveMode(OperationalMode.class, getOperationalModeValue()); }
 
 	/**
 	 * Should be serialized as "errorMode"
@@ -107,7 +108,7 @@ public interface FXStatusPacket extends OutbackStatusPacket, BatteryVoltage, FXW
 	@Override
 	int getErrorModeValue();
 	@Override
-	default @NotNull Set<@NotNull FXErrorMode> getErrorModes(){ return Modes.getActiveModes(FXErrorMode.class, getErrorModeValue()); }
+	default @NonNull Set<@NonNull FXErrorMode> getErrorModes(){ return Modes.getActiveModes(FXErrorMode.class, getErrorModeValue()); }
 
 	/**
 	 * Should be serialized as "acMode"
@@ -115,7 +116,7 @@ public interface FXStatusPacket extends OutbackStatusPacket, BatteryVoltage, FXW
 	 */
 	@JsonProperty("acMode")
 	int getACModeValue();
-	default @NotNull ACMode getACMode(){ return Modes.getActiveMode(ACMode.class, getACModeValue()); }
+	default @NonNull ACMode getACMode(){ return Modes.getActiveMode(ACMode.class, getACModeValue()); }
 
 	/**
 	 * Should be serialized as "misc"
@@ -193,7 +194,7 @@ public interface FXStatusPacket extends OutbackStatusPacket, BatteryVoltage, FXW
 	@ConvenienceField
 	@GraphQLInclude("operatingModeName")
 	@JsonProperty("operatingModeName")
-	default @NotNull String getOperatingModeName(){
+	default @NonNull String getOperatingModeName(){
 		return getOperationalMode().getModeName();
 	}
 
@@ -204,7 +205,7 @@ public interface FXStatusPacket extends OutbackStatusPacket, BatteryVoltage, FXW
 	@ConvenienceField
 	@GraphQLInclude("errorsString")
 	@JsonProperty("errors")
-	default @NotNull String getErrorsString() { return Modes.toString(FXErrorMode.class, getErrorModeValue()); }
+	default @NonNull String getErrorsString() { return Modes.toString(FXErrorMode.class, getErrorModeValue()); }
 
 	/**
 	 * Serialized as "acModeName" in packets before {@link #VERSION_NO_MORE_CONVENIENCE_FIELDS}
@@ -213,7 +214,7 @@ public interface FXStatusPacket extends OutbackStatusPacket, BatteryVoltage, FXW
 	@ConvenienceField
 	@GraphQLInclude("acModeName")
 	@JsonProperty("acModeName")
-	default @NotNull String getACModeName() { return getACMode().getModeName(); }
+	default @NonNull String getACModeName() { return getACMode().getModeName(); }
 
 	/**
 	 * Serialized as "miscModes" in packets before {@link #VERSION_NO_MORE_CONVENIENCE_FIELDS}
@@ -222,7 +223,7 @@ public interface FXStatusPacket extends OutbackStatusPacket, BatteryVoltage, FXW
 	@ConvenienceField
 	@GraphQLInclude("miscModesString")
 	@JsonProperty("miscModes")
-	default @NotNull String getMiscModesString() { return Modes.toString(MiscMode.class, getMiscValue()); }
+	default @NonNull String getMiscModesString() { return Modes.toString(MiscMode.class, getMiscValue()); }
 
 	/**
 	 * Serialized as "warnings" in packets before {@link #VERSION_NO_MORE_CONVENIENCE_FIELDS}
@@ -231,7 +232,7 @@ public interface FXStatusPacket extends OutbackStatusPacket, BatteryVoltage, FXW
 	@ConvenienceField
 	@GraphQLInclude("warnings")
 	@JsonProperty("warnings")
-	default @NotNull String getWarningsString() { return Modes.toString(WarningMode.class, getWarningModeValue()); }
+	default @NonNull String getWarningsString() { return Modes.toString(WarningMode.class, getWarningModeValue()); }
 	// endregion
 
 	// region Default Power Getters

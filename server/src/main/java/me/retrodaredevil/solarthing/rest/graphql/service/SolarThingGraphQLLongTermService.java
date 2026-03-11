@@ -2,10 +2,10 @@ package me.retrodaredevil.solarthing.rest.graphql.service;
 
 import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLQuery;
-import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.type.cache.packets.IdentificationCacheDataPacket;
 import me.retrodaredevil.solarthing.type.cache.packets.data.ChargeControllerAccumulationDataCache;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import me.retrodaredevil.solarthing.rest.cache.CacheController;
 
 import java.time.LocalDate;
@@ -58,7 +58,7 @@ public class SolarThingGraphQLLongTermService {
 		}
 
 		@GraphQLQuery
-		public @NotNull List<@NotNull IdentificationCacheDataPacket<ChargeControllerAccumulationDataCache>> chargeControllerAccumulationRaw(){
+		public @NonNull List<@NonNull IdentificationCacheDataPacket<ChargeControllerAccumulationDataCache>> chargeControllerAccumulationRaw(){
 			return cacheController.getChargeControllerAccumulation(sourceId, startMillis, endMillis);
 		}
 		@GraphQLQuery

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ public final class TargetMetaPacket implements BasicMetaPacket {
 	}
 
 	@Override
-	public @NotNull BasicMetaPacketType getPacketType() {
+	public @NonNull BasicMetaPacketType getPacketType() {
 		return BasicMetaPacketType.FRAGMENT_TARGET;
 	}
 

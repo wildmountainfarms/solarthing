@@ -2,8 +2,8 @@ package me.retrodaredevil.solarthing.commands.packets.open;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.database.UpdateToken;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Objects;
 
@@ -22,17 +22,17 @@ public class ImmutableDeleteAlterPacket implements DeleteAlterPacket {
 	}
 
 	@Override
-	public @NotNull String getDocumentIdToDelete() {
+	public @NonNull String getDocumentIdToDelete() {
 		return documentIdToDelete;
 	}
 
 	@Override
-	public @NotNull UpdateToken getUpdateToken() {
+	public @NonNull UpdateToken getUpdateToken() {
 		return updateToken;
 	}
 
 	@Override
-	public @NotNull String getUniqueString() {
+	public @NonNull String getUniqueString() {
 		return "DeleteAlterPacket(" +
 				"documentIdToDelete=" + documentIdToDelete +
 				", updateToken=" + updateToken +

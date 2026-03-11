@@ -1,8 +1,8 @@
 package me.retrodaredevil.solarthing.program.subprogram.pvoutput.provider;
 
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.identification.IdentifierFragment;
+import org.jspecify.annotations.Nullable;
 
 public interface DataProvider {
 	@Nullable Result getResult(FragmentedPacketGroup fragmentedPacketGroup);

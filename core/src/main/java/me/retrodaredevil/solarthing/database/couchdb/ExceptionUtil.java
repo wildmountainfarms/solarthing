@@ -4,12 +4,12 @@ import me.retrodaredevil.couchdbjava.exception.CouchDbException;
 import me.retrodaredevil.couchdbjava.exception.CouchDbNotFoundException;
 import me.retrodaredevil.couchdbjava.exception.CouchDbUnauthorizedException;
 import me.retrodaredevil.couchdbjava.exception.CouchDbUpdateConflictException;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.database.exception.NotFoundSolarThingDatabaseException;
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
 import me.retrodaredevil.solarthing.database.exception.UnauthorizedSolarThingDatabaseException;
 import me.retrodaredevil.solarthing.database.exception.UpdateConflictSolarThingDatabaseException;
+import org.jspecify.annotations.Nullable;
 
 @UtilityClass
 public final class ExceptionUtil {

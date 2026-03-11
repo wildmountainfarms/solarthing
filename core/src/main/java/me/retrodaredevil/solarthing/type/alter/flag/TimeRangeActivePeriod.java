@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.util.TimeRange;
+import org.jspecify.annotations.NonNull;
 
 import java.time.Instant;
 import java.util.Objects;
@@ -40,7 +40,7 @@ public class TimeRangeActivePeriod implements ActivePeriod {
 	}
 
 	@Override
-	public @NotNull ActivePeriodType getPacketType() {
+	public @NonNull ActivePeriodType getPacketType() {
 		return ActivePeriodType.TIME_RANGE;
 	}
 
@@ -64,7 +64,7 @@ public class TimeRangeActivePeriod implements ActivePeriod {
 	}
 
 	@Override
-	public @NotNull String getUniqueString() {
+	public @NonNull String getUniqueString() {
 		return "TimeRangeActivePeriod(" +
 				"timeRange=" + timeRange +
 				')';

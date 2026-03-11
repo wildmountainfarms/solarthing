@@ -1,7 +1,6 @@
 package me.retrodaredevil.solarthing.commands.command;
 
-
-import me.retrodaredevil.solarthing.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public interface CommandProvider<T extends Command> {
 	/**

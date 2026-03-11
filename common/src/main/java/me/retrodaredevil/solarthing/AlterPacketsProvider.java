@@ -1,8 +1,8 @@
 package me.retrodaredevil.solarthing;
 
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.database.VersionedPacket;
 import me.retrodaredevil.solarthing.type.alter.StoredAlterPacket;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 

@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.PacketEntry;
 import me.retrodaredevil.solarthing.packets.instance.SourcedPacket;
+import org.jspecify.annotations.NonNull;
 
 @JsonIgnoreProperties(value = { "_rev" }, allowGetters = true) // tightly coupled to CouchDB
 @JsonDeserialize(as = ImmutableStoredAlterPacket.class)
@@ -22,9 +22,9 @@ public interface StoredAlterPacket extends PacketEntry, SourcedPacket {
 	long getUpdatedDateMillis();
 
 	@JsonProperty("packet")
-	@NotNull AlterPacket getPacket();
+	@NonNull AlterPacket getPacket();
 
 	@JsonProperty("sourceId")
 	@Override
-	@NotNull String getSourceId();
+	@NonNull String getSourceId();
 }

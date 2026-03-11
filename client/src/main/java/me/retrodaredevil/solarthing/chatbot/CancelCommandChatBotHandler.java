@@ -1,7 +1,6 @@
 package me.retrodaredevil.solarthing.chatbot;
 
 import me.retrodaredevil.solarthing.AlterPacketsProvider;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.commands.packets.open.CommandOpenPacket;
 import me.retrodaredevil.solarthing.commands.packets.open.ImmutableDeleteAlterPacket;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
@@ -18,6 +17,7 @@ import me.retrodaredevil.solarthing.type.alter.StoredAlterPacket;
 import me.retrodaredevil.solarthing.type.alter.UniqueRequestIdContainer;
 import me.retrodaredevil.solarthing.type.alter.packets.ScheduledCommandPacket;
 import me.retrodaredevil.solarthing.type.open.OpenSourcePacket;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -149,7 +149,7 @@ public class CancelCommandChatBotHandler implements ChatBotHandler {
 	}
 
 	@Override
-	public @NotNull List<String> getHelpLines(Message helpMessage) {
+	public @NonNull List<String> getHelpLines(Message helpMessage) {
 		return Arrays.asList(
 				"cancel <scheduling ID>"
 		);

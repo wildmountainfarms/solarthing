@@ -4,11 +4,11 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.SerializeNameDefinedInBase;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.packets.identification.NumberedIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Objects;
 
@@ -44,7 +44,7 @@ public final class RoverIdentifier implements NumberedIdentifier, Comparable<Ide
 	}
 
 	@Override
-	public @NotNull String getRepresentation() {
+	public @NonNull String getRepresentation() {
 		if (number != NumberedIdentifier.DEFAULT_NUMBER) {
 			return "RoverIdentifier(number=" + number + ")";
 		}
@@ -71,7 +71,7 @@ public final class RoverIdentifier implements NumberedIdentifier, Comparable<Ide
 
 
 	@Override
-	public int compareTo(@NotNull Identifier o) {
+	public int compareTo(@NonNull Identifier o) {
 		if(o instanceof RoverIdentifier){
 			return Integer.compare(number, ((RoverIdentifier) o).number);
 		}

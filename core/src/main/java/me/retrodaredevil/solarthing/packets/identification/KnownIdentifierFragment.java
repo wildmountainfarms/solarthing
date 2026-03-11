@@ -1,8 +1,8 @@
 package me.retrodaredevil.solarthing.packets.identification;
 
-import me.retrodaredevil.solarthing.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 public interface KnownIdentifierFragment <T extends Identifier> extends IdentifierFragment {
 	@Override
-	@NotNull T getIdentifier();
+	@NonNull T getIdentifier();
 }

@@ -6,7 +6,7 @@ import me.retrodaredevil.couchdbjava.replicator.SimpleReplicatorDocument;
 import me.retrodaredevil.couchdbjava.replicator.source.ObjectReplicatorSource;
 import me.retrodaredevil.couchdbjava.replicator.source.ReplicatorSource;
 import me.retrodaredevil.solarthing.SolarThingDatabaseType;
-import me.retrodaredevil.solarthing.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.net.URI;
 import java.time.Duration;

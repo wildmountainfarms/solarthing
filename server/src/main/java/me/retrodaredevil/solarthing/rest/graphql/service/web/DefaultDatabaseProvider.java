@@ -9,14 +9,14 @@ import me.retrodaredevil.couchdbjava.okhttp.OkHttpCouchDbInstance;
 import me.retrodaredevil.couchdbjava.okhttp.auth.BasicAuthHandler;
 import me.retrodaredevil.couchdbjava.okhttp.auth.CookieAuthHandler;
 import me.retrodaredevil.okhttp3.OkHttpUtil;
-import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
 import me.retrodaredevil.solarthing.database.couchdb.CouchDbSolarThingDatabase;
 import me.retrodaredevil.solarthing.packets.collection.parsing.PacketParsingErrorHandler;
 import me.retrodaredevil.solarthing.rest.exceptions.DatabaseException;
 import okhttp3.Cookie;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -37,7 +37,7 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 	}
 
 	@Override
-	public @NotNull SolarThingDatabase getDatabase(@Nullable DatabaseAuthorization databaseAuthorization) {
+	public @NonNull SolarThingDatabase getDatabase(@Nullable DatabaseAuthorization databaseAuthorization) {
 		final CouchDbInstance instance;
 		if (databaseAuthorization == null) {
 			instance = defaultInstance;
@@ -54,7 +54,7 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 	}
 
 	@Override
-	public @NotNull DatabaseAuthorization authorize(String username, String password) {
+	public @NonNull DatabaseAuthorization authorize(String username, String password) {
 		CookieAuthHandler cookieAuthHandler = new CookieAuthHandler(username, password);
 		try {
 			cookieAuthHandler.authSession(noAuthInstance);

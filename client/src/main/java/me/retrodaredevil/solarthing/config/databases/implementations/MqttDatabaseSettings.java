@@ -3,12 +3,12 @@ package me.retrodaredevil.solarthing.config.databases.implementations;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.DatabaseType;
 import me.retrodaredevil.solarthing.config.databases.SimpleDatabaseType;
 import me.retrodaredevil.solarthing.mqtt.MqttPacketSaver;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -49,7 +49,7 @@ public class MqttDatabaseSettings implements DatabaseSettings {
 		return TYPE;
 	}
 
-	public @NotNull String getBroker() {
+	public @NonNull String getBroker() {
 		return broker;
 	}
 
@@ -57,15 +57,15 @@ public class MqttDatabaseSettings implements DatabaseSettings {
 		return clientId;
 	}
 
-	public @NotNull String getUsername() {
+	public @NonNull String getUsername() {
 		return username;
 	}
 
-	public @NotNull char[] getPassword() {
+	public @NonNull char[] getPassword() {
 		return password;
 	}
 
-	public @NotNull String getTopicFormat() {
+	public @NonNull String getTopicFormat() {
 		return topicFormat;
 	}
 

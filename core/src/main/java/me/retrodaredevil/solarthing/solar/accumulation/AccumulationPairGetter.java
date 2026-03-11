@@ -1,7 +1,7 @@
 package me.retrodaredevil.solarthing.solar.accumulation;
 
 import me.retrodaredevil.solarthing.packets.identification.IdentifierFragment;
-import me.retrodaredevil.solarthing.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;

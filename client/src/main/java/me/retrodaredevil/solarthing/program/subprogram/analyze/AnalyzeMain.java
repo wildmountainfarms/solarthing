@@ -2,7 +2,6 @@ package me.retrodaredevil.solarthing.program.subprogram.analyze;
 
 import me.retrodaredevil.couchdb.CouchDbUtil;
 import me.retrodaredevil.solarthing.SolarThingConstants;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.config.ConfigException;
 import me.retrodaredevil.solarthing.config.ConfigUtil;
 import me.retrodaredevil.solarthing.config.databases.DatabaseConfig;
@@ -21,6 +20,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.jspecify.annotations.NonNull;
 
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
@@ -138,7 +138,7 @@ public final class AnalyzeMain {
 		return 0;
 	}
 
-	private static @NotNull Options getOptions() {
+	private static @NonNull Options getOptions() {
 		Options options = new Options();
 
 		Option input = new Option(null, "couchdb", true, "CouchDB database configuration file path");

@@ -1,7 +1,6 @@
 package me.retrodaredevil.solarthing.program.subprogram.run;
 
 import me.retrodaredevil.io.modbus.ModbusTimeoutException;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.program.modbus.MutableAddressModbusSlave;
@@ -14,6 +13,7 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.StreetLight;
 import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusConstants;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerControl_E02D;
 import me.retrodaredevil.solarthing.util.StringUtil;
+import org.jspecify.annotations.Nullable;
 
 import java.nio.charset.Charset;
 import java.util.Locale;

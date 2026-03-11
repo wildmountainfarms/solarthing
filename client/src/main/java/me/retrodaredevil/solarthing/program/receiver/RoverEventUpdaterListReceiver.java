@@ -1,13 +1,13 @@
 package me.retrodaredevil.solarthing.program.receiver;
 
-import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
 import me.retrodaredevil.solarthing.solar.renogy.rover.event.ImmutableRoverChargingStateChangePacket;
 import me.retrodaredevil.solarthing.solar.renogy.rover.event.ImmutableRoverErrorModeChangePacket;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,7 +35,7 @@ public class RoverEventUpdaterListReceiver implements PacketListReceiver {
 			}
 		}
 	}
-	private void useData(@NotNull RoverStatusPacket rover, @Nullable RoverStatusPacket previous) {
+	private void useData(@NonNull RoverStatusPacket rover, @Nullable RoverStatusPacket previous) {
 		final Integer lastChargingStateValue;
 		final Integer lastErrorModeValue;
 		if (previous == null) {

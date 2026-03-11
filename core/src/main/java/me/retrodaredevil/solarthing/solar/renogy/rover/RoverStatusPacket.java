@@ -7,12 +7,12 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.packets.PacketWithVersion;
 import me.retrodaredevil.solarthing.packets.identification.NumberedIdentifiable;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import me.retrodaredevil.solarthing.solar.renogy.RenogyPacket;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Represents a Rover Status Packet. This implements {@link RoverReadTable}
@@ -55,12 +55,12 @@ public interface RoverStatusPacket extends RenogyPacket, RoverReadTable, PacketW
 
 	@DefaultFinal
 	@Override
-	default @NotNull SolarStatusPacketType getPacketType(){
+	default @NonNull SolarStatusPacketType getPacketType(){
 		return SolarStatusPacketType.RENOGY_ROVER_STATUS;
 	}
 
 	@Override
-	@NotNull RoverIdentifier getIdentifier();
+	@NonNull RoverIdentifier getIdentifier();
 
 	@JsonInclude(JsonInclude.Include.NON_DEFAULT) // won't include 0
 	@JsonProperty("number")

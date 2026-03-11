@@ -2,7 +2,7 @@ package me.retrodaredevil.solarthing.solcast.common;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import me.retrodaredevil.solarthing.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ public final class ForecastResult {
 		this.forecasts = requireNonNull(forecasts);
 	}
 
-	public @NotNull List<Forecast> getForecasts() {
+	public @NonNull List<Forecast> getForecasts() {
 		return forecasts;
 	}
 }

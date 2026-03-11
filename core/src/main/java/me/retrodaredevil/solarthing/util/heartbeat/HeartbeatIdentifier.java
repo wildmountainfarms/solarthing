@@ -1,6 +1,6 @@
 package me.retrodaredevil.solarthing.util.heartbeat;
 
-import me.retrodaredevil.solarthing.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Objects;
 
@@ -15,7 +15,7 @@ public final class HeartbeatIdentifier {
 	private final String identifier;
 	private final int fragmentId;
 
-	public HeartbeatIdentifier(@NotNull String identifier, int fragmentId) {
+	public HeartbeatIdentifier(@NonNull String identifier, int fragmentId) {
 		this.identifier = requireNonNull(identifier);
 		this.fragmentId = fragmentId;
 	}
@@ -33,7 +33,7 @@ public final class HeartbeatIdentifier {
 		return Objects.hash(identifier, fragmentId);
 	}
 
-	public @NotNull String getIdentifier() {
+	public @NonNull String getIdentifier() {
 		return identifier;
 	}
 

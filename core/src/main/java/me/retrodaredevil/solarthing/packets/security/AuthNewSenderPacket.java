@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
+import org.jspecify.annotations.NonNull;
 
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import java.security.PublicKey;
 
 @JsonDeserialize(as = ImmutableAuthNewSenderPacket.class)
@@ -15,7 +15,7 @@ import java.security.PublicKey;
 public interface AuthNewSenderPacket extends SecurityPacket, SenderPacket {
 	@DefaultFinal
 	@Override
-	default @NotNull SecurityPacketType getPacketType() {
+	default @NonNull SecurityPacketType getPacketType() {
 		return SecurityPacketType.AUTH_NEW_SENDER;
 	}
 
@@ -25,7 +25,7 @@ public interface AuthNewSenderPacket extends SecurityPacket, SenderPacket {
 	 * @return The base64 encoded public key
 	 */
 	@JsonProperty("publicKey")
-	@NotNull String getPublicKey();
+	@NonNull String getPublicKey();
 
 	/**
 	 * @return The public key that {@link #getPublicKey()} represents

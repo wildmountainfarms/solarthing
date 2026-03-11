@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.type.closed.meta.TargetedMetaPacket;
 import me.retrodaredevil.solarthing.type.closed.meta.TargetedMetaPacketType;
+import org.jspecify.annotations.NonNull;
 import me.retrodaredevil.solarthing.solar.outback.fx.charge.FXChargingSettings;
 
 @JsonExplicit
@@ -28,7 +28,7 @@ public class FXChargingSettingsPacket implements TargetedMetaPacket {
 	}
 
 	@Override
-	public @NotNull TargetedMetaPacketType getPacketType() {
+	public @NonNull TargetedMetaPacketType getPacketType() {
 		return TargetedMetaPacketType.FX_CHARGING_SETTINGS;
 	}
 

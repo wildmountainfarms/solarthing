@@ -3,9 +3,9 @@ package me.retrodaredevil.couchdb;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.couchdbjava.CouchDbAuth;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import okhttp3.HttpUrl;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.net.URI;
 
@@ -17,8 +17,8 @@ import java.net.URI;
 @JsonExplicit
 public interface CouchProperties {
 
-	@NotNull HttpUrl getHttpUrl();
-	@NotNull URI getUri();
+	@NonNull HttpUrl getHttpUrl();
+	@NonNull URI getUri();
 
 	@Nullable String getUsername();
 	@Nullable String getPassword();

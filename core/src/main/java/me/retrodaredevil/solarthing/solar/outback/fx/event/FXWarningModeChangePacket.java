@@ -5,8 +5,6 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.ChangePacket;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
@@ -14,6 +12,8 @@ import me.retrodaredevil.solarthing.solar.event.SupplementarySolarEventPacket;
 import me.retrodaredevil.solarthing.solar.outback.SupplementaryOutbackPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.WarningMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.FXWarningReporter;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Set;
 
@@ -25,7 +25,7 @@ public interface FXWarningModeChangePacket extends SupplementarySolarEventPacket
 
 	@DefaultFinal
 	@Override
-	default @NotNull SolarEventPacketType getPacketType(){
+	default @NonNull SolarEventPacketType getPacketType(){
 		return SolarEventPacketType.FX_WARNING_MODE_CHANGE;
 	}
 

@@ -2,8 +2,8 @@ package me.retrodaredevil.solarthing.actions.command.provider;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.commands.packets.open.CommandOpenPacket;
+import org.jspecify.annotations.NonNull;
 
 /**
  * A simple interface to provide {@link CommandOpenPacket}s.
@@ -14,5 +14,5 @@ import me.retrodaredevil.solarthing.commands.packets.open.CommandOpenPacket;
 		@JsonSubTypes.Type(RequestHeartbeatPacketProvider.class),
 })
 public interface CommandOpenProvider {
-	@NotNull CommandOpenPacket get();
+	@NonNull CommandOpenPacket get();
 }

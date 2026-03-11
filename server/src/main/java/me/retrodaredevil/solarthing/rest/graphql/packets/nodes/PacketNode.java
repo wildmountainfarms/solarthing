@@ -1,7 +1,7 @@
 package me.retrodaredevil.solarthing.rest.graphql.packets.nodes;
 
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import static java.util.Objects.requireNonNull;
 
@@ -12,7 +12,7 @@ public final class PacketNode<T> implements SimplePacketNode {
 	private final String sourceId;
 	private final int fragmentId;
 
-	public PacketNode(@NotNull T packet, long dateMillis, @NotNull String sourceId, int fragmentId) {
+	public PacketNode(@NonNull T packet, long dateMillis, @NonNull String sourceId, int fragmentId) {
 		this.packet = requireNonNull(packet);
 		this.dateMillis = dateMillis;
 		this.sourceId = requireNonNull(sourceId);
@@ -20,7 +20,7 @@ public final class PacketNode<T> implements SimplePacketNode {
 	}
 
 	@Override
-	public @NotNull T getPacket() {
+	public @NonNull T getPacket() {
 		return packet;
 	}
 
@@ -30,7 +30,7 @@ public final class PacketNode<T> implements SimplePacketNode {
 	}
 
 	@Override
-	public @NotNull String getSourceId() {
+	public @NonNull String getSourceId() {
 		return sourceId;
 	}
 

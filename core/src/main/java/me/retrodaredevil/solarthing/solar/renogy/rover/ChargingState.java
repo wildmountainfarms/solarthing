@@ -1,9 +1,9 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover;
 
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.CodeMode;
 import me.retrodaredevil.solarthing.solar.common.SolarMode;
 import me.retrodaredevil.solarthing.solar.common.SolarModeType;
+import org.jspecify.annotations.NonNull;
 
 /**
  * The charging state
@@ -42,12 +42,12 @@ public enum ChargingState implements CodeMode, SolarMode {
 	}
 
 	@Override
-	public @NotNull String getModeName() {
+	public @NonNull String getModeName() {
 		return name;
 	}
 
 	@Override
-	public @NotNull SolarModeType getSolarModeType() {
+	public @NonNull SolarModeType getSolarModeType() {
 		return solarModeType;
 	}
 }

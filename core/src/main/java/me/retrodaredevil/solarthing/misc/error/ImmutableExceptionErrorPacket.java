@@ -2,8 +2,8 @@ package me.retrodaredevil.solarthing.misc.error;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
+import org.jspecify.annotations.NonNull;
 
 import static java.util.Objects.requireNonNull;
 
@@ -32,12 +32,12 @@ public class ImmutableExceptionErrorPacket implements ExceptionErrorPacket {
 	}
 
 	@Override
-	public @NotNull ExceptionErrorIdentifier getIdentifier() {
+	public @NonNull ExceptionErrorIdentifier getIdentifier() {
 		return identifier;
 	}
 
 	@Override
-	public @NotNull IdentityInfo getIdentityInfo() {
+	public @NonNull IdentityInfo getIdentityInfo() {
 		return identityInfo;
 	}
 

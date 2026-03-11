@@ -3,7 +3,7 @@ package me.retrodaredevil.solarthing.packets;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import me.retrodaredevil.solarthing.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Any packet inheriting this class is usually a packet that might have changed how fields are serialized, or maybe some underlying functionality

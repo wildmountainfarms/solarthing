@@ -1,7 +1,7 @@
 package me.retrodaredevil.solarthing.solar.outback.mx;
 
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.CodeMode;
+import org.jspecify.annotations.NonNull;
 
 /**
  * NOTE: Some of these values are only supported on FLEXmax80 and FLEXmax60. If it is a FLEXmax unit, you also have to
@@ -45,7 +45,7 @@ public enum AuxMode implements CodeMode {
 	}
 
 	@Override
-	public @NotNull String getModeName() {
+	public @NonNull String getModeName() {
 		return name;
 	}
 

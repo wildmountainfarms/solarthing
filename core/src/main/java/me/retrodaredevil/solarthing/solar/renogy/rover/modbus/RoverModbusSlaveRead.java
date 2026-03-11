@@ -3,8 +3,6 @@ package me.retrodaredevil.solarthing.solar.renogy.rover.modbus;
 import me.retrodaredevil.io.modbus.ModbusSlave;
 import me.retrodaredevil.io.modbus.handling.ErrorCodeException;
 import me.retrodaredevil.io.modbus.handling.ReadHoldingRegisters;
-import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.packets.identification.SingleTypeIdentifier;
@@ -12,6 +10,8 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.RoverIdentityInfo;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverReadTable;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverVariant;
 import me.retrodaredevil.solarthing.solar.util.AbstractModbusRead;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import static me.retrodaredevil.solarthing.solar.util.ByteUtil.lower;
 import static me.retrodaredevil.solarthing.solar.util.ByteUtil.upper;
@@ -29,12 +29,12 @@ public class RoverModbusSlaveRead extends AbstractModbusRead implements RoverRea
 		super(modbus, Endian.BIG);
 	}
 	@Override
-	public @NotNull Identifier getIdentifier() {
+	public @NonNull Identifier getIdentifier() {
 		return IDENTIFIER;
 	}
 
 	@Override
-	public @NotNull IdentityInfo getIdentityInfo() {
+	public @NonNull IdentityInfo getIdentityInfo() {
 		return new RoverIdentityInfo(getRatedChargingCurrentValue(), RoverVariant.getVariant(getProductModel()));
 	}
 
@@ -116,7 +116,7 @@ public class RoverModbusSlaveRead extends AbstractModbusRead implements RoverRea
 
 	static final ReadHoldingRegisters CHARGING_CURRENT = new ReadHoldingRegisters(0x0102, 1);
 	@Override
-	public @NotNull Float getChargingCurrent() {
+	public @NonNull Float getChargingCurrent() {
 		return oneRegister(CHARGING_CURRENT) / 100.0F;
 	}
 
@@ -146,18 +146,18 @@ public class RoverModbusSlaveRead extends AbstractModbusRead implements RoverRea
 	}
 
 	static final ReadHoldingRegisters PV_VOLTAGE = new ReadHoldingRegisters(0x0107, 1);
-	@NotNull
+	@NonNull
 	@Override public Float getPVVoltage() { // pv voltage/solar panel voltage
 		return oneRegister(PV_VOLTAGE) / 10.0F;
 	}
 	static final ReadHoldingRegisters PV_CURRENT = new ReadHoldingRegisters(0x0108, 1);
-	@NotNull
+	@NonNull
 	@Override public Float getPVCurrent() {
 		return oneRegister(PV_CURRENT) / 100.0F;
 	}
 
 	static final ReadHoldingRegisters CHARGING_POWER = new ReadHoldingRegisters(0x0109, 1);
-	@Override public @NotNull Integer getChargingPower() {
+	@Override public @NonNull Integer getChargingPower() {
 		return oneRegister(CHARGING_POWER);
 	}
 	// 0x010A is used as the command to turn the street light on/off

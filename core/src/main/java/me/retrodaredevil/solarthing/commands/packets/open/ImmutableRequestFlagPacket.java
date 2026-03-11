@@ -2,8 +2,8 @@ package me.retrodaredevil.solarthing.commands.packets.open;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.type.alter.flag.FlagData;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Objects;
 
@@ -17,12 +17,12 @@ public class ImmutableRequestFlagPacket implements RequestFlagPacket {
 	}
 
 	@Override
-	public @NotNull FlagData getFlagData() {
+	public @NonNull FlagData getFlagData() {
 		return flagData;
 	}
 
 	@Override
-	public @NotNull String getUniqueString() {
+	public @NonNull String getUniqueString() {
 		return "RequestFlagPacket(" +
 				"flagData=" + flagData.getUniqueString() +
 				')';

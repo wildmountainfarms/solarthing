@@ -1,7 +1,7 @@
 package me.retrodaredevil.solarthing.packets.collection;
 
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.Packet;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,7 +32,7 @@ class ImmutableStoredPacketGroup implements StoredPacketGroup {
 	}
 
 	@Override
-	public @NotNull StoredIdentifier getStoredIdentifier() {
+	public @NonNull StoredIdentifier getStoredIdentifier() {
 		return storedIdentifier;
 	}
 }

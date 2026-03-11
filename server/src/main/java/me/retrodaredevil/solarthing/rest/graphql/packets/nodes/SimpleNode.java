@@ -3,7 +3,7 @@ package me.retrodaredevil.solarthing.rest.graphql.packets.nodes;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import static java.util.Objects.requireNonNull;
 
@@ -16,13 +16,13 @@ public final class SimpleNode<T> {
 	private final T data;
 	private final long dateMillis;
 
-	public SimpleNode(@NotNull T data, long dateMillis) {
+	public SimpleNode(@NonNull T data, long dateMillis) {
 		this.data = requireNonNull(data);
 		this.dateMillis = dateMillis;
 	}
 
 	@JsonProperty("data")
-	public @NotNull T getData() {
+	public @NonNull T getData() {
 		return data;
 	}
 

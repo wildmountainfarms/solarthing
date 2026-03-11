@@ -4,15 +4,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.database.UpdateToken;
+import org.jspecify.annotations.NonNull;
 
 @JsonDeserialize(as = ImmutableDeleteAlterPacket.class)
 @JsonTypeName("DELETE_ALTER")
 @JsonExplicit
 public interface DeleteAlterPacket extends CommandOpenPacket {
 	@Override
-	default @NotNull CommandOpenPacketType getPacketType() {
+	default @NonNull CommandOpenPacketType getPacketType() {
 		return CommandOpenPacketType.DELETE_ALTER;
 	}
 	/*
@@ -21,8 +21,8 @@ public interface DeleteAlterPacket extends CommandOpenPacket {
 	 */
 
 	@JsonProperty("documentIdToDelete")
-	@NotNull String getDocumentIdToDelete();
+	@NonNull String getDocumentIdToDelete();
 
 	@JsonProperty("updateToken")
-	@NotNull UpdateToken getUpdateToken();
+	@NonNull UpdateToken getUpdateToken();
 }

@@ -2,8 +2,8 @@ package me.retrodaredevil.solarthing.config.databases;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.handling.FrequencySettings;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Settings that define how a database configuration can be used in the program.

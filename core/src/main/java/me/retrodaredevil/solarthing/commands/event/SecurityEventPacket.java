@@ -2,10 +2,10 @@ package me.retrodaredevil.solarthing.commands.event;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.marker.EventPacket;
 import me.retrodaredevil.solarthing.packets.TypedDocumentedPacket;
 import me.retrodaredevil.solarthing.packets.collection.StoredIdentifier;
+import org.jspecify.annotations.NonNull;
 
 /**
  * A security event packets describe if a given requested encrypted data was successfully decrypted.
@@ -32,6 +32,6 @@ public interface SecurityEventPacket extends TypedDocumentedPacket<SecurityEvent
 	 * @return The requesting document's ID
 	 */
 	@JsonProperty("requestDocumentId")
-	@NotNull String getRequestDocumentId();
+	@NonNull String getRequestDocumentId();
 	// We don't have to store the UpdateToken (revision) because event packets should never be deleted or updated
 }

@@ -1,8 +1,8 @@
 package me.retrodaredevil.solarthing.misc.error;
 
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
+import org.jspecify.annotations.NonNull;
 
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
@@ -25,7 +25,7 @@ public class ExceptionErrorIdentifier implements Identifier {
 	}
 
 	@Override
-	public @NotNull String getRepresentation() {
+	public @NonNull String getRepresentation() {
 		return "ExceptionErrorIdentifier(exceptionCatchLocationIdentifier='" + exceptionCatchLocationIdentifier + "', exceptionInstanceIdentifier='" + exceptionInstanceIdentifier + "')";
 	}
 	@Override

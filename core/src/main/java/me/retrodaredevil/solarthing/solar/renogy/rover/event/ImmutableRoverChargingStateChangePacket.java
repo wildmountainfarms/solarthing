@@ -2,14 +2,14 @@ package me.retrodaredevil.solarthing.solar.renogy.rover.event;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.identification.DefaultSupplementaryIdentifier;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.packets.identification.KnownSupplementaryIdentifier;
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverIdentifier;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverIdentityInfo;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 public class ImmutableRoverChargingStateChangePacket implements RoverChargingStateChangePacket {
 	private final int chargingStateValue;
@@ -35,7 +35,7 @@ public class ImmutableRoverChargingStateChangePacket implements RoverChargingSta
 	}
 
 	@Override
-	public @NotNull IdentityInfo getIdentityInfo() {
+	public @NonNull IdentityInfo getIdentityInfo() {
 		return identityInfo;
 	}
 
@@ -45,7 +45,7 @@ public class ImmutableRoverChargingStateChangePacket implements RoverChargingSta
 	}
 
 	@Override
-	public @NotNull KnownSupplementaryIdentifier<RoverIdentifier> getIdentifier() {
+	public @NonNull KnownSupplementaryIdentifier<RoverIdentifier> getIdentifier() {
 		return identifier;
 	}
 

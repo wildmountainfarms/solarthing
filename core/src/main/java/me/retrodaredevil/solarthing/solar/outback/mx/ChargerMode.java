@@ -1,10 +1,10 @@
 package me.retrodaredevil.solarthing.solar.outback.mx;
 
 
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.CodeMode;
 import me.retrodaredevil.solarthing.solar.common.SolarMode;
 import me.retrodaredevil.solarthing.solar.common.SolarModeType;
+import org.jspecify.annotations.NonNull;
 
 /**
  * The charger mode of the MX
@@ -51,7 +51,7 @@ public enum ChargerMode implements CodeMode, SolarMode {
 	}
 
 	@Override
-	public @NotNull String getModeName() {
+	public @NonNull String getModeName() {
 		return name;
 	}
 
@@ -61,7 +61,7 @@ public enum ChargerMode implements CodeMode, SolarMode {
 	}
 
 	@Override
-	public @NotNull SolarModeType getSolarModeType() {
+	public @NonNull SolarModeType getSolarModeType() {
 		return solarModeType;
 	}
 }

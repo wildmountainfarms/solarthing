@@ -2,11 +2,11 @@ package me.retrodaredevil.solarthing.rest.graphql.service;
 
 import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLQuery;
-import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.type.cache.packets.IdentificationCacheDataPacket;
 import me.retrodaredevil.solarthing.type.cache.packets.IdentificationCacheNode;
 import me.retrodaredevil.solarthing.type.cache.packets.data.ChargeControllerAccumulationDataCache;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.identification.SourceIdentifierFragment;
 import me.retrodaredevil.solarthing.rest.cache.CacheController;
 import me.retrodaredevil.solarthing.rest.graphql.PacketFinder;
@@ -63,13 +63,13 @@ public class SolarThingGraphQLDailyService {
 		 * Good for a graph of daily kWh for all devices over time (with all devices resetting at the start of the day in the configured time zone)
 		 */
 		@GraphQLQuery(description = "Gives a list of a list entries. Each entry can be grouped by their identifier as entries may represent different devices")
-		@NotNull List<@NotNull DataNode<Float>> dailyKWH();
+		@NonNull List<@NonNull DataNode<Float>> dailyKWH();
 
 		/**
 		 * Good for a graph of daily kWh over time. (This sums the daily kWh of all devices)
 		 */
 		@GraphQLQuery(description = "Gives a list of entries where each entry is a sum of the daily kWh at that instant in time for the day at that time.")
-		@NotNull List<@NotNull SimpleNode<Float>> dailyKWHSum();
+		@NonNull List<@NonNull SimpleNode<Float>> dailyKWHSum();
 
 		/**
 		 * Good for a bar graph where each bar represents a device's daily kWh for that day. This is also the most efficient query if you are just interested in the daily kWh for the current day for all devices
@@ -77,7 +77,7 @@ public class SolarThingGraphQLDailyService {
 		 * @return A list of {@link SimpleNode}s where each node is a different day
 		 */
 		@GraphQLQuery(description = "Gives entries where each entry is timestamped at the start of a certain day and its value represents the daily kWh of that device for that day. (Results can be grouped by their identifiers as there may be different devices)")
-		@NotNull List<@NotNull DataNode<Float>> singleDailyKWH();
+		@NonNull List<@NonNull DataNode<Float>> singleDailyKWH();
 	}
 
 	public class SimpleSolarThingFullDayStatusQuery implements SolarThingFullDayStatusQuery {
@@ -137,7 +137,7 @@ public class SolarThingGraphQLDailyService {
 		}
 
 		@Override
-		public @NotNull List<@NotNull DataNode<Float>> dailyKWH() {
+		public @NonNull List<@NonNull DataNode<Float>> dailyKWH() {
 			return getPoints(
 					DailyChargeController.class,
 					(nodesOut, timestampedPackets, dailyPairs, sourceId, fragmentId, dayStartTimeMillis) ->
@@ -145,7 +145,7 @@ public class SolarThingGraphQLDailyService {
 			);
 		}
 		@Override
-		public @NotNull List<@NotNull SimpleNode<Float>> dailyKWHSum() {
+		public @NonNull List<@NonNull SimpleNode<Float>> dailyKWHSum() {
 			Map<LocalDate, Map<IdentifierFragment, List<TimestampedPacket<DailyChargeController>>>> map = new HashMap<>();
 			for (FragmentedPacketGroup fragmentedPacketGroup : sortedPackets) {
 				long dateMillis = fragmentedPacketGroup.getDateMillis(); // we have a common dateMillis for each fragmented packet group
@@ -182,7 +182,7 @@ public class SolarThingGraphQLDailyService {
 		}
 
 		@Override
-		public @NotNull List<@NotNull DataNode<Float>> singleDailyKWH() {
+		public @NonNull List<@NonNull DataNode<Float>> singleDailyKWH() {
 			return getPoints(
 					DailyChargeController.class,
 					(nodesOut, timestampedPackets, dailyPairs, sourceId, fragmentId, dayStartTimeMillis) ->
@@ -208,7 +208,7 @@ public class SolarThingGraphQLDailyService {
 		}
 
 		@Override
-		public @NotNull List<@NotNull DataNode<Float>> dailyKWH() {
+		public @NonNull List<@NonNull DataNode<Float>> dailyKWH() {
 			List<DataNode<Float>> r = new ArrayList<>();
 			Map<LocalDate, Map<SourceIdentifierFragment, ChargeControllerAccumulationDataCache>> dateToControllerCache = new HashMap<>();
 			for (IdentificationCacheDataPacket<ChargeControllerAccumulationDataCache> cache : chargeControllerData) {
@@ -237,13 +237,13 @@ public class SolarThingGraphQLDailyService {
 		}
 
 		@Override
-		public @NotNull List<@NotNull SimpleNode<Float>> dailyKWHSum() {
+		public @NonNull List<@NonNull SimpleNode<Float>> dailyKWHSum() {
 			// TODO implement this! This is one of the things stopping us from making the cache implementation the default
 			throw new UnsupportedOperationException();
 		}
 
 		@Override
-		public @NotNull List<@NotNull DataNode<Float>> singleDailyKWH() {
+		public @NonNull List<@NonNull DataNode<Float>> singleDailyKWH() {
 			Map<LocalDate, Map<SourceIdentifierFragment, ChargeControllerAccumulationDataCache>> dateToControllerCache = new HashMap<>();
 			Map<SourceIdentifierFragment, Identifiable> identifierFragmentToIdentifiableMap = new HashMap<>();
 			for (IdentificationCacheDataPacket<ChargeControllerAccumulationDataCache> cache : chargeControllerData) {

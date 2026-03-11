@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.packets.identification.IntegerIdentifier;
-import me.retrodaredevil.solarthing.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Objects;
 
@@ -36,7 +36,7 @@ public class OutbackIdentifier implements IntegerIdentifier, OutbackData, Compar
 	}
 
 	@Override
-	public @NotNull String getRepresentation() {
+	public @NonNull String getRepresentation() {
 		return "OutbackIdentifier(address=" + address + ")";
 	}
 
@@ -54,7 +54,7 @@ public class OutbackIdentifier implements IntegerIdentifier, OutbackData, Compar
 	}
 
 	@Override
-	public int compareTo(@NotNull Identifier o) {
+	public int compareTo(@NonNull Identifier o) {
 		if(o instanceof OutbackIdentifier){
 			return address - ((OutbackIdentifier) o).address;
 		}

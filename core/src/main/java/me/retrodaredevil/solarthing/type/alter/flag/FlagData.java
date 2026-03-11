@@ -3,8 +3,8 @@ package me.retrodaredevil.solarthing.type.alter.flag;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.util.UniqueStringRepresentation;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Objects;
 
@@ -38,7 +38,7 @@ public final class FlagData implements UniqueStringRepresentation {
 	}
 
 	@Override
-	public @NotNull String getUniqueString() {
+	public @NonNull String getUniqueString() {
 		return "FlagData(" +
 				"flagName='" + flagName + '\'' +
 				", activePeriod=" + activePeriod.getUniqueString() +

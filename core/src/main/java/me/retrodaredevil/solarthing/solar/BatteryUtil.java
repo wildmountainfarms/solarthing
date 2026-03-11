@@ -1,10 +1,10 @@
 package me.retrodaredevil.solarthing.solar;
 
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
+import org.jspecify.annotations.Nullable;
 
 @UtilityClass
 public final class BatteryUtil {

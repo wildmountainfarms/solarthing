@@ -15,7 +15,6 @@ import me.retrodaredevil.couchdbjava.json.jackson.CouchDbJacksonUtil;
 import me.retrodaredevil.couchdbjava.request.ViewQueryParamsBuilder;
 import me.retrodaredevil.couchdbjava.response.DocumentResponse;
 import me.retrodaredevil.couchdbjava.response.ViewResponse;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.database.AlterDatabase;
 import me.retrodaredevil.solarthing.database.DatabaseSource;
 import me.retrodaredevil.solarthing.database.UpdateToken;
@@ -25,6 +24,7 @@ import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseExcepti
 import me.retrodaredevil.solarthing.database.exception.UnauthorizedSolarThingDatabaseException;
 import me.retrodaredevil.solarthing.database.exception.UpdateConflictSolarThingDatabaseException;
 import me.retrodaredevil.solarthing.type.alter.StoredAlterPacket;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,7 @@ public class CouchDbAlterDatabase implements AlterDatabase {
 	}
 
 	@Override
-	public @NotNull UpdateToken upload(StoredAlterPacket storedAlterPacket) throws SolarThingDatabaseException {
+	public @NonNull UpdateToken upload(StoredAlterPacket storedAlterPacket) throws SolarThingDatabaseException {
 		final JsonData jsonData;
 		try {
 			jsonData = new StringJsonData(mapper.writeValueAsString(storedAlterPacket));
@@ -58,7 +58,7 @@ public class CouchDbAlterDatabase implements AlterDatabase {
 	}
 
 	@Override
-	public @NotNull List<VersionedPacket<StoredAlterPacket>> queryAll(String sourceId) throws SolarThingDatabaseException {
+	public @NonNull List<VersionedPacket<StoredAlterPacket>> queryAll(String sourceId) throws SolarThingDatabaseException {
 		final ViewResponse allDocs;
 		try {
 			allDocs = database.allDocs(new ViewQueryParamsBuilder().includeDocs(true).build());

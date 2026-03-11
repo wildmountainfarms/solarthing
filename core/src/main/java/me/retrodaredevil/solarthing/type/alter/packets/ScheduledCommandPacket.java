@@ -4,10 +4,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.reason.ExecutionReason;
 import me.retrodaredevil.solarthing.type.alter.AlterPacket;
 import me.retrodaredevil.solarthing.type.alter.AlterPacketType;
+import org.jspecify.annotations.NonNull;
 
 import static java.util.Objects.requireNonNull;
 
@@ -26,17 +26,17 @@ public class ScheduledCommandPacket implements AlterPacket {
 	}
 
 	@Override
-	public @NotNull AlterPacketType getPacketType() {
+	public @NonNull AlterPacketType getPacketType() {
 		return AlterPacketType.SCHEDULED_COMMAND;
 	}
 
 	@JsonProperty("data")
-	public @NotNull ScheduledCommandData getData() {
+	public @NonNull ScheduledCommandData getData() {
 		return data;
 	}
 
 	@JsonProperty("executionReason")
-	public @NotNull ExecutionReason getExecutionReason() {
+	public @NonNull ExecutionReason getExecutionReason() {
 		return executionReason;
 	}
 }

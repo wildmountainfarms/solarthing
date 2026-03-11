@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.type.open.OpenSource;
-import me.retrodaredevil.solarthing.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Objects;
 
@@ -20,17 +20,17 @@ public class OpenSourceExecutionReason implements ExecutionReason {
 	}
 
 	@Override
-	public @NotNull ExecutionReasonType getPacketType() {
+	public @NonNull ExecutionReasonType getPacketType() {
 		return ExecutionReasonType.SOURCE;
 	}
 
 	@JsonProperty("source")
-	public @NotNull OpenSource getSource() {
+	public @NonNull OpenSource getSource() {
 		return source;
 	}
 
 	@Override
-	public @NotNull String getUniqueString() {
+	public @NonNull String getUniqueString() {
 		return "OpenSourceExecutionReason(source=" + source.getUniqueString() + ")";
 	}
 

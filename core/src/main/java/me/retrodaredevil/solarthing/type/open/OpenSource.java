@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.DataSource;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.util.UniqueStringRepresentation;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Objects;
 
@@ -43,7 +43,7 @@ public final class OpenSource implements UniqueStringRepresentation {
 	}
 
 	@JsonProperty("sender")
-	public @NotNull String getSender() {
+	public @NonNull String getSender() {
 		return sender;
 	}
 	@JsonProperty("dateMillis")
@@ -52,17 +52,17 @@ public final class OpenSource implements UniqueStringRepresentation {
 	}
 
 	@JsonProperty("packet")
-	public @NotNull OpenSourcePacket getPacket() {
+	public @NonNull OpenSourcePacket getPacket() {
 		return packet;
 	}
 
 	@JsonProperty("legacyData")
-	public @NotNull String getLegacyData() {
+	public @NonNull String getLegacyData() {
 		return legacyData;
 	}
 
 	@Override
-	public @NotNull String getUniqueString() {
+	public @NonNull String getUniqueString() {
 		return "OpenSource(" +
 				"sender='" + sender + '\'' +
 				", dateMillis=" + dateMillis +

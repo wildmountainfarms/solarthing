@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 @JsonDeserialize(as = ImmutableRequestCommandPacket.class)
 @JsonTypeName("REQUEST_COMMAND")
@@ -13,10 +13,10 @@ import me.retrodaredevil.solarthing.annotations.NotNull;
 public interface RequestCommandPacket extends CommandOpenPacket {
 	@DefaultFinal
 	@Override
-	default @NotNull CommandOpenPacketType getPacketType() {
+	default @NonNull CommandOpenPacketType getPacketType() {
 		return CommandOpenPacketType.REQUEST_COMMAND;
 	}
 
 	@JsonProperty("commandName")
-	@NotNull String getCommandName();
+	@NonNull String getCommandName();
 }

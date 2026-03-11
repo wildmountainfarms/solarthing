@@ -2,9 +2,9 @@ package me.retrodaredevil.solarthing.solar.batteryvoltage;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.misc.common.DataIdentifier;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
+import org.jspecify.annotations.NonNull;
 
 public class ImmutableBatteryVoltageOnlyPacket implements BatteryVoltageOnlyPacket {
 	private final float batteryVoltage;
@@ -29,7 +29,7 @@ public class ImmutableBatteryVoltageOnlyPacket implements BatteryVoltageOnlyPack
 	}
 
 	@Override
-	public @NotNull DataIdentifier getIdentifier() {
+	public @NonNull DataIdentifier getIdentifier() {
 		return identifier;
 	}
 
@@ -39,7 +39,7 @@ public class ImmutableBatteryVoltageOnlyPacket implements BatteryVoltageOnlyPack
 	}
 
 	@Override
-	public @NotNull IdentityInfo getIdentityInfo() {
+	public @NonNull IdentityInfo getIdentityInfo() {
 		return identityInfo;
 	}
 }

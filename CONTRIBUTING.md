@@ -67,9 +67,9 @@ General rule of thumb:
 * If something is Nullable, you should probably annotate it with Nullable.
 * Just because something is NotNull doesn't mean you need to annotate it and everything else with NotNull.
 * But if something is commonly used (public api), then annotating with NotNull can be helpful.
-* Use `me.retrodaredevil.solarthing.annotations.Nullable` or `me.retrodaredevil.solarthing.annotations.NotNull`
-  * Why the custom NotNull/Nullable? We want good Kotlin support, and we want to be able to annotate more than just methods.
+* Use JSpecify nullability annotations
 * If something is exposed through GraphQL and it is not null, always put a `@NotNull` on it.
+  * TODO update this later
 
 ### Other Conventions
 * Use `java.nio.file` rather than `java.io`.

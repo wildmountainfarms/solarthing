@@ -1,9 +1,9 @@
 package me.retrodaredevil.solarthing.solar.common;
 
 import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.BitmaskMode;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Collection;
 
@@ -14,7 +14,7 @@ public interface ErrorReporter extends Identifiable {
 	 */
 	int getErrorModeValue();
 	@GraphQLInclude("errorModes")
-	@NotNull Collection<? extends @NotNull BitmaskMode> getErrorModes();
+	@NonNull Collection<? extends @NonNull BitmaskMode> getErrorModes();
 	@GraphQLInclude("hasError")
 	default boolean hasError() {
 		return getErrorModeValue() != 0;

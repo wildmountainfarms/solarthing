@@ -1,12 +1,12 @@
 package me.retrodaredevil.solarthing.program.receiver;
 
-import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.solar.tracer.TracerStatusPacket;
 import me.retrodaredevil.solarthing.solar.tracer.event.ImmutableTracerChargingEquipmentStatusChangePacket;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,7 +33,7 @@ public class TracerEventUpdaterListReceiver implements PacketListReceiver {
 			}
 		}
 	}
-	private void useData(@NotNull TracerStatusPacket tracer, @Nullable TracerStatusPacket previous) {
+	private void useData(@NonNull TracerStatusPacket tracer, @Nullable TracerStatusPacket previous) {
 		final Integer lastChargingEquipmentStatusValue;
 		if (previous == null) {
 			lastChargingEquipmentStatusValue = null;

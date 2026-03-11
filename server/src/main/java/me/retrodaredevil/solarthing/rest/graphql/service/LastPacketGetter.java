@@ -1,11 +1,11 @@
 package me.retrodaredevil.solarthing.rest.graphql.service;
 
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.collection.InstancePacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
 import me.retrodaredevil.solarthing.rest.graphql.packets.PacketFilter;
 import me.retrodaredevil.solarthing.rest.graphql.packets.PacketUtil;
 import me.retrodaredevil.solarthing.rest.graphql.packets.nodes.PacketNode;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,7 @@ public class LastPacketGetter implements PacketGetter {
 		this.packetFilter = requireNonNull(packetFilter);
 	}
 	@Override
-	public <T> @NotNull List<@NotNull PacketNode<T>> getPackets(Class<T> clazz) {
+	public <T> @NonNull List<@NonNull PacketNode<T>> getPackets(Class<T> clazz) {
 		List<InstancePacketGroup> lastPackets = new ArrayList<>();
 		for(List<InstancePacketGroup> packetGroups : PacketGroups.mapFragments(packets).values()) {
 			packetGroups.stream()

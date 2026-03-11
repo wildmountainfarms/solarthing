@@ -5,9 +5,9 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.marker.OpenPacket;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 
@@ -21,7 +21,7 @@ public interface InstanceTargetPacket extends InstancePacket, TargetPacket, Open
 
 	@DefaultFinal
 	@Override
-	default @NotNull InstancePacketType getPacketType() {
+	default @NonNull InstancePacketType getPacketType() {
 		return InstancePacketType.TARGET;
 	}
 

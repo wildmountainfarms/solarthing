@@ -10,6 +10,8 @@ import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.event.SupplementarySolarEventPacket;
 import me.retrodaredevil.solarthing.solar.outback.SupplementaryOutbackPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.ACMode;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 @JsonDeserialize(as = ImmutableFXACModeChangePacket.class)
 @JsonTypeName("FX_AC_MODE_CHANGE")
@@ -17,7 +19,7 @@ import me.retrodaredevil.solarthing.solar.outback.fx.ACMode;
 public interface FXACModeChangePacket extends SupplementarySolarEventPacket, SupplementaryOutbackPacket, ChangePacket {
 	@DefaultFinal
 	@Override
-	default @NotNull SolarEventPacketType getPacketType(){
+	default @NonNull SolarEventPacketType getPacketType(){
 		return SolarEventPacketType.FX_AC_MODE_CHANGE;
 	}
 
@@ -27,7 +29,7 @@ public interface FXACModeChangePacket extends SupplementarySolarEventPacket, Sup
 	@Nullable Integer getPreviousACModeValue();
 
 	@GraphQLInclude("acMode")
-	default @NotNull ACMode getACMode(){ return Modes.getActiveMode(ACMode.class, getACModeValue()); }
+	default @NonNull ACMode getACMode(){ return Modes.getActiveMode(ACMode.class, getACModeValue()); }
 
 	@GraphQLInclude("previousACMode")
 	default @Nullable ACMode getPreviousACMode(){

@@ -1,6 +1,6 @@
 package me.retrodaredevil.solarthing.util;
 
-import me.retrodaredevil.solarthing.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * An interface containing a getter for a unique string that describes this object.
@@ -26,5 +26,5 @@ public interface UniqueStringRepresentation {
 	 * NOTE: Implementations of this method can and may be changed in the future, so you should not persist the result of this method anywhere.
 	 * @return A string that is not human-readable, but is unique to the contents of this particular {@link UniqueStringRepresentation}
 	 */
-	@NotNull String getUniqueString();
+	@NonNull String getUniqueString();
 }

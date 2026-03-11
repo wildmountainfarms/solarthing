@@ -1,13 +1,13 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover;
 
-import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.packets.identification.SingleTypeIdentifier;
 import me.retrodaredevil.solarthing.solar.renogy.RoverBatteryType;
 import me.retrodaredevil.solarthing.solar.renogy.Voltage;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -126,12 +126,12 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 	}
 
 	@Override
-	public @NotNull Identifier getIdentifier() {
+	public @NonNull Identifier getIdentifier() {
 		return IDENTIFIER;
 	}
 
 	@Override
-	public @NotNull IdentityInfo getIdentityInfo() {
+	public @NonNull IdentityInfo getIdentityInfo() {
 		return new RoverIdentityInfo(getRatedChargingCurrentValue(), RoverVariant.getVariant(getProductModel()));
 	}
 
@@ -156,17 +156,17 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 
 	@Override public int getBatteryCapacitySOC() { return roverReadTable.getBatteryCapacitySOC(); }
 	@Override public float getBatteryVoltage() { return roverReadTable.getBatteryVoltage(); }
-	@Override public @NotNull Float getChargingCurrent() { return roverReadTable.getChargingCurrent(); }
+	@Override public @NonNull Float getChargingCurrent() { return roverReadTable.getChargingCurrent(); }
 	@Override public int getControllerTemperatureRaw() { return roverReadTable.getControllerTemperatureRaw(); }
 	@Override public int getBatteryTemperatureRaw() { return roverReadTable.getBatteryTemperatureRaw(); }
 	@Override public float getLoadVoltageRaw() { return roverReadTable.getLoadVoltageRaw(); }
 	@Override public float getLoadCurrentRaw() { return roverReadTable.getLoadCurrentRaw(); }
 	@Override public int getLoadPowerRaw() { return roverReadTable.getLoadPowerRaw(); }
-	@NotNull
+	@NonNull
 	@Override public Float getPVVoltage() { return roverReadTable.getPVVoltage(); }
-	@NotNull
+	@NonNull
 	@Override public Float getPVCurrent() { return roverReadTable.getPVCurrent(); }
-	@Override public @NotNull Integer getChargingPower() { return roverReadTable.getChargingPower(); }
+	@Override public @NonNull Integer getChargingPower() { return roverReadTable.getChargingPower(); }
 	@Override public float getDailyMinBatteryVoltage() { return roverReadTable.getDailyMinBatteryVoltage(); }
 	@Override public float getDailyMaxBatteryVoltage() { return roverReadTable.getDailyMaxBatteryVoltage(); }
 	@Override public float getDailyMaxChargingCurrent() { return roverReadTable.getDailyMaxChargingCurrent(); }

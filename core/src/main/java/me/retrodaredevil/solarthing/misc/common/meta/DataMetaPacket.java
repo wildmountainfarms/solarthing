@@ -3,9 +3,9 @@ package me.retrodaredevil.solarthing.misc.common.meta;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.type.closed.meta.TargetedMetaPacket;
 import me.retrodaredevil.solarthing.type.closed.meta.TargetedMetaPacketType;
+import org.jspecify.annotations.NonNull;
 import me.retrodaredevil.solarthing.misc.common.DataIdentifiable;
 import me.retrodaredevil.solarthing.misc.common.DataIdentifier;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
@@ -35,32 +35,32 @@ public final class DataMetaPacket implements TargetedMetaPacket, DataIdentifiabl
 	}
 
 	@Override
-	public @NotNull TargetedMetaPacketType getPacketType() {
+	public @NonNull TargetedMetaPacketType getPacketType() {
 		return TargetedMetaPacketType.DATA_INFO;
 	}
 
 	@JsonProperty("name")
-	public @NotNull String getName() {
+	public @NonNull String getName() {
 		return name;
 	}
 
 	@JsonProperty("description")
-	public @NotNull String getDescription() {
+	public @NonNull String getDescription() {
 		return description;
 	}
 
 	@JsonProperty("location")
-	public @NotNull String getLocation() {
+	public @NonNull String getLocation() {
 		return location;
 	}
 
 	@Override
-	public @NotNull DataIdentifier getIdentifier() {
+	public @NonNull DataIdentifier getIdentifier() {
 		return dataIdentifier;
 	}
 
 	@Override
-	public @NotNull IdentityInfo getIdentityInfo() {
+	public @NonNull IdentityInfo getIdentityInfo() {
 		return identityInfo;
 	}
 

@@ -6,13 +6,13 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.ChangePacket;
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.event.SupplementarySolarEventPacket;
 import me.retrodaredevil.solarthing.solar.tracer.SupplementaryTracerPacket;
 import me.retrodaredevil.solarthing.solar.tracer.TracerChargingEquipmentStatus;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Represents a change in charging equipment status which can represent any or all changes in
@@ -27,7 +27,7 @@ public interface TracerChargingEquipmentStatusChangePacket extends Supplementary
 
 	@DefaultFinal
 	@Override
-	default @NotNull SolarEventPacketType getPacketType() {
+	default @NonNull SolarEventPacketType getPacketType() {
 		return SolarEventPacketType.TRACER_CHARGING_EQUIPMENT_STATUS_CHANGE;
 	}
 
@@ -43,7 +43,7 @@ public interface TracerChargingEquipmentStatusChangePacket extends Supplementary
 	}
 
 	@GraphQLInclude("chargingEquipmentStatus")
-	@NotNull TracerChargingEquipmentStatus getChargingEquipmentStatus();
+	@NonNull TracerChargingEquipmentStatus getChargingEquipmentStatus();
 
 	@GraphQLInclude("previousChargingEquipmentStatus")
 	@Nullable TracerChargingEquipmentStatus getPreviousChargingEquipmentStatus();

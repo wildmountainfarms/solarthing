@@ -19,10 +19,10 @@ import me.retrodaredevil.couchdbjava.response.BulkDocumentResponse;
 import me.retrodaredevil.couchdbjava.response.BulkGetResponse;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.rest.cache.creators.BatteryRecordCacheNodeCreator;
 import me.retrodaredevil.solarthing.type.cache.CacheUtil;
 import me.retrodaredevil.solarthing.type.cache.packets.CacheDataPacket;
+import org.jspecify.annotations.NonNull;
 import me.retrodaredevil.solarthing.database.MillisQuery;
 import me.retrodaredevil.solarthing.database.MillisQueryBuilder;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
@@ -90,13 +90,13 @@ public class CacheHandler {
 		long currentPeriodNumber = getPeriodNumber(System.currentTimeMillis());
 		return currentPeriodNumber - 2; // We cannot get data from the current period, and we cannot get data from the previous period
 	}
-	public <T extends CacheDataPacket> List<T> getCachesFromDateMillis(@NotNull TypeReference<T> typeReference, @NotNull String cacheName, @NotNull String sourceId, long startMillis, long endMillis) {
+	public <T extends CacheDataPacket> List<T> getCachesFromDateMillis(@NonNull TypeReference<T> typeReference, @NonNull String cacheName, @NonNull String sourceId, long startMillis, long endMillis) {
 		if (endMillis < startMillis) {
 			throw new IllegalArgumentException("endMillis cannot be less than startMillis! startMillis: " + startMillis + " endMillis: " + endMillis);
 		}
 		return getCaches(typeReference, cacheName, sourceId, getPeriodNumber(startMillis), getPeriodNumber(endMillis));
 	}
-	public <T extends CacheDataPacket> @NotNull List<T> getCaches(@NotNull TypeReference<T> typeReference, @NotNull String cacheName, @NotNull String sourceId, long startPeriodNumber, long endPeriodNumber) {
+	public <T extends CacheDataPacket> @NonNull List<T> getCaches(@NonNull TypeReference<T> typeReference, @NonNull String cacheName, @NonNull String sourceId, long startPeriodNumber, long endPeriodNumber) {
 		requireNonNull(typeReference);
 		requireNonNull(cacheName);
 		requireNonNull(sourceId, "The source cannot be null!");
@@ -141,7 +141,7 @@ public class CacheHandler {
 		}
 		return revisionNode.asText();
 	}
-	private <T extends CacheDataPacket> List<T> queryOrCalculateCaches(@NotNull TypeReference<T> typeReference, @NotNull String cacheName, @NotNull String sourceId, long startPeriodNumber, long endPeriodNumber) {
+	private <T extends CacheDataPacket> List<T> queryOrCalculateCaches(@NonNull TypeReference<T> typeReference, @NonNull String cacheName, @NonNull String sourceId, long startPeriodNumber, long endPeriodNumber) {
 		List<String> documentIds = new ArrayList<>(); // the document IDs needed to return data
 		Map<String, Long> documentIdPeriodNumberMap = new HashMap<>(); // a map from a document ID to a period number
 

@@ -2,8 +2,8 @@ package me.retrodaredevil.solarthing.commands.packets.open;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.type.alter.packets.ScheduledCommandData;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -23,17 +23,17 @@ public class ImmutableScheduleCommandPacket implements ScheduleCommandPacket {
 	}
 
 	@Override
-	public @NotNull ScheduledCommandData getData() {
+	public @NonNull ScheduledCommandData getData() {
 		return data;
 	}
 
 	@Override
-	public @NotNull UUID getUniqueRequestId() {
+	public @NonNull UUID getUniqueRequestId() {
 		return uniqueRequestId;
 	}
 
 	@Override
-	public @NotNull String getUniqueString() {
+	public @NonNull String getUniqueString() {
 		return "ScheduleCommandPacket(" +
 				"data=" + data.getUniqueString() +
 				", uniqueRequestId=" + uniqueRequestId +

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 @JsonDeserialize(as = ImmutableSecurityRejectPacket.class)
 @JsonTypeName("REJECT")
@@ -12,15 +12,15 @@ import me.retrodaredevil.solarthing.annotations.NotNull;
 public interface SecurityRejectPacket extends SecurityEventPacket {
 
 	@Override
-	default @NotNull SecurityEventPacketType getPacketType() {
+	default @NonNull SecurityEventPacketType getPacketType() {
 		return SecurityEventPacketType.REJECT;
 	}
 
 	@JsonProperty("reason")
-	@NotNull Reason getReason();
+	@NonNull Reason getReason();
 
 	@JsonProperty("moreInfo")
-	@NotNull String getMoreInfo();
+	@NonNull String getMoreInfo();
 
 	enum Reason {
 		/** Used for {@link me.retrodaredevil.solarthing.packets.security.SecurityPacketType#LARGE_INTEGRITY_PACKET} to indicate

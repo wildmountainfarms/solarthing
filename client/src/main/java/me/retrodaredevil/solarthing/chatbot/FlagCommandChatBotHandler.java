@@ -1,8 +1,6 @@
 package me.retrodaredevil.solarthing.chatbot;
 
 import me.retrodaredevil.solarthing.AlterPacketsProvider;
-import me.retrodaredevil.solarthing.annotations.NotNull;
-import me.retrodaredevil.solarthing.annotations.Nullable;
 import me.retrodaredevil.solarthing.commands.packets.open.CommandOpenPacket;
 import me.retrodaredevil.solarthing.commands.packets.open.DeleteAlterPacket;
 import me.retrodaredevil.solarthing.commands.packets.open.FlagAliasAddPacket;
@@ -26,6 +24,8 @@ import me.retrodaredevil.solarthing.type.alter.packets.FlagAliasPacket;
 import me.retrodaredevil.solarthing.type.alter.packets.FlagPacket;
 import me.retrodaredevil.solarthing.util.TimeRange;
 import me.retrodaredevil.solarthing.util.TimeUtil;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -129,7 +129,7 @@ public class FlagCommandChatBotHandler implements ChatBotHandler {
 				})
 				.collect(Collectors.toList());
 	}
-	private void uploadPacket(CommandOpenPacket commandOpenPacket, Consumer<@NotNull Boolean> onSendComplete) {
+	private void uploadPacket(CommandOpenPacket commandOpenPacket, Consumer<@NonNull Boolean> onSendComplete) {
 		PacketCollectionCreator creator = commandHelper.getCommandManager().makeCreator(sourceId, zoneId, null, commandOpenPacket, PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR);
 
 		// TODO We should check if the flag being requested is already active.
@@ -397,7 +397,7 @@ public class FlagCommandChatBotHandler implements ChatBotHandler {
 	}
 
 	@Override
-	public @NotNull List<String> getHelpLines(Message helpMessage) {
+	public @NonNull List<String> getHelpLines(Message helpMessage) {
 		if (!canEditFlags(helpMessage)) {
 			return Collections.emptyList();
 		}

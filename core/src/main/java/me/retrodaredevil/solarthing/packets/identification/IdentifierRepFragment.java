@@ -2,7 +2,7 @@ package me.retrodaredevil.solarthing.packets.identification;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import me.retrodaredevil.solarthing.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Objects;
 
@@ -18,7 +18,7 @@ public class IdentifierRepFragment implements IdentifierFragmentMatcher {
 	@JsonCreator
 	public IdentifierRepFragment(
 			@JsonProperty("fragment") int fragmentId,
-			@JsonProperty("identifier") @NotNull String identifierRepresentation) {
+			@JsonProperty("identifier") @NonNull String identifierRepresentation) {
 		this.fragmentId = fragmentId;
 		this.identifierRepresentation = requireNonNull(identifierRepresentation);
 	}
@@ -33,7 +33,7 @@ public class IdentifierRepFragment implements IdentifierFragmentMatcher {
 		return fragmentId;
 	}
 
-	public @NotNull String getIdentifierRepresentation() {
+	public @NonNull String getIdentifierRepresentation() {
 		return identifierRepresentation;
 	}
 

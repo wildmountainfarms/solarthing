@@ -1,7 +1,7 @@
 package me.retrodaredevil.solarthing.config.options;
 
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
+import org.jspecify.annotations.NonNull;
 
 import static java.util.Objects.requireNonNull;
 
@@ -9,7 +9,7 @@ import static java.util.Objects.requireNonNull;
 public final class SourceIdValidator {
 	private SourceIdValidator() { throw new UnsupportedOperationException(); }
 
-	public static @NotNull String validateSourceId(String sourceId) {
+	public static @NonNull String validateSourceId(String sourceId) {
 		requireNonNull(sourceId);
 		if (sourceId.isEmpty()) {
 			throw new IllegalArgumentException("The source ID cannot be empty!");

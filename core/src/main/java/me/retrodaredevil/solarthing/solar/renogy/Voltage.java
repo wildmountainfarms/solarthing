@@ -1,7 +1,7 @@
 package me.retrodaredevil.solarthing.solar.renogy;
 
-import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.CodeMode;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
@@ -33,7 +33,7 @@ public enum Voltage implements CodeMode {
 	}
 
 	@Override
-	public @NotNull String getModeName() {
+	public @NonNull String getModeName() {
 		return voltage != null ? (voltage + "V") : "Auto";
 	}
 

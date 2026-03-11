@@ -1,8 +1,7 @@
 package me.retrodaredevil.solarthing.packets.identification;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import me.retrodaredevil.solarthing.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 public interface SupplementaryIdentifier extends Identifier {
 	/**
@@ -10,5 +9,5 @@ public interface SupplementaryIdentifier extends Identifier {
 	 * @return The {@link Identifier} that this is supplementary to
 	 */
 	@JsonProperty("supplementaryTo")
-	@NotNull Identifier getSupplementaryTo();
+	@NonNull Identifier getSupplementaryTo();
 }
