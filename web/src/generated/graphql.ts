@@ -242,7 +242,7 @@ export type DailyFXPacket = {
   dailyMaxBatteryVoltage: Scalars['Float']['output'];
   /** The minimum battery voltage for the day. Note this may reset at a different time compared to max battery voltage for the day. */
   dailyMinBatteryVoltage: Scalars['Float']['output'];
-  /** @deprecated Field no longer supported */
+  /** @deprecated Deprecated */
   errorModeValue: Scalars['Int']['output'];
   errorModes: Array<FXErrorMode>;
   hasError: Scalars['Boolean']['output'];
@@ -617,7 +617,7 @@ export type Identifier = {
 /** Contains info used to show human readable identifiers */
 export type IdentityInfo = {
   __typename?: 'IdentityInfo';
-  displayName?: Maybe<Scalars['String']['output']>;
+  displayName: Scalars['String']['output'];
   name: Scalars['String']['output'];
   shortName: Scalars['String']['output'];
   stripExtra?: Maybe<IdentityInfo>;
@@ -696,7 +696,7 @@ export type MXStatusPacket = {
   __typename?: 'MXStatusPacket';
   /** The address of the port that this device is plugged in to. If 0, this is plugged in to the mate */
   address: Scalars['Int']['output'];
-  /** @deprecated Field no longer supported */
+  /** @deprecated Deprecated */
   ampChargerCurrent: Scalars['Float']['output'];
   auxBitActive: Scalars['Boolean']['output'];
   auxMode?: Maybe<AuxMode>;
@@ -704,7 +704,7 @@ export type MXStatusPacket = {
   auxModeValueRaw: Scalars['Int']['output'];
   /** The battery voltage */
   batteryVoltage: Scalars['Float']['output'];
-  /** @deprecated Field no longer supported */
+  /** @deprecated Deprecated */
   chargerCurrent: Scalars['Int']['output'];
   chargerMode: Scalars['Int']['output'];
   chargingCurrent: Scalars['BigDecimal']['output'];
@@ -1100,7 +1100,7 @@ export type PacketNode_TracerStatusPacket = {
 
 export type PermissionObject = {
   __typename?: 'PermissionObject';
-  /** @deprecated Field no longer supported */
+  /** @deprecated Deprecated */
   fragments?: Maybe<Scalars['ObjectScalar']['output']>;
   publicKey?: Maybe<Scalars['String']['output']>;
 };
@@ -1138,12 +1138,13 @@ export type Query = {
   queryBatteryEstimate: SolarThingBatteryEstimate;
   queryBatteryRecord: SolarThingBatteryRecordQuery;
   queryEvent: SolarThingEventQuery;
-  /** Queries events in the specified time range while only including the specified fragment */
+  /** Queries events in the specified time range while only including the specified fragment. Deprecated: Use queryEvent instead */
   queryEventFragment: SolarThingEventQuery;
   /** Queries events in the specified time range while only including the specified identifier in the specified fragment */
   queryEventIdentifier: SolarThingEventQuery;
   /** Gives the timer values for the master FX of a single fragment over a time range */
   queryFXCharging?: Maybe<Array<Maybe<DataNode_FXChargingPacket>>>;
+  /** Queries each day present in the from..to time range. Optionally leave from as null to guarantee a query for a single day only. */
   queryFullDay?: Maybe<SolarThingFullDayStatusQuery>;
   queryLongTermMillis?: Maybe<SolarThingLongTermQuery>;
   queryLongTermMonth?: Maybe<SolarThingLongTermQuery>;
@@ -1151,8 +1152,12 @@ export type Query = {
   querySolcastDay?: Maybe<SolarThingSolcastDayQuery>;
   /** Query status packets in the specified time range. */
   queryStatus: SolarThingStatusQuery;
+  /** Queries status packets in the specified time range while only including the specified identifier in the specified fragment */
+  queryStatusIdentifier: SolarThingStatusQuery;
   /** Query the latest collection of status packets on or before the 'to' timestamp. */
   queryStatusLast: SolarThingStatusQuery;
+  /** Query the latest collection of status packets on or before the 'to' timestamp. */
+  queryStatusLastNow: SolarThingStatusQuery;
   systemStatus?: Maybe<DatabaseSystemStatus>;
   username?: Maybe<Scalars['String']['output']>;
 };
@@ -1173,8 +1178,8 @@ export type QueryqueryAlterArgs = {
 
 /** Query root */
 export type QueryqueryBatteryEstimateArgs = {
-  duration?: InputMaybe<Scalars['Duration']['input']>;
-  sourceId?: InputMaybe<Scalars['String']['input']>;
+  duration: Scalars['Duration']['input'];
+  sourceId: Scalars['String']['input'];
   to: Scalars['Long']['input'];
 };
 
@@ -1182,13 +1187,14 @@ export type QueryqueryBatteryEstimateArgs = {
 /** Query root */
 export type QueryqueryBatteryRecordArgs = {
   from: Scalars['Long']['input'];
-  sourceId?: InputMaybe<Scalars['String']['input']>;
+  sourceId: Scalars['String']['input'];
   to: Scalars['Long']['input'];
 };
 
 
 /** Query root */
 export type QueryqueryEventArgs = {
+  fragmentId?: InputMaybe<Scalars['Int']['input']>;
   from: Scalars['Long']['input'];
   includeUnknownChangePackets?: InputMaybe<Scalars['Boolean']['input']>;
   sourceId?: InputMaybe<Scalars['String']['input']>;
@@ -1226,7 +1232,8 @@ export type QueryqueryFXChargingArgs = {
 
 /** Query root */
 export type QueryqueryFullDayArgs = {
-  from: Scalars['Long']['input'];
+  fragmentId?: InputMaybe<Scalars['Int']['input']>;
+  from?: InputMaybe<Scalars['Long']['input']>;
   sourceId?: InputMaybe<Scalars['String']['input']>;
   to: Scalars['Long']['input'];
   useCache?: InputMaybe<Scalars['Boolean']['input']>;
@@ -1266,6 +1273,7 @@ export type QueryquerySolcastDayArgs = {
 
 /** Query root */
 export type QueryqueryStatusArgs = {
+  fragmentId?: InputMaybe<Scalars['Int']['input']>;
   from: Scalars['Long']['input'];
   sourceId?: InputMaybe<Scalars['String']['input']>;
   to: Scalars['Long']['input'];
@@ -1273,10 +1281,29 @@ export type QueryqueryStatusArgs = {
 
 
 /** Query root */
+export type QueryqueryStatusIdentifierArgs = {
+  acceptSupplementary?: InputMaybe<Scalars['Boolean']['input']>;
+  fragmentId: Scalars['Int']['input'];
+  from: Scalars['Long']['input'];
+  identifier: Scalars['String']['input'];
+  to: Scalars['Long']['input'];
+};
+
+
+/** Query root */
 export type QueryqueryStatusLastArgs = {
+  fragmentId?: InputMaybe<Scalars['Int']['input']>;
   reversed?: InputMaybe<Scalars['Boolean']['input']>;
   sourceId?: InputMaybe<Scalars['String']['input']>;
   to: Scalars['Long']['input'];
+};
+
+
+/** Query root */
+export type QueryqueryStatusLastNowArgs = {
+  fragmentId?: InputMaybe<Scalars['Int']['input']>;
+  reversed?: InputMaybe<Scalars['Boolean']['input']>;
+  sourceId?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -1530,14 +1557,14 @@ export type SolarDevice = {
 export enum SolarEventPacketType {
   FX_AC_MODE_CHANGE = 'FX_AC_MODE_CHANGE',
   FX_AUX_STATE_CHANGE = 'FX_AUX_STATE_CHANGE',
-  /** @deprecated Field no longer supported */
+  /** @deprecated Deprecated */
   FX_DAILY_DAY_END = 'FX_DAILY_DAY_END',
   FX_ERROR_MODE_CHANGE = 'FX_ERROR_MODE_CHANGE',
   FX_OPERATIONAL_MODE_CHANGE = 'FX_OPERATIONAL_MODE_CHANGE',
   FX_WARNING_MODE_CHANGE = 'FX_WARNING_MODE_CHANGE',
   MXFM_AUX_MODE_CHANGE = 'MXFM_AUX_MODE_CHANGE',
   MXFM_CHARGER_MODE_CHANGE = 'MXFM_CHARGER_MODE_CHANGE',
-  /** @deprecated Field no longer supported */
+  /** @deprecated Deprecated */
   MXFM_DAILY_DAY_END = 'MXFM_DAILY_DAY_END',
   MXFM_ERROR_MODE_CHANGE = 'MXFM_ERROR_MODE_CHANGE',
   MXFM_RAW_DAY_END = 'MXFM_RAW_DAY_END',
@@ -1547,10 +1574,10 @@ export enum SolarEventPacketType {
 }
 
 export enum SolarExtraPacketType {
-  /** @deprecated Field no longer supported */
+  /** @deprecated Deprecated */
   FX_CHARGING = 'FX_CHARGING',
   FX_DAILY = 'FX_DAILY',
-  /** @deprecated Field no longer supported */
+  /** @deprecated Deprecated */
   MXFM_DAILY = 'MXFM_DAILY'
 }
 
