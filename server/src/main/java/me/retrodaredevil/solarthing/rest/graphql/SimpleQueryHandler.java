@@ -70,7 +70,7 @@ public class SimpleQueryHandler {
 	/**
 	 * Converts a list of {@link InstancePacketGroup}s to merged {@link FragmentedPacketGroup}s.
 	 */
-	public List<? extends FragmentedPacketGroup> sortPackets(List<? extends InstancePacketGroup> packets, String sourceId) {
+	public List<? extends FragmentedPacketGroup> sortPackets(List<? extends InstancePacketGroup> packets, @Nullable String sourceId) {
 		if (packets.isEmpty()) {
 			return Collections.emptyList();
 		}

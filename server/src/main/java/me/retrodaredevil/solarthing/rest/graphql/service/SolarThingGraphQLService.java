@@ -516,8 +516,8 @@ public class SolarThingGraphQLService {
 		}
 		@GraphQLQuery
 		public @NonNull List<@NonNull PacketNode<FXOperationalModeChangePacket>> fxOperationalModeChange(
-				@GraphQLArgument(name = "include") List<@NonNull OperationalMode> include,
-				@GraphQLArgument(name = "exclude") List<@NonNull OperationalMode> exclude
+				@GraphQLArgument(name = "include") @Nullable List<@NonNull OperationalMode> include,
+				@GraphQLArgument(name = "exclude") @Nullable List<@NonNull OperationalMode> exclude
 		) {
 			List<@NonNull PacketNode<FXOperationalModeChangePacket>> r = packetGetter.getPackets(FXOperationalModeChangePacket.class);
 			if (include != null) {
@@ -549,8 +549,8 @@ public class SolarThingGraphQLService {
 		}
 		@GraphQLQuery
 		public @NonNull List<@NonNull PacketNode<SuccessMateCommandPacket>> mateCommand(
-				@GraphQLArgument(name = "include") List<@NonNull MateCommand> include,
-				@GraphQLArgument(name = "exclude") List<@NonNull MateCommand> exclude
+				@GraphQLArgument(name = "include") @Nullable List<@NonNull MateCommand> include,
+				@GraphQLArgument(name = "exclude") @Nullable List<@NonNull MateCommand> exclude
 		) {
 			List<@NonNull PacketNode<SuccessMateCommandPacket>> r = packetGetter.getPackets(SuccessMateCommandPacket.class);
 			if (include != null) {

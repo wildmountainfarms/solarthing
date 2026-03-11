@@ -5,6 +5,7 @@ import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.action.node.environment.InjectEnvironment;
 import me.retrodaredevil.action.node.environment.VariableEnvironment;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -45,14 +46,10 @@ public class CommandController {
 			path = "/run",
 			produces = "application/json"
 	)
-	public CommandRequestResponse runCommand(String apiKey, String commandName) {
-		// Also consider using this way instead of exceptions: https://stackoverflow.com/a/60079942
-		if (apiKey == null) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "apiKey is required!");
-		}
-		if (commandName == null) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "commandName is required!");
-		}
+	public CommandRequestResponse runCommand(
+			@RequestParam String apiKey,
+			@RequestParam String commandName
+	) {
 		if (!commandHandler.isAuthorized(apiKey)) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not authorized with the given api key!");
 		}
