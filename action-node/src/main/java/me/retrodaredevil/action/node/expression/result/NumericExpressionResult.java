@@ -1,6 +1,6 @@
 package me.retrodaredevil.action.node.expression.result;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * A {@link NumericExpressionResult} contains a {@link Number} of any implementation.
@@ -14,7 +14,7 @@ public interface NumericExpressionResult extends ExpressionResult, Comparable<Nu
 	}
 
 	@Override
-	default int compareTo(@NotNull NumericExpressionResult o) {
+	default int compareTo(@NonNull NumericExpressionResult o) {
 		return Double.compare(getNumber().doubleValue(), o.getNumber().doubleValue());
 	}
 }

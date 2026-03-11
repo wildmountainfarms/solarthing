@@ -16,13 +16,7 @@ plugins {
 }
 
 dependencies {
-	// only use in core
-//	testImplementation("com.tngtech.archunit:archunit:1.3.2") // https://github.com/TNG/ArchUnit/releases
-
-	// TODO only keep JSpecify
-	// https://mvnrepository.com/artifact/com.google.code.findbugs/jsr305
-	implementation("com.google.code.findbugs:jsr305:3.0.2")
-	implementation("org.jetbrains:annotations:26.0.2") // https://github.com/JetBrains/java-annotations/releases
+//	implementation("org.jetbrains:annotations:26.0.2") // https://github.com/JetBrains/java-annotations/releases
 	implementation("org.jspecify:jspecify:1.0.0")
 
 	// https://github.com/google/error-prone/releases
