@@ -87,13 +87,6 @@ tasks.named<Test>("test") {
 }
 
 spotless {
-	java {
-		// we don't removeUnusedImports() because if we have an import that's only used in documentation, Spotless will get mad
-		endWithNewline()
-		trimTrailingWhitespace()
-		leadingSpacesToTabs()
-		encoding = Charsets.UTF_8
-	}
 	format("javaBasic", com.diffplug.gradle.spotless.JavaExtension::class.java) {
 		target(fileTree(".") {
 			include("**/*.java")
@@ -122,6 +115,7 @@ tasks.withType<JavaCompile>().configureEach {
 	options.errorprone {
 		disableWarningsInGeneratedCode = true
 
+		excludedPaths = ".*/build/generated/.*"
 		check("NullAway", CheckSeverity.ERROR)
 		option("NullAway:OnlyNullMarked", "true") // @NullMarked annotation required for anything to happen
 		// https://github.com/uber/NullAway/wiki/JSpecify-Support#jspecify-mode
@@ -129,7 +123,7 @@ tasks.withType<JavaCompile>().configureEach {
 		option("NullAway:AcknowledgeRestrictiveAnnotations", "true") // annotations in non-NullMarked code are used by NullAway
 		// https://github.com/uber/NullAway/wiki/JSpecify-Support#requireexplicitnullmarking-checker
 		// TODO enable
-//		error("RequireExplicitNullMarking") // added to NullAway on 2025-12-01 in version 0.12.13
+//		error("RequireExplicitNullMarking")
 
 		// TODO update errors
 
