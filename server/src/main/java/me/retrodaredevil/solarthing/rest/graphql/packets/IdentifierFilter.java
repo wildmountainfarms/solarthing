@@ -17,9 +17,9 @@ public class IdentifierFilter implements PacketFilter {
 	private final DefaultAction defaultAction;
 
 	public IdentifierFilter(String identifierRepresentation, boolean acceptSupplementary, DefaultAction defaultAction) {
-		requireNonNull(this.identifierRepresentation = identifierRepresentation);
+		this.identifierRepresentation = requireNonNull(identifierRepresentation);
 		this.acceptSupplementary = acceptSupplementary;
-		requireNonNull(this.defaultAction = defaultAction);
+		this.defaultAction = requireNonNull(defaultAction);
 	}
 	public IdentifierFilter(String identifierRepresentation, boolean acceptSupplementary) {
 		this(identifierRepresentation, acceptSupplementary, DefaultAction.NO_KEEP);

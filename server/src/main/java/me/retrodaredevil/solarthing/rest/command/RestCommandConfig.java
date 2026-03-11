@@ -44,7 +44,7 @@ public class RestCommandConfig {
 		public Command(
 				@JsonProperty(value = "action_file", required = true) Path actionFile,
 				@JsonProperty("source") @Nullable String sourceId) {
-			requireNonNull(this.actionFile = actionFile);
+			this.actionFile = requireNonNull(actionFile);
 			this.sourceId = sourceId;
 		}
 

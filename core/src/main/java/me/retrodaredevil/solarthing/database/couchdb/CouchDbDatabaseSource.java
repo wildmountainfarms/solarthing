@@ -11,7 +11,7 @@ public class CouchDbDatabaseSource implements DatabaseSource {
 	private final CouchDbDatabase database;
 
 	public CouchDbDatabaseSource(CouchDbDatabase database) {
-		requireNonNull(this.database = database);
+		this.database = requireNonNull(database);
 	}
 
 	@Override

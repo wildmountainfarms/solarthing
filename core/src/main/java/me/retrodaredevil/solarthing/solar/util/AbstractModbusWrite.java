@@ -10,7 +10,7 @@ public abstract class AbstractModbusWrite {
 	protected final ModbusSlave modbus;
 
 	protected AbstractModbusWrite(ModbusSlave modbus) {
-		requireNonNull(this.modbus = modbus);
+		this.modbus = requireNonNull(modbus);
 	}
 
 	protected void write(int register, int value){

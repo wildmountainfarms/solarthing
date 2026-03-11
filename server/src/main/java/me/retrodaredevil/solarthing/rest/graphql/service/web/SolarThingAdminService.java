@@ -176,7 +176,7 @@ public class SolarThingAdminService {
 		private final SolarThingDatabase database;
 
 		private SolarThingDatabaseSystemStatus(SolarThingDatabase database) {
-			requireNonNull(this.database = database);
+			this.database = requireNonNull(database);
 			// NOTE: If the database has authentication on it, calling getStatus for some databases may produce inconsistent results
 			// TODO maybe consider removing authentication from database or make this work when authenticated or when unauthenticated
 		}

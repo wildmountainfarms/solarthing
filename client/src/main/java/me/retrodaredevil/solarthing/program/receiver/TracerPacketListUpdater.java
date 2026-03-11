@@ -42,8 +42,8 @@ public class TracerPacketListUpdater implements PacketListReceiver {
 
 	public TracerPacketListUpdater(int number, TracerReadTable read, TracerWriteTable write, TracerClockOptions tracerClockOptions, ConnectionHandler connectionHandler, boolean connectionHandlerHasFlushLogic) {
 		this.number = number;
-		requireNonNull(this.read = read);
-		requireNonNull(this.write = write);
+		this.read = requireNonNull(read);
+		this.write = requireNonNull(write);
 		this.tracerClockOptions = tracerClockOptions;
 		this.connectionHandler = connectionHandler;
 		this.connectionHandlerHasFlushLogic = connectionHandlerHasFlushLogic;

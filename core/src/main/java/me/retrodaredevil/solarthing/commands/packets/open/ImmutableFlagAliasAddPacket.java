@@ -15,7 +15,7 @@ public class ImmutableFlagAliasAddPacket implements FlagAliasAddPacket {
 
 	@JsonCreator
 	public ImmutableFlagAliasAddPacket(@JsonProperty(value = "flagAliasData", required = true) FlagAliasData flagAliasData) {
-		requireNonNull(this.flagAliasData = flagAliasData);
+		this.flagAliasData = requireNonNull(flagAliasData);
 	}
 
 	@Override

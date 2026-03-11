@@ -15,7 +15,7 @@ class ImmutableInstancePacketGroup implements InstancePacketGroup {
 	ImmutableInstancePacketGroup(Collection<? extends Packet> packets, long dateMillis, String sourceId, int fragmentId) {
 		this.packets = Collections.unmodifiableList(new ArrayList<>(packets));
 		this.dateMillis = dateMillis;
-		requireNonNull(this.sourceId = sourceId);
+		this.sourceId = requireNonNull(sourceId);
 		this.fragmentId = fragmentId;
 	}
 

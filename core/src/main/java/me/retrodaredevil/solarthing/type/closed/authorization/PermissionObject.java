@@ -25,7 +25,7 @@ public final class PermissionObject {
 	public PermissionObject(
 			@JsonProperty(value = "publicKey", required = true) String publicKey
 	) throws InvalidKeyException {
-		requireNonNull(this.publicKey = publicKey);
+		this.publicKey = requireNonNull(publicKey);
 		publicKeyObject = KeyUtil.decodePublicKey(publicKey);
 	}
 

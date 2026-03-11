@@ -21,7 +21,7 @@ public class TimedMetaCollection {
 
 	public TimedMetaCollection(Long startTime, Long endTime, List<BasicMetaPacket> packets) {
 		timeRange = new TimeRange(startTime, endTime);
-		requireNonNull(this.packets = packets);
+		this.packets = requireNonNull(packets);
 	}
 	@JsonCreator
 	public static TimedMetaCollection createRemoveNullValues(

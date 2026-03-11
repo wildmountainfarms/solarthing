@@ -18,10 +18,10 @@ public class ImmutableStoredAlterPacket implements StoredAlterPacket {
 			@JsonProperty(value = "updatedDateMillis", required = true) long updatedDateMillis,
 			@JsonProperty(value = "packet", required = true) AlterPacket packet,
 			@JsonProperty(value = "sourceId", required = true) String sourceId) {
-		requireNonNull(this.databaseId = databaseId);
+		this.databaseId = requireNonNull(databaseId);
 		this.updatedDateMillis = updatedDateMillis;
-		requireNonNull(this.packet = packet);
-		requireNonNull(this.sourceId = sourceId);
+		this.packet = requireNonNull(packet);
+		this.sourceId = requireNonNull(sourceId);
 	}
 
 	@Override

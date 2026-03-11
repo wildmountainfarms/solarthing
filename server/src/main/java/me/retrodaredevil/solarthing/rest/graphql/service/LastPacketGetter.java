@@ -17,8 +17,8 @@ public class LastPacketGetter implements PacketGetter {
 	private final PacketFilter packetFilter;
 
 	public LastPacketGetter(List<? extends InstancePacketGroup> packets, PacketFilter packetFilter) {
-		requireNonNull(this.packets = packets);
-		requireNonNull(this.packetFilter = packetFilter);
+		this.packets = requireNonNull(packets);
+		this.packetFilter = requireNonNull(packetFilter);
 	}
 	@Override
 	public <T> @NotNull List<@NotNull PacketNode<T>> getPackets(Class<T> clazz) {

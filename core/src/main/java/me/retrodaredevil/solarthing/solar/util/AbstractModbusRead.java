@@ -12,8 +12,8 @@ public abstract class AbstractModbusRead {
 	private final Endian endian;
 
 	protected AbstractModbusRead(ModbusSlave modbus, Endian endian) {
-		requireNonNull(this.modbus = modbus);
-		requireNonNull(this.endian = endian);
+		this.modbus = requireNonNull(modbus);
+		this.endian = requireNonNull(endian);
 	}
 
 	protected int[] get(MessageHandler<int[]> readHandler){

@@ -11,7 +11,7 @@ public class CouchDbDatabaseManagementSource implements DatabaseManagementSource
 	private final CouchDbInstance instance;
 
 	public CouchDbDatabaseManagementSource(CouchDbInstance instance) {
-		requireNonNull(this.instance = instance);
+		this.instance = requireNonNull(instance);
 	}
 
 	@Override

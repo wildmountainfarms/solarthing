@@ -35,8 +35,8 @@ public class FXAccumulationDataCache extends BaseAccumulationDataCache implement
 			@JsonProperty(value = "unknownData", required = true) Data unknownData,
 			@JsonProperty(value = "unknownStartDateMillis", required = true) Long unknownStartDateMillis) {
 		super(firstDateMillis, lastDateMillis, unknownStartDateMillis);
-		requireNonNull(this.mainData = mainData);
-		requireNonNull(this.unknownData = unknownData);
+		this.mainData = requireNonNull(mainData);
+		this.unknownData = requireNonNull(unknownData);
 
 		identifier = new OutbackIdentifier(address);
 	}

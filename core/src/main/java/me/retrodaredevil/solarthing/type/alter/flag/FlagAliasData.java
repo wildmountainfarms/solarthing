@@ -25,8 +25,8 @@ public final class FlagAliasData implements UniqueStringRepresentation {
 			@JsonProperty(value = "flagName", required = true) String flagName,
 			@JsonProperty(value = "flagAlias", required = true) String flagAlias,
 			@JsonProperty(value = "defaultDurationMillis", required = true) Long defaultDurationMillis) {
-		requireNonNull(this.flagName = flagName);
-		requireNonNull(this.flagAlias = flagAlias);
+		this.flagName = requireNonNull(flagName);
+		this.flagAlias = requireNonNull(flagAlias);
 		this.defaultDurationMillis = defaultDurationMillis;
 	}
 

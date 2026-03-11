@@ -20,7 +20,7 @@ public class RevisionUpdateToken implements UpdateToken {
 
 	@JsonCreator
 	public RevisionUpdateToken(@JsonProperty(value = "revision", required = true) String revision) {
-		requireNonNull(this.revision = revision);
+		this.revision = requireNonNull(revision);
 	}
 
 	@JsonProperty("revision")

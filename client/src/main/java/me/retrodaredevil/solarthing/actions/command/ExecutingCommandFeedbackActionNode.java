@@ -33,8 +33,8 @@ public class ExecutingCommandFeedbackActionNode implements ActionNode {
 	public ExecutingCommandFeedbackActionNode(
 			@JsonProperty(value = "message", required = true) String message,
 			@JsonProperty(value = "category", required = true) String category) {
-		requireNonNull(this.message = message);
-		requireNonNull(this.category = category);
+		this.message = requireNonNull(message);
+		this.category = requireNonNull(category);
 	}
 	@Override
 	public Action createAction(ActionEnvironment actionEnvironment) {

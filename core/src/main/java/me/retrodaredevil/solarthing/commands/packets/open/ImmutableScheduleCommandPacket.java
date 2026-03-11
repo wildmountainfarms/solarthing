@@ -18,8 +18,8 @@ public class ImmutableScheduleCommandPacket implements ScheduleCommandPacket {
 	public ImmutableScheduleCommandPacket(
 			@JsonProperty(value = "data", required = true) ScheduledCommandData data,
 			@JsonProperty(value = "uniqueRequestId", required = true) UUID uniqueRequestId) {
-		requireNonNull(this.data = data);
-		requireNonNull(this.uniqueRequestId = uniqueRequestId);
+		this.data = requireNonNull(data);
+		this.uniqueRequestId = requireNonNull(uniqueRequestId);
 	}
 
 	@Override

@@ -25,9 +25,9 @@ public class ChatBotCommandHelper {
 	private final PermissionHandler permissionHandler = new PermissionHandler();
 
 	public ChatBotCommandHelper(Map<String, List<String>> permissionMap, FragmentedPacketGroupProvider packetGroupProvider, CommandManager commandManager) {
-		requireNonNull(this.permissionMap = permissionMap);
-		requireNonNull(this.packetGroupProvider = packetGroupProvider);
-		requireNonNull(this.commandManager = commandManager);
+		this.permissionMap = requireNonNull(permissionMap);
+		this.packetGroupProvider = requireNonNull(packetGroupProvider);
+		this.commandManager = requireNonNull(commandManager);
 	}
 	private List<AvailableCommand> getCommands() {
 		FragmentedPacketGroup packetGroup = packetGroupProvider.getPacketGroup();

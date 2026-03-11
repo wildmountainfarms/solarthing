@@ -7,8 +7,8 @@ public final class VersionedPacket<T> {
 	private final UpdateToken updateToken;
 
 	public VersionedPacket(T packet, UpdateToken updateToken) {
-		requireNonNull(this.packet = packet);
-		requireNonNull(this.updateToken = updateToken);
+		this.packet = requireNonNull(packet);
+		this.updateToken = requireNonNull(updateToken);
 	}
 
 	public T getPacket() {

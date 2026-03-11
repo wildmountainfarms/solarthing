@@ -23,8 +23,8 @@ public final class FlagAliasPacket implements AlterPacket {
 	public FlagAliasPacket(
 			@JsonProperty(value = "flagAliasData", required = true) FlagAliasData flagData,
 			@JsonProperty(value = "executionReason", required = true) ExecutionReason executionReason) {
-		requireNonNull(this.flagData = flagData);
-		requireNonNull(this.executionReason = executionReason);
+		this.flagData = requireNonNull(flagData);
+		this.executionReason = requireNonNull(executionReason);
 	}
 	@Override
 	public @NotNull AlterPacketType getPacketType() {

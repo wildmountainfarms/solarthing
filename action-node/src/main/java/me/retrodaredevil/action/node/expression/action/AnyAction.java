@@ -14,7 +14,7 @@ public class AnyAction extends SimpleAction {
 
 	public AnyAction(BooleanExpression expression) {
 		super(false);
-		requireNonNull(this.expression = expression);
+		this.expression = requireNonNull(expression);
 	}
 
 	@Override

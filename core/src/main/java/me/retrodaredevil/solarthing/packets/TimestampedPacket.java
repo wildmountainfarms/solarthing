@@ -7,7 +7,7 @@ public final class TimestampedPacket<T> {
 	private final long dateMillis;
 
 	public TimestampedPacket(T packet, long dateMillis) {
-		requireNonNull(this.packet = packet);
+		this.packet = requireNonNull(packet);
 		this.dateMillis = dateMillis;
 	}
 

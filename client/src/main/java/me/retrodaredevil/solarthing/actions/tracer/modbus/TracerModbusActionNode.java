@@ -38,7 +38,7 @@ public class TracerModbusActionNode implements ActionNode {
 			@JsonProperty(value = "on_error") ActionNode errorAction
 	) {
 		this.number = number == null ? NumberedIdentifier.DEFAULT_NUMBER : number;
-		requireNonNull(this.sequentialActions = sequentialActions);
+		this.sequentialActions = requireNonNull(sequentialActions);
 		this.successAction = successAction == null ? PassActionNode.getInstance() : successAction;
 		this.errorAction = errorAction == null ? PassActionNode.getInstance() : errorAction;
 	}

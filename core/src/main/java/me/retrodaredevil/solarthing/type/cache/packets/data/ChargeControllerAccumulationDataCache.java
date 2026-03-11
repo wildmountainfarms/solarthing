@@ -36,7 +36,7 @@ public class ChargeControllerAccumulationDataCache extends BaseAccumulationDataC
 			@JsonProperty(value = "unknownGenerationKWH", required = true) float unknownGenerationKWH,
 			@JsonProperty(value = "unknownStartDateMillis", required = true) Long unknownStartDateMillis) {
 		super(firstDateMillis, lastDateMillis, unknownStartDateMillis);
-		requireNonNull(this.identifier = identifier);
+		this.identifier = requireNonNull(identifier);
 		this.generationKWH = generationKWH;
 		this.unknownGenerationKWH = unknownGenerationKWH;
 	}

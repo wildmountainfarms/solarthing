@@ -15,8 +15,8 @@ public final class AuthorizedSender {
 	private final PermissionObject data;
 
 	public AuthorizedSender(String sender, PermissionObject data) {
-		requireNonNull(this.sender = sender);
-		requireNonNull(this.data = data);
+		this.sender = requireNonNull(sender);
+		this.data = requireNonNull(data);
 	}
 
 	@JsonProperty("sender")

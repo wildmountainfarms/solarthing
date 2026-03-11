@@ -30,7 +30,7 @@ public class HeartbeatCommandChatBotHandler implements ChatBotHandler {
 	private final ResourceManager<? extends DatabaseCache> eventDatabaseCacheManager;
 
 	public HeartbeatCommandChatBotHandler(ResourceManager<? extends DatabaseCache> eventDatabaseCacheManager) {
-		requireNonNull(this.eventDatabaseCacheManager = eventDatabaseCacheManager);
+		this.eventDatabaseCacheManager = requireNonNull(eventDatabaseCacheManager);
 	}
 
 

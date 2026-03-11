@@ -23,8 +23,8 @@ public final class FlagData implements UniqueStringRepresentation {
 	public FlagData(
 			@JsonProperty(value = "flagName", required = true) String flagName,
 			@JsonProperty(value = "activePeriod", required = true) ActivePeriod activePeriod) {
-		requireNonNull(this.flagName = flagName);
-		requireNonNull(this.activePeriod = activePeriod);
+		this.flagName = requireNonNull(flagName);
+		this.activePeriod = requireNonNull(activePeriod);
 	}
 
 	@JsonProperty("flagName")

@@ -20,9 +20,9 @@ public class ComparisonExpressionNode implements ExpressionNode {
 			@JsonProperty(value = "lhs", required = true) ExpressionNode lhs,
 			@JsonProperty(value = "rhs", required = true) ExpressionNode rhs,
 			@JsonProperty(value = "operator", required = true) ComparisonExpression.Operator operator) {
-		requireNonNull(this.lhs = lhs);
-		requireNonNull(this.rhs = rhs);
-		requireNonNull(this.operator = operator);
+		this.lhs = requireNonNull(lhs);
+		this.rhs = requireNonNull(rhs);
+		this.operator = requireNonNull(operator);
 	}
 
 	@Override

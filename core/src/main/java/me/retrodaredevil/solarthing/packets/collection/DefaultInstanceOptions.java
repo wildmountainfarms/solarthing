@@ -16,7 +16,7 @@ public final class DefaultInstanceOptions {
 	private final int defaultFragmentId;
 
 	private DefaultInstanceOptions(@NotNull String defaultSourceId, int defaultFragmentId) {
-		requireNonNull(this.defaultSourceId = defaultSourceId);
+		this.defaultSourceId = requireNonNull(defaultSourceId);
 		this.defaultFragmentId = defaultFragmentId;
 	}
 	public static DefaultInstanceOptions create(@NotNull String defaultSourceId, int defaultFragmentId) {

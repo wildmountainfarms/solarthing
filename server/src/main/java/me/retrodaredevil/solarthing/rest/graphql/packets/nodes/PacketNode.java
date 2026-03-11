@@ -13,9 +13,9 @@ public final class PacketNode<T> implements SimplePacketNode {
 	private final int fragmentId;
 
 	public PacketNode(@NotNull T packet, long dateMillis, @NotNull String sourceId, int fragmentId) {
-		requireNonNull(this.packet = packet);
+		this.packet = requireNonNull(packet);
 		this.dateMillis = dateMillis;
-		requireNonNull(this.sourceId = sourceId);
+		this.sourceId = requireNonNull(sourceId);
 		this.fragmentId = fragmentId;
 	}
 

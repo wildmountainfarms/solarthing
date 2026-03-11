@@ -52,8 +52,8 @@ public class CommandManager {
 		this(() -> getKeyPairFromDirectory(keyDirectory), sender);
 	}
 	public CommandManager(Supplier<KeyPair> keyPairSupplier, String sender) {
-		requireNonNull(this.keyPairSupplier = keyPairSupplier);
-		requireNonNull(this.sender = sender);
+		this.keyPairSupplier = requireNonNull(keyPairSupplier);
+		this.sender = requireNonNull(sender);
 	}
 
 	public String getSender() {

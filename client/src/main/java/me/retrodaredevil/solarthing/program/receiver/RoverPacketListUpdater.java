@@ -22,8 +22,8 @@ public class RoverPacketListUpdater implements PacketListReceiver {
 
 	public RoverPacketListUpdater(int number, RoverReadTable read, RoverWriteTable write, ConnectionHandler connectionHandler) {
 		this.number = number;
-		requireNonNull(this.read = read);
-		requireNonNull(this.write = write);
+		this.read = requireNonNull(read);
+		this.write = requireNonNull(write);
 		this.connectionHandler = connectionHandler;
 	}
 

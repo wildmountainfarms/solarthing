@@ -15,8 +15,8 @@ public class WaitAction extends SimpleAction {
 
 	public WaitAction(NanoTimeProvider nanoTimeProvider, Duration waitDuration) {
 		super(false);
-		requireNonNull(this.nanoTimeProvider = nanoTimeProvider);
-		requireNonNull(this.waitDuration = waitDuration);
+		this.nanoTimeProvider = requireNonNull(nanoTimeProvider);
+		this.waitDuration = requireNonNull(waitDuration);
 	}
 
 	@Override

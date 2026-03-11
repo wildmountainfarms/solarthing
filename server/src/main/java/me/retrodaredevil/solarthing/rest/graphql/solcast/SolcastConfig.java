@@ -37,8 +37,8 @@ public class SolcastConfig {
 
 		@JsonCreator
 		public Entry(@JsonProperty(value = "resource", required = true) String resourceId, @JsonProperty(value = "key", required = true) String apiKey) {
-			requireNonNull(this.resourceId = resourceId);
-			requireNonNull(this.apiKey = apiKey);
+			this.resourceId = requireNonNull(resourceId);
+			this.apiKey = requireNonNull(apiKey);
 		}
 
 		public String getResourceId() {

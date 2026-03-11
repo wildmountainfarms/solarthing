@@ -24,10 +24,10 @@ public final class HeartbeatData implements UniqueStringRepresentation {
 			String identifier,
 			Duration expectedDurationToNextHeartbeat,
 			Duration bufferDuration) {
-		requireNonNull(this.displayName = displayName);
-		requireNonNull(this.identifier = identifier);
-		requireNonNull(this.expectedDurationToNextHeartbeat = expectedDurationToNextHeartbeat);
-		requireNonNull(this.bufferDuration = bufferDuration);
+		this.displayName = requireNonNull(displayName);
+		this.identifier = requireNonNull(identifier);
+		this.expectedDurationToNextHeartbeat = requireNonNull(expectedDurationToNextHeartbeat);
+		this.bufferDuration = requireNonNull(bufferDuration);
 	}
 	@JsonCreator
 	public HeartbeatData(

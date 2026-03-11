@@ -25,8 +25,8 @@ public class SingleActionNode implements ActionNode {
 	private final String lockName;
 
 	public SingleActionNode(ActionNode actionNode, String lockName) {
-		requireNonNull(this.actionNode = actionNode);
-		requireNonNull(this.lockName = lockName);
+		this.actionNode = requireNonNull(actionNode);
+		this.lockName = requireNonNull(lockName);
 	}
 	@JsonCreator
 	public static SingleActionNode create(

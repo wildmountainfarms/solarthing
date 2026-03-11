@@ -21,8 +21,8 @@ public class ScheduledCommandPacket implements AlterPacket {
 	public ScheduledCommandPacket(
 			@JsonProperty(value = "data", required = true) ScheduledCommandData data,
 			@JsonProperty(value = "executionReason", required = true) ExecutionReason executionReason) {
-		requireNonNull(this.data = data);
-		requireNonNull(this.executionReason = executionReason);
+		this.data = requireNonNull(data);
+		this.executionReason = requireNonNull(executionReason);
 	}
 
 	@Override

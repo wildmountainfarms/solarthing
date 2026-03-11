@@ -23,8 +23,8 @@ public class DeclarationActionNode implements ActionNode {
 	private final Map<String, ActionNode> declarations;
 	@JsonCreator
 	public DeclarationActionNode(ActionNode mainDeclaration, Map<String, ActionNode> declarations) {
-		requireNonNull(this.mainDeclaration = mainDeclaration);
-		requireNonNull(this.declarations = declarations);
+		this.mainDeclaration = requireNonNull(mainDeclaration);
+		this.declarations = requireNonNull(declarations);
 	}
 	@Override
 	public Action createAction(ActionEnvironment actionEnvironment) {

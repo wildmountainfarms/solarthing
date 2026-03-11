@@ -31,10 +31,10 @@ public class MqttDatabaseSettings implements DatabaseSettings {
 			@JsonProperty(value = "password", required = true) char[] password,
 			@JsonProperty("topic") String topicFormat,
 			@JsonProperty("retain") Boolean retain) {
-		requireNonNull(this.broker = broker);
+		this.broker = requireNonNull(broker);
 		this.clientId = clientId;
-		requireNonNull(this.username = username);
-		requireNonNull(this.password = password);
+		this.username = requireNonNull(username);
+		this.password = requireNonNull(password);
 		this.topicFormat = topicFormat == null ? MqttPacketSaver.DEFAULT_TOPIC_FORMAT : topicFormat;
 		this.retain = retain == null || retain; // default to true
 	}

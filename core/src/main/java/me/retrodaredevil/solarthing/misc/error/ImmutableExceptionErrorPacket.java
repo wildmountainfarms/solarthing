@@ -22,10 +22,10 @@ public class ImmutableExceptionErrorPacket implements ExceptionErrorPacket {
 			@JsonProperty(value = "message", required = true) String message,
 			@JsonProperty(value = "exceptionCatchLocationIdentifier", required = true) String exceptionCatchLocationIdentifier,
 			@JsonProperty(value = "exceptionInstanceIdentifier", required = true) String exceptionInstanceIdentifier) {
-		requireNonNull(this.exceptionName = exceptionName);
-		requireNonNull(this.message = message);
-		requireNonNull(this.exceptionCatchLocationIdentifier = exceptionCatchLocationIdentifier);
-		requireNonNull(this.exceptionInstanceIdentifier = exceptionInstanceIdentifier);
+		this.exceptionName = requireNonNull(exceptionName);
+		this.message = requireNonNull(message);
+		this.exceptionCatchLocationIdentifier = requireNonNull(exceptionCatchLocationIdentifier);
+		this.exceptionInstanceIdentifier = requireNonNull(exceptionInstanceIdentifier);
 
 		identifier = new ExceptionErrorIdentifier(exceptionCatchLocationIdentifier, exceptionInstanceIdentifier);
 		identityInfo = new ExceptionErrorIdentityInfo(identifier);

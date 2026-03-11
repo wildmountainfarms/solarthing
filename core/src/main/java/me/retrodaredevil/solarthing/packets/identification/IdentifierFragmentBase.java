@@ -12,7 +12,7 @@ public class IdentifierFragmentBase<T extends Identifier> implements KnownIdenti
 
 	protected IdentifierFragmentBase(int fragmentId, T identifier) {
 		this.fragmentId = fragmentId;
-		requireNonNull(this.identifier = identifier);
+		this.identifier = requireNonNull(identifier);
 	}
 
 	@Override

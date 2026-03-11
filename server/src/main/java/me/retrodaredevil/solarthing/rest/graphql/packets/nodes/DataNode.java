@@ -20,10 +20,10 @@ public final class DataNode<T> implements Comparable<DataNode<?>> {
 	private final int fragmentId;
 
 	public DataNode(@NotNull T data, @NotNull Identifiable identifiable, long dateMillis, @NotNull String sourceId, int fragmentId) {
-		requireNonNull(this.data = data);
-		requireNonNull(this.identifiable = identifiable);
+		this.data = requireNonNull(data);
+		this.identifiable = requireNonNull(identifiable);
 		this.dateMillis = dateMillis;
-		requireNonNull(this.sourceId = sourceId);
+		this.sourceId = requireNonNull(sourceId);
 		this.fragmentId = fragmentId;
 	}
 

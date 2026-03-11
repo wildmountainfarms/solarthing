@@ -15,7 +15,7 @@ public class ImmutableRequestCommandPacket implements RequestCommandPacket {
 	public ImmutableRequestCommandPacket(
 			@JsonProperty(value = "commandName", required = true) String commandName
 	) {
-		requireNonNull(this.commandName = commandName);
+		this.commandName = requireNonNull(commandName);
 	}
 
 	@Override

@@ -28,7 +28,7 @@ public class DefaultIdentificationCacheCreator<T extends IdentificationCacheData
 	private final IdentificationCacheNodeCreator<T, U> identificationCacheNodeCreator;
 
 	public DefaultIdentificationCacheCreator(IdentificationCacheNodeCreator<T, U> identificationCacheNodeCreator) {
-		requireNonNull(this.identificationCacheNodeCreator = identificationCacheNodeCreator);
+		this.identificationCacheNodeCreator = requireNonNull(identificationCacheNodeCreator);
 	}
 
 	@Override

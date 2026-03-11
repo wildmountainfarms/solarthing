@@ -16,7 +16,7 @@ public class RequestCommandPacketProvider implements CommandOpenProvider {
 	@JsonCreator
 	public RequestCommandPacketProvider(
 			@JsonProperty("command") String commandName) {
-		requireNonNull(this.commandName = commandName);
+		this.commandName = requireNonNull(commandName);
 	}
 
 	@Override

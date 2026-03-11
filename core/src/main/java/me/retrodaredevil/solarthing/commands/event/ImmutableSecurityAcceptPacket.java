@@ -11,7 +11,7 @@ public class ImmutableSecurityAcceptPacket implements SecurityAcceptPacket {
 
 	@JsonCreator
 	public ImmutableSecurityAcceptPacket(@JsonProperty(value = "requestDocumentId", required = true) String requestDocumentId) {
-		requireNonNull(this.requestDocumentId = requestDocumentId);
+		this.requestDocumentId = requireNonNull(requestDocumentId);
 	}
 
 	@Override

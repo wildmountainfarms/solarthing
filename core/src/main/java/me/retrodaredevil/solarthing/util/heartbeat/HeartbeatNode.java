@@ -14,7 +14,7 @@ public final class HeartbeatNode {
 
 	public HeartbeatNode(long dateMillis, HeartbeatPacket heartbeatPacket) {
 		this.dateMillis = dateMillis;
-		requireNonNull(this.heartbeatPacket = heartbeatPacket);
+		this.heartbeatPacket = requireNonNull(heartbeatPacket);
 	}
 
 	public long getDateMillis() {

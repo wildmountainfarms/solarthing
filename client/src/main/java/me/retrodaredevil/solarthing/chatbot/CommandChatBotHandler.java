@@ -33,10 +33,10 @@ public class CommandChatBotHandler implements ChatBotHandler {
 	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
 	public CommandChatBotHandler(ChatBotCommandHelper commandHelper, SolarThingDatabase database, String sourceId, ZoneId zoneId) {
-		requireNonNull(this.commandHelper = commandHelper);
-		requireNonNull(this.database = database);
-		requireNonNull(this.sourceId = sourceId);
-		requireNonNull(this.zoneId = zoneId);
+		this.commandHelper = requireNonNull(commandHelper);
+		this.database = requireNonNull(database);
+		this.sourceId = requireNonNull(sourceId);
+		this.zoneId = requireNonNull(zoneId);
 	}
 
 	@Override

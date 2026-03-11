@@ -33,7 +33,7 @@ public class SlackMessageSender implements MessageSender {
 	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 	public SlackMessageSender(String authToken, String channelId, Slack slack) {
 		requireNonNull(authToken);
-		requireNonNull(this.channelId = channelId);
+		this.channelId = requireNonNull(channelId);
 		requireNonNull(slack);
 		methodsClient = slack.methods(authToken);
 	}

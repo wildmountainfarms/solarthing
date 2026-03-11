@@ -18,7 +18,7 @@ public final class W1Source implements DeviceSource {
 	public W1Source(
 			@JsonProperty(value = "name", required = true) String name
 	) {
-		requireNonNull(this.name = name);
+		this.name = requireNonNull(name);
 	}
 
 	@JsonProperty("name")

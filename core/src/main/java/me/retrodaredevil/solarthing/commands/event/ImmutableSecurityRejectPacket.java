@@ -16,9 +16,9 @@ public class ImmutableSecurityRejectPacket implements SecurityRejectPacket {
 			@JsonProperty(value = "requestDocumentId", required = true) String requestDocumentId,
 			@JsonProperty(value = "reason", required = true) Reason reason,
 			@JsonProperty(value = "moreInfo", required = true) String moreInfo) {
-		requireNonNull(this.requestDocumentId = requestDocumentId);
-		requireNonNull(this.reason = reason);
-		requireNonNull(this.moreInfo = moreInfo);
+		this.requestDocumentId = requireNonNull(requestDocumentId);
+		this.reason = requireNonNull(reason);
+		this.moreInfo = requireNonNull(moreInfo);
 	}
 
 	@Override

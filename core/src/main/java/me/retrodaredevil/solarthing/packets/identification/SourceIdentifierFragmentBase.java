@@ -11,8 +11,8 @@ public class SourceIdentifierFragmentBase<T extends Identifier> implements Known
 	private final KnownIdentifierFragment<T> identifierFragment;
 
 	public SourceIdentifierFragmentBase(String sourceId, KnownIdentifierFragment<T> identifierFragment) {
-		requireNonNull(this.sourceId = sourceId);
-		requireNonNull(this.identifierFragment = identifierFragment);
+		this.sourceId = requireNonNull(sourceId);
+		this.identifierFragment = requireNonNull(identifierFragment);
 	}
 
 	@Override

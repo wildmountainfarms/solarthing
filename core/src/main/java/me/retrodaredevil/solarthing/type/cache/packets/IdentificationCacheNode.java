@@ -18,7 +18,7 @@ public class IdentificationCacheNode<T extends IdentificationCacheData> {
 			@JsonProperty(value = "fragmentId", required = true) int fragmentId,
 			@JsonProperty(value = "data", required = true) @NotNull T data) {
 		this.fragmentId = fragmentId;
-		requireNonNull(this.data = data);
+		this.data = requireNonNull(data);
 	}
 
 	@JsonProperty("fragmentId")

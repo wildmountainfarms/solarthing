@@ -17,7 +17,7 @@ public final class SimpleNode<T> {
 	private final long dateMillis;
 
 	public SimpleNode(@NotNull T data, long dateMillis) {
-		requireNonNull(this.data = data);
+		this.data = requireNonNull(data);
 		this.dateMillis = dateMillis;
 	}
 

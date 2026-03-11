@@ -20,7 +20,7 @@ public class TracerClockOptions {
 			@JsonProperty(value = "threshold", required = true) Duration durationThreshold,
 			@JsonProperty("offset") ZoneOffset zoneOffset,
 			@JsonProperty("zone") ZoneId zoneId) {
-		requireNonNull(this.durationThreshold = durationThreshold);
+		this.durationThreshold = requireNonNull(durationThreshold);
 		this.zoneOffset = zoneOffset;
 		this.zoneId = zoneId;
 

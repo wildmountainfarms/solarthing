@@ -16,7 +16,7 @@ public class OpenSourceExecutionReason implements ExecutionReason {
 
 	@JsonCreator
 	public OpenSourceExecutionReason(@JsonProperty(value = "source", required = true) OpenSource source) {
-		requireNonNull(this.source = source);
+		this.source = requireNonNull(source);
 	}
 
 	@Override

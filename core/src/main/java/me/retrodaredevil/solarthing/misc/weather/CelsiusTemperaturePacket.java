@@ -26,7 +26,7 @@ public class CelsiusTemperaturePacket implements TemperaturePacket {
 			@JsonProperty(value = "temperatureCelsius", required = true) float temperatureCelsius
 	) {
 		this.dataId = dataId;
-		requireNonNull(this.deviceSource = deviceSource);
+		this.deviceSource = requireNonNull(deviceSource);
 		this.temperatureCelsius = temperatureCelsius;
 
 		identifier = new DataIdentifier(dataId);

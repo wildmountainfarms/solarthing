@@ -12,8 +12,8 @@ public class ExceptionErrorIdentifier implements Identifier {
 	private final String exceptionInstanceIdentifier;
 
 	public ExceptionErrorIdentifier(String exceptionCatchLocationIdentifier, String exceptionInstanceIdentifier) {
-		requireNonNull(this.exceptionCatchLocationIdentifier = exceptionCatchLocationIdentifier);
-		requireNonNull(this.exceptionInstanceIdentifier = exceptionInstanceIdentifier);
+		this.exceptionCatchLocationIdentifier = requireNonNull(exceptionCatchLocationIdentifier);
+		this.exceptionInstanceIdentifier = requireNonNull(exceptionInstanceIdentifier);
 	}
 
 	public String getExceptionCatchLocationIdentifier() {

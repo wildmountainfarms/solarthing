@@ -17,7 +17,7 @@ public class AnyActionNode implements ActionNode {
 
 	@JsonCreator
 	public AnyActionNode(@JsonProperty("expression") ExpressionNode expression) {
-		requireNonNull(this.expression = expression);
+		this.expression = requireNonNull(expression);
 	}
 
 	@Override

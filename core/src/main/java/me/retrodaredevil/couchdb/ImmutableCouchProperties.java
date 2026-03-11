@@ -17,7 +17,7 @@ class ImmutableCouchProperties implements CouchProperties {
 
 	ImmutableCouchProperties(HttpUrl url, String username, String password, boolean basicAuth) {
 		this.basicAuth = basicAuth;
-		requireNonNull(this.url = url);
+		this.url = requireNonNull(url);
 		this.username = username;
 		this.password = password;
 	}

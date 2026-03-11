@@ -97,10 +97,10 @@ public class SolarThingGraphQLSolcastService {
 		private final ZoneId zoneId;
 
 		public SolarThingSolcastQuery(SolcastHandler handler, long from, long to, ZoneId zoneId) {
-			requireNonNull(this.handler = handler);
+			this.handler = requireNonNull(handler);
 			this.from = from;
 			this.to = to;
-			requireNonNull(this.zoneId = zoneId);
+			this.zoneId = requireNonNull(zoneId);
 		}
 
 		@GraphQLQuery
@@ -166,9 +166,9 @@ public class SolarThingGraphQLSolcastService {
 		private final @Nullable CacheController cacheController;
 
 		public SolarThingSolcastDayQuery(SolcastHandler handler, long to, ZoneId zoneId, @Nullable CacheController cacheController) {
-			requireNonNull(this.handler = handler);
+			this.handler = requireNonNull(handler);
 			this.to = to;
-			requireNonNull(this.zoneId = zoneId);
+			this.zoneId = requireNonNull(zoneId);
 			this.cacheController = cacheController;
 		}
 		@GraphQLQuery(description = "Queries the kWh generation estimate for a certain day. offset of 0 is today, 1 is tomorrow, -1 is yesterday")

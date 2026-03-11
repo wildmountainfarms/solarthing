@@ -25,7 +25,7 @@ public class BatteryRecordDataCache extends BaseAccumulationDataCache {
 			@JsonProperty(value = "unknownStartDateMillis", required = true) Long unknownStartDateMillis,
 			@JsonProperty(value = "record", required = true) Record record) {
 		super(firstDateMillis, lastDateMillis, unknownStartDateMillis);
-		requireNonNull(this.identifier = identifier);
+		this.identifier = requireNonNull(identifier);
 		this.record = record;
 
 		if ((firstDateMillis == null) != (record == null)) {

@@ -18,8 +18,8 @@ public abstract class BaseCacheDataPacket implements CacheDataPacket {
 	protected BaseCacheDataPacket(long periodStartDateMillis, long periodDurationMillis, String sourceId, String cacheName) {
 		periodStart = Instant.ofEpochMilli(periodStartDateMillis);
 		periodDuration = Duration.ofMillis(periodDurationMillis);
-		requireNonNull(this.sourceId = sourceId);
-		requireNonNull(this.cacheName = cacheName);
+		this.sourceId = requireNonNull(sourceId);
+		this.cacheName = requireNonNull(cacheName);
 
 		periodEnd = Instant.ofEpochMilli(periodStartDateMillis + periodDurationMillis);
 	}

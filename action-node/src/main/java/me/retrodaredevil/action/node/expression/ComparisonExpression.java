@@ -19,9 +19,9 @@ public class ComparisonExpression implements BooleanExpression {
 	private final Operator operator;
 
 	public ComparisonExpression(Expression lhs, Expression rhs, Operator operator) {
-		requireNonNull(this.lhs = lhs);
-		requireNonNull(this.rhs = rhs);
-		requireNonNull(this.operator = operator);
+		this.lhs = requireNonNull(lhs);
+		this.rhs = requireNonNull(rhs);
+		this.operator = requireNonNull(operator);
 	}
 
 	public enum Operator {

@@ -33,9 +33,9 @@ public class TimedPacketReceiver implements RawPacketReceiver {
 	 * @param onDataReceive This is called whenever data is received from {@code in}
 	 */
 	public TimedPacketReceiver(Duration samePacketTimeDuration, PacketListReceiver packetListReceiver, OnDataReceive onDataReceive){
-		requireNonNull(this.samePacketTimeDuration = samePacketTimeDuration);
-		requireNonNull(this.onDataReceive = onDataReceive);
-		requireNonNull(this.packetListReceiver = packetListReceiver);
+		this.samePacketTimeDuration = requireNonNull(samePacketTimeDuration);
+		this.onDataReceive = requireNonNull(onDataReceive);
+		this.packetListReceiver = requireNonNull(packetListReceiver);
 	}
 
 	@Override

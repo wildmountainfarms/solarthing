@@ -18,7 +18,7 @@ class ImmutableStoredPacketGroup implements StoredPacketGroup {
 	public ImmutableStoredPacketGroup(Collection<? extends Packet> packets, long dateMillis, StoredIdentifier storedIdentifier) {
 		this.packets = Collections.unmodifiableList(new ArrayList<>(packets));
 		this.dateMillis = dateMillis;
-		requireNonNull(this.storedIdentifier = storedIdentifier);
+		this.storedIdentifier = requireNonNull(storedIdentifier);
 	}
 
 	@Override

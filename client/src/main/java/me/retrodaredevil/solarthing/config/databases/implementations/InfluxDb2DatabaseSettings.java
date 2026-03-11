@@ -21,8 +21,8 @@ public class InfluxDb2DatabaseSettings implements DatabaseSettings {
 	private final OkHttpProperties okHttpProperties;
 
 	public InfluxDb2DatabaseSettings(InfluxDb2Properties influxDbProperties, OkHttpProperties okHttpProperties) {
-		requireNonNull(this.influxDbProperties = influxDbProperties);
-		requireNonNull(this.okHttpProperties = okHttpProperties);
+		this.influxDbProperties = requireNonNull(influxDbProperties);
+		this.okHttpProperties = requireNonNull(okHttpProperties);
 	}
 
 	@Override

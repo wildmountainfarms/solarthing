@@ -309,8 +309,8 @@ public class CacheHandler {
 		private final Object data;
 
 		private DocumentRevisionWrapper(String revision, Object data) {
-			requireNonNull(this.revision = revision);
-			requireNonNull(this.data = data);
+			this.revision = requireNonNull(revision);
+			this.data = requireNonNull(data);
 		}
 
 		@JsonProperty("_rev")

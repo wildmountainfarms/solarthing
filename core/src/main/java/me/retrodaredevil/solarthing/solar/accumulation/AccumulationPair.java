@@ -12,9 +12,9 @@ public final class AccumulationPair<T extends DailyData> {
 	private final StartPacketType startPacketType;
 
 	public AccumulationPair(TimestampedPacket<T> startPacket, TimestampedPacket<T> latestPacket, StartPacketType startPacketType) {
-		requireNonNull(this.startPacket = startPacket);
-		requireNonNull(this.latestPacket = latestPacket);
-		requireNonNull(this.startPacketType = startPacketType);
+		this.startPacket = requireNonNull(startPacket);
+		this.latestPacket = requireNonNull(latestPacket);
+		this.startPacketType = requireNonNull(startPacketType);
 	}
 	public @NotNull TimestampedPacket<T> getStartPacket() {
 		return startPacket;

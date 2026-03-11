@@ -11,7 +11,7 @@ public class AlterPacketsEnvironment {
 
 
 	public AlterPacketsEnvironment(AlterPacketsProvider alterPacketsProvider) {
-		requireNonNull(this.alterPacketsProvider = alterPacketsProvider);
+		this.alterPacketsProvider = requireNonNull(alterPacketsProvider);
 	}
 
 	/**

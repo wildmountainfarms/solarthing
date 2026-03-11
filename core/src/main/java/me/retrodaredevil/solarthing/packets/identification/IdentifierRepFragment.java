@@ -20,7 +20,7 @@ public class IdentifierRepFragment implements IdentifierFragmentMatcher {
 			@JsonProperty("fragment") int fragmentId,
 			@JsonProperty("identifier") @NotNull String identifierRepresentation) {
 		this.fragmentId = fragmentId;
-		requireNonNull(this.identifierRepresentation = identifierRepresentation);
+		this.identifierRepresentation = requireNonNull(identifierRepresentation);
 	}
 
 	@Override

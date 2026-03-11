@@ -10,7 +10,7 @@ public final class AvailableCommand {
 
 	public AvailableCommand(int fragmentId, CommandInfo commandInfo) {
 		this.fragmentId = fragmentId;
-		requireNonNull(this.commandInfo = commandInfo);
+		this.commandInfo = requireNonNull(commandInfo);
 	}
 
 	public int getFragmentId() {

@@ -23,8 +23,8 @@ public final class CouchDbStoredIdentifier extends StoredIdentifier {
 			@JsonProperty(value = "id", required = true) String id,
 			@JsonProperty(value = "revision", required = true) String revision) {
 		super(dateMillis);
-		requireNonNull(this.id = id);
-		requireNonNull(this.revision = revision);
+		this.id = requireNonNull(id);
+		this.revision = requireNonNull(revision);
 	}
 
 	@JsonProperty("id")

@@ -32,8 +32,8 @@ public final class FlagPacket implements AlterPacket {
 	public FlagPacket(
 			@JsonProperty(value = "flagData", required = true) FlagData flagData,
 			@JsonProperty(value = "executionReason", required = true) ExecutionReason executionReason) {
-		requireNonNull(this.flagData = flagData);
-		requireNonNull(this.executionReason = executionReason);
+		this.flagData = requireNonNull(flagData);
+		this.executionReason = requireNonNull(executionReason);
 	}
 	@Override
 	public @NotNull AlterPacketType getPacketType() {

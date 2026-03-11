@@ -17,8 +17,8 @@ public class ImmutableDeleteAlterPacket implements DeleteAlterPacket {
 	public ImmutableDeleteAlterPacket(
 			@JsonProperty(value = "documentIdToDelete", required = true) String documentIdToDelete,
 			@JsonProperty(value = "updateToken", required = true) UpdateToken updateToken) {
-		requireNonNull(this.documentIdToDelete = documentIdToDelete);
-		requireNonNull(this.updateToken = updateToken);
+		this.documentIdToDelete = requireNonNull(documentIdToDelete);
+		this.updateToken = requireNonNull(updateToken);
 	}
 
 	@Override

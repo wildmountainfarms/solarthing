@@ -45,9 +45,9 @@ public class SendEncryptedActionNode implements ActionNode {
 			CommandManager commandManager,
 			List<Integer> fragmentIdTargets,
 			CommandOpenProvider packetProvider) {
-		requireNonNull(this.commandManager = commandManager);
-		requireNonNull(this.fragmentIdTargets = fragmentIdTargets);
-		requireNonNull(this.packetProvider = packetProvider);
+		this.commandManager = requireNonNull(commandManager);
+		this.fragmentIdTargets = requireNonNull(fragmentIdTargets);
+		this.packetProvider = requireNonNull(packetProvider);
 	}
 
 	@JsonCreator

@@ -17,9 +17,9 @@ public class ImmutableExecutionFeedbackPacket implements ExecutionFeedbackPacket
 			@JsonProperty(value = "message", required = true) String message,
 			@JsonProperty(value = "category", required = true) String category,
 			@JsonProperty(value = "executionReason", required = true) ExecutionReason executionReason) {
-		requireNonNull(this.message = message);
-		requireNonNull(this.category = category);
-		requireNonNull(this.executionReason = executionReason);
+		this.message = requireNonNull(message);
+		this.category = requireNonNull(category);
+		this.executionReason = requireNonNull(executionReason);
 	}
 
 	@Override

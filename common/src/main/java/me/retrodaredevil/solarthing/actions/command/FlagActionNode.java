@@ -25,7 +25,7 @@ public class FlagActionNode implements ActionNode {
 
 	@JsonCreator
 	public FlagActionNode(@JsonProperty(value = "name", required = true) String flagName, @JsonProperty("not") Boolean not) {
-		requireNonNull(this.flagName = flagName);
+		this.flagName = requireNonNull(flagName);
 		this.not = not != null && not;
 	}
 

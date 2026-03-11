@@ -25,7 +25,7 @@ public final class ScheduledCommandData implements UniqueStringRepresentation {
 			@JsonProperty(value = "commandName", required = true) String commandName,
 			@JsonProperty(value = "targetFragmentIds", required = true) Collection<? extends Integer> targetFragmentIds) {
 		this.scheduledTimeMillis = scheduledTimeMillis;
-		requireNonNull(this.commandName = commandName);
+		this.commandName = requireNonNull(commandName);
 		this.targetFragmentIds = new ArrayList<>(targetFragmentIds);
 	}
 

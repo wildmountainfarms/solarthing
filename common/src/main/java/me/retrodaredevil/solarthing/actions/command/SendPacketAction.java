@@ -49,12 +49,12 @@ public class SendPacketAction extends SimpleAction implements LinkedAction {
 		//  then cancelling tasks belonging to this action only would also cancel tasks belonging to other actions using
 		//  the same ExecutorService.
 		executorService = Executors.newSingleThreadExecutor(threadFactory);
-		requireNonNull(this.millisDatabaseSupplier = millisDatabaseSupplier);
-		requireNonNull(this.packetCollectionCreator = packetCollectionCreator);
+		this.millisDatabaseSupplier = requireNonNull(millisDatabaseSupplier);
+		this.packetCollectionCreator = requireNonNull(packetCollectionCreator);
 		this.retryWaitMillis = retryWaitMillis;
 		this.maxRetries = maxRetries;
-		requireNonNull(this.onSuccessAction = onSuccessAction);
-		requireNonNull(this.onMaxRetriesAction = onMaxRetriesAction);
+		this.onSuccessAction = requireNonNull(onSuccessAction);
+		this.onMaxRetriesAction = requireNonNull(onMaxRetriesAction);
 
 		if (retryWaitMillis < 0) {
 			throw new IllegalArgumentException("retryWaitMillis must be non-negative! retryWaitMillis: " + retryWaitMillis);

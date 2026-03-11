@@ -32,10 +32,10 @@ public final class OpenSource implements UniqueStringRepresentation {
 			@JsonProperty(value = "dateMillis", required = true) long dateMillis,
 			@JsonProperty(value = "packet", required = true) OpenSourcePacket packet,
 			@JsonProperty(value = "legacyData", required = true) String legacyData) {
-		requireNonNull(this.sender = sender);
+		this.sender = requireNonNull(sender);
 		this.dateMillis = dateMillis;
-		requireNonNull(this.packet = packet);
-		requireNonNull(this.legacyData = legacyData);
+		this.packet = requireNonNull(packet);
+		this.legacyData = requireNonNull(legacyData);
 	}
 
 	public DataSource toDataSource() {

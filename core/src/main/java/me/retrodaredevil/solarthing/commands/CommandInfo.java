@@ -17,9 +17,9 @@ public final class CommandInfo {
 			@JsonProperty(value = "name", required = true) String name,
 			@JsonProperty(value = "displayName", required = true) String displayName,
 			@JsonProperty(value = "description", required = true) String description) {
-		requireNonNull(this.name = name);
-		requireNonNull(this.displayName = displayName);
-		requireNonNull(this.description = description);
+		this.name = requireNonNull(name);
+		this.displayName = requireNonNull(displayName);
+		this.description = requireNonNull(description);
 	}
 
 	@JsonProperty("name")

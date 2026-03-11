@@ -9,7 +9,7 @@ public class SensorState extends SensorStateBase {
 
 	public SensorState(String state, Map<String, String> attributes) {
 		super(attributes);
-		requireNonNull(this.state = state);
+		this.state = requireNonNull(state);
 	}
 
 	@Override

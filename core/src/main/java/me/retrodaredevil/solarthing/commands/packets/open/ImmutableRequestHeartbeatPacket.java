@@ -18,8 +18,8 @@ public class ImmutableRequestHeartbeatPacket implements RequestHeartbeatPacket {
 	public ImmutableRequestHeartbeatPacket(
 			@JsonProperty(value = "data", required = true) HeartbeatData heartbeatData,
 			@JsonProperty(value = "uniqueRequestId", required = true) UUID uniqueRequestId) {
-		requireNonNull(this.heartbeatData = heartbeatData);
-		requireNonNull(this.uniqueRequestId = uniqueRequestId);
+		this.heartbeatData = requireNonNull(heartbeatData);
+		this.uniqueRequestId = requireNonNull(uniqueRequestId);
 	}
 
 	@Override

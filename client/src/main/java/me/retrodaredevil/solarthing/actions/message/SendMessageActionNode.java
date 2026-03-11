@@ -24,8 +24,8 @@ public class SendMessageActionNode implements ActionNode {
 	private final String message;
 
 	public SendMessageActionNode(MessageSender messageSender, String message) {
-		requireNonNull(this.messageSender = messageSender);
-		requireNonNull(this.message = message);
+		this.messageSender = requireNonNull(messageSender);
+		this.message = requireNonNull(message);
 	}
 
 	@JsonCreator

@@ -16,7 +16,7 @@ public final class HeartbeatIdentifier {
 	private final int fragmentId;
 
 	public HeartbeatIdentifier(@NotNull String identifier, int fragmentId) {
-		requireNonNull(this.identifier = identifier);
+		this.identifier = requireNonNull(identifier);
 		this.fragmentId = fragmentId;
 	}
 

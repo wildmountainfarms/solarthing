@@ -44,10 +44,10 @@ public class SlackChatBotAction extends SimpleAction {
 
 	public SlackChatBotAction(String appToken, MessageSender messageSender, Slack slack, ChatBotHandler handler) {
 		super(false);
-		requireNonNull(this.appToken = appToken);
-		requireNonNull(this.messageSender = messageSender);
-		requireNonNull(this.slack = slack);
-		requireNonNull(this.handler = handler);
+		this.appToken = requireNonNull(appToken);
+		this.messageSender = requireNonNull(messageSender);
+		this.slack = requireNonNull(slack);
+		this.handler = requireNonNull(handler);
 	}
 
 	@Override

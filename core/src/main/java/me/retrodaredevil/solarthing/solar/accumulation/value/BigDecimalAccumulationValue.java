@@ -11,7 +11,7 @@ public class BigDecimalAccumulationValue implements AccumulationValue<BigDecimal
 	private final BigDecimal value;
 
 	public BigDecimalAccumulationValue(BigDecimal value) {
-		requireNonNull(this.value = value);
+		this.value = requireNonNull(value);
 	}
 	public static <T> TotalGetter<T, BigDecimalAccumulationValue> convert(Function<T, BigDecimal> totalGetter) {
 		return packet -> new BigDecimalAccumulationValue(totalGetter.apply(packet));

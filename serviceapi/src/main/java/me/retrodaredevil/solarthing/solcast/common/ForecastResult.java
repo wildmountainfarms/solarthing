@@ -13,7 +13,7 @@ public final class ForecastResult {
 
 	@JsonCreator
 	public ForecastResult(@JsonProperty(value = "forecasts", required = true) List<Forecast> forecasts) {
-		requireNonNull(this.forecasts = forecasts);
+		this.forecasts = requireNonNull(forecasts);
 	}
 
 	public @NotNull List<Forecast> getForecasts() {
