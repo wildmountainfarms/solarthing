@@ -27,6 +27,7 @@ import me.retrodaredevil.solarthing.program.subprogram.automation.AutomationMain
 import me.retrodaredevil.solarthing.program.subprogram.pvoutput.PVOutputUploadMain;
 import me.retrodaredevil.solarthing.program.subprogram.run.couchdb.CouchDbSetupMain;
 import org.apache.logging.log4j.LogManager;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,7 +68,7 @@ public class RunMain {
 			list.add(fragmentPacket);
 		};
 	}
-	public static PacketCollectionIdGenerator createIdGenerator(Integer uniqueIdsInOneHour, boolean shortDocumentId){
+	public static PacketCollectionIdGenerator createIdGenerator(@Nullable Integer uniqueIdsInOneHour, boolean shortDocumentId){
 		if(uniqueIdsInOneHour == null){
 			return PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR;
 		}

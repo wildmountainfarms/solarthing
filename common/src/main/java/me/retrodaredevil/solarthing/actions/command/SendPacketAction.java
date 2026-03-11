@@ -8,6 +8,7 @@ import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseExcepti
 import me.retrodaredevil.solarthing.database.exception.UpdateConflictSolarThingDatabaseException;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionCreator;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +39,7 @@ public class SendPacketAction extends SimpleAction implements LinkedAction {
 	private final Action onSuccessAction;
 	private final Action onMaxRetriesAction;
 
-	private volatile Action nextAction = null;
+	private volatile @Nullable Action nextAction = null;
 
 	private final ExecutorService executorService;
 

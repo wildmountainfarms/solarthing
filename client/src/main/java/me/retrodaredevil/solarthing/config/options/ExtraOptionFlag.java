@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.config.options;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import me.retrodaredevil.solarthing.annotations.Nullable;
 
 /**
  * An enum that represents different options that can be easily enabled
@@ -26,7 +27,7 @@ public enum ExtraOptionFlag {
 		return r;
 	}
 
-	public static ExtraOptionFlag forValueOrNull(String shortName){
+	public static @Nullable ExtraOptionFlag forValueOrNull(String shortName){
 		for(ExtraOptionFlag extraOptionFlag : values()){
 			if(extraOptionFlag.shortName.equals(shortName)){
 				return extraOptionFlag;

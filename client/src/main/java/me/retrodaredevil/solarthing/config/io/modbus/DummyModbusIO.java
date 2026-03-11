@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.config.io.modbus;
 
 import me.retrodaredevil.io.IOBundle;
 import me.retrodaredevil.io.modbus.*;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +26,7 @@ public class DummyModbusIO implements IOBundle {
 	private final Queue<Byte> outputData = new ConcurrentLinkedDeque<>();
 	private final Queue<Byte> inputData = new ConcurrentLinkedDeque<>();
 	private transient boolean isClosed = false;
-	private transient Long lastWriteNanos = null;
+	private transient @Nullable Long lastWriteNanos = null;
 
 	public DummyModbusIO(Map<Integer, ModbusSlave> addressToSlaveMap, IODataEncoder ioDataEncoder) {
 		this.addressToSlaveMap = addressToSlaveMap;

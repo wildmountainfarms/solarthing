@@ -36,7 +36,7 @@ public class FXChargingStateHandler {
 	private boolean atEqualizeSetpoint = false;
 	private boolean atFloatSetpoint = false;
 
-	private OperationalMode previousOperationalMode = null;
+	private @Nullable OperationalMode previousOperationalMode = null;
 
 	public FXChargingStateHandler(FXChargingSettings fxChargingSettings) {
 		this.fxChargingSettings = requireNonNull(fxChargingSettings);

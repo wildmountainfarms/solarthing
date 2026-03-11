@@ -16,8 +16,8 @@ public class SimplePacketCache<T extends Packet> implements PacketCache<T> {
 	private final PacketSource<T> packetSource;
 	private final boolean autoUpdate;
 
-	private VersionedPacket<T> versionedPacket = null;
-	private Long lastUpdateNanos = null;
+	private @Nullable VersionedPacket<T> versionedPacket = null;
+	private @Nullable Long lastUpdateNanos = null;
 
 	public SimplePacketCache(Duration updatePeriod, PacketSource<T> packetSource, boolean autoUpdate) {
 		this.updatePeriodNanos = updatePeriod.toNanos();

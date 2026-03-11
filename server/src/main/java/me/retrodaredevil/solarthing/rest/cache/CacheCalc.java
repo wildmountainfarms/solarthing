@@ -10,6 +10,7 @@ import me.retrodaredevil.solarthing.solar.accumulation.*;
 import me.retrodaredevil.solarthing.solar.accumulation.value.AccumulationValue;
 import me.retrodaredevil.solarthing.solar.accumulation.value.AccumulationValueFactory;
 import me.retrodaredevil.solarthing.solar.common.DailyData;
+import org.jspecify.annotations.Nullable;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -112,6 +113,6 @@ public final class CacheCalc {
 
 	@FunctionalInterface
 	public interface DataCreator<T, U> {
-		T create(Identifier identifier, U mainData, Long firstDateMillis, Long lastDateMillis, U unknownData, Long unknownStartDateMillis);
+		T create(Identifier identifier, U mainData, @Nullable Long firstDateMillis, @Nullable Long lastDateMillis, U unknownData, @Nullable Long unknownStartDateMillis);
 	}
 }

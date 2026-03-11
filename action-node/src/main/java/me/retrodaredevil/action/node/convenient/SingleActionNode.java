@@ -8,6 +8,7 @@ import me.retrodaredevil.action.Actions;
 import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.action.node.environment.VariableEnvironment;
+import org.jspecify.annotations.Nullable;
 
 import java.util.UUID;
 
@@ -31,7 +32,7 @@ public class SingleActionNode implements ActionNode {
 	@JsonCreator
 	public static SingleActionNode create(
 			@JsonProperty(value = "action", required = true) ActionNode actionNode,
-			@JsonProperty("lock") String lockName) {
+			@JsonProperty("lock") @Nullable String lockName) {
 		if (lockName == null) {
 			lockName = "_synchronized-" + UUID.randomUUID();
 		}

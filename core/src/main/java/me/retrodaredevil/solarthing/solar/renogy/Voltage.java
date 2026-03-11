@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.solar.renogy;
 
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.CodeMode;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -19,9 +20,9 @@ public enum Voltage implements CodeMode {
 	AUTO(255, null)
 	;
 	private final int code;
-	private final Integer voltage;
+	private final @Nullable Integer voltage;
 
-	Voltage(int code, Integer voltage) {
+	Voltage(int code, @Nullable Integer voltage) {
 		this.code = code;
 		this.voltage = voltage;
 	}
@@ -38,17 +39,17 @@ public enum Voltage implements CodeMode {
 
 	public boolean isSupported(Voltage maxVoltage){
 		requireNonNull(maxVoltage);
-		if(maxVoltage == AUTO){
+		if(maxVoltage.voltage == null){
 			throw new IllegalArgumentException("maxVoltage cannot be 'AUTO'");
 		}
-		if(this == AUTO){
+		if(voltage == null){ // this == AUTO
 			return true;
 		}
 		return voltage <= maxVoltage.voltage;
 	}
 	public static Voltage from(int value) {
 		for (Voltage voltage : values()) {
-			if (voltage != AUTO && voltage.voltage == value) {
+			if (voltage.voltage != null && voltage.voltage == value) {
 				return voltage;
 			}
 		}

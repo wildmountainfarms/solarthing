@@ -9,6 +9,7 @@ import me.retrodaredevil.solarthing.packets.PacketWithVersion;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 
 import me.retrodaredevil.solarthing.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ import java.util.List;
 @JsonExplicit
 @JsonTypeName("DEVICE_CPU_TEMPERATURE")
 public interface CpuTemperaturePacket extends DevicePacket, Identifiable, PacketWithVersion {
-	Integer VERSION_ORIGINAL = null;
+	@Nullable Integer VERSION_ORIGINAL = null;
 	int VERSION_WITH_CORES = 1;
 
 	int VERSION_LATEST = VERSION_WITH_CORES;

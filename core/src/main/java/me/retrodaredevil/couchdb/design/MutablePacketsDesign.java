@@ -1,12 +1,14 @@
 package me.retrodaredevil.couchdb.design;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class MutablePacketsDesign implements Design {
 	private final Map<String, View> views = new HashMap<>();
 	private final Map<String, String> filters = new HashMap<>();
-	private String validateDocUpdate = null;
+	private @Nullable String validateDocUpdate = null;
 
 	public MutablePacketsDesign addMillisNullView() {
 		views.put("millisNull", new SimpleView(DesignResource.VIEW_JAVASCRIPT_MILLIS_NULL.getAsString()));

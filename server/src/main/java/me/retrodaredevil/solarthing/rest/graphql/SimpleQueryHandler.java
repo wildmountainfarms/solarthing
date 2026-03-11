@@ -54,8 +54,8 @@ public class SimpleQueryHandler {
 
 	private final SolarThingDatabase database;
 
-	private VersionedPacket<RootMetaPacket> metadataCache = null;
-	private Long lastMetadataCacheNanos = null;
+	private @Nullable VersionedPacket<RootMetaPacket> metadataCache = null;
+	private @Nullable Long lastMetadataCacheNanos = null;
 
 	private final Map<UniqueQuery, Future<? extends List<? extends PacketGroup>>> executingQueryMap = new HashMap<>();
 	private final Lock executingQueryMutex = new ReentrantLock();

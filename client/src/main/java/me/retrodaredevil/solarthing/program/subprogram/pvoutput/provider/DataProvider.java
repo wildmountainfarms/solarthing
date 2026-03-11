@@ -9,11 +9,11 @@ public interface DataProvider {
 
 	class Result {
 		private final float value;
-		private final IdentifierFragment identifierFragment;
-		private final Long dateMillis;
+		private final @Nullable IdentifierFragment identifierFragment;
+		private final @Nullable Long dateMillis;
 		private final boolean isPossiblyBadData;
 
-		public Result(float voltage, IdentifierFragment identifierFragment, Long dateMillis, boolean isPossiblyBadData) {
+		public Result(float voltage, @Nullable IdentifierFragment identifierFragment, @Nullable Long dateMillis, boolean isPossiblyBadData) {
 			this.value = voltage;
 			this.identifierFragment = identifierFragment;
 			this.dateMillis = dateMillis;

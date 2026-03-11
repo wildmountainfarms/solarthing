@@ -28,7 +28,7 @@ public final class DatabaseConfig {
 					property = "type"
 			)
 			@Nullable DatabaseSettings databaseSettings,
-			@JsonProperty("settings") DatabaseUsageSettings databaseUsageSettings,
+			@JsonProperty("settings") @Nullable DatabaseUsageSettings databaseUsageSettings,
 			@JsonProperty("external") @Nullable Path externalDatabaseConfig) {
 		if ((databaseSettings == null) == (externalDatabaseConfig == null)) {
 			throw new IllegalArgumentException("Must only define config or external! Not both and not neither!");

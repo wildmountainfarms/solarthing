@@ -24,15 +24,15 @@ abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements Pa
 
 	@JsonProperty("databases")
 	@JsonPropertyDescription("An array of strings that each represent a database configuration file relative to the program directory.")
-	private List<Path> databases = null;
+	private @Nullable List<Path> databases = null;
 	@JsonProperty("database_config")
-	private DatabaseConfigSettings databaseConfigSettings = null;
+	private @Nullable DatabaseConfigSettings databaseConfigSettings = null;
 	@JsonProperty(value = "source", required = true)
 	private String source = "default";
 	@JsonProperty(value = "fragment", required = true)
 	private int fragment;
 	@JsonProperty("unique")
-	private Integer unique = null;
+	private @Nullable Integer unique = null;
 	@JsonProperty("short")
 	private boolean isShortId = true;
 
@@ -82,7 +82,7 @@ abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements Pa
 	}
 
 	@Override
-	public final Integer getUniqueIdsInOneHour() {
+	public final @Nullable Integer getUniqueIdsInOneHour() {
 		return unique;
 	}
 

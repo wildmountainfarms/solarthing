@@ -3,6 +3,7 @@ package me.retrodaredevil.action.node.expression;
 import com.fasterxml.jackson.annotation.JsonValue;
 import me.retrodaredevil.action.node.expression.result.BooleanExpressionResult;
 import me.retrodaredevil.action.node.expression.result.NumericExpressionResult;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,7 +57,7 @@ public class ComparisonExpression implements BooleanExpression {
 		Operator(String sign) {
 			this.sign = sign;
 		}
-		public static Operator fromSignOrNull(String sign) {
+		public static @Nullable Operator fromSignOrNull(String sign) {
 			requireNonNull(sign);
 			return Arrays.stream(values()).filter(operator -> operator.sign.equals(sign)).findAny().orElse(null);
 		}

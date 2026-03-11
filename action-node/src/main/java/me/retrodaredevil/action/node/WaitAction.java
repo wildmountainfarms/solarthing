@@ -2,6 +2,7 @@ package me.retrodaredevil.action.node;
 
 import me.retrodaredevil.action.SimpleAction;
 import me.retrodaredevil.action.node.util.NanoTimeProvider;
+import org.jspecify.annotations.Nullable;
 
 import java.time.Duration;
 
@@ -11,7 +12,7 @@ public class WaitAction extends SimpleAction {
 	private final NanoTimeProvider nanoTimeProvider;
 	private final Duration waitDuration;
 
-	private Long startTimeNanos = null;
+	private @Nullable Long startTimeNanos = null;
 
 	public WaitAction(NanoTimeProvider nanoTimeProvider, Duration waitDuration) {
 		super(false);
@@ -28,6 +29,6 @@ public class WaitAction extends SimpleAction {
 	@Override
 	protected void onUpdate() {
 		super.onUpdate();
-		setDone(nanoTimeProvider.getNanos() - startTimeNanos >= waitDuration.toNanos());
+		setDone(nanoTimeProvider.getNanos() - requireNonNull(startTimeNanos, "startTimeNanos") >= waitDuration.toNanos());
 	}
 }

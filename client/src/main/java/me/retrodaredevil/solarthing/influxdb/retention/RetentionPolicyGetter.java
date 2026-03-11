@@ -1,8 +1,10 @@
 package me.retrodaredevil.solarthing.influxdb.retention;
 
+import org.jspecify.annotations.Nullable;
+
 public interface RetentionPolicyGetter {
 	/**
 	 * @return The {@link RetentionPolicySetting} to use or null
 	 */
-	RetentionPolicySetting getRetentionPolicySetting();
+	@Nullable RetentionPolicySetting getRetentionPolicySetting();
 }

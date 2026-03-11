@@ -134,18 +134,18 @@ tasks.withType<JavaCompile>().configureEach {
 		disable("InvalidLink") // So many times this is wrong. #equals(Object) is a valid link!
 		disable("ComparableType") // different Identifiers need to be able to be compared to each other, so we disable this for now.
 		disable("DoNotClaimAnnotations") // TODO figure how how to make our annotation processor more "correct"
-//            disable("ReturnValueIgnored") // remove this once this is fixed: https://github.com/google/error-prone/issues/3292 // TODO can we enable this now?
 		disable("UnusedMethod") // This is useful, but has this issue: https://github.com/google/error-prone/issues/3144 // issue is now "completed", but annotations not customizable for
 		disable("InlineMeSuggester") // Wrong when annotated by annotations, and I don't need this feature
 		disable("EmptyCatch") // This is a great warning, but IntelliJ wants ignored exceptions to be named "ignored" and ErrorProne wants "ok"...
 		disable("FutureReturnValueIgnored") // For "send and forget" stuff, this is really annoying
 		disable("UnusedVariable") // We are OK with this most of the time
 		disable("CanonicalDuration") // I will specify my durations in whatever units I please
-		disable("AssignmentExpression") // TODO stop doing requireNonNull(this.asdf = asdf);
 		disable("PatternMatchingInstanceof") // TODO reenable and use pattern matching instanceof
+		disable("EffectivelyPrivate") // a warning by default, but I often like to make things public even when they're apart of a private class
 
 
 		error("MissingOverride")
+		error("AssignmentExpression")
 
 		// Experimental Errors
 		enable("ClassName")
@@ -174,31 +174,34 @@ tasks.withType<JavaCompile>().configureEach {
 		warn("UnnecessaryAnonymousClass") // suggest
 		warn("UnusedException")
 
+
+		error("FieldMissingNullable")
+		error("ParameterMissingNullable")
+		error("ReturnMissingNullable")
+
 		// Experimental Suggestions
 		warn("ConstantField")
 //            warn("FieldCanBeFinal") // Useful on everything but :client module, because of the usages of @JsonProperty on mutable fields.
 		warn("FieldCanBeLocal")
 		warn("FieldCanBeStatic")
-//            warn("FieldMissingNullable") // There are many private fields where this is easy enough to tell // TODO enable this at some point (yay nullability annotations)
 		warn("ForEachIterable")
 		warn("LambdaFunctionalInterface")
-//            warn("MethodCanBeStatic") // TODO Very, very useful, but I don't need this warning in tests
+		if (!isTest) {
+			warn("MethodCanBeStatic")
+		}
 //            error("MissingBraces") // I would love to enforce this in all places except equals(), so disable for now
 		error("MixedArrayDimensions")
 //            error("MultiVariableDeclaration") // While frowned upon many times, we use this a lot and it is helpful somtimes
 		error("MultipleTopLevelClasses")
 		error("PackageLocation")
-//            warn("ParameterMissingNullable") // This is useful. Maybe uncomment if we become more religious about use of @Nullable
 		error("PrivateConstructorForUtilityClass") // not completely ideal for spring classes with static initialization
 		warn("RemoveUnusedImports") // Only a warning because https://github.com/antlr/antlr4/issues/2568 and https://github.com/google/error-prone/issues/463
-//            warn("ReturnMissingNullable") // Useful onlyl if we become more religious about use of @Nullable
-		warn("ReturnsNullCollection")
+		error("ReturnsNullCollection")
 		warn("SwitchDefault")
 		error("SymbolToString")
 		warn("ThrowsUncheckedException") // we should be unchecked exceptions in JavaDoc instead
 		warn("TryFailRefactoring")
 		error("TypeToString")
-//            warn("UngroupedOverloads") //
 		warn("UnnecessaryBoxedAssignment")
 		warn("UnnecessaryBoxedVariable")
 		error("UnnecessaryStaticImport")
@@ -217,7 +220,7 @@ rewrite {
 	// activeRecipe("org.openrewrite.java.RemoveUnusedImports")
 
 	// https://docs.openrewrite.org/recipes/java/migrate/lang/switchcasereturnstoswitchexpression
-	activeRecipe("org.openrewrite.java.jspecify.MigrateToJSpecify") // probably not necessary, but will point out "wrong" nullability imports
+	activeRecipe("org.openrewrite.java.jspecify.MigrateToJSpecify")
 	// https://docs.openrewrite.org/recipes/java/shortenfullyqualifiedtypereferences
 	activeRecipe("org.openrewrite.java.ShortenFullyQualifiedTypeReferences")
 

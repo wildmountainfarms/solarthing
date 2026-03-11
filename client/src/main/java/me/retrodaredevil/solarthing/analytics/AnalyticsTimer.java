@@ -1,12 +1,14 @@
 package me.retrodaredevil.solarthing.analytics;
 
+import org.jspecify.annotations.Nullable;
+
 import java.time.Duration;
 
 import static java.util.Objects.requireNonNull;
 
 public class AnalyticsTimer {
 	private State state = State.SEND_FIRST;
-	private Long startTimeNanos = null;
+	private @Nullable Long startTimeNanos = null;
 	private long nextSendNanos = Long.MIN_VALUE;
 
 	public boolean shouldSend() {

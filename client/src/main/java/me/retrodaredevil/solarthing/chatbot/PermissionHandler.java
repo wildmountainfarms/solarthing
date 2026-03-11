@@ -1,5 +1,7 @@
 package me.retrodaredevil.solarthing.chatbot;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -52,7 +54,7 @@ public class PermissionHandler {
 						// a.b.c.*.e, a.b.c.d
 						return false;
 					}
-					if (nextUser.node.equals(nextDesired)) {
+					if (nextDesired.equals(nextUser.node)) {
 						break;
 					}
 					desiredIndex++;
@@ -68,14 +70,14 @@ public class PermissionHandler {
 		private static final Permission EXPANDED_WILDCARD = new Permission(null, true, false);
 		private static final Permission SINGLE_WILDCARD = new Permission(null, false, true);
 
-		private final String node;
+		private final @Nullable String node;
 		private final boolean expandedWildcard;
 		private final boolean singleWildcard;
 
 		private Permission(String node) {
 			this(requireNonNull(node), false, false);
 		}
-		private Permission(String node, boolean expandedWildcard, boolean singleWildcard) {
+		private Permission(@Nullable String node, boolean expandedWildcard, boolean singleWildcard) {
 			this.node = node;
 			this.expandedWildcard = expandedWildcard;
 			this.singleWildcard = singleWildcard;

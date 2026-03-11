@@ -16,7 +16,7 @@ public final class SolarThingEnvironment {
 	public static @Nullable String getRef() {
 		return emptyToNull(System.getenv("REF"));
 	}
-	private static String emptyToNull(String s) {
+	private static @Nullable String emptyToNull(String s) {
 		if (s.isEmpty()) {
 			return null;
 		}

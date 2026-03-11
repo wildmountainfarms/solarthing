@@ -8,10 +8,10 @@ import java.util.Objects;
 public final class TimeRange {
 	public static final TimeRange ALWAYS = new TimeRange(null, null);
 
-	private final Long startTime;
-	private final Long endTime;
+	private final @Nullable Long startTime;
+	private final @Nullable Long endTime;
 
-	public TimeRange(Long startTime, Long endTime) {
+	public TimeRange(@Nullable Long startTime, @Nullable Long endTime) {
 		this.startTime = startTime;
 		this.endTime = endTime;
 		if (startTime != null && endTime != null) {
@@ -23,7 +23,7 @@ public final class TimeRange {
 	public static TimeRange create(long startTime, long endTime) {
 		return new TimeRange(startTime, endTime);
 	}
-	public static TimeRange create(Instant startTime, Instant endTime) {
+	public static TimeRange create(@Nullable Instant startTime, @Nullable Instant endTime) {
 		return new TimeRange(startTime == null ? null : startTime.toEpochMilli(), endTime == null ? null : endTime.toEpochMilli());
 	}
 	public static TimeRange createAfter(long startTime) {

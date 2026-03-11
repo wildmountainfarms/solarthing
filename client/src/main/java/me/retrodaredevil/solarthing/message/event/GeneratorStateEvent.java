@@ -6,10 +6,11 @@ import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.solar.outback.OutbackUtil;
 import me.retrodaredevil.solarthing.solar.outback.fx.ACMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
+import org.jspecify.annotations.Nullable;
 
 @JsonTypeName("generatorstate")
 public class GeneratorStateEvent implements MessageEvent {
-	private Boolean generatorOn = null;
+	private @Nullable Boolean generatorOn = null;
 
 	@Override
 	public void run(MessageSender sender, FragmentedPacketGroup previous, FragmentedPacketGroup current) {

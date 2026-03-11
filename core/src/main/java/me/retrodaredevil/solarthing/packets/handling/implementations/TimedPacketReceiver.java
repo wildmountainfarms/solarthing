@@ -4,6 +4,7 @@ import me.retrodaredevil.solarthing.OnDataReceive;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.packets.handling.RawPacketReceiver;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +22,7 @@ public class TimedPacketReceiver implements RawPacketReceiver {
 	private final PacketListReceiver packetListReceiver;
 	private final OnDataReceive onDataReceive;
 
-	private Long lastFirstReceivedDataNanos = null; // the last time a packet was added to packetList
+	private @Nullable Long lastFirstReceivedDataNanos = null; // the last time a packet was added to packetList
 
 	/** A list that piles up packets and handles when needed. May be cleared */
 	private final List<Packet> packetList = new ArrayList<>(); //

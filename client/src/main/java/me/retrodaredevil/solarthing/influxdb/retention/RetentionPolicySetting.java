@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.influxdb.retention;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import org.jspecify.annotations.Nullable;
 
 @JsonDeserialize(builder = RetentionPolicySetting.Builder.class)
 public final class RetentionPolicySetting {
@@ -17,7 +18,7 @@ public final class RetentionPolicySetting {
 	private final boolean ignoreUnsuccessfulCreate;
 	private final RetentionPolicy retentionPolicy;
 
-	private RetentionPolicySetting(String name, boolean tryToCreate, boolean automaticallyAlter, boolean ignoreUnsuccessfulCreate, RetentionPolicy retentionPolicy) {
+	private RetentionPolicySetting(@Nullable String name, boolean tryToCreate, boolean automaticallyAlter, boolean ignoreUnsuccessfulCreate, @Nullable RetentionPolicy retentionPolicy) {
 		this.name = name;
 		this.tryToCreate = tryToCreate;
 		this.automaticallyAlter = automaticallyAlter;
@@ -64,20 +65,20 @@ public final class RetentionPolicySetting {
 	@JsonPOJOBuilder
 	static class Builder {
 		@JsonProperty("name")
-		private String name;
+		private @Nullable String name;
 		@JsonProperty("auto_alter")
-		private Boolean automaticallyAlterNullable = null;
+		private @Nullable Boolean automaticallyAlterNullable = null;
 		@JsonProperty("ignore_unsuccessful_create")
-		private Boolean ignoreUnsuccessfulCreateNullable = null;
+		private @Nullable Boolean ignoreUnsuccessfulCreateNullable = null;
 
 		@JsonProperty("duration")
-		private String duration = null;
+		private @Nullable String duration = null;
 		@JsonProperty("replication")
-		private Integer replicationNullable = null;
+		private @Nullable Integer replicationNullable = null;
 		@JsonProperty("shard_duration")
-		private String shardDuration = null;
+		private @Nullable String shardDuration = null;
 		@JsonProperty("set_as_default")
-		private Boolean setAsDefaultNullable = null;
+		private @Nullable Boolean setAsDefaultNullable = null;
 
 		public RetentionPolicySetting build() {
 			int replication = replicationNullable == null ? 1 : replicationNullable;

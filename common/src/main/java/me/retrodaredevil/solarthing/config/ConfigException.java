@@ -1,12 +1,14 @@
 package me.retrodaredevil.solarthing.config;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * An exception caused by the user's configuration.
  */
 public class ConfigException extends RuntimeException {
 	private final String userMessage;
 
-	public ConfigException(String message, Throwable cause) {
+	public ConfigException(String message, @Nullable Throwable cause) {
 		this(message, cause, message);
 	}
 

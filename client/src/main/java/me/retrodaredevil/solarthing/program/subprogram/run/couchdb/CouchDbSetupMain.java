@@ -226,7 +226,7 @@ public class CouchDbSetupMain {
 		@JsonProperty
 		private final String type = "user";
 		@JsonProperty
-		private final String password;
+		private final @Nullable String password;
 		@JsonProperty
 		private final List<String> roles = Collections.emptyList();
 
@@ -235,7 +235,7 @@ public class CouchDbSetupMain {
 			this.name = name;
 			this.password = null;
 		}
-		private UserEntry(String name, String password) {
+		private UserEntry(String name, @Nullable String password) {
 			this.name = name;
 			this.password = password;
 		}

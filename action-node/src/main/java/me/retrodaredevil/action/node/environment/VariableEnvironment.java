@@ -4,6 +4,7 @@ import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.expression.Expression;
 import me.retrodaredevil.action.node.expression.type.ExpressionType;
+import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 
@@ -14,15 +15,15 @@ public class VariableEnvironment {
 	private final Map<String, LockSet> lockSetMap = new HashMap<>();
 	/** A map of variable name to variable. Note null values are allowed, and represent a variable declared, but not initialized*/
 	private final Map<String, Variable> variableMap = new HashMap<>();
-	private final VariableEnvironment outerVariableEnvironment;
+	private final @Nullable VariableEnvironment outerVariableEnvironment;
 	/** The global lockset, which is only initialized when there is no outer variable environment*/
-	private final LockSet globalLockSet;
+	private final @Nullable LockSet globalLockSet;
 
 	public VariableEnvironment() {
 		this(null);
 	}
 
-	public VariableEnvironment(VariableEnvironment outerVariableEnvironment) {
+	public VariableEnvironment(@Nullable VariableEnvironment outerVariableEnvironment) {
 		this.outerVariableEnvironment = outerVariableEnvironment;
 		if (outerVariableEnvironment == null) {
 			globalLockSet = new LockSet();

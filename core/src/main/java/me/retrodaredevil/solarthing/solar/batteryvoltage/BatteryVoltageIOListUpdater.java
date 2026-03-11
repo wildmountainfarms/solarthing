@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.solar.batteryvoltage;
 
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +40,7 @@ public class BatteryVoltageIOListUpdater implements PacketListReceiver {
 		}
 	}
 
-	private BatteryVoltageOnlyPacket run() throws IOException {
+	private @Nullable BatteryVoltageOnlyPacket run() throws IOException {
 		StringBuilder resultBuilder = new StringBuilder();
 		byte[] buffer = new byte[1024];
 		while(inputStream.available() > 0) {
@@ -81,7 +82,7 @@ public class BatteryVoltageIOListUpdater implements PacketListReceiver {
 		}
 		return null;
 	}
-	private Double parseAndScale(String string) {
+	private @Nullable Double parseAndScale(String string) {
 		final double raw;
 		try {
 			raw = Double.parseDouble(string);

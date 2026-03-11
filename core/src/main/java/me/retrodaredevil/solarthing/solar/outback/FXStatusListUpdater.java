@@ -14,6 +14,7 @@ import me.retrodaredevil.solarthing.solar.outback.fx.extra.ImmutableDailyFXPacke
 import me.retrodaredevil.solarthing.util.integration.MutableIntegral;
 import me.retrodaredevil.solarthing.util.integration.TrapezoidalRuleAccumulator;
 import me.retrodaredevil.solarthing.util.time.TimeIdentifier;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +33,7 @@ public class FXStatusListUpdater implements PacketListReceiver {
 	private final TimeIdentifier timeIdentifier;
 
 	private final Map<Identifier, FXListUpdater> fxMap = new HashMap<>();
-	private Long lastTimeId = null;
+	private @Nullable Long lastTimeId = null;
 
 	public FXStatusListUpdater(TimeIdentifier timeIdentifier) {
 		this.timeIdentifier = requireNonNull(timeIdentifier);
@@ -69,9 +70,9 @@ public class FXStatusListUpdater implements PacketListReceiver {
 		return new TrapezoidalRuleAccumulator();
 	}
 	private static final class FXListUpdater {
-		private Long startDateMillis = null;
-		private Float minimumBatteryVoltage = null;
-		private Float maximumBatteryVoltage = null;
+		private @Nullable Long startDateMillis = null;
+		private @Nullable Float minimumBatteryVoltage = null;
+		private @Nullable Float maximumBatteryVoltage = null;
 
 		private final MutableIntegral inverterWH = createMutableIntegral();
 		private final MutableIntegral chargerWH = createMutableIntegral();

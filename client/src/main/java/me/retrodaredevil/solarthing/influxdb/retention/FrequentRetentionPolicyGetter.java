@@ -2,11 +2,12 @@ package me.retrodaredevil.solarthing.influxdb.retention;
 
 import me.retrodaredevil.solarthing.util.frequency.FrequentHandler;
 import me.retrodaredevil.solarthing.util.frequency.FrequentObject;
+import org.jspecify.annotations.Nullable;
 
 public class FrequentRetentionPolicyGetter implements RetentionPolicyGetter {
 	private final FrequentHandler<RetentionPolicySetting> handler;
 
-	private Long startMillis = null;
+	private @Nullable Long startMillis = null;
 	private double lastProgress = 0;
 
 	public FrequentRetentionPolicyGetter(FrequentHandler<RetentionPolicySetting> handler) {
@@ -14,7 +15,7 @@ public class FrequentRetentionPolicyGetter implements RetentionPolicyGetter {
 	}
 
 	@Override
-	public RetentionPolicySetting getRetentionPolicySetting() {
+	public @Nullable RetentionPolicySetting getRetentionPolicySetting() {
 		long now = System.currentTimeMillis();
 		Long startMillis = this.startMillis;
 		if(startMillis == null){

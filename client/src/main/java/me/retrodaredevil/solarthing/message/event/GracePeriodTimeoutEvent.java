@@ -13,8 +13,8 @@ public abstract class GracePeriodTimeoutEvent implements MessageEvent {
 	private final long gracePeriod;
 	private final long timeout;
 
-	private Long startTime = null;
-	private Long lastSend = null;
+	private @Nullable Long startTime = null;
+	private @Nullable Long lastSend = null;
 
 	protected GracePeriodTimeoutEvent(String gracePeriodDurationString, String timeoutDurationString) {
 		this(Duration.parse(gracePeriodDurationString).toMillis(), Duration.parse(timeoutDurationString).toMillis());
@@ -25,7 +25,7 @@ public abstract class GracePeriodTimeoutEvent implements MessageEvent {
 		this.timeout = timeout;
 	}
 
-	protected final Long getDurationMillis() {
+	protected final @Nullable Long getDurationMillis() {
 		Long startTime = this.startTime;
 		if (startTime == null) {
 			return null;

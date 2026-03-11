@@ -8,10 +8,10 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 
 final class ImmutableInstanceTargetPacket implements InstanceTargetPacket {
-	private final Collection<Integer> targetFragmentIds;
+	private final @Nullable Collection<Integer> targetFragmentIds;
 
 	@JsonCreator
-	ImmutableInstanceTargetPacket(@JsonProperty(value = "targets", required = true) Collection<Integer> targetFragmentIds) {
+	ImmutableInstanceTargetPacket(@JsonProperty(value = "targets", required = true) @Nullable Collection<Integer> targetFragmentIds) {
 		this.targetFragmentIds = targetFragmentIds == null ? null : new LinkedHashSet<>(targetFragmentIds);
 	}
 

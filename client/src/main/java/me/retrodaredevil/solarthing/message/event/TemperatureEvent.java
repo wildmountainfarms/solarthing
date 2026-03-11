@@ -6,6 +6,7 @@ import me.retrodaredevil.solarthing.message.MessageSender;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.solar.common.DualTemperature;
+import org.jspecify.annotations.Nullable;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -21,7 +22,7 @@ public class TemperatureEvent implements MessageEvent {
 	private final Duration timeout;
 	private final TemperatureType temperatureType;
 
-	private Long lastSendNanos = null;
+	private @Nullable Long lastSendNanos = null;
 
 	public TemperatureEvent(
 			@JsonProperty("low") Boolean low,

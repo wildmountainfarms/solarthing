@@ -10,6 +10,7 @@ import me.retrodaredevil.solarthing.program.subprogram.pvoutput.provider.PacketV
 import me.retrodaredevil.solarthing.program.subprogram.pvoutput.provider.PacketTemperatureCelsiusProvider;
 import me.retrodaredevil.solarthing.program.subprogram.pvoutput.provider.TemperatureCelsiusProvider;
 import me.retrodaredevil.solarthing.program.subprogram.pvoutput.provider.VoltageProvider;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,20 +30,20 @@ public class PVOutputUploadProgramOptions extends DatabaseTimeZoneOptionBase imp
 	private String apiKey;
 
 	@JsonProperty("required")
-	private Map<Integer, List<String>> requiredIdentifierMap = null;
+	private @Nullable Map<Integer, List<String>> requiredIdentifierMap = null;
 
 	@JsonProperty(AnalyticsOption.PROPERTY_NAME)
 	private boolean isAnalyticsEnabled = AnalyticsOption.DEFAULT_IS_ANALYTICS_ENABLED;
 
 	@JsonProperty("voltage_identifier")
-	private IdentifierRepFragment voltageIdentifierFragmentObject = null;
+	private @Nullable IdentifierRepFragment voltageIdentifierFragmentObject = null;
 	@JsonProperty("voltage_from")
-	private VoltageProvider voltageProvider = null;
+	private @Nullable VoltageProvider voltageProvider = null;
 
 	@JsonProperty("temperature_identifier")
-	private IdentifierRepFragment temperatureIdentifierFragmentObject = null;
+	private @Nullable IdentifierRepFragment temperatureIdentifierFragmentObject = null;
 	@JsonProperty("temperature_from")
-	private TemperatureCelsiusProvider temperatureCelsiusProvider = null;
+	private @Nullable TemperatureCelsiusProvider temperatureCelsiusProvider = null;
 
 	@JsonProperty("include_import")
 	private boolean includeImport = false;

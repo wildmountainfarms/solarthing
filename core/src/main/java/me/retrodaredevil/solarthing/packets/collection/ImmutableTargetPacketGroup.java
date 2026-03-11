@@ -13,9 +13,9 @@ class ImmutableTargetPacketGroup implements TargetPacketGroup {
 	private final List<Packet> packets;
 	private final long dateMillis;
 	private final String sourceId;
-	private final Collection<Integer> targetFragmentIds;
+	private final @Nullable Collection<Integer> targetFragmentIds;
 
-	ImmutableTargetPacketGroup(Collection<? extends Packet> packets, long dateMillis, String sourceId, Collection<Integer> targetFragmentIds) {
+	ImmutableTargetPacketGroup(Collection<? extends Packet> packets, long dateMillis, String sourceId, @Nullable Collection<Integer> targetFragmentIds) {
 		this.packets = Collections.unmodifiableList(new ArrayList<>(packets));
 		this.dateMillis = dateMillis;
 		this.sourceId = requireNonNull(sourceId);

@@ -15,6 +15,7 @@ import me.retrodaredevil.solarthing.packets.handling.CommonPacketHandleException
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +28,7 @@ public class CouchDbPacketSaver implements PacketHandler {
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
 
 	/** A map of document IDs to the current revision of that document or null if we ignore conflicts */
-	private final Map<String, String> idMap;
+	private final @Nullable Map<String, String> idMap;
 	private final CouchDbDatabase database;
 	/** We assume this is true until proven otherwise */
 	private boolean headRequestGivesRevisionETag = true;

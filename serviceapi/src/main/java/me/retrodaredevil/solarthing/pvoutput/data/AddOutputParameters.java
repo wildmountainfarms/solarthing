@@ -7,6 +7,7 @@ import me.retrodaredevil.solarthing.pvoutput.PVOutputString;
 import me.retrodaredevil.solarthing.pvoutput.SimpleDate;
 import me.retrodaredevil.solarthing.pvoutput.SimpleTime;
 import me.retrodaredevil.solarthing.pvoutput.WeatherCondition;
+import org.jspecify.annotations.Nullable;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonExplicit
@@ -32,7 +33,7 @@ public interface AddOutputParameters {
 	@JsonProperty("cd")
 	String getConditionValue();
 	@SuppressWarnings("unused")
-	default WeatherCondition getCondition(){
+	default @Nullable WeatherCondition getCondition(){
 		String value = getConditionValue();
 		if(value == null){
 			return null;
@@ -108,7 +109,7 @@ public interface AddOutputParameters {
 				toStringOrNull(getExportHighShoulder()),
 		};
 	}
-	static String toStringOrNull(Object object) {
+	static @Nullable String toStringOrNull(Object object) {
 		if(object == null) {
 			return null;
 		}

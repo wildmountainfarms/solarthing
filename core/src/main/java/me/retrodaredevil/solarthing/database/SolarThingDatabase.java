@@ -43,7 +43,7 @@ public interface SolarThingDatabase {
 	 * @return The packet or null if it has not been updated since {@code updateToken}
 	 * @throws SolarThingDatabaseException Thrown on connection errors or parsing errors
 	 */
-	@Nullable VersionedPacket<RootMetaPacket> queryMetadata(UpdateToken updateToken) throws SolarThingDatabaseException;
+	@Nullable VersionedPacket<RootMetaPacket> queryMetadata(@Nullable UpdateToken updateToken) throws SolarThingDatabaseException;
 	default @NotNull VersionedPacket<RootMetaPacket> queryMetadata() throws SolarThingDatabaseException { return requireNonNull(queryMetadata(null)); }
 
 	/**

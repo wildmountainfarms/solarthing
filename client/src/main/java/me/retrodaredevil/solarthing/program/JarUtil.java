@@ -49,7 +49,7 @@ public final class JarUtil {
 		}
 		return time.toInstant();
 	}
-	private static Path pathOrNull(URI uri) {
+	private static @Nullable Path pathOrNull(URI uri) {
 		try {
 			return Path.of(uri);
 		} catch (IllegalArgumentException | FileSystemNotFoundException e) {
@@ -65,7 +65,7 @@ public final class JarUtil {
 			this.uri = uri;
 			this.lastModified = lastModified;
 		}
-		public String getJarFileNameOrNull() {
+		public @Nullable String getJarFileNameOrNull() {
 			final Path path = pathOrNull(uri);
 			if (path == null) {
 				return null;

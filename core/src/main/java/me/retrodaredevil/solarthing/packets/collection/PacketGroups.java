@@ -7,6 +7,7 @@ import me.retrodaredevil.solarthing.packets.instance.InstancePacket;
 import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePacket;
 import me.retrodaredevil.solarthing.packets.instance.InstanceTargetPacket;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 
@@ -195,7 +196,7 @@ public final class PacketGroups {
 	 * @param packetGroupsOut The collection to put packets in. Note that packets may not be inserted in order.
 	 */
 	private static void addToPacketGroups(
-			long maxTimeDistance, Long masterIdIgnoreDistance,
+			long maxTimeDistance, @Nullable Long masterIdIgnoreDistance,
 			long minTime, long maxTime,
 			List<Integer> fragmentIds,
 			Map<Integer, ? extends List<? extends InstancePacketGroup>> fragmentMap,

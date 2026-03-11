@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.collection.DefaultInstanceOptions;
 import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePacket;
+import org.jspecify.annotations.Nullable;
 
 import java.nio.file.Path;
 
@@ -14,10 +15,10 @@ public abstract class DatabaseTimeZoneOptionBase extends TimeZoneOptionBase impl
 	@JsonProperty(value = "database", required = true)
 	private Path database;
 	@JsonProperty(value = "source", required = true)
-	private String sourceId = null;
+	private String sourceId;
 
 	@JsonProperty("include_undefined_sources")
-	private Boolean includeUndefinedSources = null;
+	private @Nullable Boolean includeUndefinedSources = null;
 	// The fact that we use DEFAULT_DEFAULT_INSTANCE_OPTIONS here is fine. The only database this matters on is the WMF database, which I have it configured correctly on
 	@JsonProperty("default_fragment")
 	private int defaultFragment = DefaultInstanceOptions.DEFAULT_DEFAULT_INSTANCE_OPTIONS.getDefaultFragmentId();

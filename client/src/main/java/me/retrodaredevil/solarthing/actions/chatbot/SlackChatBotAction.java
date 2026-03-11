@@ -11,6 +11,7 @@ import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.chatbot.ChatBotHandler;
 import me.retrodaredevil.solarthing.chatbot.Message;
 import me.retrodaredevil.solarthing.message.MessageSender;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +38,7 @@ public class SlackChatBotAction extends SimpleAction {
 
 	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-	private volatile SocketModeClient client = null;
+	private volatile @Nullable SocketModeClient client = null;
 
 	/** This set is synchronized so that in case Slack decides to run on multiple threads we still get thread safety. (I don't know if this is necessary, so this is to be safe)*/
 	private final Set<EnvelopeIdAndTimestamp> processedMessages = Collections.synchronizedSet(new HashSet<>());

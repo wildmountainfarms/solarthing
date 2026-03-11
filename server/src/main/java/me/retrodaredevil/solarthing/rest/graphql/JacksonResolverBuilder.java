@@ -17,6 +17,7 @@ import io.leangen.graphql.metadata.strategy.query.ResolverBuilderParams;
 import io.leangen.graphql.util.ClassUtils;
 import me.retrodaredevil.solarthing.annotations.GraphQLExclude;
 import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Field;
@@ -75,7 +76,7 @@ public class JacksonResolverBuilder implements ResolverBuilder {
 	public Collection<Resolver> buildSubscriptionResolvers(ResolverBuilderParams params) {
 		return Collections.emptyList();
 	}
-	private String getDeprecationReason(AnnotatedMember member) {
+	private @Nullable String getDeprecationReason(AnnotatedMember member) {
 		if (!javaDeprecationConfig.enabled || !member.hasAnnotation(Deprecated.class)) {
 			return null;
 		}

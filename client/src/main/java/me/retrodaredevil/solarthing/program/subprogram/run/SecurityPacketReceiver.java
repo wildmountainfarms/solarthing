@@ -33,6 +33,7 @@ import me.retrodaredevil.solarthing.packets.security.LargeIntegrityPacket;
 import me.retrodaredevil.solarthing.packets.security.SecurityPacket;
 import me.retrodaredevil.solarthing.packets.security.crypto.*;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -244,7 +245,7 @@ public class SecurityPacketReceiver {
 		handleMessage(storedPacketGroup, payload, sender);
 	}
 
-	private String decryptData(StoredPacketGroup storedPacketGroup, String sender, String base64EncodedData, long expectedDateMillis) {
+	private @Nullable String decryptData(StoredPacketGroup storedPacketGroup, String sender, String base64EncodedData, long expectedDateMillis) {
 		final String data;
 		try {
 			data = Decrypt.decrypt(cipher, publicKeyLookUp, sender, base64EncodedData);

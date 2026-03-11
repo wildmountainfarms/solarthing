@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.solcast.rooftop;
 
 import me.retrodaredevil.solarthing.solcast.common.*;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +23,7 @@ public class EstimatedActualCache {
 
 	private final EstimatedActualRetriever retriever;
 
-	private Long lastRequest = null;
+	private @Nullable Long lastRequest = null;
 	private boolean freeToRequestPast = false;
 
 	public EstimatedActualCache(EstimatedActualRetriever retriever) {
@@ -99,7 +100,7 @@ public class EstimatedActualCache {
 			return Collections.unmodifiableList(r);
 		}
 	}
-	private static boolean isTimestampOld(long now, Long timestamp) {
+	private static boolean isTimestampOld(long now, @Nullable Long timestamp) {
 		return timestamp == null || timestamp + REQUEST_PERIOD.toMillis() < now;
 	}
 	private void updateFutureForecastsAndEstimatedActuals() throws IOException {
@@ -131,7 +132,7 @@ public class EstimatedActualCache {
 
 	private static class Node implements Comparable<Node> {
 		private final long dateMillis;
-		private final IntervalData data;
+		private final @Nullable IntervalData data;
 
 		private Node(IntervalData data) {
 			dateMillis = data.getPeriodEnd().toEpochMilli();

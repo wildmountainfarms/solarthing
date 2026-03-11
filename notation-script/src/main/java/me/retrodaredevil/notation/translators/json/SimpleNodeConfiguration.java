@@ -1,5 +1,7 @@
 package me.retrodaredevil.notation.translators.json;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -61,11 +63,11 @@ public class SimpleNodeConfiguration implements NodeConfiguration {
 
 	public static final class Builder {
 		private String identifierFieldKey = "type";
-		private String identifierFieldValueOverride = null;
+		private @Nullable String identifierFieldValueOverride = null;
 		private final List<String> positionalArgumentFieldNames = new ArrayList<>();
 		private final Map<String, String> namedArgumentRenameMap = new HashMap<>();
-		private String subNodesFieldKey = null;
-		private String linkedNodeFieldKey = null;
+		private @Nullable String subNodesFieldKey = null;
+		private @Nullable String linkedNodeFieldKey = null;
 
 		public Builder copy() {
 			Builder newBuilder = new Builder();

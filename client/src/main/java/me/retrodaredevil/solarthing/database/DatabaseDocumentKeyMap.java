@@ -6,6 +6,7 @@ import me.retrodaredevil.solarthing.type.closed.authorization.AuthorizationPacke
 import me.retrodaredevil.solarthing.type.closed.authorization.PermissionObject;
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
 import me.retrodaredevil.solarthing.packets.security.crypto.PublicKeyLookUp;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +35,7 @@ public class DatabaseDocumentKeyMap implements PublicKeyLookUp {
 	}
 
 	@Override
-	public PublicKey getKey(String sender) {
+	public @Nullable PublicKey getKey(String sender) {
 		AuthorizationPacket authorizationPacket = packetCache.getPacket();
 		if (authorizationPacket == null) {
 			LOGGER.debug("authorizationPacket is null");

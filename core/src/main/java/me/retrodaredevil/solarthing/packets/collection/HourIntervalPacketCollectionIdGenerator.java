@@ -1,5 +1,7 @@
 package me.retrodaredevil.solarthing.packets.collection;
 
+import org.jspecify.annotations.Nullable;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.time.ZonedDateTime;
@@ -13,7 +15,7 @@ public final class HourIntervalPacketCollectionIdGenerator implements PacketColl
 
 	private final int uniqueIdsInOneHour;
 	private final Integer uniqueCode;
-	private final String uniqueCodeEncoded;
+	private final @Nullable String uniqueCodeEncoded;
 	private final boolean shortVersion;
 
 	public HourIntervalPacketCollectionIdGenerator(int uniqueIdsInOneHour, Integer uniqueCode) {
@@ -22,7 +24,7 @@ public final class HourIntervalPacketCollectionIdGenerator implements PacketColl
 	/**
 	 * @param uniqueIdsInOneHour The number of unique ids in an hour.
 	 */
-	public HourIntervalPacketCollectionIdGenerator(int uniqueIdsInOneHour, Integer uniqueCode, boolean shortVersion) {
+	public HourIntervalPacketCollectionIdGenerator(int uniqueIdsInOneHour, @Nullable Integer uniqueCode, boolean shortVersion) {
 		this.uniqueIdsInOneHour = uniqueIdsInOneHour;
 		this.uniqueCode = uniqueCode;
 		uniqueCodeEncoded = uniqueCode == null ? null : encodeUniqueCode(uniqueCode);

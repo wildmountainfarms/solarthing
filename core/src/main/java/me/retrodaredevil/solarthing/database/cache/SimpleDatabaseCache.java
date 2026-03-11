@@ -38,7 +38,7 @@ public class SimpleDatabaseCache implements DatabaseCache {
 	private final Duration volatileWindowDuration;
 	private final Clock clock;
 
-	private Data data = null;
+	private @Nullable Data data = null;
 
 	public SimpleDatabaseCache(Duration keepMaxDuration, Duration keepDuration, Duration minimumDuration, Duration volatileWindowDuration, Clock clock) {
 		this.keepMaxDuration = keepMaxDuration;
@@ -157,7 +157,7 @@ public class SimpleDatabaseCache implements DatabaseCache {
 	}
 	private static final class Node implements Comparable<Node> {
 		private final long dateMillis;
-		private final StoredPacketGroup packetGroup;
+		private final @Nullable StoredPacketGroup packetGroup;
 
 		private Node(long dateMillis) {
 			this.dateMillis = dateMillis;

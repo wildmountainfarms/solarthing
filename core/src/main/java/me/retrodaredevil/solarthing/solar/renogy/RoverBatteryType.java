@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.CodeMode;
 import me.retrodaredevil.solarthing.solar.renogy.rover.annotations.DcdcOnly;
+import org.jspecify.annotations.Nullable;
 
 /**
  * The battery type
@@ -60,7 +61,7 @@ public enum RoverBatteryType implements CodeMode {
 	public boolean isUser() {
 		return this == USER_LOCKED || this == USER_UNLOCKED;
 	}
-	public static RoverBatteryType parseOrNull(String batteryType) {
+	public static @Nullable RoverBatteryType parseOrNull(String batteryType) {
 		try {
 			return parse(batteryType);
 		} catch (IllegalArgumentException e) {

@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.solar.renogy.rover;
 
 import me.retrodaredevil.solarthing.annotations.NotNull;
 import me.retrodaredevil.solarthing.packets.CodeMode;
+import org.jspecify.annotations.Nullable;
 
 /**
  * R/W PDU address: 0xE01D, Bytes: 2
@@ -27,13 +28,13 @@ public enum LoadWorkingMode implements CodeMode {
 	NORMAL(17, null),
 	;
 	private final int value;
-	private final Integer timeDelay;
+	private final @Nullable Integer timeDelay;
 
-	LoadWorkingMode(int value, Integer timeDelay) {
+	LoadWorkingMode(int value, @Nullable Integer timeDelay) {
 		this.value = value;
 		this.timeDelay = timeDelay;
 	}
-	public Integer getTimeDelay(){
+	public @Nullable Integer getTimeDelay(){
 		return timeDelay;
 	}
 

@@ -28,6 +28,7 @@ import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
 import org.influxdb.dto.Query;
 import org.influxdb.dto.QueryResult;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -183,7 +184,7 @@ public class InfluxDbPacketSaver implements PacketHandler {
 			LOGGER.debug("Wrote {} packets to InfluxDB! database={} retention policy={}", packetsWritten, database, retentionPolicyName);
 		}
 	}
-	private String getError(QueryResult queryResult){
+	private @Nullable String getError(QueryResult queryResult){
 		if(queryResult.hasError()){
 			return queryResult.getError();
 		}

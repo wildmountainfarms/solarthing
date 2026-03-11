@@ -1,9 +1,11 @@
 package me.retrodaredevil.solarthing.util.integration;
 
+import org.jspecify.annotations.Nullable;
+
 abstract class MutableIntegralAccumulator implements MutableIntegral {
 	private double integral = 0;
 
-	private Double lastX = null;
+	private @Nullable Double lastX = null;
 	private double lastY;
 
 	@Override

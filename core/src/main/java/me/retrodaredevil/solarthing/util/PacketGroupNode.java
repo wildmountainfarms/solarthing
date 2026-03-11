@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.util;
 
 import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * This class is typically used alongside a {@link java.util.NavigableSet} and its {@link java.util.NavigableSet#headSet(Object)} and {@link java.util.NavigableSet#tailSet(Object)}
@@ -9,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class PacketGroupNode<T extends PacketGroup> implements Comparable<PacketGroupNode<T>> {
 	private final long dateMillis;
-	private final T packetGroup;
+	private final @Nullable T packetGroup;
 
 	public PacketGroupNode(long dateMillis) {
 		this.dateMillis = dateMillis;

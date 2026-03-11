@@ -8,6 +8,7 @@ import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.action.node.environment.NanoTimeProviderEnvironment;
 import me.retrodaredevil.action.node.util.NanoTimeProvider;
+import org.jspecify.annotations.Nullable;
 
 import java.time.Duration;
 
@@ -20,7 +21,7 @@ public class TimeoutActionNode implements ActionNode {
 	private final long timeoutNanos;
 	private final ActionNode actionNode;
 
-	private Long lastFireNanos = null;
+	private @Nullable Long lastFireNanos = null;
 
 	public TimeoutActionNode(
 			@JsonProperty(value = "timeout", required = true) String timeoutDurationString,

@@ -1,5 +1,7 @@
 package me.retrodaredevil.couchdb.design;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,7 +41,7 @@ public enum DesignResource {
 	*/
 	private final String fileName;
 	@SuppressWarnings("ImmutableEnumChecker") // This enum serves as a cache, which is state, which I have decided is OK in this particular case
-	private byte[] data = null;
+	private byte @Nullable [] data = null;
 
 
 	DesignResource(String fileName) {
