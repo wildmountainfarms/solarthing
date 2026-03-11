@@ -1,0 +1,94 @@
+plugins {
+	id("buildlogic.java-common-conventions")
+
+	alias(libs.plugins.spring.boot)
+	alias(libs.plugins.spring.dependency.management)
+	`java-library`
+}
+
+java {
+	sourceCompatibility = JavaVersion.VERSION_21
+	targetCompatibility = JavaVersion.VERSION_21
+}
+
+version = "0.0.1-SNAPSHOT"
+
+tasks.named<JavaCompile>("compileJava") {
+	// TODO We don't need the -parameters compiler argument (I don't think), plus now that Java 11 is required for GraphQL, what does it do/is it needed if we did need it?
+	options.compilerArgs.add("-parameters") // we don't want to use have to put @GraphQLArgument everywhere
+}
+
+dependencies {
+	api(project(":core"))
+	api(project(":common"))
+	api(project(":serviceapi"))
+	annotationProcessor(project(":process-annotations"))
+
+	implementation("org.springframework.boot:spring-boot-starter-web") {
+		exclude(group = "org.springframework.boot", module = "spring-boot-starter-logging")
+	}
+	implementation("org.springframework.boot:spring-boot-starter-log4j2")
+	testImplementation("org.springframework.boot:spring-boot-starter-test") {
+		exclude(group = "org.springframework.boot", module = "spring-boot-starter-logging")
+	}
+	implementation("org.springframework.boot:spring-boot-starter-graphql") {
+		exclude(group = "org.springframework.boot", module = "spring-boot-starter-logging")
+	}
+
+	//    implementation("com.graphql-java:graphql-java:14.0") graphql-spqr adds this dependency
+	implementation("io.leangen.graphql:spqr:0.12.4") // https://github.com/leangen/graphql-spqr/releases
+
+	// Although we don't need this dependency, we need to bump the version so that couchdb has the version it needs
+	api(libs.okhttp)
+
+	// This is necessary to bump the jackson version to whatever SolarThing is using
+	api(libs.jackson.core)
+	api(libs.jackson.annotations)
+	api(libs.jackson.databind)
+}
+
+tasks.named<Jar>("jar") {
+	enabled = true
+}
+
+tasks.bootRun {
+	workingDir = file("../program/graphql")
+}
+
+/*
+If we want to in the future, we can apply the 'war' plugin and configure the war task to be enabled here.
+We could then use bootWar to generate a war file to be used inside a tomcat server.
+ */
+
+/*
+If we want to in the future, we can configure this.
+However, configuring a buildpack (https://buildpacks.io/docs/operator-guide/create-a-builder/) is a learning curve.
+The default buildpack setup actually works perfectly, but compiling to multiple architectures (platforms)
+is actually a pain in the ass to find documentation on.
+bootBuildImage {
+	// https://docs.spring.io/spring-boot/docs/current/gradle-plugin/reference/htmlsingle/#build-image
+	// docker buildx create --use --platform linux/386,linux/amd64,linux/arm/v7,linux/arm64/v7,linux/ppc64le,linux/s390x
+	// https://docs.spring.io/spring-boot/docs/current/gradle-plugin/reference/htmlsingle/#build-image.examples.custom-image-builder
+	def containerRegistry = "ghcr.io"
+	imageName = "$containerRegistry/wildmountainfarms/solarthing-server:latest"
+}
+*/
+
+tasks.named<ProcessResources>("processResources") {
+	// TODO this dependsOn(":web:build") is also run for the generateSchema task,
+	//   which can cause errors when :web:build may give errors.
+	//   This is not ideal, especially when graphql.ts needs to be updated because it contains errors.
+	//   If you have a problem with generateSchema in the future, consider temporarily commenting this line
+	dependsOn(":web:build")
+	from("$rootDir/web/build") {
+		into("static")
+	}
+}
+
+tasks.register<JavaExec>("generateSchema") {
+	classpath = sourceSets.main.get().runtimeClasspath
+	// Used to generate schema to file
+	mainClass.set("me.retrodaredevil.solarthing.rest.graphql.OutputSchemaMain")
+	// workingDir is implicitly /graphql
+	args("../web/schema.graphqls")
+}
