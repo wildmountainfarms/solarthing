@@ -1,22 +1,16 @@
 package me.retrodaredevil.solarthing.database.exception;
 
-public class SolarThingDatabaseException extends Exception {
-	public SolarThingDatabaseException() {
-	}
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
+@NullMarked
+public class SolarThingDatabaseException extends Exception {
 	public SolarThingDatabaseException(String message) {
 		super(message);
 	}
 
-	public SolarThingDatabaseException(String message, Throwable cause) {
+	// Note: message is only nullable for compatibility reasons - TODO make message non-null
+	public SolarThingDatabaseException(@Nullable String message, Throwable cause) {
 		super(message, cause);
-	}
-
-	public SolarThingDatabaseException(Throwable cause) {
-		super(cause);
-	}
-
-	public SolarThingDatabaseException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-		super(message, cause, enableSuppression, writableStackTrace);
 	}
 }

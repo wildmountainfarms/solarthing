@@ -1,13 +1,14 @@
 package me.retrodaredevil.solarthing.packets.collection;
 
 import me.retrodaredevil.solarthing.packets.Packet;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Represents a {@link FragmentedPacketGroup} where each packet has the same fragment id.
  * <p>
  * This also implements {@link BasicPacketGroup} indicating that {@link #getDateMillis(Packet)} returns null
  */
+@NullMarked
 public interface InstancePacketGroup extends FragmentedPacketGroup, SourcedPacketGroup, BasicPacketGroup {
 
 	/**
@@ -28,7 +29,7 @@ public interface InstancePacketGroup extends FragmentedPacketGroup, SourcedPacke
 
 	@Deprecated
 	@Override
-	default @NonNull String getSourceId(Packet packet) {
+	default String getSourceId(Packet packet) {
 		return getSourceId();
 	}
 

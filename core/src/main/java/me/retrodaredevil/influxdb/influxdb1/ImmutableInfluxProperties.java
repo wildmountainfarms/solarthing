@@ -1,8 +1,10 @@
 package me.retrodaredevil.influxdb.influxdb1;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.jspecify.annotations.NullMarked;
 
 @JsonDeserialize(builder = InfluxPropertiesBuilder.class)
+@NullMarked
 public class ImmutableInfluxProperties implements InfluxProperties {
 	private final String url;
 	private final String username;

@@ -2,10 +2,12 @@ package me.retrodaredevil.okhttp3;
 
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import okhttp3.OkHttpClient;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.concurrent.TimeUnit;
 
 @UtilityClass
+@NullMarked
 public final class OkHttpUtil {
 	private OkHttpUtil() { throw new UnsupportedOperationException(); }
 

@@ -3,12 +3,14 @@ package me.retrodaredevil.solarthing.type.alter.flag;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import me.retrodaredevil.solarthing.packets.TypedDocumentedPacket;
 import me.retrodaredevil.solarthing.util.UniqueStringRepresentation;
+import org.jspecify.annotations.NullMarked;
 
 import java.time.Instant;
 
 @JsonSubTypes({
 		@JsonSubTypes.Type(TimeRangeActivePeriod.class),
 })
+@NullMarked
 public interface ActivePeriod extends TypedDocumentedPacket<ActivePeriodType>, UniqueStringRepresentation {
 
 	boolean isActive(long dateMillis);

@@ -1,12 +1,13 @@
 package me.retrodaredevil.solarthing.packets.collection;
 
 import me.retrodaredevil.solarthing.packets.Packet;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 class ImmutableFragmentedPacketGroup extends ImmutablePacketGroup implements FragmentedPacketGroup {
 	private final Map<Packet, String> sourceIdMap;
 	private final Map<Packet, Integer> fragmentIdMap;
@@ -46,13 +47,13 @@ class ImmutableFragmentedPacketGroup extends ImmutablePacketGroup implements Fra
 	}
 
 	@Override
-	public @NonNull String getSourceId(Packet packet) {
+	public String getSourceId(Packet packet) {
 		return requireNonNull(sourceIdMap.get(packet));
 	}
 
 	@Override
 	public int getFragmentId(Packet packet) {
-		return fragmentIdMap.get(packet);
+		return requireNonNull(fragmentIdMap.get(packet), "provided packet is not apart of this packet group");
 	}
 
 	@Override

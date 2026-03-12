@@ -66,7 +66,7 @@ public class CommandUtil {
 							try {
 								packetGroups = database.getOpenDatabase().query(new MillisQueryBuilder().startKey(System.currentTimeMillis() - 5 * 60 * 1000).build());
 							} catch (SolarThingDatabaseException e) {
-								throw new PacketHandleException(e);
+								throw new PacketHandleException("Failed to query open database", e);
 							}
 							securityPacketReceiver.receivePacketGroups(packetGroups);
 						}

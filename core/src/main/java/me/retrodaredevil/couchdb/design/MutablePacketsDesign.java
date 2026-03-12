@@ -1,10 +1,12 @@
 package me.retrodaredevil.couchdb.design;
 
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@NullMarked
 public class MutablePacketsDesign implements Design {
 	private final Map<String, View> views = new HashMap<>();
 	private final Map<String, String> filters = new HashMap<>();
@@ -42,7 +44,7 @@ public class MutablePacketsDesign implements Design {
 	}
 
 	@Override
-	public String getValidateDocUpdate() {
+	public @Nullable String getValidateDocUpdate() {
 		return validateDocUpdate;
 	}
 

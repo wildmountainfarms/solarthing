@@ -1,8 +1,9 @@
 package me.retrodaredevil.solarthing.misc.common.meta;
 
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public class DataMetaIdentityInfo implements IdentityInfo {
 	private final String name;
 	private final int dataId;
@@ -13,17 +14,17 @@ public class DataMetaIdentityInfo implements IdentityInfo {
 	}
 
 	@Override
-	public @NonNull String getName() {
+	public String getName() {
 		return name;
 	}
 
 	@Override
-	public @NonNull String getSuffix() {
+	public String getSuffix() {
 		return "" + dataId;
 	}
 
 	@Override
-	public @NonNull String getShortName() {
+	public String getShortName() {
 		return name;
 	}
 }

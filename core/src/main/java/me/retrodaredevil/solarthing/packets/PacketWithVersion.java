@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.packets;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -16,6 +17,7 @@ import org.jspecify.annotations.Nullable;
  * some implementations).
  */
 @JsonPropertyOrder({"packetType", "packetVersion"})
+@NullMarked
 public interface PacketWithVersion extends DocumentedPacket {
 
 	@JsonInclude(JsonInclude.Include.NON_NULL)

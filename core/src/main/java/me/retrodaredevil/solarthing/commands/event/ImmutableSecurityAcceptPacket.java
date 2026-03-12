@@ -2,10 +2,11 @@ package me.retrodaredevil.solarthing.commands.event;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class ImmutableSecurityAcceptPacket implements SecurityAcceptPacket {
 	private final String requestDocumentId;
 
@@ -15,7 +16,7 @@ public class ImmutableSecurityAcceptPacket implements SecurityAcceptPacket {
 	}
 
 	@Override
-	public @NonNull String getRequestDocumentId() {
+	public String getRequestDocumentId() {
 		return requestDocumentId;
 	}
 }

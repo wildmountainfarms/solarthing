@@ -1,6 +1,6 @@
 package me.retrodaredevil.solarthing;
 
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Collections;
 import java.util.EnumSet;
@@ -8,6 +8,7 @@ import java.util.Set;
 
 import static me.retrodaredevil.solarthing.SolarThingConstants.*;
 
+@NullMarked
 public enum SolarThingDatabaseType {
 	/**
 	 * The status database
@@ -89,7 +90,7 @@ public enum SolarThingDatabaseType {
 	public boolean isReadonlyByAll() {
 		return this == CLOSED;
 	}
-	public @NonNull Set<UserType> getUsersWithWritePermission() {
+	public Set<UserType> getUsersWithWritePermission() {
 		if (this == CLOSED || this == OPEN) { // This database is readonly by all
 			// closed is readonly by all users
 			// open already has permissive upload ability, so we don't need any user to get admin access

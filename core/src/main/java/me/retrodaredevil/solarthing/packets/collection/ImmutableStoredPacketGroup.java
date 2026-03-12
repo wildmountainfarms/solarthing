@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.packets.collection;
 
 import me.retrodaredevil.solarthing.packets.Packet;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,6 +11,7 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 class ImmutableStoredPacketGroup implements StoredPacketGroup {
 	private final List<Packet> packets;
 	private final long dateMillis;
@@ -31,6 +33,7 @@ class ImmutableStoredPacketGroup implements StoredPacketGroup {
 		return dateMillis;
 	}
 
+	// TODO remove NonNull
 	@Override
 	public @NonNull StoredIdentifier getStoredIdentifier() {
 		return storedIdentifier;

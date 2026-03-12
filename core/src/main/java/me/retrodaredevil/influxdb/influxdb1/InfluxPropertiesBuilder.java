@@ -2,10 +2,12 @@ package me.retrodaredevil.influxdb.influxdb1;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 
 @JsonPOJOBuilder
+@NullMarked
 public class InfluxPropertiesBuilder implements InfluxProperties {
 	private String url = "http://localhost:8086";
 	private String username = "root";

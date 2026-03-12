@@ -7,11 +7,12 @@ import me.retrodaredevil.solarthing.packets.DocumentedPacket;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@NullMarked
 public class SimplePacketGroupParser {
 	private final ObjectMapper mapper;
 	private final PacketParsingErrorHandler errorHandler;
@@ -22,7 +23,7 @@ public class SimplePacketGroupParser {
 	}
 
 
-	public @NonNull PacketGroup parse(ObjectNode objectNode) throws PacketParseException {
+	public PacketGroup parse(ObjectNode objectNode) throws PacketParseException {
 		JsonNode dateMillisNode = objectNode.get("dateMillis");
 		if(dateMillisNode == null){
 			throw new PacketParseException("'dateMillis' does not exist for objectNode=" + objectNode);

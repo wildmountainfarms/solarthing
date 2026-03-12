@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.packets.handling;
 
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,6 +14,7 @@ import java.util.List;
  * on {@link PacketHandler}s it didn't get to, making order significant if you want to make sure {@link PacketHandler}s that cannot throw exceptions
  * are executed before ones that could throw an exception.
  */
+@NullMarked
 public class PacketHandlerMultiplexer implements PacketHandler {
 	private final List<PacketHandler> packetHandlers;
 

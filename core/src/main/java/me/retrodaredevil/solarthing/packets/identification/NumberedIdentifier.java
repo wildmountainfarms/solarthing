@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.packets.identification;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Represents an {@link Identifier} where the only difference between similar {@link Identifier}s
@@ -11,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * To have the option of reverting the use of this, a number of 0 should not be serialized, as it will become 0 upon deserialization
  * as 0 is the default value.
  */
+@NullMarked
 public interface NumberedIdentifier extends Identifier {
 	int DEFAULT_NUMBER = 0;
 

@@ -1,9 +1,11 @@
 package me.retrodaredevil.solarthing.packets.handling;
 
 import me.retrodaredevil.solarthing.packets.Packet;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Collection;
 
+@NullMarked
 public interface RawPacketReceiver {
 	/**
 	 * Called when data was received, but that data was not parsable (it was garbled)

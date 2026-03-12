@@ -1,12 +1,14 @@
 package me.retrodaredevil.solarthing.packets.handling;
 
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+@NullMarked
 public class AsyncPacketHandlerWrapper implements PacketHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AsyncPacketHandlerWrapper.class);
 

@@ -5,6 +5,7 @@ import me.retrodaredevil.solarthing.packets.TypedDocumentedPacket;
 import me.retrodaredevil.solarthing.type.alter.packets.FlagAliasPacket;
 import me.retrodaredevil.solarthing.type.alter.packets.FlagPacket;
 import me.retrodaredevil.solarthing.type.alter.packets.ScheduledCommandPacket;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Represents a packet that is directly stored in the alter database
@@ -14,5 +15,6 @@ import me.retrodaredevil.solarthing.type.alter.packets.ScheduledCommandPacket;
 		@JsonSubTypes.Type(FlagPacket.class),
 		@JsonSubTypes.Type(FlagAliasPacket.class),
 })
+@NullMarked
 public interface AlterPacket extends TypedDocumentedPacket<AlterPacketType> {
 }

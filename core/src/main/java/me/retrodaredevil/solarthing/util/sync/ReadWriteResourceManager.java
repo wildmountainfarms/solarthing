@@ -1,9 +1,13 @@
 package me.retrodaredevil.solarthing.util.sync;
 
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
+
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Function;
 
+@NullMarked
 public class ReadWriteResourceManager<RESOURCE> implements ResourceManager<RESOURCE> {
 	private final RESOURCE resource;
 
@@ -14,7 +18,7 @@ public class ReadWriteResourceManager<RESOURCE> implements ResourceManager<RESOU
 	}
 
 	@Override
-	public <RESULT> RESULT access(Function<RESOURCE, RESULT> function) {
+	public <RESULT extends @Nullable Object> RESULT access(Function<RESOURCE, RESULT> function) {
 		readWriteLock.readLock().lock();
 		try {
 			return function.apply(resource);
@@ -24,7 +28,7 @@ public class ReadWriteResourceManager<RESOURCE> implements ResourceManager<RESOU
 	}
 
 	@Override
-	public <RESULT> RESULT update(Function<RESOURCE, RESULT> function) {
+	public <RESULT extends @Nullable Object> RESULT update(Function<RESOURCE, RESULT> function) {
 		readWriteLock.writeLock().lock();
 		try {
 			return function.apply(resource);

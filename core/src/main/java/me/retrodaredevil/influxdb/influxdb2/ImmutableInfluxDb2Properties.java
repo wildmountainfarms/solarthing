@@ -2,21 +2,22 @@ package me.retrodaredevil.influxdb.influxdb2;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+@NullMarked
 public class ImmutableInfluxDb2Properties implements InfluxDb2Properties {
 	private final String url;
-	private final char[] token;
-	private final String username;
-	private final char[] password;
+	private final char @Nullable [] token;
+	private final @Nullable String username;
+	private final char @Nullable [] password;
 	private final String org;
 
 	@JsonCreator
 	ImmutableInfluxDb2Properties(
 			@JsonProperty(value = "url", required = true) String url,
-			@JsonProperty("token") char[] token,
-			@JsonProperty("username") String username, @JsonProperty("password") char[] password,
+			@JsonProperty("token") char @Nullable [] token,
+			@JsonProperty("username") @Nullable String username, @JsonProperty("password") char @Nullable [] password,
 			@JsonProperty(value = "org", required = true) String org) {
 		this.url = url;
 		this.token = token;
@@ -36,12 +37,12 @@ public class ImmutableInfluxDb2Properties implements InfluxDb2Properties {
 
 
 	@Override
-	public @NonNull String getUrl() {
+	public String getUrl() {
 		return url;
 	}
 
 	@Override
-	public @Nullable char[] getToken() {
+	public char @Nullable [] getToken() {
 		return token;
 	}
 
@@ -51,12 +52,12 @@ public class ImmutableInfluxDb2Properties implements InfluxDb2Properties {
 	}
 
 	@Override
-	public @Nullable char[] getPassword() {
+	public char @Nullable [] getPassword() {
 		return password;
 	}
 
 	@Override
-	public @NonNull String getOrg() {
+	public String getOrg() {
 		return org;
 	}
 }

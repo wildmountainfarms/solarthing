@@ -1,11 +1,14 @@
 package me.retrodaredevil.solarthing.commands.command;
 
 import me.retrodaredevil.solarthing.reason.ExecutionReason;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public final class SourcedCommand<T extends Command> {
 	private final ExecutionReason executionReason;
 	private final T command;
@@ -16,7 +19,7 @@ public final class SourcedCommand<T extends Command> {
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(@Nullable Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		SourcedCommand<?> that = (SourcedCommand<?>) o;

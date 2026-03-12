@@ -3,9 +3,11 @@ package me.retrodaredevil.solarthing.commands.packets.status;
 import me.retrodaredevil.solarthing.commands.CommandInfo;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
 
+@NullMarked
 public class AvailableCommandsListUpdater implements PacketListReceiver {
 	private final List<CommandInfo> commandInfoList;
 	private final boolean alwaysSend;

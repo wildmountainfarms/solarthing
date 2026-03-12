@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import me.retrodaredevil.solarthing.marker.EventPacket;
 import me.retrodaredevil.solarthing.packets.TypedDocumentedPacket;
 import me.retrodaredevil.solarthing.packets.collection.StoredIdentifier;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * A security event packets describe if a given requested encrypted data was successfully decrypted.
@@ -17,6 +17,7 @@ import org.jspecify.annotations.NonNull;
 		@JsonSubTypes.Type(SecurityAcceptPacket.class),
 		@JsonSubTypes.Type(SecurityRejectPacket.class),
 })
+@NullMarked
 public interface SecurityEventPacket extends TypedDocumentedPacket<SecurityEventPacketType>, EventPacket {
 	/*
 	The reason that we use StoredIdentifier rather than UpdateTokens alongside a document ID is because
@@ -32,6 +33,6 @@ public interface SecurityEventPacket extends TypedDocumentedPacket<SecurityEvent
 	 * @return The requesting document's ID
 	 */
 	@JsonProperty("requestDocumentId")
-	@NonNull String getRequestDocumentId();
+	String getRequestDocumentId();
 	// We don't have to store the UpdateToken (revision) because event packets should never be deleted or updated
 }

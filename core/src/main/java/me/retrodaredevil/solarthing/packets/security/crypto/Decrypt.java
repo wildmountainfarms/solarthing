@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.packets.security.crypto;
 
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.packets.security.IntegrityPacket;
+import org.jspecify.annotations.NullMarked;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -13,6 +14,7 @@ import java.util.Base64;
 import static java.util.Objects.requireNonNull;
 
 @UtilityClass
+@NullMarked
 public final class Decrypt {
 	private Decrypt(){ throw new UnsupportedOperationException(); }
 
@@ -40,7 +42,7 @@ public final class Decrypt {
 		try {
 			characterByteArray = cipher.doFinal(encryptedData);
 		} catch (IllegalBlockSizeException | BadPaddingException e) {
-			throw new DecryptException(e);
+			throw new DecryptException("Failed to decrypt", e);
 		}
 		return new String(characterByteArray, StandardCharsets.UTF_8);
 	}

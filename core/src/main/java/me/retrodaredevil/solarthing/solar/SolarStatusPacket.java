@@ -7,6 +7,7 @@ import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPacket;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
 import me.retrodaredevil.solarthing.solar.tracer.TracerStatusPacket;
+import org.jspecify.annotations.NullMarked;
 
 @JsonSubTypes({
 		@JsonSubTypes.Type(FXStatusPacket.class),
@@ -15,5 +16,6 @@ import me.retrodaredevil.solarthing.solar.tracer.TracerStatusPacket;
 		@JsonSubTypes.Type(BatteryVoltageOnlyPacket.class),
 		@JsonSubTypes.Type(TracerStatusPacket.class),
 })
+@NullMarked
 public interface SolarStatusPacket extends SolarPacket<SolarStatusPacketType>, StatusPacket {
 }

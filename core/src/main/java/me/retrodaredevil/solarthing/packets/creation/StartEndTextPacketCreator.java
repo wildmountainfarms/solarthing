@@ -1,11 +1,13 @@
 package me.retrodaredevil.solarthing.packets.creation;
 
 import me.retrodaredevil.solarthing.packets.Packet;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
+@NullMarked
 public abstract class StartEndTextPacketCreator implements TextPacketCreator {
 	private static final Logger LOGGER = LoggerFactory.getLogger(StartEndTextPacketCreator.class);
 	private final char start, end;

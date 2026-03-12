@@ -1,10 +1,12 @@
 package me.retrodaredevil.solarthing.packets.handling;
 
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Handles a {@link PacketCollection}, usually by saving it somewhere
  */
+@NullMarked
 public interface PacketHandler {
 	/**
 	 * Handles the packetCollection

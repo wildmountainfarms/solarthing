@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.util.UniqueStringRepresentation;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.time.Duration;
 import java.util.Objects;
@@ -12,6 +12,7 @@ import java.util.Objects;
 import static java.util.Objects.requireNonNull;
 
 @JsonExplicit
+@NullMarked
 public final class HeartbeatData implements UniqueStringRepresentation {
 
 	private final String displayName;
@@ -40,18 +41,18 @@ public final class HeartbeatData implements UniqueStringRepresentation {
 
 
 	@JsonProperty("displayName")
-	public @NonNull String getDisplayName() {
+	public String getDisplayName() {
 		return displayName;
 	}
 
 	@JsonProperty("identifier")
-	public @NonNull String getIdentifier() {
+	public String getIdentifier() {
 		return identifier;
 	}
 
 	// Note that the serialization of this relies on the jsr310 jackson module
 	@JsonProperty("expectedDurationToNextHeartbeat")
-	public @NonNull Duration getExpectedDurationToNextHeartbeat() {
+	public Duration getExpectedDurationToNextHeartbeat() {
 		return expectedDurationToNextHeartbeat;
 	}
 
@@ -59,7 +60,7 @@ public final class HeartbeatData implements UniqueStringRepresentation {
 	 * @return The duration that is allowed after {@link #getExpectedDurationToNextHeartbeat()} before an alert should be sent
 	 */
 	@JsonProperty("bufferDuration")
-	public @NonNull Duration getBufferDuration() {
+	public Duration getBufferDuration() {
 		return bufferDuration;
 	}
 
@@ -69,7 +70,7 @@ public final class HeartbeatData implements UniqueStringRepresentation {
 	}
 
 	@Override
-	public @NonNull String getUniqueString() {
+	public String getUniqueString() {
 		return "HeartbeatData(" +
 				"displayName='" + displayName + '\'' +
 				", identifier='" + identifier + '\'' +

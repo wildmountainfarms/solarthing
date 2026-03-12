@@ -8,12 +8,14 @@ import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPackets;
 import me.retrodaredevil.solarthing.util.CheckSumException;
 import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
 import me.retrodaredevil.solarthing.util.ParsePacketAsciiDecimalDigitException;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.Collections;
 
+@NullMarked
 public class MatePacketCreator49 extends StartEndTextPacketCreator {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MatePacketCreator49.class);
 
@@ -32,13 +34,13 @@ public class MatePacketCreator49 extends StartEndTextPacketCreator {
 			try {
 				r = FXStatusPackets.createFromChars(bytes, ignoreCheckSum);
 			} catch (ParsePacketAsciiDecimalDigitException | CheckSumException e) {
-				throw new PacketCreationException(e);
+				throw new PacketCreationException("Failed to create FX packet", e);
 			}
 		} else if(value >= 65 && value <= 75){ // mx
 			try {
 				r = MXStatusPackets.createFromChars(bytes, ignoreCheckSum);
 			} catch (ParsePacketAsciiDecimalDigitException | CheckSumException e) {
-				throw new PacketCreationException(e);
+				throw new PacketCreationException("Failed to create MX packet", e);
 			}
 		} else if(value >= 97 && value <= 106){
 			throw new PacketCreationException("Not set up to use FLEXnet DC Status Packets. value: " + value);

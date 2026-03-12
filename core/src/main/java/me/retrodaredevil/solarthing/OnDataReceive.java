@@ -1,9 +1,12 @@
 package me.retrodaredevil.solarthing;
 
+import org.jspecify.annotations.NullMarked;
+
 /**
  * Represents something that handles when data is received, without knowing what that data is, just knowing that when this
  * method is called, data has been received.
  */
+@NullMarked
 public interface OnDataReceive {
 	/**
 	 *

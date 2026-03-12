@@ -8,6 +8,7 @@ import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.PacketWithVersion;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
@@ -15,12 +16,14 @@ import java.util.List;
 @JsonDeserialize(as = CelsiusCpuTemperaturePacket.class)
 @JsonExplicit
 @JsonTypeName("DEVICE_CPU_TEMPERATURE")
+@NullMarked
 public interface CpuTemperaturePacket extends DevicePacket, Identifiable, PacketWithVersion {
 	@Nullable Integer VERSION_ORIGINAL = null;
 	int VERSION_WITH_CORES = 1;
 
 	int VERSION_LATEST = VERSION_WITH_CORES;
 
+	// TODO remove NonNull
 	@DefaultFinal
 	@Override
 	default @NonNull DevicePacketType getPacketType(){
@@ -31,6 +34,7 @@ public interface CpuTemperaturePacket extends DevicePacket, Identifiable, Packet
 	@JsonProperty("cpuTemperatureFahrenheit")
 	float getCpuTemperatureFahrenheit();
 
+	// TODO remove NonNull
 	/**
 	 * @return The list of cores and their temperatures or an empty list if {@link #getPacketVersion()} == {@link #VERSION_ORIGINAL} (null)
 	 */

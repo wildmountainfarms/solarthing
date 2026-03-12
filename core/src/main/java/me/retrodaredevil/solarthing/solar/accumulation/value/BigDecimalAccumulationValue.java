@@ -1,12 +1,14 @@
 package me.retrodaredevil.solarthing.solar.accumulation.value;
 
 import me.retrodaredevil.solarthing.solar.accumulation.TotalGetter;
+import org.jspecify.annotations.NullMarked;
 
 import java.math.BigDecimal;
 import java.util.function.Function;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class BigDecimalAccumulationValue implements AccumulationValue<BigDecimalAccumulationValue> {
 	private final BigDecimal value;
 

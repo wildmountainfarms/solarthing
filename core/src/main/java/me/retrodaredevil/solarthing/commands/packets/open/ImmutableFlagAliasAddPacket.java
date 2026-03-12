@@ -3,12 +3,14 @@ package me.retrodaredevil.solarthing.commands.packets.open;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.type.alter.flag.FlagAliasData;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class ImmutableFlagAliasAddPacket implements FlagAliasAddPacket {
 
 	private final FlagAliasData flagAliasData;
@@ -19,12 +21,12 @@ public class ImmutableFlagAliasAddPacket implements FlagAliasAddPacket {
 	}
 
 	@Override
-	public @NonNull FlagAliasData getFlagAliasData() {
+	public FlagAliasData getFlagAliasData() {
 		return flagAliasData;
 	}
 
 	@Override
-	public @NonNull String getUniqueString() {
+	public String getUniqueString() {
 		return "FlagAliasAdd(flagAliasData=" + flagAliasData + ")";
 	}
 
@@ -34,7 +36,7 @@ public class ImmutableFlagAliasAddPacket implements FlagAliasAddPacket {
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(@Nullable Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		ImmutableFlagAliasAddPacket that = (ImmutableFlagAliasAddPacket) o;

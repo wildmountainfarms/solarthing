@@ -5,11 +5,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.PacketEntry;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Map;
 
 @JsonExplicit
 @JsonIgnoreProperties(value = {"_id", "_rev"}, allowGetters = true)
+@NullMarked
 public final class AuthorizationPacket implements PacketEntry {
 	public static final String DOCUMENT_ID = "authorized";
 	private final Map<String, PermissionObject> senderPermissions;

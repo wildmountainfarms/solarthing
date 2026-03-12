@@ -2,7 +2,8 @@ package me.retrodaredevil.solarthing.packets.identification;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -11,6 +12,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * "IdentifierRepresentationFragment" - represents an identifier's String representation and a fragment
  */
+@NullMarked
 public class IdentifierRepFragment implements IdentifierFragmentMatcher {
 	private final int fragmentId;
 	private final String identifierRepresentation;
@@ -18,7 +20,7 @@ public class IdentifierRepFragment implements IdentifierFragmentMatcher {
 	@JsonCreator
 	public IdentifierRepFragment(
 			@JsonProperty("fragment") int fragmentId,
-			@JsonProperty("identifier") @NonNull String identifierRepresentation) {
+			@JsonProperty("identifier") String identifierRepresentation) {
 		this.fragmentId = fragmentId;
 		this.identifierRepresentation = requireNonNull(identifierRepresentation);
 	}
@@ -33,12 +35,12 @@ public class IdentifierRepFragment implements IdentifierFragmentMatcher {
 		return fragmentId;
 	}
 
-	public @NonNull String getIdentifierRepresentation() {
+	public String getIdentifierRepresentation() {
 		return identifierRepresentation;
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(@Nullable Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		IdentifierRepFragment that = (IdentifierRepFragment) o;

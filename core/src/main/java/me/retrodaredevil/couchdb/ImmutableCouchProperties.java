@@ -3,19 +3,21 @@ package me.retrodaredevil.couchdb;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import okhttp3.HttpUrl;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.net.URI;
 
 import static java.util.Objects.requireNonNull;
 
 @JsonDeserialize(builder = CouchPropertiesBuilder.class)
+@NullMarked
 class ImmutableCouchProperties implements CouchProperties {
 	private final HttpUrl url;
-	private final String username, password;
+	private final @Nullable String username, password;
 	private final boolean basicAuth;
 
-	ImmutableCouchProperties(HttpUrl url, String username, String password, boolean basicAuth) {
+	ImmutableCouchProperties(HttpUrl url, @Nullable String username, @Nullable String password, boolean basicAuth) {
 		this.basicAuth = basicAuth;
 		this.url = requireNonNull(url);
 		this.username = username;
@@ -23,23 +25,23 @@ class ImmutableCouchProperties implements CouchProperties {
 	}
 
 	@Override
-	public @NonNull HttpUrl getHttpUrl() {
+	public HttpUrl getHttpUrl() {
 		return url;
 	}
 
 	@JsonProperty("url") // JsonProperty to work with UnwrappedDeserializer
 	@Override
-	public @NonNull URI getUri() {
+	public URI getUri() {
 		return url.uri();
 	}
 
 
 
 	@JsonProperty("username") // JsonProperty to work with UnwrappedDeserializer
-	@Override public String getUsername() { return username; }
+	@Override public @Nullable String getUsername() { return username; }
 
 	@JsonProperty("password") // JsonProperty to work with UnwrappedDeserializer
-	@Override public String getPassword() { return password; }
+	@Override public @Nullable String getPassword() { return password; }
 
 	@JsonProperty("basic_auth") // JsonProperty to work with UnwrappedDeserializer
 	@Override

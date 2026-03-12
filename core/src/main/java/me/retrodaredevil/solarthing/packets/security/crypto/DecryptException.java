@@ -1,9 +1,9 @@
 package me.retrodaredevil.solarthing.packets.security.crypto;
 
-public class DecryptException extends CryptoException {
-	public DecryptException() {
-	}
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
+public class DecryptException extends CryptoException {
 	public DecryptException(String message) {
 		super(message);
 	}
@@ -11,9 +11,4 @@ public class DecryptException extends CryptoException {
 	public DecryptException(String message, Throwable cause) {
 		super(message, cause);
 	}
-
-	public DecryptException(Throwable cause) {
-		super(cause);
-	}
-
 }

@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.packets.creation;
 
 import me.retrodaredevil.solarthing.packets.Packet;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Collection;
 
@@ -8,6 +9,7 @@ import java.util.Collection;
  * A packet creator is something that creates packets from characters from some sort of stream. The characters may be
  * received at different time intervals.
  */
+@NullMarked
 public interface TextPacketCreator {
 
 	/**

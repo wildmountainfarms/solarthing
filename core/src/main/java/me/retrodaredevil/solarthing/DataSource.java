@@ -1,10 +1,12 @@
 package me.retrodaredevil.solarthing;
 
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 /**
  * A helper class to create and parse the source string
  */
+@NullMarked
 public class DataSource {
 	private final String sender;
 	private final long dateMillis;

@@ -7,6 +7,7 @@ import me.retrodaredevil.solarthing.packets.instance.InstancePacket;
 import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePacket;
 import me.retrodaredevil.solarthing.packets.instance.InstanceTargetPacket;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.*;
@@ -14,6 +15,7 @@ import java.util.*;
 import static java.util.Objects.requireNonNull;
 
 @UtilityClass
+@NullMarked
 public final class PacketGroups {
 	private PacketGroups(){ throw new UnsupportedOperationException(); }
 
@@ -56,7 +58,7 @@ public final class PacketGroups {
 		}
 		return createInstancePacketGroup(packets, group.getDateMillis(), sourceId, fragmentId);
 	}
-	public static TargetPacketGroup createTargetPacketGroup(Collection<? extends Packet> packets, long dateMillis, String sourceId, Collection<Integer> targetFragmentIds) {
+	public static TargetPacketGroup createTargetPacketGroup(Collection<? extends Packet> packets, long dateMillis, String sourceId, @Nullable Collection<Integer> targetFragmentIds) {
 		return new ImmutableTargetPacketGroup(packets, dateMillis, sourceId, targetFragmentIds);
 	}
 	public static TargetPacketGroup parseToTargetPacketGroup(PacketGroup packetGroup) {
@@ -136,7 +138,7 @@ public final class PacketGroups {
 		return sortPackets(groups, defaultInstanceOptions, maxTimeDistance, masterIdIgnoreDistance, FragmentUtil.DEFAULT_FRAGMENT_ID_COMPARATOR);
 	}
 	@Contract(pure = true)
-	public static Map<String, List<FragmentedPacketGroup>> sortPackets(Collection<? extends PacketGroup> groups, DefaultInstanceOptions defaultInstanceOptions, long maxTimeDistance, Long masterIdIgnoreDistance, Comparator<Integer> fragmentIdComparator){
+	public static Map<String, List<FragmentedPacketGroup>> sortPackets(Collection<? extends PacketGroup> groups, DefaultInstanceOptions defaultInstanceOptions, long maxTimeDistance, @Nullable Long masterIdIgnoreDistance, Comparator<Integer> fragmentIdComparator){
 		Map<String, List<InstancePacketGroup>> map = parsePackets(groups, defaultInstanceOptions);
 		Map<String, List<FragmentedPacketGroup>> r = new HashMap<>();
 		for(Map.Entry<String, List<InstancePacketGroup>> entry : map.entrySet()) {
@@ -158,7 +160,7 @@ public final class PacketGroups {
 	 * @return A list of the merged packets
 	 */
 	@Contract(pure = true)
-	public static List<FragmentedPacketGroup> mergePackets(List<? extends InstancePacketGroup> instancePacketGroups, long maxTimeDistance, Long masterIdIgnoreDistance, Comparator<Integer> fragmentIdComparator){
+	public static List<FragmentedPacketGroup> mergePackets(List<? extends InstancePacketGroup> instancePacketGroups, long maxTimeDistance, @Nullable Long masterIdIgnoreDistance, Comparator<Integer> fragmentIdComparator){
 		if (instancePacketGroups.isEmpty()) {
 			throw new IllegalArgumentException("instancePacketGroups cannot be empty!");
 		}

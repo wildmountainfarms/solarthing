@@ -6,7 +6,8 @@ import me.retrodaredevil.solarthing.DataSource;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.util.UniqueStringRepresentation;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -19,6 +20,7 @@ import static java.util.Objects.requireNonNull;
  * the {@link SolarThingConstants#OPEN_DATABASE}, but they can be serialized in {@link SolarThingConstants#EVENT_DATABASE} to represent the cause/requester of some event
  */
 @JsonExplicit
+@NullMarked
 public final class OpenSource implements UniqueStringRepresentation {
 	private final String sender;
 	private final long dateMillis;
@@ -43,7 +45,7 @@ public final class OpenSource implements UniqueStringRepresentation {
 	}
 
 	@JsonProperty("sender")
-	public @NonNull String getSender() {
+	public String getSender() {
 		return sender;
 	}
 	@JsonProperty("dateMillis")
@@ -52,17 +54,17 @@ public final class OpenSource implements UniqueStringRepresentation {
 	}
 
 	@JsonProperty("packet")
-	public @NonNull OpenSourcePacket getPacket() {
+	public OpenSourcePacket getPacket() {
 		return packet;
 	}
 
 	@JsonProperty("legacyData")
-	public @NonNull String getLegacyData() {
+	public String getLegacyData() {
 		return legacyData;
 	}
 
 	@Override
-	public @NonNull String getUniqueString() {
+	public String getUniqueString() {
 		return "OpenSource(" +
 				"sender='" + sender + '\'' +
 				", dateMillis=" + dateMillis +
@@ -77,7 +79,7 @@ public final class OpenSource implements UniqueStringRepresentation {
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(@Nullable Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		OpenSource that = (OpenSource) o;

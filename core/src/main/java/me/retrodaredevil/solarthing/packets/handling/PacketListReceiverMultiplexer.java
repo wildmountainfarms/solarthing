@@ -1,9 +1,11 @@
 package me.retrodaredevil.solarthing.packets.handling;
 
 import me.retrodaredevil.solarthing.packets.Packet;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.*;
 
+@NullMarked
 public class PacketListReceiverMultiplexer implements PacketListReceiver {
 	private final List<PacketListReceiver> packetProviderList;
 

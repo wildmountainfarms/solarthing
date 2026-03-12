@@ -10,6 +10,7 @@ import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverIdentifier;
 import me.retrodaredevil.solarthing.solar.tracer.TracerIdentifier;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * All {@link Identifier}s have their {@link #equals(Object)} and {@link #hashCode()} methods implemented so
@@ -34,7 +35,9 @@ import org.jspecify.annotations.NonNull;
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type") // don't use "EXISTING_PROPERTY" because we want it to serialize the name we give the subclass without overhead of a getter
 @JsonClassDescription("Contains a representation that is unique across all packets in a particular fragment")
+@NullMarked
 public interface Identifier {
+	// TODO remove NonNull
 	/**
 	 * Also note that representations could change at any time after a SolarThing update, but generally they don't.
 	 * @return A representation of this identifier

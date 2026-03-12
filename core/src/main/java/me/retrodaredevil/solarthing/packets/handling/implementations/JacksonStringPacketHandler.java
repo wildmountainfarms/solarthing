@@ -3,7 +3,9 @@ package me.retrodaredevil.solarthing.packets.handling.implementations;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public class JacksonStringPacketHandler implements StringPacketHandler {
 	private final ObjectMapper mapper;
 

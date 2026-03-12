@@ -1,13 +1,14 @@
 package me.retrodaredevil.solarthing.util;
 
 import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 /**
  * This class is typically used alongside a {@link java.util.NavigableSet} and its {@link java.util.NavigableSet#headSet(Object)} and {@link java.util.NavigableSet#tailSet(Object)}
  * methods. This allows the querying of data between certain time periods without needing a full instance of a {@link PacketGroup}.
  */
+@NullMarked
 public final class PacketGroupNode<T extends PacketGroup> implements Comparable<PacketGroupNode<T>> {
 	private final long dateMillis;
 	private final @Nullable T packetGroup;
@@ -23,7 +24,7 @@ public final class PacketGroupNode<T extends PacketGroup> implements Comparable<
 	}
 
 	@Override
-	public int compareTo(@NotNull PacketGroupNode<T> node) {
+	public int compareTo(PacketGroupNode<T> node) {
 		return Long.compare(dateMillis, node.dateMillis);
 	}
 
@@ -31,7 +32,7 @@ public final class PacketGroupNode<T extends PacketGroup> implements Comparable<
 		return dateMillis;
 	}
 
-	public T getPacketGroup() {
+	public @Nullable T getPacketGroup() {
 		return packetGroup;
 	}
 }

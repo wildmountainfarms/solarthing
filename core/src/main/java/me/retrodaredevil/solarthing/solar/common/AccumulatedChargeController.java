@@ -3,13 +3,16 @@ package me.retrodaredevil.solarthing.solar.common;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.packets.support.Support;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public interface AccumulatedChargeController extends ChargeController {
 	@JsonProperty("dailyKWH")
 	float getDailyKWH();
 	@JsonProperty("dailyAH")
 	int getDailyAH();
 
+	// TODO remove NonNull
 	/**
 	 * Should be serialized as "dailyAHSupport" if serialized at all. Should be serialized using {@link Support#toString()}
 	 * <p>

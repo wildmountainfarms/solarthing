@@ -6,11 +6,14 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
 
 @JsonTypeName("data")
 @JsonExplicit
+@NullMarked
 public final class DataIdentifier implements Identifier {
 	private final int dataId;
 
@@ -19,6 +22,7 @@ public final class DataIdentifier implements Identifier {
 		this.dataId = dataId;
 	}
 
+	// TODO remove NonNull
 	@Override
 	public @NonNull String getRepresentation() {
 		return "DataIdentifier(dataId=" + dataId + ")";
@@ -30,7 +34,7 @@ public final class DataIdentifier implements Identifier {
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(@Nullable Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		DataIdentifier that = (DataIdentifier) o;

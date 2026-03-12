@@ -18,6 +18,7 @@ import me.retrodaredevil.solarthing.packets.security.crypto.HashUtil;
 import me.retrodaredevil.solarthing.packets.security.crypto.InvalidKeyException;
 import me.retrodaredevil.solarthing.packets.security.crypto.KeyUtil;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +41,7 @@ import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class CommandManager {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CommandManager.class);
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();

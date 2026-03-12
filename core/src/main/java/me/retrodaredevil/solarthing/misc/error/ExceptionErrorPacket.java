@@ -7,12 +7,15 @@ import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 @JsonDeserialize(as = ImmutableExceptionErrorPacket.class)
 @JsonTypeName("EXCEPTION_ERROR")
 @JsonExplicit
+@NullMarked
 public interface ExceptionErrorPacket extends ErrorPacket, Identifiable {
 
+	// TODO remove NonNull
 	@DefaultFinal
 	@Override
 	default @NonNull ErrorPacketType getPacketType() {
@@ -36,6 +39,7 @@ public interface ExceptionErrorPacket extends ErrorPacket, Identifiable {
 	@JsonProperty("exceptionInstanceIdentifier")
 	String getExceptionInstanceIdentifier();
 
+	// TODO remove NonNull
 	@Override
 	@NonNull ExceptionErrorIdentifier getIdentifier();
 }

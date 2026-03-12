@@ -6,6 +6,7 @@ import me.retrodaredevil.solarthing.type.closed.authorization.AuthorizationPacke
 import me.retrodaredevil.solarthing.type.closed.authorization.PermissionObject;
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
 import me.retrodaredevil.solarthing.packets.security.crypto.PublicKeyLookUp;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.security.PublicKey;
 import java.time.Duration;
 
+@NullMarked
 public class DatabaseDocumentKeyMap implements PublicKeyLookUp {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseDocumentKeyMap.class);
 

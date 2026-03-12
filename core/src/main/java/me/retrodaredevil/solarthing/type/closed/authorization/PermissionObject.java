@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.security.crypto.InvalidKeyException;
 import me.retrodaredevil.solarthing.packets.security.crypto.KeyUtil;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.security.PublicKey;
@@ -19,6 +20,7 @@ import static java.util.Objects.requireNonNull;
  */
 @JsonExplicit
 @JsonIgnoreProperties(value = {"fragments"}, allowGetters = true) // we need to allow this to be present for a few versions after we remove this to allow SolarThing instances to be updated to accept packets that do NOT have this property
+@NullMarked
 public final class PermissionObject {
 	private final String publicKey;
 	private final PublicKey publicKeyObject;

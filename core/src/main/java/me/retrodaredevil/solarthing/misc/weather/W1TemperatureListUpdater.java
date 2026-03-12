@@ -5,6 +5,7 @@ import me.retrodaredevil.solarthing.misc.source.W1Source;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.util.TimeUtil;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+@NullMarked
 public class W1TemperatureListUpdater implements PacketListReceiver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(W1TemperatureListUpdater.class);
 	private static final float RATED_MIN_TEMP_CELSIUS = -55.0f; // DS18B20 min temp

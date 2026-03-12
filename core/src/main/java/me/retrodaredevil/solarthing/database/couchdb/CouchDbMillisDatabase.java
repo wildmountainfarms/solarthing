@@ -26,10 +26,13 @@ import me.retrodaredevil.solarthing.packets.collection.StoredPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.parsing.PacketParseException;
 import me.retrodaredevil.solarthing.packets.collection.parsing.PacketParsingErrorHandler;
 import me.retrodaredevil.solarthing.packets.collection.parsing.SimplePacketGroupParser;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@NullMarked
 public class CouchDbMillisDatabase implements MillisDatabase {
 
 	private final CouchDbDatabase database;
@@ -59,7 +62,7 @@ public class CouchDbMillisDatabase implements MillisDatabase {
 		try {
 			packetGroup = parser.parse(objectNode);
 		} catch (PacketParseException e) {
-			throw new SolarThingDatabaseException(e);
+			throw new SolarThingDatabaseException("Problem parsing JSON data to packet group", e);
 		}
 		String documentId = objectNode.get("_id").asText();
 		String documentRevision = objectNode.get("_rev").asText();
@@ -86,7 +89,7 @@ public class CouchDbMillisDatabase implements MillisDatabase {
 	}
 
 	@Override
-	public UpdateToken uploadPacketCollection(PacketCollection packetCollection, UpdateToken updateToken) throws SolarThingDatabaseException {
+	public UpdateToken uploadPacketCollection(PacketCollection packetCollection, @Nullable UpdateToken updateToken) throws SolarThingDatabaseException {
 		final JsonData jsonData;
 		try {
 			jsonData = new StringJsonData(mapper.writeValueAsString(packetCollection));

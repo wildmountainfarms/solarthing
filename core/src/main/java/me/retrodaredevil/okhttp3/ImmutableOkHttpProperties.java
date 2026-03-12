@@ -1,5 +1,8 @@
 package me.retrodaredevil.okhttp3;
 
+import org.jspecify.annotations.NullMarked;
+
+@NullMarked
 public class ImmutableOkHttpProperties implements OkHttpProperties {
 	private final boolean isRetryOnConnectionFailure;
 	private final int callTimeoutMillis;

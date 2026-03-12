@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
+import org.jspecify.annotations.NullMarked;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import java.util.List;
  *
  * NOTE: This only works under the assumption that the values you read can be serialized and deserialized the same way.
  */
+@NullMarked
 public class UnwrappedDeserializeHelper {
 	private final ObjectMapper mapper;
 	private final JsonParser parser;

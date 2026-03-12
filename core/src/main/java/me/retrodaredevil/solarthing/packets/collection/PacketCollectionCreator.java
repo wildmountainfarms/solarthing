@@ -1,9 +1,10 @@
 package me.retrodaredevil.solarthing.packets.collection;
 
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.time.Instant;
 
+@NullMarked
 public interface PacketCollectionCreator {
-	@NonNull PacketCollection create(@NonNull Instant now);
+	PacketCollection create(Instant now);
 }

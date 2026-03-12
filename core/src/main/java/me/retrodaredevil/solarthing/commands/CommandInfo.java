@@ -3,10 +3,12 @@ package me.retrodaredevil.solarthing.commands;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 
 @JsonExplicit
+@NullMarked
 public final class CommandInfo {
 	private final String name;
 	private final String displayName;

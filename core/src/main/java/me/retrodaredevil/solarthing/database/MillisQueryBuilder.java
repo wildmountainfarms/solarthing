@@ -1,21 +1,25 @@
 package me.retrodaredevil.solarthing.database;
 
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
+
+@NullMarked
 public class MillisQueryBuilder {
-	private Long startKey;
-	private Long endKey;
+	private @Nullable Long startKey;
+	private @Nullable Long endKey;
 	private boolean inclusiveEnd = true;
-	private Integer limit;
+	private @Nullable Integer limit;
 	private boolean descending = false;
 
 	public MillisQuery build() {
 		return new MillisQuery(startKey, endKey, inclusiveEnd, limit, descending);
 	}
 
-	public MillisQueryBuilder startKey(Long startKey) {
+	public MillisQueryBuilder startKey(@Nullable Long startKey) {
 		this.startKey = startKey;
 		return this;
 	}
-	public MillisQueryBuilder endKey(Long endKey) {
+	public MillisQueryBuilder endKey(@Nullable Long endKey) {
 		this.endKey = endKey;
 		return this;
 	}
@@ -23,7 +27,7 @@ public class MillisQueryBuilder {
 		this.inclusiveEnd = inclusiveEnd;
 		return this;
 	}
-	public MillisQueryBuilder limit(Integer limit) {
+	public MillisQueryBuilder limit(@Nullable Integer limit) {
 		this.limit = limit;
 		return this;
 	}

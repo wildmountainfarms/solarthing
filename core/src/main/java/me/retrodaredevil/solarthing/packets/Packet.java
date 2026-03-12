@@ -1,5 +1,7 @@
 package me.retrodaredevil.solarthing.packets;
 
+import org.jspecify.annotations.NullMarked;
+
 /**
  * By implementing this, your class should be able to be serialized. At this time, we use Jackson to serialize Packets into JSON, so you should
  * annotate your classes to be serializable by Jackson.
@@ -9,5 +11,6 @@ package me.retrodaredevil.solarthing.packets;
  * If you're implementing this class, your subclass should be immutable.
  * @see <a href="https://github.com/influxdata/influxql/blob/master/README.md#keywords">InfluxDB keywords to avoid</a>
  */
+@NullMarked
 public interface Packet {
 }

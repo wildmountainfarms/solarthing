@@ -7,6 +7,7 @@ import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.misc.common.SourcedData;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,6 +17,7 @@ import java.util.Set;
 @JsonDeserialize(as = CelsiusTemperaturePacket.class)
 @JsonExplicit
 @JsonTypeName("TEMPERATURE")
+@NullMarked
 public interface TemperaturePacket extends WeatherPacket, SourcedData {
 	/**
 	 * Represents temperature Celsius values that might indicate a bad reading.
@@ -24,6 +26,7 @@ public interface TemperaturePacket extends WeatherPacket, SourcedData {
 	@Deprecated
 	Set<Float> POSSIBLE_BAD_VALUES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(0.0f, 16.0f, 24.0f, 25.0f)));
 
+	// TODO remove NonNull
 	@DefaultFinal
 	@Override
 	default @NonNull WeatherPacketType getPacketType() {

@@ -1,9 +1,11 @@
 package me.retrodaredevil.solarthing.packets.handling;
 
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class ThrottleFactorPacketHandler implements PacketHandler {
 	private final PacketHandler packetHandler;
 	private final FrequencySettings frequencySettings;

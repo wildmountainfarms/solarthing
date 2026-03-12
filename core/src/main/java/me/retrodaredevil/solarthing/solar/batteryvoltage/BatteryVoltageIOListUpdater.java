@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.solar.batteryvoltage;
 
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +12,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+@NullMarked
 public class BatteryVoltageIOListUpdater implements PacketListReceiver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(BatteryVoltageIOListUpdater.class);
 

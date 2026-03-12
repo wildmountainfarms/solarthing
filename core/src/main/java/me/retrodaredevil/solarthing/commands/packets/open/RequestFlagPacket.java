@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.type.alter.flag.FlagData;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Represents the request to schedule when a certain flag is active. This is usually handled by the automation program
@@ -16,14 +16,15 @@ import org.jspecify.annotations.NonNull;
 @JsonDeserialize(as = ImmutableRequestFlagPacket.class)
 @JsonTypeName("REQUEST_FLAG")
 @JsonExplicit
+@NullMarked
 public interface RequestFlagPacket extends CommandOpenPacket {
 
 	@DefaultFinal
 	@Override
-	default @NonNull CommandOpenPacketType getPacketType() {
+	default CommandOpenPacketType getPacketType() {
 		return CommandOpenPacketType.REQUEST_FLAG;
 	}
 
 	@JsonProperty("flagData")
-	@NonNull FlagData getFlagData();
+	FlagData getFlagData();
 }

@@ -1,7 +1,10 @@
 package me.retrodaredevil.solarthing.packets.collection;
 
+import org.jspecify.annotations.NullMarked;
+
 import java.time.ZonedDateTime;
 
+@NullMarked
 public interface PacketCollectionIdGenerator {
 	String generateId(ZonedDateTime zonedDateTime);
 

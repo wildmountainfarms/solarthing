@@ -3,12 +3,14 @@ package me.retrodaredevil.solarthing.database.cache;
 import me.retrodaredevil.solarthing.database.UpdateToken;
 import me.retrodaredevil.solarthing.database.VersionedPacket;
 import me.retrodaredevil.solarthing.packets.Packet;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 
+@NullMarked
 public class SimplePacketCache<T extends Packet> implements PacketCache<T> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SimplePacketCache.class);
 
@@ -62,7 +64,7 @@ public class SimplePacketCache<T extends Packet> implements PacketCache<T> {
 	}
 
 	public interface PacketSource<T extends Packet> {
-		VersionedPacket<T> query(@Nullable UpdateToken updateToken) throws QueryException;
+		@Nullable VersionedPacket<T> query(@Nullable UpdateToken updateToken) throws QueryException;
 	}
 	public static class QueryException extends Exception {
 		public QueryException() {

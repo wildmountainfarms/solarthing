@@ -2,10 +2,11 @@ package me.retrodaredevil.solarthing.packets.security;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public final class ImmutableIntegrityPacket implements IntegrityPacket {
 	private final String sender;
 	private final String encryptedData;
@@ -20,7 +21,7 @@ public final class ImmutableIntegrityPacket implements IntegrityPacket {
 	}
 
 	@Override
-	public @NonNull String getSender() {
+	public String getSender() {
 		return sender;
 	}
 

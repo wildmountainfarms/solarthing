@@ -1,7 +1,9 @@
 package me.retrodaredevil.solarthing.commands.command;
 
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+@NullMarked
 public interface CommandProvider<T extends Command> {
 	/**
 	 * If the returned value is not null, it represents the {@link Command} to execute and the source where it came from

@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.packets.handling;
 
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.util.PacketGroupNode;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,11 +16,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * NOTE: Once this class has been instantiated, there is no way to stop the thread that has been created.
  * <p>
  * This class functions by retrying any packet upload where calling {@link PacketHandler#handle(PacketCollection)} results in a {@link PacketHandleException}.
  */
+@NullMarked
 public class AsyncRetryingPacketHandler implements PacketHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AsyncRetryingPacketHandler.class);
 
@@ -39,6 +43,7 @@ public class AsyncRetryingPacketHandler implements PacketHandler {
 		reuploadExecutorService.scheduleWithFixedDelay(
 				() -> {
 					// We don't have to worry about synchronizing at all because our executorService executes on a single thread
+					// TODO do a better job about nullability within a PacketGroupNode
 					final List<PacketGroupNode<PacketCollection>> toReupload;
 					long removeBefore = System.currentTimeMillis() - 10 * 60 * 1000; // remove if before 10 minutes ago
 					synchronized (packetCollections) {
@@ -59,7 +64,7 @@ public class AsyncRetryingPacketHandler implements PacketHandler {
 						List<PacketGroupNode<PacketCollection>> successfullyUploaded = new ArrayList<>();
 						try {
 							for (PacketGroupNode<PacketCollection> node : toReupload) {
-								PacketCollection packetCollection = node.getPacketGroup();
+								PacketCollection packetCollection = requireNonNull(node.getPacketGroup());
 								packetHandler.handle(packetCollection);
 								successfullyUploaded.add(node);
 							}

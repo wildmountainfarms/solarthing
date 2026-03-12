@@ -3,8 +3,10 @@ package me.retrodaredevil.solarthing.packets.handling;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import org.jspecify.annotations.NullMarked;
 
 @JsonDeserialize(builder = FrequencySettings.Builder.class)
+@NullMarked
 public final class FrequencySettings {
 
 	public static final FrequencySettings NORMAL_SETTINGS = new FrequencySettings(1, 0);

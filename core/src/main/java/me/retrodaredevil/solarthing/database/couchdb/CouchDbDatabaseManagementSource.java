@@ -4,9 +4,11 @@ import me.retrodaredevil.couchdbjava.CouchDbInstance;
 import me.retrodaredevil.couchdbjava.exception.CouchDbException;
 import me.retrodaredevil.solarthing.database.DatabaseManagementSource;
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class CouchDbDatabaseManagementSource implements DatabaseManagementSource {
 	private final CouchDbInstance instance;
 

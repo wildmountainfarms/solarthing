@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.commands.command;
 
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -7,6 +8,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+@NullMarked
 public class CommandProviderMultiplexer<T extends Command> implements CommandProvider<T>{
 	private final List<CommandProvider<T>> commandProviderList;
 

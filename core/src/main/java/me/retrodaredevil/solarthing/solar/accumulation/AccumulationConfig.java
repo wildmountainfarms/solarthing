@@ -1,5 +1,8 @@
 package me.retrodaredevil.solarthing.solar.accumulation;
 
+import org.jspecify.annotations.NullMarked;
+
+@NullMarked
 public final class AccumulationConfig {
 	private final long cutOffIfStartBeforeDateMillis;
 	private final long cutOffIfEndBeforeDateMillis;

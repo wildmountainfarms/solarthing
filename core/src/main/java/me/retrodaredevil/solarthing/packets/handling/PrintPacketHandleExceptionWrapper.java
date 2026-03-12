@@ -2,10 +2,12 @@ package me.retrodaredevil.solarthing.packets.handling;
 
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
+@NullMarked
 public class PrintPacketHandleExceptionWrapper implements PacketHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PrintPacketHandleExceptionWrapper.class);
 

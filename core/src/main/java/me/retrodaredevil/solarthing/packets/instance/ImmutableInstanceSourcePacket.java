@@ -2,10 +2,11 @@ package me.retrodaredevil.solarthing.packets.instance;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 final class ImmutableInstanceSourcePacket implements InstanceSourcePacket {
 	private final String sourceId;
 
@@ -15,7 +16,7 @@ final class ImmutableInstanceSourcePacket implements InstanceSourcePacket {
 	}
 
 	@Override
-	public @NonNull String getSourceId() {
+	public String getSourceId() {
 		return sourceId;
 	}
 

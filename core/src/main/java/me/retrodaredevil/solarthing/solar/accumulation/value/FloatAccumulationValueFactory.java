@@ -1,5 +1,8 @@
 package me.retrodaredevil.solarthing.solar.accumulation.value;
 
+import org.jspecify.annotations.NullMarked;
+
+@NullMarked
 public class FloatAccumulationValueFactory implements AccumulationValueFactory<FloatAccumulationValue> {
 	private static final FloatAccumulationValueFactory INSTANCE = new FloatAccumulationValueFactory();
 	private static final FloatAccumulationValue ZERO = new FloatAccumulationValue(0.0f);

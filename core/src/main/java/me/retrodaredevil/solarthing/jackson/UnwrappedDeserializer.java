@@ -4,11 +4,15 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonDeserializer;
+import org.jspecify.annotations.NullMarked;
 
 import java.io.IOException;
 
+@Deprecated
+@NullMarked
 public abstract class UnwrappedDeserializer<T, U> extends JsonDeserializer<T> {
 	// This aims to be a fix for https://github.com/FasterXML/jackson-databind/issues/650
+	// TODO remove this class
 
 	private final Class<U> builderClass;
 	private final BuilderFunction<U, T> build;

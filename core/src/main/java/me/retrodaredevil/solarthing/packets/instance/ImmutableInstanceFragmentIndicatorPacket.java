@@ -2,7 +2,9 @@ package me.retrodaredevil.solarthing.packets.instance;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 final class ImmutableInstanceFragmentIndicatorPacket implements InstanceFragmentIndicatorPacket {
 	private final int fragmentId;
 

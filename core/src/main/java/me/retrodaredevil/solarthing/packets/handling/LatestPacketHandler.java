@@ -1,8 +1,10 @@
 package me.retrodaredevil.solarthing.packets.handling;
 
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+@NullMarked
 public class LatestPacketHandler implements PacketHandler {
 	private volatile @Nullable PacketCollection lastCollection = null;
 

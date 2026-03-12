@@ -4,12 +4,15 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("PACKET_COLLECTION")
+@NullMarked
 public class PacketCollectionExecutionReason implements ExecutionReason {
 	private final long dateMillis;
 	private final String dbId;
@@ -23,13 +26,14 @@ public class PacketCollectionExecutionReason implements ExecutionReason {
 		this.dbId = requireNonNull(dbId);
 	}
 
+	// TODO remove NonNull
 	@Override
 	public @NonNull ExecutionReasonType getPacketType() {
 		return ExecutionReasonType.PACKET_COLLECTION;
 	}
 
 	@Override
-	public @NonNull String getUniqueString() {
+	public String getUniqueString() {
 		return "PacketCollectionExecutionReason(dateMillis=" + dateMillis + ")";
 	}
 
@@ -49,7 +53,7 @@ public class PacketCollectionExecutionReason implements ExecutionReason {
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(@Nullable Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		PacketCollectionExecutionReason that = (PacketCollectionExecutionReason) o;

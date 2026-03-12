@@ -3,9 +3,11 @@ package me.retrodaredevil.solarthing.commands.packets.status;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.commands.CommandInfo;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
 
+@NullMarked
 public class ImmutableAvailableCommandsPacket implements AvailableCommandsPacket {
 	private final List<CommandInfo> commandInfoList;
 

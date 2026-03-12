@@ -118,6 +118,8 @@ tasks.withType<JavaCompile>().configureEach {
 		// https://github.com/uber/NullAway/wiki/JSpecify-Support#requireexplicitnullmarking-checker
 		// TODO reenable - some subprojects are fully compliant, but not all
 //		error("RequireExplicitNullMarking")
+		// TODO enable this when we want to fix TYPE_USE annotation positions
+//		error("AnnotationPosition")
 
 		// TODO update errors
 

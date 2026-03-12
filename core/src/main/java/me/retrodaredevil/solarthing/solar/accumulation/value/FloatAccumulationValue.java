@@ -1,12 +1,14 @@
 package me.retrodaredevil.solarthing.solar.accumulation.value;
 
 import me.retrodaredevil.solarthing.solar.accumulation.TotalGetter;
+import org.jspecify.annotations.NullMarked;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.function.Function;
 
+@NullMarked
 public final class FloatAccumulationValue implements AccumulationValue<FloatAccumulationValue> {
 	private final float value;
 

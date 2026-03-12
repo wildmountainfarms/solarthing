@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.packets.security;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import me.retrodaredevil.solarthing.packets.TypedDocumentedPacket;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Represents a packet relating to security or encrypting for integrity.
@@ -15,5 +16,6 @@ import me.retrodaredevil.solarthing.packets.TypedDocumentedPacket;
 		@JsonSubTypes.Type(LargeIntegrityPacket.class),
 		@JsonSubTypes.Type(AuthNewSenderPacket.class),
 })
+@NullMarked
 public interface SecurityPacket extends TypedDocumentedPacket<SecurityPacketType> {
 }

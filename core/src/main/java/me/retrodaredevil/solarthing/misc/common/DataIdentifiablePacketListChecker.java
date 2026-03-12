@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.misc.common;
 
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.HashSet;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.Set;
 /**
  * Crashes SolarThing if a user has incorrectly configured SolarThing by using the same data ID twice.
  */
+@NullMarked
 public class DataIdentifiablePacketListChecker implements PacketListReceiver {
 	@Override
 	public void receive(List<Packet> packets) {

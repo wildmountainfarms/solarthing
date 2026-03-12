@@ -1,10 +1,12 @@
 package me.retrodaredevil.solarthing.packets.instance;
 
 import me.retrodaredevil.solarthing.packets.Packet;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 
+@NullMarked
 public interface TargetPacket extends Packet {
 	@Nullable Collection<Integer> getTargetFragmentIds();
 

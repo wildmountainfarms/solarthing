@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.marker.OpenPacket;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
@@ -17,11 +17,12 @@ import java.util.Collection;
 @JsonTypeName("TARGET")
 @JsonDeserialize(as = ImmutableInstanceTargetPacket.class)
 @JsonExplicit
+@NullMarked
 public interface InstanceTargetPacket extends InstancePacket, TargetPacket, OpenPacket {
 
 	@DefaultFinal
 	@Override
-	default @NonNull InstancePacketType getPacketType() {
+	default InstancePacketType getPacketType() {
 		return InstancePacketType.TARGET;
 	}
 

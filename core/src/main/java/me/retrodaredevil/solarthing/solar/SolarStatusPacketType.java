@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.solar;
 
 import me.retrodaredevil.solarthing.packets.DocumentedPacketType;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Represents the packet type.
@@ -10,6 +11,7 @@ import me.retrodaredevil.solarthing.packets.DocumentedPacketType;
  * <p>
  * NOTE: This enum may have more values added to it in the future
  */
+@NullMarked
 public enum SolarStatusPacketType implements DocumentedPacketType {
 	/**
 	 * FX Status Packets

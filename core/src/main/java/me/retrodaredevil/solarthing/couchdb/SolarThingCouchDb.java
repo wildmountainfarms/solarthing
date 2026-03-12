@@ -3,8 +3,10 @@ package me.retrodaredevil.solarthing.couchdb;
 import me.retrodaredevil.couchdbjava.request.ViewQuery;
 import me.retrodaredevil.couchdbjava.request.ViewQueryParams;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
+import org.jspecify.annotations.NullMarked;
 
 @UtilityClass
+@NullMarked
 public class SolarThingCouchDb {
 	private SolarThingCouchDb() { throw new UnsupportedOperationException(); }
 

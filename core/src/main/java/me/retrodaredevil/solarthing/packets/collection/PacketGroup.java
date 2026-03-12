@@ -3,12 +3,14 @@ package me.retrodaredevil.solarthing.packets.collection;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.Packet;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.time.Instant;
 import java.util.List;
 
 @JsonExplicit
+@NullMarked
 public interface PacketGroup {
 	/**
 	 * Should be serialized as "packets"
@@ -24,7 +26,7 @@ public interface PacketGroup {
 	@JsonProperty("dateMillis")
 	long getDateMillis();
 
-	default @NonNull Instant getTimestamp() {
+	default Instant getTimestamp() {
 		return Instant.ofEpochMilli(getDateMillis());
 	}
 
@@ -33,7 +35,7 @@ public interface PacketGroup {
 	 * @return The date millis of the specific packet or null
 	 * @throws java.util.NoSuchElementException If {@code packet} is not in {@link #getPackets()}. Optional to be thrown
 	 */
-	default Long getDateMillis(Packet packet){
+	default @Nullable Long getDateMillis(Packet packet){
 		return null;
 	}
 	default long getDateMillisOrKnown(Packet packet) {

@@ -3,12 +3,14 @@ package me.retrodaredevil.solarthing.commands.packets.open;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.database.UpdateToken;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class ImmutableDeleteAlterPacket implements DeleteAlterPacket {
 	private final String documentIdToDelete;
 	private final UpdateToken updateToken;
@@ -22,17 +24,17 @@ public class ImmutableDeleteAlterPacket implements DeleteAlterPacket {
 	}
 
 	@Override
-	public @NonNull String getDocumentIdToDelete() {
+	public String getDocumentIdToDelete() {
 		return documentIdToDelete;
 	}
 
 	@Override
-	public @NonNull UpdateToken getUpdateToken() {
+	public UpdateToken getUpdateToken() {
 		return updateToken;
 	}
 
 	@Override
-	public @NonNull String getUniqueString() {
+	public String getUniqueString() {
 		return "DeleteAlterPacket(" +
 				"documentIdToDelete=" + documentIdToDelete +
 				", updateToken=" + updateToken +
@@ -45,7 +47,7 @@ public class ImmutableDeleteAlterPacket implements DeleteAlterPacket {
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(@Nullable Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		ImmutableDeleteAlterPacket that = (ImmutableDeleteAlterPacket) o;

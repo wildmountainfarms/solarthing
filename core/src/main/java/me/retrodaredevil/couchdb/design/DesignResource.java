@@ -1,5 +1,6 @@
 package me.retrodaredevil.couchdb.design;
 
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.io.DataInputStream;
@@ -14,6 +15,7 @@ import java.nio.charset.StandardCharsets;
  * Some of these design documents are validate functions: <a href="https://docs.couchdb.org/en/stable/ddocs/ddocs.html#validate-document-update-functions">Validate Document Update Functions</a>.
  *
  */
+@NullMarked
 public enum DesignResource {
 	// Validate
 	VALIDATE_JAVASCRIPT_READONLY_AUTH("validation/readonly_auth.js"),

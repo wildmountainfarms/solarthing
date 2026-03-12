@@ -1,13 +1,14 @@
 package me.retrodaredevil.solarthing.packets.collection;
 
 import me.retrodaredevil.solarthing.packets.Packet;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Represents a {@link PacketGroup} where individual packets could have different fragment IDs
  */
+@NullMarked
 public interface FragmentedPacketGroup extends PacketGroup {
-	@NonNull String getSourceId(Packet packet);
+	String getSourceId(Packet packet);
 	int getFragmentId(Packet packet);
 
 	default boolean hasSourceId(String sourceId) {

@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.packets.identification;
 
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 
@@ -9,6 +10,7 @@ import static java.util.Objects.requireNonNull;
  * you need a {@link SupplementaryIdentifier}
  * @param <T> The type of {@link Identifier} that this is supplementary to
  */
+@NullMarked
 public class UnknownSupplementaryIdentifier<T extends Identifier> implements SupplementaryIdentifier {
 	private final T identifier;
 
@@ -18,12 +20,14 @@ public class UnknownSupplementaryIdentifier<T extends Identifier> implements Sup
 		this.identifier = requireNonNull(identifier);
 	}
 
+	// TODO remove NonNull
 	@NonNull
 	@Override
 	public T getSupplementaryTo() {
 		return identifier;
 	}
 
+	// TODO remove NonNull
 	@Override
 	public @NonNull String getRepresentation() {
 		return "UnknownSupplementaryIdentifier(identifier=" + identifier + ")";

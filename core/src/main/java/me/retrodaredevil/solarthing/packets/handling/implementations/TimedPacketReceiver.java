@@ -4,6 +4,7 @@ import me.retrodaredevil.solarthing.OnDataReceive;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.packets.handling.RawPacketReceiver;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class TimedPacketReceiver implements RawPacketReceiver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TimedPacketReceiver.class);
 

@@ -7,7 +7,8 @@ import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.database.UpdateToken;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.collection.StoredIdentifier;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -15,6 +16,7 @@ import static java.util.Objects.requireNonNull;
 
 @JsonExplicit
 @JsonTypeName("couchdb-revision")
+@NullMarked
 public class RevisionUpdateToken implements UpdateToken {
 	private final String revision;
 
@@ -29,7 +31,7 @@ public class RevisionUpdateToken implements UpdateToken {
 	}
 
 	@Override
-	public @NonNull StoredIdentifier toStoredIdentifier(@NonNull PacketCollection packetCollection) {
+	public StoredIdentifier toStoredIdentifier(PacketCollection packetCollection) {
 		return new CouchDbStoredIdentifier(packetCollection.getDateMillis(), packetCollection.getDbId(), revision);
 	}
 
@@ -41,7 +43,7 @@ public class RevisionUpdateToken implements UpdateToken {
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(@Nullable Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		RevisionUpdateToken that = (RevisionUpdateToken) o;

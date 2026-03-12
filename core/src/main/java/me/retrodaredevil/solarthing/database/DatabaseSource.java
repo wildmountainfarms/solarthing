@@ -1,10 +1,12 @@
 package me.retrodaredevil.solarthing.database;
 
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Represents an individual database of a {@link DatabaseManagementSource}
  */
+@NullMarked
 public interface DatabaseSource {
 	/**
 	 * Note: It is possible for the database to exist and an exception to be thrown. Commonly, {@link me.retrodaredevil.solarthing.database.exception.UnauthorizedSolarThingDatabaseException} may be thrown

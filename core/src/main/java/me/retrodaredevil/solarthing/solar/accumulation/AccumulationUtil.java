@@ -8,13 +8,17 @@ import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 import me.retrodaredevil.solarthing.packets.identification.IdentifierFragment;
 import me.retrodaredevil.solarthing.solar.common.DailyData;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Objects.requireNonNull;
+
 @UtilityClass
+@NullMarked
 public final class AccumulationUtil {
 	private AccumulationUtil(){ throw new UnsupportedOperationException(); }
 
@@ -57,6 +61,7 @@ public final class AccumulationUtil {
 		if (firstPacket != null) {
 			//noinspection ConstantConditions
 			assert lastPacket != null;
+			requireNonNull(lastPacket);
 			r.add(createAccumulationPair(r.isEmpty(), firstPacket, lastPacket, accumulationConfig));
 		}
 		return r;

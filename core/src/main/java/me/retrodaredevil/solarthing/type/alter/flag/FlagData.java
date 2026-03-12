@@ -4,7 +4,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.util.UniqueStringRepresentation;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -15,6 +16,7 @@ import static java.util.Objects.requireNonNull;
  * Although there is no strict enforcement of what the flag's name should be, it is recommended to make it something that could be a valid variable name.
  */
 @JsonExplicit
+@NullMarked
 public final class FlagData implements UniqueStringRepresentation {
 	private final String flagName;
 	private final ActivePeriod activePeriod;
@@ -38,7 +40,7 @@ public final class FlagData implements UniqueStringRepresentation {
 	}
 
 	@Override
-	public @NonNull String getUniqueString() {
+	public String getUniqueString() {
 		return "FlagData(" +
 				"flagName='" + flagName + '\'' +
 				", activePeriod=" + activePeriod.getUniqueString() +
@@ -51,7 +53,7 @@ public final class FlagData implements UniqueStringRepresentation {
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(@Nullable Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		FlagData flagData = (FlagData) o;

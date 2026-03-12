@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import me.retrodaredevil.solarthing.database.couchdb.RevisionUpdateToken;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.collection.StoredIdentifier;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Update tokens are an abstraction to allow the updating of already uploaded data. They are also useful for caches.
@@ -21,6 +21,7 @@ import org.jspecify.annotations.NonNull;
 		@JsonSubTypes.Type(RevisionUpdateToken.class)
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
+@NullMarked
 public interface UpdateToken {
-	@NonNull StoredIdentifier toStoredIdentifier(@NonNull PacketCollection packetCollection);
+	StoredIdentifier toStoredIdentifier(PacketCollection packetCollection);
 }

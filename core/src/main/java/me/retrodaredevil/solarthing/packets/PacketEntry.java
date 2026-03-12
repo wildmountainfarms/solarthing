@@ -1,11 +1,14 @@
 package me.retrodaredevil.solarthing.packets;
 
+import org.jspecify.annotations.NullMarked;
+
 /**
  * Represents a packet that will be directly stored in the database.
  * <p>
  * You should avoid naming fields in certain ways: You should not have any fields that begin with an underscore.
  * Fields that begin with underscores in nested objects are fine.
  */
+@NullMarked
 public interface PacketEntry extends Packet {
 	/**
 	 *

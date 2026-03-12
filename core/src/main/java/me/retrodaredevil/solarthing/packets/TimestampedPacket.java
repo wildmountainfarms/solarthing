@@ -1,7 +1,10 @@
 package me.retrodaredevil.solarthing.packets;
 
+import org.jspecify.annotations.NullMarked;
+
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public final class TimestampedPacket<T> {
 	private final T packet;
 	private final long dateMillis;

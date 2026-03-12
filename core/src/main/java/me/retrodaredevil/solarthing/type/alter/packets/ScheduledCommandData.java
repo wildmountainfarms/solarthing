@@ -4,7 +4,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.util.UniqueStringRepresentation;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,6 +15,7 @@ import java.util.Objects;
 import static java.util.Objects.requireNonNull;
 
 @JsonExplicit
+@NullMarked
 public final class ScheduledCommandData implements UniqueStringRepresentation {
 	private final long scheduledTimeMillis;
 	private final String commandName;
@@ -35,17 +37,17 @@ public final class ScheduledCommandData implements UniqueStringRepresentation {
 	}
 
 	@JsonProperty("commandName")
-	public @NonNull String getCommandName() {
+	public String getCommandName() {
 		return commandName;
 	}
 
 	@JsonProperty("targetFragmentIds")
-	public @NonNull Collection<Integer> getTargetFragmentIds() {
+	public Collection<Integer> getTargetFragmentIds() {
 		return targetFragmentIds;
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(@Nullable Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		ScheduledCommandData that = (ScheduledCommandData) o;
@@ -58,7 +60,7 @@ public final class ScheduledCommandData implements UniqueStringRepresentation {
 	}
 
 	@Override
-	public @NonNull String getUniqueString() {
+	public String getUniqueString() {
 		return "ScheduledCommandData(" +
 				"scheduledTimeMillis=" + scheduledTimeMillis +
 				", commandName='" + commandName + '\'' +

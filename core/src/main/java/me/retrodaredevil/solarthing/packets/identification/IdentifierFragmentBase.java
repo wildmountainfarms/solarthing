@@ -1,11 +1,14 @@
 package me.retrodaredevil.solarthing.packets.identification;
 
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class IdentifierFragmentBase<T extends Identifier> implements KnownIdentifierFragment<T> {
 	private final int fragmentId;
 	private final T identifier;
@@ -20,6 +23,7 @@ public class IdentifierFragmentBase<T extends Identifier> implements KnownIdenti
 		return fragmentId;
 	}
 
+	// TODO remove NonNull
 	@Override
 	public @NonNull T getIdentifier() {
 		return identifier;
@@ -34,7 +38,7 @@ public class IdentifierFragmentBase<T extends Identifier> implements KnownIdenti
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(@Nullable Object o) {
 		if (this == o) return true;
 		if (!(o instanceof IdentifierFragment)) return false;
 		IdentifierFragment that = (IdentifierFragment) o;

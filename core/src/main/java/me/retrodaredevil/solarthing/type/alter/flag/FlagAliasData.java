@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.util.UniqueStringRepresentation;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.time.Duration;
@@ -13,10 +13,11 @@ import java.util.Objects;
 import static java.util.Objects.requireNonNull;
 
 @JsonExplicit
+@NullMarked
 public final class FlagAliasData implements UniqueStringRepresentation {
 	private final String flagName;
 	private final String flagAlias;
-	private final Long defaultDurationMillis;
+	private final @Nullable Long defaultDurationMillis;
 	// For the time being, a FlagAliasData only stores a duration for how long the flag should stay active.
 	//   In the future, we may consider adding a more future-proof way to represent the desired ActivePeriod
 
@@ -24,7 +25,7 @@ public final class FlagAliasData implements UniqueStringRepresentation {
 	public FlagAliasData(
 			@JsonProperty(value = "flagName", required = true) String flagName,
 			@JsonProperty(value = "flagAlias", required = true) String flagAlias,
-			@JsonProperty(value = "defaultDurationMillis", required = true) Long defaultDurationMillis) {
+			@JsonProperty(value = "defaultDurationMillis", required = true) @Nullable Long defaultDurationMillis) {
 		this.flagName = requireNonNull(flagName);
 		this.flagAlias = requireNonNull(flagAlias);
 		this.defaultDurationMillis = defaultDurationMillis;
@@ -34,7 +35,7 @@ public final class FlagAliasData implements UniqueStringRepresentation {
 	 * @return The flag name
 	 */
 	@JsonProperty("flagName")
-	public @NonNull String getFlagName() {
+	public String getFlagName() {
 		return flagName;
 	}
 
@@ -42,7 +43,7 @@ public final class FlagAliasData implements UniqueStringRepresentation {
 	 * @return The flag alias or display name
 	 */
 	@JsonProperty("flagAlias")
-	public @NonNull String getFlagAlias() {
+	public String getFlagAlias() {
 		return flagAlias;
 	}
 
@@ -61,7 +62,7 @@ public final class FlagAliasData implements UniqueStringRepresentation {
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(@Nullable Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		FlagAliasData that = (FlagAliasData) o;
@@ -74,7 +75,7 @@ public final class FlagAliasData implements UniqueStringRepresentation {
 	}
 
 	@Override
-	public @NonNull String getUniqueString() {
+	public String getUniqueString() {
 		return "FlagAliasData(" +
 				"flagName='" + flagName + '\'' +
 				", flagAlias=" + flagAlias +

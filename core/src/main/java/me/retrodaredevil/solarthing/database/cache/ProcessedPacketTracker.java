@@ -5,6 +5,7 @@ import me.retrodaredevil.solarthing.packets.collection.StoredIdentifier;
 import me.retrodaredevil.solarthing.packets.collection.StoredPacketGroup;
 import me.retrodaredevil.solarthing.util.TimeRange;
 import me.retrodaredevil.solarthing.util.sync.ResourceManager;
+import org.jspecify.annotations.NullMarked;
 
 import java.time.Duration;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.NavigableSet;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+@NullMarked
 public class ProcessedPacketTracker {
 	private static final long BUFFER_MILLIS = Duration.ofMinutes(5).toMillis();
 

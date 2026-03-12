@@ -4,7 +4,7 @@ import me.retrodaredevil.solarthing.database.MillisQuery;
 import me.retrodaredevil.solarthing.database.MillisQueryBuilder;
 import me.retrodaredevil.solarthing.packets.collection.StoredPacketGroup;
 import me.retrodaredevil.solarthing.util.TimeRange;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,12 +15,14 @@ import java.time.Instant;
 import java.util.List;
 import java.util.NavigableSet;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.TreeSet;
 import java.util.stream.Stream;
 
 /**
  * Note: Not thread safe
  */
+@NullMarked
 public class SimpleDatabaseCache implements DatabaseCache {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SimpleDatabaseCache.class);
@@ -67,7 +69,8 @@ public class SimpleDatabaseCache implements DatabaseCache {
 			set = set.descendingSet();
 		}
 		return set.stream()
-				.map(node -> node.packetGroup);
+				.map(node -> node.packetGroup)
+				.map(Objects::requireNonNull);
 	}
 	public MillisQuery getRecommendedQuery() {
 		return createRecommendedQueryBuilder().build();
@@ -170,7 +173,7 @@ public class SimpleDatabaseCache implements DatabaseCache {
 		}
 
 		@Override
-		public int compareTo(@NotNull SimpleDatabaseCache.Node node) {
+		public int compareTo(SimpleDatabaseCache.Node node) {
 			return Long.compare(dateMillis, node.dateMillis);
 		}
 	}

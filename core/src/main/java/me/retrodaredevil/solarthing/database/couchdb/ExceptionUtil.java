@@ -9,13 +9,17 @@ import me.retrodaredevil.solarthing.database.exception.NotFoundSolarThingDatabas
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
 import me.retrodaredevil.solarthing.database.exception.UnauthorizedSolarThingDatabaseException;
 import me.retrodaredevil.solarthing.database.exception.UpdateConflictSolarThingDatabaseException;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 @UtilityClass
+@NullMarked
 public final class ExceptionUtil {
 	private ExceptionUtil() { throw new UnsupportedOperationException(); }
 
+	@Deprecated
 	public static SolarThingDatabaseException createFromCouchDbException(CouchDbException exception) {
+		// TODO don't pass null as message
 		return createFromCouchDbException(null, exception);
 	}
 	@SuppressWarnings("InconsistentOverloads") // while this is an "inconsistent overload", it is consistent with how the exception constructors work

@@ -24,11 +24,12 @@ import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseExcepti
 import me.retrodaredevil.solarthing.database.exception.UnauthorizedSolarThingDatabaseException;
 import me.retrodaredevil.solarthing.database.exception.UpdateConflictSolarThingDatabaseException;
 import me.retrodaredevil.solarthing.type.alter.StoredAlterPacket;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@NullMarked
 public class CouchDbAlterDatabase implements AlterDatabase {
 	private final CouchDbDatabase database;
 	private final ObjectMapper mapper;
@@ -41,7 +42,7 @@ public class CouchDbAlterDatabase implements AlterDatabase {
 	}
 
 	@Override
-	public @NonNull UpdateToken upload(StoredAlterPacket storedAlterPacket) throws SolarThingDatabaseException {
+	public UpdateToken upload(StoredAlterPacket storedAlterPacket) throws SolarThingDatabaseException {
 		final JsonData jsonData;
 		try {
 			jsonData = new StringJsonData(mapper.writeValueAsString(storedAlterPacket));
@@ -58,7 +59,7 @@ public class CouchDbAlterDatabase implements AlterDatabase {
 	}
 
 	@Override
-	public @NonNull List<VersionedPacket<StoredAlterPacket>> queryAll(String sourceId) throws SolarThingDatabaseException {
+	public List<VersionedPacket<StoredAlterPacket>> queryAll(String sourceId) throws SolarThingDatabaseException {
 		final ViewResponse allDocs;
 		try {
 			allDocs = database.allDocs(new ViewQueryParamsBuilder().includeDocs(true).build());
@@ -105,7 +106,7 @@ public class CouchDbAlterDatabase implements AlterDatabase {
 		try {
 			database.deleteDocument(documentId, revision);
 		} catch (CouchDbUnauthorizedException e) {
-			throw new UnauthorizedSolarThingDatabaseException(e);
+			throw new UnauthorizedSolarThingDatabaseException("Unauthorized when trying to delete document", e);
 		} catch (CouchDbUpdateConflictException e) {
 			throw new UpdateConflictSolarThingDatabaseException("Update conflict on delete. Must not be latest revision. documentId: " + documentId + " revision: " + revision, e);
 		} catch (CouchDbNotFoundException e) {

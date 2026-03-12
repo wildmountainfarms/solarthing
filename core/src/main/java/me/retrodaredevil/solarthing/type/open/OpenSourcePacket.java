@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import me.retrodaredevil.solarthing.commands.packets.open.CommandOpenPacket;
 import me.retrodaredevil.solarthing.packets.DocumentedPacket;
 import me.retrodaredevil.solarthing.util.UniqueStringRepresentation;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * By implementing this interface and by adding your class to the {@link JsonSubTypes}, you enable a given packet to be serialized and deserialized
@@ -17,5 +18,6 @@ import me.retrodaredevil.solarthing.util.UniqueStringRepresentation;
 @JsonSubTypes(
 		@JsonSubTypes.Type(CommandOpenPacket.class)
 )
+@NullMarked
 public interface OpenSourcePacket extends DocumentedPacket, UniqueStringRepresentation {
 }

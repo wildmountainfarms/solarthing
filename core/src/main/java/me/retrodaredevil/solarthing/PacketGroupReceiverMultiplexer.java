@@ -1,12 +1,14 @@
 package me.retrodaredevil.solarthing;
 
 import me.retrodaredevil.solarthing.packets.collection.TargetPacketGroup;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+@NullMarked
 public class PacketGroupReceiverMultiplexer implements PacketGroupReceiver {
 	private final List<PacketGroupReceiver> packetGroupReceivers;
 

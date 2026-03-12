@@ -1,11 +1,10 @@
 package me.retrodaredevil.solarthing.packets.creation;
 
-public class PacketTooBigException extends PacketCreationException {
-	public PacketTooBigException() {
-	}
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
+public class PacketTooBigException extends PacketCreationException {
 	public PacketTooBigException(String message) {
 		super(message);
 	}
-
 }

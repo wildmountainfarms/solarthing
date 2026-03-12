@@ -3,7 +3,9 @@ package me.retrodaredevil.solarthing.database.couchdb;
 import me.retrodaredevil.couchdbjava.request.ViewQueryParams;
 import me.retrodaredevil.couchdbjava.request.ViewQueryParamsBuilder;
 import me.retrodaredevil.solarthing.database.MillisQuery;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public final class CouchDbQueryUtil {
 	private CouchDbQueryUtil() { throw new UnsupportedOperationException(); }
 

@@ -5,6 +5,7 @@ import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.solar.common.DailyChargeController;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +18,7 @@ import java.util.Map;
  * to make sure that the daily kWh of a charge controller is logged somewhere permanent in case the connection to the databaes does
  * not work for a long period of time.
  */
+@NullMarked
 public class DaySummaryLogListReceiver implements PacketListReceiver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DaySummaryLogListReceiver.class);
 	private final Map<Identifier, DailyChargeController> controllerMap = new HashMap<>();

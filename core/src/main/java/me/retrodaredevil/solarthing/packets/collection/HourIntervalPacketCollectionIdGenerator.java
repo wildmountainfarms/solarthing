@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.packets.collection;
 
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.nio.ByteBuffer;
@@ -10,15 +11,16 @@ import java.util.Base64;
 /**
  * A {@link PacketCollectionIdGenerator} that generates a certain number of unique IDs per hour.
  */
+@NullMarked
 public final class HourIntervalPacketCollectionIdGenerator implements PacketCollectionIdGenerator {
 	private static final Base64.Encoder UNIQUE_ENCODER = Base64.getEncoder().withoutPadding();
 
 	private final int uniqueIdsInOneHour;
-	private final Integer uniqueCode;
+	private final @Nullable Integer uniqueCode;
 	private final @Nullable String uniqueCodeEncoded;
 	private final boolean shortVersion;
 
-	public HourIntervalPacketCollectionIdGenerator(int uniqueIdsInOneHour, Integer uniqueCode) {
+	public HourIntervalPacketCollectionIdGenerator(int uniqueIdsInOneHour, @Nullable Integer uniqueCode) {
 		this(uniqueIdsInOneHour, uniqueCode, false);
 	}
 	/**

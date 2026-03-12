@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.commands.packets.open;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import me.retrodaredevil.solarthing.type.open.OpenSourcePacket;
 import me.retrodaredevil.solarthing.packets.TypedDocumentedPacket;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Represents a command packet stored in the {@link me.retrodaredevil.solarthing.SolarThingConstants#OPEN_DATABASE}, but not usually directly in a packet collection.
@@ -16,5 +17,6 @@ import me.retrodaredevil.solarthing.packets.TypedDocumentedPacket;
 		@JsonSubTypes.Type(RequestHeartbeatPacket.class),
 		@JsonSubTypes.Type(FlagAliasAddPacket.class),
 })
+@NullMarked
 public interface CommandOpenPacket extends TypedDocumentedPacket<CommandOpenPacketType>, OpenSourcePacket {
 }

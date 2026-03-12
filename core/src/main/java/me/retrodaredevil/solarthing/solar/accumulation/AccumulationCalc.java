@@ -6,12 +6,14 @@ import me.retrodaredevil.solarthing.solar.accumulation.value.AccumulationValue;
 import me.retrodaredevil.solarthing.solar.accumulation.value.AccumulationValueFactory;
 import me.retrodaredevil.solarthing.solar.common.DailyData;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 @UtilityClass
+@NullMarked
 public final class AccumulationCalc {
 	private AccumulationCalc() { throw new UnsupportedOperationException(); }
 

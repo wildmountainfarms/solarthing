@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.packets.handling;
 
 import me.retrodaredevil.solarthing.packets.Packet;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
 
@@ -8,6 +9,7 @@ import java.util.List;
  * Represents something that accepts a list of packets. This is a broad interface, so its behaviour is NOT strictly defined.
  */
 @FunctionalInterface
+@NullMarked
 public interface PacketListReceiver {
 	/**
 	 * When calling this method, you can expect that {@code packets} may be mutated.

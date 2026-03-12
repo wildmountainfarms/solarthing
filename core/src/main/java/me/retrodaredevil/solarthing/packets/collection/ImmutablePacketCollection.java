@@ -1,9 +1,11 @@
 package me.retrodaredevil.solarthing.packets.collection;
 
 import me.retrodaredevil.solarthing.packets.Packet;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.*;
 
+@NullMarked
 class ImmutablePacketCollection implements PacketCollection {
 	private final List<Packet> packets;
 	/** The UTC date represented in milliseconds */

@@ -2,12 +2,14 @@ package me.retrodaredevil.solarthing.packets.collection;
 
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.packets.Packet;
+import org.jspecify.annotations.NullMarked;
 
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Collection;
 
 @UtilityClass
+@NullMarked
 public final class PacketCollections {
 	private PacketCollections(){ throw new UnsupportedOperationException(); }
 

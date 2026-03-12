@@ -4,9 +4,11 @@ import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 @UtilityClass
+@NullMarked
 public final class BatteryUtil {
 	private BatteryUtil() { throw new UnsupportedOperationException(); }
 	public static int getNumberOfCells(float batteryVoltage) {

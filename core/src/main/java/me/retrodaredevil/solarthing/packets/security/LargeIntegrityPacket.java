@@ -6,11 +6,14 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 @JsonTypeName("LARGE_INTEGRITY_PACKET")
 @JsonDeserialize(as = ImmutableLargeIntegrityPacket.class)
 @JsonExplicit
+@NullMarked
 public interface LargeIntegrityPacket extends SecurityPacket, SenderPacket {
+	// TODO remove NonNull
 	@DefaultFinal
 	@Override
 	default @NonNull SecurityPacketType getPacketType(){

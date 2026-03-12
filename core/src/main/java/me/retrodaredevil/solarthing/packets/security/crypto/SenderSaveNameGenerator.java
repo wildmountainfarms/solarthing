@@ -1,5 +1,8 @@
 package me.retrodaredevil.solarthing.packets.security.crypto;
 
+import org.jspecify.annotations.NullMarked;
+
+@NullMarked
 public interface SenderSaveNameGenerator {
 	String getFileName(String sender);
 

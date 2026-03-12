@@ -2,27 +2,28 @@ package me.retrodaredevil.influxdb.influxdb2;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 @JsonDeserialize(as = ImmutableInfluxDb2Properties.class)
+@NullMarked
 public interface InfluxDb2Properties {
 	/**
 	 * @return The Url of the database. This looks something like http://localhost:8086
 	 */
 	@JsonProperty("url")
-	@NonNull String getUrl();
+	String getUrl();
 
 	@JsonProperty("token")
-	@Nullable char[] getToken();
+	char @Nullable [] getToken();
 
 	@JsonProperty("username")
 	@Nullable String getUsername();
 	@JsonProperty("password")
-	@Nullable char[] getPassword();
+	char @Nullable [] getPassword();
 
 	@JsonProperty("org")
-	@NonNull String getOrg();
+	String getOrg();
 
 	static InfluxDb2Properties createTokenAuth(String url, char[] token, String org) {
 		return new ImmutableInfluxDb2Properties(url, token, null, null, org);

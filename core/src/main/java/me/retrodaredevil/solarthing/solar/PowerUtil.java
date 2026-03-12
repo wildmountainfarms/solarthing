@@ -7,11 +7,13 @@ import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPacket;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
 import me.retrodaredevil.solarthing.solar.tracer.TracerStatusPacket;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
 @UtilityClass
+@NullMarked
 public final class PowerUtil {
 	private PowerUtil() { throw new UnsupportedOperationException(); }
 
@@ -68,10 +70,10 @@ public final class PowerUtil {
 	}
 
 	public static class Data {
-		private final Integer generatingWatts;
-		private final Integer consumingWatts;
+		private final @Nullable Integer generatingWatts;
+		private final @Nullable Integer consumingWatts;
 
-		public Data(Integer generatingWatts, Integer consumingWatts) {
+		public Data(@Nullable Integer generatingWatts, @Nullable Integer consumingWatts) {
 			this.generatingWatts = generatingWatts;
 			this.consumingWatts = consumingWatts;
 		}

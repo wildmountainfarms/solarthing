@@ -4,12 +4,13 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.packets.security.crypto.InvalidKeyException;
 import me.retrodaredevil.solarthing.packets.security.crypto.KeyUtil;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.security.PublicKey;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public final class ImmutableAuthNewSenderPacket implements AuthNewSenderPacket {
 
 	private final String sender;
@@ -27,7 +28,7 @@ public final class ImmutableAuthNewSenderPacket implements AuthNewSenderPacket {
 	}
 
 	@Override
-	public @NonNull String getPublicKey() {
+	public String getPublicKey() {
 		return publicKey;
 	}
 
@@ -37,7 +38,7 @@ public final class ImmutableAuthNewSenderPacket implements AuthNewSenderPacket {
 	}
 
 	@Override
-	public @NonNull String getSender() {
+	public String getSender() {
 		return sender;
 	}
 }

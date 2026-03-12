@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.database.cache;
 
 import me.retrodaredevil.solarthing.packets.collection.StoredPacketGroup;
 import me.retrodaredevil.solarthing.util.TimeRange;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,6 +22,7 @@ import java.util.stream.Stream;
  * <p>
  * TDLR; The implementation probably isn't thread safe.
  */
+@NullMarked
 public interface DatabaseCache {
 	Stream<StoredPacketGroup> createCachedPacketsInRangeStream(TimeRange timeRange, boolean descending);
 	default Stream<StoredPacketGroup> createAllCachedPacketsStream(boolean descending) {

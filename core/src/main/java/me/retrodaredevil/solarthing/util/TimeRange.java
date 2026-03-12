@@ -1,10 +1,12 @@
 package me.retrodaredevil.solarthing.util;
 
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.time.Instant;
 import java.util.Objects;
 
+@NullMarked
 public final class TimeRange {
 	public static final TimeRange ALWAYS = new TimeRange(null, null);
 
@@ -62,6 +64,7 @@ public final class TimeRange {
 		return contains(time.toEpochMilli());
 	}
 
+	@SuppressWarnings("NullAway") // this code is correct I promise, NullAway.
 	public boolean fullyContains(TimeRange timeRange) {
 		if (startTime == null && endTime == null) {
 			return true;
@@ -101,7 +104,7 @@ public final class TimeRange {
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(@Nullable Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		TimeRange timeRange = (TimeRange) o;

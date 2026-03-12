@@ -41,11 +41,12 @@ import me.retrodaredevil.solarthing.type.closed.meta.RootMetaPacket;
 import me.retrodaredevil.solarthing.type.closed.meta.TargetMetaPacket;
 import me.retrodaredevil.solarthing.type.event.feedback.FeedbackPacket;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class CouchDbSolarThingDatabase implements SolarThingDatabase {
 
 	private final CouchDbInstance instance;
@@ -96,49 +97,49 @@ public class CouchDbSolarThingDatabase implements SolarThingDatabase {
 		return new CouchDbSolarThingDatabase(instance, PacketParsingErrorHandler.DO_NOTHING, JacksonUtil.lenientMapper(JacksonUtil.defaultMapper()));
 	}
 
-	public static @NonNull RevisionUpdateToken checkUpdateToken(@NonNull UpdateToken updateToken) {
+	public static RevisionUpdateToken checkUpdateToken(UpdateToken updateToken) {
 		requireNonNull(updateToken);
 		try {
 			return (RevisionUpdateToken) updateToken;
 		} catch (ClassCastException ex) {
-			throw new IncompatibleUpdateTokenException(ex);
+			throw new IncompatibleUpdateTokenException("Incompatible UpdateToken. check has failed", ex);
 		}
 	}
 
 	@Override
-	public @NonNull DatabaseManagementSource getDatabaseManagementSource() {
+	public DatabaseManagementSource getDatabaseManagementSource() {
 		return databaseManagementSource;
 	}
 
 	@Override
-	public @NonNull RevisionUpdateToken validateUpdateToken(@NonNull UpdateToken updateToken) {
+	public RevisionUpdateToken validateUpdateToken(UpdateToken updateToken) {
 		return checkUpdateToken(updateToken);
 	}
 
 	@Override
-	public @NonNull MillisDatabase getStatusDatabase() { return statusDatabase; }
+	public MillisDatabase getStatusDatabase() { return statusDatabase; }
 	@Override
-	public @NonNull MillisDatabase getEventDatabase() { return eventDatabase; }
+	public MillisDatabase getEventDatabase() { return eventDatabase; }
 	@Override
-	public @NonNull MillisDatabase getOpenDatabase() { return openDatabase; }
+	public MillisDatabase getOpenDatabase() { return openDatabase; }
 
 	@Override
-	public @NonNull CouchDbAlterDatabase getAlterDatabase() {
+	public CouchDbAlterDatabase getAlterDatabase() {
 		return alterDatabase;
 	}
 
 	@Override
-	public @NonNull DatabaseSource getClosedDatabaseSource() {
+	public DatabaseSource getClosedDatabaseSource() {
 		return closedDatabaseSource;
 	}
 
 	@Override
-	public @NonNull DatabaseSource getCacheDatabaseSource() {
+	public DatabaseSource getCacheDatabaseSource() {
 		return cacheDatabaseSource;
 	}
 
 	@Override
-	public @Nullable VersionedPacket<RootMetaPacket> queryMetadata(UpdateToken updateToken) throws SolarThingDatabaseException {
+	public @Nullable VersionedPacket<RootMetaPacket> queryMetadata(@Nullable UpdateToken updateToken) throws SolarThingDatabaseException {
 		DocumentData data = queryDocument(closedDatabase, RootMetaPacket.DOCUMENT_ID, updateToken);
 		if (data == null) {
 			return null;
@@ -153,7 +154,7 @@ public class CouchDbSolarThingDatabase implements SolarThingDatabase {
 	}
 
 	@Override
-	public @Nullable VersionedPacket<AuthorizationPacket> queryAuthorized(UpdateToken updateToken) throws SolarThingDatabaseException {
+	public @Nullable VersionedPacket<AuthorizationPacket> queryAuthorized(@Nullable UpdateToken updateToken) throws SolarThingDatabaseException {
 		DocumentData data = queryDocument(closedDatabase, AuthorizationPacket.DOCUMENT_ID, updateToken);
 		if (data == null) {
 			return null;
@@ -168,7 +169,7 @@ public class CouchDbSolarThingDatabase implements SolarThingDatabase {
 	}
 
 	@Override
-	public void updateAuthorized(@NonNull AuthorizationPacket authorizationPacket, @Nullable UpdateToken updateToken) throws SolarThingDatabaseException {
+	public void updateAuthorized(AuthorizationPacket authorizationPacket, @Nullable UpdateToken updateToken) throws SolarThingDatabaseException {
 		final JsonData data;
 		try {
 			data = new StringJsonData(simpleObjectMapper.writeValueAsString(authorizationPacket));
@@ -188,7 +189,7 @@ public class CouchDbSolarThingDatabase implements SolarThingDatabase {
 	}
 
 	@Override
-	public @NonNull SessionInfo getSessionInfo() throws SolarThingDatabaseException{
+	public SessionInfo getSessionInfo() throws SolarThingDatabaseException{
 		final SessionGetResponse response;
 		try {
 			response = instance.getSessionInfo();
@@ -199,7 +200,7 @@ public class CouchDbSolarThingDatabase implements SolarThingDatabase {
 		return new SessionInfo(name);
 	}
 
-	private static @Nullable DocumentData queryDocument(CouchDbDatabase database, String name, UpdateToken updateToken) throws SolarThingDatabaseException {
+	private static @Nullable DocumentData queryDocument(CouchDbDatabase database, String name, @Nullable UpdateToken updateToken) throws SolarThingDatabaseException {
 		final String revision;
 		if (updateToken == null) {
 			revision = null;

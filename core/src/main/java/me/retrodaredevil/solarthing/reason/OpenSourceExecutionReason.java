@@ -5,12 +5,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.type.open.OpenSource;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("SOURCE")
+@NullMarked
 public class OpenSourceExecutionReason implements ExecutionReason {
 	private final OpenSource source;
 
@@ -19,18 +22,19 @@ public class OpenSourceExecutionReason implements ExecutionReason {
 		this.source = requireNonNull(source);
 	}
 
+	// TODO remove NonNull
 	@Override
 	public @NonNull ExecutionReasonType getPacketType() {
 		return ExecutionReasonType.SOURCE;
 	}
 
 	@JsonProperty("source")
-	public @NonNull OpenSource getSource() {
+	public OpenSource getSource() {
 		return source;
 	}
 
 	@Override
-	public @NonNull String getUniqueString() {
+	public String getUniqueString() {
 		return "OpenSourceExecutionReason(source=" + source.getUniqueString() + ")";
 	}
 
@@ -40,7 +44,7 @@ public class OpenSourceExecutionReason implements ExecutionReason {
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(@Nullable Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		OpenSourceExecutionReason that = (OpenSourceExecutionReason) o;

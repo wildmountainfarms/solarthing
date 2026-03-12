@@ -2,11 +2,13 @@ package me.retrodaredevil.solarthing.packets.collection;
 
 import me.retrodaredevil.solarthing.packets.Packet;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 class ImmutableInstancePacketGroup implements InstancePacketGroup {
 	private final List<Packet> packets;
 	private final long dateMillis;
@@ -29,6 +31,7 @@ class ImmutableInstancePacketGroup implements InstancePacketGroup {
 		return dateMillis;
 	}
 
+	// TODO remove NonNull
 	@Override
 	public @NonNull String getSourceId() {
 		return sourceId;

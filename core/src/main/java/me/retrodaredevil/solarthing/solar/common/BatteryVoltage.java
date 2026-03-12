@@ -3,10 +3,12 @@ package me.retrodaredevil.solarthing.solar.common;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Represents something that detects and measures the battery voltage
  */
+@NullMarked
 public interface BatteryVoltage extends Identifiable {
 
 	/**

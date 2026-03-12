@@ -5,7 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.misc.common.DataIdentifier;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public class ImmutableBatteryVoltageOnlyPacket implements BatteryVoltageOnlyPacket {
 	private final float batteryVoltage;
 	private final int dataId;
@@ -28,6 +30,7 @@ public class ImmutableBatteryVoltageOnlyPacket implements BatteryVoltageOnlyPack
 		return batteryVoltage;
 	}
 
+	// TODO remove NonNull
 	@Override
 	public @NonNull DataIdentifier getIdentifier() {
 		return identifier;
@@ -38,6 +41,7 @@ public class ImmutableBatteryVoltageOnlyPacket implements BatteryVoltageOnlyPack
 		return dataId;
 	}
 
+	// TODO remove NonNull
 	@Override
 	public @NonNull IdentityInfo getIdentityInfo() {
 		return identityInfo;

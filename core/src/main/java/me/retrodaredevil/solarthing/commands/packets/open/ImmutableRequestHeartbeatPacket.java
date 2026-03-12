@@ -3,13 +3,15 @@ package me.retrodaredevil.solarthing.commands.packets.open;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.type.event.feedback.HeartbeatData;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class ImmutableRequestHeartbeatPacket implements RequestHeartbeatPacket {
 	private final HeartbeatData heartbeatData;
 	private final UUID uniqueRequestId;
@@ -23,17 +25,17 @@ public class ImmutableRequestHeartbeatPacket implements RequestHeartbeatPacket {
 	}
 
 	@Override
-	public @NonNull HeartbeatData getData() {
+	public HeartbeatData getData() {
 		return heartbeatData;
 	}
 
 	@Override
-	public @NonNull UUID getUniqueRequestId() {
+	public UUID getUniqueRequestId() {
 		return uniqueRequestId;
 	}
 
 	@Override
-	public @NonNull String getUniqueString() {
+	public String getUniqueString() {
 		return "RequestHeartbeatPacket(data=" + heartbeatData.getUniqueString() + ", uniqueRequestId=" + uniqueRequestId + ")";
 	}
 
@@ -43,7 +45,7 @@ public class ImmutableRequestHeartbeatPacket implements RequestHeartbeatPacket {
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(@Nullable Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		ImmutableRequestHeartbeatPacket that = (ImmutableRequestHeartbeatPacket) o;

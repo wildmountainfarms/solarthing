@@ -4,7 +4,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.util.TimeRange;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class TimedMetaCollection {
 	// check this out https://github.com/FasterXML/jackson-databind/issues/511 we could use fail on invalid subtype
 
@@ -19,15 +21,15 @@ public class TimedMetaCollection {
 	private final TimeRange timeRange;
 	private final List<BasicMetaPacket> packets;
 
-	public TimedMetaCollection(Long startTime, Long endTime, List<BasicMetaPacket> packets) {
+	public TimedMetaCollection(@Nullable Long startTime, @Nullable Long endTime, List<BasicMetaPacket> packets) {
 		timeRange = new TimeRange(startTime, endTime);
 		this.packets = requireNonNull(packets);
 	}
 	@JsonCreator
 	public static TimedMetaCollection createRemoveNullValues(
-			@JsonProperty("start") Long startTime,
-			@JsonProperty("end") Long endTime,
-			@JsonProperty(value = "packets", required = true) List<BasicMetaPacket> nullablePackets
+			@JsonProperty("start") @Nullable Long startTime,
+			@JsonProperty("end") @Nullable Long endTime,
+			@JsonProperty(value = "packets", required = true) List<@Nullable BasicMetaPacket> nullablePackets
 	) {
 		return new TimedMetaCollection(
 				startTime,
@@ -39,16 +41,16 @@ public class TimedMetaCollection {
 
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	@JsonProperty("start")
-	public Long getStartTime() {
+	public @Nullable Long getStartTime() {
 		return timeRange.getStartTimeMillis();
 	}
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	@JsonProperty("end")
-	public Long getEndTime() {
+	public @Nullable Long getEndTime() {
 		return timeRange.getEndTimeMillis();
 	}
 	@JsonProperty("packets")
-	public @NonNull List<BasicMetaPacket> getPackets() {
+	public List<BasicMetaPacket> getPackets() {
 		return packets;
 	}
 

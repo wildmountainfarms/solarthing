@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.packets.handling.implementations;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
+import org.jspecify.annotations.NullMarked;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -10,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
+@NullMarked
 public class FileWritePacketHandler implements PacketHandler {
 	private final Path file;
 	private final StringPacketHandler stringPacketHandler;
@@ -27,7 +29,7 @@ public class FileWritePacketHandler implements PacketHandler {
 		try {
 			Files.write(file, string.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE, (append ? StandardOpenOption.APPEND : StandardOpenOption.TRUNCATE_EXISTING));
 		} catch (IOException e) {
-			throw new PacketHandleException(e);
+			throw new PacketHandleException("Faile to write to file", e);
 		}
 	}
 }

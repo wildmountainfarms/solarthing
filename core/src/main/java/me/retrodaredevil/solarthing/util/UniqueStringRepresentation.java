@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.util;
 
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * An interface containing a getter for a unique string that describes this object.
@@ -8,6 +9,7 @@ import org.jspecify.annotations.NonNull;
  * Note: If you are implementing {@link #getUniqueString()}, check to see if one of your superclasses or superinterfaces require
  * you to override {@link #equals(Object)}. It is not required by this interface, but is common among subinterfaces that implement this.
  */
+@NullMarked
 public interface UniqueStringRepresentation {
 	/*
 	If you're looking at this class, you might be wondering why don't I just use toString()? Well, if I just use toString(),
@@ -16,6 +18,7 @@ public interface UniqueStringRepresentation {
 	So in some ways, this is just an extra interface which forces implementations to define some method which has the same effect as toString()
 	 */
 
+	// TODO remove NonNull
 	/**
 	 * Note: If
 	 * {@link UniqueStringRepresentation#equals(Object) executionReason.equals}({@link UniqueStringRepresentation anotherReason}),

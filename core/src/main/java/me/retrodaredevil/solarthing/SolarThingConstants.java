@@ -1,12 +1,14 @@
 package me.retrodaredevil.solarthing;
 
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
 import java.time.Duration;
 
 @UtilityClass
+@NullMarked
 public final class SolarThingConstants {
 	private SolarThingConstants(){ throw new UnsupportedOperationException(); }
 

@@ -2,10 +2,11 @@ package me.retrodaredevil.solarthing.solar.accumulation;
 
 import me.retrodaredevil.solarthing.packets.TimestampedPacket;
 import me.retrodaredevil.solarthing.solar.common.DailyData;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public final class AccumulationPair<T extends DailyData> {
 	private final TimestampedPacket<T> startPacket;
 	private final TimestampedPacket<T> latestPacket;
@@ -16,13 +17,13 @@ public final class AccumulationPair<T extends DailyData> {
 		this.latestPacket = requireNonNull(latestPacket);
 		this.startPacketType = requireNonNull(startPacketType);
 	}
-	public @NonNull TimestampedPacket<T> getStartPacket() {
+	public TimestampedPacket<T> getStartPacket() {
 		return startPacket;
 	}
-	public @NonNull TimestampedPacket<T> getLatestPacket() {
+	public TimestampedPacket<T> getLatestPacket() {
 		return latestPacket;
 	}
-	public @NonNull StartPacketType getStartPacketType() {
+	public StartPacketType getStartPacketType() {
 		return startPacketType;
 	}
 

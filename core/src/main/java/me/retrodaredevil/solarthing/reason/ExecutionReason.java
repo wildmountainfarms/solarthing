@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.TypedDocumentedPacket;
 import me.retrodaredevil.solarthing.util.UniqueStringRepresentation;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Represents the reason for the execution/event/cause of something.
@@ -17,5 +18,6 @@ import me.retrodaredevil.solarthing.util.UniqueStringRepresentation;
 		@JsonSubTypes.Type(PacketCollectionExecutionReason.class),
 })
 @JsonExplicit
+@NullMarked
 public interface ExecutionReason extends TypedDocumentedPacket<ExecutionReasonType>, UniqueStringRepresentation {
 }

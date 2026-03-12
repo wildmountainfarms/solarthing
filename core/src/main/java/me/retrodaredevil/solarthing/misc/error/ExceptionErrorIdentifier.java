@@ -2,11 +2,14 @@ package me.retrodaredevil.solarthing.misc.error;
 
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class ExceptionErrorIdentifier implements Identifier {
 	private final String exceptionCatchLocationIdentifier;
 	private final String exceptionInstanceIdentifier;
@@ -24,6 +27,7 @@ public class ExceptionErrorIdentifier implements Identifier {
 		return exceptionInstanceIdentifier;
 	}
 
+	// TODO remove NonNull
 	@Override
 	public @NonNull String getRepresentation() {
 		return "ExceptionErrorIdentifier(exceptionCatchLocationIdentifier='" + exceptionCatchLocationIdentifier + "', exceptionInstanceIdentifier='" + exceptionInstanceIdentifier + "')";
@@ -34,7 +38,7 @@ public class ExceptionErrorIdentifier implements Identifier {
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(@Nullable Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		ExceptionErrorIdentifier that = (ExceptionErrorIdentifier) o;

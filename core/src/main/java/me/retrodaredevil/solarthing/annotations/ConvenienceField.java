@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.annotations;
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.jspecify.annotations.NullMarked;
 
 import java.lang.annotation.*;
 
@@ -15,6 +16,7 @@ import java.lang.annotation.*;
 @JacksonAnnotationsInside
 @JsonIgnore // ignore convenience fields by default
 @Retention(RetentionPolicy.RUNTIME)
+@NullMarked
 public @interface ConvenienceField {
 	/** Used to document when a particular field became annotated with @ConvenienceField so that people know what version it was removed from the serialized packet */
 	int sincePacketVersion() default -1;

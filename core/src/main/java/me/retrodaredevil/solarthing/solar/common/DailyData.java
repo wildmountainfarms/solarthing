@@ -1,8 +1,10 @@
 package me.retrodaredevil.solarthing.solar.common;
 
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+@NullMarked
 public interface DailyData extends Identifiable {
 	/**
 	 * NOTE: If {@code previousDailyData} is data from a {@link DailyData} generated after this, the returned result is

@@ -1,10 +1,12 @@
 package me.retrodaredevil.solarthing.packets.identification;
 
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * This is usually used as a unique key that groups a fragmentId and an {@link Identifier} together.
  */
+@NullMarked
 public interface IdentifierFragment extends IdentifierFragmentMatcher { // It would be nice to make these serializable to JSON, but nah. Probably not necessary.
 	int getFragmentId();
 	@NonNull Identifier getIdentifier();

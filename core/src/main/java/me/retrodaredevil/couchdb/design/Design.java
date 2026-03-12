@@ -3,11 +3,14 @@ package me.retrodaredevil.couchdb.design;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.Map;
 
 @JsonExplicit
+@NullMarked
 public interface Design {
 	@JsonProperty("language")
 	String getLanguage();
@@ -22,7 +25,7 @@ public interface Design {
 	 */
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	@JsonProperty("validate_doc_update")
-	default String getValidateDocUpdate() {
+	default @Nullable String getValidateDocUpdate() {
 		return null;
 	}
 

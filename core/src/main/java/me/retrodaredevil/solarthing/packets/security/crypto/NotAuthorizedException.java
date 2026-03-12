@@ -1,9 +1,9 @@
 package me.retrodaredevil.solarthing.packets.security.crypto;
 
-public class NotAuthorizedException extends CryptoException {
-	public NotAuthorizedException() {
-	}
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
+public class NotAuthorizedException extends CryptoException {
 	public NotAuthorizedException(String message) {
 		super(message);
 	}
@@ -11,9 +11,4 @@ public class NotAuthorizedException extends CryptoException {
 	public NotAuthorizedException(String message, Throwable cause) {
 		super(message, cause);
 	}
-
-	public NotAuthorizedException(Throwable cause) {
-		super(cause);
-	}
-
 }

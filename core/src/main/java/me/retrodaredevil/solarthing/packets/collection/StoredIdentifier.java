@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import me.retrodaredevil.solarthing.database.couchdb.CouchDbStoredIdentifier;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * StoredIdentifiers represent some unique identifier that is stored in the database along with
@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 		@JsonSubTypes.Type(CouchDbStoredIdentifier.class)
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
+@NullMarked
 public abstract class StoredIdentifier implements Comparable<StoredIdentifier> {
 	/*
 	Although these can be serialized to JSON, there is no particular use for serializing them to JSON *yet*.
@@ -45,7 +46,7 @@ public abstract class StoredIdentifier implements Comparable<StoredIdentifier> {
 	public abstract String toString();
 
 	@Override
-	public int compareTo(@NotNull StoredIdentifier storedIdentifier) {
+	public int compareTo(StoredIdentifier storedIdentifier) {
 		return Long.compare(dateMillis, storedIdentifier.dateMillis);
 	}
 }

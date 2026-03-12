@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * This type of packet can be used to make sure data is coming from a certain sender.
@@ -13,7 +14,9 @@ import org.jspecify.annotations.NonNull;
 @JsonTypeName("INTEGRITY_PACKET")
 @JsonDeserialize(as = ImmutableIntegrityPacket.class)
 @JsonExplicit
+@NullMarked
 public interface IntegrityPacket extends SecurityPacket, SenderPacket {
+	// TODO remove NonNull
 	@DefaultFinal
 	@Override
 	default @NonNull SecurityPacketType getPacketType(){

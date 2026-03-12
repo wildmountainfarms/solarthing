@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.packets.security.crypto;
 
 import com.fasterxml.jackson.core.Base64Variants;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
+import org.jspecify.annotations.NullMarked;
 
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
@@ -14,6 +15,7 @@ import java.security.spec.X509EncodedKeySpec;
  * Contains constants and utility methods for encoding keys and creating new keys
  */
 @UtilityClass
+@NullMarked
 public final class KeyUtil {
 	private KeyUtil() { throw new UnsupportedOperationException(); }
 

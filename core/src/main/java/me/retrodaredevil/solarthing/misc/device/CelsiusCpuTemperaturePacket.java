@@ -8,6 +8,7 @@ import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.packets.identification.SingleTypeIdentifier;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -15,8 +16,9 @@ import java.util.Collections;
 import java.util.List;
 
 @JsonIgnoreProperties(value = {"cpuTemperatureFahrenheit"}, allowGetters = true)
+@NullMarked
 public class CelsiusCpuTemperaturePacket implements CpuTemperaturePacket {
-	private final Integer packetVersion;
+	private final @Nullable Integer packetVersion;
 	private final float cpuTemperatureCelsius;
 	private final List<Core> cores;
 	private final Identifier identifier;
@@ -24,9 +26,9 @@ public class CelsiusCpuTemperaturePacket implements CpuTemperaturePacket {
 
 	@JsonCreator
 	public CelsiusCpuTemperaturePacket(
-			@JsonProperty(value = "packetVersion") Integer packetVersion,
+			@JsonProperty(value = "packetVersion") @Nullable Integer packetVersion,
 			@JsonProperty(value = "cpuTemperatureCelsius", required = true) float cpuTemperatureCelsius,
-			@JsonProperty("cores") List<Core> cores
+			@JsonProperty("cores") @Nullable List<Core> cores
 	) {
 		this.packetVersion = packetVersion;
 		this.cpuTemperatureCelsius = cpuTemperatureCelsius;
@@ -54,6 +56,7 @@ public class CelsiusCpuTemperaturePacket implements CpuTemperaturePacket {
 		return cpuTemperatureCelsius * 1.8f + 32;
 	}
 
+	// TODO remove NonNull
 	@Override
 	public @NonNull List<Core> getCores() {
 		return cores;

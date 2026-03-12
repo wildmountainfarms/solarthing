@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.packets.collection.StoredIdentifier;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -13,6 +15,7 @@ import static java.util.Objects.requireNonNull;
  *
  */
 @JsonTypeName("couchdb")
+@NullMarked
 public final class CouchDbStoredIdentifier extends StoredIdentifier {
 	private final String id;
 	private final String revision;
@@ -38,7 +41,7 @@ public final class CouchDbStoredIdentifier extends StoredIdentifier {
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(@Nullable Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		CouchDbStoredIdentifier that = (CouchDbStoredIdentifier) o;

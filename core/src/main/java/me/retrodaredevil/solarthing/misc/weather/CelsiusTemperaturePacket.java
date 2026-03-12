@@ -7,10 +7,12 @@ import me.retrodaredevil.solarthing.misc.common.DataIdentifier;
 import me.retrodaredevil.solarthing.misc.source.DeviceSource;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 
 @JsonIgnoreProperties(value = {"temperatureFahrenheit"}, allowGetters = true)
+@NullMarked
 public class CelsiusTemperaturePacket implements TemperaturePacket {
 	private final int dataId;
 	private final DeviceSource deviceSource;
@@ -43,11 +45,13 @@ public class CelsiusTemperaturePacket implements TemperaturePacket {
 		return temperatureCelsius * 1.8f + 32;
 	}
 
+	// TODO remove NonNull
 	@Override
 	public @NonNull DataIdentifier getIdentifier() {
 		return identifier;
 	}
 
+	// TODO remove NonNull
 	@Override
 	public @NonNull IdentityInfo getIdentityInfo() {
 		return identityInfo;
@@ -58,6 +62,7 @@ public class CelsiusTemperaturePacket implements TemperaturePacket {
 		return dataId;
 	}
 
+	// TODO remove NonNull
 	@Override
 	public @NonNull DeviceSource getDeviceSource() {
 		return deviceSource;

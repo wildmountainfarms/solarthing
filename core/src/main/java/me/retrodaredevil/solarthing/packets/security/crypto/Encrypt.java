@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.packets.security.crypto;
 
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
+import org.jspecify.annotations.NullMarked;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -12,6 +13,7 @@ import java.util.Base64;
 import static java.util.Objects.requireNonNull;
 
 @UtilityClass
+@NullMarked
 public final class Encrypt {
 	private Encrypt(){ throw new UnsupportedOperationException(); }
 
@@ -22,7 +24,7 @@ public final class Encrypt {
 		try {
 			cipher.init(Cipher.ENCRYPT_MODE, key);
 		} catch (java.security.InvalidKeyException e) {
-			throw new InvalidKeyException(e);
+			throw new InvalidKeyException("Invalid private key", e);
 		}
 		final byte[] encryptedData;
 		try {

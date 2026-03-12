@@ -1,9 +1,13 @@
 package me.retrodaredevil.solarthing.packets.collection;
 
 import me.retrodaredevil.solarthing.packets.Packet;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.*;
 
+import static java.util.Objects.requireNonNull;
+
+@NullMarked
 class ImmutablePacketGroup implements PacketGroup {
 
 	private final List<Packet> packets;
@@ -29,6 +33,6 @@ class ImmutablePacketGroup implements PacketGroup {
 
 	@Override
 	public final Long getDateMillis(Packet packet) {
-		return dateMillisPacketMap.get(packet);
+		return requireNonNull(dateMillisPacketMap.get(packet), "provided packet is not apart of this packet group");
 	}
 }

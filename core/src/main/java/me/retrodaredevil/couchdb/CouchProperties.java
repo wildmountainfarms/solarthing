@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.couchdbjava.CouchDbAuth;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import okhttp3.HttpUrl;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.net.URI;
@@ -15,10 +15,11 @@ import java.net.URI;
  */
 @JsonDeserialize(as = ImmutableCouchProperties.class)
 @JsonExplicit
+@NullMarked
 public interface CouchProperties {
 
-	@NonNull HttpUrl getHttpUrl();
-	@NonNull URI getUri();
+	HttpUrl getHttpUrl();
+	URI getUri();
 
 	@Nullable String getUsername();
 	@Nullable String getPassword();

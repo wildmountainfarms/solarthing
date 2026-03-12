@@ -4,9 +4,11 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
+import org.jspecify.annotations.NullMarked;
 
 @JsonPOJOBuilder
 @JsonExplicit
+@NullMarked
 public class OkHttpPropertiesBuilder implements OkHttpProperties {
 
 	private boolean isRetryOnConnectionFailure = true;

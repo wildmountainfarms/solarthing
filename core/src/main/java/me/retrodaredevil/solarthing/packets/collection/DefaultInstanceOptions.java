@@ -1,10 +1,11 @@
 package me.retrodaredevil.solarthing.packets.collection;
 
 import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePacket;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public final class DefaultInstanceOptions {
 	/** Using this should be avoided whenever possible. It it usually better to have someone configure the defaults themselves, or have an error be thrown when
 	 * default instance options have to be used */
@@ -15,11 +16,11 @@ public final class DefaultInstanceOptions {
 	private final String defaultSourceId;
 	private final int defaultFragmentId;
 
-	private DefaultInstanceOptions(@NonNull String defaultSourceId, int defaultFragmentId) {
+	private DefaultInstanceOptions(String defaultSourceId, int defaultFragmentId) {
 		this.defaultSourceId = requireNonNull(defaultSourceId);
 		this.defaultFragmentId = defaultFragmentId;
 	}
-	public static DefaultInstanceOptions create(@NonNull String defaultSourceId, int defaultFragmentId) {
+	public static DefaultInstanceOptions create(String defaultSourceId, int defaultFragmentId) {
 		return new DefaultInstanceOptions(defaultSourceId, defaultFragmentId);
 	}
 	public static void requireFragmentIdNoDefaults(int fragmentId) {
@@ -43,7 +44,7 @@ public final class DefaultInstanceOptions {
 		requireSourceIdNoDefaults(sourceId);
 	}
 
-	public @NonNull String getDefaultSourceId() {
+	public String getDefaultSourceId() {
 		return defaultSourceId;
 	}
 
