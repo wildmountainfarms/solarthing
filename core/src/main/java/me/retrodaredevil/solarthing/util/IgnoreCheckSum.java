@@ -1,5 +1,8 @@
 package me.retrodaredevil.solarthing.util;
 
+import org.jspecify.annotations.NullMarked;
+
+@NullMarked
 public enum IgnoreCheckSum {
 	/**
 	 * Throws a {@link CheckSumException} when there's an error with the check sum

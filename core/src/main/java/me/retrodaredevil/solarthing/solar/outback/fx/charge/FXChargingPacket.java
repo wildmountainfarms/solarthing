@@ -5,10 +5,12 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.solar.outback.OutbackData;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 @JsonDeserialize(as = ImmutableFXChargingPacket.class)
 @JsonExplicit
+@NullMarked
 public interface FXChargingPacket extends OutbackData, Packet {
 	@JsonProperty("address")
 	@Override

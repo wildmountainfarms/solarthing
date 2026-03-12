@@ -8,12 +8,14 @@ import me.retrodaredevil.solarthing.packets.identification.KnownSupplementaryIde
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXIdentityInfo;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
+@NullMarked
 public class ImmutableFXWarningModeChangePacket implements FXWarningModeChangePacket {
 	private final int address;
 	private final int warningModeValue;
-	private final Integer previousWarningModeValue;
+	private final @Nullable Integer previousWarningModeValue;
 	private final int ignoredWarningModeValueConstant;
 	private final KnownSupplementaryIdentifier<OutbackIdentifier> identifier;
 	private final IdentityInfo identityInfo;
@@ -21,13 +23,13 @@ public class ImmutableFXWarningModeChangePacket implements FXWarningModeChangePa
 	private ImmutableFXWarningModeChangePacket(
 			@JsonProperty(value = "address", required = true) int address,
 			@JsonProperty(value = "warningModeValue", required = true) int warningModeValue,
-			@JsonProperty(value = "previousWarningModeValue", required = true) Integer previousWarningModeValue,
+			@JsonProperty(value = "previousWarningModeValue", required = true) @Nullable Integer previousWarningModeValue,
 			@JsonProperty(value = "ignoredWarningModeValueConstant", required = true) int ignoredWarningModeValueConstant
 	) {
 		this(new OutbackIdentifier(address), warningModeValue, previousWarningModeValue, ignoredWarningModeValueConstant);
 	}
 
-	public ImmutableFXWarningModeChangePacket(OutbackIdentifier outbackIdentifier, int warningModeValue, Integer previousWarningModeValue, int ignoredWarningModeValueConstant) {
+	public ImmutableFXWarningModeChangePacket(OutbackIdentifier outbackIdentifier, int warningModeValue, @Nullable Integer previousWarningModeValue, int ignoredWarningModeValueConstant) {
 		this.warningModeValue = warningModeValue;
 		this.previousWarningModeValue = previousWarningModeValue;
 		this.ignoredWarningModeValueConstant = ignoredWarningModeValueConstant;
@@ -43,7 +45,7 @@ public class ImmutableFXWarningModeChangePacket implements FXWarningModeChangePa
 	}
 
 	@Override
-	public Integer getPreviousWarningModeValue() {
+	public @Nullable Integer getPreviousWarningModeValue() {
 		return previousWarningModeValue;
 	}
 
@@ -53,12 +55,12 @@ public class ImmutableFXWarningModeChangePacket implements FXWarningModeChangePa
 	}
 
 	@Override
-	public @NonNull KnownSupplementaryIdentifier<OutbackIdentifier> getIdentifier() {
+	public KnownSupplementaryIdentifier<OutbackIdentifier> getIdentifier() {
 		return identifier;
 	}
 
 	@Override
-	public @NonNull IdentityInfo getIdentityInfo() {
+	public IdentityInfo getIdentityInfo() {
 		return identityInfo;
 	}
 

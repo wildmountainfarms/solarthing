@@ -1,7 +1,7 @@
 package me.retrodaredevil.solarthing.solar.renogy;
 
 import me.retrodaredevil.solarthing.packets.CodeMode;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
@@ -11,6 +11,7 @@ import static java.util.Objects.requireNonNull;
  *
  * PDU address: 0x000A, Bytes: 2, upper 8 bits
  */
+@NullMarked
 public enum Voltage implements CodeMode {
 	V12(12, 12),
 	V24(24, 24),
@@ -33,7 +34,7 @@ public enum Voltage implements CodeMode {
 	}
 
 	@Override
-	public @NonNull String getModeName() {
+	public String getModeName() {
 		return voltage != null ? (voltage + "V") : "Auto";
 	}
 

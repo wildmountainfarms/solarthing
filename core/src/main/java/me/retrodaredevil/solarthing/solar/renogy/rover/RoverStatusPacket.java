@@ -13,6 +13,7 @@ import me.retrodaredevil.solarthing.packets.identification.NumberedIdentifiable;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import me.retrodaredevil.solarthing.solar.renogy.RenogyPacket;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Represents a Rover Status Packet. This implements {@link RoverReadTable}
@@ -27,6 +28,7 @@ import org.jspecify.annotations.NonNull;
 @JsonTypeName("RENOGY_ROVER_STATUS")
 @JsonExplicit
 @JsonClassDescription("Status packet for Rover and Rover-like devices")
+@NullMarked
 public interface RoverStatusPacket extends RenogyPacket, RoverReadTable, PacketWithVersion, NumberedIdentifiable {
 
 
@@ -53,12 +55,14 @@ public interface RoverStatusPacket extends RenogyPacket, RoverReadTable, PacketW
 		public static final int LATEST = ADDED_ERROR_MODE_EVENT;
 	}
 
+	// TODO remove NonNull
 	@DefaultFinal
 	@Override
 	default @NonNull SolarStatusPacketType getPacketType(){
 		return SolarStatusPacketType.RENOGY_ROVER_STATUS;
 	}
 
+	// TODO remove NonNull
 	@Override
 	@NonNull RoverIdentifier getIdentifier();
 

@@ -9,10 +9,13 @@ import me.retrodaredevil.solarthing.solar.SolarStatusPacket;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import me.retrodaredevil.solarthing.solar.common.Shunt;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 @JsonDeserialize(as = ImmutablePzemShuntStatusPacket.class)
 @JsonTypeName("PZEM_SHUNT")
+@NullMarked
 public interface PzemShuntStatusPacket extends SolarStatusPacket, PzemShuntReadTable, Shunt, DataIdentifiable {
+	// TODO remove NonNull
 	@DefaultFinal
 	@Override
 	default @NonNull SolarStatusPacketType getPacketType() {

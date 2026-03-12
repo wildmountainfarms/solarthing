@@ -4,7 +4,9 @@ import me.retrodaredevil.io.modbus.ModbusSlave;
 import me.retrodaredevil.io.modbus.handling.MessageHandler;
 import me.retrodaredevil.io.modbus.handling.ReadInputRegisters;
 import me.retrodaredevil.solarthing.solar.pzem.PzemShuntReadTable;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public class PzemShuntModbusSlaveRead implements PzemShuntReadTable {
 	private final ModbusSlave modbus;
 

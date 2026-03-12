@@ -11,6 +11,7 @@ import me.retrodaredevil.solarthing.solar.outback.mx.event.MXRawDayEndPacket;
 import me.retrodaredevil.solarthing.solar.renogy.rover.event.RoverChargingStateChangePacket;
 import me.retrodaredevil.solarthing.solar.renogy.rover.event.RoverErrorModeChangePacket;
 import me.retrodaredevil.solarthing.solar.tracer.event.TracerChargingEquipmentStatusChangePacket;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * A type of packet for solar data that goes into the "event" database. These packets have one of the types defined in {@link SolarEventPacketType}
@@ -31,5 +32,6 @@ import me.retrodaredevil.solarthing.solar.tracer.event.TracerChargingEquipmentSt
 
 		@JsonSubTypes.Type(TracerChargingEquipmentStatusChangePacket.class),
 })
+@NullMarked
 public interface SolarEventPacket extends TypedDocumentedPacket<SolarEventPacketType>, EventPacket {
 }

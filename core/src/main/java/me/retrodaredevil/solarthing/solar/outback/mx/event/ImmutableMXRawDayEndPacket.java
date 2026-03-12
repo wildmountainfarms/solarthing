@@ -9,8 +9,9 @@ import me.retrodaredevil.solarthing.packets.support.Support;
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXIdentityInfo;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public class ImmutableMXRawDayEndPacket implements MXRawDayEndPacket {
 
 	private final int address;
@@ -37,12 +38,12 @@ public class ImmutableMXRawDayEndPacket implements MXRawDayEndPacket {
 	}
 
 	@Override
-	public @NonNull KnownSupplementaryIdentifier<OutbackIdentifier> getIdentifier() {
+	public KnownSupplementaryIdentifier<OutbackIdentifier> getIdentifier() {
 		return identifier;
 	}
 
 	@Override
-	public @NonNull IdentityInfo getIdentityInfo() {
+	public IdentityInfo getIdentityInfo() {
 		return identityInfo;
 	}
 
@@ -56,7 +57,6 @@ public class ImmutableMXRawDayEndPacket implements MXRawDayEndPacket {
 		return dailyAH;
 	}
 
-	@NonNull
 	@Override
 	public Support getDailyAHSupport() {
 		return dailyAHSupport;

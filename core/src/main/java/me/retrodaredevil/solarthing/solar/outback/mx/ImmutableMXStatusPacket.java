@@ -7,12 +7,14 @@ import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.packets.support.Support;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 @JsonIgnoreProperties(value = {
 		"auxModeName", "errors", "chargerModeName",
 		"batteryVoltageString", "dailyKWHString", "ampChargerCurrentString"
 }, allowGetters = true)
+@NullMarked
 final class ImmutableMXStatusPacket implements MXStatusPacket {
 	private final @Nullable Integer packetVersion;
 	private final int address;

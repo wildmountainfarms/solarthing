@@ -11,13 +11,16 @@ import me.retrodaredevil.solarthing.solar.event.SupplementarySolarEventPacket;
 import me.retrodaredevil.solarthing.solar.outback.SupplementaryOutbackPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.OperationalMode;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 
 @JsonDeserialize(as = ImmutableFXOperationalModeChangePacket.class)
 @JsonTypeName("FX_OPERATIONAL_MODE_CHANGE")
 @JsonExplicit
+@NullMarked
 public interface FXOperationalModeChangePacket extends SupplementarySolarEventPacket, SupplementaryOutbackPacket, ChangePacket {
+	// TODO remove NonNull
 	@DefaultFinal
 	@Override
 	default @NonNull SolarEventPacketType getPacketType(){
@@ -26,6 +29,7 @@ public interface FXOperationalModeChangePacket extends SupplementarySolarEventPa
 
 	@JsonProperty("operationalModeValue")
 	int getOperationalModeValue();
+	// TODO remove NonNull
 	@JsonProperty("previousOperationalModeValue")
 	@Nullable Integer getPreviousOperationalModeValue();
 

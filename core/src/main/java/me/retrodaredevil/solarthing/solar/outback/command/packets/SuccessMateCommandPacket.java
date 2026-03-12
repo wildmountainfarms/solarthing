@@ -10,22 +10,26 @@ import me.retrodaredevil.solarthing.packets.PacketWithVersion;
 import me.retrodaredevil.solarthing.reason.ExecutionReason;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 @JsonTypeName("MATE_COMMAND_SUCCESS")
 @JsonDeserialize(as = ImmutableSuccessMateCommandPacket.class)
 @JsonExplicit
+@NullMarked
 public interface SuccessMateCommandPacket extends MateCommandFeedbackPacket, PacketWithVersion {
 	int VERSION_EXECUTION_REASON_INCLUDED = 2;
 
 	int VERSION_LATEST = VERSION_EXECUTION_REASON_INCLUDED;
 
+	// TODO remove NonNull
 	@DefaultFinal
 	@Override
 	default @NonNull MateCommandFeedbackPacketType getPacketType() {
 		return MateCommandFeedbackPacketType.MATE_COMMAND_SUCCESS;
 	}
 
+	// TODO remove NonNull
 	/**
 	 * Should be serialized as "command" (as a String)
 	 * @return The {@link MateCommand} that was successfully sent to the MATE
@@ -33,6 +37,7 @@ public interface SuccessMateCommandPacket extends MateCommandFeedbackPacket, Pac
 	@JsonProperty("command")
 	@NonNull MateCommand getCommand();
 
+	// TODO remove NonNull
 	/**
 	 * Should be serialized as "source"
 	 * <p>

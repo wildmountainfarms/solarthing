@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -15,8 +16,9 @@ import org.jspecify.annotations.Nullable;
 		"operatingModeName", "errors", "acModeName", "miscModes", "warnings",
 		"batteryVoltageString"
 }, allowGetters = true)
+@NullMarked
 final class ImmutableFXStatusPacket implements FXStatusPacket {
-	private final Integer packetVersion;
+	private final @Nullable Integer packetVersion;
 	private final int address;
 
 	private final float inverterCurrent;
@@ -39,7 +41,7 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 	private final IdentityInfo identityInfo;
 
 	ImmutableFXStatusPacket(
-			Integer packetVersion,
+			@Nullable Integer packetVersion,
 			int address,
 			float inverterCurrent, int inverterCurrentRaw,
 			float chargerCurrent, int chargerCurrentRaw,
@@ -81,12 +83,12 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 	private static ImmutableFXStatusPacket jacksonCreator(
 			@JsonProperty(value = "packetVersion") Integer packetVersion,
 			@JsonProperty(value = "address", required = true) int address,
-			@JsonProperty(value = "inverterCurrent", required = true) float inverterCurrent, @JsonProperty(value = "inverterCurrentRaw") Integer inverterCurrentRawNullable,
-			@JsonProperty(value = "chargerCurrent", required = true) float chargerCurrent, @JsonProperty(value = "chargerCurrentRaw") Integer chargerCurrentRawNullable,
-			@JsonProperty(value = "buyCurrent", required = true) float buyCurrent, @JsonProperty("buyCurrentRaw") Integer buyCurrentRawNullable,
-			@JsonProperty(value = "inputVoltage", required = true) int inputVoltage, @JsonProperty("inputVoltageRaw") Integer inputVoltageRawNullable,
-			@JsonProperty(value = "outputVoltage", required = true) int outputVoltage, @JsonProperty("outputVoltageRaw") Integer outputVoltageRawNullable,
-			@JsonProperty(value = "sellCurrent", required = true) float sellCurrent, @JsonProperty("sellCurrentRaw") Integer sellCurrentRawNullable,
+			@JsonProperty(value = "inverterCurrent", required = true) float inverterCurrent, @JsonProperty(value = "inverterCurrentRaw") @Nullable Integer inverterCurrentRawNullable,
+			@JsonProperty(value = "chargerCurrent", required = true) float chargerCurrent, @JsonProperty(value = "chargerCurrentRaw") @Nullable Integer chargerCurrentRawNullable,
+			@JsonProperty(value = "buyCurrent", required = true) float buyCurrent, @JsonProperty("buyCurrentRaw") @Nullable Integer buyCurrentRawNullable,
+			@JsonProperty(value = "inputVoltage", required = true) int inputVoltage, @JsonProperty("inputVoltageRaw") @Nullable Integer inputVoltageRawNullable,
+			@JsonProperty(value = "outputVoltage", required = true) int outputVoltage, @JsonProperty("outputVoltageRaw") @Nullable Integer outputVoltageRawNullable,
+			@JsonProperty(value = "sellCurrent", required = true) float sellCurrent, @JsonProperty("sellCurrentRaw") @Nullable Integer sellCurrentRawNullable,
 			@JsonProperty(value = "operatingMode", required = true) int operatingMode, @JsonProperty(value = "errorMode", required = true) int errorMode, @JsonProperty(value = "acMode", required = true) int acMode,
 			@JsonProperty(value = "batteryVoltage", required = true) float batteryVoltage,
 			@JsonProperty(value = "misc", required = true) int misc, @JsonProperty(value = "warningMode", required = true) int warningMode, @JsonProperty(value = "chksum", required = true) int chksum
@@ -112,6 +114,7 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 		);
 	}
 
+	// TODO remove NonNull
 	@Override
 	public @NonNull IdentityInfo getIdentityInfo() {
 		return identityInfo;
@@ -222,6 +225,7 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 		return address;
 	}
 
+	// TODO remove NonNull
 	@Override
 	public @NonNull OutbackIdentifier getIdentifier() {
 		return identifier;

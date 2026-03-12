@@ -8,13 +8,14 @@ import me.retrodaredevil.solarthing.packets.identification.KnownSupplementaryIde
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXIdentityInfo;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+@NullMarked
 public class ImmutableMXErrorModeChangePacket implements MXErrorModeChangePacket {
 	private final int address;
 	private final int errorModeValue;
-	private final Integer previousErrorModeValue;
+	private final @Nullable Integer previousErrorModeValue;
 	private final KnownSupplementaryIdentifier<OutbackIdentifier> identifier;
 	private final IdentityInfo identityInfo;
 	@JsonCreator
@@ -26,7 +27,7 @@ public class ImmutableMXErrorModeChangePacket implements MXErrorModeChangePacket
 		this(new OutbackIdentifier(address), errorModeValue, previousErrorModeValue);
 	}
 
-	public ImmutableMXErrorModeChangePacket(OutbackIdentifier outbackIdentifier, int errorModeValue, Integer previousErrorModeValue) {
+	public ImmutableMXErrorModeChangePacket(OutbackIdentifier outbackIdentifier, int errorModeValue, @Nullable Integer previousErrorModeValue) {
 		this.errorModeValue = errorModeValue;
 		this.previousErrorModeValue = previousErrorModeValue;
 
@@ -46,12 +47,12 @@ public class ImmutableMXErrorModeChangePacket implements MXErrorModeChangePacket
 	}
 
 	@Override
-	public @NonNull KnownSupplementaryIdentifier<OutbackIdentifier> getIdentifier() {
+	public KnownSupplementaryIdentifier<OutbackIdentifier> getIdentifier() {
 		return identifier;
 	}
 
 	@Override
-	public @NonNull IdentityInfo getIdentityInfo() {
+	public IdentityInfo getIdentityInfo() {
 		return identityInfo;
 	}
 

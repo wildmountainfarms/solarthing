@@ -9,14 +9,17 @@ import me.retrodaredevil.solarthing.packets.identification.UnknownSupplementaryI
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXIdentityInfo;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 
+@NullMarked
 public class ImmutableFXDailyData implements FXDailyData {
 
 	private final int address;
 
-	private final Long startDateMillis;
+	private final @Nullable Long startDateMillis;
 
 	private final float dailyMinBatteryVoltage;
 	private final float dailyMaxBatteryVoltage;
@@ -38,7 +41,7 @@ public class ImmutableFXDailyData implements FXDailyData {
 	@JsonCreator
 	public ImmutableFXDailyData(
 			@JsonProperty(value = "address", required = true) int address,
-			@JsonProperty(value = "startDateMillis") Long startDateMillis,
+			@JsonProperty(value = "startDateMillis") @Nullable Long startDateMillis,
 			@JsonProperty(value = "dailyMinBatteryVoltage", required = true) float dailyMinBatteryVoltage, @JsonProperty(value = "dailyMaxBatteryVoltage", required = true) float dailyMaxBatteryVoltage, @JsonProperty(value = "inverterKWH", required = true) float inverterKWH, @JsonProperty(value = "chargerKWH", required = true) float chargerKWH, @JsonProperty(value = "buyKWH", required = true) float buyKWH, @JsonProperty(value = "sellKWH", required = true) float sellKWH,
 			@JsonProperty(value = "operationalModeValues", required = true) Collection<Integer> operationalModeValues, @JsonProperty(value = "errorModeValue", required = true) int errorModeValue, @JsonProperty(value = "warningModeValue", required = true) int warningModeValue, @JsonProperty(value = "miscValue", required = true) int miscValue, @JsonProperty(value = "acModeValues", required = true) Collection<Integer> acModeValues
 	) {
@@ -76,7 +79,7 @@ public class ImmutableFXDailyData implements FXDailyData {
 	}
 
 	@Override
-	public Long getStartDateMillis() {
+	public @Nullable Long getStartDateMillis() {
 		return startDateMillis;
 	}
 
@@ -88,10 +91,12 @@ public class ImmutableFXDailyData implements FXDailyData {
 	@Override public float getBuyKWH() { return buyKWH; }
 	@Override public float getSellKWH() { return sellKWH; }
 
+	// TODO remove NonNull
 	@Override public @NonNull Collection<@NonNull Integer> getOperationalModeValues() { return operationalModeValues; }
 	@Deprecated
 	@Override public int getErrorModeValue() { return errorModeValue; }
 	@Override public int getWarningModeValue() { return warningModeValue; }
 	@Override public int getMiscValue() { return miscValue; }
+	// TODO remove NonNull
 	@Override public @NonNull Collection<@NonNull Integer> getACModeValues() { return acModeValues; }
 }

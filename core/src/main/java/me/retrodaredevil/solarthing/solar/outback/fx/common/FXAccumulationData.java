@@ -1,7 +1,9 @@
 package me.retrodaredevil.solarthing.solar.outback.fx.common;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public interface FXAccumulationData {
 	@JsonProperty("inverterKWH")
 	float getInverterKWH();

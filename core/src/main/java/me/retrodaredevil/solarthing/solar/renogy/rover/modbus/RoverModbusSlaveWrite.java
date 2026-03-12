@@ -8,12 +8,14 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.LoadWorkingMode;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverWriteTable;
 import me.retrodaredevil.solarthing.solar.renogy.rover.StreetLight;
 import me.retrodaredevil.solarthing.solar.util.AbstractModbusWrite;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 import static me.retrodaredevil.io.modbus.ModbusMessages.get8BitDataFrom16BitArray;
 import static me.retrodaredevil.solarthing.solar.renogy.rover.special.UpperLower16Bit.getCombined;
 import static me.retrodaredevil.util.NumberUtil.checkRange;
 
+@NullMarked
 public class RoverModbusSlaveWrite extends AbstractModbusWrite implements RoverWriteTable {
 	@SuppressWarnings("unused")
 	private static final int WRITE_EXCEPTION_UNSUPPORTED_FUNCTION_CODE = 1;

@@ -5,11 +5,12 @@ import me.retrodaredevil.solarthing.packets.CodeMode;
 import me.retrodaredevil.solarthing.solar.common.SolarMode;
 import me.retrodaredevil.solarthing.solar.common.SolarModeType;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * The charger mode of the MX
  */
-@SuppressWarnings("unused")
+@NullMarked
 public enum ChargerMode implements CodeMode, SolarMode {
 	/**
 	 * Not charging the battery
@@ -50,6 +51,7 @@ public enum ChargerMode implements CodeMode, SolarMode {
 		return value;
 	}
 
+	// TODO remove NonNull
 	@Override
 	public @NonNull String getModeName() {
 		return name;
@@ -60,6 +62,7 @@ public enum ChargerMode implements CodeMode, SolarMode {
 		return name;
 	}
 
+	// TODO remove NonNull
 	@Override
 	public @NonNull SolarModeType getSolarModeType() {
 		return solarModeType;

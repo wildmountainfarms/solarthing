@@ -12,7 +12,7 @@ import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.event.SupplementarySolarEventPacket;
 import me.retrodaredevil.solarthing.solar.outback.SupplementaryOutbackPacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXErrorMode;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Set;
@@ -20,10 +20,11 @@ import java.util.Set;
 @JsonDeserialize(as = ImmutableMXErrorModeChangePacket.class)
 @JsonTypeName("MXFM_ERROR_MODE_CHANGE")
 @JsonExplicit
+@NullMarked
 public interface MXErrorModeChangePacket extends SupplementarySolarEventPacket, SupplementaryOutbackPacket, ErrorReporter, ChangePacket {
 	@DefaultFinal
 	@Override
-	default @NonNull SolarEventPacketType getPacketType(){
+	default SolarEventPacketType getPacketType(){
 		return SolarEventPacketType.MXFM_ERROR_MODE_CHANGE;
 	}
 
@@ -35,7 +36,7 @@ public interface MXErrorModeChangePacket extends SupplementarySolarEventPacket, 
 	@Nullable Integer getPreviousErrorModeValue();
 
 	@Override
-	default @NonNull Set<@NonNull MXErrorMode> getErrorModes(){
+	default Set<MXErrorMode> getErrorModes(){
 		return Modes.getActiveModes(MXErrorMode.class, getErrorModeValue());
 	}
 	default @Nullable Set<MXErrorMode> getPreviousErrorModes(){

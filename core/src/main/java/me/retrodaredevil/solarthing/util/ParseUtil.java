@@ -1,5 +1,8 @@
 package me.retrodaredevil.solarthing.util;
 
+import org.jspecify.annotations.NullMarked;
+
+@NullMarked
 public class ParseUtil {
 	private ParseUtil() { throw new UnsupportedOperationException(); }
 	public static int toInt(char[] chars, int index) throws ParsePacketAsciiDecimalDigitException{

@@ -6,7 +6,7 @@ import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.packets.identification.SingleTypeIdentifier;
 import me.retrodaredevil.solarthing.solar.renogy.RoverBatteryType;
 import me.retrodaredevil.solarthing.solar.renogy.Voltage;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
@@ -14,6 +14,7 @@ import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 	private static final Identifier IDENTIFIER = new SingleTypeIdentifier("DummyRoverReadWrite");
 	public interface OnChange {
@@ -126,12 +127,12 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 	}
 
 	@Override
-	public @NonNull Identifier getIdentifier() {
+	public Identifier getIdentifier() {
 		return IDENTIFIER;
 	}
 
 	@Override
-	public @NonNull IdentityInfo getIdentityInfo() {
+	public IdentityInfo getIdentityInfo() {
 		return new RoverIdentityInfo(getRatedChargingCurrentValue(), RoverVariant.getVariant(getProductModel()));
 	}
 
@@ -156,17 +157,15 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 
 	@Override public int getBatteryCapacitySOC() { return roverReadTable.getBatteryCapacitySOC(); }
 	@Override public float getBatteryVoltage() { return roverReadTable.getBatteryVoltage(); }
-	@Override public @NonNull Float getChargingCurrent() { return roverReadTable.getChargingCurrent(); }
+	@Override public Float getChargingCurrent() { return roverReadTable.getChargingCurrent(); }
 	@Override public int getControllerTemperatureRaw() { return roverReadTable.getControllerTemperatureRaw(); }
 	@Override public int getBatteryTemperatureRaw() { return roverReadTable.getBatteryTemperatureRaw(); }
 	@Override public float getLoadVoltageRaw() { return roverReadTable.getLoadVoltageRaw(); }
 	@Override public float getLoadCurrentRaw() { return roverReadTable.getLoadCurrentRaw(); }
 	@Override public int getLoadPowerRaw() { return roverReadTable.getLoadPowerRaw(); }
-	@NonNull
 	@Override public Float getPVVoltage() { return roverReadTable.getPVVoltage(); }
-	@NonNull
 	@Override public Float getPVCurrent() { return roverReadTable.getPVCurrent(); }
-	@Override public @NonNull Integer getChargingPower() { return roverReadTable.getChargingPower(); }
+	@Override public Integer getChargingPower() { return roverReadTable.getChargingPower(); }
 	@Override public float getDailyMinBatteryVoltage() { return roverReadTable.getDailyMinBatteryVoltage(); }
 	@Override public float getDailyMaxBatteryVoltage() { return roverReadTable.getDailyMaxBatteryVoltage(); }
 	@Override public float getDailyMaxChargingCurrent() { return roverReadTable.getDailyMaxChargingCurrent(); }
@@ -427,7 +426,7 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 
 	@Override
 	public int getOperatingDurationHours(OperatingSetting setting) {
-		return operatingDurationHoursMap.get(setting);
+		return requireNonNull(operatingDurationHoursMap.get(setting), () -> "expected value present for " + setting);
 	}
 	@Override
 	public void setOperatingDurationHours(OperatingSetting setting, int hours) {
@@ -438,11 +437,11 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 
 	@Override
 	public int getOperatingPowerPercentage(OperatingSetting setting) {
-		return operatingPowerPercentageMap.get(setting);
+		return requireNonNull(operatingPowerPercentageMap.get(setting), () -> "expected value present for " + setting);
 	}
 	@Override
 	public void setOperatingPowerPercentage(OperatingSetting setting, int operatingPowerPercentage) {
-		int old = operatingPowerPercentageMap.get(setting);
+		int old = requireNonNull(operatingPowerPercentageMap.get(setting), () -> "expected value present for " + setting);
 		operatingPowerPercentageMap.put(setting, operatingPowerPercentage);
 		onChange.onChange(setting + ".operatingPowerPercentage", "" + old, "" + operatingPowerPercentage);
 	}

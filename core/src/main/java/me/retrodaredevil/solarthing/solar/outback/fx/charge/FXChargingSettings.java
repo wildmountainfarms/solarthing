@@ -1,7 +1,11 @@
 package me.retrodaredevil.solarthing.solar.outback.fx.charge;
 
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
+
+@NullMarked
 public class FXChargingSettings {
-	private final Float rebulkVoltage;
+	private final @Nullable Float rebulkVoltage;
 
 	private final float absorbVoltage;
 	private final long absorbTimeMillis;
@@ -14,7 +18,7 @@ public class FXChargingSettings {
 	private final long equalizeTimeMillis;
 
 	public FXChargingSettings(
-			Float rebulkVoltage, float absorbVoltage, long absorbTimeMillis,
+			@Nullable Float rebulkVoltage, float absorbVoltage, long absorbTimeMillis,
 			float floatVoltage, long floatTimeMillis, float refloatVoltage,
 			float equalizeVoltage, long equalizeTimeMillis) {
 		this.rebulkVoltage = rebulkVoltage;
@@ -41,7 +45,7 @@ public class FXChargingSettings {
 		return 0.4f; // 48V system
 	}
 
-	public Float getRebulkVoltage() {
+	public @Nullable Float getRebulkVoltage() {
 		return rebulkVoltage;
 	}
 

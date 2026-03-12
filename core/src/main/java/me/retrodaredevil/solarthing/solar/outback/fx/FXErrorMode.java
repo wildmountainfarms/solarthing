@@ -2,10 +2,12 @@ package me.retrodaredevil.solarthing.solar.outback.fx;
 
 import me.retrodaredevil.solarthing.packets.BitmaskMode;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * The errors modes for the FX
  */
+@NullMarked
 public enum FXErrorMode implements BitmaskMode { // multiple can be active (or 0)
 	LOW_VAC_OUTPUT(1, "Low VAC output"),
 	STACKING_ERROR(2, "Stacking Error"),
@@ -27,6 +29,7 @@ public enum FXErrorMode implements BitmaskMode { // multiple can be active (or 0
 		return value;
 	}
 
+	// TODO remove NonNull
 	@Override
 	public @NonNull String getModeName() {
 		return name;

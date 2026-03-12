@@ -8,13 +8,14 @@ import me.retrodaredevil.solarthing.packets.identification.KnownSupplementaryIde
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXIdentityInfo;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+@NullMarked
 public class ImmutableFXAuxStateChangePacket implements FXAuxStateChangePacket {
 	private final int address;
 	private final boolean isAuxActive;
-	private final Boolean wasAuxActive;
+	private final @Nullable Boolean wasAuxActive;
 
 	private final KnownSupplementaryIdentifier<OutbackIdentifier> identifier;
 	private final IdentityInfo identityInfo;
@@ -23,14 +24,14 @@ public class ImmutableFXAuxStateChangePacket implements FXAuxStateChangePacket {
 	private ImmutableFXAuxStateChangePacket(
 			@JsonProperty(value = "address", required = true) int address,
 			@JsonProperty(value = "isAuxActive", required = true) boolean isAuxActive,
-			@JsonProperty(value = "wasAuxActive", required = true) Boolean wasAuxActive
+			@JsonProperty(value = "wasAuxActive", required = true) @Nullable Boolean wasAuxActive
 	) {
 		this(new OutbackIdentifier(address), isAuxActive, wasAuxActive);
 	}
 	public ImmutableFXAuxStateChangePacket(
 			OutbackIdentifier outbackIdentifier,
 			boolean isAuxActive,
-			Boolean wasAuxActive
+			@Nullable Boolean wasAuxActive
 	) {
 		this.isAuxActive = isAuxActive;
 		this.wasAuxActive = wasAuxActive;
@@ -54,12 +55,12 @@ public class ImmutableFXAuxStateChangePacket implements FXAuxStateChangePacket {
 	}
 
 	@Override
-	public @NonNull KnownSupplementaryIdentifier<OutbackIdentifier> getIdentifier() {
+	public KnownSupplementaryIdentifier<OutbackIdentifier> getIdentifier() {
 		return identifier;
 	}
 
 	@Override
-	public @NonNull IdentityInfo getIdentityInfo() {
+	public IdentityInfo getIdentityInfo() {
 		return identityInfo;
 	}
 

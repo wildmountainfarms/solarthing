@@ -1,5 +1,8 @@
 package me.retrodaredevil.solarthing.solar.outback.fx.charge;
 
+import org.jspecify.annotations.NullMarked;
+
+@NullMarked
 public class ModeTimer {
 	private final long modeTimeMillis;
 	private long timeMillis;

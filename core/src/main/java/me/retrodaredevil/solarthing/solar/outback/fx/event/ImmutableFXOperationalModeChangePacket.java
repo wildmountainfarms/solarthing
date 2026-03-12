@@ -8,13 +8,14 @@ import me.retrodaredevil.solarthing.packets.identification.KnownSupplementaryIde
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXIdentityInfo;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+@NullMarked
 public class ImmutableFXOperationalModeChangePacket implements FXOperationalModeChangePacket {
 	private final int address;
 	private final int operationalModeValue;
-	private final Integer previousOperationalModeValue;
+	private final @Nullable Integer previousOperationalModeValue;
 	private final KnownSupplementaryIdentifier<OutbackIdentifier> identifier;
 	private final IdentityInfo identityInfo;
 
@@ -29,7 +30,7 @@ public class ImmutableFXOperationalModeChangePacket implements FXOperationalMode
 	public ImmutableFXOperationalModeChangePacket(
 			OutbackIdentifier outbackIdentifier,
 			int operationalModeValue,
-			Integer previousOperationalModeValue
+			@Nullable Integer previousOperationalModeValue
 	) {
 		this.operationalModeValue = operationalModeValue;
 		this.previousOperationalModeValue = previousOperationalModeValue;
@@ -54,13 +55,11 @@ public class ImmutableFXOperationalModeChangePacket implements FXOperationalMode
 		return previousOperationalModeValue;
 	}
 
-	@NonNull
 	@Override
 	public KnownSupplementaryIdentifier<OutbackIdentifier> getIdentifier() {
 		return identifier;
 	}
 
-	@NonNull
 	@Override
 	public IdentityInfo getIdentityInfo() {
 		return identityInfo;

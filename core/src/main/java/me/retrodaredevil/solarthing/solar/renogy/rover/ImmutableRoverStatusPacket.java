@@ -5,10 +5,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.packets.identification.NumberedIdentifier;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 @JsonIgnoreProperties(value = {"productModelString", "hardwareVersionString", "softwareVersionString", "streetLightBrightness", "streetLightOn", "chargingStateName", "errors", "batteryTypeName", "loadWorkingModeName"}, allowGetters = true)
+@NullMarked
 public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	private final @Nullable Integer packetVersion;
 	private final RoverIdentifier identifier;
@@ -95,7 +96,7 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	@JsonCreator
 	public ImmutableRoverStatusPacket(
 			@JsonProperty("packetVersion") @Nullable Integer packetVersion,
-			@JsonProperty("number") Integer number,
+			@JsonProperty("number") @Nullable Integer number,
 			@JsonProperty(value = "maxVoltage", required = true) int maxVoltage, @JsonProperty(value = "ratedChargingCurrent", required = true) int ratedChargingCurrent, @JsonProperty(value = "ratedDischargingCurrent", required = true) int ratedDischargingCurrent, @JsonProperty(value = "productType", required = true) int productType, @JsonProperty(value = "productModelEncoded", required = true) byte[] productModel,
 			@JsonProperty(value = "softwareVersion", required = true) int softwareVersion, @JsonProperty(value = "hardwareVersion", required = true) int hardwareVersion, @JsonProperty(value = "productSerialNumber", required = true) int productSerialNumber,
 			@JsonProperty(value = "controllerDeviceAddress", required = true) int controllerDeviceAddress,
@@ -216,12 +217,12 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	}
 
 	@Override
-	public @NonNull RoverIdentifier getIdentifier() {
+	public RoverIdentifier getIdentifier() {
 		return identifier;
 	}
 
 	@Override
-	public @NonNull IdentityInfo getIdentityInfo() {
+	public IdentityInfo getIdentityInfo() {
 		return identityInfo;
 	}
 
@@ -281,7 +282,7 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 	}
 
 	@Override
-	public @NonNull Float getChargingCurrent() {
+	public Float getChargingCurrent() {
 		return chargingCurrent;
 	}
 
@@ -310,20 +311,18 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 		return loadPower;
 	}
 
-	@NonNull
 	@Override
 	public Float getPVVoltage() {
 		return inputVoltage;
 	}
 
-	@NonNull
 	@Override
 	public Float getPVCurrent() {
 		return pvCurrent;
 	}
 
 	@Override
-	public @NonNull Integer getChargingPower() {
+	public Integer getChargingPower() {
 		return chargingPower;
 	}
 

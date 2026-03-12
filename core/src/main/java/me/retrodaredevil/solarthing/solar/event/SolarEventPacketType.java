@@ -1,7 +1,9 @@
 package me.retrodaredevil.solarthing.solar.event;
 
 import me.retrodaredevil.solarthing.packets.DocumentedPacketType;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public enum SolarEventPacketType implements DocumentedPacketType {
 	FX_OPERATIONAL_MODE_CHANGE,
 	FX_AC_MODE_CHANGE,

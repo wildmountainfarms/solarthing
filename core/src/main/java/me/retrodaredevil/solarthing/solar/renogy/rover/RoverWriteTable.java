@@ -7,9 +7,12 @@ import me.retrodaredevil.solarthing.solar.renogy.RoverBatteryType;
 import me.retrodaredevil.solarthing.solar.renogy.Voltage;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerControl_E021;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerControl_E02D;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 @SuppressWarnings("unused")
 @JsonExplicit
+@NullMarked
 public interface RoverWriteTable extends Rover {
 	void factoryReset();
 	void clearHistory();
@@ -65,7 +68,7 @@ public interface RoverWriteTable extends Rover {
 
 	void setSystemVoltageSetting(Voltage voltage);
 	@JsonProperty("systemVoltageSetting")
-	default void setSystemVoltageSettingValue(Integer voltageValue) {
+	default void setSystemVoltageSettingValue(@Nullable Integer voltageValue) {
 		final Voltage voltage;
 		if (voltageValue == null) {
 			voltage = Voltage.AUTO;

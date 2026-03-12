@@ -4,11 +4,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public interface PVCurrentAndVoltage extends Identifiable {
+	// TODO remove NonNull
 	@JsonProperty("pvCurrent")
 	@NonNull Number getPVCurrent();
 
+	// TODO remove NonNull
 	/**
 	 * AKA the PV Voltage
 	 *
@@ -19,6 +23,7 @@ public interface PVCurrentAndVoltage extends Identifiable {
 	@JsonProperty("inputVoltage")
 	@NonNull Number getPVVoltage();
 
+	// TODO remove NonNull
 	@GraphQLInclude("pvWattage")
 	default @NonNull Number getPVWattage(){
 		return getPVCurrent().floatValue() * getPVVoltage().floatValue();

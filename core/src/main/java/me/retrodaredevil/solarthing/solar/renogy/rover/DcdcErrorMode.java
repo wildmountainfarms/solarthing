@@ -1,7 +1,8 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover;
 
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public enum DcdcErrorMode implements SimpleRoverErrorMode {
 	BACKUP_BATTERY_OVER_DISCHARGE("Backup battery over discharge", 1),
 	BACKUP_BATTERY_OVER_VOLTAGE("Backup battery over pressure", 1 << 1),
@@ -42,7 +43,7 @@ public enum DcdcErrorMode implements SimpleRoverErrorMode {
 	}
 
 	@Override
-	public @NonNull String getModeName() {
+	public String getModeName() {
 		return name;
 	}
 }

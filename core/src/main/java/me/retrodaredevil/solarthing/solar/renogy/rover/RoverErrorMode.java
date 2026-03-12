@@ -1,12 +1,13 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover;
 
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Represents different error modes supported by the Renogy Rover
  * <p>
  * PDU address: 0x0121 and 0x0122, Bytes: 4, all 4 bytes
  */
+@NullMarked
 public enum RoverErrorMode implements SimpleRoverErrorMode {
 //	RESERVED_31("reserved", 1 << 31),
 	CHARGE_SHORT_CIRCUIT("Charge MOS short circuit", 1 << 30),
@@ -42,7 +43,7 @@ public enum RoverErrorMode implements SimpleRoverErrorMode {
 	}
 
 	@Override
-	public @NonNull String getModeName() {
+	public String getModeName() {
 		return name;
 	}
 }

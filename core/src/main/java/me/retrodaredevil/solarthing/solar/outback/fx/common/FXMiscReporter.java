@@ -4,11 +4,14 @@ import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.solar.outback.fx.MiscMode;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Set;
 
+@NullMarked
 public interface FXMiscReporter {
 	int getMiscValue();
+	// TODO remove NonNull
 	@GraphQLInclude("miscModes")
 	default @NonNull Set<@NonNull MiscMode> getMiscModes(){ return Modes.getActiveModes(MiscMode.class, getMiscValue()); }
 

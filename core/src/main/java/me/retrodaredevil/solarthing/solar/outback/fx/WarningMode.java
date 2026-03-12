@@ -2,10 +2,12 @@ package me.retrodaredevil.solarthing.solar.outback.fx;
 
 import me.retrodaredevil.solarthing.packets.BitmaskMode;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * The warning modes for the fx
  */
+@NullMarked
 public enum WarningMode implements BitmaskMode { // multiple can be active (or 0)
 	/** AC source  is above 66 Hz* (upper limit) and will be dropped if frequency gets much higher*/
 	AC_INPUT_FREQ_HIGH(1, "AC Input Freq High"),
@@ -36,6 +38,7 @@ public enum WarningMode implements BitmaskMode { // multiple can be active (or 0
 		return value;
 	}
 
+	// TODO remove NonNull
 	@Override
 	public @NonNull String getModeName() {
 		return name;

@@ -1,8 +1,10 @@
 package me.retrodaredevil.solarthing.solar.renogy;
 
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
+import org.jspecify.annotations.NullMarked;
 
 @UtilityClass
+@NullMarked
 public final class ProductModelUtil {
 	private ProductModelUtil(){ throw new UnsupportedOperationException(); }
 	/*

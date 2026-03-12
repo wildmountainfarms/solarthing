@@ -8,13 +8,14 @@ import me.retrodaredevil.solarthing.packets.identification.KnownSupplementaryIde
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXIdentityInfo;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+@NullMarked
 public class ImmutableMXChargerModeChangePacket implements MXChargerModeChangePacket {
 	private final int address;
 	private final int chargerModeValue;
-	private final Integer previousChargerModeValue;
+	private final @Nullable Integer previousChargerModeValue;
 	private final KnownSupplementaryIdentifier<OutbackIdentifier> identifier;
 	private final IdentityInfo identityInfo;
 
@@ -27,7 +28,7 @@ public class ImmutableMXChargerModeChangePacket implements MXChargerModeChangePa
 		this(new OutbackIdentifier(address), chargerModeValue, previousChargerModeValue);
 	}
 
-	public ImmutableMXChargerModeChangePacket(OutbackIdentifier outbackIdentifier, int chargerModeValue, Integer previousChargerModeValue) {
+	public ImmutableMXChargerModeChangePacket(OutbackIdentifier outbackIdentifier, int chargerModeValue, @Nullable Integer previousChargerModeValue) {
 		this.chargerModeValue = chargerModeValue;
 		this.previousChargerModeValue = previousChargerModeValue;
 
@@ -47,11 +48,11 @@ public class ImmutableMXChargerModeChangePacket implements MXChargerModeChangePa
 	}
 
 	@Override
-	public @NonNull KnownSupplementaryIdentifier<OutbackIdentifier> getIdentifier() {
+	public KnownSupplementaryIdentifier<OutbackIdentifier> getIdentifier() {
 		return identifier;
 	}
 	@Override
-	public @NonNull IdentityInfo getIdentityInfo() {
+	public IdentityInfo getIdentityInfo() {
 		return identityInfo;
 	}
 

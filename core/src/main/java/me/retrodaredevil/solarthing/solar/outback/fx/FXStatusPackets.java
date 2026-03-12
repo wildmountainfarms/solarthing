@@ -3,9 +3,11 @@ package me.retrodaredevil.solarthing.solar.outback.fx;
 import me.retrodaredevil.solarthing.util.CheckSumException;
 import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
 import me.retrodaredevil.solarthing.util.ParsePacketAsciiDecimalDigitException;
+import org.jspecify.annotations.NullMarked;
 
 import static me.retrodaredevil.solarthing.util.ParseUtil.toInt;
 
+@NullMarked
 public final class FXStatusPackets {
 	private FXStatusPackets(){ throw new UnsupportedOperationException(); }
 	/**

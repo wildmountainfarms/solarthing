@@ -5,7 +5,7 @@ import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
 import me.retrodaredevil.solarthing.packets.CodeMode;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.solar.renogy.rover.ChargingMethod;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Represents the special power control values of register 0xE02D.
@@ -13,6 +13,7 @@ import org.jspecify.annotations.NonNull;
  * <p>
  * Although this uses a mix of JsonProperty and GraphQLInclude annotations, it's just to maintain convention and is not for any particular purpose
  */
+@NullMarked
 public interface SpecialPowerControl_E02D extends UpperLower16Bit {
 
 	@GraphQLInclude("formattedInfo")
@@ -100,7 +101,7 @@ public interface SpecialPowerControl_E02D extends UpperLower16Bit {
 		}
 
 		@Override
-		public @NonNull String getModeName() {
+		public String getModeName() {
 			return name;
 		}
 	}
@@ -128,7 +129,7 @@ public interface SpecialPowerControl_E02D extends UpperLower16Bit {
 		}
 
 		@Override
-		public @NonNull String getModeName() {
+		public String getModeName() {
 			return chargingMethod.getModeName();
 		}
 	}
@@ -154,7 +155,7 @@ public interface SpecialPowerControl_E02D extends UpperLower16Bit {
 		}
 
 		@Override
-		public @NonNull String getModeName() {
+		public String getModeName() {
 			return voltage + "V";
 		}
 	}

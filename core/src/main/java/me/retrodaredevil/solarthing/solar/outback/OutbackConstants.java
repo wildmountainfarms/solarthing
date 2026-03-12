@@ -3,8 +3,10 @@ package me.retrodaredevil.solarthing.solar.outback;
 import me.retrodaredevil.io.serial.SerialConfig;
 import me.retrodaredevil.io.serial.SerialConfigBuilder;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
+import org.jspecify.annotations.NullMarked;
 
 @UtilityClass
+@NullMarked
 public final class OutbackConstants {
 	private OutbackConstants(){ throw new UnsupportedOperationException(); }
 

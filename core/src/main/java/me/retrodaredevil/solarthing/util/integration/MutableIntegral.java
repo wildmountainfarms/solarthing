@@ -1,5 +1,8 @@
 package me.retrodaredevil.solarthing.util.integration;
 
+import org.jspecify.annotations.NullMarked;
+
+@NullMarked
 public interface MutableIntegral {
 	/**
 	 *

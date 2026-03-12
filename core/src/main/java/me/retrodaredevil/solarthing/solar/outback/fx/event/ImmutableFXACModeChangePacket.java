@@ -8,13 +8,14 @@ import me.retrodaredevil.solarthing.packets.identification.KnownSupplementaryIde
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXIdentityInfo;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+@NullMarked
 public class ImmutableFXACModeChangePacket implements FXACModeChangePacket {
 	private final int address;
 	private final int acModeValue;
-	private final Integer previousACModeValue;
+	private final @Nullable Integer previousACModeValue;
 
 	private final KnownSupplementaryIdentifier<OutbackIdentifier> identifier;
 	private final IdentityInfo identityInfo;
@@ -27,7 +28,7 @@ public class ImmutableFXACModeChangePacket implements FXACModeChangePacket {
 		this(new OutbackIdentifier(address), acModeValue, previousACModeValue);
 	}
 
-	public ImmutableFXACModeChangePacket(OutbackIdentifier outbackIdentifier, int acModeValue, Integer previousACModeValue) {
+	public ImmutableFXACModeChangePacket(OutbackIdentifier outbackIdentifier, int acModeValue, @Nullable Integer previousACModeValue) {
 		this.acModeValue = acModeValue;
 		this.previousACModeValue = previousACModeValue;
 
@@ -52,12 +53,12 @@ public class ImmutableFXACModeChangePacket implements FXACModeChangePacket {
 	}
 
 	@Override
-	public @NonNull KnownSupplementaryIdentifier<OutbackIdentifier> getIdentifier() {
+	public KnownSupplementaryIdentifier<OutbackIdentifier> getIdentifier() {
 		return identifier;
 	}
 
 	@Override
-	public @NonNull IdentityInfo getIdentityInfo() {
+	public IdentityInfo getIdentityInfo() {
 		return identityInfo;
 	}
 }

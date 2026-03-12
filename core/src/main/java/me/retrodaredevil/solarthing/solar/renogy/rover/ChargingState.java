@@ -3,13 +3,14 @@ package me.retrodaredevil.solarthing.solar.renogy.rover;
 import me.retrodaredevil.solarthing.packets.CodeMode;
 import me.retrodaredevil.solarthing.solar.common.SolarMode;
 import me.retrodaredevil.solarthing.solar.common.SolarModeType;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * The charging state
  *
  * PDU address: 0x0120, Bytes: 2, lower 8 bits
  */
+@NullMarked
 public enum ChargingState implements CodeMode, SolarMode {
 	DEACTIVATED("Deactivated", 0, SolarModeType.CHARGE_CONTROLLER_OFF),
 	ACTIVATED("Activated", 1, SolarModeType.BULK),
@@ -42,12 +43,12 @@ public enum ChargingState implements CodeMode, SolarMode {
 	}
 
 	@Override
-	public @NonNull String getModeName() {
+	public String getModeName() {
 		return name;
 	}
 
 	@Override
-	public @NonNull SolarModeType getSolarModeType() {
+	public SolarModeType getSolarModeType() {
 		return solarModeType;
 	}
 }

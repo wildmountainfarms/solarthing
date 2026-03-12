@@ -4,6 +4,8 @@ import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.solar.outback.fx.event.*;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,6 +15,7 @@ import java.util.Map;
 /**
  * Receives fx status packets and then sends them to something to handle "event" packets
  */
+@NullMarked
 public class FXEventUpdaterListReceiver implements PacketListReceiver {
 	private final PacketListReceiver eventReceiver;
 	private final Map<Integer, Integer> fxWarningIgnoreMap;
@@ -35,7 +38,7 @@ public class FXEventUpdaterListReceiver implements PacketListReceiver {
 			}
 		}
 	}
-	private void useData(FXStatusPacket fx, FXStatusPacket previous, int ignoredWarningModeValueConstant){
+	private void useData(FXStatusPacket fx, @Nullable FXStatusPacket previous, int ignoredWarningModeValueConstant){
 		final Integer lastACMode;
 		final Boolean wasAuxActive;
 		final Integer previousOperationalModeValue;

@@ -1,5 +1,8 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover;
 
+import org.jspecify.annotations.NullMarked;
+
+@NullMarked
 public enum ChargingMethod {
 	DIRECT("Direct"),
 	PWM("PWM")

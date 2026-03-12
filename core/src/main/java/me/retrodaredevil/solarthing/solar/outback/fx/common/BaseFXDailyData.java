@@ -6,7 +6,9 @@ import me.retrodaredevil.solarthing.packets.identification.KnownSupplementaryIde
 import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifiable;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public abstract class BaseFXDailyData extends ImmutableFXDailyData implements SupplementaryIdentifiable {
 
 	private final KnownSupplementaryIdentifier<OutbackIdentifier> supplementaryIdentifier;
@@ -30,6 +32,7 @@ public abstract class BaseFXDailyData extends ImmutableFXDailyData implements Su
 		supplementaryIdentifier = new DefaultSupplementaryIdentifier<>(outbackIdentifier, packetType.toString());
 	}
 
+	// TODO remove NonNull
 	@Override
 	public @NonNull KnownSupplementaryIdentifier<OutbackIdentifier> getIdentifier() {
 		return supplementaryIdentifier;

@@ -1,8 +1,10 @@
 package me.retrodaredevil.util;
 
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
+import org.jspecify.annotations.NullMarked;
 
 @UtilityClass
+@NullMarked
 public final class NumberUtil {
 	private NumberUtil(){ throw new UnsupportedOperationException(); }
 

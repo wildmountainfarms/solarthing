@@ -13,12 +13,14 @@ import me.retrodaredevil.solarthing.solar.outback.fx.FXErrorMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.OperationalMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.extra.DailyFXPacket;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Set;
 
 @JsonExplicit
+@NullMarked
 public interface FXDailyData extends OutbackData, DailyBatteryVoltage, ErrorReporter, FXWarningReporter, FXMiscReporter, FXAccumulationData {
 	@Override
 	default boolean isNewDay(DailyData previousDailyData){
@@ -46,8 +48,7 @@ public interface FXDailyData extends OutbackData, DailyBatteryVoltage, ErrorRepo
 
 	@JsonProperty("startDateMillis")
 	@Override
-	@Nullable
-	Long getStartDateMillis();
+	@Nullable Long getStartDateMillis();
 
 	// FX Accumulation Data
 

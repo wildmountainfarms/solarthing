@@ -2,7 +2,7 @@ package me.retrodaredevil.solarthing.solar.renogy.rover;
 
 import me.retrodaredevil.solarthing.packets.CodeMode;
 import me.retrodaredevil.solarthing.solar.renogy.rover.annotations.RoverOnly;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 
 /**
@@ -15,6 +15,7 @@ import org.jspecify.annotations.NonNull;
  * For write (brightness): PDU address: 0xE001
  */
 @RoverOnly
+@NullMarked
 public enum StreetLight implements CodeMode {
 	OFF("Off", 0),
 	ON("On", 1 << 7)
@@ -34,7 +35,7 @@ public enum StreetLight implements CodeMode {
 	}
 
 	@Override
-	public @NonNull String getModeName() {
+	public String getModeName() {
 		return name;
 	}
 

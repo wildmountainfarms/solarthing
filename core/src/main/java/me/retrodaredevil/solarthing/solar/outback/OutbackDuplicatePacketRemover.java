@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.solar.outback;
 
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,6 +12,7 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class OutbackDuplicatePacketRemover implements PacketListReceiver {
 	public static final OutbackDuplicatePacketRemover INSTANCE = new OutbackDuplicatePacketRemover();
 	private static final Logger LOGGER = LoggerFactory.getLogger(OutbackDuplicatePacketRemover.class);

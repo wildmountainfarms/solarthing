@@ -1,7 +1,9 @@
 package me.retrodaredevil.solarthing.solar.common;
 
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public enum SolarModeType implements BasicSolarMode {
 	INVERTER_OFF("Off"),
 	INVERTER_ON("On"),
@@ -39,6 +41,7 @@ public enum SolarModeType implements BasicSolarMode {
 		return false;
 	}
 
+	// TODO remove NonNull
 	@Override
 	public @NonNull String getModeName() {
 		return displayName;

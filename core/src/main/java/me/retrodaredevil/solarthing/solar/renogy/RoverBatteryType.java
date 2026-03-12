@@ -3,7 +3,7 @@ package me.retrodaredevil.solarthing.solar.renogy;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import me.retrodaredevil.solarthing.packets.CodeMode;
 import me.retrodaredevil.solarthing.solar.renogy.rover.annotations.DcdcOnly;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -11,6 +11,7 @@ import org.jspecify.annotations.Nullable;
  * <p><p>
  * PDU address: 0xE004, Bytes: 2
  */
+@NullMarked
 public enum RoverBatteryType implements CodeMode {
 	/**
 	 * This represents the User battery type when it is directly configured from the Rover. When this is selected, charging parameters are unlocked
@@ -54,7 +55,7 @@ public enum RoverBatteryType implements CodeMode {
 	}
 
 	@Override
-	public @NonNull String getModeName() {
+	public String getModeName() {
 		return name;
 	}
 

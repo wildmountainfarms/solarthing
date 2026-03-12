@@ -7,12 +7,15 @@ import me.retrodaredevil.solarthing.solar.outback.mx.event.ImmutableMXAuxModeCha
 import me.retrodaredevil.solarthing.solar.outback.mx.event.ImmutableMXChargerModeChangePacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.event.ImmutableMXErrorModeChangePacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.event.ImmutableMXRawDayEndPacket;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@NullMarked
 public class MXEventUpdaterListReceiver implements PacketListReceiver {
 	private final PacketListReceiver eventReceiver;
 	private final Map<Identifier, MXStatusPacket> previousPacketMap = new HashMap<>();
@@ -32,7 +35,7 @@ public class MXEventUpdaterListReceiver implements PacketListReceiver {
 			}
 		}
 	}
-	private void useData(MXStatusPacket mx, MXStatusPacket last){
+	private void useData(MXStatusPacket mx, @Nullable MXStatusPacket last){
 		final Integer previousChargerModeValue;
 		final Integer previousRawAuxModeValue;
 		final Integer previousErrorModeValue;

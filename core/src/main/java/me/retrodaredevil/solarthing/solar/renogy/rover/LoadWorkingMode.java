@@ -1,12 +1,13 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover;
 
 import me.retrodaredevil.solarthing.packets.CodeMode;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 /**
  * R/W PDU address: 0xE01D, Bytes: 2
  */
+@NullMarked
 public enum LoadWorkingMode implements CodeMode {
 	LIGHT_CONTROL(0, null),
 	LIGHT_DELAY_1(1, 1),
@@ -44,7 +45,7 @@ public enum LoadWorkingMode implements CodeMode {
 	}
 
 	@Override
-	public @NonNull String getModeName() {
+	public String getModeName() {
 		return toString();
 	}
 }

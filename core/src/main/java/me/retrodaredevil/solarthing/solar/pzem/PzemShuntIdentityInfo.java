@@ -1,8 +1,9 @@
 package me.retrodaredevil.solarthing.solar.pzem;
 
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public class PzemShuntIdentityInfo implements IdentityInfo {
 	private final int dataId;
 
@@ -11,17 +12,17 @@ public class PzemShuntIdentityInfo implements IdentityInfo {
 	}
 
 	@Override
-	public @NonNull String getName() {
+	public String getName() {
 		return "Pzem Shunt";
 	}
 
 	@Override
-	public @NonNull String getSuffix() {
+	public String getSuffix() {
 		return "" + dataId;
 	}
 
 	@Override
-	public @NonNull String getShortName() {
+	public String getShortName() {
 		return "PZ";
 	}
 }

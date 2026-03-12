@@ -8,9 +8,12 @@ import me.retrodaredevil.solarthing.type.closed.meta.TargetedMetaPacket;
 import me.retrodaredevil.solarthing.type.closed.meta.TargetedMetaPacketType;
 import org.jspecify.annotations.NonNull;
 import me.retrodaredevil.solarthing.solar.outback.fx.charge.FXChargingSettings;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 @JsonExplicit
 @JsonTypeName("FX_CHARGING_SETTINGS")
+@NullMarked
 public class FXChargingSettingsPacket implements TargetedMetaPacket {
 	private final FXChargingSettings fxChargingSettings;
 	private final int temperatureAdjustCelsius;
@@ -18,7 +21,7 @@ public class FXChargingSettingsPacket implements TargetedMetaPacket {
 	@JsonCreator
 	public FXChargingSettingsPacket(
 			@JsonProperty(value = "settings", required = true) Settings settings,
-			@JsonProperty("temperatureAdjustCelsius") Integer temperatureAdjustCelsius) {
+			@JsonProperty("temperatureAdjustCelsius") @Nullable Integer temperatureAdjustCelsius) {
 		this.fxChargingSettings = new FXChargingSettings(
 				settings.rebulkVoltage, settings.absorbVoltage, Math.round(settings.absorbTimeHours * 60 * 60 * 1000),
 				settings.floatVoltage, Math.round(settings.floatTimeHours * 60 * 60 * 1000),
@@ -27,6 +30,7 @@ public class FXChargingSettingsPacket implements TargetedMetaPacket {
 		this.temperatureAdjustCelsius = temperatureAdjustCelsius == null ? 0 : temperatureAdjustCelsius;
 	}
 
+	// TODO remove NonNull
 	@Override
 	public @NonNull TargetedMetaPacketType getPacketType() {
 		return TargetedMetaPacketType.FX_CHARGING_SETTINGS;
@@ -49,7 +53,7 @@ public class FXChargingSettingsPacket implements TargetedMetaPacket {
 
 
 	public static class Settings {
-		private final Float rebulkVoltage;
+		private final @Nullable Float rebulkVoltage;
 
 		private final float absorbVoltage;
 		private final double absorbTimeHours;
@@ -63,7 +67,7 @@ public class FXChargingSettingsPacket implements TargetedMetaPacket {
 
 		@JsonCreator
 		public Settings(
-				@JsonProperty("rebulkVoltage") Float rebulkVoltage,
+				@JsonProperty("rebulkVoltage") @Nullable Float rebulkVoltage,
 				@JsonProperty(value = "absorbVoltage", required = true) float absorbVoltage,
 				@JsonProperty(value = "absorbTimeHours", required = true) double absorbTimeHours,
 				@JsonProperty(value = "floatVoltage", required = true) float floatVoltage,

@@ -19,6 +19,7 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.special.ImmutableSpecialP
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerControl_E021;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerControl_E02D;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
@@ -28,6 +29,7 @@ import java.util.Set;
 import static java.util.Objects.requireNonNull;
 
 @JsonExplicit
+@NullMarked
 public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeController, DailyAdvancedChargeController, RecordBatteryVoltage, DualTemperature {
 	SerialConfig SERIAL_CONFIG = new SerialConfigBuilder(9600)
 			.setDataBits(8)
@@ -113,6 +115,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	@JsonProperty("productModelEncoded") // jackson should encode and decode as this as base64 when serializing and deserializing
 	byte[] getProductModelValue();
 
+	// TODO remove NonNull
 	/**
 	 * Should be serialized as "productModelString"
 	 * <p>
@@ -143,6 +146,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	@GraphQLInclude("softwareVersionValue")
 	@JsonProperty("softwareVersion")
 	int getSoftwareVersionValue();
+	// TODO remove NonNull
 	/**
 	 * If serialized, should be serialized as "softwareVersionString" using {@link Version#toString()}
 	 * @return The {@link Version} object representing the software version
@@ -151,6 +155,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	@ValidSinceVersion(version = RoverStatusPacket.Version.CORRECT_TWO_REGISTER)
 	@GraphQLInclude("softwareVersion")
 	default @NonNull Version getSoftwareVersion(){ return new Version(getSoftwareVersionValue()); }
+	// TODO remove NonNull
 	@ConvenienceField(sincePacketVersion = RoverStatusPacket.Version.REMOVED_CONVENIENCE_FIELDS_2)
 	@ValidSinceVersion(version = RoverStatusPacket.Version.CORRECT_TWO_REGISTER)
 	@JsonProperty("softwareVersionString")
@@ -225,6 +230,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	@Override
 	float getBatteryVoltage();
 
+	// TODO remove NonNull
 	/**
 	 * Should be serialized as "chargingCurrent"
 	 * @return The charging current
@@ -246,6 +252,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	@JsonProperty("batteryTemperatureRaw")
 	int getBatteryTemperatureRaw();
 
+	// TODO remove NonNull
 	/**
 	 * @return The temperature of the controller in degrees celsius
 	 */
@@ -253,6 +260,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	default @NonNull Integer getControllerTemperatureCelsius(){
 		return convertRawTemperature(getControllerTemperatureRaw());
 	}
+	// TODO remove NonNull
 	/**
 	 * @return The temperature of the battery in degrees celsius
 	 */
@@ -348,15 +356,18 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	}
 	// endregion
 
+	// TODO remove NonNull
 	/** AKA PV/Solar Panel voltage*/
 	@SerializeNameDefinedInBase
 	@Override
 	@NonNull Float getPVVoltage();
 
+	// TODO remove NonNull
 	@SerializeNameDefinedInBase
 	@Override
 	@NonNull Float getPVCurrent();
 
+	// TODO remove NonNull
 	@JsonProperty("chargingPower")
 	@Override
 	@NonNull Integer getChargingPower();
@@ -453,6 +464,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 
 	@JsonProperty("chargingState")
 	int getChargingStateValue();
+	// TODO remove NonNull
 	@GraphQLInclude("chargingMode")
 	@Override
 	default @NonNull ChargingState getChargingMode(){ return Modes.getActiveMode(ChargingState.class, getChargingStateValue()); }
@@ -464,6 +476,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	@JsonProperty("errorMode")
 	@Override
 	int getErrorModeValue();
+	// TODO remove NonNull
 	@ValidSinceVersion(version = RoverStatusPacket.Version.CORRECT_TWO_REGISTER)
 	@Override
 	default @NonNull Collection<? extends @NonNull SimpleRoverErrorMode> getErrorModes(){
@@ -481,18 +494,21 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 		}
 		return Modes.toString(RoverErrorMode.class, getErrorModeValue());
 	}
+	// TODO remove NonNull
 	@ValidSinceVersion(version = RoverStatusPacket.Version.CORRECT_TWO_REGISTER)
 	@GraphQLInclude("dcdcErrorModes")
 	@DcdcOnly
 	default @NonNull Set<@NonNull DcdcErrorMode> getDcdcErrorModes() {
 		return Modes.getActiveModes(DcdcErrorMode.class, getErrorModeValue());
 	}
+	// TODO remove NonNull
 	@ValidSinceVersion(version = RoverStatusPacket.Version.CORRECT_TWO_REGISTER)
 	@GraphQLInclude("roverErrorModes")
 	@RoverOnly
 	default @NonNull Set<@NonNull RoverErrorMode> getRoverErrorModes() {
 		return Modes.getActiveModes(RoverErrorMode.class, getErrorModeValue());
 	}
+	// TODO remove NonNull
 	@ValidSinceVersion(version = RoverStatusPacket.Version.CORRECT_TWO_REGISTER)
 	@GraphQLInclude("dcdcErrorModesOrEmpty")
 	@JsonPropertyDescription("The DcdcErrorMode or an empty list if this is not a DCDC charge controller")
@@ -502,6 +518,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 		}
 		return Collections.emptyList();
 	}
+	// TODO remove NonNull
 	@ValidSinceVersion(version = RoverStatusPacket.Version.CORRECT_TWO_REGISTER)
 	@GraphQLInclude("roverErrorModesOrEmpty")
 	@JsonPropertyDescription("The RoverErrorModes or an empty list if this is a DCDC charge controller")
@@ -556,15 +573,17 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	 * NOTE: On some products, this is broken. If this returns a {@link Voltage#AUTO} or null, you can assume it's not working correctly
 	 * @return The recognized {@link Voltage} or null.
 	 */
-	default Voltage getRecognizedVoltage(){ return Modes.getActiveModeOrNull(Voltage.class, getRecognizedVoltageValue()); }
+	default @Nullable Voltage getRecognizedVoltage(){ return Modes.getActiveModeOrNull(Voltage.class, getRecognizedVoltageValue()); }
 
 	// 0xE004
 	/** Should be serialized as "batteryType" */
 	@GraphQLInclude("batteryTypeValue")
 	@JsonProperty("batteryType")
 	int getBatteryTypeValue();
+	// TODO remove NonNull
 	@GraphQLInclude("batteryType")
 	default @NonNull RoverBatteryType getBatteryType(){ return Modes.getActiveMode(RoverBatteryType.class, getBatteryTypeValue()); }
+	// TODO remove NonNull
 	@ConvenienceField(sincePacketVersion = RoverStatusPacket.Version.REMOVED_CONVENIENCE_FIELDS)
 	@JsonProperty("batteryTypeName") // convenient
 	default @NonNull String getBatteryTypeName(){ return getBatteryType().getModeName(); }
@@ -737,7 +756,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	 */
 	@DcdcOnly
 	@WillBeUsedEventually
-	default Integer getControllerChargingPowerSetting() { return null; }
+	default @Nullable Integer getControllerChargingPowerSetting() { return null; }
 	/**
 	 * Only applies to Dual Input Charge Controllers
 	 *
@@ -748,7 +767,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	 */
 	@DcdcOnly
 	@WillBeUsedEventually
-	default Integer getGeneratorChargingPowerSetting() { return null; }
+	default @Nullable Integer getGeneratorChargingPowerSetting() { return null; }
 
 	@DefaultFinal
 	default boolean supportsMesLoad() {

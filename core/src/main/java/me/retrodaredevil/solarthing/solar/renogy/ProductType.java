@@ -1,13 +1,14 @@
 package me.retrodaredevil.solarthing.solar.renogy;
 
 import me.retrodaredevil.solarthing.packets.CodeMode;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * The product type
  *
  * PDU address: 0x000B, Bytes: 2, lower 8 bits
  */
+@NullMarked
 public enum ProductType implements CodeMode {
 	CONTROLLER("Controller", 0),
 	INVERTER("Inverter", 1)
@@ -27,7 +28,7 @@ public enum ProductType implements CodeMode {
 	}
 
 	@Override
-	public @NonNull String getModeName() {
+	public String getModeName() {
 		return name;
 	}
 }

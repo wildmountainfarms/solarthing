@@ -3,10 +3,12 @@ package me.retrodaredevil.solarthing.solar.outback.fx;
 
 import me.retrodaredevil.solarthing.packets.BitmaskMode;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * The misc modes for the FX
  */
+@NullMarked
 public enum MiscMode implements BitmaskMode {
 	/**
 	 * Represents a 230V FX unit. This means multiply input and output voltages by 2 and divide all currents by 2
@@ -30,6 +32,7 @@ public enum MiscMode implements BitmaskMode {
 		return value;
 	}
 
+	// TODO remove NonNull
 	@Override
 	public @NonNull String getModeName() {
 		return name;

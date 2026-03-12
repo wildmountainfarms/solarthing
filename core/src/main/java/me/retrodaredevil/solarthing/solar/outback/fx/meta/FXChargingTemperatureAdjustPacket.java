@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.type.closed.meta.TargetedMetaPacket;
 import me.retrodaredevil.solarthing.type.closed.meta.TargetedMetaPacketType;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Used to adjust the temperature of the sensor used to get the battery's temperature. This is only used if the temperature
@@ -15,6 +15,7 @@ import org.jspecify.annotations.NonNull;
  */
 @JsonExplicit
 @JsonTypeName("FX_CHARGING_TEMPERATURE_ADJUST")
+@NullMarked
 public class FXChargingTemperatureAdjustPacket implements TargetedMetaPacket {
 	private final int temperatureAdjustCelsius;
 	@JsonCreator
@@ -23,7 +24,7 @@ public class FXChargingTemperatureAdjustPacket implements TargetedMetaPacket {
 	}
 
 	@Override
-	public @NonNull TargetedMetaPacketType getPacketType() {
+	public TargetedMetaPacketType getPacketType() {
 		return TargetedMetaPacketType.FX_CHARGING_TEMPERATURE_ADJUST;
 	}
 

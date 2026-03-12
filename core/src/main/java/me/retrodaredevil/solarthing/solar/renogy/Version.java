@@ -5,10 +5,12 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
+import org.jspecify.annotations.NullMarked;
 
 import java.io.IOException;
 
 @JsonSerialize(using = Version.StringOnlySerializer.class)
+@NullMarked
 public final class Version {
 	private final int raw;
 	private final int high, middle, low;

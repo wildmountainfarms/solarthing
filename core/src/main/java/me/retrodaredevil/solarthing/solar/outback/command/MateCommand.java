@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.solar.outback.command;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import me.retrodaredevil.solarthing.commands.command.Command;
+import org.jspecify.annotations.NullMarked;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -23,6 +24,7 @@ import java.util.Map;
  * More on the DROP command not working: https://forum.outbackpower.com/viewtopic.php?t=14790 https://forum.outbackpower.com/viewtopic.php?t=14410
  * Those forum posts seem to suggest that an unsuccessful DROP command is because of a high buy or charge current
  */
+@NullMarked
 public enum MateCommand implements Command {
 	/**
 	 * Turns the FX to on mode

@@ -3,11 +3,13 @@ package me.retrodaredevil.solarthing.solar.renogy.rover;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * An interface that indicates that an object is somehow associated by a rover either by providing data or by setting data
  */
 @SuppressWarnings("InterfaceWithOnlyStatics") // This is a marker interface that happens to have static constants in it
+@NullMarked
 public interface Rover {
 
 	enum OperatingSetting {

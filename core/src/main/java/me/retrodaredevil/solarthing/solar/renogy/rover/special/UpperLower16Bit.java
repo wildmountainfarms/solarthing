@@ -1,7 +1,10 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover.special;
 
+import org.jspecify.annotations.NullMarked;
+
 import static me.retrodaredevil.util.NumberUtil.checkRange;
 
+@NullMarked
 public interface UpperLower16Bit {
 	int getUpper();
 	int getLower();

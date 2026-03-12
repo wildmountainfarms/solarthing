@@ -8,11 +8,13 @@ import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 import org.apache.commons.text.StringEscapeUtils;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 
 @UtilityClass
+@NullMarked
 public final class OutbackUtil {
 	private OutbackUtil() { throw new UnsupportedOperationException(); }
 	/**
@@ -20,7 +22,7 @@ public final class OutbackUtil {
 	 * @return The {@link FXStatusPacket} from {@code packetCollection} or null if there were no FX packets in {@code packetCollection}
 	 */
 	@Contract(pure = true)
-	public static FXStatusPacket getMasterFX(Collection<? extends Packet> packets){
+	public static @Nullable FXStatusPacket getMasterFX(Collection<? extends Packet> packets){
 		FXStatusPacket fx = null;
 		for(Packet packet : packets){
 			if(!(packet instanceof SolarStatusPacket)) continue;

@@ -10,12 +10,15 @@ import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.event.SupplementarySolarEventPacket;
 import me.retrodaredevil.solarthing.solar.outback.SupplementaryOutbackPacket;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 @JsonDeserialize(as = ImmutableFXAuxStateChangePacket.class)
 @JsonTypeName("FX_AUX_STATE_CHANGE")
 @JsonExplicit
+@NullMarked
 public interface FXAuxStateChangePacket extends SupplementarySolarEventPacket, SupplementaryOutbackPacket, ChangePacket {
+	// TODO remove NonNull
 	@DefaultFinal
 	@Override
 	default @NonNull SolarEventPacketType getPacketType(){

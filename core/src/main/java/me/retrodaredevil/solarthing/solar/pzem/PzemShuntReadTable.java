@@ -5,8 +5,10 @@ import me.retrodaredevil.io.serial.SerialConfig;
 import me.retrodaredevil.io.serial.SerialConfigBuilder;
 import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
+import org.jspecify.annotations.NullMarked;
 
 @JsonExplicit
+@NullMarked
 public interface PzemShuntReadTable {
 	SerialConfig SERIAL_CONFIG = new SerialConfigBuilder(9600).setDataBits(8).setStopBits(SerialConfig.StopBits.TWO).build();
 

@@ -14,6 +14,8 @@ import me.retrodaredevil.solarthing.solar.outback.fx.extra.ImmutableDailyFXPacke
 import me.retrodaredevil.solarthing.util.integration.MutableIntegral;
 import me.retrodaredevil.solarthing.util.integration.TrapezoidalRuleAccumulator;
 import me.retrodaredevil.solarthing.util.time.TimeIdentifier;
+import org.checkerframework.checker.nullness.qual.RequiresNonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +29,7 @@ import static java.util.Objects.requireNonNull;
  * <p>
  * This expects that there are no duplicate packets. If there are duplicate packets, the behaviour is undefined.
  */
+@NullMarked
 public class FXStatusListUpdater implements PacketListReceiver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FXStatusListUpdater.class);
 
@@ -93,12 +96,13 @@ public class FXStatusListUpdater implements PacketListReceiver {
 			}
 
 			float batteryVoltage = fx.getBatteryVoltage();
-			Float currentMin = minimumBatteryVoltage;
-			Float currentMax = maximumBatteryVoltage;
-			if(currentMin == null || batteryVoltage < currentMin){
+			// TODO submit bug report to NullAway - we should be able to store field value in local variable before doing comparison
+//			Float currentMin = minimumBatteryVoltage;
+//			Float currentMax = maximumBatteryVoltage;
+			if(minimumBatteryVoltage == null || batteryVoltage < minimumBatteryVoltage){
 				minimumBatteryVoltage = batteryVoltage;
 			}
-			if(currentMax == null || batteryVoltage > currentMax){
+			if(maximumBatteryVoltage == null || batteryVoltage > maximumBatteryVoltage){
 				maximumBatteryVoltage = batteryVoltage;
 			}
 
@@ -121,6 +125,7 @@ public class FXStatusListUpdater implements PacketListReceiver {
 
 			packets.add(packet);
 		}
+		@RequiresNonNull({"minimumBatteryVoltage", "maximumBatteryVoltage"})
 		private FXDailyData createData(FXStatusPacket fx){
 			return new ImmutableFXDailyData(
 					fx.getAddress(),

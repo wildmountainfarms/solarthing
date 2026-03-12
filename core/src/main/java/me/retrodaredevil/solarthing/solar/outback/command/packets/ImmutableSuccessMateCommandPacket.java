@@ -5,10 +5,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.reason.ExecutionReason;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class ImmutableSuccessMateCommandPacket implements SuccessMateCommandPacket {
 
 	private final Integer packetVersion;
@@ -34,11 +36,13 @@ public class ImmutableSuccessMateCommandPacket implements SuccessMateCommandPack
 		return packetVersion;
 	}
 
+	// TODO remove NonNull
 	@Override
 	public @NonNull MateCommand getCommand() {
 		return command;
 	}
 
+	// TODO remove NonNull
 	@Override
 	public @NonNull String getSource() {
 		return source;

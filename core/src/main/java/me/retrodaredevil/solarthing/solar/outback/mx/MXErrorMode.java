@@ -2,10 +2,12 @@ package me.retrodaredevil.solarthing.solar.outback.mx;
 
 import me.retrodaredevil.solarthing.packets.BitmaskMode;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * NOTE: Error modes are only implemented on MX versions greater than 5.11 and on FLEXmax80 and FLEXmax60s.
  */
+@NullMarked
 public enum MXErrorMode implements BitmaskMode {
 	SHORTED_BATTERY_SENSOR(32, "Shorted Battery Sensor"),
 	TOO_HOT(64, "Too Hot"),
@@ -24,6 +26,7 @@ public enum MXErrorMode implements BitmaskMode {
 		return value;
 	}
 
+	// TODO remove NonNull
 	@Override
 	public @NonNull String getModeName() {
 		return name;

@@ -14,6 +14,7 @@ import me.retrodaredevil.solarthing.solar.common.DailyChargeController;
 import me.retrodaredevil.solarthing.solar.common.DailyData;
 import me.retrodaredevil.solarthing.solar.outback.OutbackStatusPacket;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Set;
@@ -26,12 +27,14 @@ import java.util.Set;
 @JsonDeserialize(as = ImmutableMXStatusPacket.class)
 @JsonTypeName("MXFM_STATUS")
 @JsonExplicit
+@NullMarked
 public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeController, DailyChargeController, BatteryVoltage, PacketWithVersion {
 
 	/** This version indicates that the packet no longer has convenience string fields. This indicates a different in serialization, not in underlying data. */
 	int VERSION_NO_MORE_CONVENIENCE_FIELDS = 2;
 	int VERSION_LATEST = VERSION_NO_MORE_CONVENIENCE_FIELDS;
 
+	// TODO remove NonNull
 	@DefaultFinal
 	@Override
 	default @NonNull SolarStatusPacketType getPacketType(){
@@ -51,6 +54,7 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 	@Nullable
 	default Long getStartDateMillis() { return null; }
 
+	// TODO remove NonNull
 	@Override
 	default @NonNull Integer getPVWattage() {
 		return getPVCurrent() * getPVVoltage();
@@ -80,6 +84,7 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 	@JsonProperty("ampChargerCurrent")
 	float getAmpChargerCurrent();
 
+	// TODO remove NonNull
 	@GraphQLInclude("chargingCurrent")
 	@Override
 	default @NonNull Number getChargingCurrent(){
@@ -94,12 +99,14 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 		return getChargerCurrent() + getAmpChargerCurrent();
 	}
 
+	// TODO remove NonNull
 	@GraphQLInclude("chargingPower")
 	@Override
 	default @NonNull Float getChargingPower(){
 		return (getChargerCurrent() + getAmpChargerCurrent()) * getBatteryVoltage();
 	}
 
+	// TODO remove NonNull
 	/**
 	 * Should be serialized as "pvCurrent"
 	 * <p>
@@ -111,6 +118,7 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 	@Override
 	Integer getPVCurrent();
 
+	// TODO remove NonNull
 	/**
 	 * Should be serialized as "inputVoltage"
 	 * <p>
@@ -146,7 +154,7 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 		return AuxMode.getActualValueCode(getRawAuxModeValue());
 	}
 	@Deprecated
-	default @NonNull AuxMode getAuxMode(){ return Modes.getActiveMode(AuxMode.class, getAuxModeValue());}
+	default AuxMode getAuxMode(){ return Modes.getActiveMode(AuxMode.class, getAuxModeValue());}
 	@GraphQLInclude("auxMode")
 	default @Nullable AuxMode getAuxModeOrNull(){ return Modes.getActiveModeOrNull(AuxMode.class, getAuxModeValue());}
 	@GraphQLInclude("auxBitActive")
@@ -159,6 +167,7 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 	@JsonProperty("errorMode")
 	@Override
 	int getErrorModeValue();
+	// TODO remove NonNull
 	@Override
 	default @NonNull Set<@NonNull MXErrorMode> getErrorModes(){
 		return Modes.getActiveModes(MXErrorMode.class, getErrorModeValue());
@@ -173,6 +182,7 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 	@JsonProperty("chargerMode")
 	int getChargerModeValue();
 
+	// TODO remove NonNull
 	@GraphQLInclude("chargingMode")
 	@Override
 	default @NonNull ChargerMode getChargingMode(){
@@ -193,6 +203,7 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 	 */
 	@Override
 	int getDailyAH();
+	// TODO remove NonNull
 	/**
 	 * Should be serialized as "dailyAHSupport". Should be serialized using {@link Support#toString()}
 	 * @return A {@link Support} enum constant indicating whether or not {@link #getDailyAH()} is supported
@@ -211,16 +222,18 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 
 	// region Convenience Strings
 	@Deprecated
-	default @NonNull String getAuxModeName(){ return getAuxMode().getModeName(); }
+	default String getAuxModeName(){ return getAuxMode().getModeName(); }
 	@ConvenienceField
 	@JsonProperty("auxModeName")
 	default @Nullable String getAuxModeNameOrNull(){
 		AuxMode auxMode = getAuxModeOrNull();
 		return auxMode == null ? null : auxMode.getModeName();
 	}
+	// TODO remove NonNull
 	@ConvenienceField
 	@JsonProperty("errors")
 	default @NonNull String getErrorsString(){ return Modes.toString(MXErrorMode.class, getErrorModeValue()); }
+	// TODO remove NonNull
 	@ConvenienceField
 	@JsonProperty("chargerModeName")
 	default @NonNull String getChargerModeName(){ return getChargingMode().getModeName(); }

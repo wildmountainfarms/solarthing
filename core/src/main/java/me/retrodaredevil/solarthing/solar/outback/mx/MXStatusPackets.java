@@ -5,12 +5,14 @@ import me.retrodaredevil.solarthing.packets.support.Support;
 import me.retrodaredevil.solarthing.util.CheckSumException;
 import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
 import me.retrodaredevil.solarthing.util.ParsePacketAsciiDecimalDigitException;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static me.retrodaredevil.solarthing.util.ParseUtil.toInt;
 
 @UtilityClass
+@NullMarked
 public final class MXStatusPackets {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MXStatusPackets.class);
 	private MXStatusPackets(){ throw new UnsupportedOperationException(); }

@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.solar.outback.mx;
 
 import me.retrodaredevil.solarthing.packets.CodeMode;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * NOTE: Some of these values are only supported on FLEXmax80 and FLEXmax60. If it is a FLEXmax unit, you also have to
@@ -12,7 +13,7 @@ import org.jspecify.annotations.NonNull;
  * For modes such as 27 or 63, it is assumed that an Outback FLEXmax is being used and a Mate with outdated firmware is reporting the aux mode.
  * For these situations, you must be careful in parsing the aux mode.
  */
-@SuppressWarnings("unused")
+@NullMarked
 public enum AuxMode implements CodeMode {
 	DISABLED(0, "disabled"),
 	DIVERSION(1, "Diversion"),
@@ -44,6 +45,7 @@ public enum AuxMode implements CodeMode {
 		this(value, name, false);
 	}
 
+	// TODO remove NonNull
 	@Override
 	public @NonNull String getModeName() {
 		return name;

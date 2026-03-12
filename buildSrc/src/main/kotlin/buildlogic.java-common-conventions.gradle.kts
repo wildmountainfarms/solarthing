@@ -18,6 +18,10 @@ plugins {
 dependencies {
 //	implementation("org.jetbrains:annotations:26.0.2") // https://github.com/JetBrains/java-annotations/releases
 	implementation("org.jspecify:jspecify:1.0.0")
+	// Add checker-qual dependency so we can use @RequiresNonNull.
+	//   More info: https://github.com/uber/NullAway/wiki/Supported-Annotations#ensuresnonnullif
+	// https://mvnrepository.com/artifact/org.checkerframework/checker-qual
+	implementation("org.checkerframework:checker-qual:3.54.0")
 
 	// https://github.com/google/error-prone/releases
 	val errorProneVersion = "2.48.0"

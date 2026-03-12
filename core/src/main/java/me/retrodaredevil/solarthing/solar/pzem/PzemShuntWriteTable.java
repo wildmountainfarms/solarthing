@@ -1,5 +1,8 @@
 package me.retrodaredevil.solarthing.solar.pzem;
 
+import org.jspecify.annotations.NullMarked;
+
+@NullMarked
 public interface PzemShuntWriteTable {
 	void setHighVoltageAlarmThresholdRaw(int voltageRaw);
 	void setLowVoltageAlarmThresholdRaw(int voltageRaw);

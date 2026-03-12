@@ -4,13 +4,14 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+@NullMarked
 public class ImmutableFXChargingPacket implements FXChargingPacket {
 	private final int address;
 
-	private final FXChargingMode fxChargingMode;
+	private final @Nullable FXChargingMode fxChargingMode;
 
 	private final long remainingAbsorbTimeMillis;
 	private final long remainingFloatTimeMillis;
@@ -22,7 +23,7 @@ public class ImmutableFXChargingPacket implements FXChargingPacket {
 
 
 	public ImmutableFXChargingPacket(
-			@NonNull OutbackIdentifier outbackIdentifier,
+			OutbackIdentifier outbackIdentifier,
 			@Nullable FXChargingMode fxChargingMode,
 			long remainingAbsorbTimeMillis,
 			long remainingFloatTimeMillis,
