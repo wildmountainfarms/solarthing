@@ -11,10 +11,12 @@ import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.solar.common.BasicChargeController;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Collections;
 
 @JsonTypeName("net-charge")
+@NullMarked
 public class NetChargeExpressionNode implements ExpressionNode {
 	@Override
 	public NumericExpression createExpression(ActionEnvironment actionEnvironment) {

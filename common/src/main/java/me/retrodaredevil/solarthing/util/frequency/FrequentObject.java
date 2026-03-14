@@ -4,16 +4,19 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
 
 @JsonExplicit
+@NullMarked
 public final class FrequentObject<T> {
 	@JsonUnwrapped
 	private final T object;
 
 	@JsonProperty("frequency")
-	private final Integer frequency;
+	private final @Nullable Integer frequency;
 
 	/**
 	 *
@@ -21,7 +24,7 @@ public final class FrequentObject<T> {
 	 * @param frequency The frequency or null, to indicate default
 	 */
 	@JsonCreator // Jackson 2.19 supports JsonUnwrapped within JsonCreator https://github.com/FasterXML/jackson-databind/issues/1467
-	public FrequentObject(@JsonUnwrapped T object, @JsonProperty("frequency") Integer frequency) {
+	public FrequentObject(@JsonUnwrapped T object, @JsonProperty("frequency") @Nullable Integer frequency) {
 		this.object = object;
 		this.frequency = frequency;
 	}
@@ -30,11 +33,11 @@ public final class FrequentObject<T> {
 		return object;
 	}
 
-	public Integer getFrequency() {
+	public @Nullable Integer getFrequency() {
 		return frequency;
 	}
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(@Nullable Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		FrequentObject<?> that = (FrequentObject<?>) o;

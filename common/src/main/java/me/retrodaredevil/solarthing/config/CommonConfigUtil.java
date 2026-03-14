@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import org.apache.commons.text.StringSubstitutor;
+import org.jspecify.annotations.NullMarked;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 @UtilityClass
+@NullMarked
 public class CommonConfigUtil {
 	private CommonConfigUtil() { throw new UnsupportedOperationException(); }
 

@@ -1,7 +1,9 @@
 package me.retrodaredevil.solarthing.config.databases;
 
 import java.beans.ConstructorProperties;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public class SimpleDatabaseType implements DatabaseType {
 	private final String name;
 

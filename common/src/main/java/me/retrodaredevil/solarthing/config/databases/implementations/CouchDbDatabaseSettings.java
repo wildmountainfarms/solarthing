@@ -13,12 +13,15 @@ import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.DatabaseType;
 import me.retrodaredevil.solarthing.config.databases.SimpleDatabaseType;
 import okhttp3.HttpUrl;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("couchdb")
 @JsonDeserialize(using = CouchDbDatabaseSettings.Deserializer.class)
 @JsonExplicit
+@NullMarked
 public final class CouchDbDatabaseSettings implements DatabaseSettings {
 	public static final DatabaseType TYPE = new SimpleDatabaseType("couchdb");
 
@@ -55,6 +58,7 @@ public final class CouchDbDatabaseSettings implements DatabaseSettings {
 	}
 
 
+	@Deprecated
 	static class Deserializer extends UnwrappedDeserializer<CouchDbDatabaseSettings, Builder> {
 		Deserializer() {
 			super(Builder.class, Builder::build);
@@ -65,11 +69,11 @@ public final class CouchDbDatabaseSettings implements DatabaseSettings {
 
 		@JsonUnwrapped
 		@JsonProperty(required = true)
-		private CouchProperties couchProperties;
+		private @Nullable CouchProperties couchProperties;
 
 		@JsonUnwrapped
 		@JsonProperty(required = true)
-		private OkHttpProperties okHttpProperties;
+		private @Nullable OkHttpProperties okHttpProperties;
 
 		public CouchDbDatabaseSettings build(){
 			return new CouchDbDatabaseSettings(requireNonNull(couchProperties), requireNonNull(okHttpProperties));

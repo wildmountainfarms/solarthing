@@ -3,9 +3,12 @@ package me.retrodaredevil.solarthing.util.frequency;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class FrequentHandler<T> {
 	private final List<? extends FrequentObject<T>> frequentObjectList;
 
@@ -18,7 +21,7 @@ public class FrequentHandler<T> {
 		this.frequentObjectList = requireNonNull(frequentObjectList);
 	}
 
-	public FrequentObject<T> get(double progress){
+	public @Nullable FrequentObject<T> get(double progress){
 		if(progress < 0 || progress >= 1) throw new IllegalArgumentException("progress must be between 0 and 1. range: [0..1)");
 
 		FrequentObject<T> defaultObject = null;

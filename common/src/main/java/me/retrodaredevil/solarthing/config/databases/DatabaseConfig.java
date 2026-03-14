@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.config.CommonConfigUtil;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.nio.file.Path;
@@ -13,6 +14,7 @@ import java.nio.file.Path;
 import static java.util.Objects.requireNonNull;
 
 @JsonExplicit
+@NullMarked
 public final class DatabaseConfig {
 	private final @Nullable DatabaseSettings databaseSettings;
 	private final @Nullable DatabaseUsageSettings databaseUsageSettings;

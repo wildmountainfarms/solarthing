@@ -8,10 +8,12 @@ import me.retrodaredevil.action.node.expression.result.NumericExpressionResult;
 import me.retrodaredevil.solarthing.PacketGroupProvider;
 import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnvironment;
 import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.stream.Collectors;
 
 @JsonTypeName("battery-voltage")
+@NullMarked
 public class BatteryVoltageExpressionNode implements ExpressionNode {
 	@Override
 	public NumericExpression createExpression(ActionEnvironment actionEnvironment) {
