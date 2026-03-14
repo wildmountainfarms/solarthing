@@ -18,6 +18,8 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.ChargingState;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
 import me.retrodaredevil.solarthing.solar.tracer.TracerStatusPacket;
 import me.retrodaredevil.solarthing.solar.tracer.mode.ChargingStatus;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 @JsonTypeName("fulloutput")
+@NullMarked
 public class RequireFullOutputActionNode implements ActionNode {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RequireFullOutputActionNode.class);
 	private final Map<Integer, List<String>> requiredIdentifierMap;
@@ -35,8 +38,8 @@ public class RequireFullOutputActionNode implements ActionNode {
 	@JsonCreator
 	public RequireFullOutputActionNode(
 			@JsonProperty(value = "required", required = true) Map<Integer, List<String>> requiredIdentifierMap,
-			@JsonProperty("mx_float_ignore") Map<Integer, List<String>> ignoreReportedMXFloatMap,
-			@JsonProperty(value = "log") Boolean log) {
+			@JsonProperty("mx_float_ignore") @Nullable Map<Integer, List<String>> ignoreReportedMXFloatMap,
+			@JsonProperty(value = "log") @Nullable Boolean log) {
 		this.requiredIdentifierMap = requiredIdentifierMap;
 		this.ignoreReportedMXFloatMap = ignoreReportedMXFloatMap == null ? Collections.emptyMap() : ignoreReportedMXFloatMap;
 		this.log = log == null || log;

@@ -12,6 +12,7 @@ import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnviron
 import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 import me.retrodaredevil.solarthing.solar.outback.OutbackUtil;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +20,7 @@ import org.slf4j.LoggerFactory;
  * An action that becomes done when aux is on or off, based on {@link #on}
  */
 @JsonTypeName("auxstate")
+@NullMarked
 public class AuxStateActionNode implements ActionNode {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AuxStateActionNode.class);
 	private final boolean on;

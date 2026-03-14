@@ -7,10 +7,13 @@ import me.retrodaredevil.action.Actions;
 import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.SolarThingConstants;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @JsonTypeName("log")
+@NullMarked
 public class LogActionNode implements ActionNode {
 	private static final Logger LOGGER = LoggerFactory.getLogger(LogActionNode.class);
 	private final String message;
@@ -20,8 +23,8 @@ public class LogActionNode implements ActionNode {
 	// TODO allow this to accept an expression similar to PrintActionNode
 	public LogActionNode(
 			@JsonProperty(value = "message", required = true) String message,
-			@JsonProperty("debug") Boolean debug,
-			@JsonProperty("summary") Boolean summary) {
+			@JsonProperty("debug") @Nullable Boolean debug,
+			@JsonProperty("summary") @Nullable Boolean summary) {
 		this.message = message;
 		this.debug = debug != null && debug;
 		this.summary = summary != null && summary;

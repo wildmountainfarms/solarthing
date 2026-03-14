@@ -13,6 +13,8 @@ import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 import me.retrodaredevil.solarthing.solar.outback.OutbackUtil;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.OperationalMode;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +24,7 @@ import static java.util.Objects.requireNonNull;
  * An action that becomes "done" when it is in a certain operational mode, or if {@link #not} is true, when it's not in a certain operational mode
  */
 @JsonTypeName("fxoperational")
+@NullMarked
 public class FXOperationalModeActionNode implements ActionNode {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FXOperationalModeActionNode.class);
 
@@ -33,7 +36,7 @@ public class FXOperationalModeActionNode implements ActionNode {
 		this.not = not;
 	}
 	@JsonCreator
-	public static FXOperationalModeActionNode create(@JsonProperty(value = "mode", required = true) String operationalMode, @JsonProperty("not") Boolean not) {
+	public static FXOperationalModeActionNode create(@JsonProperty(value = "mode", required = true) String operationalMode, @JsonProperty("not") @Nullable Boolean not) {
 		return new FXOperationalModeActionNode(parseMode(operationalMode), Boolean.TRUE.equals(not));
 	}
 	private static OperationalMode parseMode(String modeString) {

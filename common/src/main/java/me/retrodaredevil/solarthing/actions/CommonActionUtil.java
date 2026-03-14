@@ -25,6 +25,7 @@ import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.expression.BatteryVoltageExpressionNode;
 import me.retrodaredevil.solarthing.expression.NetChargeExpressionNode;
 import org.antlr.v4.runtime.CharStreams;
+import org.jspecify.annotations.NullMarked;
 import org.jetbrains.annotations.Contract;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +37,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @UtilityClass
+@NullMarked
 public final class CommonActionUtil {
 	private CommonActionUtil() { throw new UnsupportedOperationException(); }
 
@@ -60,7 +62,7 @@ public final class CommonActionUtil {
 	}
 
 
-	@Contract("null -> fail; _ -> param1")
+	@Contract("_ -> param1")
 	public static ObjectMapper registerActionNodes(ObjectMapper objectMapper) {
 		objectMapper.registerSubtypes(
 				ActionNode.class,

@@ -10,6 +10,8 @@ import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.LatestFragmentedPacketGroupEnvironment;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.util.IdentifierUtil;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @JsonTypeName("required")
+@NullMarked
 public class RequiredIdentifierActionNode implements ActionNode {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RequiredIdentifierActionNode.class);
 	private final Map<Integer, List<String>> requiredIdentifierMap;
@@ -25,7 +28,7 @@ public class RequiredIdentifierActionNode implements ActionNode {
 	@JsonCreator
 	public RequiredIdentifierActionNode(
 			@JsonProperty(value = "required", required = true) Map<Integer, List<String>> requiredIdentifierMap,
-			@JsonProperty(value = "log") Boolean log) {
+			@JsonProperty(value = "log") @Nullable Boolean log) {
 		this.requiredIdentifierMap = requiredIdentifierMap;
 		this.log = log == null || log;
 	}

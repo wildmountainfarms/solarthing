@@ -2,10 +2,12 @@ package me.retrodaredevil.solarthing;
 
 import me.retrodaredevil.solarthing.database.VersionedPacket;
 import me.retrodaredevil.solarthing.type.alter.StoredAlterPacket;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
+@NullMarked
 public interface AlterPacketsProvider {
 	/**
 	 * Note that you can assume that the returned packets only apply to whatever source ID you are currently using, so you

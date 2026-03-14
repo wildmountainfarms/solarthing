@@ -13,19 +13,22 @@ import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 import me.retrodaredevil.solarthing.solar.outback.OutbackUtil;
 import me.retrodaredevil.solarthing.solar.outback.fx.ACMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Locale;
 
 @JsonTypeName("acmode")
+@NullMarked
 public class ACModeActionNode implements ActionNode {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ACModeActionNode.class);
 	private final ACMode acMode;
 	private final boolean not;
 
 	@JsonCreator
-	public ACModeActionNode(@JsonProperty(value = "mode", required = true) String mode, @JsonProperty("not") Boolean not) {
+	public ACModeActionNode(@JsonProperty(value = "mode", required = true) String mode, @JsonProperty("not") @Nullable Boolean not) {
 		this(parseMode(mode), Boolean.TRUE.equals(not));
 	}
 
