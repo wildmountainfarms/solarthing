@@ -10,7 +10,10 @@ import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnviron
 import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
 import org.jspecify.annotations.NullMarked;
 
+import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static java.util.Objects.*;
 
 @JsonTypeName("battery-voltage")
 @NullMarked
@@ -20,7 +23,7 @@ public class BatteryVoltageExpressionNode implements ExpressionNode {
 		LatestPacketGroupEnvironment latestFragmentedPacketGroupEnvironment = actionEnvironment.getInjectEnvironment().get(LatestPacketGroupEnvironment.class);
 		PacketGroupProvider provider = latestFragmentedPacketGroupEnvironment.getPacketGroupProvider();
 
-		return () -> provider.getPacketGroup().getPackets().stream()
+		return () -> requireNonNull(provider.getPacketGroup(), "provider gave null packet group").getPackets().stream()
 				.filter(packet -> packet instanceof BatteryVoltage)
 				.map(packet -> (BatteryVoltage) packet)
 				.map(BatteryVoltage::getBatteryVoltage)

@@ -78,7 +78,7 @@ public final class DatabaseConfig {
 		DatabaseConfig external = CommonConfigUtil.readConfig(externalDatabaseConfig, DatabaseConfig.class, mapper)
 				.resolveExternal(mapper);
 		// We have resolved the external DatabaseConfig, so external.databaseUsageSettings must not be null
-		assert external.databaseUsageSettings != null;
+		requireNonNull(external.databaseUsageSettings, "We have resolved the external DatabaseConfig, so external.databaseUsageSettings must not be null");
 		final DatabaseUsageSettings databaseUsageSettings;
 		if (this.databaseUsageSettings == null) {
 			databaseUsageSettings = external.databaseUsageSettings;

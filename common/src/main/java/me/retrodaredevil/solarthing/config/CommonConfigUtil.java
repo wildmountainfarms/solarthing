@@ -79,7 +79,8 @@ public class CommonConfigUtil {
 	 * @return The resulting config exception with a customized message
 	 */
 	public static ConfigException createExceptionFromJackson(String fileRepresentation, IOException jacksonIOException) {
-		if (jacksonIOException.getMessage().contains("end-of-input")) {
+		String exceptionMessage = jacksonIOException.getMessage();
+		if (exceptionMessage != null && exceptionMessage.contains("end-of-input")) {
 			throw new ConfigException("Invalid JSON in file: " + fileRepresentation + " (check formatting)", jacksonIOException);
 		}
 		if (jacksonIOException instanceof DatabindException) {
