@@ -19,6 +19,7 @@ import me.retrodaredevil.solarthing.database.SolarThingDatabase;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionCreator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.instance.InstanceTargetPackets;
+import org.jspecify.annotations.NullMarked;
 
 import java.nio.file.Path;
 import java.time.ZoneId;
@@ -33,6 +34,7 @@ import static java.util.Objects.requireNonNull;
  * This class will handle the encrypting of the packet.
  */
 @JsonTypeName("sendopen")
+@NullMarked
 public class SendEncryptedActionNode implements ActionNode {
 
 	private final CommandManager commandManager;

@@ -12,6 +12,8 @@ import me.retrodaredevil.solarthing.actions.environment.AlterPacketsEnvironment;
 import me.retrodaredevil.solarthing.database.VersionedPacket;
 import me.retrodaredevil.solarthing.type.alter.StoredAlterPacket;
 import me.retrodaredevil.solarthing.type.alter.flag.FlagUtil;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.time.Instant;
 import java.util.List;
@@ -19,12 +21,13 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("flag")
+@NullMarked
 public class FlagActionNode implements ActionNode {
 	private final String flagName;
 	private final boolean not;
 
 	@JsonCreator
-	public FlagActionNode(@JsonProperty(value = "name", required = true) String flagName, @JsonProperty("not") Boolean not) {
+	public FlagActionNode(@JsonProperty(value = "name", required = true) String flagName, @JsonProperty("not") @Nullable Boolean not) {
 		this.flagName = requireNonNull(flagName);
 		this.not = not != null && not;
 	}

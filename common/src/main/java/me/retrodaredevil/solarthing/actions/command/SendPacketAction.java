@@ -8,6 +8,7 @@ import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseExcepti
 import me.retrodaredevil.solarthing.database.exception.UpdateConflictSolarThingDatabaseException;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionCreator;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,7 @@ import static java.util.Objects.requireNonNull;
  * Note: This is not a "one and done" action. This action will stay active (potentially blocking the sequence of actions in some queue) until
  * the packet is uploaded or this action is ended. This NEVER blocks the thread it is being called on, but {@link #isDone()} will not be true until it is done uploading.
  */
+@NullMarked
 public class SendPacketAction extends SimpleAction implements LinkedAction {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SendPacketAction.class);
 
@@ -66,7 +68,7 @@ public class SendPacketAction extends SimpleAction implements LinkedAction {
 	}
 
 	@Override
-	public Action getNextAction() {
+	public @Nullable Action getNextAction() {
 		return nextAction;
 	}
 

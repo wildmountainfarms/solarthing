@@ -1,12 +1,14 @@
 package me.retrodaredevil.solarthing.actions.config;
 
 import java.nio.file.Path;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 
 /**
  * Holds data necessary to construct an {@link me.retrodaredevil.action.node.ActionNode} such as the file and the format/language of this file.
  */
+@NullMarked
 public final class ActionReference {
 	private final Path path;
 	private final ActionFormat format;
