@@ -5,13 +5,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.util.TimeRange;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.time.Instant;
 import java.util.Objects;
 
 @JsonExplicit
 @JsonTypeName("TIME_RANGE")
+@NullMarked
 public class TimeRangeActivePeriod implements ActivePeriod {
 	private final TimeRange timeRange;
 
@@ -31,16 +33,16 @@ public class TimeRangeActivePeriod implements ActivePeriod {
 	}
 
 	@JsonProperty("startDateMillis")
-	private Long getStartDateMillis() {
+	private @Nullable Long getStartDateMillis() {
 		return timeRange.getStartTimeMillis();
 	}
 	@JsonProperty("endDateMillis")
-	private Long getEndDateMillis() {
+	private @Nullable Long getEndDateMillis() {
 		return timeRange.getEndTimeMillis();
 	}
 
 	@Override
-	public @NonNull ActivePeriodType getPacketType() {
+	public ActivePeriodType getPacketType() {
 		return ActivePeriodType.TIME_RANGE;
 	}
 
@@ -64,7 +66,7 @@ public class TimeRangeActivePeriod implements ActivePeriod {
 	}
 
 	@Override
-	public @NonNull String getUniqueString() {
+	public String getUniqueString() {
 		return "TimeRangeActivePeriod(" +
 				"timeRange=" + timeRange +
 				')';
@@ -76,7 +78,7 @@ public class TimeRangeActivePeriod implements ActivePeriod {
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(@Nullable Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		TimeRangeActivePeriod that = (TimeRangeActivePeriod) o;

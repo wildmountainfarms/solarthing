@@ -9,6 +9,8 @@ import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.packets.identification.NumberedIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -21,6 +23,7 @@ import java.util.Objects;
  */
 @JsonTypeName("rover")
 @JsonExplicit
+@NullMarked
 public final class RoverIdentifier implements NumberedIdentifier, Comparable<Identifier> {
 
 	private final int number;
@@ -33,7 +36,7 @@ public final class RoverIdentifier implements NumberedIdentifier, Comparable<Ide
 		return new RoverIdentifier(number);
 	}
 	@JsonCreator
-	private static RoverIdentifier deserialize(@JsonProperty("number") Integer number) {
+	private static RoverIdentifier deserialize(@JsonProperty("number") @Nullable Integer number) {
 		return getFromNumber(number == null ? 0 : number);
 	}
 
@@ -43,6 +46,7 @@ public final class RoverIdentifier implements NumberedIdentifier, Comparable<Ide
 		return number;
 	}
 
+	// TODO remove NonNull
 	@Override
 	public @NonNull String getRepresentation() {
 		if (number != NumberedIdentifier.DEFAULT_NUMBER) {
@@ -71,7 +75,7 @@ public final class RoverIdentifier implements NumberedIdentifier, Comparable<Ide
 
 
 	@Override
-	public int compareTo(@NonNull Identifier o) {
+	public int compareTo(Identifier o) {
 		if(o instanceof RoverIdentifier){
 			return Integer.compare(number, ((RoverIdentifier) o).number);
 		}

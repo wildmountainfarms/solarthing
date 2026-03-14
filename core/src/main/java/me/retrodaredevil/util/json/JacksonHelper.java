@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
+import org.jspecify.annotations.NullMarked;
 
 @UtilityClass
+@NullMarked
 public final class JacksonHelper {
 	private JacksonHelper(){ throw new UnsupportedOperationException(); }
 

@@ -1,8 +1,10 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover;
 
 import me.retrodaredevil.solarthing.solar.renogy.ProductModelUtil;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+@NullMarked
 public enum RoverVariant {
 	ROVER,
 	ROVER_ELITE,

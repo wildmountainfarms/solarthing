@@ -6,7 +6,9 @@ import me.retrodaredevil.solarthing.packets.identification.KnownSupplementaryIde
 import me.retrodaredevil.solarthing.packets.identification.Numbered;
 import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifiable;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public interface SupplementaryRoverPacket extends SupplementaryIdentifiable, Packet, Numbered {
 
 	// Unlike the status packet, "number" will always be included
@@ -14,6 +16,7 @@ public interface SupplementaryRoverPacket extends SupplementaryIdentifiable, Pac
 	@Override
 	int getNumber();
 
+	// TODO remove NonNull
 	@Override
 	@NonNull KnownSupplementaryIdentifier<RoverIdentifier> getIdentifier();
 }

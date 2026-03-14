@@ -1,8 +1,9 @@
 package me.retrodaredevil.solarthing.solar.tracer.mode;
 
 import me.retrodaredevil.solarthing.packets.BitmaskMode;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public enum ChargingEquipmentError implements BitmaskMode {
 	CHARGING_MOSFET_SHORT(1 << 13, "Charging MOSFET is short"),
 	CHARGING_OR_ANTI_REVERSE_MOSFET_SHORT(1 << 12, "Charging or Anti-reverse MOSFET is short"),
@@ -29,7 +30,7 @@ public enum ChargingEquipmentError implements BitmaskMode {
 	}
 
 	@Override
-	public @NonNull String getModeName() {
+	public String getModeName() {
 		return name;
 	}
 }

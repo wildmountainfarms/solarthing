@@ -5,21 +5,22 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.reason.ExecutionReason;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 
 @JsonDeserialize(as = ImmutableHeartbeatPacket.class)
 @JsonTypeName("HEARTBEAT")
 @JsonExplicit
+@NullMarked
 public interface HeartbeatPacket extends FeedbackPacket {
 	@Override
-	default @NonNull FeedbackPacketType getPacketType() {
+	default FeedbackPacketType getPacketType() {
 		return FeedbackPacketType.HEARTBEAT;
 	}
 
 	@JsonProperty("data")
-	@NonNull HeartbeatData getData();
+	HeartbeatData getData();
 
 	@JsonProperty("executionReason")
-	@NonNull ExecutionReason getExecutionReason();
+	ExecutionReason getExecutionReason();
 }

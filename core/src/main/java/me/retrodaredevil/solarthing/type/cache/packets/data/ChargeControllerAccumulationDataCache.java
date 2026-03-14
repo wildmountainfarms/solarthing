@@ -6,10 +6,13 @@ import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.util.MathUtil;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
 @JsonExplicit
+@NullMarked
 public class ChargeControllerAccumulationDataCache extends BaseAccumulationDataCache implements IdentificationCacheData {
 	public static final String CACHE_NAME = "chargeControllerAccumulation";
 	/*
@@ -31,10 +34,10 @@ public class ChargeControllerAccumulationDataCache extends BaseAccumulationDataC
 	public ChargeControllerAccumulationDataCache(
 			@JsonProperty(value = "identifier", required = true) Identifier identifier,
 			@JsonProperty(value = "generationKWH", required = true) float generationKWH,
-			@JsonProperty(value = "firstDateMillis", required = true) Long firstDateMillis,
-			@JsonProperty(value = "lastDateMillis", required = true) Long lastDateMillis,
+			@JsonProperty(value = "firstDateMillis", required = true) @Nullable Long firstDateMillis,
+			@JsonProperty(value = "lastDateMillis", required = true) @Nullable Long lastDateMillis,
 			@JsonProperty(value = "unknownGenerationKWH", required = true) float unknownGenerationKWH,
-			@JsonProperty(value = "unknownStartDateMillis", required = true) Long unknownStartDateMillis) {
+			@JsonProperty(value = "unknownStartDateMillis", required = true) @Nullable Long unknownStartDateMillis) {
 		super(firstDateMillis, lastDateMillis, unknownStartDateMillis);
 		this.identifier = requireNonNull(identifier);
 		this.generationKWH = generationKWH;

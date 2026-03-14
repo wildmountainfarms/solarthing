@@ -8,8 +8,10 @@ import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import me.retrodaredevil.solarthing.annotations.ConvenienceField;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
+import org.jspecify.annotations.NullMarked;
 
 @UtilityClass
+@NullMarked
 public final class JacksonUtil {
 	private JacksonUtil(){ throw new UnsupportedOperationException(); }
 

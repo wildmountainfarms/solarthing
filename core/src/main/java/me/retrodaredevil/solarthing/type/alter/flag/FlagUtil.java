@@ -4,12 +4,14 @@ import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.type.alter.AlterPacket;
 import me.retrodaredevil.solarthing.type.alter.StoredAlterPacket;
 import me.retrodaredevil.solarthing.type.alter.packets.FlagPacket;
+import org.jspecify.annotations.NullMarked;
 
 import java.time.Instant;
 import java.util.Objects;
 import java.util.stream.Stream;
 
 @UtilityClass
+@NullMarked
 public class FlagUtil {
 	private FlagUtil() { throw new UnsupportedOperationException(); }
 
@@ -34,6 +36,7 @@ public class FlagUtil {
 					return null;
 				})
 				.filter(Objects::nonNull)
+				.map(Objects::requireNonNull) // TODO this map operation should not be necessary
 				;
 	}
 	public static <T extends FlagPacket> Stream<T> filterActivePackets(Instant now, Stream<T> flagPacketStream) {

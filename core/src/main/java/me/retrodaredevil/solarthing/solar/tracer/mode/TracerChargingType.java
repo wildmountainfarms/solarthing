@@ -1,11 +1,12 @@
 package me.retrodaredevil.solarthing.solar.tracer.mode;
 
 import me.retrodaredevil.solarthing.packets.CodeMode;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Represents what type of controller this is, doesn't actually tell you about if the controller is charging or not
  */
+@NullMarked
 public enum TracerChargingType implements CodeMode {
 	PWM(1, "PWM"),
 	MPPT(2, "MPPT"),
@@ -24,7 +25,7 @@ public enum TracerChargingType implements CodeMode {
 	}
 
 	@Override
-	public @NonNull String getModeName() {
+	public String getModeName() {
 		return name;
 	}
 }

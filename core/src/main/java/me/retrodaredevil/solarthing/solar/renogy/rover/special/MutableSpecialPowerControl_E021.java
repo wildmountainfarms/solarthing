@@ -1,7 +1,9 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover.special;
 
 import me.retrodaredevil.solarthing.solar.renogy.rover.ChargingMethod;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public class MutableSpecialPowerControl_E021 implements SpecialPowerControl_E021{
 	private int upper;
 	private int lower;

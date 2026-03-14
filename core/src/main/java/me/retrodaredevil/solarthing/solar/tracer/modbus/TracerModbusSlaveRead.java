@@ -9,10 +9,11 @@ import me.retrodaredevil.solarthing.solar.common.DailyData;
 import me.retrodaredevil.solarthing.solar.tracer.TracerIdentityInfo;
 import me.retrodaredevil.solarthing.solar.tracer.TracerReadTable;
 import me.retrodaredevil.solarthing.solar.util.AbstractModbusRead;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import static me.retrodaredevil.solarthing.solar.util.ByteUtil.convertTo48BitLittleEndian;
 
+@NullMarked
 public class TracerModbusSlaveRead extends AbstractModbusRead implements TracerReadTable {
 	private static final Identifier IDENTIFIER = new SingleTypeIdentifier("TracerModbusSlaveRead");
 
@@ -26,12 +27,12 @@ public class TracerModbusSlaveRead extends AbstractModbusRead implements TracerR
 	}
 
 	@Override
-	public @NonNull Identifier getIdentifier() {
+	public Identifier getIdentifier() {
 		return IDENTIFIER;
 	}
 
 	@Override
-	public @NonNull IdentityInfo getIdentityInfo() {
+	public IdentityInfo getIdentityInfo() {
 		return new TracerIdentityInfo(getRatedOutputCurrent());
 	}
 
@@ -90,18 +91,18 @@ public class TracerModbusSlaveRead extends AbstractModbusRead implements TracerR
 
 	private static final MessageHandler<int[]> INPUT_VOLTAGE = new ReadInputRegisters(0x3100, 1);
 	@Override
-	public @NonNull Float getPVVoltage() {
+	public Float getPVVoltage() {
 		return oneRegister(INPUT_VOLTAGE) / 100.0f;
 	}
 	private static final MessageHandler<int[]> INPUT_CURRENT = new ReadInputRegisters(0x3101, 1);
 	@Override
-	public @NonNull Float getPVCurrent() {
+	public Float getPVCurrent() {
 		return oneRegister(INPUT_CURRENT) / 100.0f;
 	}
 
 	private static final MessageHandler<int[]> INPUT_POWER = new ReadInputRegisters(0x3102, 2);
 	@Override
-	public @NonNull Float getPVWattage() {
+	public Float getPVWattage() {
 		return twoRegistersAsInt(INPUT_POWER) / 100.0f;
 	}
 
@@ -113,13 +114,13 @@ public class TracerModbusSlaveRead extends AbstractModbusRead implements TracerR
 
 	private static final MessageHandler<int[]> CHARGING_CURRENT = new ReadInputRegisters(0x3105, 1);
 	@Override
-	public @NonNull Float getChargingCurrent() {
+	public Float getChargingCurrent() {
 		return oneRegister(CHARGING_CURRENT) / 100.0f;
 	}
 
 	private static final MessageHandler<int[]> CHARGING_POWER = new ReadInputRegisters(0x3106, 2);
 	@Override
-	public @NonNull Float getChargingPower() {
+	public Float getChargingPower() {
 		return twoRegistersAsInt(CHARGING_POWER) / 100.0f;
 	}
 
@@ -143,7 +144,7 @@ public class TracerModbusSlaveRead extends AbstractModbusRead implements TracerR
 
 	private static final MessageHandler<int[]> BATTERY_TEMPERATURE_CELSIUS = new ReadInputRegisters(0x3110, 1);
 	@Override
-	public @NonNull Float getBatteryTemperatureCelsius() {
+	public Float getBatteryTemperatureCelsius() {
 		return convertRawTemperatureToCelsius(oneRegister(BATTERY_TEMPERATURE_CELSIUS));
 	}
 

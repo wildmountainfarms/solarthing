@@ -5,7 +5,9 @@ import me.retrodaredevil.io.modbus.ModbusMessages;
 import me.retrodaredevil.io.modbus.handling.HandleResponseHelper;
 import me.retrodaredevil.io.modbus.handling.MessageHandler;
 import me.retrodaredevil.io.modbus.handling.ParsedResponseException;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public class RoverMessageHandler implements MessageHandler<Void> {
 	private final int functionCode;
 

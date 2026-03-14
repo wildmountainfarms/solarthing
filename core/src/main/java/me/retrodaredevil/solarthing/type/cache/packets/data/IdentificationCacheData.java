@@ -1,13 +1,14 @@
 package me.retrodaredevil.solarthing.type.cache.packets.data;
 
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Represents data associated with an identifier and a fragment ID. The fragment ID tracked elsewhere, usually in a level above this object.
  */
+@NullMarked
 public interface IdentificationCacheData {
-	@NonNull Identifier getIdentifier();
+	Identifier getIdentifier();
 
 	/**
 	 *

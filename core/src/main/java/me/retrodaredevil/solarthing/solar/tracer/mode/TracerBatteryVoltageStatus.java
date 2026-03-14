@@ -1,8 +1,9 @@
 package me.retrodaredevil.solarthing.solar.tracer.mode;
 
 import me.retrodaredevil.solarthing.packets.CodeMode;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public enum TracerBatteryVoltageStatus implements CodeMode {
 	NORMAL(0, "Normal"),
 	OVER_VOLTAGE(1, "Over voltage"),
@@ -24,7 +25,7 @@ public enum TracerBatteryVoltageStatus implements CodeMode {
 	}
 
 	@Override
-	public @NonNull String getModeName() {
+	public String getModeName() {
 		return name;
 	}
 }

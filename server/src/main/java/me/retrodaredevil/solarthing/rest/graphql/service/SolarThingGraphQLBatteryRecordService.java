@@ -55,7 +55,7 @@ public class SolarThingGraphQLBatteryRecordService {
 				String sourceId = cache.getSourceId();
 				for (var node : cache.getNodes()) {
 					BatteryRecordDataCache batteryRecord = node.getData();
-					BatteryRecordDataCache.Record record = batteryRecord.getRecord();
+					BatteryRecordDataCache.RecordData record = batteryRecord.getRecord();
 					if (record != null) {
 						double voltHours = record.getBatteryVoltageHours();
 						double hours = record.getKnownDurationMillis() / (1000.0 * 60 * 60);

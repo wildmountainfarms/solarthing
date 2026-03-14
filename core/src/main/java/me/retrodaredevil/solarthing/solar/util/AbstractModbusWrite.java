@@ -3,9 +3,11 @@ package me.retrodaredevil.solarthing.solar.util;
 import me.retrodaredevil.io.modbus.ModbusSlave;
 import me.retrodaredevil.io.modbus.handling.WriteMultipleRegisters;
 import me.retrodaredevil.io.modbus.handling.WriteSingleRegister;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public abstract class AbstractModbusWrite {
 	protected final ModbusSlave modbus;
 

@@ -2,8 +2,9 @@ package me.retrodaredevil.solarthing.solar.tracer.mode;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import me.retrodaredevil.solarthing.packets.CodeMode;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public enum TracerBatteryType implements CodeMode {
 	USER(0, "User"),
 	SEALED(1, "Sealed"),
@@ -24,7 +25,7 @@ public enum TracerBatteryType implements CodeMode {
 	}
 
 	@Override
-	public @NonNull String getModeName() {
+	public String getModeName() {
 		return name;
 	}
 

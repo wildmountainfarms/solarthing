@@ -11,7 +11,7 @@ import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.event.SupplementarySolarEventPacket;
 import me.retrodaredevil.solarthing.solar.tracer.SupplementaryTracerPacket;
 import me.retrodaredevil.solarthing.solar.tracer.TracerChargingEquipmentStatus;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -23,11 +23,12 @@ import org.jspecify.annotations.Nullable;
 @JsonDeserialize(as = ImmutableTracerChargingEquipmentStatusChangePacket.class)
 @JsonTypeName("TRACER_CHARGING_EQUIPMENT_STATUS_CHANGE")
 @JsonExplicit
+@NullMarked
 public interface TracerChargingEquipmentStatusChangePacket extends SupplementarySolarEventPacket, SupplementaryTracerPacket, ChangePacket {
 
 	@DefaultFinal
 	@Override
-	default @NonNull SolarEventPacketType getPacketType() {
+	default SolarEventPacketType getPacketType() {
 		return SolarEventPacketType.TRACER_CHARGING_EQUIPMENT_STATUS_CHANGE;
 	}
 
@@ -43,7 +44,7 @@ public interface TracerChargingEquipmentStatusChangePacket extends Supplementary
 	}
 
 	@GraphQLInclude("chargingEquipmentStatus")
-	@NonNull TracerChargingEquipmentStatus getChargingEquipmentStatus();
+	TracerChargingEquipmentStatus getChargingEquipmentStatus();
 
 	@GraphQLInclude("previousChargingEquipmentStatus")
 	@Nullable TracerChargingEquipmentStatus getPreviousChargingEquipmentStatus();

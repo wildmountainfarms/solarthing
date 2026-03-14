@@ -1,11 +1,13 @@
 package me.retrodaredevil.solarthing.type.cache;
 
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
+import org.jspecify.annotations.NullMarked;
 
 import java.time.Duration;
 import java.time.Instant;
 
 @UtilityClass
+@NullMarked
 public final class CacheUtil {
 	private CacheUtil() { throw new UnsupportedOperationException(); }
 

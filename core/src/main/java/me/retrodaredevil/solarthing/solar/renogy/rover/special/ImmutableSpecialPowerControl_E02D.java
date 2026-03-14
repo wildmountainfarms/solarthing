@@ -1,5 +1,8 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover.special;
 
+import org.jspecify.annotations.NullMarked;
+
+@NullMarked
 public class ImmutableSpecialPowerControl_E02D implements SpecialPowerControl_E02D{
 
 	private final int upper;

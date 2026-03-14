@@ -3,10 +3,11 @@ package me.retrodaredevil.solarthing.type.event.feedback;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.reason.ExecutionReason;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class ImmutableExecutionFeedbackPacket implements ExecutionFeedbackPacket {
 	private final String message;
 	private final String category;
@@ -23,17 +24,17 @@ public class ImmutableExecutionFeedbackPacket implements ExecutionFeedbackPacket
 	}
 
 	@Override
-	public @NonNull String getMessage() {
+	public String getMessage() {
 		return message;
 	}
 
 	@Override
-	public @NonNull String getCategory() {
+	public String getCategory() {
 		return category;
 	}
 
 	@Override
-	public @NonNull ExecutionReason getExecutionReason() {
+	public ExecutionReason getExecutionReason() {
 		return executionReason;
 	}
 }

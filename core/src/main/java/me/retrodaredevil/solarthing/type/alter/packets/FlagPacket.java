@@ -9,6 +9,7 @@ import me.retrodaredevil.solarthing.type.alter.AlterPacket;
 import me.retrodaredevil.solarthing.type.alter.AlterPacketType;
 import me.retrodaredevil.solarthing.type.alter.flag.FlagData;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 
@@ -24,6 +25,7 @@ import static java.util.Objects.requireNonNull;
  */
 @JsonTypeName("FLAG")
 @JsonExplicit
+@NullMarked
 public final class FlagPacket implements AlterPacket {
 	private final FlagData flagData;
 	private final ExecutionReason executionReason;

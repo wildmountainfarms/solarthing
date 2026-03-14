@@ -8,12 +8,13 @@ import me.retrodaredevil.solarthing.reason.ExecutionReason;
 import me.retrodaredevil.solarthing.type.alter.AlterPacket;
 import me.retrodaredevil.solarthing.type.alter.AlterPacketType;
 import me.retrodaredevil.solarthing.type.alter.flag.FlagAliasData;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("FLAG_ALIAS")
 @JsonExplicit
+@NullMarked
 public final class FlagAliasPacket implements AlterPacket {
 
 	private final FlagAliasData flagData;
@@ -27,17 +28,17 @@ public final class FlagAliasPacket implements AlterPacket {
 		this.executionReason = requireNonNull(executionReason);
 	}
 	@Override
-	public @NonNull AlterPacketType getPacketType() {
+	public AlterPacketType getPacketType() {
 		return AlterPacketType.FLAG_ALIAS;
 	}
 
 	@JsonProperty("flagAliasData")
-	public @NonNull FlagAliasData getFlagAliasData() {
+	public FlagAliasData getFlagAliasData() {
 		return flagData;
 	}
 
 	@JsonProperty("executionReason")
-	public @NonNull ExecutionReason getExecutionReason() {
+	public ExecutionReason getExecutionReason() {
 		return executionReason;
 	}
 }

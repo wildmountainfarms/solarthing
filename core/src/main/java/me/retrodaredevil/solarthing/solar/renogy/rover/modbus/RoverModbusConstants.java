@@ -1,8 +1,10 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover.modbus;
 
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
+import org.jspecify.annotations.NullMarked;
 
 @UtilityClass
+@NullMarked
 public class RoverModbusConstants {
 	private RoverModbusConstants() { throw new UnsupportedOperationException(); }
 

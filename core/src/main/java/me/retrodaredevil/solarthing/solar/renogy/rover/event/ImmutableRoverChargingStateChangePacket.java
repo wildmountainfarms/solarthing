@@ -8,9 +8,10 @@ import me.retrodaredevil.solarthing.packets.identification.KnownSupplementaryIde
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverIdentifier;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverIdentityInfo;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+@NullMarked
 public class ImmutableRoverChargingStateChangePacket implements RoverChargingStateChangePacket {
 	private final int chargingStateValue;
 	private final @Nullable Integer previousChargingStateValue;
@@ -35,7 +36,7 @@ public class ImmutableRoverChargingStateChangePacket implements RoverChargingSta
 	}
 
 	@Override
-	public @NonNull IdentityInfo getIdentityInfo() {
+	public IdentityInfo getIdentityInfo() {
 		return identityInfo;
 	}
 
@@ -45,7 +46,7 @@ public class ImmutableRoverChargingStateChangePacket implements RoverChargingSta
 	}
 
 	@Override
-	public @NonNull KnownSupplementaryIdentifier<RoverIdentifier> getIdentifier() {
+	public KnownSupplementaryIdentifier<RoverIdentifier> getIdentifier() {
 		return identifier;
 	}
 

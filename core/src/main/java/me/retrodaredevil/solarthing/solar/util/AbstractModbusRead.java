@@ -2,11 +2,13 @@ package me.retrodaredevil.solarthing.solar.util;
 
 import me.retrodaredevil.io.modbus.ModbusSlave;
 import me.retrodaredevil.io.modbus.handling.MessageHandler;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 import static me.retrodaredevil.solarthing.solar.util.ByteUtil.convertTo32BitBigEndian;
 import static me.retrodaredevil.solarthing.solar.util.ByteUtil.convertTo32BitLittleEndian;
 
+@NullMarked
 public abstract class AbstractModbusRead {
 	protected final ModbusSlave modbus;
 	private final Endian endian;

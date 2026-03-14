@@ -6,22 +6,26 @@ import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.PacketEntry;
 import me.retrodaredevil.solarthing.packets.instance.SourcedPacket;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.time.Duration;
 import java.time.Instant;
 
 @JsonIgnoreProperties(value = {"_id", "_rev"}, allowGetters = true) // tightly coupled to CouchDB, this is fine // this will be applied to subclasses
 @JsonExplicit
+@NullMarked
 public interface CacheDataPacket extends PacketEntry, SourcedPacket {
 
 	@JsonProperty("_id") // tightly couple to CouchDB, but that's OK
 	@Override
 	String getDbId();
 
+	// TODO remove NonNull
 	@JsonProperty("sourceId")
 	@Override
 	@NonNull String getSourceId();
 
+	// TODO remove NonNull
 	@JsonProperty("cacheName")
 	@NonNull String getCacheName();
 
@@ -31,9 +35,9 @@ public interface CacheDataPacket extends PacketEntry, SourcedPacket {
 	@JsonProperty("periodDurationMillis")
 	long getPeriodDurationMillis();
 
-	@NonNull Instant getPeriodStart();
-	@NonNull Instant getPeriodEnd();
-	@NonNull Duration getPeriodDuration();
+	Instant getPeriodStart();
+	Instant getPeriodEnd();
+	Duration getPeriodDuration();
 
 	/**
 	 * Combines this packet with a future packet. Note this will only work as expected if these packets are back to back

@@ -1,14 +1,18 @@
 package me.retrodaredevil.solarthing.type.cache.packets.data;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.checkerframework.checker.nullness.qual.EnsuresNonNull;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
+@NullMarked
 public abstract class BaseAccumulationDataCache implements IdentificationCacheData {
-	private final Long firstDateMillis;
-	private final Long lastDateMillis;
+	private final @Nullable Long firstDateMillis;
+	private final @Nullable Long lastDateMillis;
 
-	private final Long unknownStartDateMillis;
+	private final @Nullable Long unknownStartDateMillis;
 
-	protected BaseAccumulationDataCache(Long firstDateMillis, Long lastDateMillis, Long unknownStartDateMillis) {
+	protected BaseAccumulationDataCache(@Nullable Long firstDateMillis, @Nullable Long lastDateMillis, @Nullable Long unknownStartDateMillis) {
 		this.firstDateMillis = firstDateMillis;
 		this.lastDateMillis = lastDateMillis;
 		this.unknownStartDateMillis = unknownStartDateMillis;
@@ -24,18 +28,31 @@ public abstract class BaseAccumulationDataCache implements IdentificationCacheDa
 		return firstDateMillis == null;
 	}
 
+	/**
+	 * Inverted version of {@link #isUnknown()}.
+	 * This exists only because of the {@link EnsuresNonNull} annotation, which in theory should help with NullAway.
+	 * Although the usage of {@link EnsuresNonNull} is mostly experimental at this point.
+	 * <p>
+	 * Consider removing this method in the future if we do not get value from {@link EnsuresNonNull}.
+	 */
+	@SuppressWarnings("NullAway") // Validation for lastDateMillis occurs within constructor - this is valid
+	@EnsuresNonNull({"firstDateMillis", "lastDateMillis"})
+	public boolean isKnown() {
+		return firstDateMillis != null;
+	}
+
 	@JsonProperty("firstDateMillis")
-	public Long getFirstDateMillis() {
+	public @Nullable Long getFirstDateMillis() {
 		return firstDateMillis;
 	}
 
 	@JsonProperty("lastDateMillis")
-	public Long getLastDateMillis() {
+	public @Nullable Long getLastDateMillis() {
 		return lastDateMillis;
 	}
 
 	@JsonProperty("unknownStartDateMillis")
-	public Long getUnknownStartDateMillis() {
+	public @Nullable Long getUnknownStartDateMillis() {
 		return unknownStartDateMillis;
 	}
 }

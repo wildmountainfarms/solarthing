@@ -1,12 +1,14 @@
 package me.retrodaredevil.solarthing.util;
 
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
+import org.jspecify.annotations.NullMarked;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
 @UtilityClass
+@NullMarked
 public class MathUtil {
 	private MathUtil() { throw new UnsupportedOperationException(); }
 

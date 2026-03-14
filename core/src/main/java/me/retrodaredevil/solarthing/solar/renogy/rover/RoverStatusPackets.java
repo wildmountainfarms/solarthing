@@ -1,8 +1,10 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover;
 
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
+import org.jspecify.annotations.NullMarked;
 
 @UtilityClass
+@NullMarked
 public final class RoverStatusPackets {
 	private RoverStatusPackets(){ throw new UnsupportedOperationException(); }
 

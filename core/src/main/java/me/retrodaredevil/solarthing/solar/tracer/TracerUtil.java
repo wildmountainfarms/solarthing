@@ -1,12 +1,14 @@
 package me.retrodaredevil.solarthing.solar.tracer;
 
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
+import org.jspecify.annotations.NullMarked;
 
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.MonthDay;
 
 @UtilityClass
+@NullMarked
 public final class TracerUtil {
 	private TracerUtil() { throw new UnsupportedOperationException(); }
 

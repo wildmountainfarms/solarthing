@@ -1,7 +1,9 @@
 package me.retrodaredevil.solarthing.util.integration;
 
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+@NullMarked
 abstract class MutableIntegralAccumulator implements MutableIntegral {
 	private double integral = 0;
 

@@ -11,11 +11,13 @@ import me.retrodaredevil.solarthing.solar.outback.OutbackData;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.FXAccumulationData;
 import me.retrodaredevil.solarthing.solar.outback.fx.extra.DailyFXPacket;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
 @JsonExplicit
+@NullMarked
 public class FXAccumulationDataCache extends BaseAccumulationDataCache implements IdentificationCacheData, OutbackData {
 	private static final AccumulationValueFactory<Data> DATA_FACTORY = () -> Data.ZERO;
 	public static final String CACHE_NAME = "fxAccumulation";
@@ -30,10 +32,10 @@ public class FXAccumulationDataCache extends BaseAccumulationDataCache implement
 	public FXAccumulationDataCache(
 			@JsonProperty(value = "address", required = true) int address,
 			@JsonProperty(value = "mainData", required = true) Data mainData,
-			@JsonProperty(value = "firstDateMillis", required = true) Long firstDateMillis,
-			@JsonProperty(value = "lastDateMillis", required = true) Long lastDateMillis,
+			@JsonProperty(value = "firstDateMillis", required = true) @Nullable Long firstDateMillis,
+			@JsonProperty(value = "lastDateMillis", required = true) @Nullable Long lastDateMillis,
 			@JsonProperty(value = "unknownData", required = true) Data unknownData,
-			@JsonProperty(value = "unknownStartDateMillis", required = true) Long unknownStartDateMillis) {
+			@JsonProperty(value = "unknownStartDateMillis", required = true) @Nullable Long unknownStartDateMillis) {
 		super(firstDateMillis, lastDateMillis, unknownStartDateMillis);
 		this.mainData = requireNonNull(mainData);
 		this.unknownData = requireNonNull(unknownData);
@@ -77,7 +79,7 @@ public class FXAccumulationDataCache extends BaseAccumulationDataCache implement
 	}
 
 	@Override
-	public @NonNull OutbackIdentifier getIdentifier() {
+	public OutbackIdentifier getIdentifier() {
 		return identifier;
 	}
 
@@ -87,12 +89,12 @@ public class FXAccumulationDataCache extends BaseAccumulationDataCache implement
 	}
 
 	@JsonProperty("mainData")
-	public @NonNull Data getMainData() {
+	public Data getMainData() {
 		return mainData;
 	}
 
 	@JsonProperty("unknownData")
-	public @NonNull Data getUnknownData() {
+	public Data getUnknownData() {
 		return unknownData;
 	}
 

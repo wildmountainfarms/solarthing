@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.solar.renogy.rover;
 
 import me.retrodaredevil.solarthing.solar.renogy.RoverBatteryType;
 import me.retrodaredevil.solarthing.solar.renogy.Voltage;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Collection;
 import java.util.EnumSet;
@@ -10,6 +11,7 @@ import static me.retrodaredevil.solarthing.solar.renogy.RoverBatteryType.*;
 import static me.retrodaredevil.solarthing.solar.renogy.Voltage.*;
 
 @SuppressWarnings("ImmutableEnumChecker") // the collections we use are, in fact, not mutable, thank you ErrorProne, but go away
+@NullMarked
 public enum KnownRoverController {
 	ROVER_20("RNG-CTRL-RVR20", EnumSet.of(OPEN, SEALED, GEL, LITHIUM, USER_UNLOCKED), EnumSet.of(V12, V24, AUTO), 20),
 	ROVER_20_PG("RNG-CTRL-RVRPG20", ROVER_20),

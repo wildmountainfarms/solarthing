@@ -1,7 +1,9 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover.modbus;
 
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+@NullMarked
 public enum ExceptionCodeError {
 	READ_EXCEPTION_UNSUPPORTED_FUNCTION_CODE(1),
 	READ_EXCEPTION_UNSUPPORTED_REGISTER(2),

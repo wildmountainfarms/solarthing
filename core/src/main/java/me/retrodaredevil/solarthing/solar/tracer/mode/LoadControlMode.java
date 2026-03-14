@@ -1,8 +1,9 @@
 package me.retrodaredevil.solarthing.solar.tracer.mode;
 
 import me.retrodaredevil.solarthing.packets.CodeMode;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public enum LoadControlMode implements CodeMode {
 	MANUAL_CONTROL(0, "Manual Control"),
 	LIGHT_ON_OFF(1, "Light ON/OFF"),
@@ -24,7 +25,7 @@ public enum LoadControlMode implements CodeMode {
 	}
 
 	@Override
-	public @NonNull String getModeName() {
+	public String getModeName() {
 		return name;
 	}
 }

@@ -4,13 +4,15 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @JsonTypeName("FRAGMENT_TARGET")
 @JsonExplicit
+@NullMarked
 public final class TargetMetaPacket implements BasicMetaPacket {
 	private final List<Integer> fragmentIds;
 	private final List<TargetedMetaPacket> packets;
@@ -18,7 +20,7 @@ public final class TargetMetaPacket implements BasicMetaPacket {
 	@JsonCreator
 	public TargetMetaPacket(
 			@JsonProperty(value = "fragmentIds", required = true) List<Integer> fragmentIds,
-			@JsonProperty(value = "packets", required = true) List<TargetedMetaPacket> packets
+			@JsonProperty(value = "packets", required = true) List<@Nullable TargetedMetaPacket> packets
 	) {
 		this.fragmentIds = fragmentIds;
 		this.packets = new ArrayList<>();
@@ -30,7 +32,7 @@ public final class TargetMetaPacket implements BasicMetaPacket {
 	}
 
 	@Override
-	public @NonNull BasicMetaPacketType getPacketType() {
+	public BasicMetaPacketType getPacketType() {
 		return BasicMetaPacketType.FRAGMENT_TARGET;
 	}
 

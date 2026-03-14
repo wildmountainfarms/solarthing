@@ -1,8 +1,10 @@
 package me.retrodaredevil.solarthing.solar.tracer;
 
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
+import org.jspecify.annotations.NullMarked;
 
 @UtilityClass
+@NullMarked
 public class TracerStatusPackets {
 	private TracerStatusPackets() { throw new UnsupportedOperationException(); }
 

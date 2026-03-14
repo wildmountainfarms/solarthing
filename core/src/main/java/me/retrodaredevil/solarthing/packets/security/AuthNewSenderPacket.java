@@ -28,7 +28,7 @@ public interface AuthNewSenderPacket extends SecurityPacket, SenderPacket {
 	 * @return The base64 encoded public key
 	 */
 	@JsonProperty("publicKey")
-	String getPublicKey();
+	@NonNull String getPublicKey();
 
 	/**
 	 * @return The public key that {@link #getPublicKey()} represents

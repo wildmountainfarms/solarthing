@@ -8,9 +8,11 @@ import me.retrodaredevil.solarthing.solar.tracer.mode.ChargingEquipmentError;
 import me.retrodaredevil.solarthing.solar.tracer.mode.ChargingStatus;
 import me.retrodaredevil.solarthing.solar.tracer.mode.InputVoltageStatus;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Set;
 
+@NullMarked
 public interface TracerChargingEquipmentStatus extends ErrorReporter {
 
 	@JsonProperty("chargingEquipmentStatusValue")
@@ -18,6 +20,7 @@ public interface TracerChargingEquipmentStatus extends ErrorReporter {
 
 	default int getInputVoltageStatusValue() { return getChargingEquipmentStatus() >> 14; }
 	default int getChargingStatusValue() { return (getChargingEquipmentStatus() >> 2) & 0b11; }
+	// TODO remove NonNull
 	@Override
 	default @NonNull Set<@NonNull ChargingEquipmentError> getErrorModes() { return Modes.getActiveModes(ChargingEquipmentError.class, getChargingEquipmentStatus()); }
 	/**
@@ -29,10 +32,13 @@ public interface TracerChargingEquipmentStatus extends ErrorReporter {
 	default int getErrorModeValue() { return getChargingEquipmentStatus(); }
 	@GraphQLInclude("isRunning")
 	default boolean isRunning() { return (getChargingEquipmentStatus() & 1) == 1; }
+	// TODO remove NonNull
 	@GraphQLInclude("inputVoltageStatus")
 	default @NonNull InputVoltageStatus getInputVoltageStatus() { return Modes.getActiveMode(InputVoltageStatus.class, getInputVoltageStatusValue()); }
+	// TODO remove NonNull
 	@GraphQLInclude("chargingStatus")
 	default @NonNull ChargingStatus getChargingStatus() { return Modes.getActiveMode(ChargingStatus.class, getChargingStatusValue()); }
+	// TODO remove NonNull
 	@GraphQLInclude("chargingStatusName")
 	default @NonNull String getChargingStatusName() { return getChargingStatus().getModeName(); }
 

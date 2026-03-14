@@ -1,9 +1,12 @@
 package me.retrodaredevil.solarthing.util;
 
+import org.jspecify.annotations.NullMarked;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@NullMarked
 public final class StringUtil {
 	private StringUtil() { throw new UnsupportedOperationException(); }
 

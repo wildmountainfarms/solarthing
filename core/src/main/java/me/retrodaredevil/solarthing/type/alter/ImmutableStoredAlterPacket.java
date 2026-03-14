@@ -2,10 +2,11 @@ package me.retrodaredevil.solarthing.type.alter;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class ImmutableStoredAlterPacket implements StoredAlterPacket {
 	private final String databaseId;
 	private final long updatedDateMillis;
@@ -35,12 +36,12 @@ public class ImmutableStoredAlterPacket implements StoredAlterPacket {
 	}
 
 	@Override
-	public @NonNull AlterPacket getPacket() {
+	public AlterPacket getPacket() {
 		return packet;
 	}
 
 	@Override
-	public @NonNull String getSourceId() {
+	public String getSourceId() {
 		return sourceId;
 	}
 }

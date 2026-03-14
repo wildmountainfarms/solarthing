@@ -1,8 +1,9 @@
 package me.retrodaredevil.solarthing.solar.tracer.mode;
 
 import me.retrodaredevil.solarthing.packets.CodeMode;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public enum LoadTimingControlSelection implements CodeMode {
 	ONE_TIMER(0, "One timer"),
 	TWO_TIMER(1, "Two timer")
@@ -21,7 +22,7 @@ public enum LoadTimingControlSelection implements CodeMode {
 	}
 
 	@Override
-	public @NonNull String getModeName() {
+	public String getModeName() {
 		return name;
 	}
 }

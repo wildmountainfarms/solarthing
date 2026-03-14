@@ -1,9 +1,12 @@
 package me.retrodaredevil.solarthing.util.time;
 
+import org.jspecify.annotations.NullMarked;
+
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
+@NullMarked
 public class DailyIdentifier implements TimeIdentifier {
 	private final ZoneId zoneId;
 

@@ -4,7 +4,7 @@ package me.retrodaredevil.solarthing.solar.outback.fx;
 import me.retrodaredevil.solarthing.packets.CodeMode;
 import me.retrodaredevil.solarthing.solar.common.SolarMode;
 import me.retrodaredevil.solarthing.solar.common.SolarModeType;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import static me.retrodaredevil.solarthing.solar.common.SolarModeType.*;
 
@@ -15,6 +15,7 @@ import static me.retrodaredevil.solarthing.solar.common.SolarModeType.*;
  * {@link me.retrodaredevil.solarthing.solar.outback.fx.charge.FXChargingMode} and {@link me.retrodaredevil.solarthing.solar.outback.fx.charge.FXChargingStateHandler} to
  * determine this.
  */
+@NullMarked
 public enum OperationalMode implements CodeMode, SolarMode { // one must be active
 	INV_OFF(0, "Inv Off", INVERTER_OFF),
 	SEARCH(1, "Search", INVERTER_SEARCH),
@@ -86,7 +87,7 @@ public enum OperationalMode implements CodeMode, SolarMode { // one must be acti
 	}
 
 	@Override
-	public @NonNull String getModeName() {
+	public String getModeName() {
 		return name;
 	}
 
@@ -96,7 +97,7 @@ public enum OperationalMode implements CodeMode, SolarMode { // one must be acti
 	}
 
 	@Override
-	public @NonNull SolarModeType getSolarModeType() {
+	public SolarModeType getSolarModeType() {
 		return solarModeType;
 	}
 }

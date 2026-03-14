@@ -2,10 +2,11 @@ package me.retrodaredevil.solarthing.solar.tracer.batteryconfig;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.solar.tracer.mode.TracerBatteryType;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public interface TracerBatteryConfig {
-	@NonNull TracerBatteryType getBatteryType();
+	TracerBatteryType getBatteryType();
 	@JsonProperty("batteryCapacityAmpHours")
 	int getBatteryCapacityAmpHours();
 	/** @return number in range 0-9 */

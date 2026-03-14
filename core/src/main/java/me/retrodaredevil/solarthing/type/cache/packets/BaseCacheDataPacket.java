@@ -1,13 +1,14 @@
 package me.retrodaredevil.solarthing.type.cache.packets;
 
 import me.retrodaredevil.solarthing.type.cache.CacheUtil;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.time.Duration;
 import java.time.Instant;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public abstract class BaseCacheDataPacket implements CacheDataPacket {
 	private final String sourceId;
 	private final String cacheName;
@@ -30,25 +31,25 @@ public abstract class BaseCacheDataPacket implements CacheDataPacket {
 	}
 
 	@Override
-	public @NonNull String getSourceId() {
+	public String getSourceId() {
 		return sourceId;
 	}
 
 	@Override
-	public @NonNull String getCacheName() {
+	public String getCacheName() {
 		return cacheName;
 	}
 
 	@Override
-	public @NonNull Instant getPeriodStart() {
+	public Instant getPeriodStart() {
 		return periodStart;
 	}
 	@Override
-	public @NonNull Instant getPeriodEnd() {
+	public Instant getPeriodEnd() {
 		return periodEnd;
 	}
 	@Override
-	public @NonNull Duration getPeriodDuration() {
+	public Duration getPeriodDuration() {
 		return periodDuration;
 	}
 

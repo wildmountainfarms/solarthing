@@ -10,7 +10,7 @@ import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.event.SupplementarySolarEventPacket;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
 import me.retrodaredevil.solarthing.solar.renogy.rover.SupplementaryRoverPacket;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -21,11 +21,12 @@ import org.jspecify.annotations.Nullable;
 @JsonDeserialize(as = ImmutableRoverErrorModeChangePacket.class)
 @JsonTypeName("ROVER_ERROR_MODE_CHANGE")
 @JsonExplicit
+@NullMarked
 public interface RoverErrorModeChangePacket extends SupplementarySolarEventPacket, SupplementaryRoverPacket, ChangePacket {
 
 	@DefaultFinal
 	@Override
-	default @NonNull SolarEventPacketType getPacketType() {
+	default SolarEventPacketType getPacketType() {
 		return SolarEventPacketType.ROVER_ERROR_MODE_CHANGE;
 	}
 

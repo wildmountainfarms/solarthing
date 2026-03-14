@@ -84,7 +84,7 @@ public class BatteryRecordCacheNodeCreator implements IdentificationCacheNodeCre
 			}
 
 		}
-		final BatteryRecordDataCache.Record record;
+		final BatteryRecordDataCache.RecordData record;
 		final Long firstDateMillis;
 		final Long lastDateMillis;
 		final Long unknownStartDateMillis;
@@ -118,7 +118,7 @@ public class BatteryRecordCacheNodeCreator implements IdentificationCacheNodeCre
 				unknownBatteryVoltageHours = 0.0;
 			}
 			lastDateMillis = lastDataBeforePeriodEnd.getDateMillis();
-			record = new BatteryRecordDataCache.Record(
+			record = new BatteryRecordDataCache.RecordData(
 					min, minDateMillis,
 					max, maxDateMillis,
 					unknownBatteryVoltageHours, unknownDurationMillis,

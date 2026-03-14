@@ -1,6 +1,9 @@
 package me.retrodaredevil.solarthing.type.cache.packets.data;
 
+import org.jspecify.annotations.NullMarked;
+
 @Deprecated
+@NullMarked
 public class FXModeTimeDataCache /*implements IdentificationCacheData*/ {
 	// TODO These long duration millis values are just estimates, so maybe we could actually have three estimates: high, low, average
 //	private final Map<ACMode, Long> acModeDurationMillisMap;

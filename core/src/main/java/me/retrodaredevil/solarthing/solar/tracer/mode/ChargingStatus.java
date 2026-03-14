@@ -3,12 +3,13 @@ package me.retrodaredevil.solarthing.solar.tracer.mode;
 import me.retrodaredevil.solarthing.packets.CodeMode;
 import me.retrodaredevil.solarthing.solar.common.SolarMode;
 import me.retrodaredevil.solarthing.solar.common.SolarModeType;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Charging status represents the current mode of the charge controller. However, while in any of these modes, (except {@link #NO_CHARGING},
  * the controller may actually be in Bulk mode.
  */
+@NullMarked
 public enum ChargingStatus implements CodeMode, SolarMode {
 	NO_CHARGING(0, "No charging", SolarModeType.CHARGE_CONTROLLER_OFF),
 	FLOAT(1, "Float", SolarModeType.BULK_FLOAT),
@@ -31,12 +32,12 @@ public enum ChargingStatus implements CodeMode, SolarMode {
 	}
 
 	@Override
-	public @NonNull String getModeName() {
+	public String getModeName() {
 		return name;
 	}
 
 	@Override
-	public @NonNull SolarModeType getSolarModeType() {
+	public SolarModeType getSolarModeType() {
 		return solarModeType;
 	}
 }

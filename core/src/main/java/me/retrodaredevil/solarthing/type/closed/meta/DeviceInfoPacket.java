@@ -5,9 +5,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 @JsonTypeName("DEVICE_INFO")
 @JsonExplicit
+@NullMarked
 public final class DeviceInfoPacket implements TargetedMetaPacket {
 	private final String deviceName;
 	private final String deviceDescription;

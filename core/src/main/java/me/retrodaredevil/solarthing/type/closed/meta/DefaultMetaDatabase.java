@@ -1,8 +1,11 @@
 package me.retrodaredevil.solarthing.type.closed.meta;
 
+import org.jspecify.annotations.NullMarked;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@NullMarked
 public class DefaultMetaDatabase implements MetaDatabase {
 	private final RootMetaPacket rootMetaPacket;
 

@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.util;
 
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.text.DecimalFormat;
@@ -11,6 +12,7 @@ import java.time.format.DateTimeParseException;
 import java.util.Locale;
 
 @UtilityClass
+@NullMarked
 public class TimeUtil {
 	private TimeUtil() { throw new UnsupportedOperationException(); }
 

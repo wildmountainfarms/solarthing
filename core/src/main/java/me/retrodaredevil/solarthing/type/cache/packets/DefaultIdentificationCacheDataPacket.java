@@ -4,10 +4,12 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.type.cache.packets.data.IdentificationCacheData;
 import me.retrodaredevil.solarthing.packets.identification.IdentifierFragment;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+@NullMarked
 public final class DefaultIdentificationCacheDataPacket<T extends IdentificationCacheData> extends BaseCacheDataPacket implements IdentificationCacheDataPacket<T> {
 	private final List<IdentificationCacheNode<T>> nodes;
 	@JsonCreator

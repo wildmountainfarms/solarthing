@@ -13,6 +13,7 @@ import me.retrodaredevil.io.modbus.parsing.MessageParser;
 import me.retrodaredevil.solarthing.solar.renogy.rover.DummyRoverReadWrite;
 import me.retrodaredevil.solarthing.solar.renogy.rover.Rover;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverReadTable;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 import static me.retrodaredevil.io.modbus.ModbusMessages.convert8BitArray;
@@ -22,6 +23,7 @@ import static me.retrodaredevil.io.modbus.ModbusMessages.get16BitDataFrom8BitArr
  * Represents a {@link ModbusSlave} tightly coupled to {@link RoverModbusSlaveRead}.
  * Note that this will not work with a ModbusCacheSlave (present in program module).
  */
+@NullMarked
 public class LocalRoverModbusSlave implements ModbusSlave {
 	private static final MessageParser PARSER = new DefaultMessageParser();
 

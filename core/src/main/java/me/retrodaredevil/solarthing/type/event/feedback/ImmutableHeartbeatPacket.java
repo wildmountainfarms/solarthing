@@ -3,10 +3,11 @@ package me.retrodaredevil.solarthing.type.event.feedback;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.reason.ExecutionReason;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class ImmutableHeartbeatPacket implements HeartbeatPacket {
 	private final HeartbeatData data;
 	private final ExecutionReason executionReason;
@@ -20,12 +21,12 @@ public class ImmutableHeartbeatPacket implements HeartbeatPacket {
 	}
 
 	@Override
-	public @NonNull HeartbeatData getData() {
+	public HeartbeatData getData() {
 		return data;
 	}
 
 	@Override
-	public @NonNull ExecutionReason getExecutionReason() {
+	public ExecutionReason getExecutionReason() {
 		return executionReason;
 	}
 }

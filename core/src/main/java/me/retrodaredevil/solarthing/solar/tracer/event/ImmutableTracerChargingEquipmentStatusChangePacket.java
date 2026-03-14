@@ -10,9 +10,10 @@ import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.tracer.TracerChargingEquipmentStatus;
 import me.retrodaredevil.solarthing.solar.tracer.TracerIdentifier;
 import me.retrodaredevil.solarthing.solar.tracer.TracerIdentityInfo;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+@NullMarked
 public class ImmutableTracerChargingEquipmentStatusChangePacket implements TracerChargingEquipmentStatusChangePacket {
 	private final int chargingEquipmentStatusValue;
 	private final @Nullable Integer previousChargingEquipmentStatusValue;
@@ -20,7 +21,7 @@ public class ImmutableTracerChargingEquipmentStatusChangePacket implements Trace
 	private final IdentityInfo identityInfo;
 
 
-	private final @NonNull TracerChargingEquipmentStatus tracerChargingEquipmentStatus;
+	private final TracerChargingEquipmentStatus tracerChargingEquipmentStatus;
 	private final @Nullable TracerChargingEquipmentStatus previousTracerChargingEquipmentStatus;
 
 	@JsonCreator
@@ -44,7 +45,7 @@ public class ImmutableTracerChargingEquipmentStatusChangePacket implements Trace
 	}
 
 	@Override
-	public @NonNull IdentityInfo getIdentityInfo() {
+	public IdentityInfo getIdentityInfo() {
 		return identityInfo;
 	}
 
@@ -54,7 +55,7 @@ public class ImmutableTracerChargingEquipmentStatusChangePacket implements Trace
 	}
 
 	@Override
-	public @NonNull KnownSupplementaryIdentifier<TracerIdentifier> getIdentifier() {
+	public KnownSupplementaryIdentifier<TracerIdentifier> getIdentifier() {
 		return identifier;
 	}
 
@@ -69,7 +70,7 @@ public class ImmutableTracerChargingEquipmentStatusChangePacket implements Trace
 	}
 
 	@Override
-	public @NonNull TracerChargingEquipmentStatus getChargingEquipmentStatus() {
+	public TracerChargingEquipmentStatus getChargingEquipmentStatus() {
 		return tracerChargingEquipmentStatus;
 	}
 
@@ -86,12 +87,12 @@ public class ImmutableTracerChargingEquipmentStatusChangePacket implements Trace
 		}
 
 		@Override
-		public @NonNull Identifier getIdentifier() {
+		public Identifier getIdentifier() {
 			return ImmutableTracerChargingEquipmentStatusChangePacket.this.getIdentifier();
 		}
 
 		@Override
-		public @NonNull IdentityInfo getIdentityInfo() {
+		public IdentityInfo getIdentityInfo() {
 			return ImmutableTracerChargingEquipmentStatusChangePacket.this.getIdentityInfo();
 		}
 

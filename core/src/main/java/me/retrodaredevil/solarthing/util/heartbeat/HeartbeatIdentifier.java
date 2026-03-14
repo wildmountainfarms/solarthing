@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.util.heartbeat;
 
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -11,17 +12,18 @@ import static java.util.Objects.requireNonNull;
  * <p>
  * {@link #equals(Object)} and {@link #hashCode()} are implemented for use in datastructures relying on either method.
  */
+@NullMarked
 public final class HeartbeatIdentifier {
 	private final String identifier;
 	private final int fragmentId;
 
-	public HeartbeatIdentifier(@NonNull String identifier, int fragmentId) {
+	public HeartbeatIdentifier(String identifier, int fragmentId) {
 		this.identifier = requireNonNull(identifier);
 		this.fragmentId = fragmentId;
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(@Nullable Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		HeartbeatIdentifier that = (HeartbeatIdentifier) o;
@@ -33,7 +35,7 @@ public final class HeartbeatIdentifier {
 		return Objects.hash(identifier, fragmentId);
 	}
 
-	public @NonNull String getIdentifier() {
+	public String getIdentifier() {
 		return identifier;
 	}
 

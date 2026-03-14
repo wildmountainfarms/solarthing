@@ -5,25 +5,27 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
-import org.jspecify.annotations.NonNull;
+import org.checkerframework.checker.nullness.qual.EnsuresNonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
 @JsonExplicit
+@NullMarked
 public class BatteryRecordDataCache extends BaseAccumulationDataCache {
 	public static final String CACHE_NAME = "batteryRecord";
 
 	private final Identifier identifier;
-	private final Record record;
+	private final BatteryRecordDataCache.@Nullable RecordData record;
 
 	@JsonCreator
 	public BatteryRecordDataCache(
 			@JsonProperty(value = "identifier", required = true) Identifier identifier,
-			@JsonProperty(value = "firstDateMillis", required = true) Long firstDateMillis,
-			@JsonProperty(value = "lastDateMillis", required = true) Long lastDateMillis,
-			@JsonProperty(value = "unknownStartDateMillis", required = true) Long unknownStartDateMillis,
-			@JsonProperty(value = "record", required = true) Record record) {
+			@JsonProperty(value = "firstDateMillis", required = true) @Nullable Long firstDateMillis,
+			@JsonProperty(value = "lastDateMillis", required = true) @Nullable Long lastDateMillis,
+			@JsonProperty(value = "unknownStartDateMillis", required = true) @Nullable Long unknownStartDateMillis,
+			@JsonProperty(value = "record", required = true) BatteryRecordDataCache.@Nullable RecordData record) {
 		super(firstDateMillis, lastDateMillis, unknownStartDateMillis);
 		this.identifier = requireNonNull(identifier);
 		this.record = record;
@@ -41,18 +43,25 @@ public class BatteryRecordDataCache extends BaseAccumulationDataCache {
 		}
 	}
 
+	@SuppressWarnings("NullAway") // Validation for record occurs within constructor - this is valid
+	@EnsuresNonNull("record")
+	@Override
+	public boolean isKnown() {
+		return super.isKnown();
+	}
+
 	@JsonProperty("record")
-	public BatteryRecordDataCache.@Nullable Record getRecord() {
+	public @Nullable RecordData getRecord() {
 		return record;
 	}
 
 	@Override
 	public BatteryRecordDataCache combine(IdentificationCacheData other) {
 		BatteryRecordDataCache data = (BatteryRecordDataCache) other;
-		if (isUnknown()) {
+		if (!isKnown()) {
 			return data;
 		}
-		if (data.isUnknown()) {
+		if (!data.isKnown()) {
 			return this;
 		}
 		final float min;
@@ -78,7 +87,7 @@ public class BatteryRecordDataCache extends BaseAccumulationDataCache {
 				getFirstDateMillis(),
 				data.getLastDateMillis(),
 				getUnknownStartDateMillis(),
-				new Record(
+				new RecordData(
 						min, minDateMillis,
 						max, maxDateMillis,
 						record.unknownBatteryVoltageHours, record.unknownDurationMillis,
@@ -91,13 +100,13 @@ public class BatteryRecordDataCache extends BaseAccumulationDataCache {
 
 	@JsonProperty("identifier")
 	@Override
-	public @NonNull Identifier getIdentifier() {
+	public Identifier getIdentifier() {
 		return identifier;
 	}
 
 	@SuppressWarnings("JavaLangClash")
 	@JsonExplicit
-	public static class Record {
+	public static class RecordData {
 
 		private final float minBatteryVoltage;
 		private final long minBatteryVoltageDateMillis;
@@ -128,7 +137,7 @@ public class BatteryRecordDataCache extends BaseAccumulationDataCache {
 		private final long gapDurationMillis;
 
 		@JsonCreator
-		public Record(
+		public RecordData(
 				@JsonProperty(value = "minBatteryVoltage", required = true) float minBatteryVoltage,
 				@JsonProperty(value = "minBatteryVoltageDateMillis", required = true) long minBatteryVoltageDateMillis,
 				@JsonProperty(value = "maxBatteryVoltage", required = true) float maxBatteryVoltage,
@@ -137,8 +146,8 @@ public class BatteryRecordDataCache extends BaseAccumulationDataCache {
 				@JsonProperty(value = "unknownDurationMillis", required = true) long unknownDurationMillis,
 				@JsonProperty(value = "batteryVoltageHours", required = true) double batteryVoltageHours,
 				@JsonProperty(value = "knownDurationMillis", required = true) long knownDurationMillis,
-				@JsonProperty("gapBatteryVoltageHours") Double gapBatteryVoltageHours,
-				@JsonProperty("gapDurationMillis") Long gapDurationMillis
+				@JsonProperty("gapBatteryVoltageHours") @Nullable Double gapBatteryVoltageHours,
+				@JsonProperty("gapDurationMillis") @Nullable Long gapDurationMillis
 		) {
 			this.minBatteryVoltage = minBatteryVoltage;
 			this.minBatteryVoltageDateMillis = minBatteryVoltageDateMillis;

@@ -1,8 +1,10 @@
 package me.retrodaredevil.solarthing.solar.util;
 
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
+import org.jspecify.annotations.NullMarked;
 
 @UtilityClass
+@NullMarked
 public final class ByteUtil {
 	private ByteUtil() { throw new UnsupportedOperationException(); }
 

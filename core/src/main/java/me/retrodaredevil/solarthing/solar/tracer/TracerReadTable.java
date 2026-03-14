@@ -13,6 +13,7 @@ import me.retrodaredevil.solarthing.solar.common.*;
 import me.retrodaredevil.solarthing.solar.tracer.batteryconfig.TracerBatteryConfig;
 import me.retrodaredevil.solarthing.solar.tracer.mode.*;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -20,6 +21,7 @@ import java.time.LocalTime;
 import java.time.MonthDay;
 
 @JsonExplicit
+@NullMarked
 public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeController, DailyAdvancedChargeController, DualTemperature, TracerBatteryConfig, TracerChargingEquipmentStatus {
 
 	SerialConfig SERIAL_CONFIG = new SerialConfigBuilder(115200)
@@ -28,6 +30,7 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 			.setParity(SerialConfig.Parity.NONE)
 			.build();
 
+	// TODO remove NonNull (many occurrences)
 	@Override
 	default @NonNull ChargingStatus getChargingMode() {
 		// In the future, if we figure out if there's a way to tell if the tracer is actually in one of these modes rather than just in Bulk, we may
