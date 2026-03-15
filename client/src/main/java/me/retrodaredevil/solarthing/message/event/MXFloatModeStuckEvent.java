@@ -12,6 +12,7 @@ import me.retrodaredevil.solarthing.packets.identification.KnownIdentifierFragme
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.mx.ChargerMode;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPacket;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +28,7 @@ import java.util.Map;
  * I believe that some older MXs need to be manually turned out of EQ.
  */
 @JsonTypeName("mxfloatstuck")
+@NullMarked
 public class MXFloatModeStuckEvent implements MessageEvent {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MXFloatModeStuckEvent.class);
 

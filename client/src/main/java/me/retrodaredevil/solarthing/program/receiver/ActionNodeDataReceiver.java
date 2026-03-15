@@ -17,6 +17,7 @@ import me.retrodaredevil.solarthing.commands.packets.open.CommandOpenPacketType;
 import me.retrodaredevil.solarthing.commands.packets.open.RequestCommandPacket;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.TargetPacketGroup;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +27,7 @@ import java.util.Map;
  * A {@link PacketGroupReceiver} that receives {@link CommandOpenPacketType#REQUEST_COMMAND} packets and then starts the execution
  * of an action based on {@link RequestCommandPacket#getCommandName()}.
  */
+@NullMarked
 public class ActionNodeDataReceiver implements PacketGroupReceiver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionNodeDataReceiver.class);
 	/*

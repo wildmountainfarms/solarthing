@@ -9,6 +9,7 @@ import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
 import me.retrodaredevil.solarthing.util.TimeUtil;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.text.DecimalFormat;
@@ -18,6 +19,7 @@ import java.time.Duration;
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("lowbatteryvoltage")
+@NullMarked
 public class LowBatteryVoltageEvent extends GracePeriodTimeoutEvent {
 	private static final NumberFormat FORMAT = new DecimalFormat("0.0");
 	private final float batteryVoltage;
@@ -25,7 +27,7 @@ public class LowBatteryVoltageEvent extends GracePeriodTimeoutEvent {
 	@JsonCreator
 	public LowBatteryVoltageEvent(
 			@JsonProperty(value = "voltage", required = true) float batteryVoltage,
-			@JsonProperty("grace_period") @JsonAlias("time") String belowForDurationString,
+			@JsonProperty("grace_period") @JsonAlias("time") @Nullable String belowForDurationString,
 			@JsonProperty(value = "timeout", required = true) String timeoutDurationString
 	) {
 		super(belowForDurationString == null ? 0 : Duration.parse(belowForDurationString).toMillis(), Duration.parse(timeoutDurationString).toMillis());

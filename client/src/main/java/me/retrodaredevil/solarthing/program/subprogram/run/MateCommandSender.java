@@ -6,6 +6,7 @@ import me.retrodaredevil.solarthing.commands.command.CommandProvider;
 import me.retrodaredevil.solarthing.commands.command.OnCommandExecute;
 import me.retrodaredevil.solarthing.commands.command.SourcedCommand;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +16,7 @@ import java.util.Collection;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class MateCommandSender implements OnDataReceive {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MateCommandSender.class);
 	private final CommandProvider<MateCommand> commandProvider;

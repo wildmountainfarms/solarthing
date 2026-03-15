@@ -15,6 +15,7 @@ import me.retrodaredevil.couchdbjava.request.ViewQueryParamsBuilder;
 import me.retrodaredevil.couchdbjava.response.ViewResponse;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.couchdb.SolarThingCouchDb;
+import org.jspecify.annotations.NullMarked;
 
 import java.io.PrintStream;
 import java.time.Duration;
@@ -23,6 +24,7 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class CustomWmfCouchDbEdit20240318 {
 	/**
 	 * The very first bad data is from {@code 240318,05,14/30|zDw4/g} (tracer), which had a timestamp of 1710761245129. We will round down to the nearest second

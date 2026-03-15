@@ -10,6 +10,7 @@ import com.slack.api.methods.SlackApiException;
 import com.slack.api.util.http.SlackHttpClient;
 import me.retrodaredevil.solarthing.message.MessageSender;
 import okhttp3.OkHttpClient;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +22,7 @@ import java.util.concurrent.Executors;
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("slack")
+@NullMarked
 public class SlackMessageSender implements MessageSender {
 	/*
 	When setting up in Slack, make sure your bot has the "chat:write" permission and "chat:write.public" permission

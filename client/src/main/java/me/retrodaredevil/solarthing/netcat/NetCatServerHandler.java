@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.netcat;
 
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,7 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.Executors;
 
+@NullMarked
 public class NetCatServerHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(NetCatServerHandler.class);
 	private final ServerSocket serverSocket;

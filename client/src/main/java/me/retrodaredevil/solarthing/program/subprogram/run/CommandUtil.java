@@ -17,6 +17,7 @@ import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseExcepti
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.collection.StoredPacketGroup;
 import me.retrodaredevil.solarthing.packets.handling.*;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +26,7 @@ import java.util.Collections;
 import java.util.List;
 
 @UtilityClass
+@NullMarked
 public class CommandUtil {
 	private CommandUtil() { throw new UnsupportedOperationException(); }
 	private static final Logger LOGGER = LoggerFactory.getLogger(CommandUtil.class);

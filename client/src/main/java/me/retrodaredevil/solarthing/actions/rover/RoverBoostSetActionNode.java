@@ -13,17 +13,20 @@ import me.retrodaredevil.solarthing.actions.environment.RoverErrorEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.RoverModbusEnvironment;
 import me.retrodaredevil.solarthing.actions.error.ActionErrorState;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverWriteTable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @JsonTypeName("roverboostset")
+@NullMarked
 public class RoverBoostSetActionNode implements ActionNode {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RoverBoostSetActionNode.class);
 
-	private final Integer boostVoltageRaw;
-	private final Integer boostTimeMinutes;
+	private final @Nullable Integer boostVoltageRaw;
+	private final @Nullable Integer boostTimeMinutes;
 	@JsonCreator
-	public RoverBoostSetActionNode(@JsonProperty("voltageraw") Integer boostVoltageRaw, @JsonProperty("minutes") Integer boostTimeMinutes) {
+	public RoverBoostSetActionNode(@JsonProperty("voltageraw") @Nullable Integer boostVoltageRaw, @JsonProperty("minutes") @Nullable Integer boostTimeMinutes) {
 		this.boostVoltageRaw = boostVoltageRaw;
 		this.boostTimeMinutes = boostTimeMinutes;
 		if (boostVoltageRaw == null && boostTimeMinutes == null) {

@@ -27,6 +27,7 @@ import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import okhttp3.logging.HttpLoggingInterceptor;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +38,7 @@ import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class InfluxDb2PacketSaver implements PacketHandler {
 //	private static final Logger LOGGER = LoggerFactory.getLogger(InfluxDbPacketSaver.class);
 	private static final Logger INFLUX_LOGGER = LoggerFactory.getLogger("org.influxdb");

@@ -7,9 +7,11 @@ import me.retrodaredevil.solarthing.message.MessageSender;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.solar.outback.OutbackUtil;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 @JsonTypeName("lowacinput")
+@NullMarked
 public class LowACInputEvent extends GracePeriodTimeoutEvent {
 	private final int lowThresholdVoltage;
 	private final boolean lowRaw;
@@ -20,10 +22,10 @@ public class LowACInputEvent extends GracePeriodTimeoutEvent {
 	public LowACInputEvent(
 			@JsonProperty(value = "grace_period", required = true) String gracePeriodDurationString,
 			@JsonProperty(value = "timeout", required = true) String timeoutDurationString,
-			@JsonProperty(value = "low_threshold") Integer lowThreshold,
-			@JsonProperty(value = "low_threshold_raw") Integer lowThresholdRaw,
-			@JsonProperty(value = "high_threshold") Integer highThreshold,
-			@JsonProperty(value = "high_threshold_raw") Integer highThresholdRaw
+			@JsonProperty(value = "low_threshold") @Nullable Integer lowThreshold,
+			@JsonProperty(value = "low_threshold_raw") @Nullable Integer lowThresholdRaw,
+			@JsonProperty(value = "high_threshold") @Nullable Integer highThreshold,
+			@JsonProperty(value = "high_threshold_raw") @Nullable Integer highThresholdRaw
 	) {
 		super(gracePeriodDurationString, timeoutDurationString);
 		if (lowThreshold != null) {

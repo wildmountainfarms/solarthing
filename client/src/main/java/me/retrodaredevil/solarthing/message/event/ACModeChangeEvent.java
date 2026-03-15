@@ -8,19 +8,22 @@ import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.solar.outback.OutbackUtil;
 import me.retrodaredevil.solarthing.solar.outback.fx.ACMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
 
 @JsonTypeName("acmodechange")
+@NullMarked
 public class ACModeChangeEvent implements MessageEvent {
 	private final List<ACMode> changeTo;
 	private final List<ACMode> changeFrom;
 
 	@JsonCreator
 	public ACModeChangeEvent(
-			@JsonProperty(value = "to") List<ACMode> changeTo,
-			@JsonProperty(value = "from") List<ACMode> changeFrom
+			@JsonProperty(value = "to") @Nullable List<ACMode> changeTo,
+			@JsonProperty(value = "from") @Nullable List<ACMode> changeFrom
 	) {
 		this.changeTo = changeTo == null ? Collections.emptyList() : changeTo;
 		this.changeFrom = changeFrom == null ? Collections.emptyList() : changeFrom;

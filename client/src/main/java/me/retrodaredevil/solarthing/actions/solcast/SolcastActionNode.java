@@ -14,6 +14,7 @@ import me.retrodaredevil.solarthing.solcast.*;
 import me.retrodaredevil.solarthing.solcast.rooftop.Measurement;
 import me.retrodaredevil.solarthing.solcast.rooftop.MeasurementData;
 import okhttp3.OkHttpClient;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import retrofit2.Call;
@@ -27,6 +28,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @JsonTypeName("solcast")
+@NullMarked
 public class SolcastActionNode implements ActionNode {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SolcastActionNode.class);
 

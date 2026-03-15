@@ -6,10 +6,12 @@ import me.retrodaredevil.solarthing.program.action.RunActionMain;
 import me.retrodaredevil.solarthing.program.subprogram.analyze.AnalyzeMain;
 import me.retrodaredevil.solarthing.program.check.CheckMain;
 import me.retrodaredevil.solarthing.program.subprogram.run.RunMain;
+import org.jspecify.annotations.NullMarked;
 
 import java.time.Instant;
 
 @UtilityClass
+@NullMarked
 public final class SolarMain {
 	private SolarMain(){ throw new UnsupportedOperationException(); }
 

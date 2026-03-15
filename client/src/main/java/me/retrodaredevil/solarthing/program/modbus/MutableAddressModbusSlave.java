@@ -3,7 +3,9 @@ package me.retrodaredevil.solarthing.program.modbus;
 import me.retrodaredevil.io.modbus.ModbusMessage;
 import me.retrodaredevil.io.modbus.ModbusSlave;
 import me.retrodaredevil.io.modbus.ModbusSlaveBus;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public class MutableAddressModbusSlave implements ModbusSlave {
 	private int address;
 	private final ModbusSlaveBus modbus;

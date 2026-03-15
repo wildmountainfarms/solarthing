@@ -1,5 +1,8 @@
 package me.retrodaredevil.solarthing.influxdb.retention;
 
+import org.jspecify.annotations.NullMarked;
+
+@NullMarked
 public class ConstantRetentionPolicyGetter implements RetentionPolicyGetter {
 	private final RetentionPolicySetting retentionPolicySetting;
 

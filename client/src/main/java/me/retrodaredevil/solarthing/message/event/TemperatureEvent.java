@@ -6,6 +6,7 @@ import me.retrodaredevil.solarthing.message.MessageSender;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.solar.common.DualTemperature;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.text.DecimalFormat;
@@ -13,6 +14,7 @@ import java.text.NumberFormat;
 import java.time.Duration;
 
 @JsonTypeName("temperature")
+@NullMarked
 public class TemperatureEvent implements MessageEvent {
 	private static final NumberFormat NUMBER_FORMAT = new DecimalFormat("0.0#");
 
@@ -25,11 +27,11 @@ public class TemperatureEvent implements MessageEvent {
 	private @Nullable Long lastSendNanos = null;
 
 	public TemperatureEvent(
-			@JsonProperty("low") Boolean low,
-			@JsonProperty("celsius") Float thresholdCelsius,
-			@JsonProperty("fahrenheit") Float thresholdFahrenheit,
+			@JsonProperty("low") @Nullable Boolean low,
+			@JsonProperty("celsius") @Nullable Float thresholdCelsius,
+			@JsonProperty("fahrenheit") @Nullable Float thresholdFahrenheit,
 			@JsonProperty(value = "timeout", required = true) String timeoutDurationString,
-			@JsonProperty("from") TemperatureType temperatureType) {
+			@JsonProperty("from") @Nullable TemperatureType temperatureType) {
 		this.low = low != null && low; // default to high temperature
 		if (thresholdCelsius != null) {
 			this.thresholdCelsius = thresholdCelsius;

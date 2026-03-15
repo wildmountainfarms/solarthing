@@ -14,10 +14,12 @@ import me.retrodaredevil.solarthing.actions.error.ActionErrorState;
 import me.retrodaredevil.solarthing.solar.renogy.rover.LoadWorkingMode;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverWriteTable;
 import me.retrodaredevil.solarthing.solar.renogy.rover.StreetLight;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @JsonTypeName("roverload")
+@NullMarked
 public class RoverLoadActionNode implements ActionNode {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RoverLoadActionNode.class);
 	private final boolean on;

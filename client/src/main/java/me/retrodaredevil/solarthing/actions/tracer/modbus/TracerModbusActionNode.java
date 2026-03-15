@@ -14,6 +14,8 @@ import me.retrodaredevil.solarthing.actions.environment.TracerErrorEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.TracerModbusEnvironment;
 import me.retrodaredevil.solarthing.actions.error.TryErrorStateAction;
 import me.retrodaredevil.solarthing.packets.identification.NumberedIdentifier;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,6 +26,7 @@ import static java.util.Objects.requireNonNull;
  * @see me.retrodaredevil.solarthing.actions.rover.modbus.RoverModbusActionNode This class is copy pasted and is the tracer version of this.
  */
 @JsonTypeName("tracer-modbus")
+@NullMarked
 public class TracerModbusActionNode implements ActionNode {
 	private final int number;
 	private final List<ActionNode> sequentialActions;
@@ -32,10 +35,10 @@ public class TracerModbusActionNode implements ActionNode {
 
 	@JsonCreator
 	public TracerModbusActionNode(
-			@JsonProperty("number") Integer number,
+			@JsonProperty("number") @Nullable Integer number,
 			@JsonProperty(value = "actions", required = true) List<ActionNode> sequentialActions,
-			@JsonProperty(value = "on_success") ActionNode successAction,
-			@JsonProperty(value = "on_error") ActionNode errorAction
+			@JsonProperty(value = "on_success") @Nullable ActionNode successAction,
+			@JsonProperty(value = "on_error") @Nullable ActionNode errorAction
 	) {
 		this.number = number == null ? NumberedIdentifier.DEFAULT_NUMBER : number;
 		this.sequentialActions = requireNonNull(sequentialActions);

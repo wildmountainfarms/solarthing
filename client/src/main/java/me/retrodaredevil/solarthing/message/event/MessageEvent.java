@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import me.retrodaredevil.solarthing.message.MessageSender;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.InstancePacketGroup;
+import org.jspecify.annotations.NullMarked;
 
 @JsonSubTypes({
 		@JsonSubTypes.Type(LowBatteryVoltageEvent.class),
@@ -20,6 +21,7 @@ import me.retrodaredevil.solarthing.packets.collection.InstancePacketGroup;
 		@JsonSubTypes.Type(NoHeartbeatEvent.class),
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
+@NullMarked
 public interface MessageEvent {
 	default void run(MessageSender sender, FragmentedPacketGroup previous, FragmentedPacketGroup current) {}
 	default void runForEvent(MessageSender sender, InstancePacketGroup packetGroup) {}

@@ -16,6 +16,7 @@ import me.retrodaredevil.solarthing.config.options.DatabaseOption;
 import me.retrodaredevil.solarthing.config.options.PacketHandlingOption;
 import me.retrodaredevil.solarthing.config.databases.DatabaseConfig;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
+import org.jspecify.annotations.NullMarked;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @UtilityClass
+@NullMarked
 public final class ConfigUtil {
 	private ConfigUtil() { throw new UnsupportedOperationException(); }
 

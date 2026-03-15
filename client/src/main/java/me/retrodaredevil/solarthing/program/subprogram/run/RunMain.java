@@ -27,6 +27,7 @@ import me.retrodaredevil.solarthing.program.subprogram.automation.AutomationMain
 import me.retrodaredevil.solarthing.program.subprogram.pvoutput.PVOutputUploadMain;
 import me.retrodaredevil.solarthing.program.subprogram.run.couchdb.CouchDbSetupMain;
 import org.apache.logging.log4j.LogManager;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +41,7 @@ import java.util.Random;
 import static java.util.Objects.requireNonNull;
 
 @UtilityClass
+@NullMarked
 public class RunMain {
 	private RunMain() { throw new UnsupportedOperationException(); }
 

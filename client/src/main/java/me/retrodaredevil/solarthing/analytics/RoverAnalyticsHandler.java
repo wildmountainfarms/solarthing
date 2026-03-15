@@ -4,7 +4,9 @@ import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public class RoverAnalyticsHandler implements PacketHandler {
 	private final AnalyticsManager analyticsManager;
 	private final AnalyticsTimer timer = new AnalyticsTimer();

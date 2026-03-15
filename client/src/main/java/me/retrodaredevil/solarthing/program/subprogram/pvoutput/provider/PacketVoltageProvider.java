@@ -12,12 +12,14 @@ import me.retrodaredevil.solarthing.packets.identification.IdentifierFragmentMat
 import me.retrodaredevil.solarthing.packets.identification.IdentifierRepFragment;
 import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
 import me.retrodaredevil.solarthing.solar.common.PVCurrentAndVoltage;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
 
 @JsonTypeName("packet")
+@NullMarked
 public class PacketVoltageProvider implements VoltageProvider {
 	private final IdentifierFragmentMatcher voltageIdentifierFragmentMatcher;
 	private final VoltagePacketType voltagePacketType;
@@ -25,7 +27,7 @@ public class PacketVoltageProvider implements VoltageProvider {
 	@JsonCreator
 	public PacketVoltageProvider(
 			@JsonProperty(value = "identifier", required = true) @JsonDeserialize(as = IdentifierRepFragment.class) IdentifierFragmentMatcher voltageIdentifierFragmentMatcher,
-			@JsonProperty("from") VoltagePacketType voltagePacketType) {
+			@JsonProperty("from") @Nullable VoltagePacketType voltagePacketType) {
 		this.voltageIdentifierFragmentMatcher = requireNonNull(voltageIdentifierFragmentMatcher);
 		this.voltagePacketType = voltagePacketType == null ? VoltagePacketType.PV : voltagePacketType;
 	}

@@ -22,6 +22,7 @@ import me.retrodaredevil.solarthing.SolarThingDatabaseType;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.io.PrintStream;
@@ -31,6 +32,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
+@NullMarked
 public class CouchDbSetupMain {
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
 
@@ -244,7 +246,7 @@ public class CouchDbSetupMain {
 		void promptContinue();
 		@Nullable String promptContinueOrCustomCommand();
 		@Nullable String promptUserName(SolarThingDatabaseType.UserType userType);
-		@NonNull String promptUserPassword(SolarThingDatabaseType.UserType userType);
+		String promptUserPassword(SolarThingDatabaseType.UserType userType);
 	}
 	public static class ScannerPrompt implements Prompt {
 

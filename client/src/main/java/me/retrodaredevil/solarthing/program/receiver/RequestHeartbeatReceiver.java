@@ -11,10 +11,12 @@ import me.retrodaredevil.solarthing.type.event.feedback.HeartbeatData;
 import me.retrodaredevil.solarthing.type.event.feedback.HeartbeatPacket;
 import me.retrodaredevil.solarthing.type.event.feedback.ImmutableHeartbeatPacket;
 import me.retrodaredevil.solarthing.type.open.OpenSource;
+import org.jspecify.annotations.NullMarked;
 
 import java.time.Instant;
 import java.util.Arrays;
 
+@NullMarked
 public class RequestHeartbeatReceiver implements PacketGroupReceiver {
 	private final PacketListReceiverHandler eventPacketListReceiverHandler;
 

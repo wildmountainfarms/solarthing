@@ -9,6 +9,7 @@ import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.message.MessageSender;
 import me.retrodaredevil.solarthing.config.ConfigUtil;
+import org.jspecify.annotations.NullMarked;
 
 import java.nio.file.Path;
 
@@ -18,6 +19,7 @@ import static java.util.Objects.requireNonNull;
  * An action node that is designed to send a message directly to a {@link MessageSender}
  */
 @JsonTypeName("sendmessage")
+@NullMarked
 public class SendMessageActionNode implements ActionNode {
 
 	private final MessageSender messageSender;

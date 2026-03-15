@@ -14,6 +14,7 @@ import me.retrodaredevil.solarthing.packets.identification.IdentifierFragmentMat
 import me.retrodaredevil.solarthing.packets.identification.IdentifierRepFragment;
 import me.retrodaredevil.solarthing.solar.common.BatteryTemperature;
 import me.retrodaredevil.solarthing.solar.common.ControllerTemperature;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
@@ -24,6 +25,7 @@ import static java.util.Objects.requireNonNull;
  * Most of the time the source of the temperature packet is
  */
 @JsonTypeName("packet")
+@NullMarked
 public class PacketTemperatureCelsiusProvider implements TemperatureCelsiusProvider {
 
 	private final IdentifierFragmentMatcher temperatureIdentifierFragmentMatcher;
@@ -32,7 +34,7 @@ public class PacketTemperatureCelsiusProvider implements TemperatureCelsiusProvi
 	@JsonCreator
 	public PacketTemperatureCelsiusProvider(
 			@JsonProperty(value = "identifier", required = true) @JsonDeserialize(as = IdentifierRepFragment.class) IdentifierFragmentMatcher temperatureIdentifierFragmentMatcher,
-			@JsonProperty("from") TemperaturePacketType temperaturePacketType) {
+			@JsonProperty("from") @Nullable TemperaturePacketType temperaturePacketType) {
 		this.temperatureIdentifierFragmentMatcher = requireNonNull(temperatureIdentifierFragmentMatcher);
 		this.temperaturePacketType = temperaturePacketType == null ? TemperaturePacketType.PACKET : temperaturePacketType;
 	}

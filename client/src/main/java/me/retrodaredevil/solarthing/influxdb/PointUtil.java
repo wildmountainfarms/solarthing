@@ -11,10 +11,12 @@ import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifier;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.*;
 
 @UtilityClass
+@NullMarked
 public final class PointUtil {
 	private PointUtil() { throw new UnsupportedOperationException(); }
 

@@ -13,13 +13,16 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.StreetLight;
 import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusConstants;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.SpecialPowerControl_E02D;
 import me.retrodaredevil.solarthing.util.StringUtil;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.nio.charset.Charset;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Scanner;
 
 @UtilityClass
+@NullMarked
 public final class RoverSetupProgram {
 	private RoverSetupProgram(){ throw new UnsupportedOperationException(); }
 
@@ -89,7 +92,7 @@ public final class RoverSetupProgram {
 					case "chargingcurrentsetting" -> System.out.println(read.getChargingCurrentSetting());
 					case "nominalbatterycapacity", "batterycapacity", "batteryah" -> System.out.println(read.getNominalBatteryCapacity());
 					case "systemvoltagesetting", "systemvoltage" -> System.out.println(read.getSystemVoltageSetting().getModeName());
-					case "recognizedvoltage" -> System.out.println(read.getRecognizedVoltage().getModeName());
+					case "recognizedvoltage" -> System.out.println(Optional.ofNullable(read.getRecognizedVoltage()).map(Voltage::getModeName).orElse("voltage detection is broken on this model"));
 					case "batterytype" -> System.out.println(read.getBatteryType().getModeName());
 					case "overvoltagethresholdraw" -> System.out.println(read.getOverVoltageThresholdRaw());
 					case "chargingvoltagelimitraw" -> System.out.println(read.getChargingVoltageLimitRaw());

@@ -20,7 +20,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
@@ -34,6 +34,7 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@NullMarked
 public final class AnalyzeMain {
 	private AnalyzeMain() { throw new UnsupportedOperationException(); }
 
@@ -138,7 +139,7 @@ public final class AnalyzeMain {
 		return 0;
 	}
 
-	private static @NonNull Options getOptions() {
+	private static Options getOptions() {
 		Options options = new Options();
 
 		Option input = new Option(null, "couchdb", true, "CouchDB database configuration file path");

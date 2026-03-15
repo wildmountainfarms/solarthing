@@ -14,6 +14,8 @@ import me.retrodaredevil.solarthing.actions.environment.RoverErrorEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.RoverModbusEnvironment;
 import me.retrodaredevil.solarthing.actions.error.TryErrorStateAction;
 import me.retrodaredevil.solarthing.packets.identification.NumberedIdentifier;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,6 +32,7 @@ import static java.util.Objects.requireNonNull;
  * If an error occurs while an action is executing, the action will complete then the "on_error" action will become active.
  */
 @JsonTypeName("rover-modbus")
+@NullMarked
 public class RoverModbusActionNode implements ActionNode {
 	private final int number;
 	private final List<ActionNode> sequentialActions;
@@ -38,10 +41,10 @@ public class RoverModbusActionNode implements ActionNode {
 
 	@JsonCreator
 	public RoverModbusActionNode(
-			@JsonProperty("number") Integer number,
+			@JsonProperty("number") @Nullable Integer number,
 			@JsonProperty(value = "actions", required = true) List<ActionNode> sequentialActions,
-			@JsonProperty(value = "on_success") ActionNode successAction,
-			@JsonProperty(value = "on_error") ActionNode errorAction
+			@JsonProperty(value = "on_success") @Nullable ActionNode successAction,
+			@JsonProperty(value = "on_error") @Nullable ActionNode errorAction
 	) {
 		this.number = number == null ? NumberedIdentifier.DEFAULT_NUMBER : number;
 		this.sequentialActions = requireNonNull(sequentialActions);

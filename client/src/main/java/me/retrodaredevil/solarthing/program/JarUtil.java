@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.program;
 
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
@@ -13,6 +14,7 @@ import java.nio.file.attribute.FileTime;
 import java.time.Instant;
 
 @UtilityClass
+@NullMarked
 public final class JarUtil {
 	private JarUtil() { throw new UnsupportedOperationException(); }
 	/*
@@ -33,7 +35,7 @@ public final class JarUtil {
 		}
 	}
 
-	public static String getJarFileName() {
+	public static @Nullable String getJarFileName() {
 		return getData().getJarFileNameOrNull();
 	}
 	private static @Nullable Instant getLastModified(URI uri) {
@@ -59,9 +61,9 @@ public final class JarUtil {
 
 	public static class Data {
 		private final URI uri;
-		private final Instant lastModified;
+		private final @Nullable Instant lastModified;
 
-		private Data(URI uri, Instant lastModified) {
+		private Data(URI uri, @Nullable Instant lastModified) {
 			this.uri = uri;
 			this.lastModified = lastModified;
 		}

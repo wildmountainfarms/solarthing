@@ -26,6 +26,7 @@ import me.retrodaredevil.solarthing.config.options.ActionsOption;
 import me.retrodaredevil.solarthing.config.options.CommandOption;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,13 +37,14 @@ import java.util.List;
 import java.util.Map;
 
 @UtilityClass
+@NullMarked
 public final class ActionUtil {
 	private ActionUtil() { throw new UnsupportedOperationException(); }
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionUtil.class);
 
 	private static final ObjectMapper CONFIG_MAPPER = ActionUtil.registerActionNodes(JacksonUtil.defaultMapper());
 
-	@Contract("null -> fail; _ -> param1")
+	@Contract("_ -> param1")
 	public static ObjectMapper registerActionNodes(ObjectMapper objectMapper) {
 		objectMapper.registerSubtypes(
 				MateCommandActionNode.class,

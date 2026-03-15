@@ -3,7 +3,9 @@ package me.retrodaredevil.solarthing.influxdb.infuxdb2;
 import com.influxdb.client.write.Point;
 import me.retrodaredevil.solarthing.influxdb.PointUtil;
 import me.retrodaredevil.solarthing.packets.Packet;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public class ConstantMeasurementPacketPoint2Creator implements PacketPoint2Creator {
 	private final String measurement;
 

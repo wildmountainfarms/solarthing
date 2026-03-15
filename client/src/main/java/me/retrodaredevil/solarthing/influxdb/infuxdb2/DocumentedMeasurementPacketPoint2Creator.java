@@ -5,7 +5,9 @@ import me.retrodaredevil.solarthing.influxdb.PointUtil;
 import me.retrodaredevil.solarthing.packets.DocumentedPacket;
 import me.retrodaredevil.solarthing.packets.DocumentedPacketType;
 import me.retrodaredevil.solarthing.packets.Packet;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public enum DocumentedMeasurementPacketPoint2Creator implements PacketPoint2Creator {
 	INSTANCE;
 	@Override

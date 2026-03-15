@@ -3,12 +3,14 @@ package me.retrodaredevil.solarthing.message.event;
 import me.retrodaredevil.solarthing.message.MessageSender;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.util.TimeUtil;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.time.Duration;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public abstract class GracePeriodTimeoutEvent implements MessageEvent {
 	private final long gracePeriod;
 	private final long timeout;

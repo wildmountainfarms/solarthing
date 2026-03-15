@@ -1,8 +1,11 @@
 package me.retrodaredevil.solarthing.message;
 
+import org.jspecify.annotations.NullMarked;
+
 import java.util.Collection;
 import java.util.List;
 
+@NullMarked
 public class MessageSenderMultiplexer implements MessageSender {
 	private final List<MessageSender> messageSenderList;
 

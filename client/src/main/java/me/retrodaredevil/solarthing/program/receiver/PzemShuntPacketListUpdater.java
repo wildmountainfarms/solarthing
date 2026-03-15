@@ -6,11 +6,13 @@ import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.solar.pzem.ImmutablePzemShuntStatusPacket;
 import me.retrodaredevil.solarthing.solar.pzem.PzemShuntReadTable;
 import me.retrodaredevil.solarthing.solar.pzem.PzemShuntStatusPacket;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+@NullMarked
 public class PzemShuntPacketListUpdater implements PacketListReceiver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PzemShuntPacketListUpdater.class);
 	private final int dataId;

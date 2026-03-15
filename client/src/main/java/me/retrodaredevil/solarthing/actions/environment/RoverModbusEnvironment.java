@@ -2,7 +2,9 @@ package me.retrodaredevil.solarthing.actions.environment;
 
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverReadTable;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverWriteTable;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public class RoverModbusEnvironment {
 	private final RoverReadTable read;
 	private final RoverWriteTable write;

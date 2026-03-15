@@ -1,5 +1,8 @@
 package me.retrodaredevil.solarthing.actions.error;
 
+import org.jspecify.annotations.NullMarked;
+
+@NullMarked
 public final class ActionErrorState {
 
 	private int errorCount = 0;

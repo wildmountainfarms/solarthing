@@ -13,10 +13,12 @@ import me.retrodaredevil.solarthing.actions.environment.TracerModbusEnvironment;
 import me.retrodaredevil.solarthing.actions.error.ActionErrorState;
 import me.retrodaredevil.solarthing.solar.tracer.TracerWriteTable;
 import me.retrodaredevil.solarthing.solar.tracer.mode.LoadControlMode;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @JsonTypeName("tracerload")
+@NullMarked
 public class TracerLoadActionNode implements ActionNode {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TracerLoadActionNode.class);
 

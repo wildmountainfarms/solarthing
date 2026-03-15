@@ -6,10 +6,12 @@ import me.retrodaredevil.action.SimpleAction;
 import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.MateCommandEnvironment;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Queue;
 
 @JsonTypeName("matecommandwait")
+@NullMarked
 public class MateCommandWaitActionNode implements ActionNode {
 
 	@Override

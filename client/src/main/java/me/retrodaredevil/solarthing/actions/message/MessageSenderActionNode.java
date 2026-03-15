@@ -119,6 +119,12 @@ public class MessageSenderActionNode implements ActionNode {
 			for (MessageEventNode messageEventNode : messageEventNodes) {
 				MessageSender sender = getMessageSenderFrom(messageEventNode);
 				if (statusRun) {
+					//noinspection ConstantValue
+					assert last != null;
+					//noinspection ConstantValue
+					assert packetGroup != null;
+					requireNonNull(last, "statusRun boolean flag should mean that last is non-null");
+					requireNonNull(packetGroup, "statusRun boolean flag should mean that packetGroup is non-null");
 					messageEventNode.getMessageEvent().run(sender, last, packetGroup);
 				}
 				for (InstancePacketGroup instancePacketGroup : unhandledEventInstancePacketGroups) {

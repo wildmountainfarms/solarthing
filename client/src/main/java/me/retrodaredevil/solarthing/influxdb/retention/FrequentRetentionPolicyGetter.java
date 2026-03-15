@@ -2,8 +2,10 @@ package me.retrodaredevil.solarthing.influxdb.retention;
 
 import me.retrodaredevil.solarthing.util.frequency.FrequentHandler;
 import me.retrodaredevil.solarthing.util.frequency.FrequentObject;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+@NullMarked
 public class FrequentRetentionPolicyGetter implements RetentionPolicyGetter {
 	private final FrequentHandler<RetentionPolicySetting> handler;
 

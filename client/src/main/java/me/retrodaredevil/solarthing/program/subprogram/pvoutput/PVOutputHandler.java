@@ -23,6 +23,7 @@ import me.retrodaredevil.solarthing.solar.common.DailyChargeController;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.FXDailyData;
 import me.retrodaredevil.solarthing.solar.outback.fx.extra.DailyFXPacket;
 import me.retrodaredevil.solarthing.util.IdentifierUtil;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,6 +35,7 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+@NullMarked
 public class PVOutputHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PVOutputHandler.class);
 

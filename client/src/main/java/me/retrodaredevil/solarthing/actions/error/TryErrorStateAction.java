@@ -3,9 +3,12 @@ package me.retrodaredevil.solarthing.actions.error;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.LinkedAction;
 import me.retrodaredevil.action.SimpleAction;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
+@NullMarked
 public class TryErrorStateAction extends SimpleAction implements LinkedAction {
 
 	private final List<Action> actions;
@@ -13,7 +16,7 @@ public class TryErrorStateAction extends SimpleAction implements LinkedAction {
 	private final Action errorAction;
 	private final ActionErrorState actionErrorState;
 	private int index = 0;
-	private Action nextAction;
+	private @Nullable Action nextAction;
 
 	public TryErrorStateAction(List<Action> actions, Action successAction, Action errorAction, ActionErrorState actionErrorState) {
 		super(false);
@@ -50,7 +53,7 @@ public class TryErrorStateAction extends SimpleAction implements LinkedAction {
 	}
 
 	@Override
-	public Action getNextAction() {
+	public @Nullable Action getNextAction() {
 		return nextAction;
 	}
 }

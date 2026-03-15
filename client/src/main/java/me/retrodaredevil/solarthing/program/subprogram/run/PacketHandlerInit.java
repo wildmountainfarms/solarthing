@@ -57,6 +57,7 @@ import me.retrodaredevil.solarthing.reason.PacketCollectionExecutionReason;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import me.retrodaredevil.solarthing.util.frequency.FrequentHandler;
 import okhttp3.MediaType;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,6 +73,7 @@ import java.util.function.Supplier;
 import static java.util.Objects.requireNonNull;
 
 @UtilityClass
+@NullMarked
 public class PacketHandlerInit {
 	private PacketHandlerInit(){ throw new UnsupportedOperationException(); }
 

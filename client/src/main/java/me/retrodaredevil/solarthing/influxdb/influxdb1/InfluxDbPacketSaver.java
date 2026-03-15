@@ -28,6 +28,7 @@ import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
 import org.influxdb.dto.Query;
 import org.influxdb.dto.QueryResult;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +45,7 @@ import static java.util.Objects.requireNonNull;
  * <p>
  * Note that when saving, with the current implementation, integers are not stored. Only floats are stored.
  */
+@NullMarked
 public class InfluxDbPacketSaver implements PacketHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(InfluxDbPacketSaver.class);
 	private static final Logger INFLUX_LOGGER = LoggerFactory.getLogger("org.influxdb");

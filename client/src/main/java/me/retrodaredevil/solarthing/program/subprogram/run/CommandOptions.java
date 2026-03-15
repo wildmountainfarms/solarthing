@@ -26,7 +26,7 @@ public interface CommandOptions {
 	boolean isValidate();
 
 	@Unparsed(name = "LEGACY ARGUMENTS")
-	List<String> getLegacyOptionsRaw();
+	@Nullable List<String> getLegacyOptionsRaw();
 
 	// Note that we cannot use default methods here as jewelcli does not like them
 }

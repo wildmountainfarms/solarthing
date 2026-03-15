@@ -36,6 +36,7 @@ import me.retrodaredevil.solarthing.util.JacksonUtil;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import retrofit2.Call;
@@ -54,6 +55,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+@NullMarked
 public class PVOutputUploadMain {
 	private PVOutputUploadMain(){ throw new UnsupportedOperationException(); }
 	private static final Logger LOGGER = LoggerFactory.getLogger(PVOutputUploadMain.class);

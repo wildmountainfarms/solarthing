@@ -8,19 +8,22 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.RoverReadTable;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPackets;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverWriteTable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class RoverPacketListUpdater implements PacketListReceiver {
 
 	private final int number;
 	private final RoverReadTable read;
 	private final RoverWriteTable write;
-	private final ConnectionHandler connectionHandler;
+	private final @Nullable ConnectionHandler connectionHandler;
 
-	public RoverPacketListUpdater(int number, RoverReadTable read, RoverWriteTable write, ConnectionHandler connectionHandler) {
+	public RoverPacketListUpdater(int number, RoverReadTable read, RoverWriteTable write, @Nullable ConnectionHandler connectionHandler) {
 		this.number = number;
 		this.read = requireNonNull(read);
 		this.write = requireNonNull(write);

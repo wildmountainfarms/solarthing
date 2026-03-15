@@ -9,6 +9,7 @@ import me.retrodaredevil.io.modbus.handling.ReadInputRegisters;
 import me.retrodaredevil.io.modbus.parsing.DefaultMessageParser;
 import me.retrodaredevil.io.modbus.parsing.MessageParseException;
 import me.retrodaredevil.io.modbus.parsing.MessageParser;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +23,7 @@ import java.util.function.BiFunction;
  * The advantage to this is that bulk requests can be performed and cached, then smaller requests can use that cache
  * to avoid many unnecessary and inefficient small requests.
  */
+@NullMarked
 public class ModbusCacheSlave implements ModbusSlave {
 	private static final MessageParser PARSER = new DefaultMessageParser();
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModbusCacheSlave.class);

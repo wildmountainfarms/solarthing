@@ -9,6 +9,8 @@ import me.retrodaredevil.action.node.PassActionNode;
 import me.retrodaredevil.action.node.QueueActionNode;
 import me.retrodaredevil.action.node.RaceActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,8 +21,8 @@ import java.nio.file.Path;
 import java.util.Arrays;
 
 import static java.util.Objects.requireNonNull;
-
 @JsonTypeName("writetext")
+@NullMarked
 public class WriteTextActionNode implements ActionNode {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(WriteTextActionNode.class);
@@ -34,8 +36,8 @@ public class WriteTextActionNode implements ActionNode {
 	public WriteTextActionNode(
 			@JsonProperty(value = "file", required = true) Path file,
 			@JsonProperty(value = "text", required = true) String text,
-			@JsonProperty("onfail") ActionNode onFailureAction,
-			@JsonProperty("finally") ActionNode finallyAction
+			@JsonProperty("onfail") @Nullable ActionNode onFailureAction,
+			@JsonProperty("finally") @Nullable ActionNode finallyAction
 	) {
 		this.file = requireNonNull(file);
 		this.text = requireNonNull(text);

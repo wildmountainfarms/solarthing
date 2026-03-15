@@ -9,11 +9,13 @@ import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import me.retrodaredevil.solarthing.util.StringUtil;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
 
 @UtilityClass
+@NullMarked
 public final class NetCatUtil {
 	private NetCatUtil() { throw new UnsupportedOperationException(); }
 

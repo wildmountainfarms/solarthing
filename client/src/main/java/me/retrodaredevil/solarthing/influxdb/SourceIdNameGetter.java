@@ -1,7 +1,9 @@
 package me.retrodaredevil.solarthing.influxdb;
 
 import me.retrodaredevil.solarthing.packets.collection.InstancePacketGroup;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public enum SourceIdNameGetter implements NameGetter {
 	INSTANCE;
 	@Override

@@ -5,7 +5,7 @@ import me.retrodaredevil.couchdbjava.exception.CouchDbException;
 import me.retrodaredevil.solarthing.SolarThingDatabaseType;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.program.subprogram.run.couchdb.CouchDbSetupMain;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.io.OutputStream;
@@ -14,6 +14,7 @@ import java.io.PrintStream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @UtilityClass
+@NullMarked
 public class IntegrationSetup {
 	private IntegrationSetup() { throw new UnsupportedOperationException(); }
 
@@ -40,7 +41,7 @@ public class IntegrationSetup {
 		}
 
 		@Override
-		public @NonNull String promptUserPassword(SolarThingDatabaseType.UserType userType) {
+		public String promptUserPassword(SolarThingDatabaseType.UserType userType) {
 			return IntegrationUtil.getAuthFor(userType).getPassword();
 		}
 	}

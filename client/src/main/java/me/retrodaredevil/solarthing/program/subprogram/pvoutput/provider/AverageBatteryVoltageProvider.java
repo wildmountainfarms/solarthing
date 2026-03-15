@@ -4,11 +4,13 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.DoubleSummaryStatistics;
 
 @JsonTypeName("average-battery-voltage")
+@NullMarked
 public enum AverageBatteryVoltageProvider implements VoltageProvider {
 	INSTANCE;
 

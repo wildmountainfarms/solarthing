@@ -19,6 +19,8 @@ import me.retrodaredevil.solarthing.solar.tracer.TracerWriteTable;
 import me.retrodaredevil.solarthing.solar.tracer.batteryconfig.TracerBatteryConfigBuilder;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import me.retrodaredevil.solarthing.util.StringUtil;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +30,7 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class TracerPacketListUpdater implements PacketListReceiver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TracerPacketListUpdater.class);
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
@@ -35,12 +38,12 @@ public class TracerPacketListUpdater implements PacketListReceiver {
 	private final int number;
 	private final TracerReadTable read;
 	private final TracerWriteTable write;
-	private final TracerClockOptions tracerClockOptions;
-	private final ConnectionHandler connectionHandler;
+	private final @Nullable TracerClockOptions tracerClockOptions;
+	private final @Nullable ConnectionHandler connectionHandler;
 	/** Set to true if we queue up {@link TracerBatteryConfigBuilder} fields before writing them */
 	private final boolean connectionHandlerHasFlushLogic;
 
-	public TracerPacketListUpdater(int number, TracerReadTable read, TracerWriteTable write, TracerClockOptions tracerClockOptions, ConnectionHandler connectionHandler, boolean connectionHandlerHasFlushLogic) {
+	public TracerPacketListUpdater(int number, TracerReadTable read, TracerWriteTable write, @Nullable TracerClockOptions tracerClockOptions, @Nullable ConnectionHandler connectionHandler, boolean connectionHandlerHasFlushLogic) {
 		this.number = number;
 		this.read = requireNonNull(read);
 		this.write = requireNonNull(write);

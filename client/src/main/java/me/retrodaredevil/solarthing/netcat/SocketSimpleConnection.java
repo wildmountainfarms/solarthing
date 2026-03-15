@@ -1,6 +1,6 @@
 package me.retrodaredevil.solarthing.netcat;
 
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class SocketSimpleConnection implements SimpleConnection {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SocketSimpleConnection.class);
 	private final Socket socket;
@@ -48,7 +49,7 @@ public class SocketSimpleConnection implements SimpleConnection {
 	}
 
 	@Override
-	public void send(@NonNull String line) {
+	public void send(String line) {
 		LOGGER.info("Sending " + line);
 		requireNonNull(line);
 		writer.println(line);

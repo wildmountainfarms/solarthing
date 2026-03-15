@@ -20,6 +20,7 @@ import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.solar.outback.fx.ACMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 import okhttp3.OkHttpClient;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import retrofit2.Call;
@@ -35,6 +36,7 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("homeassistant")
+@NullMarked
 public class HomeAssistantActionNode implements ActionNode {
 	private static final Logger LOGGER = LoggerFactory.getLogger(HomeAssistantActionNode.class);
 	private static final NumberFormat FORMAT = new DecimalFormat("0.0");

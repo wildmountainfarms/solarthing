@@ -15,6 +15,7 @@ import me.retrodaredevil.solarthing.packets.handling.CommonPacketHandleException
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+@NullMarked
 public class CouchDbPacketSaver implements PacketHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CouchDbPacketSaver.class);
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();

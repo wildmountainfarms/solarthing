@@ -9,12 +9,14 @@ import me.retrodaredevil.solarthing.type.event.feedback.HeartbeatData;
 import me.retrodaredevil.solarthing.type.event.feedback.HeartbeatPacket;
 import me.retrodaredevil.solarthing.util.heartbeat.HeartbeatIdentifier;
 import me.retrodaredevil.solarthing.util.heartbeat.HeartbeatNode;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 @JsonTypeName("noheartbeat")
+@NullMarked
 public class NoHeartbeatEvent implements MessageEvent {
 
 	private final Map<HeartbeatIdentifier, HeartbeatNode> map = new HashMap<>();

@@ -4,9 +4,11 @@ import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
 import okhttp3.*;
+import org.jspecify.annotations.NullMarked;
 
 import java.io.IOException;
 
+@NullMarked
 public class PostPacketHandler implements PacketHandler {
 	private final String url;
 	private final StringPacketHandler stringPacketHandler;

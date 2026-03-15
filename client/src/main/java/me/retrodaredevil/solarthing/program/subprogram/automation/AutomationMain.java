@@ -37,6 +37,8 @@ import me.retrodaredevil.solarthing.util.TimeRange;
 import me.retrodaredevil.solarthing.util.sync.BasicResourceManager;
 import me.retrodaredevil.solarthing.util.sync.ReadWriteResourceManager;
 import me.retrodaredevil.solarthing.util.sync.ResourceManager;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,8 +51,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static java.util.Objects.requireNonNull;
+
 
 @UtilityClass
+@NullMarked
 public final class AutomationMain {
 	private AutomationMain() { throw new UnsupportedOperationException(); }
 
@@ -68,6 +73,8 @@ public final class AutomationMain {
 				return databaseCache.createRecommendedQueryBuilder().endKey(null).build();
 			}
 		});
+		long startKey = requireNonNull(query.getStartKey(), "Start key cannot be null");
+		Long endKey = query.getEndKey();
 
 		final List<StoredPacketGroup> rawPacketGroups;
 		try {
@@ -79,7 +86,7 @@ public final class AutomationMain {
 		}
 
 		databaseCacheManager.update(databaseCache -> {
-			databaseCache.feed(rawPacketGroups, query.getStartKey(), query.getEndKey());
+			databaseCache.feed(rawPacketGroups, startKey, endKey);
 		});
 		if (rawPacketGroups.isEmpty()) {
 			// This message is commonly printed for solarthing_open database, which is fine.
@@ -101,8 +108,9 @@ public final class AutomationMain {
 
 		VariableEnvironment globalVariableEnvironment = new VariableEnvironment();
 
-		AtomicReference<FragmentedPacketGroup> latestPacketGroupReference = new AtomicReference<>(null); // Use atomic reference so that access is thread safe
-		AtomicReference<List<VersionedPacket<StoredAlterPacket>>> alterPacketsReference = new AtomicReference<>(null); // Use atomic reference so that access is thread safe
+		// TODO consider opening NullAway bug that diamond operator does not recognize @Nullable info
+		AtomicReference<@Nullable FragmentedPacketGroup> latestPacketGroupReference = new AtomicReference<@Nullable FragmentedPacketGroup>(null); // Use atomic reference so that access is thread safe
+		AtomicReference<@Nullable List<VersionedPacket<StoredAlterPacket>>> alterPacketsReference = new AtomicReference<@Nullable List<VersionedPacket<StoredAlterPacket>>>(null); // Use atomic reference so that access is thread safe
 		FragmentedPacketGroupProvider fragmentedPacketGroupProvider = latestPacketGroupReference::get; // note this may return null, and that's OK // This is thread safe if needed
 		Clock clock = Clock.systemUTC();
 

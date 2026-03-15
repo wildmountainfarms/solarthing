@@ -3,20 +3,22 @@ package me.retrodaredevil.solarthing.influxdb.retention;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 @JsonDeserialize(builder = RetentionPolicySetting.Builder.class)
+@NullMarked
 public final class RetentionPolicySetting {
 	/**
 	 * This corresponds to a default retention policy that is automatically determined when you put a point in a database without specifying a retention policy.
 	 */
 	public static final RetentionPolicySetting DEFAULT_POLICY = new RetentionPolicySetting(null, false, false, false, null);
 
-	private final String name;
+	private final @Nullable String name;
 	private final boolean tryToCreate;
 	private final boolean automaticallyAlter;
 	private final boolean ignoreUnsuccessfulCreate;
-	private final RetentionPolicy retentionPolicy;
+	private final @Nullable RetentionPolicy retentionPolicy;
 
 	private RetentionPolicySetting(@Nullable String name, boolean tryToCreate, boolean automaticallyAlter, boolean ignoreUnsuccessfulCreate, @Nullable RetentionPolicy retentionPolicy) {
 		this.name = name;
@@ -41,7 +43,7 @@ public final class RetentionPolicySetting {
 		return new RetentionPolicySetting(name, false, false, false, null);
 	}
 
-	public String getName() {
+	public @Nullable String getName() {
 		return name;
 	}
 
@@ -53,7 +55,7 @@ public final class RetentionPolicySetting {
 		return automaticallyAlter;
 	}
 
-	public RetentionPolicy getRetentionPolicy() {
+	public @Nullable RetentionPolicy getRetentionPolicy() {
 		return retentionPolicy;
 	}
 

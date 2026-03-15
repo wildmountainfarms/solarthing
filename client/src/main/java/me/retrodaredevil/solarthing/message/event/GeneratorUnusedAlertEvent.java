@@ -8,9 +8,11 @@ import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.solar.outback.fx.ACMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 @JsonTypeName("generatorunusedalert")
+@NullMarked
 public class GeneratorUnusedAlertEvent extends GracePeriodTimeoutEvent {
 	private final int lowThresholdVoltage;
 	private final boolean lowRaw;
@@ -19,8 +21,8 @@ public class GeneratorUnusedAlertEvent extends GracePeriodTimeoutEvent {
 	public GeneratorUnusedAlertEvent(
 			@JsonProperty(value = "grace_period", required = true) String gracePeriodDurationString,
 			@JsonProperty(value = "timeout", required = true) String timeoutDurationString,
-			@JsonProperty(value = "voltage_threshold") Integer lowThreshold,
-			@JsonProperty(value = "voltage_threshold_raw") Integer lowThresholdRaw
+			@JsonProperty(value = "voltage_threshold") @Nullable Integer lowThreshold,
+			@JsonProperty(value = "voltage_threshold_raw") @Nullable Integer lowThresholdRaw
 	) {
 		super(gracePeriodDurationString, timeoutDurationString);
 		if (lowThreshold != null) {

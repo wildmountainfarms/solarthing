@@ -2,7 +2,9 @@ package me.retrodaredevil.solarthing.actions.environment;
 
 import me.retrodaredevil.solarthing.solar.tracer.TracerReadTable;
 import me.retrodaredevil.solarthing.solar.tracer.TracerWriteTable;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public final class TracerModbusEnvironment {
 	private final TracerReadTable read;
 	private final TracerWriteTable write;

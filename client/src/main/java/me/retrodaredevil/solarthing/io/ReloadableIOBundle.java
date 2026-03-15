@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.io;
 
 import me.retrodaredevil.io.IOBundle;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+@NullMarked
 public class ReloadableIOBundle implements IOBundle {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ReloadableIOBundle.class);
 	@SuppressWarnings("InputStreamSlowMultibyteRead")

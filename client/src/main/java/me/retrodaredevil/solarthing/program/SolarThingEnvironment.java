@@ -1,9 +1,11 @@
 package me.retrodaredevil.solarthing.program;
 
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 @UtilityClass
+@NullMarked
 public final class SolarThingEnvironment {
 	private SolarThingEnvironment() { throw new UnsupportedOperationException(); }
 

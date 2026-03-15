@@ -5,10 +5,12 @@ import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXStatusPacket;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@NullMarked
 public class MateAnalyticsHandler implements PacketHandler {
 	private final AnalyticsManager analyticsManager;
 	private final AnalyticsTimer timer = new AnalyticsTimer();

@@ -13,6 +13,7 @@ public record CommonPercentiles(
 ) {
 	private static final Quantiles.ScaleAndIndexes PERCENTILE_1000 = Quantiles.scale(1000).indexes(1, 10, 100, 900, 990, 999);
 
+	@SuppressWarnings("NullAway") // TODO NullAway seems to be incorrect here, or maybe bug in this library?
 	public static CommonPercentiles fromDataset(List<? extends Number> dataset) {
 		Map<Integer, Double> result = PERCENTILE_1000.compute(dataset);
 		return new CommonPercentiles(

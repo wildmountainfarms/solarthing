@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.netcat;
 
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.io.EOFException;
@@ -9,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
 
+@NullMarked
 public class ConnectionHandler {
 	private final NetCatServerHandler netCatServerHandler;
 	private final List<SimpleConnection> connections = new ArrayList<>();

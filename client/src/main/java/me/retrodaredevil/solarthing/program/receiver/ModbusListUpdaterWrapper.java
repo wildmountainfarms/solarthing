@@ -14,12 +14,16 @@ import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.ExceptionCodeError;
 import me.retrodaredevil.solarthing.util.TimeUtil;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Set;
 
+import static java.util.Objects.requireNonNull;
+
+@NullMarked
 public class ModbusListUpdaterWrapper implements PacketListReceiver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModbusListUpdaterWrapper.class);
 	private static final String MODBUS_RUNTIME_EXCEPTION_CATCH_LOCATION_IDENTIFIER = "read.modbus";
@@ -71,7 +75,7 @@ public class ModbusListUpdaterWrapper implements PacketListReceiver {
 				LOGGER.debug("Sending error packets");
 				packets.add(new ImmutableExceptionErrorPacket(
 						e.getClass().getName(),
-						e.getMessage(),
+						requireNonNull(e.getMessage(), "All ModbusRuntimeExceptions should have a message set"), // TODO add nullability annotations to io-lib and make this exception getMessage() non-null
 						MODBUS_RUNTIME_EXCEPTION_CATCH_LOCATION_IDENTIFIER,
 						errorIdentifierString
 				));

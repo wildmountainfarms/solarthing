@@ -11,10 +11,12 @@ import me.retrodaredevil.solarthing.actions.environment.MateCommandEnvironment;
 import me.retrodaredevil.solarthing.commands.command.SourcedCommand;
 import me.retrodaredevil.solarthing.reason.ExecutionReason;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Queue;
 
 @JsonTypeName("matecommand")
+@NullMarked
 public class MateCommandActionNode implements ActionNode {
 
 	private final MateCommand mateCommand;
