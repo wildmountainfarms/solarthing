@@ -2,10 +2,12 @@ package me.retrodaredevil.solarthing.pvoutput.service;
 
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
+import org.jspecify.annotations.NullMarked;
 import retrofit2.Retrofit;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 @UtilityClass
+@NullMarked
 public final class PVOutputRetrofitUtil {
 	private PVOutputRetrofitUtil(){ throw new UnsupportedOperationException(); }
 

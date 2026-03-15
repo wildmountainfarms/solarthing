@@ -2,11 +2,13 @@ package me.retrodaredevil.solarthing.solcast.common;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
+import org.jspecify.annotations.NullMarked;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Comparator;
 
+@NullMarked
 public interface IntervalData {
 	@JsonProperty("period_end")
 	Instant getPeriodEnd();

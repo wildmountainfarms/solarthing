@@ -1,10 +1,14 @@
 package me.retrodaredevil.solarthing.emoncms;
 
+import org.jspecify.annotations.NullMarked;
+
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import retrofit2.Retrofit;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 @UtilityClass
+
+@NullMarked
 public final class EmonCmsRetrofitUtil {
 	private EmonCmsRetrofitUtil(){ throw new UnsupportedOperationException(); }
 

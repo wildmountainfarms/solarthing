@@ -1,5 +1,7 @@
 package me.retrodaredevil.solarthing.solcast.rooftop;
 
+import org.jspecify.annotations.NullMarked;
+
 import me.retrodaredevil.solarthing.solcast.common.*;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.Nullable;
@@ -13,6 +15,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.TreeSet;
 
+
+@NullMarked
 public class EstimatedActualCache {
 	private static final Logger LOGGER = LoggerFactory.getLogger(EstimatedActualCache.class);
 	private static final Duration DURATION_7_DAYS = Duration.ofDays(7);

@@ -1,31 +1,36 @@
 package me.retrodaredevil.solarthing.pvoutput.data;
 
+import org.jspecify.annotations.NullMarked;
+
 import me.retrodaredevil.solarthing.pvoutput.SimpleDate;
 import me.retrodaredevil.solarthing.pvoutput.SimpleTime;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
+
+@NullMarked
 public class AddStatusParametersBuilder implements AddStatusParameters {
 	private final SimpleDate date;
 	private final SimpleTime time;
 
-	private Number energyGeneration;
-	private Number powerGeneration;
-	private Number energyConsumption;
-	private Number powerConsumption;
+	private @Nullable Number energyGeneration;
+	private @Nullable Number powerGeneration;
+	private @Nullable Number energyConsumption;
+	private @Nullable Number powerConsumption;
 
-	private Float temperatureCelsius;
-	private Float voltage;
-	private Integer cumulativeFlag;
-	private Integer netFlag;
+	private @Nullable Float temperatureCelsius;
+	private @Nullable Float voltage;
+	private @Nullable Integer cumulativeFlag;
+	private @Nullable Integer netFlag;
 
-	private Number extendedValue1;
-	private Number extendedValue2;
-	private Number extendedValue3;
-	private Number extendedValue4;
-	private Number extendedValue5;
-	private Number extendedValue6;
-	private String textMessage1;
+	private @Nullable Number extendedValue1;
+	private @Nullable Number extendedValue2;
+	private @Nullable Number extendedValue3;
+	private @Nullable Number extendedValue4;
+	private @Nullable Number extendedValue5;
+	private @Nullable Number extendedValue6;
+	private @Nullable String textMessage1;
 
 	public AddStatusParametersBuilder(SimpleDate date, SimpleTime time) {
 		this.date = requireNonNull(date);
@@ -42,94 +47,94 @@ public class AddStatusParametersBuilder implements AddStatusParameters {
 	@Override public SimpleDate getDate() { return date; }
 	@Override public SimpleTime getTime() { return time; }
 
-	@Override public Number getEnergyGeneration() { return energyGeneration; }
-	@Override public Number getPowerGeneration() { return powerGeneration; }
-	@Override public Number getEnergyConsumption() { return energyConsumption; }
-	@Override public Number getPowerConsumption() { return powerConsumption; }
-	@Override public Float getTemperatureCelsius() { return temperatureCelsius; }
-	@Override public Float getVoltage() { return voltage; }
-	@Override public Integer getCumulativeFlag() { return cumulativeFlag; }
-	@Override public Integer getNetFlag() { return netFlag; }
-	@Override public Number getExtendedValue1() { return extendedValue1; }
-	@Override public Number getExtendedValue2() { return extendedValue2; }
-	@Override public Number getExtendedValue3() { return extendedValue3; }
-	@Override public Number getExtendedValue4() { return extendedValue4; }
-	@Override public Number getExtendedValue5() { return extendedValue5; }
-	@Override public Number getExtendedValue6() { return extendedValue6; }
-	@Override public String getTextMessage1() { return textMessage1; }
+	@Override public @Nullable Number getEnergyGeneration() { return energyGeneration; }
+	@Override public @Nullable Number getPowerGeneration() { return powerGeneration; }
+	@Override public @Nullable Number getEnergyConsumption() { return energyConsumption; }
+	@Override public @Nullable Number getPowerConsumption() { return powerConsumption; }
+	@Override public @Nullable Float getTemperatureCelsius() { return temperatureCelsius; }
+	@Override public @Nullable Float getVoltage() { return voltage; }
+	@Override public @Nullable Integer getCumulativeFlag() { return cumulativeFlag; }
+	@Override public @Nullable Integer getNetFlag() { return netFlag; }
+	@Override public @Nullable Number getExtendedValue1() { return extendedValue1; }
+	@Override public @Nullable Number getExtendedValue2() { return extendedValue2; }
+	@Override public @Nullable Number getExtendedValue3() { return extendedValue3; }
+	@Override public @Nullable Number getExtendedValue4() { return extendedValue4; }
+	@Override public @Nullable Number getExtendedValue5() { return extendedValue5; }
+	@Override public @Nullable Number getExtendedValue6() { return extendedValue6; }
+	@Override public @Nullable String getTextMessage1() { return textMessage1; }
 	// endregion
 
-	public AddStatusParametersBuilder setEnergyGeneration(Number energyGeneration) {
+	public AddStatusParametersBuilder setEnergyGeneration(@Nullable Number energyGeneration) {
 		this.energyGeneration = energyGeneration;
 		return this;
 	}
 
-	public AddStatusParametersBuilder setPowerGeneration(Number powerGeneration) {
+	public AddStatusParametersBuilder setPowerGeneration(@Nullable Number powerGeneration) {
 		this.powerGeneration = powerGeneration;
 		return this;
 	}
 
-	public AddStatusParametersBuilder setEnergyConsumption(Number energyConsumption) {
+	public AddStatusParametersBuilder setEnergyConsumption(@Nullable Number energyConsumption) {
 		this.energyConsumption = energyConsumption;
 		return this;
 	}
 
-	public AddStatusParametersBuilder setPowerConsumption(Number powerConsumption) {
+	public AddStatusParametersBuilder setPowerConsumption(@Nullable Number powerConsumption) {
 		this.powerConsumption = powerConsumption;
 		return this;
 	}
 
-	public AddStatusParametersBuilder setTemperatureCelsius(Float temperatureCelsius) {
+	public AddStatusParametersBuilder setTemperatureCelsius(@Nullable Float temperatureCelsius) {
 		this.temperatureCelsius = temperatureCelsius;
 		return this;
 	}
 
-	public AddStatusParametersBuilder setVoltage(Float voltage) {
+	public AddStatusParametersBuilder setVoltage(@Nullable Float voltage) {
 		this.voltage = voltage;
 		return this;
 	}
 
-	public AddStatusParametersBuilder setCumulativeFlag(Integer cumulativeFlag) {
+	public AddStatusParametersBuilder setCumulativeFlag(@Nullable Integer cumulativeFlag) {
 		this.cumulativeFlag = cumulativeFlag;
 		return this;
 	}
 
-	public AddStatusParametersBuilder setNetFlag(Integer netFlag) {
+	public AddStatusParametersBuilder setNetFlag(@Nullable Integer netFlag) {
 		this.netFlag = netFlag;
 		return this;
 	}
 
-	public AddStatusParametersBuilder setExtendedValue1(Number extendedValue1) {
+	public AddStatusParametersBuilder setExtendedValue1(@Nullable Number extendedValue1) {
 		this.extendedValue1 = extendedValue1;
 		return this;
 	}
 
-	public AddStatusParametersBuilder setExtendedValue2(Number extendedValue2) {
+	public AddStatusParametersBuilder setExtendedValue2(@Nullable Number extendedValue2) {
 		this.extendedValue2 = extendedValue2;
 		return this;
 	}
 
-	public AddStatusParametersBuilder setExtendedValue3(Number extendedValue3) {
+	public AddStatusParametersBuilder setExtendedValue3(@Nullable Number extendedValue3) {
 		this.extendedValue3 = extendedValue3;
 		return this;
 	}
 
-	public AddStatusParametersBuilder setExtendedValue4(Number extendedValue4) {
+	public AddStatusParametersBuilder setExtendedValue4(@Nullable Number extendedValue4) {
 		this.extendedValue4 = extendedValue4;
 		return this;
 	}
 
-	public AddStatusParametersBuilder setExtendedValue5(Number extendedValue5) {
+	public AddStatusParametersBuilder setExtendedValue5(@Nullable Number extendedValue5) {
 		this.extendedValue5 = extendedValue5;
 		return this;
 	}
 
-	public AddStatusParametersBuilder setExtendedValue6(Number extendedValue6) {
+	public AddStatusParametersBuilder setExtendedValue6(@Nullable Number extendedValue6) {
 		this.extendedValue6 = extendedValue6;
 		return this;
 	}
 
-	public AddStatusParametersBuilder setTextMessage1(String textMessage1) {
+	public AddStatusParametersBuilder setTextMessage1(@Nullable String textMessage1) {
 		this.textMessage1 = textMessage1;
 		return this;
 	}
@@ -137,25 +142,25 @@ public class AddStatusParametersBuilder implements AddStatusParameters {
 		private final SimpleDate date;
 		private final SimpleTime time;
 
-		private final Number energyGeneration;
-		private final Number powerGeneration;
-		private final Number energyConsumption;
-		private final Number powerConsumption;
+		private final @Nullable Number energyGeneration;
+		private final @Nullable Number powerGeneration;
+		private final @Nullable Number energyConsumption;
+		private final @Nullable Number powerConsumption;
 
-		private final Float temperatureCelsius;
-		private final Float voltage;
-		private final Integer cumulativeFlag;
-		private final Integer netFlag;
+		private final @Nullable Float temperatureCelsius;
+		private final @Nullable Float voltage;
+		private final @Nullable Integer cumulativeFlag;
+		private final @Nullable Integer netFlag;
 
-		private final Number extendedValue1;
-		private final Number extendedValue2;
-		private final Number extendedValue3;
-		private final Number extendedValue4;
-		private final Number extendedValue5;
-		private final Number extendedValue6;
-		private final String textMessage1;
+		private final @Nullable Number extendedValue1;
+		private final @Nullable Number extendedValue2;
+		private final @Nullable Number extendedValue3;
+		private final @Nullable Number extendedValue4;
+		private final @Nullable Number extendedValue5;
+		private final @Nullable Number extendedValue6;
+		private final @Nullable String textMessage1;
 
-		ImmutableAddStatusParameters(SimpleDate date, SimpleTime time, Number energyGeneration, Number powerGeneration, Number energyConsumption, Number powerConsumption, Float temperatureCelsius, Float voltage, Integer cumulativeFlag, Integer netFlag, Number extendedValue1, Number extendedValue2, Number extendedValue3, Number extendedValue4, Number extendedValue5, Number extendedValue6, String textMessage1) {
+		ImmutableAddStatusParameters(SimpleDate date, SimpleTime time, @Nullable Number energyGeneration, @Nullable Number powerGeneration, @Nullable Number energyConsumption, @Nullable Number powerConsumption, @Nullable Float temperatureCelsius, @Nullable Float voltage, @Nullable Integer cumulativeFlag, @Nullable Integer netFlag, @Nullable Number extendedValue1, @Nullable Number extendedValue2, @Nullable Number extendedValue3, @Nullable Number extendedValue4, @Nullable Number extendedValue5, @Nullable Number extendedValue6, @Nullable String textMessage1) {
 			this.date = date;
 			this.time = time;
 			this.energyGeneration = energyGeneration;
@@ -177,20 +182,20 @@ public class AddStatusParametersBuilder implements AddStatusParameters {
 		@Override public SimpleDate getDate() { return date; }
 		@Override public SimpleTime getTime() { return time; }
 
-		@Override public Number getEnergyGeneration() { return energyGeneration; }
-		@Override public Number getPowerGeneration() { return powerGeneration; }
-		@Override public Number getEnergyConsumption() { return energyConsumption; }
-		@Override public Number getPowerConsumption() { return powerConsumption; }
-		@Override public Float getTemperatureCelsius() { return temperatureCelsius; }
-		@Override public Float getVoltage() { return voltage; }
-		@Override public Integer getCumulativeFlag() { return cumulativeFlag; }
-		@Override public Integer getNetFlag() { return netFlag; }
-		@Override public Number getExtendedValue1() { return extendedValue1; }
-		@Override public Number getExtendedValue2() { return extendedValue2; }
-		@Override public Number getExtendedValue3() { return extendedValue3; }
-		@Override public Number getExtendedValue4() { return extendedValue4; }
-		@Override public Number getExtendedValue5() { return extendedValue5; }
-		@Override public Number getExtendedValue6() { return extendedValue6; }
-		@Override public String getTextMessage1() { return textMessage1; }
+		@Override public @Nullable Number getEnergyGeneration() { return energyGeneration; }
+		@Override public @Nullable Number getPowerGeneration() { return powerGeneration; }
+		@Override public @Nullable Number getEnergyConsumption() { return energyConsumption; }
+		@Override public @Nullable Number getPowerConsumption() { return powerConsumption; }
+		@Override public @Nullable Float getTemperatureCelsius() { return temperatureCelsius; }
+		@Override public @Nullable Float getVoltage() { return voltage; }
+		@Override public @Nullable Integer getCumulativeFlag() { return cumulativeFlag; }
+		@Override public @Nullable Integer getNetFlag() { return netFlag; }
+		@Override public @Nullable Number getExtendedValue1() { return extendedValue1; }
+		@Override public @Nullable Number getExtendedValue2() { return extendedValue2; }
+		@Override public @Nullable Number getExtendedValue3() { return extendedValue3; }
+		@Override public @Nullable Number getExtendedValue4() { return extendedValue4; }
+		@Override public @Nullable Number getExtendedValue5() { return extendedValue5; }
+		@Override public @Nullable Number getExtendedValue6() { return extendedValue6; }
+		@Override public @Nullable String getTextMessage1() { return textMessage1; }
 	}
 }

@@ -2,11 +2,13 @@ package me.retrodaredevil.solarthing.solcast;
 
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
+import org.jspecify.annotations.NullMarked;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 @UtilityClass
+@NullMarked
 public final class SolcastRetrofitUtil {
 	private SolcastRetrofitUtil() { throw new UnsupportedOperationException(); }
 

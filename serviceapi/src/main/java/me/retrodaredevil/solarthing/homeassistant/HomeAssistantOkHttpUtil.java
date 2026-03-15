@@ -3,8 +3,10 @@ package me.retrodaredevil.solarthing.homeassistant;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.serviceutil.HeaderRequestInterceptor;
 import okhttp3.OkHttpClient;
+import org.jspecify.annotations.NullMarked;
 
 @UtilityClass
+@NullMarked
 public final class HomeAssistantOkHttpUtil {
 	private HomeAssistantOkHttpUtil(){ throw new UnsupportedOperationException(); }
 

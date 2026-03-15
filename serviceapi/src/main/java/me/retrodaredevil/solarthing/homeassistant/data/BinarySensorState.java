@@ -1,7 +1,11 @@
 package me.retrodaredevil.solarthing.homeassistant.data;
 
+import org.jspecify.annotations.NullMarked;
+
 import java.util.Map;
 
+
+@NullMarked
 public class BinarySensorState extends SensorStateBase {
 	private final boolean on;
 

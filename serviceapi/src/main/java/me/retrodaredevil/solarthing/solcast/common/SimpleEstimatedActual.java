@@ -2,7 +2,9 @@ package me.retrodaredevil.solarthing.solcast.common;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public interface SimpleEstimatedActual extends IntervalData {
 	@JsonProperty("pv_estimate")
 	float getPVEstimate();

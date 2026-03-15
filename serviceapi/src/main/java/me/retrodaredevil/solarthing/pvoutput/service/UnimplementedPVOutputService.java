@@ -1,9 +1,11 @@
 package me.retrodaredevil.solarthing.pvoutput.service;
 
+import org.jspecify.annotations.NullMarked;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 
+@NullMarked
 interface UnimplementedPVOutputService {
 
 //	@POST("ravenpost.jsp") void ravenPost();

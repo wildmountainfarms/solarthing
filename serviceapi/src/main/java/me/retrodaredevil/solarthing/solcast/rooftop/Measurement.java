@@ -3,10 +3,12 @@ package me.retrodaredevil.solarthing.solcast.rooftop;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.solcast.common.IntervalData;
+import org.jspecify.annotations.NullMarked;
 
 import java.time.Duration;
 import java.time.Instant;
 
+@NullMarked
 public final class Measurement implements IntervalData {
 	private static final Duration MINIMUM_PERIOD = Duration.ofMinutes(5);
 	private final Instant periodEnd;

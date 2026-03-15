@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
+import org.jspecify.annotations.NullMarked;
 
 import java.io.IOException;
 import java.time.temporal.ChronoField;
@@ -14,6 +15,7 @@ import java.time.temporal.Temporal;
 import java.util.Calendar;
 
 @JsonDeserialize(using = SimpleTime.Deserializer.class)
+@NullMarked
 public final class SimpleTime implements PVOutputString {
 	private final int hour;
 	private final int minute;

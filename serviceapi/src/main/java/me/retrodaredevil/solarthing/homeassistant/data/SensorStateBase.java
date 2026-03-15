@@ -1,9 +1,12 @@
 package me.retrodaredevil.solarthing.homeassistant.data;
 
+import org.jspecify.annotations.NullMarked;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+@NullMarked
 public abstract class SensorStateBase implements HomeAssistantSensorState {
 	private final Map<String, String> attributes;
 

@@ -1,16 +1,21 @@
 package me.retrodaredevil.solarthing.pvoutput.data;
 
+import org.jspecify.annotations.NullMarked;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.pvoutput.SimpleDate;
 import me.retrodaredevil.solarthing.pvoutput.SimpleTime;
+import org.jspecify.annotations.Nullable;
 
 /**
  * @see <a href="https://pvoutput.org/help.html#api-addstatus">PVOutput.org api-add-status</a>
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonExplicit
+
+@NullMarked
 public interface AddStatusParameters {
 	@JsonProperty("d")
 	SimpleDate getDate();
@@ -19,24 +24,24 @@ public interface AddStatusParameters {
 
 	// One of these 4 methods must not return null
 	@JsonProperty("v1")
-	Number getEnergyGeneration();
+	@Nullable Number getEnergyGeneration();
 	/**
 	 * @return If {@link #isDataCumulative()} net export power, otherwise power generation. May be null
 	 */
 	@JsonProperty("v2")
-	Number getPowerGeneration();
+	@Nullable Number getPowerGeneration();
 	@JsonProperty("v3")
-	Number getEnergyConsumption();
+	@Nullable Number getEnergyConsumption();
 	@JsonProperty("v4")
-	Number getPowerConsumption();
+	@Nullable Number getPowerConsumption();
 
 	@JsonProperty("v5")
-	Float getTemperatureCelsius();
+	@Nullable Float getTemperatureCelsius();
 	@JsonProperty("v6")
-	Float getVoltage();
+	@Nullable Float getVoltage();
 
 	@JsonProperty("c1")
-	Integer getCumulativeFlag();
+	@Nullable Integer getCumulativeFlag();
 
 	/**
 	 * If cumulative, {@link #getEnergyGeneration()} and {@link #getEnergyConsumption()} will never reset.
@@ -47,7 +52,7 @@ public interface AddStatusParameters {
 		return cumulativeFlag != null && cumulativeFlag == 1;
 	}
 	@JsonProperty("n")
-	Integer getNetFlag();
+	@Nullable Integer getNetFlag();
 
 	/**
 	 *
@@ -60,22 +65,22 @@ public interface AddStatusParameters {
 	}
 
 	@JsonProperty("v7")
-	Number getExtendedValue1();
+	@Nullable Number getExtendedValue1();
 	@JsonProperty("v8")
-	Number getExtendedValue2();
+	@Nullable Number getExtendedValue2();
 	@JsonProperty("v9")
-	Number getExtendedValue3();
+	@Nullable Number getExtendedValue3();
 	@JsonProperty("v10")
-	Number getExtendedValue4();
+	@Nullable Number getExtendedValue4();
 	@JsonProperty("v11")
-	Number getExtendedValue5();
+	@Nullable Number getExtendedValue5();
 	@JsonProperty("v12")
-	Number getExtendedValue6();
+	@Nullable Number getExtendedValue6();
 
 	/**
 	 * Only available in donation mode
 	 * @return A text message no greater than 30 characters.
 	 */
 	@JsonProperty("m1")
-	String getTextMessage1();
+	@Nullable String getTextMessage1();
 }

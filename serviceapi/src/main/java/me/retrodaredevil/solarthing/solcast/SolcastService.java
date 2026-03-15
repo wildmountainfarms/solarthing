@@ -4,9 +4,11 @@ import me.retrodaredevil.solarthing.solcast.common.EstimatedActualResult;
 import me.retrodaredevil.solarthing.solcast.common.ForecastResult;
 import me.retrodaredevil.solarthing.solcast.rooftop.MeasurementData;
 import me.retrodaredevil.solarthing.solcast.rooftop.MeasurementResult;
+import org.jspecify.annotations.NullMarked;
 import retrofit2.Call;
 import retrofit2.http.*;
 
+@NullMarked
 public interface SolcastService {
 	/**
 	 * https://docs.solcast.com.au/#measurements-rooftop-site

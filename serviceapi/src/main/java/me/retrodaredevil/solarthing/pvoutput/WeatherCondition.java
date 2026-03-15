@@ -1,7 +1,9 @@
 package me.retrodaredevil.solarthing.pvoutput;
 
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+@NullMarked
 public enum WeatherCondition implements PVOutputString {
 	FINE("Fine"),
 	PARTLY_CLOUDY("Partly Cloudy"),

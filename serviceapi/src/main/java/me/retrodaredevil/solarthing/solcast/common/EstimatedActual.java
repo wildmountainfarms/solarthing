@@ -1,11 +1,15 @@
 package me.retrodaredevil.solarthing.solcast.common;
 
+import org.jspecify.annotations.NullMarked;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.Duration;
 import java.time.Instant;
 
+
+@NullMarked
 public final class EstimatedActual implements SimpleEstimatedActual {
 	private final float pvEstimate;
 	private final Instant periodEnd;

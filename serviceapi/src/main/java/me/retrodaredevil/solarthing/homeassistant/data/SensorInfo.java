@@ -2,10 +2,12 @@ package me.retrodaredevil.solarthing.homeassistant.data;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.jspecify.annotations.NullMarked;
 
 import java.time.Instant;
 import java.util.Map;
 
+@NullMarked
 public class SensorInfo implements HomeAssistantSensorInfo {
 	private final String entityId;
 	private final Instant lastChanged;

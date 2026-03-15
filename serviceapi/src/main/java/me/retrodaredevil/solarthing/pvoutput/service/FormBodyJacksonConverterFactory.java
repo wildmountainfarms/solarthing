@@ -1,5 +1,7 @@
 package me.retrodaredevil.solarthing.pvoutput.service;
 
+import org.jspecify.annotations.NullMarked;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -12,6 +14,8 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
+
+@NullMarked
 public class FormBodyJacksonConverterFactory extends Converter.Factory {
 	private final ObjectMapper mapper;
 

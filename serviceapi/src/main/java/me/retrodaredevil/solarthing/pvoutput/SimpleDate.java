@@ -7,6 +7,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
 import java.time.Instant;
@@ -22,6 +24,7 @@ import java.util.Objects;
  * Represents a date with a year, month, and day. Both month and day are 1 based.
  */
 @JsonDeserialize(using = SimpleDate.Deserializer.class)
+@NullMarked
 public final class SimpleDate implements Comparable<SimpleDate>, PVOutputString {
 	private final int year;
 	private final int month;
@@ -76,7 +79,7 @@ public final class SimpleDate implements Comparable<SimpleDate>, PVOutputString 
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(@Nullable Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		SimpleDate that = (SimpleDate) o;

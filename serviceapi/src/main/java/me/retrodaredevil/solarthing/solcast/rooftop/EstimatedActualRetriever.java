@@ -1,5 +1,7 @@
 package me.retrodaredevil.solarthing.solcast.rooftop;
 
+import org.jspecify.annotations.NullMarked;
+
 import me.retrodaredevil.solarthing.solcast.SolcastService;
 import me.retrodaredevil.solarthing.solcast.common.EstimatedActualResult;
 import me.retrodaredevil.solarthing.solcast.common.ForecastResult;
@@ -13,6 +15,8 @@ import static java.util.Objects.requireNonNull;
 /**
  * Should retrieve past estimated actuals or future forecasts seven days in the past and seven days in the future, respectively.
  */
+
+@NullMarked
 public interface EstimatedActualRetriever {
 	EstimatedActualResult retrievePast() throws IOException;
 	ForecastResult retrieveForecast() throws IOException;

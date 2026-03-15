@@ -1,8 +1,12 @@
 package me.retrodaredevil.solarthing.pvoutput;
 
+import org.jspecify.annotations.NullMarked;
+
 /**
  * Represents common azimuths/orientations of solar panels
  */
+
+@NullMarked
 public enum Azimuth {
 	NORTH("N", 0),
 	EAST("E", 90),

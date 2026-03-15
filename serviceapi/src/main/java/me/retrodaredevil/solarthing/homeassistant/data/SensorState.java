@@ -1,9 +1,12 @@
 package me.retrodaredevil.solarthing.homeassistant.data;
 
+import org.jspecify.annotations.NullMarked;
+
 import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class SensorState extends SensorStateBase {
 	private final String state;
 

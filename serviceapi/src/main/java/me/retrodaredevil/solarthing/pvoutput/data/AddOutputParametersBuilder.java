@@ -3,26 +3,32 @@ package me.retrodaredevil.solarthing.pvoutput.data;
 import me.retrodaredevil.solarthing.pvoutput.SimpleDate;
 import me.retrodaredevil.solarthing.pvoutput.SimpleTime;
 import me.retrodaredevil.solarthing.pvoutput.WeatherCondition;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
 @SuppressWarnings("unused")
+@NullMarked
 public class AddOutputParametersBuilder implements AddOutputParameters {
 	private final SimpleDate date;
-	private Number generated;
-	private Number exported;
-	private Number peakPower;
-	private SimpleTime peakTime;
-	private String condition;
-	private Float minimumTemperatureCelsius;
-	private Float maximumTemperatureCelsius;
-	private String comments;
-	private Number importPeak;
-	private Number importOffPeak;
-	private Number importShoulder;
-	private Number importHighShoulder;
-	private Number consumption;
-	private Number exportPeak, exportOffPeak, exportShoulder, exportHighShoulder;
+	private @Nullable Number generated;
+	private @Nullable Number exported;
+	private @Nullable Number peakPower;
+	private @Nullable SimpleTime peakTime;
+	private @Nullable String condition;
+	private @Nullable Float minimumTemperatureCelsius;
+	private @Nullable Float maximumTemperatureCelsius;
+	private @Nullable String comments;
+	private @Nullable Number importPeak;
+	private @Nullable Number importOffPeak;
+	private @Nullable Number importShoulder;
+	private @Nullable Number importHighShoulder;
+	private @Nullable Number consumption;
+	private @Nullable Number exportPeak;
+	private @Nullable Number exportOffPeak;
+	private @Nullable Number exportShoulder;
+	private @Nullable Number exportHighShoulder;
 
 	public AddOutputParametersBuilder(SimpleDate date) {
 		this.date = requireNonNull(date);
@@ -37,53 +43,53 @@ public class AddOutputParametersBuilder implements AddOutputParameters {
 		return date;
 	}
 
-	public AddOutputParametersBuilder setGenerated(Number generated) {
+	public AddOutputParametersBuilder setGenerated(@Nullable Number generated) {
 		this.generated = generated;
 		return this;
 	}
 
 	@Override
-	public Number getGenerated() {
+	public @Nullable Number getGenerated() {
 		return generated;
 	}
 
-	public AddOutputParametersBuilder setExported(Number exported) {
+	public AddOutputParametersBuilder setExported(@Nullable Number exported) {
 		this.exported = exported;
 		return this;
 	}
 
 	@Override
-	public Number getExported() {
+	public @Nullable Number getExported() {
 		return exported;
 	}
 
-	public AddOutputParametersBuilder setPeakPower(Number peakPower) {
+	public AddOutputParametersBuilder setPeakPower(@Nullable Number peakPower) {
 		this.peakPower = peakPower;
 		return this;
 	}
 
 	@Override
-	public Number getPeakPower() {
+	public @Nullable Number getPeakPower() {
 		return peakPower;
 	}
 
-	public AddOutputParametersBuilder setPeakTime(SimpleTime peakTime) {
+	public AddOutputParametersBuilder setPeakTime(@Nullable SimpleTime peakTime) {
 		this.peakTime = peakTime;
 		return this;
 	}
 
 	@Override
-	public SimpleTime getPeakTime() {
+	public @Nullable SimpleTime getPeakTime() {
 		return peakTime;
 	}
 
-	public AddOutputParametersBuilder setConditionValue(String condition) {
+	public AddOutputParametersBuilder setConditionValue(@Nullable String condition) {
 		this.condition = condition;
 		return this;
 	}
 
 	@Override
-	public String getConditionValue() {
+	public @Nullable String getConditionValue() {
 		return condition;
 	}
 
@@ -92,109 +98,109 @@ public class AddOutputParametersBuilder implements AddOutputParameters {
 		return this;
 	}
 
-	public AddOutputParametersBuilder setMinimumTemperatureCelsius(Float minimumTemperatureCelsius) {
+	public AddOutputParametersBuilder setMinimumTemperatureCelsius(@Nullable Float minimumTemperatureCelsius) {
 		this.minimumTemperatureCelsius = minimumTemperatureCelsius;
 		return this;
 	}
 
 	@Override
-	public Float getMinimumTemperatureCelsius() {
+	public @Nullable Float getMinimumTemperatureCelsius() {
 		return minimumTemperatureCelsius;
 	}
 
-	public AddOutputParametersBuilder setMaximumTemperatureCelsius(Float maximumTemperatureCelsius) {
+	public AddOutputParametersBuilder setMaximumTemperatureCelsius(@Nullable Float maximumTemperatureCelsius) {
 		this.maximumTemperatureCelsius = maximumTemperatureCelsius;
 		return this;
 	}
 
 	@Override
-	public Float getMaximumTemperatureCelsius() {
+	public @Nullable Float getMaximumTemperatureCelsius() {
 		return maximumTemperatureCelsius;
 	}
 
 	/**
 	 * @param comments The comments string. It is recommended to be less than 30 characters
 	 */
-	public AddOutputParametersBuilder setComments(String comments) {
+	public AddOutputParametersBuilder setComments(@Nullable String comments) {
 		this.comments = comments;
 		return this;
 	}
 
 	@Override
-	public String getComments() {
+	public @Nullable String getComments() {
 		return comments;
 	}
 
-	public AddOutputParametersBuilder setImportPeak(Number importPeak) {
+	public AddOutputParametersBuilder setImportPeak(@Nullable Number importPeak) {
 		this.importPeak = importPeak;
 		return this;
 	}
 
 	@Override
-	public Number getImportPeak() {
+	public @Nullable Number getImportPeak() {
 		return importPeak;
 	}
 
-	public AddOutputParametersBuilder setImportOffPeak(Number importOffPeak) {
+	public AddOutputParametersBuilder setImportOffPeak(@Nullable Number importOffPeak) {
 		this.importOffPeak = importOffPeak;
 		return this;
 	}
 
 	@Override
-	public Number getImportOffPeak() {
+	public @Nullable Number getImportOffPeak() {
 		return importOffPeak;
 	}
 
-	public AddOutputParametersBuilder setImportShoulder(Number importShoulder) {
+	public AddOutputParametersBuilder setImportShoulder(@Nullable Number importShoulder) {
 		this.importShoulder = importShoulder;
 		return this;
 	}
 
 	@Override
-	public Number getImportShoulder() {
+	public @Nullable Number getImportShoulder() {
 		return importShoulder;
 	}
 
-	public AddOutputParametersBuilder setImportHighShoulder(Number importHighShoulder) {
+	public AddOutputParametersBuilder setImportHighShoulder(@Nullable Number importHighShoulder) {
 		this.importHighShoulder = importHighShoulder;
 		return this;
 	}
 
 	@Override
-	public Number getImportHighShoulder() {
+	public @Nullable Number getImportHighShoulder() {
 		return importHighShoulder;
 	}
 
-	public AddOutputParametersBuilder setConsumption(Number consumption) {
+	public AddOutputParametersBuilder setConsumption(@Nullable Number consumption) {
 		this.consumption = consumption;
 		return this;
 	}
 
 	@Override
-	public Number getConsumption() {
+	public @Nullable Number getConsumption() {
 		return consumption;
 	}
 
-	@Override public Number getExportPeak() { return exportPeak; }
-	public AddOutputParametersBuilder setExportPeak(Number exportPeak) {
+	@Override public @Nullable Number getExportPeak() { return exportPeak; }
+	public AddOutputParametersBuilder setExportPeak(@Nullable Number exportPeak) {
 		this.exportPeak = exportPeak;
 		return this;
 	}
 
-	@Override public Number getExportOffPeak() { return exportOffPeak; }
-	public AddOutputParametersBuilder setExportOffPeak(Number exportOffPeak) {
+	@Override public @Nullable Number getExportOffPeak() { return exportOffPeak; }
+	public AddOutputParametersBuilder setExportOffPeak(@Nullable Number exportOffPeak) {
 		this.exportOffPeak = exportOffPeak;
 		return this;
 	}
 
-	@Override public Number getExportShoulder() { return exportShoulder; }
-	public AddOutputParametersBuilder setExportShoulder(Number exportShoulder) {
+	@Override public @Nullable Number getExportShoulder() { return exportShoulder; }
+	public AddOutputParametersBuilder setExportShoulder(@Nullable Number exportShoulder) {
 		this.exportShoulder = exportShoulder;
 		return this;
 	}
 
-	@Override public Number getExportHighShoulder() { return exportHighShoulder; }
-	public AddOutputParametersBuilder setExportHighShoulder(Number exportHighShoulder) {
+	@Override public @Nullable Number getExportHighShoulder() { return exportHighShoulder; }
+	public AddOutputParametersBuilder setExportHighShoulder(@Nullable Number exportHighShoulder) {
 		this.exportHighShoulder = exportHighShoulder;
 		return this;
 	}
@@ -202,22 +208,22 @@ public class AddOutputParametersBuilder implements AddOutputParameters {
 
 	private static final class ImmutableAddOutputParameters implements AddOutputParameters {
 		private final SimpleDate date;
-		private final Number generated;
-		private final Number exported;
-		private final Number peakPower;
-		private final SimpleTime peakTime;
-		private final String condition;
-		private final Float minimumTemperatureCelsius;
-		private final Float maximumTemperatureCelsius;
-		private final String comments;
-		private final Number importPeak;
-		private final Number importOffPeak;
-		private final Number importShoulder;
-		private final Number importHighShoulder;
-		private final Number consumption;
-		private final Number exportPeak, exportOffPeak, exportShoulder, exportHighShoulder;
+		private final @Nullable Number generated;
+		private final @Nullable Number exported;
+		private final @Nullable Number peakPower;
+		private final @Nullable SimpleTime peakTime;
+		private final @Nullable String condition;
+		private final @Nullable Float minimumTemperatureCelsius;
+		private final @Nullable Float maximumTemperatureCelsius;
+		private final @Nullable String comments;
+		private final @Nullable Number importPeak;
+		private final @Nullable Number importOffPeak;
+		private final @Nullable Number importShoulder;
+		private final @Nullable Number importHighShoulder;
+		private final @Nullable Number consumption;
+		private final @Nullable Number exportPeak, exportOffPeak, exportShoulder, exportHighShoulder;
 
-		private ImmutableAddOutputParameters(SimpleDate date, Number generated, Number exported, Number peakPower, SimpleTime peakTime, String condition, Float minimumTemperatureCelsius, Float maximumTemperatureCelsius, String comments, Number importPeak, Number importOffPeak, Number importShoulder, Number importHighShoulder, Number consumption, Number exportPeak, Number exportOffPeak, Number exportShoulder, Number exportHighShoulder) {
+		private ImmutableAddOutputParameters(SimpleDate date, @Nullable Number generated, @Nullable Number exported, @Nullable Number peakPower, @Nullable SimpleTime peakTime, @Nullable String condition, @Nullable Float minimumTemperatureCelsius, @Nullable Float maximumTemperatureCelsius, @Nullable String comments, @Nullable Number importPeak, @Nullable Number importOffPeak, @Nullable Number importShoulder, @Nullable Number importHighShoulder, @Nullable Number consumption, @Nullable Number exportPeak, @Nullable Number exportOffPeak, @Nullable Number exportShoulder, @Nullable Number exportHighShoulder) {
 			this.date = requireNonNull(date);
 			this.generated = generated;
 			this.exported = exported;
@@ -239,23 +245,23 @@ public class AddOutputParametersBuilder implements AddOutputParameters {
 		}
 
 		@Override public SimpleDate getOutputDate() { return date; }
-		@Override public Number getGenerated() { return generated; }
-		@Override public Number getExported() { return exported; }
-		@Override public Number getPeakPower() { return peakPower; }
-		@Override public SimpleTime getPeakTime() { return peakTime; }
-		@Override public String getConditionValue() { return condition; }
-		@Override public Float getMinimumTemperatureCelsius() { return minimumTemperatureCelsius; }
-		@Override public Float getMaximumTemperatureCelsius() { return maximumTemperatureCelsius; }
+		@Override public @Nullable Number getGenerated() { return generated; }
+		@Override public @Nullable Number getExported() { return exported; }
+		@Override public @Nullable Number getPeakPower() { return peakPower; }
+		@Override public @Nullable SimpleTime getPeakTime() { return peakTime; }
+		@Override public @Nullable String getConditionValue() { return condition; }
+		@Override public @Nullable Float getMinimumTemperatureCelsius() { return minimumTemperatureCelsius; }
+		@Override public @Nullable Float getMaximumTemperatureCelsius() { return maximumTemperatureCelsius; }
 
-		@Override public String getComments() { return comments; }
-		@Override public Number getImportPeak() { return importPeak; }
-		@Override public Number getImportOffPeak() { return importOffPeak; }
-		@Override public Number getImportShoulder() { return importShoulder; }
-		@Override public Number getImportHighShoulder() { return importHighShoulder; }
-		@Override public Number getConsumption() { return consumption; }
-		@Override public Number getExportPeak() { return exportPeak; }
-		@Override public Number getExportOffPeak() { return exportOffPeak; }
-		@Override public Number getExportShoulder() { return exportShoulder; }
-		@Override public Number getExportHighShoulder() { return exportHighShoulder; }
+		@Override public @Nullable String getComments() { return comments; }
+		@Override public @Nullable Number getImportPeak() { return importPeak; }
+		@Override public @Nullable Number getImportOffPeak() { return importOffPeak; }
+		@Override public @Nullable Number getImportShoulder() { return importShoulder; }
+		@Override public @Nullable Number getImportHighShoulder() { return importHighShoulder; }
+		@Override public @Nullable Number getConsumption() { return consumption; }
+		@Override public @Nullable Number getExportPeak() { return exportPeak; }
+		@Override public @Nullable Number getExportOffPeak() { return exportOffPeak; }
+		@Override public @Nullable Number getExportShoulder() { return exportShoulder; }
+		@Override public @Nullable Number getExportHighShoulder() { return exportHighShoulder; }
 	}
 }

@@ -7,10 +7,12 @@ import me.retrodaredevil.solarthing.pvoutput.PVOutputString;
 import me.retrodaredevil.solarthing.pvoutput.SimpleDate;
 import me.retrodaredevil.solarthing.pvoutput.SimpleTime;
 import me.retrodaredevil.solarthing.pvoutput.WeatherCondition;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonExplicit
+@NullMarked
 public interface AddOutputParameters {
 	@JsonProperty("d")
 	SimpleDate getOutputDate();
@@ -20,18 +22,18 @@ public interface AddOutputParameters {
 	 * @return The number of generated watt hours, or null
 	 */
 	@JsonProperty("g")
-	Number getGenerated();
+	@Nullable Number getGenerated();
 	/** @return The number of exported watt hours*/
 	@JsonProperty("e")
-	Number getExported();
+	@Nullable Number getExported();
 	/** @return The peak power in watts*/
 	@JsonProperty("pp")
-	Number getPeakPower();
+	@Nullable Number getPeakPower();
 	@JsonProperty("pt")
-	SimpleTime getPeakTime();
+	@Nullable SimpleTime getPeakTime();
 
 	@JsonProperty("cd")
-	String getConditionValue();
+	@Nullable String getConditionValue();
 	@SuppressWarnings("unused")
 	default @Nullable WeatherCondition getCondition(){
 		String value = getConditionValue();
@@ -42,53 +44,35 @@ public interface AddOutputParameters {
 	}
 
 	@JsonProperty("tm")
-	Float getMinimumTemperatureCelsius();
+	@Nullable Float getMinimumTemperatureCelsius();
 	@JsonProperty("tx")
-	Float getMaximumTemperatureCelsius();
+	@Nullable Float getMaximumTemperatureCelsius();
 
 	@JsonProperty("cm")
-	String getComments();
+	@Nullable String getComments();
 
 	@JsonProperty("ip")
-	Number getImportPeak();
+	@Nullable Number getImportPeak();
 	@JsonProperty("io")
-	Number getImportOffPeak();
+	@Nullable Number getImportOffPeak();
 	@JsonProperty("is")
-	Number getImportShoulder();
+	@Nullable Number getImportShoulder();
 	@JsonProperty("ih")
-	Number getImportHighShoulder();
+	@Nullable Number getImportHighShoulder();
 	@JsonProperty("c")
-	Number getConsumption();
+	@Nullable Number getConsumption();
 
 	@JsonProperty("ep")
-	Number getExportPeak();
+	@Nullable Number getExportPeak();
 	@JsonProperty("eo")
-	Number getExportOffPeak();
+	@Nullable Number getExportOffPeak();
 	@JsonProperty("es")
-	Number getExportShoulder();
+	@Nullable Number getExportShoulder();
 	@JsonProperty("eh")
-	Number getExportHighShoulder();
+	@Nullable Number getExportHighShoulder();
 
-	@Deprecated
-	default String[] toBatchCsvArray() {
-		return new String[] {
-				getOutputDate().toPVOutputString(),
-				toStringOrNull(getGenerated()),
-				toStringOrNull(getExported()),
-				toStringOrNull(getConsumption()),
-				toStringOrNull(getPeakPower()),
-				toStringOrNull(getPeakTime()),
-				getConditionValue(),
-				toStringOrNull(getMinimumTemperatureCelsius()),
-				toStringOrNull(getMaximumTemperatureCelsius()),
-				getComments(),
-				toStringOrNull(getImportPeak()),
-				toStringOrNull(getImportOffPeak()),
-				toStringOrNull(getImportShoulder())
-		};
-	}
-	default String[] toCsvArray() {
-		return new String[] {
+	default @Nullable String[] toCsvArray() {
+		return new @Nullable String[] {
 				getOutputDate().toPVOutputString(),
 				toStringOrNull(getGenerated()),
 				toStringOrNull(getExported()),
@@ -109,7 +93,7 @@ public interface AddOutputParameters {
 				toStringOrNull(getExportHighShoulder()),
 		};
 	}
-	static @Nullable String toStringOrNull(Object object) {
+	static @Nullable String toStringOrNull(@Nullable Object object) {
 		if(object == null) {
 			return null;
 		}

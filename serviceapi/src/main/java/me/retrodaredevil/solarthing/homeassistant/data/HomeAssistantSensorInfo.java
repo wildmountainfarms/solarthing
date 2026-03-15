@@ -1,8 +1,11 @@
 package me.retrodaredevil.solarthing.homeassistant.data;
 
+import org.jspecify.annotations.NullMarked;
+
 import java.time.Instant;
 import java.util.Map;
 
+@NullMarked
 public interface HomeAssistantSensorInfo extends HomeAssistantSensorState {
 	String getEntityId();
 	default String getName() {

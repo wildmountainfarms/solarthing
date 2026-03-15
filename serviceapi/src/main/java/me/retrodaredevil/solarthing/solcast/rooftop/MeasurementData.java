@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.solcast.rooftop;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public final class MeasurementData {
 	private final @Nullable Measurement measurement;
 	private final @Nullable List<Measurement> measurements;
