@@ -8,6 +8,7 @@ import me.retrodaredevil.io.modbus.ModbusSlave;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
 import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.LocalRoverModbusSlave;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
+import org.jspecify.annotations.NullMarked;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 @JsonTypeName("rover")
+@NullMarked
 public class DummyRoverModbusSlave implements DummyModbusSlave {
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
 

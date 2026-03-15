@@ -1,5 +1,8 @@
 package me.retrodaredevil.solarthing.integration;
 
+import org.jspecify.annotations.NullMarked;
+
+@NullMarked
 public enum DatabaseService {
 	COUCHDB("couchdb"),
 	;

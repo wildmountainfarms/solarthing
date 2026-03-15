@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.nio.file.Path;
 import java.util.Collections;
@@ -12,6 +14,7 @@ import java.util.Map;
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("mate")
+@NullMarked
 public final class MateProgramOptions extends PacketHandlingOptionBase implements IOBundleOption, ProgramOptions {
 
 	private final boolean ignoreCheckSum;
@@ -22,10 +25,10 @@ public final class MateProgramOptions extends PacketHandlingOptionBase implement
 
 	@JsonCreator
 	public MateProgramOptions(
-			@JsonProperty("ignore_check_sum") Boolean ignoreCheckSum,
-			@JsonProperty("correct_check_sum") Boolean correctCheckSum,
+			@JsonProperty("ignore_check_sum") @Nullable Boolean ignoreCheckSum,
+			@JsonProperty("correct_check_sum") @Nullable Boolean correctCheckSum,
 			@JsonProperty(value = "io", required = true) Path io,
-			@JsonProperty("fx_warning_ignore") Map<Integer, Integer> fxWarningIgnoreMap) {
+			@JsonProperty("fx_warning_ignore") @Nullable Map<Integer, Integer> fxWarningIgnoreMap) {
 		this.ignoreCheckSum = Boolean.TRUE.equals(ignoreCheckSum);
 		this.correctCheckSum = Boolean.TRUE.equals(correctCheckSum);
 		this.io = requireNonNull(io);

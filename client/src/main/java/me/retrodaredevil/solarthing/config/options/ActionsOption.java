@@ -1,9 +1,12 @@
 package me.retrodaredevil.solarthing.config.options;
 
+import org.jspecify.annotations.NullMarked;
+
 /**
  * Represents some sort of {@link ProgramOptions} that can contain actions that would usually
  * be executed each "iteration".
  */
+@NullMarked
 public interface ActionsOption extends ProgramOptions {
 
 	/**

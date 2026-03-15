@@ -13,17 +13,17 @@ import static java.util.Objects.requireNonNull;
 @NullMarked
 public class ImmutableSuccessMateCommandPacket implements SuccessMateCommandPacket {
 
-	private final Integer packetVersion;
+	private final @Nullable Integer packetVersion;
 	private final MateCommand command;
 	private final String source;
-	private final ExecutionReason executionReason;
+	private final @Nullable ExecutionReason executionReason;
 
 	@JsonCreator
 	public ImmutableSuccessMateCommandPacket(
-			@JsonProperty("packetVersion") Integer packetVersion,
+			@JsonProperty("packetVersion") @Nullable Integer packetVersion,
 			@JsonProperty(value = "command", required = true) MateCommand command,
 			@JsonProperty(value = "source", required = true) String source,
-			@JsonProperty("executionReason") ExecutionReason executionReason
+			@JsonProperty("executionReason") @Nullable ExecutionReason executionReason
 	) {
 		this.packetVersion = packetVersion;
 		this.command = requireNonNull(command);
@@ -32,7 +32,7 @@ public class ImmutableSuccessMateCommandPacket implements SuccessMateCommandPack
 	}
 
 	@Override
-	public Integer getPacketVersion() {
+	public @Nullable Integer getPacketVersion() {
 		return packetVersion;
 	}
 

@@ -17,7 +17,7 @@ import me.retrodaredevil.solarthing.type.alter.StoredAlterPacket;
 import me.retrodaredevil.solarthing.type.alter.UniqueRequestIdContainer;
 import me.retrodaredevil.solarthing.type.alter.packets.ScheduledCommandPacket;
 import me.retrodaredevil.solarthing.type.open.OpenSourcePacket;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,6 +34,7 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class CancelCommandChatBotHandler implements ChatBotHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CancelCommandChatBotHandler.class);
 	private static final String SHORT_USAGE = "cancel <scheduling ID>";
@@ -149,7 +150,7 @@ public class CancelCommandChatBotHandler implements ChatBotHandler {
 	}
 
 	@Override
-	public @NonNull List<String> getHelpLines(Message helpMessage) {
+	public List<String> getHelpLines(Message helpMessage) {
 		return Arrays.asList(
 				"cancel <scheduling ID>"
 		);

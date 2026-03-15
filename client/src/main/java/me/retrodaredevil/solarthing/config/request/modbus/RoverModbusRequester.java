@@ -21,6 +21,8 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.RoverReadTable;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverWriteTable;
 import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusSlaveRead;
 import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.RoverModbusSlaveWrite;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,19 +32,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 @JsonTypeName("rover")
+@NullMarked
 public class RoverModbusRequester implements ModbusRequester {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RoverModbusRequester.class);
 	private final boolean sendErrorPackets;
 	private final boolean bulkRequest;
 	private final int number;
-	private final NetCatConfig configurationServerConfig;
+	private final @Nullable NetCatConfig configurationServerConfig;
 
 	@JsonCreator
 	public RoverModbusRequester(
-			@JsonProperty("error_packets") Boolean sendErrorPackets,
-			@JsonProperty("bulk_request") Boolean bulkRequest,
-			@JsonProperty("number") Integer number,
-			@JsonProperty("server") NetCatConfig configurationServerConfig) {
+			@JsonProperty("error_packets") @Nullable Boolean sendErrorPackets,
+			@JsonProperty("bulk_request") @Nullable Boolean bulkRequest,
+			@JsonProperty("number") @Nullable Integer number,
+			@JsonProperty("server") @Nullable NetCatConfig configurationServerConfig) {
 		this.sendErrorPackets = Boolean.TRUE.equals(sendErrorPackets); // default false
 		this.bulkRequest = !Boolean.FALSE.equals(bulkRequest); // default true
 		this.number = number == null ? NumberedIdentifier.DEFAULT_NUMBER : number;

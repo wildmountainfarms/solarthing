@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.config.request.modbus;
 
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,6 +9,7 @@ import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class ReloadIOSuccessReporterHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ReloadIOSuccessReporterHandler.class);
 	private final Runnable reloadIO;

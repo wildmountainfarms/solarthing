@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.packets.security;
 
 import com.fasterxml.jackson.core.Base64Variants;
 import me.retrodaredevil.solarthing.packets.security.crypto.*;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
 
 import javax.crypto.Cipher;
@@ -11,6 +12,7 @@ import java.security.NoSuchAlgorithmException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@NullMarked
 class LargeIntegrityPacketTest {
 
 	@Test

@@ -31,6 +31,7 @@ import me.retrodaredevil.solarthing.solar.tracer.modbus.TracerModbusSlaveRead;
 import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.io.EOFException;
@@ -43,6 +44,7 @@ import java.util.function.Function;
  * tell the user if a serial port is giving them good data.
  */
 @UtilityClass
+@NullMarked
 public class CheckMain {
 	private CheckMain() { throw new UnsupportedOperationException(); }
 
@@ -141,14 +143,14 @@ public class CheckMain {
 			return false;
 		}
 	}
-	private static boolean scanForRover(@NonNull String port, int modbusAddress, boolean scan, boolean debugTable) throws SerialPortException {
+	private static boolean scanForRover(String port, int modbusAddress, boolean scan, boolean debugTable) throws SerialPortException {
 		return doModbus(port, modbusAddress, scan, debugTable, RoverReadTable.SERIAL_CONFIG, RoverModbusSlaveRead::new);
 	}
-	private static boolean scanForTracer(@NonNull String port, int modbusAddress, boolean scan, boolean debugTable) throws SerialPortException {
+	private static boolean scanForTracer(String port, int modbusAddress, boolean scan, boolean debugTable) throws SerialPortException {
 		return doModbus(port, modbusAddress, scan, debugTable, TracerReadTable.SERIAL_CONFIG, TracerModbusSlaveRead::new);
 	}
 
-	private static int doForOptions(@NonNull String port, @Nullable String type, @Nullable Integer modbusAddress, boolean scan, boolean debugTable) throws SerialPortException {
+	private static int doForOptions(String port, @Nullable String type, @Nullable Integer modbusAddress, boolean scan, boolean debugTable) throws SerialPortException {
 		if (type == null) {
 			if (scan) {
 				System.err.println("Scan is not supported when searching through all possible options");

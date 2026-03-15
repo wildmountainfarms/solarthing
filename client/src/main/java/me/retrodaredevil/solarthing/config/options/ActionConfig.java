@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.actions.config.ActionFormat;
 import me.retrodaredevil.solarthing.actions.config.ActionReference;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.nio.file.Path;
 import java.util.Collections;
@@ -11,6 +13,7 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public final class ActionConfig {
 	public static final ActionConfig EMPTY = new ActionConfig(Collections.emptyList());
 	private final List<Entry> entries;
@@ -31,8 +34,8 @@ public final class ActionConfig {
 		@JsonCreator
 		public Entry(
 				@JsonProperty(value = "path", required = true) Path path,
-				@JsonProperty("format") ActionFormat format,
-				@JsonProperty("once") Boolean runOnce
+				@JsonProperty("format") @Nullable ActionFormat format,
+				@JsonProperty("once") @Nullable Boolean runOnce
 		) {
 			this.actionReference = new ActionReference(
 					path,

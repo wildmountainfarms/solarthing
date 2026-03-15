@@ -24,6 +24,7 @@ import me.retrodaredevil.solarthing.solar.outback.mx.event.MXErrorModeChangePack
 import me.retrodaredevil.solarthing.util.CheckSumException;
 import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
 import me.retrodaredevil.solarthing.util.ParsePacketAsciiDecimalDigitException;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
@@ -32,6 +33,7 @@ import java.util.Collections;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@NullMarked
 public class OutbackPacketsTest {
 	private static final Path DIRECTORY_FX = PacketTestUtil.SOLARTHING_ROOT.resolve("testing/packets/fx");
 	private static final Path DIRECTORY_MX = PacketTestUtil.SOLARTHING_ROOT.resolve("testing/packets/mx");

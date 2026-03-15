@@ -9,7 +9,7 @@ import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionCreator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.packets.instance.InstanceTargetPackets;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class CommandChatBotHandler implements ChatBotHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CommandChatBotHandler.class);
 
@@ -69,7 +70,7 @@ public class CommandChatBotHandler implements ChatBotHandler {
 	}
 
 	@Override
-	public @NonNull List<String> getHelpLines(Message helpMessage) {
+	public List<String> getHelpLines(Message helpMessage) {
 		List<AvailableCommand> availableCommands = commandHelper.getAllowedCommands(helpMessage);
 		return availableCommands.stream()
 				.map(availableCommand -> '"' + availableCommand.getCommandInfo().getDisplayName() + "\" (" + availableCommand.getFragmentId() + ") -- " + availableCommand.getCommandInfo().getDescription())

@@ -1,10 +1,12 @@
 package me.retrodaredevil.solarthing.actions.environment;
 
 import me.retrodaredevil.solarthing.program.subprogram.run.PacketListReceiverHandler;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * An environment that contains objects used to put data in the event database
  */
+@NullMarked
 public class EventReceiverEnvironment {
 	private final PacketListReceiverHandler eventPacketListReceiverHandler;
 

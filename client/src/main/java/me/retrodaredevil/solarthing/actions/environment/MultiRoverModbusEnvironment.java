@@ -1,11 +1,13 @@
 package me.retrodaredevil.solarthing.actions.environment;
 
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+@NullMarked
 public final class MultiRoverModbusEnvironment {
 	private final Map<Integer, RoverModbusEnvironment> map;
 

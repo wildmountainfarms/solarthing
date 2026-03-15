@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.config.request;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import me.retrodaredevil.solarthing.config.request.modbus.ModbusDataRequester;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * A {@link DataRequester} returns a {@link DataRequesterResult}, which can allow the addition of
@@ -19,6 +20,7 @@ import me.retrodaredevil.solarthing.config.request.modbus.ModbusDataRequester;
 		@JsonSubTypes.Type(ModbusDataRequester.class),
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
+@NullMarked
 public interface DataRequester {
 
 	DataRequesterResult create(RequestObject requestObject);

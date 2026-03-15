@@ -1,15 +1,16 @@
 package me.retrodaredevil.solarthing.config.options;
 
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 
 @UtilityClass
+@NullMarked
 public final class SourceIdValidator {
 	private SourceIdValidator() { throw new UnsupportedOperationException(); }
 
-	public static @NonNull String validateSourceId(String sourceId) {
+	public static String validateSourceId(String sourceId) {
 		requireNonNull(sourceId);
 		if (sourceId.isEmpty()) {
 			throw new IllegalArgumentException("The source ID cannot be empty!");

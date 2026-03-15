@@ -24,7 +24,7 @@ import me.retrodaredevil.solarthing.type.alter.packets.FlagAliasPacket;
 import me.retrodaredevil.solarthing.type.alter.packets.FlagPacket;
 import me.retrodaredevil.solarthing.util.TimeRange;
 import me.retrodaredevil.solarthing.util.TimeUtil;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +44,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@NullMarked
 public class FlagCommandChatBotHandler implements ChatBotHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FlagCommandChatBotHandler.class);
 	private static final String USAGE_SET = "flag set <flag name> [for <duration>]";
@@ -129,7 +130,7 @@ public class FlagCommandChatBotHandler implements ChatBotHandler {
 				})
 				.collect(Collectors.toList());
 	}
-	private void uploadPacket(CommandOpenPacket commandOpenPacket, Consumer<@NonNull Boolean> onSendComplete) {
+	private void uploadPacket(CommandOpenPacket commandOpenPacket, Consumer<Boolean> onSendComplete) {
 		PacketCollectionCreator creator = commandHelper.getCommandManager().makeCreator(sourceId, zoneId, null, commandOpenPacket, PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR);
 
 		// TODO We should check if the flag being requested is already active.
@@ -254,7 +255,8 @@ public class FlagCommandChatBotHandler implements ChatBotHandler {
 					}
 					return null;
 				})
-				.filter(Objects::nonNull);
+				.filter(Objects::nonNull)
+				.map(Objects::requireNonNull);
 	}
 
 	@Override
@@ -397,7 +399,7 @@ public class FlagCommandChatBotHandler implements ChatBotHandler {
 	}
 
 	@Override
-	public @NonNull List<String> getHelpLines(Message helpMessage) {
+	public List<String> getHelpLines(Message helpMessage) {
 		if (!canEditFlags(helpMessage)) {
 			return Collections.emptyList();
 		}

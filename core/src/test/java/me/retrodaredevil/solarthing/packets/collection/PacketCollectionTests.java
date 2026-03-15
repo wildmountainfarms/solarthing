@@ -1,11 +1,13 @@
 package me.retrodaredevil.solarthing.packets.collection;
 
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
 
 import java.time.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@NullMarked
 final class PacketCollectionTests {
 	@Test
 	void testHourInterval(){

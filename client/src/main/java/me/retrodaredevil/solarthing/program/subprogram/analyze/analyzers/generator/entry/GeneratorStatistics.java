@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.program.subprogram.analyze.analyzers.genera
 
 import me.retrodaredevil.solarthing.program.subprogram.analyze.statistics.fx.FXStatisticCollection;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
+import org.jspecify.annotations.NullMarked;
 
 import java.time.Instant;
 import java.util.Collection;
@@ -10,6 +11,7 @@ import java.util.Map;
 /**
  * Represents statistics of some time period of a generator run, not necessarily the entire generator run
  */
+@NullMarked
 public record GeneratorStatistics(
 		Instant startTime,
 		Instant endTime,

@@ -6,12 +6,14 @@ import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.convenient.SingleActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
+import org.jspecify.annotations.NullMarked;
 
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
 @JsonTypeName("chatbot_slack")
+@NullMarked
 public class WrappedSlackChatBotActionNode implements ActionNode {
 
 	private final SingleActionNode actionNode;

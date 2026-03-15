@@ -3,10 +3,12 @@ package me.retrodaredevil.solarthing.misc.weather;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import me.retrodaredevil.solarthing.PacketTestUtil;
 import me.retrodaredevil.solarthing.misc.source.W1Source;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@NullMarked
 public class WeatherPacketsTest {
 
 	@Test

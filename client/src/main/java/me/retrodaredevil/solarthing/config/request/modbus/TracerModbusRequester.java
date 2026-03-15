@@ -22,6 +22,8 @@ import me.retrodaredevil.solarthing.solar.tracer.TracerReadTable;
 import me.retrodaredevil.solarthing.solar.tracer.TracerWriteTable;
 import me.retrodaredevil.solarthing.solar.tracer.modbus.TracerModbusSlaveRead;
 import me.retrodaredevil.solarthing.solar.tracer.modbus.TracerModbusSlaveWrite;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,26 +35,27 @@ import java.util.Map;
 import java.util.Set;
 
 @JsonTypeName("tracer")
+@NullMarked
 public class TracerModbusRequester implements ModbusRequester {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TracerModbusRequester.class);
 
 	private final boolean sendErrorPackets;
 	private final boolean bulkRequest;
 	private final int number;
-	private final TracerClockOptions tracerClockOptions;
-	private final NetCatConfig configurationServerConfig;
+	private final @Nullable TracerClockOptions tracerClockOptions;
+	private final @Nullable NetCatConfig configurationServerConfig;
 	private final boolean connectionHandlerHasFlushLogic;
 	private final Set<ModbusListUpdaterWrapper.Feature> extraFeatures;
 
 	@JsonCreator
 	public TracerModbusRequester(
-			@JsonProperty("error_packets") Boolean sendErrorPackets,
-			@JsonProperty("bulk_request") Boolean bulkRequest,
-			@JsonProperty("number") Integer number,
-			@JsonProperty("clock") TracerClockOptions tracerClockOptions,
-			@JsonProperty("server") NetCatConfig configurationServerConfig,
-			@JsonProperty("connectionHandlerHasFlushLogic") Boolean connectionHandlerHasFlushLogic,
-			@JsonProperty("features") Set<ModbusListUpdaterWrapper.Feature> extraFeatures
+			@JsonProperty("error_packets") @Nullable Boolean sendErrorPackets,
+			@JsonProperty("bulk_request") @Nullable Boolean bulkRequest,
+			@JsonProperty("number") @Nullable Integer number,
+			@JsonProperty("clock") @Nullable TracerClockOptions tracerClockOptions,
+			@JsonProperty("server") @Nullable NetCatConfig configurationServerConfig,
+			@JsonProperty("connectionHandlerHasFlushLogic") @Nullable Boolean connectionHandlerHasFlushLogic,
+			@JsonProperty("features") @Nullable Set<ModbusListUpdaterWrapper.Feature> extraFeatures
 	) {
 		this.sendErrorPackets = Boolean.TRUE.equals(sendErrorPackets); // default false
 		this.bulkRequest = !Boolean.FALSE.equals(bulkRequest); // default true

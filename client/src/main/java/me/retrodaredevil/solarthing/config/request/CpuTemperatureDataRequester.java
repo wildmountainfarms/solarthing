@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.misc.device.CpuTemperatureListUpdater;
+import org.jspecify.annotations.NullMarked;
 
 @JsonTypeName("cpu-temp")
+@NullMarked
 public class CpuTemperatureDataRequester implements DataRequester {
 	private final DataRequesterResult result;
 

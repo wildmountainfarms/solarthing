@@ -21,6 +21,7 @@ import me.retrodaredevil.solarthing.database.cache.DatabaseCache;
 import me.retrodaredevil.solarthing.message.implementations.SlackMessageSender;
 import me.retrodaredevil.solarthing.util.sync.ResourceManager;
 import okhttp3.OkHttpClient;
+import org.jspecify.annotations.NullMarked;
 
 import java.nio.file.Path;
 import java.time.Duration;
@@ -34,6 +35,7 @@ import java.util.Map;
  * <p>
  * Note: Only one of these should be in use at a time in the automation program. You can use {@link WrappedSlackChatBotActionNode} to achieve this
  */
+@NullMarked
 public class SlackChatBotActionNode implements ActionNode {
 
 	/*

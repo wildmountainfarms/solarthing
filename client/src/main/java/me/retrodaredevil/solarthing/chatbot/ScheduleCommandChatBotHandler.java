@@ -9,7 +9,7 @@ import me.retrodaredevil.solarthing.packets.collection.PacketCollectionCreator;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
 import me.retrodaredevil.solarthing.type.alter.packets.ScheduledCommandData;
 import me.retrodaredevil.solarthing.util.TimeUtil;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +25,7 @@ import java.util.concurrent.Executors;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class ScheduleCommandChatBotHandler implements ChatBotHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ScheduleCommandChatBotHandler.class);
 	private static final String SHORT_USAGE = "schedule <command> <in|at|for> <duration>";
@@ -136,7 +137,7 @@ public class ScheduleCommandChatBotHandler implements ChatBotHandler {
 	}
 
 	@Override
-	public @NonNull List<String> getHelpLines(Message helpMessage) {
+	public List<String> getHelpLines(Message helpMessage) {
 		if (canScheduleAnyCommands(helpMessage)) {
 			return Collections.singletonList(SHORT_USAGE);
 		}

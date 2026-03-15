@@ -5,6 +5,7 @@ import me.retrodaredevil.solarthing.packets.collection.DateMillisStoredIdentifie
 import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
 import me.retrodaredevil.solarthing.packets.collection.StoredPacketGroup;
 import me.retrodaredevil.solarthing.util.TimeRange;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
 
 import java.time.Clock;
@@ -13,9 +14,11 @@ import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.Collections;
 
+import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@NullMarked
 class DatabaseCacheTest {
 
 	@Test
@@ -37,7 +40,7 @@ class DatabaseCacheTest {
 					create(instant.minus(SimpleDatabaseCache.DEFAULT_VOLATILE_WINDOW_DURATION).minusSeconds(20)),
 					create(instant.minus(SimpleDatabaseCache.DEFAULT_VOLATILE_WINDOW_DURATION).plusSeconds(20)),
 					create(instant.minus(SimpleDatabaseCache.DEFAULT_VOLATILE_WINDOW_DURATION).plusSeconds(40))
-			), firstRecommendedQuery.getStartKey(), firstRecommendedQuery.getEndKey());
+			), requireNonNull(firstRecommendedQuery.getStartKey(), "startKey"), firstRecommendedQuery.getEndKey());
 		}
 
 		assertEquals(6, cache.getAllCachedPackets().size());
@@ -73,7 +76,7 @@ class DatabaseCacheTest {
 					create(instant.minus(SimpleDatabaseCache.DEFAULT_VOLATILE_WINDOW_DURATION).plusSeconds(20)),
 					create(instant.minus(SimpleDatabaseCache.DEFAULT_VOLATILE_WINDOW_DURATION).plusSeconds(41)),
 					create(instant.minus(SimpleDatabaseCache.DEFAULT_VOLATILE_WINDOW_DURATION).plusSeconds(50))
-			), millisQuery.getStartKey(), millisQuery.getEndKey());
+			), requireNonNull(millisQuery.getStartKey(), "startKey"), millisQuery.getEndKey());
 		}
 		assertEquals(7, cache.getAllCachedPackets().size());
 		assertEquals(

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,6 +17,7 @@ import static java.util.Objects.requireNonNull;
 @SuppressWarnings("CanBeFinal")
 @JsonTypeName("automation")
 @JsonExplicit
+@NullMarked
 public class AutomationProgramOptions extends DatabaseTimeZoneOptionBase implements ActionsOption {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AutomationProgramOptions.class);
 

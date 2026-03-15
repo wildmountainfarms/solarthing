@@ -8,11 +8,14 @@ import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.config.ConfigUtil;
 import me.retrodaredevil.solarthing.solar.batteryvoltage.BatteryVoltageIOListUpdater;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverReadTable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.nio.file.Path;
 
 @JsonTypeName("battery-voltage-io")
 @JsonExplicit
+@NullMarked
 public class BatteryVoltageIODataRequester implements DataRequester {
 	private final Path ioBundleFile;
 	private final int dataId;
@@ -24,10 +27,10 @@ public class BatteryVoltageIODataRequester implements DataRequester {
 	public BatteryVoltageIODataRequester(
 			@JsonProperty(value = "io", required = true) Path ioBundleFile,
 			@JsonProperty(value = "data_id", required = true) int dataId,
-			@JsonProperty("multiplier") Double multiplier,
-			@JsonProperty("divisor") Double divisor,
-			@JsonProperty(value = "invalid_when_below") Double invalidWhenBelow,
-			@JsonProperty(value = "invalid_when_above") Double invalidWhenAbove
+			@JsonProperty("multiplier") @Nullable Double multiplier,
+			@JsonProperty("divisor") @Nullable Double divisor,
+			@JsonProperty(value = "invalid_when_below") @Nullable Double invalidWhenBelow,
+			@JsonProperty(value = "invalid_when_above") @Nullable Double invalidWhenAbove
 	) {
 		this.ioBundleFile = ioBundleFile;
 		this.dataId = dataId;

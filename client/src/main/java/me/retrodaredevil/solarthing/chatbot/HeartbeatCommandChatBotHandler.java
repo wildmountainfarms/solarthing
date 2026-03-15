@@ -11,7 +11,7 @@ import me.retrodaredevil.solarthing.util.TimeUtil;
 import me.retrodaredevil.solarthing.util.heartbeat.HeartbeatIdentifier;
 import me.retrodaredevil.solarthing.util.heartbeat.HeartbeatNode;
 import me.retrodaredevil.solarthing.util.sync.ResourceManager;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -25,6 +25,7 @@ import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class HeartbeatCommandChatBotHandler implements ChatBotHandler {
 
 	private final ResourceManager<? extends DatabaseCache> eventDatabaseCacheManager;
@@ -130,7 +131,7 @@ public class HeartbeatCommandChatBotHandler implements ChatBotHandler {
 	}
 
 	@Override
-	public @NonNull List<String> getHelpLines(Message helpMessage) {
+	public List<String> getHelpLines(Message helpMessage) {
 		return Arrays.asList(
 				"heartbeat"
 		);

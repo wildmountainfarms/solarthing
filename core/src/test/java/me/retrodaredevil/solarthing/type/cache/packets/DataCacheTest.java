@@ -6,10 +6,12 @@ import me.retrodaredevil.solarthing.type.cache.packets.data.ChargeControllerAccu
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@NullMarked
 class DataCacheTest {
 
 	@Test

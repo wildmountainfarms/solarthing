@@ -1,11 +1,13 @@
 package me.retrodaredevil.solarthing.util.frequency;
 
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@NullMarked
 final class FrequentHandlerTest {
 	@Test
 	void testFrequentHandler(){

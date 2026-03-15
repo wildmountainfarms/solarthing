@@ -18,6 +18,8 @@ import me.retrodaredevil.solarthing.io.ReloadableIOBundle;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiverMultiplexer;
 import me.retrodaredevil.solarthing.config.ConfigUtil;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.nio.file.Path;
 import java.time.Duration;
@@ -29,6 +31,7 @@ import java.util.NoSuchElementException;
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("modbus")
+@NullMarked
 public class ModbusDataRequester implements DataRequester {
 	private final Path ioBundleFile;
 	private final Map<Integer, ModbusRequester> addressToModbusRequesterMap;
@@ -39,8 +42,8 @@ public class ModbusDataRequester implements DataRequester {
 	public ModbusDataRequester(
 			@JsonProperty(value = "io", required = true) Path ioBundleFile,
 			@JsonProperty(value = "devices", required = true) Map<Integer, ModbusRequester> addressToModbusRequesterMap,
-			@JsonProperty("initial_timeout") String initialTimeoutDurationString,
-			@JsonProperty("end_timeout") String endTimeoutDurationString
+			@JsonProperty("initial_timeout") @Nullable String initialTimeoutDurationString,
+			@JsonProperty("end_timeout") @Nullable String endTimeoutDurationString
 	) {
 		this.ioBundleFile = requireNonNull(ioBundleFile);
 		this.addressToModbusRequesterMap = requireNonNull(addressToModbusRequesterMap);

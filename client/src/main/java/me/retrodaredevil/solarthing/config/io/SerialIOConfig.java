@@ -10,24 +10,27 @@ import me.retrodaredevil.io.serial.JSerialIOBundle;
 import me.retrodaredevil.io.serial.SerialConfig;
 import me.retrodaredevil.io.serial.SerialConfigBuilder;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 @JsonTypeName("serial")
+@NullMarked
 public class SerialIOConfig implements IOConfig {
 	public static final String DEFAULT_SERIAL_CONFIG_KEY = "defaultSerialConfig";
 
 	@JsonProperty(value = "port", required = true)
-	private String port;
+	private @Nullable String port;
 
 	/*
 	If we combined these, null would not be the same as undefined. In our config files, we want null to have the same meaning as
 	undefined. So we use separate variables to allow this
 	 */
 	@JacksonInject(DEFAULT_SERIAL_CONFIG_KEY)
-	private SerialConfig defaultSerialConfig;
+	private @Nullable SerialConfig defaultSerialConfig;
 
 	@JsonProperty("serial_config") // optional JSON override to provide custom configuration
 	@JsonDeserialize(as = SerialConfigBuilderJackson.class)
-	private SerialConfig serialConfig;
+	private @Nullable SerialConfig serialConfig;
 
 	@Override
 	public IOBundle createIOBundle() throws Exception {
@@ -75,7 +78,7 @@ public class SerialIOConfig implements IOConfig {
 		}
 
 		@JsonProperty("parity")
-		public void setParity(String parity){
+		public void setParity(@Nullable String parity){
 			if(parity == null) return;
 
 			setParity(Parity.EVEN);

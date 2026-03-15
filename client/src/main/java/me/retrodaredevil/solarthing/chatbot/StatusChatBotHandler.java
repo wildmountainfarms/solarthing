@@ -15,13 +15,14 @@ import me.retrodaredevil.solarthing.type.alter.StoredAlterPacket;
 import me.retrodaredevil.solarthing.type.alter.packets.ScheduledCommandData;
 import me.retrodaredevil.solarthing.type.alter.packets.ScheduledCommandPacket;
 import me.retrodaredevil.solarthing.util.TimeUtil;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@NullMarked
 public class StatusChatBotHandler implements ChatBotHandler {
 	private final FragmentedPacketGroupProvider packetGroupProvider;
 	private final AlterPacketsProvider alterPacketsProvider;
@@ -35,6 +36,10 @@ public class StatusChatBotHandler implements ChatBotHandler {
 	public boolean handleMessage(Message message, MessageSender messageSender) {
 		if (ChatBotUtil.isSimilar("battery voltage", message.getText())) {
 			FragmentedPacketGroup packetGroup = packetGroupProvider.getPacketGroup();
+			if (packetGroup == null) {
+				messageSender.sendMessage("Data is not yet populated! Battery voltage unavailable. Sorry!");
+				return true;
+			}
 			Float batteryVoltageAverage = BatteryUtil.getBatteryVoltageAverage(packetGroup);
 			if (batteryVoltageAverage == null) {
 				messageSender.sendMessage("Battery voltage unavailable from latest data. Sorry!");
@@ -44,6 +49,10 @@ public class StatusChatBotHandler implements ChatBotHandler {
 			return true;
 		} else if (ChatBotUtil.isSimilar("battery temperature", message.getText()) || ChatBotUtil.isSimilar("battery temp", message.getText())) {
 			FragmentedPacketGroup packetGroup = packetGroupProvider.getPacketGroup();
+			if (packetGroup == null) {
+				messageSender.sendMessage("Data is not yet populated! Battery temperature unavailable. Sorry!");
+				return true;
+			}
 			List<String> lines = new ArrayList<>();
 			for (Packet packet : packetGroup.getPackets()) {
 				int fragmentId = packetGroup.getFragmentId(packet);
@@ -87,7 +96,7 @@ public class StatusChatBotHandler implements ChatBotHandler {
 	}
 
 	@Override
-	public @NonNull List<String> getHelpLines(Message helpMessage) {
+	public List<String> getHelpLines(Message helpMessage) {
 		return Arrays.asList(
 				"\"battery voltage\" -- Get the battery voltage",
 				"\"battery temperature\" -- Get the battery temperature from each device"

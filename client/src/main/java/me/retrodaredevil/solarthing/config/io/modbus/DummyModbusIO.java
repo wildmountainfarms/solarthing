@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.config.io.modbus;
 
 import me.retrodaredevil.io.IOBundle;
 import me.retrodaredevil.io.modbus.*;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class DummyModbusIO implements IOBundle {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DummyModbusIO.class);
 	/*
@@ -70,6 +72,7 @@ public class DummyModbusIO implements IOBundle {
 					if (responseMessage != null) {
 						//noinspection ConstantConditions
 						assert address != null;
+						requireNonNull(address, "address must not be null");
 						ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 						ioDataEncoder.sendMessage(outputStream, address, responseMessage);
 						byte[] responseBytes = outputStream.toByteArray();

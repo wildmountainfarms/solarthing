@@ -6,8 +6,10 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.DatabaseType;
 import me.retrodaredevil.solarthing.config.databases.SimpleDatabaseType;
+import org.jspecify.annotations.NullMarked;
 
 @JsonTypeName("post")
+@NullMarked
 public final class PostDatabaseSettings implements DatabaseSettings {
 	public static final DatabaseType TYPE = new SimpleDatabaseType("post");
 

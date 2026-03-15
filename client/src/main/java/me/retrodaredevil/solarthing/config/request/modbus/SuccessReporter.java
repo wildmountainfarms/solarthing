@@ -1,5 +1,8 @@
 package me.retrodaredevil.solarthing.config.request.modbus;
 
+import org.jspecify.annotations.NullMarked;
+
+@NullMarked
 public interface SuccessReporter {
 	/**
 	 * Reports the successful communication

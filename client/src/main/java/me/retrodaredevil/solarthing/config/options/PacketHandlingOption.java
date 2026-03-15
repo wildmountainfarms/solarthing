@@ -2,24 +2,25 @@ package me.retrodaredevil.solarthing.config.options;
 
 
 import me.retrodaredevil.solarthing.config.request.DataRequester;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.nio.file.Path;
 import java.util.List;
 
+@NullMarked
 public interface PacketHandlingOption extends TimeZoneOption {
 
 	@Deprecated
-	@NonNull List<Path> getDatabaseConfigurationFilePaths();
+	List<Path> getDatabaseConfigurationFilePaths();
 
-	@NonNull DatabaseConfigSettings getDatabaseConfigSettings();
+	DatabaseConfigSettings getDatabaseConfigSettings();
 
-	@NonNull String getSourceId();
+	String getSourceId();
 	int getFragmentId();
 
 	@Nullable Integer getUniqueIdsInOneHour();
 	boolean isDocumentIdShort();
 
-	@NonNull List<DataRequester> getDataRequesterList();
+	List<DataRequester> getDataRequesterList();
 }

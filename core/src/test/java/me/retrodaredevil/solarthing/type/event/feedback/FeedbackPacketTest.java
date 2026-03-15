@@ -7,12 +7,14 @@ import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerat
 import me.retrodaredevil.solarthing.reason.OpenSourceExecutionReason;
 import me.retrodaredevil.solarthing.reason.PacketCollectionExecutionReason;
 import me.retrodaredevil.solarthing.type.open.OpenSource;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
 
 import java.time.Clock;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 
+@NullMarked
 class FeedbackPacketTest {
 
 	@Test

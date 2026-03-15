@@ -58,6 +58,7 @@ import me.retrodaredevil.solarthing.util.JacksonUtil;
 import me.retrodaredevil.solarthing.util.frequency.FrequentHandler;
 import okhttp3.MediaType;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -182,7 +183,7 @@ public class PacketHandlerInit {
 		return new PacketHandlerBundle(statusPacketHandlers, eventPacketHandlers);
 	}
 
-	public static <T extends PacketHandlingOption & CommandOption & ActionsOption> Result initHandlers(T options, Supplier<? extends EnvironmentUpdater> environmentUpdaterSupplier, Collection<? extends PacketHandler> additionalPacketHandlers) throws IOException {
+	public static <T extends PacketHandlingOption & CommandOption & ActionsOption> Result initHandlers(T options, Supplier<? extends @Nullable EnvironmentUpdater> environmentUpdaterSupplier, Collection<? extends PacketHandler> additionalPacketHandlers) throws IOException {
 		List<DatabaseConfig> databaseConfigs = ConfigUtil.resolveConfigs(options.getDatabaseConfigSettings());
 		PacketHandlerBundle packetHandlerBundle = PacketHandlerInit.getPacketHandlerBundle(databaseConfigs, SolarThingConstants.STATUS_DATABASE, SolarThingConstants.EVENT_DATABASE, options.getSourceId(), options.getFragmentId());
 		List<PacketHandler> statusPacketHandlers = new ArrayList<>();
@@ -246,7 +247,7 @@ public class PacketHandlerInit {
 		ActionMultiplexer multiplexer = new Actions.ActionMultiplexerBuilder().build();
 		List<ActionNodeEntry> actionNodeEntries = new ArrayList<>(originalActionNodeEntries); // entries may be removed from this list
 
-		PacketCollection[] packetCollectionReference = new PacketCollection[] { null };
+		@Nullable PacketCollection[] packetCollectionReference = new @Nullable PacketCollection[] { null };
 		LatestPacketGroupEnvironment latestPacketGroupEnvironment = new LatestPacketGroupEnvironment(() -> requireNonNull(packetCollectionReference[0], "Using latestPacketGroupEnvironment before initializing packet collection!"));
 
 		return packetCollection -> {

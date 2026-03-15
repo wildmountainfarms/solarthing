@@ -2,11 +2,13 @@ package me.retrodaredevil.solarthing.config.options;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 /**
  * An enum that represents different options that can be easily enabled
  */
+@NullMarked
 public enum ExtraOptionFlag {
 	RPI_LOG_CPU_TEMPERATURE("rpi_cpu_temp");
 	private final String shortName;

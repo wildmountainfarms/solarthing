@@ -9,10 +9,12 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
 import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
 import me.retrodaredevil.io.modbus.handling.ErrorCodeException;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@NullMarked
 public class ModbusSerializationCatcher extends BeanPropertyWriter {
 
 

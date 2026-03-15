@@ -9,6 +9,7 @@ import me.retrodaredevil.solarthing.type.alter.flag.TimeRangeActivePeriod;
 import me.retrodaredevil.solarthing.type.alter.packets.ScheduledCommandData;
 import me.retrodaredevil.solarthing.type.event.feedback.HeartbeatData;
 import me.retrodaredevil.solarthing.util.TimeRange;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
@@ -16,6 +17,7 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.UUID;
 
+@NullMarked
 class CommandOpenPacketsTest {
 
 	@Test

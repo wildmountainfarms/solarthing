@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import me.retrodaredevil.io.IOBundle;
 import me.retrodaredevil.solarthing.config.io.modbus.DummyModbusIOConfig;
+import org.jspecify.annotations.NullMarked;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
@@ -12,6 +13,7 @@ import me.retrodaredevil.solarthing.config.io.modbus.DummyModbusIOConfig;
 		@JsonSubTypes.Type(DummyModbusIOConfig.class),
 		@JsonSubTypes.Type(BlankIOConfig.class),
 })
+@NullMarked
 public interface IOConfig {
 	IOBundle createIOBundle() throws Exception;
 }

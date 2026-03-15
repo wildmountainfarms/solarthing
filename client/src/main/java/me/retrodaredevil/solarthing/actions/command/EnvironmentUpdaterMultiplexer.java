@@ -2,12 +2,14 @@ package me.retrodaredevil.solarthing.actions.command;
 
 import me.retrodaredevil.action.node.environment.InjectEnvironment;
 import me.retrodaredevil.solarthing.reason.ExecutionReason;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+@NullMarked
 public class EnvironmentUpdaterMultiplexer implements EnvironmentUpdater {
 	private final List<EnvironmentUpdater> environmentUpdaterList;
 

@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.chatbot;
 
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class PermissionHandler {
 
 
@@ -60,7 +62,7 @@ public class PermissionHandler {
 					desiredIndex++;
 				}
 				desiredIndex--;
-			} else if (!userPermission.singleWildcard && !userPermission.node.equals(desiredPermission)) {
+			} else if (!userPermission.singleWildcard && !requireNonNull(userPermission.node).equals(desiredPermission)) {
 				return false;
 			}
 		}

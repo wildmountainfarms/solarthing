@@ -1,11 +1,13 @@
 package me.retrodaredevil.solarthing.solar.outback.fx.charge;
 
 import me.retrodaredevil.solarthing.solar.outback.fx.OperationalMode;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+@NullMarked
 class FXChargingStateHandlerTest {
 
 	@Test

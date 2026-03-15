@@ -1,9 +1,11 @@
 package me.retrodaredevil.solarthing.util.integration;
 
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@NullMarked
 class IntegralAccumulatorTest {
 	@Test
 	void testTrapezoidal(){

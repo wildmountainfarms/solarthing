@@ -1,9 +1,11 @@
 package me.retrodaredevil.solarthing.chatbot;
 
 import me.retrodaredevil.solarthing.commands.CommandInfo;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public final class AvailableCommand {
 	private final int fragmentId;
 	private final CommandInfo commandInfo;

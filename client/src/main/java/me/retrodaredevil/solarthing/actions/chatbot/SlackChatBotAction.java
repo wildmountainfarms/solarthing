@@ -11,6 +11,7 @@ import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.chatbot.ChatBotHandler;
 import me.retrodaredevil.solarthing.chatbot.Message;
 import me.retrodaredevil.solarthing.message.MessageSender;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class SlackChatBotAction extends SimpleAction {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SlackChatBotAction.class);
 

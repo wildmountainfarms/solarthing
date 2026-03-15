@@ -14,6 +14,7 @@ import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerat
 import me.retrodaredevil.solarthing.packets.collection.PacketCollections;
 import me.retrodaredevil.solarthing.packets.instance.InstanceFragmentIndicatorPackets;
 import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePackets;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -25,6 +26,7 @@ import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @Tag("integration")
+@NullMarked
 public class DatabasePermissionTest {
 
 	private static PacketCollection createSimplePacketCollection() {

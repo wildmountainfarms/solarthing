@@ -1,7 +1,9 @@
 package me.retrodaredevil.solarthing.chatbot;
 
 import me.retrodaredevil.solarthing.message.MessageSender;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public class HelpChatBotHandler implements ChatBotHandler {
 	private final ChatBotHandler chatBotHandler;
 

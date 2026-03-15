@@ -25,6 +25,7 @@ import me.retrodaredevil.notation.translators.json.SimpleConfigurationProvider;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import org.antlr.v4.runtime.CharStreams;
+import org.jspecify.annotations.NullMarked;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,6 +37,7 @@ import java.util.List;
 
 
 @UtilityClass
+@NullMarked
 public class RunActionMain {
 	private RunActionMain() { throw new UnsupportedOperationException(); }
 

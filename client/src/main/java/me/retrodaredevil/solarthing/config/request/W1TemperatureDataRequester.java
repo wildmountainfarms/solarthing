@@ -4,12 +4,14 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.misc.weather.W1TemperatureListUpdater;
+import org.jspecify.annotations.NullMarked;
 
 import java.nio.file.Path;
 
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("w1-temperature")
+@NullMarked
 public class W1TemperatureDataRequester implements DataRequester {
 	private final Path directory;
 	private final int dataId;

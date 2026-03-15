@@ -7,11 +7,13 @@ import me.retrodaredevil.io.IOBundle;
 import me.retrodaredevil.io.modbus.ModbusSlave;
 import me.retrodaredevil.io.modbus.RtuDataEncoder;
 import me.retrodaredevil.solarthing.config.io.IOConfig;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @JsonTypeName("dummy-modbus")
+@NullMarked
 public class DummyModbusIOConfig implements IOConfig {
 	private final Map<Integer, DummyModbusSlave> addressToSlaveMap;
 

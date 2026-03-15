@@ -7,6 +7,7 @@ import me.retrodaredevil.solarthing.actions.command.EnvironmentUpdater;
 import me.retrodaredevil.action.node.environment.InjectEnvironment;
 import me.retrodaredevil.solarthing.commands.packets.open.RequestCommandPacket;
 import me.retrodaredevil.solarthing.packets.Packet;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Collection;
 import java.util.function.Predicate;
@@ -17,6 +18,7 @@ import java.util.function.Predicate;
  * This command name is determined by {@link RequestCommandPacket} which is retrieved from {@link OpenSource#getPacket()}
  */
 @Deprecated
+@NullMarked
 public class AttachToCommandEnvironmentUpdater implements EnvironmentUpdater {
 	private final Collection<Object> environmentsToAdd;
 	private final Predicate<? super String> shouldAttachToCommandPredicate;

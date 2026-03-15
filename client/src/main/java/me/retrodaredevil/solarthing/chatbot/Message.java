@@ -1,7 +1,10 @@
 package me.retrodaredevil.solarthing.chatbot;
 
+import org.jspecify.annotations.NullMarked;
+
 import java.time.Instant;
 
+@NullMarked
 public final class Message {
 	private final String text;
 	private final String userId;

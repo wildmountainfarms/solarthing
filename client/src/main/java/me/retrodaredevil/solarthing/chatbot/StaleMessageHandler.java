@@ -1,7 +1,9 @@
 package me.retrodaredevil.solarthing.chatbot;
 
 import me.retrodaredevil.solarthing.message.MessageSender;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public class StaleMessageHandler implements ChatBotHandler {
 	@Override
 	public boolean handleMessage(Message message, MessageSender messageSender) {

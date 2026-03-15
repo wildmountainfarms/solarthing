@@ -2,14 +2,15 @@ package me.retrodaredevil.solarthing.config.options;
 
 import me.retrodaredevil.solarthing.actions.config.ActionReference;
 import me.retrodaredevil.solarthing.commands.CommandInfo;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 
+@NullMarked
 public interface CommandOption {
 	@Nullable List<CommandConfig> getDeclaredCommandsNullable();
-	default @NonNull List<CommandConfig> getDeclaredCommands() {
+	default List<CommandConfig> getDeclaredCommands() {
 		List<CommandConfig> commandConfigs = getDeclaredCommandsNullable();
 		if (commandConfigs == null) {
 			return Collections.emptyList();

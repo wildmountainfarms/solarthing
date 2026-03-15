@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.solar.tracer;
 
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
@@ -8,6 +9,7 @@ import java.time.MonthDay;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@NullMarked
 class TracerUtilTest {
 
 	@Test

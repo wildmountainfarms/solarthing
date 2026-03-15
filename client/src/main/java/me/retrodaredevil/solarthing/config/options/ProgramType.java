@@ -5,11 +5,13 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.jspecify.annotations.NullMarked;
 
 import java.io.IOException;
 
 @JsonDeserialize(using = ProgramType.Deserializer.class)
 @JsonSerialize(using = ProgramType.Serializer.class)
+@NullMarked
 public enum ProgramType {
 	MATE("mate"),
 //	ROVER("rover"),

@@ -6,11 +6,14 @@ import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.actions.config.ActionFormat;
 import me.retrodaredevil.solarthing.actions.config.ActionReference;
 import me.retrodaredevil.solarthing.commands.CommandInfo;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 
+@NullMarked
 public class CommandConfig {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CommandConfig.class);
 	private final CommandInfo commandInfo;
@@ -22,11 +25,11 @@ public class CommandConfig {
 			@JsonProperty(value = "display_name", required = true) String displayName,
 			@JsonProperty(value = "description", required = true) String description,
 			@JsonProperty(value = "action", required = true) Path actionPath,
-			@JsonProperty("format") ActionFormat format) {
+			@JsonProperty("format") @Nullable ActionFormat format) {
 		this.commandInfo = new CommandInfo(name, displayName, description);
 		this.actionReference = new ActionReference(actionPath, inferFormat(actionPath, format));
 	}
-	private static ActionFormat inferFormat(Path actionPath, ActionFormat format) {
+	private static ActionFormat inferFormat(Path actionPath, @Nullable ActionFormat format) {
 		if (format == null) {
 			// This logic will allow us to default to NOTATION_SCRIPT, but to still support legacy configuration files
 			// We should be able to remove this logic in the future.

@@ -7,17 +7,18 @@ import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.DatabaseType;
 import me.retrodaredevil.solarthing.config.databases.SimpleDatabaseType;
 import me.retrodaredevil.solarthing.mqtt.MqttPacketSaver;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("mqtt")
+@NullMarked
 public class MqttDatabaseSettings implements DatabaseSettings {
 	public static final DatabaseType TYPE = new SimpleDatabaseType("mqtt");
 
 	private final String broker;
-	private final String clientId;
+	private final @Nullable String clientId;
 	private final String username;
 	private final char[] password;
 	private final String topicFormat;
@@ -26,11 +27,11 @@ public class MqttDatabaseSettings implements DatabaseSettings {
 	@JsonCreator
 	public MqttDatabaseSettings(
 			@JsonProperty(value = "broker", required = true) String broker,
-			@JsonProperty("client_id") String clientId,
+			@JsonProperty("client_id") @Nullable String clientId,
 			@JsonProperty(value = "username", required = true) String username,
 			@JsonProperty(value = "password", required = true) char[] password,
-			@JsonProperty("topic") String topicFormat,
-			@JsonProperty("retain") Boolean retain) {
+			@JsonProperty("topic") @Nullable String topicFormat,
+			@JsonProperty("retain") @Nullable Boolean retain) {
 		this.broker = requireNonNull(broker);
 		this.clientId = clientId;
 		this.username = requireNonNull(username);
@@ -49,7 +50,7 @@ public class MqttDatabaseSettings implements DatabaseSettings {
 		return TYPE;
 	}
 
-	public @NonNull String getBroker() {
+	public String getBroker() {
 		return broker;
 	}
 
@@ -57,15 +58,15 @@ public class MqttDatabaseSettings implements DatabaseSettings {
 		return clientId;
 	}
 
-	public @NonNull String getUsername() {
+	public String getUsername() {
 		return username;
 	}
 
-	public @NonNull char[] getPassword() {
+	public char[] getPassword() {
 		return password;
 	}
 
-	public @NonNull String getTopicFormat() {
+	public String getTopicFormat() {
 		return topicFormat;
 	}
 

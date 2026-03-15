@@ -16,6 +16,7 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +24,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
+@NullMarked
 public class MqttPacketSaver implements PacketHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MqttPacketSaver.class);
 	private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.defaultMapper();

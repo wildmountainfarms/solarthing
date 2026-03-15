@@ -2,10 +2,12 @@ package me.retrodaredevil.solarthing.commands.packets.open;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import me.retrodaredevil.solarthing.PacketTestUtil;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@NullMarked
 class CommandOpenPacketTest {
 
 	@Test

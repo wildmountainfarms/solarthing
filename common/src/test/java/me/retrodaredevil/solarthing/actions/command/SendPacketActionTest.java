@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.actions.command;
 
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -9,6 +10,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@NullMarked
 class SendPacketActionTest {
 
 	@Disabled("GitHub Actions doesn't like this action very much because the Thread.sleep stuff to prevent race conditions doesn't always work.")

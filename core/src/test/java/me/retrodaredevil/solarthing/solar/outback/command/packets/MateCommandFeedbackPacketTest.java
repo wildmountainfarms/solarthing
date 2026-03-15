@@ -6,10 +6,12 @@ import me.retrodaredevil.solarthing.PacketTestUtil;
 import me.retrodaredevil.solarthing.commands.packets.open.ImmutableRequestCommandPacket;
 import me.retrodaredevil.solarthing.reason.OpenSourceExecutionReason;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
 
 //import static org.junit.jupiter.api.Assertions.*;
 
+@NullMarked
 final class MateCommandFeedbackPacketTest {
 
 	@Test

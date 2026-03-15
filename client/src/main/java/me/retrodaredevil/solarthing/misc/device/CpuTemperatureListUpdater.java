@@ -2,6 +2,7 @@ package me.retrodaredevil.solarthing.misc.device;
 
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,6 +14,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+@NullMarked
 public class CpuTemperatureListUpdater implements PacketListReceiver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CpuTemperatureListUpdater.class);
 

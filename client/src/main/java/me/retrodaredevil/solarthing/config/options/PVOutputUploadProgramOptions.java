@@ -10,6 +10,7 @@ import me.retrodaredevil.solarthing.program.subprogram.pvoutput.provider.PacketV
 import me.retrodaredevil.solarthing.program.subprogram.pvoutput.provider.PacketTemperatureCelsiusProvider;
 import me.retrodaredevil.solarthing.program.subprogram.pvoutput.provider.TemperatureCelsiusProvider;
 import me.retrodaredevil.solarthing.program.subprogram.pvoutput.provider.VoltageProvider;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,16 +19,19 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Objects.requireNonNull;
+
 @SuppressWarnings({"FieldMayBeFinal", "CanBeFinal"})
 @JsonTypeName("pvoutput-upload")
 @JsonExplicit
+@NullMarked
 public class PVOutputUploadProgramOptions extends DatabaseTimeZoneOptionBase implements AnalyticsOption, DatabaseOption, ProgramOptions {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PVOutputUploadProgramOptions.class);
 
 	@JsonProperty(value = "system_id", required = true)
 	private int systemId;
 	@JsonProperty(value = "api_key", required = true)
-	private String apiKey;
+	private @Nullable String apiKey;
 
 	@JsonProperty("required")
 	private @Nullable Map<Integer, List<String>> requiredIdentifierMap = null;
@@ -67,7 +71,7 @@ public class PVOutputUploadProgramOptions extends DatabaseTimeZoneOptionBase imp
 	}
 
 	public String getApiKey() {
-		return apiKey;
+		return requireNonNull(apiKey, "apiKey must not be null");
 	}
 
 	public Map<Integer, List<String>> getRequiredIdentifierMap() {

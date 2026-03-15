@@ -1,7 +1,7 @@
 package me.retrodaredevil.solarthing.chatbot;
 
 import me.retrodaredevil.solarthing.message.MessageSender;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Collections;
 import java.util.List;
@@ -11,11 +11,12 @@ import java.util.List;
  * <p>
  * All implementations must be thread safe.
  */
+@NullMarked
 public interface ChatBotHandler {
 
 	boolean handleMessage(Message message, MessageSender messageSender);
 
-	@NonNull default List<String> getHelpLines(Message helpMessage) {
+	default List<String> getHelpLines(Message helpMessage) {
 		return Collections.emptyList();
 	}
 }

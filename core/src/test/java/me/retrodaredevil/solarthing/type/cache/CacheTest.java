@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.type.cache;
 
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
@@ -9,6 +10,7 @@ import java.time.ZoneId;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@NullMarked
 class CacheTest {
 	@Test
 	void test() {

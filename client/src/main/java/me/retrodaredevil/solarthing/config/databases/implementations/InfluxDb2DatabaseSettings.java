@@ -9,11 +9,14 @@ import me.retrodaredevil.okhttp3.OkHttpProperties;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.DatabaseType;
 import me.retrodaredevil.solarthing.config.databases.SimpleDatabaseType;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
 @JsonDeserialize(using = InfluxDb2DatabaseSettings.Deserializer.class)
 @JsonTypeName("influxdb2")
+@NullMarked
 public class InfluxDb2DatabaseSettings implements DatabaseSettings {
 	public static final DatabaseType TYPE = new SimpleDatabaseType("influxdb2");
 
@@ -41,6 +44,7 @@ public class InfluxDb2DatabaseSettings implements DatabaseSettings {
 	public OkHttpProperties getOkHttpProperties() {
 		return okHttpProperties;
 	}
+	@Deprecated
 	static class Deserializer extends UnwrappedDeserializer<InfluxDb2DatabaseSettings, Builder> {
 		Deserializer() {
 			super(Builder.class, Builder::build);
@@ -48,12 +52,15 @@ public class InfluxDb2DatabaseSettings implements DatabaseSettings {
 	}
 	static class Builder {
 		@JsonUnwrapped
-		private InfluxDb2Properties influxDbProperties;
+		private @Nullable InfluxDb2Properties influxDbProperties;
 		@JsonUnwrapped
-		private OkHttpProperties okHttpProperties;
+		private @Nullable OkHttpProperties okHttpProperties;
 
 		public InfluxDb2DatabaseSettings build() {
-			return new InfluxDb2DatabaseSettings(influxDbProperties, okHttpProperties);
+			return new InfluxDb2DatabaseSettings(
+					requireNonNull(influxDbProperties, "JsonUnwrapped should have initialized influxDbProperties"),
+					requireNonNull(okHttpProperties, "JsonUnwrapped should have initialized okHttpProperties")
+			);
 		}
 
 	}

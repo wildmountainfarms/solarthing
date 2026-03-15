@@ -4,6 +4,7 @@ import me.retrodaredevil.solarthing.FragmentedPacketGroupProvider;
 import me.retrodaredevil.solarthing.commands.util.CommandManager;
 import me.retrodaredevil.solarthing.commands.packets.status.AvailableCommandsPacket;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class ChatBotCommandHelper {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ChatBotCommandHelper.class);
 

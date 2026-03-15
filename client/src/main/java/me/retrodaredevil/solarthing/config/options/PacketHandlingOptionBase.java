@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.config.databases.DatabaseConfig;
 import me.retrodaredevil.solarthing.config.request.DataRequester;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import static java.util.Objects.requireNonNull;
 
 @SuppressWarnings({"FieldCanBeLocal", "CanBeFinal"})
+@NullMarked
 abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements PacketHandlingOption, ActionsOption, CommandOption, AnalyticsOption {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PacketHandlingOptionBase.class);
 
@@ -40,7 +41,7 @@ abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements Pa
 	private @Nullable List<DataRequester> dataRequesterList;
 
 	@JsonProperty("commands")
-	private List<CommandConfig> commandConfigs;
+	private @Nullable List<CommandConfig> commandConfigs;
 
 	@JsonProperty(AnalyticsOption.PROPERTY_NAME)
 	private boolean isAnalyticsEnabled = AnalyticsOption.DEFAULT_IS_ANALYTICS_ENABLED;
@@ -50,7 +51,7 @@ abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements Pa
 
 	@Deprecated
 	@Override
-	public final @NonNull List<Path> getDatabaseConfigurationFilePaths() {
+	public final List<Path> getDatabaseConfigurationFilePaths() {
 		List<Path> r = databases;
 		if(r == null){
 			return Collections.emptyList();
@@ -59,7 +60,7 @@ abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements Pa
 	}
 
 	@Override
-	public @NonNull DatabaseConfigSettings getDatabaseConfigSettings() {
+	public DatabaseConfigSettings getDatabaseConfigSettings() {
 		if (databaseConfigSettings == null) {
 			if(databases == null){
 				return DatabaseConfigSettings.EMPTY;
@@ -72,7 +73,7 @@ abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements Pa
 	}
 
 	@Override
-	public final @NonNull String getSourceId() {
+	public final String getSourceId() {
 		return SourceIdValidator.validateSourceId(source);
 	}
 
@@ -92,7 +93,7 @@ abstract class PacketHandlingOptionBase extends TimeZoneOptionBase implements Pa
 	}
 
 	@Override
-	public final @NonNull List<DataRequester> getDataRequesterList() {
+	public final List<DataRequester> getDataRequesterList() {
 		List<DataRequester> r = dataRequesterList;
 		if (r == null) {
 			return Collections.emptyList();

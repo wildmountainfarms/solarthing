@@ -6,12 +6,14 @@ import me.retrodaredevil.solarthing.commands.CommandInfo;
 import me.retrodaredevil.solarthing.commands.packets.status.AvailableCommandsPacket;
 import me.retrodaredevil.solarthing.commands.packets.status.CommandStatusPacket;
 import me.retrodaredevil.solarthing.commands.packets.status.ImmutableAvailableCommandsPacket;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@NullMarked
 class CommandStatusPacketTest {
 
 	@Test

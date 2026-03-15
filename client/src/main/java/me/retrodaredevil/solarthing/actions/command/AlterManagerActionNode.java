@@ -14,9 +14,11 @@ import me.retrodaredevil.solarthing.actions.environment.TimeZoneEnvironment;
 import me.retrodaredevil.solarthing.commands.util.CommandManager;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
 import me.retrodaredevil.solarthing.database.cache.DatabaseCache;
+import org.jspecify.annotations.NullMarked;
 
 import java.nio.file.Path;
 
+@NullMarked
 public class AlterManagerActionNode implements ActionNode {
 
 	private final String sender;

@@ -2,9 +2,11 @@ package me.retrodaredevil.solarthing.actions.environment;
 
 import me.retrodaredevil.solarthing.commands.command.SourcedCommand;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Queue;
 
+@NullMarked
 public class MateCommandEnvironment {
 	private final Queue<? super SourcedCommand<MateCommand>> queue;
 

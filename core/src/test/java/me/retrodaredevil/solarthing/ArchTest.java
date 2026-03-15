@@ -17,6 +17,7 @@ import me.retrodaredevil.solarthing.packets.Mode;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.TypedDocumentedPacket;
 import me.retrodaredevil.solarthing.reason.ExecutionReason;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import java.util.Collection;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.*;
 import static org.junit.jupiter.api.Assertions.fail;
 
+@NullMarked
 public class ArchTest {
 	@Test
 	void testArch() {

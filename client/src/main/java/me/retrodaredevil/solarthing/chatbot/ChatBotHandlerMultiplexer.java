@@ -1,11 +1,12 @@
 package me.retrodaredevil.solarthing.chatbot;
 
 import me.retrodaredevil.solarthing.message.MessageSender;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@NullMarked
 public class ChatBotHandlerMultiplexer implements ChatBotHandler {
 	private final List<ChatBotHandler> chatBotHandlerList;
 
@@ -24,7 +25,7 @@ public class ChatBotHandlerMultiplexer implements ChatBotHandler {
 	}
 
 	@Override
-	public @NonNull List<String> getHelpLines(Message helpMessage) {
+	public List<String> getHelpLines(Message helpMessage) {
 		return chatBotHandlerList.stream()
 				.flatMap(chatBotHandler -> chatBotHandler.getHelpLines(helpMessage).stream())
 				.collect(Collectors.toList());

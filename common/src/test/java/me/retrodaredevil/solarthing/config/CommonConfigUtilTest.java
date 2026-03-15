@@ -6,12 +6,15 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
+import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.*;
 
+@NullMarked
 class CommonConfigUtilTest {
 
 	@Test
@@ -23,7 +26,7 @@ class CommonConfigUtilTest {
 				fail("Reading did not cause exception for: " + badJson);
 			} catch (JsonProcessingException e) {
 				assertTrue(e.getClass() == MismatchedInputException.class || e.getClass() == JsonEOFException.class, "Failed for: " + badJson);
-				assertTrue(e.getMessage().contains("end-of-input"), "Failed for: " + badJson);
+				assertTrue(requireNonNull(e.getMessage(), "message is null").contains("end-of-input"), "Failed for: " + badJson);
 			}
 		}
 	}

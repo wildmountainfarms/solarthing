@@ -11,6 +11,7 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.event.ImmutableRoverError
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.MutableSpecialPowerControl_E021;
 import me.retrodaredevil.solarthing.solar.renogy.rover.special.MutableSpecialPowerControl_E02D;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
@@ -18,6 +19,7 @@ import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@NullMarked
 final class RenogyTest {
 	private static final Path DIRECTORY_ROVER = PacketTestUtil.SOLARTHING_ROOT.resolve("testing/packets/rover");
 

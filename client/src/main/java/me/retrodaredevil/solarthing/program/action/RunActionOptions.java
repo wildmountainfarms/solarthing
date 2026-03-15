@@ -2,9 +2,12 @@ package me.retrodaredevil.solarthing.program.action;
 
 import com.lexicalscope.jewel.cli.Option;
 import com.lexicalscope.jewel.cli.Unparsed;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
+@NullMarked
 public interface RunActionOptions {
 	@Option(shortName = "h", longName = "help", helpRequest = true)
 	boolean isHelp();
@@ -17,7 +20,7 @@ public interface RunActionOptions {
 
 
 	@Unparsed(name = "Positional Arguments")
-	List<String> getPositionalArguments();
+	@Nullable List<String> getPositionalArguments();
 
 
 }

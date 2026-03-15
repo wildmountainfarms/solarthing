@@ -3,10 +3,12 @@ package me.retrodaredevil.solarthing.type.cache.packets.data;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import me.retrodaredevil.solarthing.PacketTestUtil;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 
+@NullMarked
 class BatteryRecordDataCacheTest {
 
 	@Test

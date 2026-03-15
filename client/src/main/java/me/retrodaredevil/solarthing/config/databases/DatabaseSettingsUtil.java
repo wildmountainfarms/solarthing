@@ -4,8 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.SubtypeResolver;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.config.databases.implementations.*;
+import org.jspecify.annotations.NullMarked;
 
 @UtilityClass
+@NullMarked
 public class DatabaseSettingsUtil {
 	private DatabaseSettingsUtil() { throw new UnsupportedOperationException(); }
 

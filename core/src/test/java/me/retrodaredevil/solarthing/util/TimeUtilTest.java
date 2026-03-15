@@ -1,11 +1,13 @@
 package me.retrodaredevil.solarthing.util;
 
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@NullMarked
 class TimeUtilTest {
 
 	@Test

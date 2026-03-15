@@ -1,7 +1,9 @@
 package me.retrodaredevil.solarthing.config.options;
 
 import me.retrodaredevil.solarthing.annotations.DefaultFinal;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public interface AnalyticsOption extends ProgramOptions {
 	boolean isAnalyticsOptionEnabled();
 

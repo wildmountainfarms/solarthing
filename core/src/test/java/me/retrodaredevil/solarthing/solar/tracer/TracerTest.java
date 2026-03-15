@@ -7,12 +7,14 @@ import me.retrodaredevil.solarthing.solar.SolarStatusPacket;
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacket;
 import me.retrodaredevil.solarthing.solar.tracer.event.ImmutableTracerChargingEquipmentStatusChangePacket;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@NullMarked
 public class TracerTest {
 	private static final Path DIRECTORY_TRACER = PacketTestUtil.SOLARTHING_ROOT.resolve("testing/packets/tracer");
 

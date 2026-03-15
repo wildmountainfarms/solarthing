@@ -2,9 +2,11 @@ package me.retrodaredevil.solarthing.config.request;
 
 import me.retrodaredevil.solarthing.actions.command.EnvironmentUpdater;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public final class DataRequesterResult {
 	private final PacketListReceiver statusPacketListReceiver;
 	private final EnvironmentUpdater environmentUpdater;

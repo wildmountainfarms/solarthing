@@ -13,6 +13,7 @@ import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.program.subprogram.run.PacketListReceiverHandler;
 import me.retrodaredevil.solarthing.reason.ExecutionReason;
 import me.retrodaredevil.solarthing.type.event.feedback.ImmutableExecutionFeedbackPacket;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +24,7 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("feedback")
+@NullMarked
 public class ExecutingCommandFeedbackActionNode implements ActionNode {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ExecutingCommandFeedbackActionNode.class);
 

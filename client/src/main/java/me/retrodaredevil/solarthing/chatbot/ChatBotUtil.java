@@ -2,12 +2,15 @@ package me.retrodaredevil.solarthing.chatbot;
 
 import info.debatty.java.stringsimilarity.JaroWinkler;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.function.Function;
 
 @UtilityClass
+@NullMarked
 public final class ChatBotUtil {
 	private ChatBotUtil() { throw new UnsupportedOperationException(); }
 	private static final JaroWinkler MATCHER = new JaroWinkler();
@@ -19,10 +22,10 @@ public final class ChatBotUtil {
 	public static boolean isSimilar(String s1, String s2) {
 		return similarity(s1, s2) > SIMILARITY_CONSTANT;
 	}
-	public static <T> T findBest(Iterable<? extends T> iterable, Function<? super T, ? extends String> toText, String text) {
+	public static <T> @Nullable T findBest(Iterable<? extends T> iterable, Function<? super T, ? extends String> toText, String text) {
 		return findBest(iterable.iterator(), toText, text);
 	}
-	public static <T> T findBest(Iterator<? extends T> iterator, Function<? super T, ? extends String> toText, String text) {
+	public static <T> @Nullable T findBest(Iterator<? extends T> iterator, Function<? super T, ? extends String> toText, String text) {
 		T best = null;
 		double bestSimilarity = 0;
 		while (iterator.hasNext()) {

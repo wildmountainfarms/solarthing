@@ -5,10 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.solarthing.program.subprogram.pvoutput.provider.AverageBatteryVoltageProvider;
 import me.retrodaredevil.solarthing.program.subprogram.pvoutput.provider.VoltageProvider;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@NullMarked
 class VoltageProviderTest {
 
 	@Test

@@ -6,10 +6,12 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.DatabaseType;
 import me.retrodaredevil.solarthing.config.databases.SimpleDatabaseType;
+import org.jspecify.annotations.NullMarked;
 
 import java.nio.file.Path;
 
 @JsonTypeName("latest")
+@NullMarked
 public final class LatestFileDatabaseSettings implements DatabaseSettings {
 	public static final DatabaseType TYPE = new SimpleDatabaseType("latest");
 

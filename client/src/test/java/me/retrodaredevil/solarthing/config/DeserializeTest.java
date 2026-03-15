@@ -32,6 +32,8 @@ import me.retrodaredevil.solarthing.util.CheckSumException;
 import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import me.retrodaredevil.solarthing.util.ParsePacketAsciiDecimalDigitException;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -46,6 +48,7 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.*;
 
+@NullMarked
 public class DeserializeTest {
 	private static final Path SOLARTHING_ROOT = Path.of(".."); // Working directory for tests are the /client folder
 	private static final Path BASE_CONFIG_DIRECTORY = SOLARTHING_ROOT.resolve("config_templates/base");
@@ -199,7 +202,7 @@ public class DeserializeTest {
 	void testRunAlertGeneratorOffWhileAuxOn(ActionNode actionNode) throws ParsePacketAsciiDecimalDigitException, CheckSumException {
 		// We need to simulate an automation program environment to run this action
 		Duration[] timeReference = new Duration [] { Duration.ZERO };
-		FragmentedPacketGroup[] packetGroupReference = new FragmentedPacketGroup[] { null };
+		@Nullable FragmentedPacketGroup[] packetGroupReference = new @Nullable FragmentedPacketGroup[] { null };
 		final int FRAGMENT_ID = 1; // the fragment ID used in the required action in the alert ActionLang script
 
 		FragmentedPacketGroupProvider fragmentedPacketGroupProvider = () -> requireNonNull(packetGroupReference[0]);

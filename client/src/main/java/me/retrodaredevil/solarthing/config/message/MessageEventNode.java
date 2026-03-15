@@ -3,9 +3,11 @@ package me.retrodaredevil.solarthing.config.message;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.message.event.MessageEvent;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
 
+@NullMarked
 public class MessageEventNode {
 	private final MessageEvent messageEvent;
 	private final List<String> sendTo;

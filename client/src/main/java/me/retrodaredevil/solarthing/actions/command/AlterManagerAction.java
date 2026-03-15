@@ -45,6 +45,7 @@ import me.retrodaredevil.solarthing.type.alter.packets.ScheduledCommandData;
 import me.retrodaredevil.solarthing.type.alter.packets.ScheduledCommandPacket;
 import me.retrodaredevil.solarthing.type.open.OpenSource;
 import me.retrodaredevil.solarthing.util.TimeRange;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,6 +62,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+@NullMarked
 public class AlterManagerAction extends SimpleAction {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AlterManagerAction.class);
 	private static final Cipher CIPHER;

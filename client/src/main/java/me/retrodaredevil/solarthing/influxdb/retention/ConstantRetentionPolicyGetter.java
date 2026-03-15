@@ -1,17 +1,18 @@
 package me.retrodaredevil.solarthing.influxdb.retention;
 
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 @NullMarked
 public class ConstantRetentionPolicyGetter implements RetentionPolicyGetter {
-	private final RetentionPolicySetting retentionPolicySetting;
+	private final @Nullable RetentionPolicySetting retentionPolicySetting;
 
-	public ConstantRetentionPolicyGetter(RetentionPolicySetting retentionPolicySetting) {
+	public ConstantRetentionPolicyGetter(@Nullable RetentionPolicySetting retentionPolicySetting) {
 		this.retentionPolicySetting = retentionPolicySetting;
 	}
 
 	@Override
-	public RetentionPolicySetting getRetentionPolicySetting() {
+	public @Nullable RetentionPolicySetting getRetentionPolicySetting() {
 		return retentionPolicySetting;
 	}
 }
