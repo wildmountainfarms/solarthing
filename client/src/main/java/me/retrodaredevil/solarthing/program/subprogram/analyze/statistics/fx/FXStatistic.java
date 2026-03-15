@@ -1,5 +1,7 @@
 package me.retrodaredevil.solarthing.program.subprogram.analyze.statistics.fx;
 
+import org.jspecify.annotations.NullMarked;
+
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -13,6 +15,7 @@ import java.util.function.Supplier;
  * Usually many of these properties become more useful for the shorter periods of time that are focused on.
  *
  */
+@NullMarked
 public record FXStatistic<T>(
 		T batteryVoltage,
 

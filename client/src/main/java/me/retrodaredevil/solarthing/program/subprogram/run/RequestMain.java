@@ -18,6 +18,7 @@ import me.retrodaredevil.solarthing.program.receiver.RoverEventUpdaterListReceiv
 import me.retrodaredevil.solarthing.program.receiver.TracerEventUpdaterListReceiver;
 import me.retrodaredevil.solarthing.solar.DaySummaryLogListReceiver;
 import me.retrodaredevil.solarthing.util.TimeUtil;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@NullMarked
 public class RequestMain {
 	private RequestMain() { throw new UnsupportedOperationException(); }
 

@@ -1,5 +1,7 @@
 package me.retrodaredevil.solarthing.program.subprogram.analyze.analyzers.generator.entry;
 
+import org.jspecify.annotations.NullMarked;
+
 import java.time.Instant;
 
 
@@ -15,6 +17,7 @@ import java.time.Instant;
  * @param startTime The time of the first packet showing the generator starting
  * @param endTime The time of the last packet that the generator was running for
  */
+@NullMarked
 public record GeneratorRunEntry(
 		Instant startTime,
 		Instant endTime,

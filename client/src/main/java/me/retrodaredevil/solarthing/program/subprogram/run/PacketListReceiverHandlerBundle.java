@@ -11,6 +11,7 @@ import me.retrodaredevil.solarthing.packets.handling.PacketHandlerMultiplexer;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiverMultiplexer;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,6 +19,7 @@ import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.List;
 
+@NullMarked
 public final class PacketListReceiverHandlerBundle {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PacketListReceiverHandlerBundle.class);
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();

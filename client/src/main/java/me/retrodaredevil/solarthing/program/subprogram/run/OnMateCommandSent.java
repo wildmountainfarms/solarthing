@@ -9,9 +9,11 @@ import me.retrodaredevil.solarthing.reason.OpenSourceExecutionReason;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
 import me.retrodaredevil.solarthing.solar.outback.command.packets.ImmutableSuccessMateCommandPacket;
 import me.retrodaredevil.solarthing.solar.outback.command.packets.SuccessMateCommandPacket;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Collections;
 
+@NullMarked
 public class OnMateCommandSent implements OnCommandExecute<MateCommand> {
 //	private static final Logger LOGGER = LoggerFactory.getLogger(OnMateCommandSent.class);
 

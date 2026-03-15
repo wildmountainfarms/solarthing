@@ -32,6 +32,7 @@ import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXEventUpdaterListReceiver;
 import me.retrodaredevil.solarthing.solar.outback.mx.MXEventUpdaterListReceiver;
 import me.retrodaredevil.solarthing.util.time.DailyIdentifier;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +44,7 @@ import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class OutbackMateMain {
 	private OutbackMateMain() { throw new UnsupportedOperationException(); }
 	private static final Logger LOGGER = LoggerFactory.getLogger(OutbackMateMain.class);

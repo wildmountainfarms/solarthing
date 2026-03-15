@@ -1,10 +1,12 @@
 package me.retrodaredevil.solarthing.program.subprogram.analyze.statistics;
 
 import com.google.common.math.Quantiles;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
 import java.util.Map;
 
+@NullMarked
 public record CommonPercentiles(
 		double p0_1, double p1, double p10,
 		double p90, double p99, double p99_9

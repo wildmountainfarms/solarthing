@@ -6,6 +6,7 @@ import me.retrodaredevil.solarthing.packets.creation.PacketCreationException;
 import me.retrodaredevil.solarthing.packets.creation.TextPacketCreator;
 import me.retrodaredevil.solarthing.packets.handling.RawPacketReceiver;
 import me.retrodaredevil.solarthing.solar.outback.OutbackUtil;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +18,7 @@ import java.util.Collection;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class SolarReader {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SolarReader.class);
 

@@ -1,8 +1,11 @@
 package me.retrodaredevil.solarthing.program.subprogram.analyze;
 
+import org.jspecify.annotations.NullMarked;
+
 import java.time.Instant;
 import java.util.List;
 
+@NullMarked
 public interface Analyzer<RESULT> {
 	/**
 	 * An implementation should analyze the given {@link DataChunk} while taking the {@code processingStartInstant} and {@code processingEndInstant} constraints into account.

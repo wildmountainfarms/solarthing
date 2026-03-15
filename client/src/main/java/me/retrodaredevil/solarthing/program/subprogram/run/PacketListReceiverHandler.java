@@ -7,6 +7,7 @@ import me.retrodaredevil.solarthing.packets.collection.PacketCollections;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandleException;
 import me.retrodaredevil.solarthing.packets.handling.PacketHandler;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +16,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
+@NullMarked
 public class PacketListReceiverHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PacketListReceiverHandler.class);
 	private final PacketListReceiver packetListReceiver;

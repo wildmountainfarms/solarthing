@@ -11,6 +11,7 @@ import me.retrodaredevil.solarthing.program.subprogram.analyze.analyzers.generat
 import me.retrodaredevil.solarthing.program.subprogram.analyze.statistics.fx.FXStatisticAnalysis;
 import me.retrodaredevil.solarthing.solar.outback.fx.ACMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
+import org.jspecify.annotations.NullMarked;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * An analyzer that is designed to analyze individual generator runs and output statistics about each run.
  */
+@NullMarked
 public class GeneratorRunAnalyzer implements Analyzer<GeneratorRunEntry> {
 
 	private final DefaultInstanceOptions defaultInstanceOptions;

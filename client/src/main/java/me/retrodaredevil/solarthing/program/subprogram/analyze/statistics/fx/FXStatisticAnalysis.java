@@ -5,12 +5,14 @@ import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.InstancePacketGroup;
 import me.retrodaredevil.solarthing.program.subprogram.analyze.statistics.CommonPercentiles;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@NullMarked
 public final class FXStatisticAnalysis {
 	private FXStatisticAnalysis() { throw new UnsupportedOperationException(); }
 

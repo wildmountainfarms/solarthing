@@ -5,6 +5,7 @@ import me.retrodaredevil.solarthing.database.MillisQueryBuilder;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
 import me.retrodaredevil.solarthing.packets.collection.StoredPacketGroup;
+import org.jspecify.annotations.NullMarked;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -20,6 +21,7 @@ import static java.util.Objects.requireNonNull;
  * For the generator run analysis example, you would give its analyzer 2 days worth of data, and then instruct it to only analyze generator runs that started on the first day.
  * This is done to account for generator runs (or other sections of data) that may need to be analyzed over the period of multiple days.
  */
+@NullMarked
 public class AnalysisExecutor<T> {
 	private static final int MAX_RETRIES = 10;
 
