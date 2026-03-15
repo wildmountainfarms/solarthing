@@ -1,6 +1,7 @@
 package me.retrodaredevil.solarthing.actions.environment;
 
 import me.retrodaredevil.solarthing.FragmentedPacketGroupProvider;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Contains a {@link FragmentedPacketGroupProvider} that returns the latest {@link me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup}.
@@ -11,6 +12,7 @@ import me.retrodaredevil.solarthing.FragmentedPacketGroupProvider;
  * This environment may not be available for all actions, as the use of a {@link me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup} usually
  * implies the querying of a database and the combining of packets from multiple fragments.
  */
+@NullMarked
 public class LatestFragmentedPacketGroupEnvironment {
 	private final FragmentedPacketGroupProvider packetGroupProvider;
 

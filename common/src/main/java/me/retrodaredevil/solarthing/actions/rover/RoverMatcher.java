@@ -9,21 +9,25 @@ import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 import me.retrodaredevil.solarthing.packets.identification.NumberedIdentifier;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static java.util.Objects.requireNonNull;
+
+@NullMarked
 public final class RoverMatcher {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RoverMatcher.class);
 
-	private final Integer fragmentId;
+	private final @Nullable Integer fragmentId;
 	private final int number;
 
-	public RoverMatcher(Integer fragmentId, int number) {
+	public RoverMatcher(@Nullable Integer fragmentId, int number) {
 		this.fragmentId = fragmentId;
 		this.number = number;
 	}
-	public static RoverMatcher createFromRaw(Integer fragmentId, Integer number) {
+	public static RoverMatcher createFromRaw(@Nullable Integer fragmentId, @Nullable Integer number) {
 		return new RoverMatcher(
 				fragmentId,
 				number == null ? NumberedIdentifier.DEFAULT_NUMBER : number
@@ -95,7 +99,7 @@ public final class RoverMatcher {
 				LOGGER.warn("packetGroup is null!");
 				return null;
 			}
-			int fragmentId = RoverMatcher.this.fragmentId; // implicitly assert this is non-null
+			int fragmentId = requireNonNull(RoverMatcher.this.fragmentId, "If a FragmentedProvider is instantiated, we should have already checked fragmentId is non-null!");
 			return packetGroup.getPackets().stream()
 					.filter(packet -> packetGroup.getFragmentId(packet) == fragmentId && packet instanceof RoverStatusPacket)
 					.map(packet -> (RoverStatusPacket) packet)

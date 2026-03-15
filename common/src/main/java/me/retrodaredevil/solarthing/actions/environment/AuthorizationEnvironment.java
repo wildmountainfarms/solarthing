@@ -1,7 +1,9 @@
 package me.retrodaredevil.solarthing.actions.environment;
 
 import me.retrodaredevil.solarthing.packets.security.crypto.PublicKeyLookUp;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public class AuthorizationEnvironment {
 	private final PublicKeyLookUp publicKeyLookUp;
 

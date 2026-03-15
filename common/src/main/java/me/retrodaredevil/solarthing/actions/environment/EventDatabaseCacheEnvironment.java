@@ -2,7 +2,9 @@ package me.retrodaredevil.solarthing.actions.environment;
 
 import me.retrodaredevil.solarthing.database.cache.DatabaseCache;
 import me.retrodaredevil.solarthing.util.sync.ResourceManager;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public class EventDatabaseCacheEnvironment {
 	private final ResourceManager<? extends DatabaseCache> eventDatabaseCacheManager;
 

@@ -3,7 +3,9 @@ package me.retrodaredevil.solarthing.actions.environment;
 import me.retrodaredevil.couchdb.CouchProperties;
 import me.retrodaredevil.okhttp3.OkHttpProperties;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public class CouchDbEnvironment {
 	private final CouchDbDatabaseSettings databaseSettings;
 

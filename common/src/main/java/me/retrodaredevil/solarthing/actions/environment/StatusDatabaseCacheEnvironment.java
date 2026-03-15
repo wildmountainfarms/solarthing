@@ -2,12 +2,14 @@ package me.retrodaredevil.solarthing.actions.environment;
 
 import me.retrodaredevil.solarthing.database.cache.DatabaseCache;
 import me.retrodaredevil.solarthing.util.sync.ResourceManager;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Provides access to the resource manager for the status database.
  *
  * Note: You should only use this if you need historical data. For the most recent data, use a {@link me.retrodaredevil.solarthing.FragmentedPacketGroupProvider}
  */
+@NullMarked
 public class StatusDatabaseCacheEnvironment {
 	private final ResourceManager<? extends DatabaseCache> statusDatabaseCacheManager;
 

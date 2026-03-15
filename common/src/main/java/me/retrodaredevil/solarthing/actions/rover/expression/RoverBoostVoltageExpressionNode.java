@@ -9,17 +9,20 @@ import me.retrodaredevil.action.node.expression.node.ExpressionNode;
 import me.retrodaredevil.action.node.expression.result.NumericExpressionResult;
 import me.retrodaredevil.solarthing.actions.rover.RoverMatcher;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collections;
 
 @JsonTypeName("rover-boost-voltage")
+@NullMarked
 public class RoverBoostVoltageExpressionNode implements ExpressionNode {
 	private final RoverMatcher roverMatcher;
 
 	@JsonCreator
 	public RoverBoostVoltageExpressionNode(
-			@JsonProperty("fragment") Integer fragmentId,
-			@JsonProperty("number") Integer number
+			@JsonProperty("fragment") @Nullable Integer fragmentId,
+			@JsonProperty("number") @Nullable Integer number
 	) {
 		roverMatcher = RoverMatcher.createFromRaw(fragmentId, number);
 	}
