@@ -128,21 +128,17 @@ tasks.withType<JavaCompile>().configureEach {
 			"jakarta.annotation.PostConstruct",
 		).joinToString(","))
 		// https://github.com/uber/NullAway/wiki/JSpecify-Support#requireexplicitnullmarking-checker
-		// TODO reenable - some subprojects are fully compliant, but not all
 		error("RequireExplicitNullMarking")
-		// TODO enable this when we want to fix TYPE_USE annotation positions
-//		error("AnnotationPosition")
+		warn("AnnotationPosition") // keep as warn so that rewriteRun can fix this issue
 
 		// TODO update errors
 
 		disable("MissingSummary") // Our JavaDocs don't need to be perfect
 		disable("StringSplitter") // Yes String.split(String) has surprising behavior, but we know how to be careful.
 		disable("EqualsGetClass") // Most of the time we prefer that equality checks don't evaluate to true for subclasses
-		disable("NullableOnContainingClass") // This is dumb, who would do it this way? A.B reads as a fully qualified name to me...
 		disable("InvalidLink") // So many times this is wrong. #equals(Object) is a valid link!
 		disable("ComparableType") // different Identifiers need to be able to be compared to each other, so we disable this for now.
 		disable("DoNotClaimAnnotations") // TODO figure how how to make our annotation processor more "correct"
-		disable("UnusedMethod") // This is useful, but has this issue: https://github.com/google/error-prone/issues/3144 // issue is now "completed", but annotations not customizable for
 		disable("InlineMeSuggester") // Wrong when annotated by annotations, and I don't need this feature
 		disable("EmptyCatch") // This is a great warning, but IntelliJ wants ignored exceptions to be named "ignored" and ErrorProne wants "ok"...
 		disable("FutureReturnValueIgnored") // For "send and forget" stuff, this is really annoying
@@ -154,6 +150,8 @@ tasks.withType<JavaCompile>().configureEach {
 
 		error("MissingOverride")
 		error("AssignmentExpression")
+		error("NullableOnContainingClass")
+		warn("UnusedMethod") // Note: https://github.com/google/error-prone/issues/3144 // issue is now "completed", but annotations not customizable
 
 		// Experimental Errors
 		enable("ClassName")
@@ -161,7 +159,6 @@ tasks.withType<JavaCompile>().configureEach {
 		warn("EmptyIf")
 		warn("InsecureCryptoUsage")
 		// Experimental Warnings
-		warn("AnnotationPosition")
 		warn("ConstantPatternCompile")
 		warn("DifferentNameButSame")
 		error("EqualsBrokenForNull")
@@ -225,6 +222,8 @@ rewrite {
 	activeRecipe("org.openrewrite.java.RemoveObjectsIsNull")
 
 //	activeRecipe("me.retrodaredevil.rewrite.SolarThingNullabilityAnnotations")
+
+	activeRecipe("org.openrewrite.staticanalysis.NullableOnMethodReturnType")
 
 	// https://docs.openrewrite.org/recipes/java/removeunusedimports
 	// We decide against RemoveUnusedImports, because it does not check imports exclusively used within Javadocs

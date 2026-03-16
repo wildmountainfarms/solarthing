@@ -50,9 +50,7 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 		return getDailyKWH() < previous.getDailyKWH() || getDailyAH() < previous.getDailyAH();
 	}
 
-	@Override
-	@Nullable
-	default Long getStartDateMillis() { return null; }
+	@Override default @Nullable Long getStartDateMillis() { return null; }
 
 	// TODO remove NonNull
 	@Override

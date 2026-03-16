@@ -21,6 +21,5 @@ public interface DailyData extends Identifiable {
 	 *
 	 * @return The start time in UTC millis or null if not supported/not yet implemented.
 	 */
-	@Nullable
-	default Long getStartDateMillis() { return null; }
+	default @Nullable Long getStartDateMillis() { return null; }
 }

@@ -1,10 +1,8 @@
 package me.retrodaredevil.solarthing.solcast.rooftop;
 
-import org.jspecify.annotations.NullMarked;
-
 import me.retrodaredevil.solarthing.solcast.common.*;
-import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -148,7 +146,7 @@ public class EstimatedActualCache {
 		}
 
 		@Override
-		public int compareTo(@NotNull EstimatedActualCache.Node node) {
+		public int compareTo(EstimatedActualCache.Node node) {
 			return Long.compare(dateMillis, node.dateMillis);
 		}
 	}

@@ -19,9 +19,8 @@ public class DefaultSupplementaryIdentifier<T extends Identifier> implements Kno
 	}
 
 	// TODO remove NonNull
-	@NonNull
 	@Override
-	public T getSupplementaryTo() {
+	public @NonNull T getSupplementaryTo() {
 		return identifier;
 	}
 
