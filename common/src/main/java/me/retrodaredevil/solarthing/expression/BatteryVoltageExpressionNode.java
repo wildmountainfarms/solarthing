@@ -10,7 +10,6 @@ import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnviron
 import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
 import org.jspecify.annotations.NullMarked;
 
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.*;
