@@ -37,7 +37,7 @@ public class ACModeActionNode implements ActionNode {
 		this.not = not;
 	}
 	private static ACMode parseMode(String modeName) {
-		modeName = modeName.replaceAll(" ", "").toLowerCase(Locale.ENGLISH);
+		modeName = modeName.replace(" ", "").toLowerCase(Locale.ENGLISH);
 		return switch (modeName) {
 			case "noac" -> ACMode.NO_AC;
 			case "acdrop" -> ACMode.AC_DROP;

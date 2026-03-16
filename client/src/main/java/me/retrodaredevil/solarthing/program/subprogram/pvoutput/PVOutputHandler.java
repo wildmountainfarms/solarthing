@@ -117,17 +117,17 @@ public class PVOutputHandler {
 		int removeAmount = uniqueReadings.size() / 7 + 1; // remove at least 1 set of outliers. For every 7 unique readings, remove another set
 		for (int i = 0; i < removeAmount; i++) {
 			// remove outliers
-			uniqueReadings.remove(uniqueReadings.first());
+			uniqueReadings.remove(uniqueReadings.getFirst());
 			if (!uniqueReadings.isEmpty()) { // need to make this check because it's possible that the size is 1 before removing the first element
-				uniqueReadings.remove(uniqueReadings.last());
+				uniqueReadings.remove(uniqueReadings.getLast());
 			}
 		}
 		if (uniqueReadings.isEmpty()) {
 			// better safe than sorry
 			return false;
 		}
-		float firstReading = uniqueReadings.first();
-		float lastReading = uniqueReadings.last();
+		float firstReading = uniqueReadings.getFirst();
+		float lastReading = uniqueReadings.getLast();
 		return temperatureCelsius > firstReading - 4.0f && temperatureCelsius < lastReading + 4.0f;
 	}
 	private static AddStatusParametersBuilder createStatusBuilder(ZoneId zoneId, long dateMillis) {

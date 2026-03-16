@@ -114,12 +114,12 @@ public class SolarThingGraphQLService {
 		List<? extends InstancePacketGroup> packets = simpleQueryHandler.queryStatus(to - SolarThingConstants.LATEST_PACKETS_DURATION.toMillis(), to, sourceId, fragmentId);
 		List<InstancePacketGroup> lastPackets = new ArrayList<>();
 		for(List<InstancePacketGroup> packetGroups : PacketGroups.mapFragments(packets).values()) {
-			lastPackets.add(packetGroups.get(packetGroups.size() - 1));
+			lastPackets.add(packetGroups.getLast());
 		}
 		List<? extends FragmentedPacketGroup> sortedPackets = simpleQueryHandler.sortPackets(lastPackets, sourceId);
 		return new SolarThingStatusQuery(
 				new ReversedPacketGetter(new LastPacketGetter(packets, PacketFilter.KEEP_ALL), reversed),
-				sortedPackets.isEmpty() ? Collections.emptyList() : Collections.singletonList(sortedPackets.get(sortedPackets.size() - 1)),
+				sortedPackets.isEmpty() ? Collections.emptyList() : Collections.singletonList(sortedPackets.getLast()),
 				simpleQueryHandler
 		);
 	}
@@ -374,7 +374,7 @@ public class SolarThingGraphQLService {
 		}
 		@JsonProperty("acMode")
 		public @NonNull ACMode getACMode() {
-			return fx.get(0).getACMode();
+			return fx.getFirst().getACMode();
 		}
 		@JsonProperty("miscModesString")
 		public @NonNull String getMiscModesString() {
@@ -462,9 +462,9 @@ public class SolarThingGraphQLService {
 		@JsonProperty("batteryVoltage")
 		public @Nullable Float getBatteryVoltage() {
 			// default to prefer first FX battery voltage;
-			BatteryVoltage device = fx.isEmpty() ? null : fx.get(0);
+			BatteryVoltage device = fx.isEmpty() ? null : fx.getFirst();
 			if (device == null) {
-				device = batteryVoltage.isEmpty() ? null : batteryVoltage.get(0);
+				device = batteryVoltage.isEmpty() ? null : batteryVoltage.getFirst();
 			}
 			if (device == null) {
 				return null;

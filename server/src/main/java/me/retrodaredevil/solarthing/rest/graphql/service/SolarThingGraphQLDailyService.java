@@ -126,14 +126,14 @@ public class SolarThingGraphQLDailyService {
 			return new ArrayList<>(r);
 		}
 		private <T extends DailyData> void addAllPoints(Collection<? super DataNode<Float>> nodesOut, List<TimestampedPacket<T>> timestampedPackets, List<AccumulationPair<T>> accumulationPairs, String sourceId, int fragmentId, Function<T, Float> totalGetter) {
-			T firstPacket = timestampedPackets.get(0).getPacket();
+			T firstPacket = timestampedPackets.getFirst().getPacket();
 			List<AccumulationCalc.SumNode<FloatAccumulationValue>> sumNodes = AccumulationCalc.getTotals(accumulationPairs, FloatAccumulationValue.convert(totalGetter), timestampedPackets, FloatAccumulationValueFactory.getInstance());
 			for (AccumulationCalc.SumNode<FloatAccumulationValue> sumNode : sumNodes) {
 				nodesOut.add(new DataNode<>(sumNode.getSum().getValue(), firstPacket, sumNode.getDateMillis(), sourceId, fragmentId));
 			}
 		}
 		private <T extends DailyData> void addDayPoints(Collection<? super DataNode<Float>> nodesOut, List<TimestampedPacket<T>> timestampedPackets, List<AccumulationPair<T>> accumulationPairs, String sourceId, int fragmentId, long dayStartTimeMillis, Function<T, Float> totalGetter) {
-			T firstPacket = timestampedPackets.get(0).getPacket();
+			T firstPacket = timestampedPackets.getFirst().getPacket();
 			float total = AccumulationCalc.getTotal(accumulationPairs, FloatAccumulationValue.convert(totalGetter), FloatAccumulationValueFactory.getInstance()).getValue();
 			nodesOut.add(new DataNode<>(total, firstPacket, dayStartTimeMillis, sourceId, fragmentId));
 		}

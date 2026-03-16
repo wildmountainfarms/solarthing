@@ -41,9 +41,9 @@ public class FXOperationalModeActionNode implements ActionNode {
 	}
 	private static OperationalMode parseMode(String modeString) {
 		requireNonNull(modeString);
-		modeString = modeString.replaceAll(" ", "");
+		modeString = modeString.replace(" ", "");
 		for (OperationalMode mode : OperationalMode.values()) {
-			if (mode.getModeName().replaceAll(" ", "").equalsIgnoreCase(modeString)) {
+			if (mode.getModeName().replace(" ", "").equalsIgnoreCase(modeString)) {
 				return mode;
 			}
 		}

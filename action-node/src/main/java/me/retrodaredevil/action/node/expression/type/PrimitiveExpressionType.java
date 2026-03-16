@@ -7,5 +7,5 @@ public enum PrimitiveExpressionType implements ExpressionType {
 	NUMERIC,
 	STRING,
 	BOOLEAN,
-	;
+	
 }

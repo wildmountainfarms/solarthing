@@ -46,7 +46,7 @@ public class DatabaseAuthorization {
 
 	@JsonProperty("url") // public to avoid IllegalAccessException in GraphQL-spqr code
 	public @NonNull String getUrlString() {
-		return cookie.domain().toString();
+		return cookie.domain();
 	}
 
 	@JsonProperty("cookie") // public to avoid IllegalAccessException in GraphQL-spqr code

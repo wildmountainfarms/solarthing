@@ -133,10 +133,10 @@ public class SolarThingGraphQLSolcastService {
 			);
 
 
-			SimpleEstimatedActual first = simpleEstimatedActuals.get(0);
+			SimpleEstimatedActual first = simpleEstimatedActuals.getFirst();
 
 			startDate = max(startDate, first.getPeriodMidpoint().atZone(zoneId).toLocalDate().plusDays(1));
-			SimpleEstimatedActual last = simpleEstimatedActuals.get(simpleEstimatedActuals.size() - 1);
+			SimpleEstimatedActual last = simpleEstimatedActuals.getLast();
 
 			endDate = min(endDate, last.getPeriodMidpoint().atZone(zoneId).toLocalDate().minusDays(1));
 
@@ -207,7 +207,7 @@ public class SolarThingGraphQLSolcastService {
 				}
 			}
 
-			SimpleEstimatedActual lastEstimatedActual = estimatedActuals.isEmpty() ? null : estimatedActuals.get(estimatedActuals.size() - 1);
+			SimpleEstimatedActual lastEstimatedActual = estimatedActuals.isEmpty() ? null : estimatedActuals.getLast();
 
 			float actualDailyKWH = 0;
 			for (IdentificationCacheDataPacket<ChargeControllerAccumulationDataCache> cacheDataPacket : chargeControllerAccumulationCache) {

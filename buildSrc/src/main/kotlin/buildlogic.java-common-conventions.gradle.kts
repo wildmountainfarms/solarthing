@@ -234,9 +234,71 @@ rewrite {
 	// https://docs.openrewrite.org/recipes/java/shortenfullyqualifiedtypereferences
 	activeRecipe("org.openrewrite.java.ShortenFullyQualifiedTypeReferences")
 
-	// Lots of static analysis
-//	activeRecipe("org.openrewrite.staticanalysis.RemoveExtraSemicolons")
-	activeRecipe("org.openrewrite.staticanalysis.AnnotateNullableParameters") // if you check for null, it should be @Nullable
+//	activeRecipe("org.openrewrite.java.migrate.util.SequencedCollection") // TODO this was enabled, but it won't compile for all language versions
+	activeRecipe("org.openrewrite.java.migrate.lang.SwitchCaseAssignmentsToSwitchExpression")
+	activeRecipe("org.openrewrite.java.migrate.lang.SwitchCaseReturnsToSwitchExpression")
+	activeRecipe("org.openrewrite.java.jspecify.MigrateToJSpecify") // probably not necessary, but will point out "wrong" nullability imports
+	activeRecipe("org.openrewrite.java.ShortenFullyQualifiedTypeReferences")
 
-	// TODO add more
+	// Lots of static analysis
+	activeRecipe("org.openrewrite.staticanalysis.RemoveExtraSemicolons")
+	activeRecipe("org.openrewrite.staticanalysis.AnnotateNullableParameters") // if you check for null, it should be @Nullable
+	activeRecipe("org.openrewrite.staticanalysis.CatchClauseOnlyRethrows")
+	activeRecipe("org.openrewrite.staticanalysis.CompareEnumsWithEqualityOperator")
+//	activeRecipe("org.openrewrite.staticanalysis.FinalClass") // maybe consider in the future
+	activeRecipe("org.openrewrite.staticanalysis.ForLoopIncrementInUpdate")
+//	activeRecipe("org.openrewrite.staticanalysis.UpperCaseLiteralSuffixes") // eventually maybe we can consider this
+//	activeRecipe("org.openrewrite.staticanalysis.UseDiamondOperator") // TODO see what this does independently
+	activeRecipe("org.openrewrite.staticanalysis.BooleanChecksNotInverted")
+//	activeRecipe("org.openrewrite.staticanalysis.NeedBraces") // consider in the future
+//	activeRecipe("org.openrewrite.staticanalysis.HideUtilityClassConstructor") // tries to make spring application class have private constructor
+//	activeRecipe("org.openrewrite.staticanalysis.JavaApiBestPractices") // TODO enable
+	activeRecipe("org.openrewrite.staticanalysis.ModifierOrder")
+	activeRecipe("org.openrewrite.staticanalysis.NestedEnumsAreNotStatic")
+	activeRecipe("org.openrewrite.staticanalysis.UseJavaStyleArrayDeclarations")
+	activeRecipe("org.openrewrite.staticanalysis.NoDoubleBraceInitialization")
+//	activeRecipe("org.openrewrite.staticanalysis.MultipleVariableDeclarations") // maybe consider in the future
+//	activeRecipe("org.openrewrite.staticanalysis.OperatorWrap") // TODO enable - this is a good thing, but results in many many changes
+	activeRecipe("org.openrewrite.staticanalysis.PreferSystemGetPropertyOverGetenv")
+	activeRecipe("org.openrewrite.staticanalysis.PreferEqualityComparisonOverDifferenceCheck")
+	activeRecipe("org.openrewrite.staticanalysis.PreferIncrementOperator")
+//	activeRecipe("org.openrewrite.staticanalysis.CommonDeclarationSiteTypeVariances") // Could be useful, but honestly the `? super asdf` and `? extends asdf` gets old when it's unnecessary
+	activeRecipe("org.openrewrite.staticanalysis.UnnecessaryPrimitiveAnnotations")
+	activeRecipe("org.openrewrite.staticanalysis.UnnecessaryCatch")
+	activeRecipe("org.openrewrite.staticanalysis.EmptyBlock")
+//	activeRecipe("org.openrewrite.staticanalysis.RemoveRedundantTypeCast") // bug where it will sometimes remove (T) in unchecked code
+	activeRecipe("org.openrewrite.staticanalysis.RemoveRedundantNullCheckBeforeInstanceof")
+	activeRecipe("org.openrewrite.staticanalysis.RemoveRedundantNullCheckBeforeLiteralEquals")
+	activeRecipe($$"org.openrewrite.staticanalysis.SimplifyTernaryRecipes$SimplifyTernaryFalseTrueRecipe")
+	activeRecipe($$"org.openrewrite.staticanalysis.SimplifyTernaryRecipes$SimplifyTernaryTrueFalseRecipe")
+	activeRecipe("org.openrewrite.staticanalysis.UseListSort")
+	activeRecipe("org.openrewrite.staticanalysis.SimplifyBooleanExpression")
+	activeRecipe("org.openrewrite.staticanalysis.SimplifyBooleanReturn")
+	activeRecipe("org.openrewrite.staticanalysis.StaticMethodNotFinal")
+	activeRecipe("org.openrewrite.staticanalysis.NoToStringOnStringType")
+	activeRecipe("org.openrewrite.staticanalysis.UnnecessaryCloseInTryWithResources")
+	activeRecipe("org.openrewrite.staticanalysis.UnnecessaryExplicitTypeArguments")
+	activeRecipe("org.openrewrite.staticanalysis.UnnecessaryReturnAsLastStatement")
+	activeRecipe("org.openrewrite.staticanalysis.UnnecessaryThrows")
+	activeRecipe("org.openrewrite.staticanalysis.UnwrapRepeatableAnnotations")
+//	activeRecipe("org.openrewrite.staticanalysis.UnwrapElseAfterReturn") // kinda annoying when I want to pick the style on a per if-else statement basis
+	activeRecipe("org.openrewrite.staticanalysis.UsePortableNewlines")
+//	activeRecipe("org.openrewrite.staticanalysis.UseCollectionInterfaces") // stops people from using something like an ArrayList in a return type // TODO enable
+//	activeRecipe("org.openrewrite.staticanalysis.IsEmptyCallOnCollections") // eventually enable this, but first update some tests
+	activeRecipe("org.openrewrite.staticanalysis.NoEmptyCollectionWithRawType")
+	activeRecipe("org.openrewrite.staticanalysis.ReplaceCollectionToArrayArgWithEmptyArray")
+	activeRecipe("org.openrewrite.staticanalysis.UseMapContainsKey")
+	activeRecipe("org.openrewrite.staticanalysis.UseStandardCharset")
+	activeRecipe("org.openrewrite.staticanalysis.EqualsToContentEquals")
+	activeRecipe("org.openrewrite.staticanalysis.StringLiteralEquality")
+	activeRecipe("org.openrewrite.staticanalysis.UseStringReplace")
+	activeRecipe("org.openrewrite.staticanalysis.UseSystemLineSeparator")
+	activeRecipe("org.openrewrite.staticanalysis.NoEqualityInForCondition")
+	// consider https://docs.openrewrite.org/recipes/staticanalysis/explicitlambdaargumenttypes later
+	activeRecipe("org.openrewrite.staticanalysis.IndexOfChecksShouldUseAStartPosition")
+	activeRecipe("org.openrewrite.staticanalysis.PrimitiveWrapperClassConstructorToValueOf")
+	activeRecipe("org.openrewrite.staticanalysis.RemoveHashCodeCallsFromArrayInstances")
+	activeRecipe("org.openrewrite.staticanalysis.IndexOfReplaceableByContains")
+	activeRecipe("org.openrewrite.staticanalysis.BigDecimalDoubleConstructorRecipe")
+
 }

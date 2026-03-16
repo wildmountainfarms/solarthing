@@ -65,7 +65,7 @@ public class SolarThingGraphQLFXService {
 		);
 		List<FragmentedPacketGroup> sortedPackets = null;
 		for (List<FragmentedPacketGroup> fragmentedPacketGroups : map.values()) {
-			if (fragmentedPacketGroups.get(0).hasFragmentId(fragmentId)) {
+			if (fragmentedPacketGroups.getFirst().hasFragmentId(fragmentId)) {
 				sortedPackets = fragmentedPacketGroups;
 				break;
 			}

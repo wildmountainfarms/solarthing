@@ -105,8 +105,8 @@ public class SolarThingGraphQLBatteryRecordService {
 			if (data.isEmpty()) {
 				return Collections.emptyList();
 			}
-			var first = data.get(0);
-			var last = data.get(data.size() - 1);
+			var first = data.getFirst();
+			var last = data.getLast();
 
 			int lastFirstIndex = data.size();
 			long lastStartDateMillis = last.getPeriodEndDateMillis();

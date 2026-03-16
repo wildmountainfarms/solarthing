@@ -43,7 +43,7 @@ public class TimeUtil {
 				.replaceAll("MINUTES|MINUTE", "M")
 				.replaceAll("HOURS|HOUR", "H")
 				.replaceAll("DAYS|DAY", "D")
-				.replaceAll("AND", "")
+				.replace("AND", "")
 				;
 		if (!formalDuration.startsWith("P")) { // Make the format of the string we send lenient
 			if (formalDuration.contains("T")) {
@@ -52,7 +52,7 @@ public class TimeUtil {
 				formalDuration = "PT" + formalDuration;
 			}
 		}
-		formalDuration = formalDuration.replaceAll(" ", "");
+		formalDuration = formalDuration.replace(" ", "");
 		return formalDuration;
 	}
 	public static @Nullable Duration lenientParseDurationOrNull(String informalDuration) {
@@ -74,9 +74,9 @@ public class TimeUtil {
 	public static String slackEscape(String messageToEscape) {
 		// https://api.slack.com/reference/surfaces/formatting#escaping
 		return messageToEscape
-				.replaceAll("&", "&amp;")
-				.replaceAll("<", "&lt;")
-				.replaceAll(">", "&gt;")
+				.replace("&", "&amp;")
+				.replace("<", "&lt;")
+				.replace(">", "&gt;")
 				;
 	}
 }

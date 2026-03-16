@@ -178,9 +178,9 @@ public class SlackChatBotAction extends SimpleAction {
 		}
 	}
 	private static Instant epochSecondsToInstant(BigDecimal timestampBigDecimal) {
-		long nanos = timestampBigDecimal.multiply(new BigDecimal(1_000_000)).remainder(new BigDecimal(1000)).longValue() * 1000;
+		long nanos = timestampBigDecimal.multiply(BigDecimal.valueOf(1_000_000)).remainder(BigDecimal.valueOf(1000)).longValue() * 1000;
 		// convert epoch millis to milliseconds, then add additional nanoseconds
-		return Instant.ofEpochMilli(timestampBigDecimal.multiply(new BigDecimal(1000)).longValue())
+		return Instant.ofEpochMilli(timestampBigDecimal.multiply(BigDecimal.valueOf(1000)).longValue())
 				.plusNanos(nanos);
 	}
 

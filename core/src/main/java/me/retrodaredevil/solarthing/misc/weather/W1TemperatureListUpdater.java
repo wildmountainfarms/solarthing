@@ -44,7 +44,7 @@ public class W1TemperatureListUpdater implements PacketListReceiver {
 		long startTimeNanos = System.nanoTime();
 		final String name;
 		try {
-			name = readContents(nameFile).replaceAll("\n", ""); // remove new line at end
+			name = readContents(nameFile).replace("\n", ""); // remove new line at end
 		} catch (FileNotFoundException e){
 			LOGGER.error("name file does not exist. file: " + nameFile);
 			return;
