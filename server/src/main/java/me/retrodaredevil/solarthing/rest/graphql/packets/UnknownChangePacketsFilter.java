@@ -2,7 +2,9 @@ package me.retrodaredevil.solarthing.rest.graphql.packets;
 
 import me.retrodaredevil.solarthing.rest.graphql.packets.nodes.PacketNode;
 import me.retrodaredevil.solarthing.packets.ChangePacket;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public class UnknownChangePacketsFilter implements PacketFilter {
 	private final boolean includeUnknownChangePackets;
 

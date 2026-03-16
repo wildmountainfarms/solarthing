@@ -6,6 +6,7 @@ import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbData
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
 import me.retrodaredevil.solarthing.database.couchdb.CouchDbSolarThingDatabase;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,7 @@ import java.time.ZoneId;
 import java.util.Collections;
 
 @Component
+@NullMarked
 public class CommandHandlerProvider {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CommandHandlerProvider.class);
 	private static final ObjectMapper SIMPLE_OBJECT_MAPPER = JacksonUtil.defaultMapper();

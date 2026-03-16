@@ -7,6 +7,7 @@ import io.leangen.graphql.metadata.TypedElement;
 import io.leangen.graphql.metadata.exceptions.TypeMappingException;
 import io.leangen.graphql.metadata.strategy.query.*;
 import io.leangen.graphql.metadata.strategy.value.Property;
+import org.jspecify.annotations.NullMarked;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -17,6 +18,7 @@ import java.lang.reflect.Method;
  * <p>
  * This allows annotations declared in interfaces to be "inherited".
  */
+@NullMarked
 public class SolarThingAnnotatedResolverBuilder extends PublicResolverBuilder {
 
 

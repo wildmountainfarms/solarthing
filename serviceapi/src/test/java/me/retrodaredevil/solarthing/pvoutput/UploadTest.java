@@ -6,12 +6,14 @@ import me.retrodaredevil.solarthing.pvoutput.service.PVOutputService;
 import me.retrodaredevil.solarthing.pvoutput.service.PVOutputRetrofitUtil;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
+import org.jspecify.annotations.NullMarked;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
 import java.io.IOException;
 
+@NullMarked
 public class UploadTest {
 	private UploadTest() { throw new UnsupportedOperationException(); }
 	private static void testRetrofit(OkHttpClient client) throws IOException {

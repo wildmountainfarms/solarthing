@@ -1,5 +1,7 @@
 package me.retrodaredevil.solarthing.rest.graphql.service;
 
+import org.jspecify.annotations.NullMarked;
+
 /**
  * This class is designed to contain queries relating to statistics over a particular time range.
  * <p>
@@ -14,6 +16,7 @@ package me.retrodaredevil.solarthing.rest.graphql.service;
  * @deprecated Stubbed out for later implementation
  */
 @Deprecated
+@NullMarked
 public class SolarThingGraphQLStatisticsService {
 
 

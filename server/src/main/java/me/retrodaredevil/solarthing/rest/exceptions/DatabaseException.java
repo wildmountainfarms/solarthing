@@ -4,6 +4,7 @@ import graphql.ErrorClassification;
 import graphql.ErrorType;
 import graphql.GraphQLError;
 import graphql.language.SourceLocation;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Collections;
 import java.util.List;
@@ -11,10 +12,8 @@ import java.util.List;
 /**
  * Should be used for connection exceptions when trying to query the database
  */
+@NullMarked
 public class DatabaseException extends RestException implements GraphQLError {
-
-	public DatabaseException() {
-	}
 
 	public DatabaseException(String message) {
 		super(message);

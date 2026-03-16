@@ -26,7 +26,7 @@ import me.retrodaredevil.solarthing.type.closed.meta.DefaultMetaDatabase;
 import me.retrodaredevil.solarthing.type.closed.meta.EmptyMetaDatabase;
 import me.retrodaredevil.solarthing.type.closed.meta.MetaDatabase;
 import me.retrodaredevil.solarthing.type.closed.meta.RootMetaPacket;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +46,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class SimpleQueryHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SimpleQueryHandler.class);
 	private static final Duration METADATA_CACHE_VALID = Duration.ofSeconds(15);
@@ -201,7 +202,7 @@ public class SimpleQueryHandler {
 		return new DefaultMetaDatabase(metadata.getPacket());
 	}
 
-	public List<VersionedPacket<StoredAlterPacket>> queryAlter(@NonNull String sourceId) {
+	public List<VersionedPacket<StoredAlterPacket>> queryAlter(String sourceId) {
 		requireNonNull(sourceId);
 		try {
 			return database.getAlterDatabase().queryAll(sourceId);

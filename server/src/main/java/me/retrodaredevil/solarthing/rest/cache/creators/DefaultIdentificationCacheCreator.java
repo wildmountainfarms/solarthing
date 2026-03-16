@@ -11,6 +11,7 @@ import me.retrodaredevil.solarthing.packets.collection.InstancePacketGroup;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.packets.identification.IdentifierFragment;
+import org.jspecify.annotations.NullMarked;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -24,6 +25,7 @@ import static java.util.Objects.requireNonNull;
  * @param <T> The type of data inside each node that will be a part of the produced {@link IdentificationCacheDataPacket}
  * @param <U> The type required by the given {@link IdentificationCacheNodeCreator} that will filter packets necessary to create a given node
  */
+@NullMarked
 public class DefaultIdentificationCacheCreator<T extends IdentificationCacheData, U extends Identifiable> implements CacheCreator {
 	private final IdentificationCacheNodeCreator<T, U> identificationCacheNodeCreator;
 

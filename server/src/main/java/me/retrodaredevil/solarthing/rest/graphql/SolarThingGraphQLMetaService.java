@@ -7,11 +7,13 @@ import me.retrodaredevil.solarthing.rest.graphql.packets.nodes.SimplePacketNode;
 import me.retrodaredevil.solarthing.type.closed.meta.DeviceInfoPacket;
 import me.retrodaredevil.solarthing.type.closed.meta.MetaDatabase;
 import me.retrodaredevil.solarthing.type.closed.meta.TargetedMetaPacket;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import me.retrodaredevil.solarthing.misc.common.DataIdentifiable;
 import me.retrodaredevil.solarthing.misc.common.meta.DataMetaPacket;
 import me.retrodaredevil.solarthing.misc.weather.TemperaturePacket;
 
+@NullMarked
 public class SolarThingGraphQLMetaService {
 	private final SimpleQueryHandler simpleQueryHandler;
 

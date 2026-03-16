@@ -23,11 +23,13 @@ import me.retrodaredevil.solarthing.solar.outback.fx.charge.FXChargingStateHandl
 import me.retrodaredevil.solarthing.solar.outback.fx.charge.ImmutableFXChargingPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.meta.FXChargingSettingsPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.meta.FXChargingTemperatureAdjustPacket;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@NullMarked
 public class SolarThingGraphQLFXService {
 	private final SimpleQueryHandler simpleQueryHandler;
 

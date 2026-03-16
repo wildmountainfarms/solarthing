@@ -8,11 +8,15 @@ import me.retrodaredevil.solarthing.type.cache.packets.IdentificationCacheNode;
 import me.retrodaredevil.solarthing.type.cache.packets.data.BatteryRecordDataCache;
 import me.retrodaredevil.solarthing.util.integration.MutableIntegral;
 import me.retrodaredevil.solarthing.util.integration.TrapezoidalRuleAccumulator;
+import org.jspecify.annotations.NullMarked;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 
+import static java.util.Objects.requireNonNull;
+
+@NullMarked
 public class BatteryRecordCacheNodeCreator implements IdentificationCacheNodeCreator<BatteryRecordDataCache, BatteryVoltage> {
 	@Override
 	public Class<BatteryVoltage> getAcceptedType() {
@@ -98,6 +102,7 @@ public class BatteryRecordCacheNodeCreator implements IdentificationCacheNodeCre
 			final double unknownBatteryVoltageHours;
 			final long unknownDurationMillis;
 			if (lastDataBeforePeriodStart == null) { // we have no data from the previous period
+				requireNonNull(firstDataAfterPeriodStart, "firstDataAfterPeriodStart");
 				firstDateMillis = firstDataAfterPeriodStart.getDateMillis();
 				// we will only have "unknown" data if there is no data in the previous period and we were able to get data from before the previous period
 				if (lastDataBeforePreviousPeriodStart == null) {
@@ -112,11 +117,13 @@ public class BatteryRecordCacheNodeCreator implements IdentificationCacheNodeCre
 					unknownBatteryVoltageHours = unknownPeriodAverageVoltage * hours;
 				}
 			} else {
+				requireNonNull(lastDataBeforePeriodStart, "lastDataBeforePeriodStart");
 				firstDateMillis = lastDataBeforePeriodStart.getDateMillis();
 				unknownStartDateMillis = null;
 				unknownDurationMillis = 0;
 				unknownBatteryVoltageHours = 0.0;
 			}
+			requireNonNull(lastDataBeforePeriodEnd, "lastDataBeforePeriodEnd");
 			lastDateMillis = lastDataBeforePeriodEnd.getDateMillis();
 			record = new BatteryRecordDataCache.RecordData(
 					min, minDateMillis,

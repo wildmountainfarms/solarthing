@@ -23,6 +23,7 @@ import me.retrodaredevil.solarthing.rest.graphql.service.web.SolarThingAdminServ
 import me.retrodaredevil.solarthing.rest.graphql.solcast.SolcastConfig;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,6 +45,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Component
+@NullMarked
 public class GraphQLProvider {
 	private static final Logger LOGGER = LoggerFactory.getLogger(GraphQLProvider.class);
 
@@ -124,7 +126,7 @@ public class GraphQLProvider {
 				.build();
 	}
 
-	static GraphQLSchemaGenerator createGraphQLSchemaGenerator(ObjectMapper objectMapper, CouchDbDatabaseSettings couchDbDatabaseSettings, DefaultInstanceOptions defaultInstanceOptions, @NonNull SolcastConfig solcastConfig, CacheController cacheController) {
+	static GraphQLSchemaGenerator createGraphQLSchemaGenerator(ObjectMapper objectMapper, CouchDbDatabaseSettings couchDbDatabaseSettings, DefaultInstanceOptions defaultInstanceOptions, SolcastConfig solcastConfig, CacheController cacheController) {
 		JacksonValueMapperFactory jacksonValueMapperFactory = JacksonValueMapperFactory.builder()
 				.withPrototype(objectMapper)
 				.build();

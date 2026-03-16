@@ -6,6 +6,7 @@ import me.retrodaredevil.solarthing.type.cache.packets.IdentificationCacheDataPa
 import me.retrodaredevil.solarthing.type.cache.packets.IdentificationCacheNode;
 import me.retrodaredevil.solarthing.type.cache.packets.data.ChargeControllerAccumulationDataCache;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import me.retrodaredevil.solarthing.packets.identification.SourceIdentifierFragment;
 import me.retrodaredevil.solarthing.rest.cache.CacheController;
@@ -41,6 +42,7 @@ import java.util.function.Function;
 import static java.util.Objects.requireNonNull;
 import static me.retrodaredevil.solarthing.rest.graphql.service.SchemaConstants.*;
 
+@NullMarked
 public class SolarThingGraphQLDailyService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SolarThingGraphQLDailyService.class);
 

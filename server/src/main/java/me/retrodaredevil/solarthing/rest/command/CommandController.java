@@ -5,6 +5,7 @@ import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.action.node.environment.InjectEnvironment;
 import me.retrodaredevil.action.node.environment.VariableEnvironment;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 @CrossOrigin(originPatterns = { "http://*:[*]", "https://*:[*]" }, allowCredentials = "true") // This endpoint is consumed by client-side Grafana code, so we need this
 @RestController
 @RequestMapping("/api/v1/command")
+@NullMarked
 public class CommandController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CommandController.class);
 	/*

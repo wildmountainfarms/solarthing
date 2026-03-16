@@ -7,6 +7,7 @@ import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import okhttp3.Cookie;
 import okhttp3.HttpUrl;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 
@@ -18,6 +19,7 @@ import static java.util.Objects.requireNonNull;
  * Although this is a concrete class, its internals may change if other components of SolarThing change.
  */
 @JsonExplicit
+@NullMarked
 public class DatabaseAuthorization {
 	private final Cookie cookie;
 

@@ -11,6 +11,7 @@ import me.retrodaredevil.solarthing.type.alter.flag.FlagUtil;
 import me.retrodaredevil.solarthing.type.alter.packets.FlagPacket;
 import me.retrodaredevil.solarthing.type.alter.packets.ScheduledCommandPacket;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.time.Instant;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.stream.Stream;
 import static me.retrodaredevil.solarthing.rest.graphql.service.SchemaConstants.DESCRIPTION_REQUIRED_SOURCE;
 
 @GraphQLType
+@NullMarked
 public class SolarThingGraphQLAlterService {
 
 	private final SimpleQueryHandler simpleQueryHandler;

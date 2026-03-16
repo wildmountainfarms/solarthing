@@ -5,6 +5,7 @@ import me.retrodaredevil.solarthing.solcast.common.ForecastResult;
 import me.retrodaredevil.solarthing.solcast.rooftop.*;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
+import org.jspecify.annotations.NullMarked;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -15,6 +16,7 @@ import java.time.Instant;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class SolcastUploadTest {
 	private SolcastUploadTest() { throw new UnsupportedOperationException(); }
 	private static final String RESOURCE_ID = "90d5-ccbe-7af4-280c";

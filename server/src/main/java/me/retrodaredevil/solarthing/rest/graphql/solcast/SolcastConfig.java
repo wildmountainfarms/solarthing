@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
@@ -18,6 +19,7 @@ import static java.util.Objects.requireNonNull;
  * make it correspond to a certain source to avoid confusion.
  */
 @JsonDeserialize(builder = SolcastConfig.Builder.class)
+@NullMarked
 public class SolcastConfig {
 	private final Map<String, Entry> sourceEntryMap;
 

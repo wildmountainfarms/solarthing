@@ -2,10 +2,12 @@ package me.retrodaredevil.solarthing.rest.graphql.packets.nodes;
 
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 
 @JsonExplicit
+@NullMarked
 public final class PacketNode<T> implements SimplePacketNode {
 	private final T packet;
 	private final long dateMillis;

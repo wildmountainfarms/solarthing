@@ -7,11 +7,13 @@ import graphql.execution.DataFetcherExceptionHandlerResult;
 import graphql.execution.ResultPath;
 import graphql.language.SourceLocation;
 import me.retrodaredevil.solarthing.rest.exceptions.DatabaseException;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CompletableFuture;
 
+@NullMarked
 public class SolarThingExceptionHandler implements DataFetcherExceptionHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SolarThingExceptionHandler.class);
 

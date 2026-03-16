@@ -27,6 +27,8 @@ import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbData
 import me.retrodaredevil.solarthing.couchdb.SolarThingCouchDb;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import okhttp3.HttpUrl;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
@@ -45,12 +47,13 @@ import static java.util.Objects.requireNonNull;
 @Component
 @EnableScheduling
 @EnableAsync
+@NullMarked
 public class InMemoryDatabaseManager {
 	private static final Logger LOGGER = LoggerFactory.getLogger(InMemoryDatabaseManager.class);
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
 
 	private final CouchDbDatabaseSettings couchDbDatabaseSettings;
-	private final CouchDbDatabaseSettings replicateCouchDbDatabaseSettings;
+	private final @Nullable CouchDbDatabaseSettings replicateCouchDbDatabaseSettings;
 
 	private volatile boolean areDatabasesKnownToBeFullySetup = false;
 	private volatile boolean isReplicatorKnownToBeFullySetup = false;

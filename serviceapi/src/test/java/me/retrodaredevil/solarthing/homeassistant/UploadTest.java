@@ -4,6 +4,7 @@ import me.retrodaredevil.solarthing.homeassistant.data.SensorInfo;
 import me.retrodaredevil.solarthing.homeassistant.data.SensorState;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
+import org.jspecify.annotations.NullMarked;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+@NullMarked
 public class UploadTest {
 	private UploadTest() { throw new UnsupportedOperationException(); }
 

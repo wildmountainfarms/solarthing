@@ -15,10 +15,12 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
 import me.retrodaredevil.solarthing.solar.tracer.TracerStatusPacket;
 import me.retrodaredevil.solarthing.type.alter.flag.ActivePeriod;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.time.Instant;
 
+@NullMarked
 public class SolarThingGraphQLExtensions {
 	@GraphQLQuery(name = "batteryTemperatureFahrenheit")
 	public float getBatteryTemperatureFahrenheit(@GraphQLContext RoverStatusPacket roverStatusPacket){

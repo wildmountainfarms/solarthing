@@ -1,10 +1,12 @@
 package me.retrodaredevil.solarthing.rest.graphql.packets;
 
 import me.retrodaredevil.solarthing.rest.graphql.packets.nodes.PacketNode;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Collection;
 import java.util.List;
 
+@NullMarked
 public class PacketFilterMultiplexer implements PacketFilter {
 	private final List<PacketFilter> packetFilterList;
 

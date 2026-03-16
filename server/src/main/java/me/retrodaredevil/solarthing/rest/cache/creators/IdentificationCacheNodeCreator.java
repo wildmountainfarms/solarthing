@@ -5,11 +5,13 @@ import me.retrodaredevil.solarthing.type.cache.packets.data.IdentificationCacheD
 import me.retrodaredevil.solarthing.packets.TimestampedPacket;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 import me.retrodaredevil.solarthing.packets.identification.IdentifierFragment;
+import org.jspecify.annotations.NullMarked;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 
+@NullMarked
 public interface IdentificationCacheNodeCreator<T extends IdentificationCacheData, U extends Identifiable> {
 	Class<U> getAcceptedType();
 	String getCacheName();

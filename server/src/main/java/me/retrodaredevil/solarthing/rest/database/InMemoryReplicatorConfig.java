@@ -6,6 +6,7 @@ import me.retrodaredevil.couchdbjava.replicator.SimpleReplicatorDocument;
 import me.retrodaredevil.couchdbjava.replicator.source.ObjectReplicatorSource;
 import me.retrodaredevil.couchdbjava.replicator.source.ReplicatorSource;
 import me.retrodaredevil.solarthing.SolarThingDatabaseType;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.net.URI;
@@ -15,6 +16,7 @@ import java.time.Duration;
 /**
  * Represents the replication configs needed when setting up an in memory database
  */
+@NullMarked
 public enum InMemoryReplicatorConfig {
 	STATUS_IN_MEMORY_TO_EXTERNAL(SolarThingDatabaseType.STATUS, true, null),
 	STATUS_EXTERNAL_TO_IN_MEMORY(SolarThingDatabaseType.STATUS, false, Duration.ofHours(24)),

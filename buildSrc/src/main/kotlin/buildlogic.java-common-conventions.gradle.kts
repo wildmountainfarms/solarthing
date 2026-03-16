@@ -119,9 +119,17 @@ tasks.withType<JavaCompile>().configureEach {
 		// https://github.com/uber/NullAway/wiki/JSpecify-Support#jspecify-mode
 		option("NullAway:JSpecifyMode", "true")
 		option("NullAway:AcknowledgeRestrictiveAnnotations", "true") // annotations in non-NullMarked code are used by NullAway
+		// https://github.com/uber/NullAway/wiki/Configuration#excluded-field-annotations
+		option("NullAway:ExcludedFieldAnnotations", listOf(
+			"org.springframework.beans.factory.annotation.Value",
+		).joinToString(","))
+		// https://github.com/uber/NullAway/wiki/Configuration#custom-initializer-annotations
+		option("NullAway:CustomInitializerAnnotations", listOf(
+			"jakarta.annotation.PostConstruct",
+		).joinToString(","))
 		// https://github.com/uber/NullAway/wiki/JSpecify-Support#requireexplicitnullmarking-checker
 		// TODO reenable - some subprojects are fully compliant, but not all
-//		error("RequireExplicitNullMarking")
+		error("RequireExplicitNullMarking")
 		// TODO enable this when we want to fix TYPE_USE annotation positions
 //		error("AnnotationPosition")
 

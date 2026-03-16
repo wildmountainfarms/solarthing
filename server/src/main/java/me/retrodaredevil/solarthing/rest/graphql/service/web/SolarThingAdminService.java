@@ -22,6 +22,7 @@ import me.retrodaredevil.solarthing.rest.graphql.service.web.authorization.Autho
 import me.retrodaredevil.solarthing.type.closed.authorization.AuthorizationPacket;
 import me.retrodaredevil.solarthing.type.closed.authorization.PermissionObject;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.time.Duration;
@@ -35,6 +36,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class SolarThingAdminService {
 
 	private final DatabaseProvider databaseProvider;

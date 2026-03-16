@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.rest.spring;
 
+import org.jspecify.annotations.NullMarked;
 import org.springframework.beans.factory.config.CustomEditorConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -8,6 +9,7 @@ import java.nio.file.Path;
 import java.util.Map;
 
 @Component
+@NullMarked
 public class ApplicationConfig {
 
 	@Bean

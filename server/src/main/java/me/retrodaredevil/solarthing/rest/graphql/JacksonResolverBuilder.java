@@ -17,6 +17,8 @@ import io.leangen.graphql.metadata.strategy.query.ResolverBuilderParams;
 import io.leangen.graphql.util.ClassUtils;
 import me.retrodaredevil.solarthing.annotations.GraphQLExclude;
 import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
+import org.checkerframework.checker.nullness.qual.EnsuresNonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.AnnotatedType;
@@ -27,6 +29,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+@NullMarked
 public class JacksonResolverBuilder implements ResolverBuilder {
 
 	private ObjectMapper objectMapper = new ObjectMapper();
@@ -57,6 +60,7 @@ public class JacksonResolverBuilder implements ResolverBuilder {
 	 * @param javaDeprecationConfig Configures if and how {@code Deprecated} maps to GraphQL deprecation
 	 * @return This builder instance to allow chained calls
 	 */
+	@EnsuresNonNull("javaDeprecationConfig")
 	public JacksonResolverBuilder withJavaDeprecation(JavaDeprecationMappingConfig javaDeprecationConfig) {
 		this.javaDeprecationConfig = javaDeprecationConfig;
 		return this;

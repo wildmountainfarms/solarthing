@@ -1,11 +1,12 @@
 package me.retrodaredevil.solarthing.rest.graphql.service;
 
 import me.retrodaredevil.solarthing.rest.graphql.packets.nodes.PacketNode;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Collections;
 import java.util.List;
 
+@NullMarked
 public class ReversedPacketGetter implements PacketGetter {
 	private final PacketGetter packetGetter;
 	private final boolean reversed;
@@ -16,7 +17,7 @@ public class ReversedPacketGetter implements PacketGetter {
 	}
 
 	@Override
-	public <T> @NonNull List<@NonNull PacketNode<T>> getPackets(Class<T> clazz) {
+	public <T> List<PacketNode<T>> getPackets(Class<T> clazz) {
 		List<PacketNode<T>> r = packetGetter.getPackets(clazz);
 		if (reversed) {
 			Collections.reverse(r);

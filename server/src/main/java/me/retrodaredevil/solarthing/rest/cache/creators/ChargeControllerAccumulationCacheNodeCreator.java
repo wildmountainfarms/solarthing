@@ -8,11 +8,13 @@ import me.retrodaredevil.solarthing.rest.cache.CacheCalc;
 import me.retrodaredevil.solarthing.solar.accumulation.value.FloatAccumulationValue;
 import me.retrodaredevil.solarthing.solar.accumulation.value.FloatAccumulationValueFactory;
 import me.retrodaredevil.solarthing.solar.common.DailyChargeController;
+import org.jspecify.annotations.NullMarked;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 
+@NullMarked
 public class ChargeControllerAccumulationCacheNodeCreator implements IdentificationCacheNodeCreator<ChargeControllerAccumulationDataCache, DailyChargeController> {
 	@Override
 	public Class<DailyChargeController> getAcceptedType() {

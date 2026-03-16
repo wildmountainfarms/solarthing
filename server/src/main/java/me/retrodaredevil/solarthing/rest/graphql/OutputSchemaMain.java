@@ -12,12 +12,14 @@ import me.retrodaredevil.solarthing.rest.cache.CacheController;
 import me.retrodaredevil.solarthing.rest.cache.CacheHandler;
 import me.retrodaredevil.solarthing.rest.graphql.solcast.SolcastConfig;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
+import org.jspecify.annotations.NullMarked;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
 
+@NullMarked
 public class OutputSchemaMain {
 	private OutputSchemaMain() { throw new UnsupportedOperationException(); }
 	public static void main(String[] args) {

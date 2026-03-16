@@ -15,11 +15,12 @@ import me.retrodaredevil.solarthing.database.couchdb.CouchDbSolarThingDatabase;
 import me.retrodaredevil.solarthing.packets.collection.parsing.PacketParsingErrorHandler;
 import me.retrodaredevil.solarthing.rest.exceptions.DatabaseException;
 import okhttp3.Cookie;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class DefaultDatabaseProvider implements DatabaseProvider {
 
 	private final CouchDbDatabaseSettings couchDbDatabaseSettings;
@@ -37,7 +38,7 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 	}
 
 	@Override
-	public @NonNull SolarThingDatabase getDatabase(@Nullable DatabaseAuthorization databaseAuthorization) {
+	public SolarThingDatabase getDatabase(@Nullable DatabaseAuthorization databaseAuthorization) {
 		final CouchDbInstance instance;
 		if (databaseAuthorization == null) {
 			instance = defaultInstance;
@@ -54,7 +55,7 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 	}
 
 	@Override
-	public @NonNull DatabaseAuthorization authorize(String username, String password) {
+	public DatabaseAuthorization authorize(String username, String password) {
 		CookieAuthHandler cookieAuthHandler = new CookieAuthHandler(username, password);
 		try {
 			cookieAuthHandler.authSession(noAuthInstance);

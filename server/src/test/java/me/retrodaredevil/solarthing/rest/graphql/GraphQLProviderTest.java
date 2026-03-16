@@ -12,11 +12,13 @@ import me.retrodaredevil.solarthing.rest.cache.CacheHandler;
 import me.retrodaredevil.solarthing.rest.graphql.solcast.SolcastConfig;
 import me.retrodaredevil.solarthing.packets.collection.DefaultInstanceOptions;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 
 
+@NullMarked
 class GraphQLProviderTest {
 
 	@Test

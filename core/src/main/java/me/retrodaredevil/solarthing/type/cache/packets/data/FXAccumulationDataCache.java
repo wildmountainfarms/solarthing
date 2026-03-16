@@ -42,7 +42,7 @@ public class FXAccumulationDataCache extends BaseAccumulationDataCache implement
 
 		identifier = new OutbackIdentifier(address);
 	}
-	public static FXAccumulationDataCache createFromIdentifier(Identifier supplementaryIdentifier, Data mainData, Long firstDateMillis, Long lastDateMillis, Data unknownData, Long unknownStartDateMillis) {
+	public static FXAccumulationDataCache createFromIdentifier(Identifier supplementaryIdentifier, Data mainData, @Nullable Long firstDateMillis, @Nullable Long lastDateMillis, Data unknownData, @Nullable Long unknownStartDateMillis) {
 		if (!(supplementaryIdentifier instanceof SupplementaryIdentifier)) {
 			throw new IllegalArgumentException("The passed identifier is not a SupplementaryIdentifier! It is: " + supplementaryIdentifier.getClass() + " and its value is: " + supplementaryIdentifier.getRepresentation());
 		}

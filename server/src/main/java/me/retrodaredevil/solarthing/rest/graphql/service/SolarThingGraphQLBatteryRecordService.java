@@ -13,6 +13,7 @@ import me.retrodaredevil.solarthing.type.cache.packets.IdentificationCacheDataPa
 import me.retrodaredevil.solarthing.type.cache.packets.IdentificationCacheNode;
 import me.retrodaredevil.solarthing.type.cache.packets.data.BatteryRecordDataCache;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,8 +26,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.requireNonNull;
 import static me.retrodaredevil.solarthing.rest.graphql.service.SchemaConstants.*;
 
+@NullMarked
 public class SolarThingGraphQLBatteryRecordService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SolarThingGraphQLBatteryRecordService.class);
 
@@ -143,6 +146,7 @@ public class SolarThingGraphQLBatteryRecordService {
 				}
 				//noinspection ConstantConditions
 				assert firstIndex != null;
+				requireNonNull(firstIndex, "firstIndex is null");
 
 				lastFirstIndex = firstIndex;
 				lastStartDateMillis = data.get(firstIndex).getPeriodStartDateMillis();
@@ -169,7 +173,7 @@ public class SolarThingGraphQLBatteryRecordService {
 			return averageMap.entrySet().stream().map(entry -> {
 				var identifierFragment = entry.getKey();
 				double rawAverage = entry.getValue();
-				double remainingWeight = remainingWeightMap.get(identifierFragment);
+				double remainingWeight = requireNonNull(remainingWeightMap.get(identifierFragment), "expected remainingWeight to contain value for " + identifierFragment);
 				double average = rawAverage / (1 - remainingWeight);
 
 				Identifiable identifiable = packetFinder.getCached(identifierFragment);

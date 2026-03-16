@@ -3,7 +3,9 @@ package me.retrodaredevil.solarthing.rest.graphql.packets.nodes;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public interface SimplePacketNode {
 	@JsonProperty("packet")
 	@NonNull Object getPacket();

@@ -10,6 +10,7 @@ import me.retrodaredevil.solarthing.solar.accumulation.*;
 import me.retrodaredevil.solarthing.solar.accumulation.value.AccumulationValue;
 import me.retrodaredevil.solarthing.solar.accumulation.value.AccumulationValueFactory;
 import me.retrodaredevil.solarthing.solar.common.DailyData;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.time.Duration;
@@ -17,7 +18,10 @@ import java.time.Instant;
 import java.util.List;
 import java.util.function.Function;
 
+import static java.util.Objects.requireNonNull;
+
 @UtilityClass
+@NullMarked
 public final class CacheCalc {
 	private CacheCalc() { throw new UnsupportedOperationException(); }
 
@@ -89,6 +93,7 @@ public final class CacheCalc {
 					null
 			);
 		} else {
+			requireNonNull(lastDataBeforePeriodEnd, "lastDataBeforePeriodEnd is null");
 			AccumulationCalc.SumNode<VALUE> firstData = lastDataBeforePeriodStart == null ? firstDataAfterPeriodStart : lastDataBeforePeriodStart;
 			VALUE generation = lastDataBeforePeriodEnd.getSum().minus(firstData.getSum());
 			final VALUE unknownGeneration;

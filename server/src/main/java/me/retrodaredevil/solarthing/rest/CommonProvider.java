@@ -8,6 +8,7 @@ import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbData
 import me.retrodaredevil.solarthing.packets.collection.DefaultInstanceOptions;
 import me.retrodaredevil.solarthing.packets.instance.InstanceSourcePacket;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,13 +21,14 @@ import java.nio.file.Path;
 import java.util.Objects;
 
 @Component
+@NullMarked
 public class CommonProvider {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CommonProvider.class);
 
 	@Value("${solarthing.config.database}")
 	private Path databaseFile;
 	@Value("${solarthing.config.replicate:#{null}}")
-	private Path replicateDatabaseFile;
+	private @Nullable Path replicateDatabaseFile;
 	@Value("${solarthing.config.default_source:#{null}}")
 	private @Nullable String defaultSourceId;
 	@Value("${solarthing.config.default_fragment:#{null}}")
@@ -34,7 +36,7 @@ public class CommonProvider {
 
 	private DefaultInstanceOptions defaultInstanceOptions;
 	private CouchDbDatabaseSettings couchDbDatabaseSettings;
-	private CouchDbDatabaseSettings replicateCouchDbDatabaseSettings;
+	private @Nullable CouchDbDatabaseSettings replicateCouchDbDatabaseSettings;
 
 
 	private String getDefaultSourceId() {
@@ -92,7 +94,7 @@ public class CommonProvider {
 		return couchDbDatabaseSettings;
 	}
 	@Bean
-	public CouchDbDatabaseSettings replicateCouchDbDatabaseSettings() {
+	public @Nullable CouchDbDatabaseSettings replicateCouchDbDatabaseSettings() {
 		return replicateCouchDbDatabaseSettings;
 	}
 

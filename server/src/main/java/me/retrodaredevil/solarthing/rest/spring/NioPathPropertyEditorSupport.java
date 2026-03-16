@@ -1,5 +1,7 @@
 package me.retrodaredevil.solarthing.rest.spring;
 
+import org.jspecify.annotations.NullMarked;
+
 import java.beans.PropertyEditorSupport;
 import java.nio.file.Path;
 
@@ -12,6 +14,7 @@ import java.nio.file.Path;
  * }
  * </pre>
  */
+@NullMarked
 public class NioPathPropertyEditorSupport extends PropertyEditorSupport {
 	@Override
 	public String getAsText() {

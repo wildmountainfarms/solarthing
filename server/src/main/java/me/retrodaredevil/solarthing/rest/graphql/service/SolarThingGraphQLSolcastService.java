@@ -18,6 +18,7 @@ import me.retrodaredevil.solarthing.solcast.rooftop.EstimatedActualCache;
 import me.retrodaredevil.solarthing.solcast.rooftop.EstimatedActualRetriever;
 import okhttp3.OkHttpClient;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +34,7 @@ import static java.util.Objects.requireNonNull;
 import static me.retrodaredevil.solarthing.rest.graphql.service.SchemaConstants.DESCRIPTION_FROM;
 import static me.retrodaredevil.solarthing.rest.graphql.service.SchemaConstants.DESCRIPTION_TO;
 
+@NullMarked
 public class SolarThingGraphQLSolcastService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SolarThingGraphQLSolcastService.class);
 	/*

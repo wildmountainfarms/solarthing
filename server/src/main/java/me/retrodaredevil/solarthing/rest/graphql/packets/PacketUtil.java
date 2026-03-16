@@ -4,11 +4,13 @@ import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.rest.graphql.packets.nodes.PacketNode;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @UtilityClass
+@NullMarked
 public final class PacketUtil {
 	private PacketUtil(){ throw new UnsupportedOperationException(); }
 

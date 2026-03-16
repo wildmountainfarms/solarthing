@@ -7,11 +7,13 @@ import okhttp3.CookieJar;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
 
+@NullMarked
 public class ExistingCookieAuthHandler implements OkHttpAuthHandler {
 	private final Cookie cookie;
 

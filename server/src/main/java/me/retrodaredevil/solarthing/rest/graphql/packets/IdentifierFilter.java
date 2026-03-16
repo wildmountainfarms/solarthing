@@ -3,9 +3,11 @@ package me.retrodaredevil.solarthing.rest.graphql.packets;
 import me.retrodaredevil.solarthing.rest.graphql.packets.nodes.PacketNode;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifiable;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class IdentifierFilter implements PacketFilter {
 	public enum DefaultAction {
 		KEEP,

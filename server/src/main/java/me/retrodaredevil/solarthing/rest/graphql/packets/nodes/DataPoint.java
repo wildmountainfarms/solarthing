@@ -3,10 +3,12 @@ package me.retrodaredevil.solarthing.rest.graphql.packets.nodes;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Represents data without a timestamp
  */
+@NullMarked
 public final class DataPoint<T> {
 	private final T data;
 	private final Identifiable identifiable;

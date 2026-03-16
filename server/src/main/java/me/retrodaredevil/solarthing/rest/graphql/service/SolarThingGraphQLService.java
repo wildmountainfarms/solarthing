@@ -50,6 +50,7 @@ import me.retrodaredevil.solarthing.type.closed.meta.TargetMetaPacket;
 import me.retrodaredevil.solarthing.type.closed.meta.TargetedMetaPacket;
 import me.retrodaredevil.solarthing.type.closed.meta.TargetedMetaPacketType;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -61,6 +62,7 @@ import java.util.stream.Collectors;
 import static me.retrodaredevil.solarthing.rest.graphql.service.SchemaConstants.*;
 
 @GraphQLType
+@NullMarked
 public class SolarThingGraphQLService {
 
 	private final SimpleQueryHandler simpleQueryHandler;

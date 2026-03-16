@@ -1,5 +1,7 @@
 package me.retrodaredevil.solarthing.rest;
 
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,15 +19,16 @@ import org.springframework.web.servlet.function.ServerResponse;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 
 @Configuration
+@NullMarked
 public class WebConfiguration {
 
 	@Bean
-	public HandlerMapping catchAllHandlerMapping(ApplicationContext applicationContext) {
+	public @Nullable HandlerMapping catchAllHandlerMapping(ApplicationContext applicationContext) {
 		// related to https://stackoverflow.com/a/42998817/5434860
 		// We have to do it this way, so we can set the order so this has the lowest precedence
 		var registry = new ViewControllerRegistry(applicationContext) {
 			@Override
-			public SimpleUrlHandlerMapping buildHandlerMapping() {
+			public @Nullable SimpleUrlHandlerMapping buildHandlerMapping() {
 				return super.buildHandlerMapping();
 			}
 		};

@@ -7,12 +7,14 @@ import io.leangen.graphql.annotations.types.GraphQLUnion;
 import io.leangen.graphql.metadata.messages.MessageBundle;
 import io.leangen.graphql.metadata.strategy.type.DefaultTypeInfoGenerator;
 import io.leangen.graphql.util.Utils;
+import org.jspecify.annotations.NullMarked;
 
 import java.lang.reflect.AnnotatedType;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+@NullMarked
 public class SolarThingTypeInfoGenerator extends DefaultTypeInfoGenerator {
 	@Override
 	@SuppressWarnings("unchecked")
@@ -36,6 +38,6 @@ public class SolarThingTypeInfoGenerator extends DefaultTypeInfoGenerator {
 				.map(opt -> opt.filter(Utils::isNotEmpty))
 				.reduce(Utils::or)
 				.map(opt -> opt.orElse(defaultValue.get()))
-				.get();
+				.orElseThrow(() -> new IllegalStateException("No optionals provided"));
 	}
 }

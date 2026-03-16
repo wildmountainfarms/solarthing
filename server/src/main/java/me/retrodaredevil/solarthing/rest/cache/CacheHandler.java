@@ -22,7 +22,6 @@ import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.rest.cache.creators.BatteryRecordCacheNodeCreator;
 import me.retrodaredevil.solarthing.type.cache.CacheUtil;
 import me.retrodaredevil.solarthing.type.cache.packets.CacheDataPacket;
-import org.jspecify.annotations.NonNull;
 import me.retrodaredevil.solarthing.database.MillisQuery;
 import me.retrodaredevil.solarthing.database.MillisQueryBuilder;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
@@ -38,6 +37,7 @@ import me.retrodaredevil.solarthing.rest.cache.creators.DefaultIdentificationCac
 import me.retrodaredevil.solarthing.rest.cache.creators.FXAccumulationCacheNodeCreator;
 import me.retrodaredevil.solarthing.rest.exceptions.DatabaseException;
 import me.retrodaredevil.solarthing.rest.exceptions.UnexpectedResponseException;
+import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,6 +47,7 @@ import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class CacheHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CacheHandler.class);
 	private static final int QUERY_PERIOD_COUNT = 4 * 24; // we can request data a day at a time, but we won't do more than that
@@ -90,13 +91,13 @@ public class CacheHandler {
 		long currentPeriodNumber = getPeriodNumber(System.currentTimeMillis());
 		return currentPeriodNumber - 2; // We cannot get data from the current period, and we cannot get data from the previous period
 	}
-	public <T extends CacheDataPacket> List<T> getCachesFromDateMillis(@NonNull TypeReference<T> typeReference, @NonNull String cacheName, @NonNull String sourceId, long startMillis, long endMillis) {
+	public <T extends CacheDataPacket> List<T> getCachesFromDateMillis(TypeReference<T> typeReference, String cacheName, String sourceId, long startMillis, long endMillis) {
 		if (endMillis < startMillis) {
 			throw new IllegalArgumentException("endMillis cannot be less than startMillis! startMillis: " + startMillis + " endMillis: " + endMillis);
 		}
 		return getCaches(typeReference, cacheName, sourceId, getPeriodNumber(startMillis), getPeriodNumber(endMillis));
 	}
-	public <T extends CacheDataPacket> @NonNull List<T> getCaches(@NonNull TypeReference<T> typeReference, @NonNull String cacheName, @NonNull String sourceId, long startPeriodNumber, long endPeriodNumber) {
+	public <T extends CacheDataPacket> List<T> getCaches(TypeReference<T> typeReference, String cacheName, String sourceId, long startPeriodNumber, long endPeriodNumber) {
 		requireNonNull(typeReference);
 		requireNonNull(cacheName);
 		requireNonNull(sourceId, "The source cannot be null!");
@@ -141,7 +142,7 @@ public class CacheHandler {
 		}
 		return revisionNode.asText();
 	}
-	private <T extends CacheDataPacket> List<T> queryOrCalculateCaches(@NonNull TypeReference<T> typeReference, @NonNull String cacheName, @NonNull String sourceId, long startPeriodNumber, long endPeriodNumber) {
+	private <T extends CacheDataPacket> List<T> queryOrCalculateCaches(TypeReference<T> typeReference, String cacheName, String sourceId, long startPeriodNumber, long endPeriodNumber) {
 		List<String> documentIds = new ArrayList<>(); // the document IDs needed to return data
 		Map<String, Long> documentIdPeriodNumberMap = new HashMap<>(); // a map from a document ID to a period number
 
@@ -195,12 +196,18 @@ public class CacheHandler {
 					queryStartPeriodNumber = periodNumber;
 					queryEndPeriodNumber = periodNumber;
 				} else {
+					//noinspection ConstantValue
+					assert queryEndPeriodNumber != null;
+					requireNonNull(queryEndPeriodNumber);
 					queryStartPeriodNumber = Math.min(queryStartPeriodNumber, periodNumber);
 					queryEndPeriodNumber = Math.max(queryEndPeriodNumber, periodNumber);
 				}
 			}
 		}
 		if (queryStartPeriodNumber != null) {
+			//noinspection ConstantValue
+			assert queryEndPeriodNumber != null;
+			requireNonNull(queryEndPeriodNumber);
 			List<CacheDataPacket> calculatedPackets = calculatePeriod(queryStartPeriodNumber, queryEndPeriodNumber);
 
 			List<JsonData> calculatedPacketsJsonDataList = new ArrayList<>();

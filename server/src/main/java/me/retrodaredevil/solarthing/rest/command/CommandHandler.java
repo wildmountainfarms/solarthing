@@ -11,6 +11,7 @@ import me.retrodaredevil.solarthing.actions.environment.SourceIdEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.TimeZoneEnvironment;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
@@ -20,6 +21,7 @@ import java.time.ZoneId;
 
 import static java.util.Objects.requireNonNull;
 
+@NullMarked
 public class CommandHandler {
 	private static final ObjectMapper CONFIG_MAPPER = CommonActionUtil.registerActionNodes(JacksonUtil.defaultMapper());
 

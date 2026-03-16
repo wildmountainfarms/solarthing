@@ -5,12 +5,14 @@ import me.retrodaredevil.couchdbjava.CouchDbInstance;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.packets.collection.DefaultInstanceOptions;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import jakarta.annotation.PostConstruct;
 
 @Component
+@NullMarked
 public class CacheHandlerProvider {
 
 	private final DefaultInstanceOptions defaultInstanceOptions;

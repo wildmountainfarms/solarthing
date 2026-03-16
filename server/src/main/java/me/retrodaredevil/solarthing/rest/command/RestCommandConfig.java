@@ -3,7 +3,7 @@ package me.retrodaredevil.solarthing.rest.command;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.nio.file.Path;
@@ -14,6 +14,7 @@ import java.util.Set;
 import static java.util.Objects.requireNonNull;
 
 @JsonExplicit
+@NullMarked
 public class RestCommandConfig {
 	private final Set<String> apiKeys;
 	private final Map<String, Command> commandToActionFileMap;
@@ -48,7 +49,7 @@ public class RestCommandConfig {
 			this.sourceId = sourceId;
 		}
 
-		public @NonNull Path getActionFile() {
+		public Path getActionFile() {
 			return actionFile;
 		}
 

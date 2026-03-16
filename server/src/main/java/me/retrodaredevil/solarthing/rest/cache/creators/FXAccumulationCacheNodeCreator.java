@@ -6,11 +6,13 @@ import me.retrodaredevil.solarthing.packets.TimestampedPacket;
 import me.retrodaredevil.solarthing.packets.identification.IdentifierFragment;
 import me.retrodaredevil.solarthing.rest.cache.CacheCalc;
 import me.retrodaredevil.solarthing.solar.outback.fx.extra.DailyFXPacket;
+import org.jspecify.annotations.NullMarked;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 
+@NullMarked
 public class FXAccumulationCacheNodeCreator implements IdentificationCacheNodeCreator<FXAccumulationDataCache, DailyFXPacket> {
 	@Override
 	public Class<DailyFXPacket> getAcceptedType() {

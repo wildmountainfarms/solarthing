@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
 
@@ -12,6 +13,7 @@ import static java.util.Objects.requireNonNull;
  * @param <T> The type of the data.
  */
 @JsonExplicit
+@NullMarked
 public final class DataNode<T> implements Comparable<DataNode<?>> {
 	private final T data;
 	private final Identifiable identifiable;
@@ -19,7 +21,7 @@ public final class DataNode<T> implements Comparable<DataNode<?>> {
 	private final String sourceId;
 	private final int fragmentId;
 
-	public DataNode(@NonNull T data, @NonNull Identifiable identifiable, long dateMillis, @NonNull String sourceId, int fragmentId) {
+	public DataNode(T data, Identifiable identifiable, long dateMillis, String sourceId, int fragmentId) {
 		this.data = requireNonNull(data);
 		this.identifiable = requireNonNull(identifiable);
 		this.dateMillis = dateMillis;

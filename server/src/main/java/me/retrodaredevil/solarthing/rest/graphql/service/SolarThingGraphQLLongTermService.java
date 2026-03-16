@@ -5,6 +5,7 @@ import io.leangen.graphql.annotations.GraphQLQuery;
 import me.retrodaredevil.solarthing.type.cache.packets.IdentificationCacheDataPacket;
 import me.retrodaredevil.solarthing.type.cache.packets.data.ChargeControllerAccumulationDataCache;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import me.retrodaredevil.solarthing.rest.cache.CacheController;
 
@@ -16,6 +17,7 @@ import java.util.List;
 
 import static me.retrodaredevil.solarthing.rest.graphql.service.SchemaConstants.*;
 
+@NullMarked
 public class SolarThingGraphQLLongTermService {
 
 	private final CacheController cacheController;
@@ -29,14 +31,14 @@ public class SolarThingGraphQLLongTermService {
 	@GraphQLQuery
 	public SolarThingLongTermQuery queryLongTermMillis(
 			@GraphQLArgument(name = "from", description = DESCRIPTION_FROM) long from, @GraphQLArgument(name = "to", description = DESCRIPTION_TO) long to,
-			@GraphQLArgument(name = "sourceId", description = DESCRIPTION_OPTIONAL_SOURCE) @Nullable String sourceId){
+			@GraphQLArgument(name = "sourceId", description = DESCRIPTION_REQUIRED_SOURCE) @NonNull String sourceId){
 		return new SolarThingLongTermQuery(sourceId, from, to);
 	}
 	@GraphQLQuery
 	public SolarThingLongTermQuery queryLongTermMonth(
 			@GraphQLArgument(name = "year") int year,
 			@GraphQLArgument(name = "month") Month month,
-			@GraphQLArgument(name = "sourceId", description = DESCRIPTION_OPTIONAL_SOURCE) @Nullable String sourceId){
+			@GraphQLArgument(name = "sourceId", description = DESCRIPTION_REQUIRED_SOURCE) @NonNull String sourceId){
 		YearMonth yearMonth = YearMonth.of(year, month);
 		LocalDate start = LocalDate.of(year, month, 1);
 		LocalDate end = yearMonth.atEndOfMonth();

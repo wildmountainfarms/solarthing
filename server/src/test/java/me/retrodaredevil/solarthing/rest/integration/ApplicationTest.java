@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.rest.integration;
 
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,6 +10,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest // we use SpringBootTest instead of ContextConfiguration as it configures stuff as similar to the real application
 @TestPropertySource("/test.properties")
+@NullMarked
 public class ApplicationTest {
 	/*
 	This test was created specifically for https://github.com/wildmountainfarms/solarthing/issues/135

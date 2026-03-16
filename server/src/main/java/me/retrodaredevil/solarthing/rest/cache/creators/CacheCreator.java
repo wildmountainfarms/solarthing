@@ -2,11 +2,13 @@ package me.retrodaredevil.solarthing.rest.cache.creators;
 
 import me.retrodaredevil.solarthing.type.cache.packets.CacheDataPacket;
 import me.retrodaredevil.solarthing.packets.collection.InstancePacketGroup;
+import org.jspecify.annotations.NullMarked;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 
+@NullMarked
 public interface CacheCreator {
 	/**
 	 * Creates a {@link CacheDataPacket} to be stored in the database for a given period.
