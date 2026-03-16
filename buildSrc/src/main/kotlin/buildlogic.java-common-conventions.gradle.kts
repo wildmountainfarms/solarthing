@@ -248,11 +248,11 @@ rewrite {
 //	activeRecipe("org.openrewrite.staticanalysis.FinalClass") // maybe consider in the future
 	activeRecipe("org.openrewrite.staticanalysis.ForLoopIncrementInUpdate")
 //	activeRecipe("org.openrewrite.staticanalysis.UpperCaseLiteralSuffixes") // eventually maybe we can consider this
-//	activeRecipe("org.openrewrite.staticanalysis.UseDiamondOperator") // TODO see what this does independently
+	activeRecipe("org.openrewrite.staticanalysis.UseDiamondOperator")
 	activeRecipe("org.openrewrite.staticanalysis.BooleanChecksNotInverted")
 //	activeRecipe("org.openrewrite.staticanalysis.NeedBraces") // consider in the future
 //	activeRecipe("org.openrewrite.staticanalysis.HideUtilityClassConstructor") // tries to make spring application class have private constructor
-//	activeRecipe("org.openrewrite.staticanalysis.JavaApiBestPractices") // TODO enable
+	activeRecipe("org.openrewrite.staticanalysis.JavaApiBestPractices")
 	activeRecipe("org.openrewrite.staticanalysis.ModifierOrder")
 	activeRecipe("org.openrewrite.staticanalysis.NestedEnumsAreNotStatic")
 	activeRecipe("org.openrewrite.staticanalysis.UseJavaStyleArrayDeclarations")
@@ -283,7 +283,7 @@ rewrite {
 	activeRecipe("org.openrewrite.staticanalysis.UnwrapRepeatableAnnotations")
 //	activeRecipe("org.openrewrite.staticanalysis.UnwrapElseAfterReturn") // kinda annoying when I want to pick the style on a per if-else statement basis
 	activeRecipe("org.openrewrite.staticanalysis.UsePortableNewlines")
-//	activeRecipe("org.openrewrite.staticanalysis.UseCollectionInterfaces") // stops people from using something like an ArrayList in a return type // TODO enable
+	activeRecipe("org.openrewrite.staticanalysis.UseCollectionInterfaces") // stops people from using something like an ArrayList in a return type // TODO enable
 //	activeRecipe("org.openrewrite.staticanalysis.IsEmptyCallOnCollections") // eventually enable this, but first update some tests
 	activeRecipe("org.openrewrite.staticanalysis.NoEmptyCollectionWithRawType")
 	activeRecipe("org.openrewrite.staticanalysis.ReplaceCollectionToArrayArgWithEmptyArray")

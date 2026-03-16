@@ -181,7 +181,7 @@ public final class PacketGroups {
 			fragmentIds = new ArrayList<>(fragmentIdsSet); // now this is sorted
 		}
 		// Create an ordered set so that whenever something is added to it, it gets ordered correctly
-		TreeSet<FragmentedPacketGroup> packetGroups = new TreeSet<>(Comparator.comparingLong(PacketGroup::getDateMillis));
+		NavigableSet<FragmentedPacketGroup> packetGroups = new TreeSet<>(Comparator.comparingLong(PacketGroup::getDateMillis));
 		addToPacketGroups(
 				maxTimeDistance, masterIdIgnoreDistance,
 				Long.MIN_VALUE, Long.MAX_VALUE,
