@@ -34,7 +34,7 @@ public final class SolarMain {
 		if (args.length == 0) {
 			System.err.println("""
 					Usage: solarthing [command] [args]
-					
+
 					Commands:
 					  run [options]
 					  version
