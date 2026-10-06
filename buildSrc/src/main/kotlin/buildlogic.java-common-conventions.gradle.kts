@@ -16,18 +16,17 @@ plugins {
 }
 
 dependencies {
-//	implementation("org.jetbrains:annotations:26.0.2") // https://github.com/JetBrains/java-annotations/releases
-	implementation("org.jspecify:jspecify:1.0.0")
+	implementation("org.jspecify:jspecify:1.0.1")
 	// Add checker-qual dependency so we can use @RequiresNonNull.
 	//   More info: https://github.com/uber/NullAway/wiki/Supported-Annotations#ensuresnonnullif
 	// https://mvnrepository.com/artifact/org.checkerframework/checker-qual
-	implementation("org.checkerframework:checker-qual:3.54.0")
+	implementation("org.checkerframework:checker-qual:4.3.0")
 
 	// https://github.com/google/error-prone/releases
-	val errorProneVersion = "2.48.0"
+	val errorProneVersion = "2.50.0"
 	errorprone("com.google.errorprone:error_prone_core:$errorProneVersion")
 	// https://github.com/uber/NullAway/releases
-	errorprone("com.uber.nullaway:nullaway:0.13.1")
+	errorprone("com.uber.nullaway:nullaway:0.14.2")
 
 	// https://mvnrepository.com/artifact/com.google.errorprone/error_prone_annotations
 	compileOnly("com.google.errorprone:error_prone_annotations:$errorProneVersion")
@@ -48,7 +47,7 @@ dependencies {
 	rewrite("org.openrewrite.recipe:rewrite-hibernate:2.17.1")
 
 	// Use JUnit Jupiter for testing. https://junit.org/junit5/
-	testImplementation("org.junit.jupiter:junit-jupiter:6.0.3")
+	testImplementation("org.junit.jupiter:junit-jupiter:6.1.3")
 
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }

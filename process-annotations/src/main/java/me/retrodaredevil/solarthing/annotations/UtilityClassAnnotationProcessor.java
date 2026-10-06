@@ -13,7 +13,7 @@ import javax.tools.Diagnostic;
 import java.util.Set;
 
 @SupportedAnnotationTypes({"me.retrodaredevil.solarthing.annotations.UtilityClass"})
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
+@SupportedSourceVersion(SourceVersion.RELEASE_11)
 @AutoService(Processor.class)
 @NullMarked
 public class UtilityClassAnnotationProcessor extends AbstractProcessor {

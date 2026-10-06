@@ -12,11 +12,12 @@ repositories {
 
 dependencies {
 	// https://github.com/tbroyer/gradle-errorprone-plugin/releases
-	implementation("net.ltgt.errorprone:net.ltgt.errorprone.gradle.plugin:5.0.0")
+	implementation("net.ltgt.errorprone:net.ltgt.errorprone.gradle.plugin:5.1.1")
 
 	// https://mvnrepository.com/artifact/com.diffplug.spotless/spotless-plugin-gradle
-	implementation("com.diffplug.spotless:com.diffplug.spotless.gradle.plugin:8.2.1")
+	implementation("com.diffplug.spotless:com.diffplug.spotless.gradle.plugin:8.10.3")
 
+	// TODO upgrade to a newer openrewrite version - staying on 7.41.0 since that's the last version on Gradle Plugin Portal
 	// https://github.com/openrewrite/rewrite-gradle-plugin/releases
 	implementation("org.openrewrite.rewrite:org.openrewrite.rewrite.gradle.plugin:7.25.0")
 }

@@ -14,7 +14,7 @@ import java.util.Set;
 import static java.util.Objects.requireNonNull;
 
 @SupportedAnnotationTypes({"java.lang.Override", "me.retrodaredevil.solarthing.annotations.DefaultFinal"})
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
+@SupportedSourceVersion(SourceVersion.RELEASE_11)
 @AutoService(Processor.class)
 @NullMarked
 public class DefaultFinalAnnotationProcessor extends AbstractProcessor {
