@@ -57,11 +57,10 @@ public class RequireFullOutputActionNode implements ActionNode {
 					if (fragmentId != desiredFragmentId) {
 						continue;
 					}
-					if (packet instanceof Identifiable) {
-						Identifier identifier = ((Identifiable) packet).getIdentifier();
+					if (packet instanceof Identifiable identifiable) {
+						Identifier identifier = identifiable.getIdentifier();
 						if (desiredIdentifierRepresentation.equals(identifier.getRepresentation())) {
-							if (packet instanceof MXStatusPacket) {
-								MXStatusPacket mx = (MXStatusPacket) packet;
+							if (packet instanceof MXStatusPacket mx) {
 								ChargerMode mode = mx.getChargingMode();
 								// Some old MX firmwares consistently report being in float mode after a full absorb cycle even after the daily reset.
 								//   This configuration option allows us to treat float as full output for a given MX
@@ -72,8 +71,7 @@ public class RequireFullOutputActionNode implements ActionNode {
 									}
 									return false;
 								}
-							} else if (packet instanceof RoverStatusPacket) {
-								RoverStatusPacket rover = (RoverStatusPacket) packet;
+							} else if (packet instanceof RoverStatusPacket rover) {
 								ChargingState state = rover.getChargingMode();
 								if (state != ChargingState.ACTIVATED && state != ChargingState.DEACTIVATED && state != ChargingState.MPPT) {
 									if (log) {
@@ -81,8 +79,7 @@ public class RequireFullOutputActionNode implements ActionNode {
 									}
 									return false;
 								}
-							} else if (packet instanceof TracerStatusPacket) {
-								TracerStatusPacket tracer = (TracerStatusPacket) packet;
+							} else if (packet instanceof TracerStatusPacket tracer) {
 								ChargingStatus status = tracer.getChargingMode();
 								// we currently cannot tell if while in BOOST or EQUALIZE if the controller is actually in Bulk, so float is the only mode we know that isn't at full output
 								if (status == ChargingStatus.FLOAT) {

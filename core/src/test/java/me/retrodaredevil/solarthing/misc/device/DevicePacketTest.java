@@ -24,8 +24,8 @@ class DevicePacketTest {
 			CpuTemperaturePacket packet = new CelsiusCpuTemperaturePacket(CpuTemperaturePacket.VERSION_WITH_CORES, 20.0f, Collections.singletonList(new CelsiusCpuTemperaturePacket.CelsiusCore(0, 20.0f)));
 			assertEquals(20, packet.getCpuTemperatureCelsius());
 			assertEquals(1, packet.getCores().size());
-			assertEquals(20.0f, packet.getCores().get(0).getTemperatureCelsius());
-			assertEquals(0, packet.getCores().get(0).getNumber());
+			assertEquals(20.0f, packet.getCores().getFirst().getTemperatureCelsius());
+			assertEquals(0, packet.getCores().getFirst().getNumber());
 			PacketTestUtil.testJson(packet, CpuTemperaturePacket.class);
 		}
 	}

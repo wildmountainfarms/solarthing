@@ -52,8 +52,8 @@ public class MXFloatModeStuckEvent implements MessageEvent {
 				KnownIdentifierFragment<OutbackIdentifier> identifierFragment = IdentifierFragment.create(previous.getFragmentId(previousPacket), previousMX.getIdentifier());
 				MXStatusPacket currentMX = null;
 				for (Packet currentPacket : current.getPackets()) {
-					if (currentPacket instanceof Identifiable) {
-						IdentifierFragment currentIdentifierFragment = IdentifierFragment.create(current.getFragmentId(currentPacket), ((Identifiable) currentPacket).getIdentifier());
+					if (currentPacket instanceof Identifiable identifiable) {
+						IdentifierFragment currentIdentifierFragment = IdentifierFragment.create(current.getFragmentId(currentPacket), identifiable.getIdentifier());
 						if (identifierFragment.equals(currentIdentifierFragment)) {
 							currentMX = (MXStatusPacket) currentPacket;
 						}

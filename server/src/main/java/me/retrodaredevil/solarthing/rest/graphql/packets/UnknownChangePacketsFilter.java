@@ -21,8 +21,8 @@ public class UnknownChangePacketsFilter implements PacketFilter {
 			return true;
 		}
 		Object packet = packetNode.getPacket();
-		if (packet instanceof ChangePacket) {
-			return !((ChangePacket) packet).isLastUnknown();
+		if (packet instanceof ChangePacket changePacket) {
+			return !changePacket.isLastUnknown();
 		}
 		return true;
 	}

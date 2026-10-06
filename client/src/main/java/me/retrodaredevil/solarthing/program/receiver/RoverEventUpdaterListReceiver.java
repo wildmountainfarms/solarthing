@@ -28,8 +28,7 @@ public class RoverEventUpdaterListReceiver implements PacketListReceiver {
 	@Override
 	public void receive(List<Packet> packets) {
 		for (Packet packet : packets) {
-			if (packet instanceof RoverStatusPacket) {
-				RoverStatusPacket rover = (RoverStatusPacket) packet;
+			if (packet instanceof RoverStatusPacket rover) {
 				RoverStatusPacket previous = previousPacketMap.get(rover.getIdentifier());
 				previousPacketMap.put(rover.getIdentifier(), rover);
 				useData(rover, previous);

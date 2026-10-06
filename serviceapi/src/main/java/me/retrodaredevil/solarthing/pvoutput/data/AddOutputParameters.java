@@ -97,8 +97,8 @@ public interface AddOutputParameters {
 		if(object == null) {
 			return null;
 		}
-		if (object instanceof PVOutputString) {
-			return ((PVOutputString) object).toPVOutputString();
+		if (object instanceof PVOutputString string) {
+			return string.toPVOutputString();
 		}
 		return object.toString();
 	}

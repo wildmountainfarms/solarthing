@@ -49,12 +49,12 @@ class PacketGroupsTest {
 		);
 		List<FragmentedPacketGroup> fragmentedPacketGroups = PacketGroups.mergePackets(packetGroups, 10L, 10L);
 		assertEquals(1, fragmentedPacketGroups.size());
-		FragmentedPacketGroup fragmentedPacketGroup = fragmentedPacketGroups.get(0);
+		FragmentedPacketGroup fragmentedPacketGroup = fragmentedPacketGroups.getFirst();
 		assertEquals(4, fragmentedPacketGroup.getPackets().size());
 		assertEquals(0L, fragmentedPacketGroup.getDateMillis());
 
-		assertEquals(0L, fragmentedPacketGroup.getDateMillis(fragmentedPacketGroup.getPackets().get(0)));
-		assertEquals(1, fragmentedPacketGroup.getFragmentId(fragmentedPacketGroup.getPackets().get(0)));
+		assertEquals(0L, fragmentedPacketGroup.getDateMillis(fragmentedPacketGroup.getPackets().getFirst()));
+		assertEquals(1, fragmentedPacketGroup.getFragmentId(fragmentedPacketGroup.getPackets().getFirst()));
 
 		// notice that even though the InstancePacketGroup with a fragment ID of 3 was passed first, the one with a packet ID of 2 gets added first
 		assertEquals(5L, fragmentedPacketGroup.getDateMillis(fragmentedPacketGroup.getPackets().get(1)));
@@ -78,7 +78,7 @@ class PacketGroupsTest {
 		// notice that the master ID ignore distance is 15L, so the 4th fragment should be ignored
 		List<FragmentedPacketGroup> fragmentedPacketGroups = PacketGroups.mergePackets(packetGroups, 10L, 15L);
 		assertEquals(1, fragmentedPacketGroups.size());
-		FragmentedPacketGroup fragmentedPacketGroup = fragmentedPacketGroups.get(0);
+		FragmentedPacketGroup fragmentedPacketGroup = fragmentedPacketGroups.getFirst();
 		assertEquals(3, fragmentedPacketGroup.getPackets().size());
 		assertEquals(0L, fragmentedPacketGroup.getDateMillis());
 	}
@@ -92,7 +92,7 @@ class PacketGroupsTest {
 		// notice that the master ID ignore distance is 15L, so the 4th fragment should be ignored
 		List<FragmentedPacketGroup> fragmentedPacketGroups = PacketGroups.mergePackets(packetGroups, 10L, 10L);
 		assertEquals(2, fragmentedPacketGroups.size());
-		FragmentedPacketGroup fragmentedPacketGroup1 = fragmentedPacketGroups.get(0);
+		FragmentedPacketGroup fragmentedPacketGroup1 = fragmentedPacketGroups.getFirst();
 		assertEquals(1, fragmentedPacketGroup1.getPackets().size());
 		assertEquals(0L, fragmentedPacketGroup1.getDateMillis());
 
@@ -120,7 +120,7 @@ class PacketGroupsTest {
 		// notice that the master ID ignore distance is 15L, so the 4th fragment should be ignored
 		List<FragmentedPacketGroup> fragmentedPacketGroups = PacketGroups.mergePackets(packetGroups, 10L, 10L);
 		assertEquals(1, fragmentedPacketGroups.size());
-		FragmentedPacketGroup fragmentedPacketGroup1 = fragmentedPacketGroups.get(0);
+		FragmentedPacketGroup fragmentedPacketGroup1 = fragmentedPacketGroups.getFirst();
 		assertEquals(3, fragmentedPacketGroup1.getPackets().size());
 		assertEquals(0L, fragmentedPacketGroup1.getDateMillis());
 	}

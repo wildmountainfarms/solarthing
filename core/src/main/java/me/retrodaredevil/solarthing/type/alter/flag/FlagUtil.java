@@ -18,8 +18,7 @@ public class FlagUtil {
 	public static boolean isFlagActive(Instant now, String flagName, Stream<? extends StoredAlterPacket> packetStream) {
 		return packetStream.anyMatch(storedAlterPacket -> {
 			AlterPacket alterPacket = storedAlterPacket.getPacket();
-			if (alterPacket instanceof FlagPacket) {
-				FlagPacket flagPacket = (FlagPacket) alterPacket;
+			if (alterPacket instanceof FlagPacket flagPacket) {
 				FlagData data = flagPacket.getFlagData();
 				return data.getFlagName().equals(flagName) && data.getActivePeriod().isActive(now);
 			}
@@ -30,8 +29,8 @@ public class FlagUtil {
 		return packetStream
 				.map(storedAlterPacket -> {
 					AlterPacket alterPacket = storedAlterPacket.getPacket();
-					if (alterPacket instanceof FlagPacket) {
-						return (FlagPacket) alterPacket;
+					if (alterPacket instanceof FlagPacket flagPacket) {
+						return flagPacket;
 					}
 					return null;
 				})

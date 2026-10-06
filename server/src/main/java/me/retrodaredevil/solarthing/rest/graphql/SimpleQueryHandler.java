@@ -140,8 +140,8 @@ public class SimpleQueryHandler {
 			throw new DatabaseException("Interrupted!", e);
 		} catch (ExecutionException e) {
 			Throwable cause = e.getCause();
-			if (cause instanceof RuntimeException) {
-				throw (RuntimeException) cause;
+			if (cause instanceof RuntimeException exception) {
+				throw exception;
 			}
 			throw new DatabaseException("Unknown execution exception", e);
 		}

@@ -3,6 +3,7 @@ package me.retrodaredevil.solarthing.packets.collection;
 import org.jspecify.annotations.NullMarked;
 
 import java.time.ZonedDateTime;
+import java.util.concurrent.ThreadLocalRandom;
 
 @NullMarked
 public interface PacketCollectionIdGenerator {
@@ -17,7 +18,7 @@ public interface PacketCollectionIdGenerator {
 			final int minute = zonedDateTime.getMinute();
 			final int second = zonedDateTime.getSecond();
 			return "" + year + "," + month + "," + day + "," +
-					hour + "," + minute + "," + second + "," + Math.random(); // avoid collisions
+					hour + "," + minute + "," + second + "," + ThreadLocalRandom.current().nextDouble(); // avoid collisions
 		};
 
 		private Defaults() { throw new UnsupportedOperationException(); }

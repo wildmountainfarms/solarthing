@@ -45,14 +45,12 @@ public class PacketVoltageProvider implements VoltageProvider {
 			}
 			long dateMillis = requireNonNull(fragmentedPacketGroup.getDateMillis(packet), "Implementation of FragmentedPacketGroup did not provide individual dateMillis! type: " + fragmentedPacketGroup.getClass().getName());
 			if (voltagePacketType == VoltagePacketType.PV) {
-				if (packet instanceof PVCurrentAndVoltage) {
-					PVCurrentAndVoltage pvCurrentAndVoltage = (PVCurrentAndVoltage) packet;
+				if (packet instanceof PVCurrentAndVoltage pvCurrentAndVoltage) {
 					float voltage = pvCurrentAndVoltage.getPVVoltage().floatValue();
 					return new Result(voltage, identifierFragment, dateMillis, false);
 				}
 			} else if (voltagePacketType == VoltagePacketType.BATTERY) {
-				if (packet instanceof BatteryVoltage) {
-					BatteryVoltage batteryVoltagePacket = (BatteryVoltage) packet;
+				if (packet instanceof BatteryVoltage batteryVoltagePacket) {
 					float batteryVoltage = batteryVoltagePacket.getBatteryVoltage();
 					return new Result(batteryVoltage, identifierFragment, dateMillis, false);
 				}

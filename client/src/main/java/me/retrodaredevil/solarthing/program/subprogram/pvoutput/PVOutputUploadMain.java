@@ -155,7 +155,7 @@ public class PVOutputUploadMain {
 					if (!handler.checkPackets(dayStart.toEpochMilli(), packetGroups)) {
 						System.err.println("Unsuccessfully checked packets for " + date);
 						try {
-							System.out.println(MAPPER.writeValueAsString(packetGroups.get(packetGroups.size() - 1)));
+							System.out.println(MAPPER.writeValueAsString(packetGroups.getLast()));
 						} catch (JsonProcessingException e) {
 							e.printStackTrace();
 						}
@@ -192,7 +192,7 @@ public class PVOutputUploadMain {
 			}
 			int endIndex = Math.min(i + 30, addOutputParameters.size());
 			List<AddOutputParameters> parameters = addOutputParameters.subList(i, endIndex);
-			System.out.println("Going to upload from " + parameters.get(0).getOutputDate().toPVOutputString() + " to " + parameters.get(parameters.size() - 1).getOutputDate().toPVOutputString());
+			System.out.println("Going to upload from " + parameters.getFirst().getOutputDate().toPVOutputString() + " to " + parameters.getLast().getOutputDate().toPVOutputString());
 			AddBatchOutputParameters batchOutputParameters = new ImmutableAddBatchOutputParameters(parameters);
 			try {
 				LOGGER.debug("Batch Output parameters as JSON: " + MAPPER.writeValueAsString(batchOutputParameters));
@@ -300,7 +300,7 @@ public class PVOutputUploadMain {
 			if(rawPacketGroups != null){
 				List<FragmentedPacketGroup> packetGroups = PacketUtil.getPacketGroups(options.getSourceId(), options.getDefaultInstanceOptions(), rawPacketGroups);
 				if (packetGroups != null) {
-					FragmentedPacketGroup latestPacketGroup = packetGroups.get(packetGroups.size() - 1);
+					FragmentedPacketGroup latestPacketGroup = packetGroups.getLast();
 					if (latestPacketGroup.getDateMillis() < now - 5 * 60 * 1000) {
 						LOGGER.warn("The last packet is more than 5 minutes in the past! now=" + now + " packet date=" + latestPacketGroup.getDateMillis());
 						try {

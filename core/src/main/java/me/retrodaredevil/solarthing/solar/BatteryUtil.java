@@ -33,8 +33,8 @@ public final class BatteryUtil {
 		float sum = 0;
 		int count = 0;
 		for (Packet packet : packetGroup.getPackets()) {
-			if (packet instanceof BatteryVoltage) {
-				sum += ((BatteryVoltage) packet).getBatteryVoltage();
+			if (packet instanceof BatteryVoltage voltage) {
+				sum += voltage.getBatteryVoltage();
 				count++;
 			}
 		}

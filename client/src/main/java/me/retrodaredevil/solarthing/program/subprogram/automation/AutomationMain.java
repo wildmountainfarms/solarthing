@@ -172,7 +172,7 @@ public final class AutomationMain {
 
 			List<FragmentedPacketGroup> statusPacketGroups = PacketUtil.getPacketGroups(options.getSourceId(), options.getDefaultInstanceOptions(), cachedPackets);
 			if (statusPacketGroups != null) {
-				FragmentedPacketGroup statusPacketGroup = statusPacketGroups.get(statusPacketGroups.size() - 1);
+				FragmentedPacketGroup statusPacketGroup = statusPacketGroups.getLast();
 				latestPacketGroupReference.set(statusPacketGroup);
 			}
 			for (Iterator<ActionNodeEntry> iterator = actionNodeEntries.iterator(); iterator.hasNext(); ) {

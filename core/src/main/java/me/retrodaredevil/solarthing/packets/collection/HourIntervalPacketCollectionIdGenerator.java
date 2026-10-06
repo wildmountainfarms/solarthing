@@ -62,7 +62,7 @@ public final class HourIntervalPacketCollectionIdGenerator implements PacketColl
 		} else {
 			String r = String.format("%d,%02d,%02d,%02d,(%0" + uniqueIdsString.length() + "d/" + uniqueIdsString + ")", year, month, day, hour, progressNumber);
 			if (uniqueCode != null) {
-				r += String.format(",[%08x]", uniqueCode);
+				r += ",[%08x]".formatted(uniqueCode);
 			}
 			return r;
 		}

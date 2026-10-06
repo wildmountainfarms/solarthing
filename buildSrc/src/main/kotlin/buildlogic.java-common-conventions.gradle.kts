@@ -233,7 +233,11 @@ rewrite {
 	// https://docs.openrewrite.org/recipes/java/shortenfullyqualifiedtypereferences
 	activeRecipe("org.openrewrite.java.ShortenFullyQualifiedTypeReferences")
 
-//	activeRecipe("org.openrewrite.java.migrate.util.SequencedCollection") // TODO this was enabled, but it won't compile for all language versions
+	// choose a subset of https://docs.openrewrite.org/recipes/java/migrate/upgradetojava25
+	activeRecipe("org.openrewrite.java.migrate.UpgradeToJava21")
+	activeRecipe("org.openrewrite.java.migrate.lang.MigrateProcessWaitForDuration")
+
+	activeRecipe("org.openrewrite.java.migrate.util.SequencedCollection")
 	activeRecipe("org.openrewrite.java.migrate.lang.SwitchCaseAssignmentsToSwitchExpression")
 	activeRecipe("org.openrewrite.java.migrate.lang.SwitchCaseReturnsToSwitchExpression")
 	activeRecipe("org.openrewrite.java.jspecify.MigrateToJSpecify") // probably not necessary, but will point out "wrong" nullability imports

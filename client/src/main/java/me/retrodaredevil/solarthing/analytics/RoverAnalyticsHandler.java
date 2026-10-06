@@ -24,8 +24,7 @@ public class RoverAnalyticsHandler implements PacketHandler {
 	}
 	private void send(PacketCollection packetCollection) {
 		for (Packet packet : packetCollection.getPackets()) {
-			if (packet instanceof RoverStatusPacket) {
-				RoverStatusPacket rover = (RoverStatusPacket) packet;
+			if (packet instanceof RoverStatusPacket rover) {
 				String data = "(" + rover.getNumber() + ") " + rover.getProductModel() + "," + rover.getRatedChargingCurrentValue();
 				if (!rover.supportsMesLoad()) {
 					data += ",no MES Load";

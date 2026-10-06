@@ -32,8 +32,8 @@ public final class IdentifierUtil {
 					if (fragmentId != desiredFragmentId) {
 						continue;
 					}
-					if (packet instanceof Identifiable) {
-						Identifier identifier = ((Identifiable) packet).getIdentifier();
+					if (packet instanceof Identifiable identifiable) {
+						Identifier identifier = identifiable.getIdentifier();
 						if (desiredIdentifierRepresentation.equals(identifier.getRepresentation())) {
 							continue outerLoop;
 						}

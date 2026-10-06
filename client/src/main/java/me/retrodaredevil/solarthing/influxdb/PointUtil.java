@@ -22,16 +22,14 @@ public final class PointUtil {
 
 	public static Map<String, String> getTags(Packet packet) {
 		Map<String, String> r = new HashMap<>();
-		if(packet instanceof Identifiable){
-			Identifier identifier = ((Identifiable) packet).getIdentifier();
+		if(packet instanceof Identifiable identifiable){
+			Identifier identifier = identifiable.getIdentifier();
 			r.put("identifier", identifier.getRepresentation());
-			if(identifier instanceof SupplementaryIdentifier){
-				SupplementaryIdentifier supplementaryIdentifier = (SupplementaryIdentifier) identifier;
+			if(identifier instanceof SupplementaryIdentifier supplementaryIdentifier){
 				r.put("identifier_supplementaryTo", supplementaryIdentifier.getSupplementaryTo().getRepresentation());
 			}
 		}
-		if(packet instanceof DocumentedPacket){
-			DocumentedPacket documentedPacket = (DocumentedPacket) packet;
+		if(packet instanceof DocumentedPacket documentedPacket){
 			DocumentedPacketType type = documentedPacket.getPacketType();
 			r.put("packetType", type.toString());
 		}

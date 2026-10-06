@@ -13,107 +13,107 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public class RoverElitePacketTest {
 	@Test
 	void test() throws JsonProcessingException {
-		String json = "{\n" +
-				"  \n" +
-				"\"packetType\" : \"RENOGY_ROVER_STATUS\",\n" +
-				"  \"maxVoltage\" : 24,\n" +
-				"  \"ratedChargingCurrent\" : 20,\n" +
-				"  \"ratedDischargingCurrent\" : 20,\n" +
-				"  \"productType\" : 0,\n" +
-				"  \"productModelEncoded\" : \"UkNDMjBSVlJFLUcxICAgIA==\",\n" +
-				"  \"softwareVersion\" : 0,\n" +
-				"  \"hardwareVersionString\" : \"V00.00.00\",\n" +
-				"  \"productSerialNumber\" : 0,\n" +
-				"  \"controllerDeviceAddress\" : 1,\n" +
-				"  \"batteryCapacitySOC\" : 100,\n" +
-				"  \"batteryVoltage\" : 13.8,\n" +
-				"  \"chargingCurrent\" : 0.3,\n" +
-				"  \"controllerTemperatureRaw\" : 26,\n" +
-				"  \"batteryTemperatureRaw\" : 20,\n" +
-				"  \"loadVoltage\" : 0.0,\n" +
-				"  \"loadCurrent\" : 0.0,\n" +
-				"  \"loadPower\" : 0,\n" +
-				"  \"inputVoltage\" : 18.5,\n" +
-				"  \"pvCurrent\" : 0.21,\n" +
-				"  \"chargingPower\" : 4,\n" +
-				"  \"dailyMinBatteryVoltage\" : 12.5,\n" +
-				"  \"dailyMaxBatteryVoltage\" : 14.3,\n" +
-				"  \"dailyMaxChargingCurrent\" : 3.6,\n" +
-				"  \"dailyMaxDischargingCurrent\" : 0.0,\n" +
-				"  \"dailyMaxChargingPower\" : 40,\n" +
-				"  \"dailyMaxDischargingPower\" : 0,\n" +
-				"  \"dailyAH\" : 10,\n" +
-				"  \"dailyAHDischarging\" : 0,\n" +
-				"  \"dailyKWH\" : 0.131,\n" +
-				"  \"dailyKWHConsumption\" : 0.0,\n" +
-				"  \"operatingDaysCount\" : 7,\n" +
-				"  \"batteryOverDischargesCount\" : 0,\n" +
-				"  \"batteryFullChargesCount\" : 0,\n" +
-				"  \"chargingAmpHoursOfBatteryCount\" : 18,\n" +
-				"  \"dischargingAmpHoursOfBatteryCount\" : 0,\n" +
-				"  \"cumulativeKWH\" : 0.219,\n" +
-				"  \"cumulativeKWHConsumption\" : 0.0,\n" +
-				"  \"streetLightValue\" : 0,\n" +
-				"  \"chargingState\" : 5,\n" +
-				"  \"errorMode\" : 0,\n" +
-				"  \"nominalBatteryCapacity\" : 200,\n" +
-				"  \"systemVoltageSetting\" : 255,\n" +
-				"  \"recognizedVoltage\" : 12,\n" +
-				"  \"batteryType\" : 3,\n" +
-				"  \"overVoltageThresholdRaw\" : 160,\n" +
-				"  \"chargingVoltageLimitRaw\" : 155,\n" +
-				"  \"equalizingChargingVoltageRaw\" : 152,\n" +
-				"  \"boostChargingVoltageRaw\" : 142,\n" +
-				"  \"floatingChargingVoltageRaw\" : 138,\n" +
-				"  \"boostChargingRecoveryVoltageRaw\" : 132,\n" +
-				"  \"overDischargeRecoveryVoltageRaw\" : 126,\n" +
-				"  \"underVoltageWarningLevelRaw\" : 120,\n" +
-				"  \"overDischargeVoltageRaw\" : 111,\n" +
-				"  \"dischargingLimitVoltageRaw\" : 106,\n" +
-				"  \"endOfChargeSOC\" : 100,\n" +
-				"  \"endOfDischargeSOC\" : 50,\n" +
-				"  \"overDischargeTimeDelaySeconds\" : 5,\n" +
-				"  \"equalizingChargingTimeRaw\" : 0,\n" +
-				"  \"boostChargingTimeRaw\" : 120,\n" +
-				"  \"equalizingChargingIntervalRaw\" : 0,\n" +
-				"  \"temperatureCompensationFactorRaw\" : 3,\n" +
-				"  \"operatingStage1\" : {\n" +
-				"    \"durationHours\" : 0,\n" +
-				"    \"operatingPowerPercentage\" : 0\n" +
-				"  },\n" +
-				"  \"operatingStage2\" : {\n" +
-				"    \"durationHours\" : 0,\n" +
-				"    \"operatingPowerPercentage\" : 0\n" +
-				"  },\n" +
-				"  \"operatingStage3\" : {\n" +
-				"    \"durationHours\" : 0,\n" +
-				"    \"operatingPowerPercentage\" : 0\n" +
-				"  },\n" +
-				"  \"operatingMorningOn\" : {\n" +
-				"    \"durationHours\" : 0,\n" +
-				"    \"operatingPowerPercentage\" : 0\n" +
-				"  },\n" +
-				"  \"loadWorkingMode\" : 0,\n" +
-				"  \"lightControlDelayMinutes\" : 0,\n" +
-				"  \"lightControlVoltage\" : 0,\n" +
-				"  \"ledLoadCurrentSettingRaw\" : 0,\n" +
-				"  \"specialPowerControlE021Raw\" : 0,\n" +
-				"  \"sensed1\" : null,\n" +
-				"  \"sensed2\" : null,\n" +
-				"  \"sensed3\" : null,\n" +
-				"  \"sensingTimeDelayRaw\" : null,\n" +
-				"  \"ledLoadCurrentRaw\" : null,\n" +
-				"  \"specialPowerControlE02DRaw\" : null,\n" +
-				"  \"productModelString\" : \"RCC20RVRE-G1\",\n" +
-				"  \"softwareVersionString\" : \"V00.00.00\",\n" +
-				"  \"hardwareVersion\" : 0,\n" +
-				"  \"streetLightBrightness\" : 0,\n" +
-				"  \"streetLightOn\" : false,\n" +
-				"  \"chargingStateName\" : \"Float\",\n" +
-				"  \"errors\" : \"\",\n" +
-				"  \"batteryTypeName\" : \"gel\",\n" +
-				"  \"loadWorkingModeName\" : \"LIGHT_CONTROL\"\n" +
-				"}";
+		String json = """
+				{
+					"packetType" : "RENOGY_ROVER_STATUS",
+					"maxVoltage" : 24,
+					"ratedChargingCurrent" : 20,
+					"ratedDischargingCurrent" : 20,
+					"productType" : 0,
+					"productModelEncoded" : "UkNDMjBSVlJFLUcxICAgIA==",
+					"softwareVersion" : 0,
+					"hardwareVersionString" : "V00.00.00",
+					"productSerialNumber" : 0,
+					"controllerDeviceAddress" : 1,
+					"batteryCapacitySOC" : 100,
+					"batteryVoltage" : 13.8,
+					"chargingCurrent" : 0.3,
+					"controllerTemperatureRaw" : 26,
+					"batteryTemperatureRaw" : 20,
+					"loadVoltage" : 0.0,
+					"loadCurrent" : 0.0,
+					"loadPower" : 0,
+					"inputVoltage" : 18.5,
+					"pvCurrent" : 0.21,
+					"chargingPower" : 4,
+					"dailyMinBatteryVoltage" : 12.5,
+					"dailyMaxBatteryVoltage" : 14.3,
+					"dailyMaxChargingCurrent" : 3.6,
+					"dailyMaxDischargingCurrent" : 0.0,
+					"dailyMaxChargingPower" : 40,
+					"dailyMaxDischargingPower" : 0,
+					"dailyAH" : 10,
+					"dailyAHDischarging" : 0,
+					"dailyKWH" : 0.131,
+					"dailyKWHConsumption" : 0.0,
+					"operatingDaysCount" : 7,
+					"batteryOverDischargesCount" : 0,
+					"batteryFullChargesCount" : 0,
+					"chargingAmpHoursOfBatteryCount" : 18,
+					"dischargingAmpHoursOfBatteryCount" : 0,
+					"cumulativeKWH" : 0.219,
+					"cumulativeKWHConsumption" : 0.0,
+					"streetLightValue" : 0,
+					"chargingState" : 5,
+					"errorMode" : 0,
+					"nominalBatteryCapacity" : 200,
+					"systemVoltageSetting" : 255,
+					"recognizedVoltage" : 12,
+					"batteryType" : 3,
+					"overVoltageThresholdRaw" : 160,
+					"chargingVoltageLimitRaw" : 155,
+					"equalizingChargingVoltageRaw" : 152,
+					"boostChargingVoltageRaw" : 142,
+					"floatingChargingVoltageRaw" : 138,
+					"boostChargingRecoveryVoltageRaw" : 132,
+					"overDischargeRecoveryVoltageRaw" : 126,
+					"underVoltageWarningLevelRaw" : 120,
+					"overDischargeVoltageRaw" : 111,
+					"dischargingLimitVoltageRaw" : 106,
+					"endOfChargeSOC" : 100,
+					"endOfDischargeSOC" : 50,
+					"overDischargeTimeDelaySeconds" : 5,
+					"equalizingChargingTimeRaw" : 0,
+					"boostChargingTimeRaw" : 120,
+					"equalizingChargingIntervalRaw" : 0,
+					"temperatureCompensationFactorRaw" : 3,
+					"operatingStage1" : {
+						"durationHours" : 0,
+						"operatingPowerPercentage" : 0
+					},
+					"operatingStage2" : {
+						"durationHours" : 0,
+						"operatingPowerPercentage" : 0
+					},
+					"operatingStage3" : {
+						"durationHours" : 0,
+						"operatingPowerPercentage" : 0
+					},
+					"operatingMorningOn" : {
+						"durationHours" : 0,
+						"operatingPowerPercentage" : 0
+					},
+					"loadWorkingMode" : 0,
+					"lightControlDelayMinutes" : 0,
+					"lightControlVoltage" : 0,
+					"ledLoadCurrentSettingRaw" : 0,
+					"specialPowerControlE021Raw" : 0,
+					"sensed1" : null,
+					"sensed2" : null,
+					"sensed3" : null,
+					"sensingTimeDelayRaw" : null,
+					"ledLoadCurrentRaw" : null,
+					"specialPowerControlE02DRaw" : null,
+					"productModelString" : "RCC20RVRE-G1",
+					"softwareVersionString" : "V00.00.00",
+					"hardwareVersion" : 0,
+					"streetLightBrightness" : 0,
+					"streetLightOn" : false,
+					"chargingStateName" : "Float",
+					"errors" : "",
+					"batteryTypeName" : "gel",
+					"loadWorkingModeName" : "LIGHT_CONTROL"
+				}""";
 		ObjectMapper mapper = JacksonUtil.defaultMapper();
 		RoverStatusPacket roverStatusPacket = mapper.readValue(json, RoverStatusPacket.class);
 		assertNull(roverStatusPacket.getSensed1());

@@ -69,8 +69,8 @@ public final class AnnotationUtil {
 			return annotation;
 		}
 		for (AnnotatedElement element : typedElement.getElements()) {
-			if (element instanceof Method) {
-				T elementAnnotation = getAnnotation(annotationClass, (Method) element);
+			if (element instanceof Method method) {
+				T elementAnnotation = getAnnotation(annotationClass, method);
 				if (elementAnnotation != null) {
 					return elementAnnotation;
 				}

@@ -13,18 +13,18 @@ public class PzemTest {
 	@Test
 	void test() throws JsonProcessingException {
 
-		String json = "{\n" +
-				"  \n" +
-				"\"packetType\" : \"PZEM_SHUNT\",\n" +
-				"  \"dataId\" : 1,\n" +
-				"  \"voltageValueRaw\" : 25,\n" +
-				"  \"currentValueRaw\" : 4,\n" +
-				"  \"powerValueRaw\" : 100,\n" +
-				"  \"energyValueRaw\" : 123,\n" +
-				"  \"highVoltageAlarmStatus\" : 0,\n" +
-				"  \"lowVoltageAlarmStatus\" : 0,\n" +
-				"  \"modbusAddress\" : 1\n" +
-				"}";
+		String json = """
+				{
+					"packetType" : "PZEM_SHUNT",
+					"dataId" : 1,
+					"voltageValueRaw" : 25,
+					"currentValueRaw" : 4,
+					"powerValueRaw" : 100,
+					"energyValueRaw" : 123,
+					"highVoltageAlarmStatus" : 0,
+					"lowVoltageAlarmStatus" : 0,
+					"modbusAddress" : 1
+				}""";
 		ObjectMapper mapper = JacksonUtil.defaultMapper();
 		PzemShuntStatusPacket parsedPacket = mapper.readValue(json, PzemShuntStatusPacket.class);
 		String generatedJson = mapper.writeValueAsString(parsedPacket);

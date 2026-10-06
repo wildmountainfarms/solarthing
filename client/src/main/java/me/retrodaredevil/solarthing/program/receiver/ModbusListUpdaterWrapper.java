@@ -58,7 +58,7 @@ public class ModbusListUpdaterWrapper implements PacketListReceiver {
 			} else {
 				builder.append(' '); // separate each byte with space
 			}
-			builder.append(String.format("%02X", element & 0xFF));
+			builder.append("%02X".formatted(element & 0xFF));
 		}
 		return builder.toString();
 	}
@@ -100,16 +100,15 @@ public class ModbusListUpdaterWrapper implements PacketListReceiver {
 				} else {
 					LOGGER.error("Got a modbus timeout. Message: " + e.getMessage()); // we don't need to log the stacktrace, so the exception is not logged
 				}
-			} else if (e instanceof ParsedResponseException) {
+			} else if (e instanceof ParsedResponseException parsedResponseException) {
 				// we don't need to log the stacktrace here as long as we log the message of the error
-				ParsedResponseException parsedResponseException = (ParsedResponseException) e;
 				ModbusMessage message = parsedResponseException.getResponse();
-				String hexFunctionCode = String.format("%02X", message.getFunctionCode());
+				String hexFunctionCode = "%02X".formatted(message.getFunctionCode());
 				LOGGER.info("Communication with device working well. Got this response back: function code=0x" + hexFunctionCode + " data='" + dataToSplitHex(message.getByteData()) + "' feel free to open issue at https://github.com/wildmountainfarms/solarthing/issues/");
 				LOGGER.error("Modbus parsed response exception: " + e.getMessage());
 				if (logType == LogType.ROVER) {
-					if (e instanceof ErrorCodeException) {
-						int code = ((ErrorCodeException) e).getExceptionCode();
+					if (e instanceof ErrorCodeException exception) {
+						int code = exception.getExceptionCode();
 						ExceptionCodeError error = ExceptionCodeError.fromCodeOrNull(code);
 						if (error == ExceptionCodeError.READ_EXCEPTION_UNSUPPORTED_FUNCTION_CODE) {
 							LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "Got unsupported function code error. This should never happen.");
@@ -122,8 +121,8 @@ public class ModbusListUpdaterWrapper implements PacketListReceiver {
 						}
 					}
 				}
-			} else if (e instanceof RawResponseException) {
-				byte[] data = ((RawResponseException) e).getRawData();
+			} else if (e instanceof RawResponseException exception) {
+				byte[] data = exception.getRawData();
 				LOGGER.info("Got part of a response back. (Maybe timed out halfway through?) data='" + dataToSplitHex(data) + "' Feel free to open an issue at https://github.com/wildmountainfarms/solarthing/issues/", e);
 			} else {
 				LOGGER.error("Modbus exception", e);

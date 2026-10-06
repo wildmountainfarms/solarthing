@@ -56,8 +56,7 @@ public class ActionNodeDataReceiver implements PacketGroupReceiver {
 	@Override
 	public void receivePacketGroup(String sender, TargetPacketGroup packetGroup) {
 		for (Packet packet : packetGroup.getPackets()) {
-			if (packet instanceof CommandOpenPacket) {
-				CommandOpenPacket commandOpenPacket = (CommandOpenPacket) packet;
+			if (packet instanceof CommandOpenPacket commandOpenPacket) {
 				if (commandOpenPacket.getPacketType() == CommandOpenPacketType.REQUEST_COMMAND) {
 					RequestCommandPacket requestCommand = (RequestCommandPacket) commandOpenPacket;
 

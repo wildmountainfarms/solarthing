@@ -32,13 +32,15 @@ public final class SolarMain {
 
 	private static int determineMainSubprogram(String[] args) {
 		if (args.length == 0) {
-			System.err.println("Usage: solarthing [command] [args]\n\n" +
-					"Commands:\n" +
-					"  run [options]\n" +
-					"  version\n" +
-					"  check --port <serial port> [--type <type>]\n" +
-					"  action [file]\n" +
-					"  analyze [options]");
+			System.err.println("""
+					Usage: solarthing [command] [args]
+					
+					Commands:
+					  run [options]
+					  version
+					  check --port <serial port> [--type <type>]
+					  action [file]
+					  analyze [options]""");
 			return SolarThingConstants.EXIT_CODE_INVALID_OPTIONS;
 		}
 		String firstArg = args[0];

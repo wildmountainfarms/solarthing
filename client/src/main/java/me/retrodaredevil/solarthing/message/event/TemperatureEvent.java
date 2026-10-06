@@ -55,8 +55,7 @@ public class TemperatureEvent implements MessageEvent {
 			}
 		}
 		for (Packet packet : current.getPackets()) {
-			if (packet instanceof DualTemperature) {
-				DualTemperature dualTemperature = (DualTemperature) packet;
+			if (packet instanceof DualTemperature dualTemperature) {
 				if (temperatureType == TemperatureType.BATTERY) {
 					if (check(sender, dualTemperature.getBatteryTemperatureCelsius().floatValue())) {
 						return;

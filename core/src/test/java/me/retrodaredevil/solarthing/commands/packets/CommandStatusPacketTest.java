@@ -19,7 +19,7 @@ class CommandStatusPacketTest {
 	@Test
 	void test() throws JsonProcessingException {
 		AvailableCommandsPacket packet = new ImmutableAvailableCommandsPacket(Collections.singletonList(new CommandInfo("asdf", "Asdf", "Cool")));
-		assertEquals("asdf", packet.getCommandInfoList().get(0).getName());
+		assertEquals("asdf", packet.getCommandInfoList().getFirst().getName());
 		assertEquals(1, packet.getCommandInfoList().size());
 		PacketTestUtil.testJson(packet, AvailableCommandsPacket.class);
 		PacketTestUtil.testJson(packet, CommandStatusPacket.class);

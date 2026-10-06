@@ -30,10 +30,10 @@ public class AttachToCommandEnvironmentUpdater implements EnvironmentUpdater {
 
 	@Override
 	public void updateInjectEnvironment(ExecutionReason executionReason, InjectEnvironment.Builder injectEnvironmentBuilder) {
-		if (executionReason instanceof OpenSourceExecutionReason) {
-			Packet packet = ((OpenSourceExecutionReason) executionReason).getSource().getPacket();
-			if (packet instanceof RequestCommandPacket) {
-				String commandName = ((RequestCommandPacket) packet).getCommandName();
+		if (executionReason instanceof OpenSourceExecutionReason reason) {
+			Packet packet = reason.getSource().getPacket();
+			if (packet instanceof RequestCommandPacket commandPacket) {
+				String commandName = commandPacket.getCommandName();
 				if (shouldAttachToCommandPredicate.test(commandName)) {
 					for (Object environment : environmentsToAdd) {
 						injectEnvironmentBuilder.add(environment);

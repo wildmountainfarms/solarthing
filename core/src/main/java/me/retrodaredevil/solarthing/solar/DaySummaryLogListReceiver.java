@@ -26,8 +26,7 @@ public class DaySummaryLogListReceiver implements PacketListReceiver {
 	@Override
 	public void receive(List<Packet> packets) {
 		for (Packet packet : packets) {
-			if (packet instanceof DailyChargeController) {
-				DailyChargeController controller = (DailyChargeController) packet;
+			if (packet instanceof DailyChargeController controller) {
 				DailyChargeController previous = controllerMap.get(controller.getIdentifier());
 				controllerMap.put(controller.getIdentifier(), controller);
 				if (previous != null && controller.isNewDay(previous)) {

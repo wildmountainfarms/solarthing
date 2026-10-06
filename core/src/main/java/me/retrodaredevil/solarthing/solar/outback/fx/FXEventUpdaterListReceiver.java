@@ -29,8 +29,7 @@ public class FXEventUpdaterListReceiver implements PacketListReceiver {
 	@Override
 	public void receive(List<Packet> packets) {
 		for(Packet packet : packets){
-			if(packet instanceof FXStatusPacket){
-				FXStatusPacket fx = (FXStatusPacket) packet;
+			if(packet instanceof FXStatusPacket fx){
 				FXStatusPacket previous = previousPacketMap.get(fx.getIdentifier());
 				previousPacketMap.put(fx.getIdentifier(), fx);
 				Integer warningIgnoreValue = fxWarningIgnoreMap.get(fx.getAddress());

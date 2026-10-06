@@ -66,8 +66,8 @@ public final class TracerIdentifier implements NumberedIdentifier, Comparable<Id
 
 	@Override
 	public int compareTo(Identifier o) {
-		if(o instanceof TracerIdentifier){
-			return Integer.compare(number, ((TracerIdentifier) o).number);
+		if(o instanceof TracerIdentifier identifier){
+			return Integer.compare(number, identifier.number);
 		}
 		if(o instanceof RoverIdentifier){
 			return 1;

@@ -74,8 +74,8 @@ public final class RoverIdentifier implements NumberedIdentifier, Comparable<Ide
 
 	@Override
 	public int compareTo(Identifier o) {
-		if(o instanceof RoverIdentifier){
-			return Integer.compare(number, ((RoverIdentifier) o).number);
+		if(o instanceof RoverIdentifier identifier){
+			return Integer.compare(number, identifier.number);
 		}
 		if(o instanceof OutbackIdentifier){
 			return 1; // renogy devices show up after outback devices

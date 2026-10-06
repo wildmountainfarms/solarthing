@@ -24,34 +24,21 @@ public final class PowerUtil {
 		Integer generatingW = null;
 		Integer usingW = null;
 		for(Packet packet : packetGroup.getPackets()){
-			if(packet instanceof MXStatusPacket){
+			if(packet instanceof MXStatusPacket mx){
 				if (generatingW == null) {
 					generatingW = 0;
 				}
 				if (generatingType == GeneratingType.PV_ONLY) {
-					generatingW += ((MXStatusPacket) packet).getPVWattage();
+					generatingW += mx.getPVWattage();
 				} else if (generatingType == GeneratingType.TOTAL_CHARGING) {
-					generatingW += ((MXStatusPacket) packet).getChargingPower().intValue();
+					generatingW += mx.getChargingPower().intValue();
 				} else throw new AssertionError("Unknown generatingType: " + generatingType);
-			} else if(packet instanceof FXStatusPacket){
+			} else if(packet instanceof FXStatusPacket fx){
 				if (usingW == null) {
 					usingW = 0;
 				}
-				usingW += ((FXStatusPacket) packet).getPowerUsageWattage();
-			} else if(packet instanceof RoverStatusPacket){
-				if (generatingW == null) {
-					generatingW = 0;
-				}
-				if (usingW == null) {
-					usingW = 0;
-				}
-				if (generatingType == GeneratingType.PV_ONLY) {
-					generatingW += ((RoverStatusPacket) packet).getPVWattage().intValue();
-				} else if (generatingType == GeneratingType.TOTAL_CHARGING) {
-					generatingW += ((RoverStatusPacket) packet).getChargingPower();
-				} else throw new AssertionError("Unknown generatingType: " + generatingType);
-				usingW += ((RoverStatusPacket) packet).getLoadPower();
-			} else if (packet instanceof TracerStatusPacket) {
+				usingW += fx.getPowerUsageWattage();
+			} else if(packet instanceof RoverStatusPacket rover){
 				if (generatingW == null) {
 					generatingW = 0;
 				}
@@ -59,11 +46,24 @@ public final class PowerUtil {
 					usingW = 0;
 				}
 				if (generatingType == GeneratingType.PV_ONLY) {
-					generatingW += ((TracerStatusPacket) packet).getPVWattage().intValue();
+					generatingW += rover.getPVWattage().intValue();
 				} else if (generatingType == GeneratingType.TOTAL_CHARGING) {
-					generatingW += ((TracerStatusPacket) packet).getChargingPower().intValue();
+					generatingW += rover.getChargingPower();
 				} else throw new AssertionError("Unknown generatingType: " + generatingType);
-				usingW += (int) ((TracerStatusPacket) packet).getLoadPower();
+				usingW += rover.getLoadPower();
+			} else if (packet instanceof TracerStatusPacket tracer) {
+				if (generatingW == null) {
+					generatingW = 0;
+				}
+				if (usingW == null) {
+					usingW = 0;
+				}
+				if (generatingType == GeneratingType.PV_ONLY) {
+					generatingW += tracer.getPVWattage().intValue();
+				} else if (generatingType == GeneratingType.TOTAL_CHARGING) {
+					generatingW += tracer.getChargingPower().intValue();
+				} else throw new AssertionError("Unknown generatingType: " + generatingType);
+				usingW += (int) tracer.getLoadPower();
 			}
 		}
 		return new Data(generatingW, usingW);

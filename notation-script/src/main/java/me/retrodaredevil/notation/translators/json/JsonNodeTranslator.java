@@ -46,7 +46,7 @@ public class JsonNodeTranslator implements NodeTranslator<JsonNode> {
 		if (arguments.size() != 1) {
 			throw new IllegalArgumentException("Invalid number of arguments for racer");
 		}
-		Argument argument = arguments.get(0);
+		Argument argument = arguments.getFirst();
 		if (!(argument instanceof Node)) {
 			throw new IllegalArgumentException("Argument should be a node for racer");
 		}
@@ -84,22 +84,22 @@ public class JsonNodeTranslator implements NodeTranslator<JsonNode> {
 	}
 
 	private JsonNode translateArgument(Argument argument) {
-		if (argument instanceof Node) {
-			return translate((Node) argument);
-		} else if (argument instanceof ArrayArgument) {
+		if (argument instanceof Node node) {
+			return translate(node);
+		} else if (argument instanceof ArrayArgument arrayArgument) {
 			return new ArrayNode(
 					JsonNodeFactory.instance,
-					((ArrayArgument) argument).getValues().stream()
+					arrayArgument.getValues().stream()
 							.map(this::translateArgument)
 							.collect(Collectors.toList())
 			);
-		} else if (argument instanceof NumberArgument) {
-			Number value = ((NumberArgument) argument).getValue();
-			return new DecimalNode(value instanceof BigDecimal ? (BigDecimal) value : BigDecimal.valueOf(value.doubleValue()));
-		} else if (argument instanceof BooleanArgument) {
-			return BooleanNode.valueOf(((BooleanArgument) argument).getValue());
-		} else if (argument instanceof StringArgument) {
-			String rawValue = ((StringArgument) argument).getValue();
+		} else if (argument instanceof NumberArgument numberArgument) {
+			Number value = numberArgument.getValue();
+			return new DecimalNode(value instanceof BigDecimal bd ? bd : BigDecimal.valueOf(value.doubleValue()));
+		} else if (argument instanceof BooleanArgument booleanArgument) {
+			return BooleanNode.valueOf(booleanArgument.getValue());
+		} else if (argument instanceof StringArgument stringArgument) {
+			String rawValue = stringArgument.getValue();
 			return TextNode.valueOf(rawValue);
 		} else throw new AssertionError("Unknown argument type: " + argument.getClass().getName());
 	}
@@ -113,8 +113,7 @@ public class JsonNodeTranslator implements NodeTranslator<JsonNode> {
 			} else if (config == CustomNodeConfiguration.DATA) {
 				return translateData(node);
 			} else throw new AssertionError("Unknown config: " + config);
-		} else if (config instanceof SimpleNodeConfiguration) {
-			SimpleNodeConfiguration simpleNodeConfiguration = (SimpleNodeConfiguration) config;
+		} else if (config instanceof SimpleNodeConfiguration simpleNodeConfiguration) {
 			ObjectNode objectNode = new ObjectNode(JsonNodeFactory.instance);
 			String typeName = simpleNodeConfiguration.getIdentifierFieldValueOverride() == null
 					? node.getIdentifier()

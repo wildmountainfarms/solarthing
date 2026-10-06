@@ -14,8 +14,7 @@ public enum DocumentedMeasurementPacketPointCreator implements PacketPointCreato
 	INSTANCE;
 	@Override
 	public Point.Builder createBuilder(Packet packet) {
-		if(packet instanceof DocumentedPacket){
-			DocumentedPacket documentedPacket = (DocumentedPacket) packet;
+		if(packet instanceof DocumentedPacket documentedPacket){
 			DocumentedPacketType type = documentedPacket.getPacketType();
 			return apply(Point.measurement(type.toString()), packet);
 		}

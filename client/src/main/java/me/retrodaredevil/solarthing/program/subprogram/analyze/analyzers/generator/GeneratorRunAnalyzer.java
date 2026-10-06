@@ -41,8 +41,8 @@ public class GeneratorRunAnalyzer implements Analyzer<GeneratorRunEntry> {
 	 * @return The {@link GeneratorRunEntry} created from the passed arguments
 	 */
 	private GeneratorRunEntry analyzeRow(List<InstancePacketGroup> packets) {
-		var first = packets.get(0);
-		var last = packets.get(packets.size() - 1);
+		var first = packets.getFirst();
+		var last = packets.getLast();
 		Instant startTime = Instant.ofEpochMilli(first.getDateMillis());
 		Instant endTime = Instant.ofEpochMilli(last.getDateMillis());
 		return new GeneratorRunEntry(
@@ -82,7 +82,7 @@ public class GeneratorRunAnalyzer implements Analyzer<GeneratorRunEntry> {
 				System.err.println("[warning] No fx status packets found for dateMillis: " + dateMillis);
 				continue;
 			}
-			FXStatusPacket fx1 = fxStatusPackets.get(0);
+			FXStatusPacket fx1 = fxStatusPackets.getFirst();
 			boolean generatorOn = fx1.getACMode() != ACMode.NO_AC;
 
 			boolean isInsideTimeRange = dateMillis >= processingStartMillis && dateMillis < processingEndMillis;

@@ -30,10 +30,10 @@ public class NetChargeExpressionNode implements ExpressionNode {
 			}
 			double totalWatts = 0;
 			for (Packet packet : packetGroup.getPackets()) {
-				if (packet instanceof FXStatusPacket) {
-					totalWatts -= ((FXStatusPacket) packet).getInverterWattage();
-				} else if (packet instanceof BasicChargeController) {
-					totalWatts += ((BasicChargeController) packet).getChargingPower().doubleValue();
+				if (packet instanceof FXStatusPacket fx) {
+					totalWatts -= fx.getInverterWattage();
+				} else if (packet instanceof BasicChargeController controller) {
+					totalWatts += controller.getChargingPower().doubleValue();
 				}
 			}
 			return Collections.singletonList(NumericExpressionResult.create(totalWatts));

@@ -113,7 +113,7 @@ public class FlagCommandChatBotHandler implements ChatBotHandler {
 		return packets.stream()
 				.filter(versionedPacket -> {
 					AlterPacket alterPacket = versionedPacket.getPacket().getPacket();
-					return alterPacket instanceof FlagPacket && ((FlagPacket) alterPacket).getFlagData().getFlagName().equals(flagName);
+					return alterPacket instanceof FlagPacket flagPacket && flagPacket.getFlagData().getFlagName().equals(flagName);
 				})
 				.collect(Collectors.toList());
 	}
@@ -126,7 +126,7 @@ public class FlagCommandChatBotHandler implements ChatBotHandler {
 		return packets.stream()
 				.filter(versionedPacket -> {
 					AlterPacket alterPacket = versionedPacket.getPacket().getPacket();
-					return alterPacket instanceof FlagAliasPacket && ((FlagAliasPacket) alterPacket).getFlagAliasData().getFlagName().equals(flagName);
+					return alterPacket instanceof FlagAliasPacket flagAliasPacket && flagAliasPacket.getFlagAliasData().getFlagName().equals(flagName);
 				})
 				.collect(Collectors.toList());
 	}
@@ -250,8 +250,8 @@ public class FlagCommandChatBotHandler implements ChatBotHandler {
 				.map(versionedPacket -> {
 					StoredAlterPacket storedAlterPacket = versionedPacket.getPacket();
 					AlterPacket alterPacket = storedAlterPacket.getPacket();
-					if (alterPacket instanceof FlagAliasPacket) {
-						return (FlagAliasPacket) alterPacket;
+					if (alterPacket instanceof FlagAliasPacket flagAliasPacket) {
+						return flagAliasPacket;
 					}
 					return null;
 				})

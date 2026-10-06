@@ -27,8 +27,8 @@ public class OnMateCommandSent implements OnCommandExecute<MateCommand> {
 	public void onCommandExecute(SourcedCommand<MateCommand> command) {
 		ExecutionReason executionReason = command.getExecutionReason();
 		final String dataSource;
-		if (executionReason instanceof OpenSourceExecutionReason) {
-			dataSource = ((OpenSourceExecutionReason) executionReason).getSource().toDataSource().toString(); // for legacy reasons, include the data source converted to a string
+		if (executionReason instanceof OpenSourceExecutionReason reason) {
+			dataSource = reason.getSource().toDataSource().toString(); // for legacy reasons, include the data source converted to a string
 		} else {
 			dataSource = executionReason.getUniqueString(); // this may occur for new packets
 		}

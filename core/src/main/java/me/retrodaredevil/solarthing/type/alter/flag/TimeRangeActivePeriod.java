@@ -58,9 +58,8 @@ public class TimeRangeActivePeriod implements ActivePeriod {
 
 	@Override
 	public boolean encapsulatesAllOf(ActivePeriod activePeriod) {
-		if (activePeriod instanceof TimeRangeActivePeriod) {
-			TimeRange other = ((TimeRangeActivePeriod) activePeriod).timeRange;
-			return timeRange.fullyContains(other);
+		if (activePeriod instanceof TimeRangeActivePeriod period) {
+			return timeRange.fullyContains(period.timeRange);
 		}
 		return false;
 	}

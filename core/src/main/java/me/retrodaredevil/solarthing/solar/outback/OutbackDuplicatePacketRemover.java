@@ -24,8 +24,7 @@ public class OutbackDuplicatePacketRemover implements PacketListReceiver {
 		split.add(0);
 		for (int i = 0; i < packets.size(); i++) {
 			Packet packet = packets.get(i);
-			if (packet instanceof OutbackStatusPacket) {
-				OutbackStatusPacket outbackStatusPacket = (OutbackStatusPacket) packet;
+			if (packet instanceof OutbackStatusPacket outbackStatusPacket) {
 				if(last != null && outbackStatusPacket.getAddress() <= last.getAddress()){
 					split.add(i);
 				}

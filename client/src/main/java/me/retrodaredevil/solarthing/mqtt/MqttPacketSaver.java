@@ -108,8 +108,7 @@ public class MqttPacketSaver implements PacketHandler {
 		client.publish(statusTopic, "online".getBytes(CHARSET), 1, retain);
 
 		for (Packet packet : instancePacketGroup.getPackets()) {
-			if (packet instanceof Identifiable) {
-				Identifiable identifiable = (Identifiable) packet;
+			if (packet instanceof Identifiable identifiable) {
 				String topic = partiallyFormattedTopic.replace("%identifier", identifiable.getIdentifier().getRepresentation()) + "/";
 
 

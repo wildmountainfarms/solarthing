@@ -29,13 +29,13 @@ public class ToStringExpressionNode implements ExpressionNode {
 		Expression expression = expressionNode.createExpression(actionEnvironment);
 		return () -> expression.evaluate().stream()
 				.map(expressionResult -> {
-					if (expressionResult instanceof StringExpressionResult) {
-						return (StringExpressionResult) expressionResult;
-					} else if (expressionResult instanceof NumericExpressionResult) {
-						Number number = ((NumericExpressionResult) expressionResult).getNumber();
+					if (expressionResult instanceof StringExpressionResult stringExpressionResult) {
+						return stringExpressionResult;
+					} else if (expressionResult instanceof NumericExpressionResult numericExpressionResult) {
+						Number number = numericExpressionResult.getNumber();
 						return new StringExpressionResult(number.toString());
-					} else if (expressionResult instanceof BooleanExpressionResult) {
-						boolean value = ((BooleanExpressionResult) expressionResult).getBoolean();
+					} else if (expressionResult instanceof BooleanExpressionResult booleanExpressionResult) {
+						boolean value = booleanExpressionResult.getBoolean();
 						return new StringExpressionResult(value ? "true" : "false");
 					} else {
 						throw new UnsupportedOperationException("Unsupported expression result to convert to string. expression result: " + expressionResult);

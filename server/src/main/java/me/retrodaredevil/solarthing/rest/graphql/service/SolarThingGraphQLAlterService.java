@@ -51,8 +51,8 @@ public class SolarThingGraphQLAlterService {
 			return packets.stream()
 					.map(versionedPacket -> {
 						AlterPacket alterPacket = versionedPacket.getPacket().getPacket();
-						if (alterPacket instanceof ScheduledCommandPacket) {
-							return (ScheduledCommandPacket) alterPacket;
+						if (alterPacket instanceof ScheduledCommandPacket scheduledCommandPacket) {
+							return scheduledCommandPacket;
 						}
 						return null;
 					})

@@ -9,7 +9,6 @@ import org.jspecify.annotations.NullMarked;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -20,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class PacketTestUtil {
 	private PacketTestUtil() { throw new UnsupportedOperationException(); }
 
-	public static final Path SOLARTHING_ROOT = Paths.get("..");
+	public static final Path SOLARTHING_ROOT = Path.of("..");
 
 	public static <T> void testJson(T originalPacket, Class<T> packetClass) throws JsonProcessingException {
 		testJson(originalPacket, packetClass, false);

@@ -34,13 +34,11 @@ public class MateAnalyticsHandler implements PacketHandler {
 		int fmCount = 0;
 		Boolean isOldFirmware = null;
 		for (Packet packet : packetCollection.getPackets()) {
-			if (packet instanceof FXStatusPacket) {
+			if (packet instanceof FXStatusPacket fx) {
 				fxCount++;
-				FXStatusPacket fx = (FXStatusPacket) packet;
 				fxOperationalModes.add(fx.getOperationalModeValue());
-			} else if (packet instanceof MXStatusPacket) {
+			} else if (packet instanceof MXStatusPacket mx) {
 				mxfmCount++;
-				MXStatusPacket mx = (MXStatusPacket) packet;
 				if (Boolean.TRUE.equals(mx.isFlexMax())) {
 					fmCount++;
 				}

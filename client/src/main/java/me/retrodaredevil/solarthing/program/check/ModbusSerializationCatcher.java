@@ -29,8 +29,8 @@ public class ModbusSerializationCatcher extends BeanPropertyWriter {
 			super.serializeAsField(bean, gen, prov);
 		} catch (Exception ex) { // likely an InvocationTargetException, but catch exception in case it is anything else
 			final ErrorCodeException actual;
-			if (ex instanceof ErrorCodeException) {
-				actual = (ErrorCodeException) ex;
+			if (ex instanceof ErrorCodeException exception) {
+				actual = exception;
 			} else {
 				if (ex.getCause() instanceof ErrorCodeException) {
 					actual = (ErrorCodeException) ex.getCause();

@@ -82,10 +82,10 @@ public class SolarThingGraphQLFXService {
 			List<FXStatusPacket> fxPackets = new ArrayList<>();
 			Integer temperature = null;
 			for (Packet packet : packetGroup.getPackets()) {
-				if (packet instanceof FXStatusPacket && packetGroup.getFragmentId(packet) == fragmentId) {
-					fxPackets.add((FXStatusPacket) packet);
-				} else if (packet instanceof BatteryTemperature) {
-					temperature = Math.round(((BatteryTemperature) packet).getBatteryTemperatureCelsius().floatValue());
+				if (packet instanceof FXStatusPacket fx && packetGroup.getFragmentId(packet) == fragmentId) {
+					fxPackets.add(fx);
+				} else if (packet instanceof BatteryTemperature batteryTemperature) {
+					temperature = Math.round(batteryTemperature.getBatteryTemperatureCelsius().floatValue());
 				}
 			}
 			if (fxPackets.isEmpty()) {

@@ -203,8 +203,8 @@ public class RunMain {
 			try {
 				return CouchDbSetupMain.createFrom((CouchDbDatabaseSettings) settings).doCouchDbSetupMain();
 			} catch (CouchDbException e) {
-				if (e instanceof CouchDbCodeException) {
-					ErrorResponse error = ((CouchDbCodeException) e).getErrorResponse();
+				if (e instanceof CouchDbCodeException exception) {
+					ErrorResponse error = exception.getErrorResponse();
 					if (error != null) {
 						System.err.println(error.getError());
 						System.err.println(error.getReason());
@@ -218,7 +218,7 @@ public class RunMain {
 			System.err.println(cli.getHelpMessage());
 			return SolarThingConstants.EXIT_CODE_INVALID_OPTIONS;
 		}
-		System.err.println("Invalid sub command: " + legacyArguments.get(0));
+		System.err.println("Invalid sub command: " + legacyArguments.getFirst());
 		return SolarThingConstants.EXIT_CODE_INVALID_OPTIONS;
 	}
 }

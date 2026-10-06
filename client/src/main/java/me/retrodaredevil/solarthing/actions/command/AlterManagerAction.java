@@ -61,6 +61,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadLocalRandom;
 
 @NullMarked
 public class AlterManagerAction extends SimpleAction {
@@ -200,19 +201,17 @@ public class AlterManagerAction extends SimpleAction {
 				));
 				ScheduledCommandPacket scheduledCommandPacket = new ScheduledCommandPacket(data, executionReason);
 				// This databaseId is basically an arbitrary way to generate a unique ID. It contains some stuff such as the command name to debug more easily
-				String databaseId = "alter-scheduled-command-" + data.getCommandName() + "-" + Long.toHexString(data.getScheduledTimeMillis()) + "-" + sender + "-" + Math.random();
+				String databaseId = "alter-scheduled-command-" + data.getCommandName() + "-" + Long.toHexString(data.getScheduledTimeMillis()) + "-" + sender + "-" + ThreadLocalRandom.current().nextDouble();
 				StoredAlterPacket storedAlterPacket = new ImmutableStoredAlterPacket(databaseId, now, scheduledCommandPacket, this.sourceId);
 				storedAlterPacketsToUpload.add(storedAlterPacket);
-			} else if (packet instanceof DeleteAlterPacket) {
-				DeleteAlterPacket deleteAlterPacket = (DeleteAlterPacket) packet;
+			} else if (packet instanceof DeleteAlterPacket deleteAlterPacket) {
 				try {
 					database.validateUpdateToken(deleteAlterPacket.getUpdateToken());
 					deleteAlterPackets.add(deleteAlterPacket);
 				} catch (IncompatibleUpdateTokenException ex) {
 					LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "For some reason we have an incompatible update token!", ex);
 				}
-			} else if (packet instanceof RequestFlagPacket) {
-				RequestFlagPacket requestFlagPacket = (RequestFlagPacket) packet;
+			} else if (packet instanceof RequestFlagPacket requestFlagPacket) {
 				// Originally I was going to not upload a FlagPacket if an existing FlagPacket's
 				//   time range fully encapsulated the newly requested one, but that adds some complexity
 				//   that is not needed at the moment
@@ -224,17 +223,16 @@ public class AlterManagerAction extends SimpleAction {
 						requestFlagPacket.getUniqueString() // this is legacy data and shouldn't be used anywhere, so it doesn't matter what we put here
 				));
 				FlagPacket flagPacket = new FlagPacket(flagData, executionReason);
-				String databaseId = "alter-flag-" + flagData.getFlagName() + "-" + sender + "-" + Math.random();
+				String databaseId = "alter-flag-" + flagData.getFlagName() + "-" + sender + "-" + ThreadLocalRandom.current().nextDouble();
 				StoredAlterPacket storedAlterPacket = new ImmutableStoredAlterPacket(databaseId, now, flagPacket, sourceId);
 				storedAlterPacketsToUpload.add(storedAlterPacket);
-			} else if (packet instanceof FlagAliasAddPacket) {
-				FlagAliasAddPacket flagAliasAddPacket = (FlagAliasAddPacket) packet;
+			} else if (packet instanceof FlagAliasAddPacket flagAliasAddPacket) {
 				FlagAliasData flagAliasData = flagAliasAddPacket.getFlagAliasData();
 				ExecutionReason executionReason = new OpenSourceExecutionReason(new OpenSource(
 						sender, packetGroup.getDateMillis(), flagAliasAddPacket, flagAliasAddPacket.getUniqueString()
 				));
 				FlagAliasPacket flagAliasPacket = new FlagAliasPacket(flagAliasData, executionReason);
-				String databaseId = "alter-flag-alias-" + flagAliasData.getFlagName() + "-" + sender + "-" + Math.random();
+				String databaseId = "alter-flag-alias-" + flagAliasData.getFlagName() + "-" + sender + "-" + ThreadLocalRandom.current().nextDouble();
 				StoredAlterPacket storedAlterPacket = new ImmutableStoredAlterPacket(databaseId, now, flagAliasPacket, sourceId);
 				storedAlterPacketsToUpload.add(storedAlterPacket);
 			}

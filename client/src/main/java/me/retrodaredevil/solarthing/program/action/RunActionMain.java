@@ -32,7 +32,6 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 
@@ -42,16 +41,16 @@ public class RunActionMain {
 	private RunActionMain() { throw new UnsupportedOperationException(); }
 
 	private static final ObjectMapper MAPPER = new ObjectMapper();
-	private static final String USAGE = "" +
-			"Usage: solarthing action [options] <file>\n" +
-			"  --check                Set to only parse the program and exit\n" +
-			"  --json                 Set to parse and output json of program";
+	private static final String USAGE = """
+			Usage: solarthing action [options] <file>
+			  --check                Set to only parse the program and exit
+			  --json                 Set to parse and output json of program""";
 
 	private static InputStream inputStreamFrom(String argument) throws IOException {
 		if ("-".equals(argument)) {
 			return System.in;
 		}
-		Path path = Paths.get(argument);
+		Path path = Path.of(argument);
 		return Files.newInputStream(path);
 	}
 
@@ -72,7 +71,7 @@ public class RunActionMain {
 			System.err.println(USAGE);
 			return SolarThingConstants.EXIT_CODE_INVALID_OPTIONS;
 		}
-		String inputArgument = positionalArguments.get(0);
+		String inputArgument = positionalArguments.getFirst();
 		final Node node;
 		try {
 			InputStream inputStream = inputStreamFrom(inputArgument);

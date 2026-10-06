@@ -68,14 +68,14 @@ public class CancelCommandChatBotHandler implements ChatBotHandler {
 		return storedAlterPackets.filter(versionedPacket -> {
 			StoredAlterPacket storedAlterPacket = versionedPacket.getPacket();
 			AlterPacket alterPacket = storedAlterPacket.getPacket();
-			if (alterPacket instanceof ScheduledCommandPacket) {
-				ExecutionReason executionReason = ((ScheduledCommandPacket) alterPacket).getExecutionReason();
-				if (executionReason instanceof OpenSourceExecutionReason) {
-					OpenSourcePacket openSourcePacket = ((OpenSourceExecutionReason) executionReason).getSource().getPacket();
+			if (alterPacket instanceof ScheduledCommandPacket packet) {
+				ExecutionReason executionReason = packet.getExecutionReason();
+				if (executionReason instanceof OpenSourceExecutionReason reason) {
+					OpenSourcePacket openSourcePacket = reason.getSource().getPacket();
 					// Instead of using ScheduleCommandPacket here (notice, not Scheduled), might as well be more general and use UniqueRequestIdContainer.
 					//   At the time of writing this code, there's not actually a reason for it, but hey, maybe using UniqueRequestContainerId over ScheduleCommandPacket
 					//   will be useful in the future.
-					return openSourcePacket instanceof UniqueRequestIdContainer && ((UniqueRequestIdContainer) openSourcePacket).getUniqueRequestId().equals(schedulingId);
+					return openSourcePacket instanceof UniqueRequestIdContainer uric && uric.getUniqueRequestId().equals(schedulingId);
 				}
 			}
 			return false;
@@ -93,7 +93,7 @@ public class CancelCommandChatBotHandler implements ChatBotHandler {
 		} else if (targets.size() > 1) {
 			messageSender.sendMessage("Multiple packets corresponded to ID: " + schedulingId + ". Please report this error.");
 		} else {
-			VersionedPacket<StoredAlterPacket> target = targets.get(0);
+			VersionedPacket<StoredAlterPacket> target = targets.getFirst();
 			messageSender.sendMessage("Going request cancel of " + target.getPacket().getDbId());
 			CommandOpenPacket packet = new ImmutableDeleteAlterPacket(target.getPacket().getDbId(), target.getUpdateToken());
 			PacketCollectionCreator creator = commandHelper.getCommandManager().makeCreator(sourceId, zoneId, null, packet, PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR);

@@ -42,7 +42,7 @@ public class DefaultNonNullMapper extends NonNullMapper {
 
 	private static GraphQLType applyNullability(GraphQLType type, TypedElement element) {
 		if (element.isAnnotationPresentAnywhere(Nullable.class)) {
-			return type instanceof GraphQLNonNull ? ((GraphQLNonNull) type).getWrappedType() : type;
+			return type instanceof GraphQLNonNull gqlnn ? gqlnn.getWrappedType() : type;
 		}
 		return type instanceof GraphQLNonNull ? type : GraphQLNonNull.nonNull(type);
 	}

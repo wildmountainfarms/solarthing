@@ -72,7 +72,7 @@ public final class AccumulationCalc {
 			if (previousAccumulationPairs.isEmpty()) {
 				throw new AssertionError("We checked to make sure dailyPairs is not empty, so why is previousDailyPairs empty?");
 			}
-			AccumulationPair<T> lastAccumulationPair = previousAccumulationPairs.get(previousAccumulationPairs.size() - 1);
+			AccumulationPair<T> lastAccumulationPair = previousAccumulationPairs.getLast();
 			previousAccumulationPairs.set(previousAccumulationPairs.size() - 1, new AccumulationPair<>(lastAccumulationPair.getStartPacket(), packet, lastAccumulationPair.getStartPacketType()));
 			U sum = getTotal(previousAccumulationPairs, totalGetter, accumulationValueFactory);
 			r.add(new SumNode<>(sum, dateMillis));

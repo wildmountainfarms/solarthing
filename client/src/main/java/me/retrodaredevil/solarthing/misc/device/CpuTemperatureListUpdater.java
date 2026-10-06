@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +28,7 @@ public class CpuTemperatureListUpdater implements PacketListReceiver {
 		List<CpuTemperaturePacket.Core> cores = new ArrayList<>();
 		int totalMilliCelsius = 0;
 		for (int number = 0; number < processorCount; number++) {
-			Path path = Paths.get("/sys/class/thermal/thermal_zone" + number + "/temp");
+			Path path = Path.of("/sys/class/thermal/thermal_zone" + number + "/temp");
 			final String contents;
 			try {
 				contents = Files.readString(path, StandardCharsets.UTF_8).stripTrailing();

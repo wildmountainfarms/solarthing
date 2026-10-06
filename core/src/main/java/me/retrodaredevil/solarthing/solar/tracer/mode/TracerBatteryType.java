@@ -31,8 +31,7 @@ public enum TracerBatteryType implements CodeMode {
 
 	@JsonCreator
 	public static TracerBatteryType parse(Object object) {
-		if (object instanceof Integer) {
-			int code = (int) object;
+		if (object instanceof Integer code) {
 			for (TracerBatteryType type : values()) {
 				if (type.isActive(code)) {
 					return type;
@@ -40,8 +39,8 @@ public enum TracerBatteryType implements CodeMode {
 			}
 			throw new IllegalArgumentException("Unknown code: " + code);
 		}
-		if (object instanceof String) {
-			return parseFromString((String) object);
+		if (object instanceof String string) {
+			return parseFromString(string);
 		}
 		throw new IllegalArgumentException("Unknown type: " + object.getClass());
 	}

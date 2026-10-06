@@ -29,8 +29,7 @@ public class RequestHeartbeatReceiver implements PacketGroupReceiver {
 		Instant now = Instant.now();
 
 		for (Packet packet : packetGroup.getPackets()) {
-			if (packet instanceof RequestHeartbeatPacket) {
-				RequestHeartbeatPacket requestHeartbeatPacket = (RequestHeartbeatPacket) packet;
+			if (packet instanceof RequestHeartbeatPacket requestHeartbeatPacket) {
 				HeartbeatData data = requestHeartbeatPacket.getData();
 				OpenSource openSource = new OpenSource(sender, packetGroup.getDateMillis(), requestHeartbeatPacket, requestHeartbeatPacket.getUniqueString());
 				ExecutionReason executionReason = new OpenSourceExecutionReason(openSource);

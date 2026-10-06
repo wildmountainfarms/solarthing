@@ -249,8 +249,8 @@ public class SolarThingGraphQLService {
 			for (FragmentedPacketGroup packetGroup : sortedPackets) {
 				Number batteryTemperatureCelsius = null;
 				for (Packet packet : packetGroup.getPackets()) {
-					if (packet instanceof BatteryTemperature) {
-						batteryTemperatureCelsius = ((BatteryTemperature) packet).getBatteryTemperatureCelsius();
+					if (packet instanceof BatteryTemperature batteryTemperature) {
+						batteryTemperatureCelsius = batteryTemperature.getBatteryTemperatureCelsius();
 						if (packet instanceof TracerStatusPacket) {
 							break; // prefer tracer temperature as it is more precise
 						}
@@ -301,20 +301,20 @@ public class SolarThingGraphQLService {
 				List<BasicChargeController> chargeController = new ArrayList<>();
 				List<ErrorReporter> errorReporter = new ArrayList<>();
 				for (Packet packet : packetGroup.getPackets()) {
-					if (packet instanceof SolarDevice) {
-						solarDevice.add((SolarDevice) packet);
+					if (packet instanceof SolarDevice device) {
+						solarDevice.add(device);
 					}
-					if (packet instanceof BatteryVoltage) {
-						batteryVoltage.add((BatteryVoltage) packet);
+					if (packet instanceof BatteryVoltage voltage) {
+						batteryVoltage.add(voltage);
 					}
-					if (packet instanceof FXStatusPacket) {
-						fx.add((FXStatusPacket) packet);
+					if (packet instanceof FXStatusPacket fxStatusPacket) {
+						fx.add(fxStatusPacket);
 					}
-					if (packet instanceof BasicChargeController) {
-						chargeController.add((BasicChargeController) packet);
+					if (packet instanceof BasicChargeController controller) {
+						chargeController.add(controller);
 					}
-					if (packet instanceof ErrorReporter) {
-						errorReporter.add((ErrorReporter) packet);
+					if (packet instanceof ErrorReporter reporter) {
+						errorReporter.add(reporter);
 					}
 				}
 				FlatData flatData = new FlatData(solarDevice, batteryVoltage, fx, chargeController, errorReporter);

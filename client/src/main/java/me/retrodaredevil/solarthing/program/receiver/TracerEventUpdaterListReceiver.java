@@ -26,8 +26,7 @@ public class TracerEventUpdaterListReceiver implements PacketListReceiver {
 	@Override
 	public void receive(List<Packet> packets) {
 		for (Packet packet : packets) {
-			if (packet instanceof TracerStatusPacket) {
-				TracerStatusPacket tracer = (TracerStatusPacket) packet;
+			if (packet instanceof TracerStatusPacket tracer) {
 				TracerStatusPacket previous = previousPacketMap.get(tracer.getIdentifier());
 				previousPacketMap.put(tracer.getIdentifier(), tracer);
 				useData(tracer, previous);

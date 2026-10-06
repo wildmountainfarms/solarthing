@@ -56,8 +56,8 @@ public class OutbackIdentifier implements IntegerIdentifier, OutbackData, Compar
 
 	@Override
 	public int compareTo(Identifier o) {
-		if(o instanceof OutbackIdentifier){
-			return address - ((OutbackIdentifier) o).address;
+		if(o instanceof OutbackIdentifier identifier){
+			return address - identifier.address;
 		}
 		return -1; // whatever is is should show up after us no matter what
 	}

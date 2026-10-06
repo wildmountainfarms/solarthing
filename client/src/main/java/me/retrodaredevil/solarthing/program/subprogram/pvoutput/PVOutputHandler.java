@@ -56,7 +56,7 @@ public class PVOutputHandler {
 			LOGGER.warn("No packets!");
 			return false;
 		}
-		String reason = IdentifierUtil.getRequirementNotMetReason(requiredIdentifierMap, packetGroupList.get(packetGroupList.size() - 1));
+		String reason = IdentifierUtil.getRequirementNotMetReason(requiredIdentifierMap, packetGroupList.getLast());
 		if (reason == null) {
 			return true;
 		}
@@ -75,7 +75,7 @@ public class PVOutputHandler {
 		It probably doesn't matter here, but it's worth considering changing how we do stuff like this in the future.
 		 */
 
-		FragmentedPacketGroup latestPacketGroup = packetGroupList.get(packetGroupList.size() - 1);
+		FragmentedPacketGroup latestPacketGroup = packetGroupList.getLast();
 		LOGGER.debug("Continuing with the latest packet group. Day start: " + dayStartTimeMillis);
 		AddStatusParametersBuilder addStatusParametersBuilder = createStatusBuilder(zoneId, latestPacketGroup.getDateMillis());
 		setStatusPowerValues(addStatusParametersBuilder, latestPacketGroup);

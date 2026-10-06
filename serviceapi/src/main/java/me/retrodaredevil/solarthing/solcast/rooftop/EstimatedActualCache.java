@@ -113,10 +113,10 @@ public class EstimatedActualCache {
 		for (Forecast forecast : forecasts) {
 			nodes.add(new Node(forecast));
 		}
-		forecastSet.tailSet(nodes.get(0), true).clear();
+		forecastSet.tailSet(nodes.getFirst(), true).clear();
 		forecastSet.addAll(nodes);
 
-		simpleEstimatedActualSet.tailSet(nodes.get(0), true).clear();
+		simpleEstimatedActualSet.tailSet(nodes.getFirst(), true).clear();
 		simpleEstimatedActualSet.addAll(nodes);
 	}
 	private void updatePastEstimatedActuals() throws IOException {
@@ -128,7 +128,7 @@ public class EstimatedActualCache {
 			nodes.add(new Node(estimatedActual));
 		}
 
-		simpleEstimatedActualSet.headSet(nodes.get(nodes.size() - 1), true).clear();
+		simpleEstimatedActualSet.headSet(nodes.getLast(), true).clear();
 		simpleEstimatedActualSet.addAll(nodes);
 	}
 

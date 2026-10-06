@@ -27,8 +27,7 @@ public class MXEventUpdaterListReceiver implements PacketListReceiver {
 	@Override
 	public void receive(List<Packet> packets) {
 		for(Packet packet : packets){
-			if(packet instanceof MXStatusPacket){
-				MXStatusPacket mx = (MXStatusPacket) packet;
+			if(packet instanceof MXStatusPacket mx){
 				MXStatusPacket previous = previousPacketMap.get(mx.getIdentifier());
 				previousPacketMap.put(mx.getIdentifier(), mx);
 				useData(mx, previous);

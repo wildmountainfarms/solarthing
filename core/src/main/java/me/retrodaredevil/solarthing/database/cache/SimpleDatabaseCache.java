@@ -66,7 +66,7 @@ public class SimpleDatabaseCache implements DatabaseCache {
 			set = set.headSet(new Node(timeRange.getEndTimeMillis()), true);
 		}
 		if (descending) {
-			set = set.descendingSet();
+			set = set.reversed();
 		}
 		return set.stream()
 				.map(node -> node.packetGroup)

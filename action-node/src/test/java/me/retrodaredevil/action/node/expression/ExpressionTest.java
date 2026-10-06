@@ -19,7 +19,7 @@ class ExpressionTest {
 	private static boolean evaluateSingleBoolean(BooleanExpression expression) {
 		List<? extends BooleanExpressionResult> result = expression.evaluate();
 		assertEquals(1, result.size());
-		return result.get(0).getBoolean();
+		return result.getFirst().getBoolean();
 	}
 	private static ComparisonExpression createComparisonExpression(Number lhs, Number rhs, ComparisonExpression.Operator operator) {
 		return new ComparisonExpression(

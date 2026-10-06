@@ -35,7 +35,7 @@ public class RaceActionNode implements ActionNode {
 				throw new IllegalArgumentException("The size of the array must be 2! The first element is the condition, the second is the action");
 			}
 
-			this.conditionNode = actionNodeList.get(0);
+			this.conditionNode = actionNodeList.getFirst();
 			this.actionNode = actionNodeList.get(1);
 		}
 		public RaceNode(ActionNode conditionNode, ActionNode actionNode) {

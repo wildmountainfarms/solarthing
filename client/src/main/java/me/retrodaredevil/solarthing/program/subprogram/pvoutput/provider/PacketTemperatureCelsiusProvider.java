@@ -53,21 +53,18 @@ public class PacketTemperatureCelsiusProvider implements TemperatureCelsiusProvi
 			}
 			long dateMillis = requireNonNull(fragmentedPacketGroup.getDateMillis(packet), "Implementation of FragmentedPacketGroup did not provide individual dateMillis! type: " + fragmentedPacketGroup.getClass().getName());
 			if (temperaturePacketType == TemperaturePacketType.PACKET) {
-				if (packet instanceof TemperaturePacket) {
-					TemperaturePacket temperaturePacket = (TemperaturePacket) packet;
+				if (packet instanceof TemperaturePacket temperaturePacket) {
 					boolean isW1Sensor = temperaturePacket.getDeviceSource() instanceof W1Source; // we assume W1 sensors sometimes give bad data
 
 					float temperatureCelsius = temperaturePacket.getTemperatureCelsius();
 					return new Result(temperatureCelsius, identifierFragment, dateMillis, isW1Sensor);
 				}
 			} else if (temperaturePacketType == TemperaturePacketType.CONTROLLER) {
-				if (packet instanceof ControllerTemperature) {
-					ControllerTemperature controllerTemperature = (ControllerTemperature) packet;
+				if (packet instanceof ControllerTemperature controllerTemperature) {
 					return new Result(controllerTemperature.getControllerTemperatureCelsius().floatValue(), identifierFragment, dateMillis, false);
 				}
 			} else if (temperaturePacketType == TemperaturePacketType.BATTERY) {
-				if (packet instanceof BatteryTemperature) {
-					BatteryTemperature controllerTemperature = (BatteryTemperature) packet;
+				if (packet instanceof BatteryTemperature controllerTemperature) {
 					return new Result(controllerTemperature.getBatteryTemperatureCelsius().floatValue(), identifierFragment, dateMillis, false);
 				}
 			} else throw new AssertionError();

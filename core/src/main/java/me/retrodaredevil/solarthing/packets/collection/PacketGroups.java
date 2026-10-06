@@ -38,15 +38,14 @@ public final class PacketGroups {
 		return createStoredPacketGroup(packetGroup.getPackets(), packetGroup.getDateMillis(), storedIdentifier);
 	}
 	public static InstancePacketGroup parseToInstancePacketGroup(PacketGroup group, DefaultInstanceOptions defaultInstanceOptions){
-		if(group instanceof InstancePacketGroup){
-			return (InstancePacketGroup) group;
+		if(group instanceof InstancePacketGroup packetGroup){
+			return packetGroup;
 		}
 		List<Packet> packets = new ArrayList<>();
 		String sourceId = defaultInstanceOptions.getDefaultSourceId();
 		int fragmentId = defaultInstanceOptions.getDefaultFragmentId();
 		for(Packet packet : group.getPackets()){
-			if (packet instanceof InstancePacket) {
-				InstancePacket instancePacket = (InstancePacket) packet;
+			if (packet instanceof InstancePacket instancePacket) {
 				switch(instancePacket.getPacketType()){
 					case SOURCE: sourceId = ((InstanceSourcePacket) instancePacket).getSourceId(); break;
 					case FRAGMENT_INDICATOR: fragmentId = ((InstanceFragmentIndicatorPacket) instancePacket).getFragmentId(); break;
@@ -62,15 +61,14 @@ public final class PacketGroups {
 		return new ImmutableTargetPacketGroup(packets, dateMillis, sourceId, targetFragmentIds);
 	}
 	public static TargetPacketGroup parseToTargetPacketGroup(PacketGroup packetGroup) {
-		if (packetGroup instanceof TargetPacketGroup) {
-			return (TargetPacketGroup) packetGroup;
+		if (packetGroup instanceof TargetPacketGroup group) {
+			return group;
 		}
 		List<Packet> packets = new ArrayList<>();
 		InstanceSourcePacket sourcePacket = null;
 		InstanceTargetPacket targetPacket = null;
 		for (Packet packet : packetGroup.getPackets()) {
-			if (packet instanceof InstancePacket) {
-				InstancePacket instancePacket = (InstancePacket) packet;
+			if (packet instanceof InstancePacket instancePacket) {
 				switch (instancePacket.getPacketType()) {
 					case SOURCE: sourcePacket = (InstanceSourcePacket) packet; break;
 					case TARGET: targetPacket = (InstanceTargetPacket) packet; break;
@@ -215,7 +213,7 @@ public final class PacketGroups {
 		if (fragmentIds.isEmpty()) {
 			throw new IllegalArgumentException("Fragment IDs is empty!");
 		}
-		int masterFragmentId = fragmentIds.get(0);
+		int masterFragmentId = fragmentIds.getFirst();
 		List<Integer> subFragmentIds = fragmentIds.subList(1, fragmentIds.size()); // List of fragment IDs not including the master
 		List<? extends InstancePacketGroup> masterList = requireNonNull(fragmentMap.get(masterFragmentId));
 		if(masterIdIgnoreDistance != null && fragmentIds.size() > 1){ // see if we need to check for gaps in the master list
@@ -248,8 +246,8 @@ public final class PacketGroups {
 
 			// The first master packet (also the earliest master packet)
 			InstancePacketGroup firstPacket = subListList
-					.get(0) // we know this won't fail because we added at least one element above
-					.get(0); // we're going to infer that this won't fail because it should never be empty
+					.getFirst() // we know this won't fail because we added at least one element above
+					.getFirst(); // we're going to infer that this won't fail because it should never be empty
 
 			// Add non-master packets before the first master packet
 			addToPacketGroups(
@@ -263,7 +261,7 @@ public final class PacketGroups {
 					// This deals with our first gap
 					addToPacketGroups(
 							maxTimeDistance, masterIdIgnoreDistance,
-							lastTime + masterIdIgnoreDistance, subList.get(0).getDateMillis() - masterIdIgnoreDistance,
+							lastTime + masterIdIgnoreDistance, subList.getFirst().getDateMillis() - masterIdIgnoreDistance,
 							subFragmentIds, fragmentMap, packetGroupsOut
 					);
 				}
@@ -278,13 +276,13 @@ public final class PacketGroups {
 						minTime, maxTime, // we don't have to limit the time more because we limited the selection with subFragmentMap
 						fragmentIds, subFragmentMap, packetGroupsOut
 				);
-				lastTime = subList.get(subList.size() - 1).getDateMillis();
+				lastTime = subList.getLast().getDateMillis();
 			}
-			List<? extends InstancePacketGroup> lastSubList = subListList.get(subListList.size() - 1);
+			List<? extends InstancePacketGroup> lastSubList = subListList.getLast();
 			// Add non-master packets after the last master packet
 			addToPacketGroups(
 					maxTimeDistance, masterIdIgnoreDistance,
-					lastSubList.get(lastSubList.size() - 1).getDateMillis() + masterIdIgnoreDistance, Long.MAX_VALUE,
+					lastSubList.getLast().getDateMillis() + masterIdIgnoreDistance, Long.MAX_VALUE,
 					subFragmentIds, fragmentMap, packetGroupsOut
 			);
 			return;

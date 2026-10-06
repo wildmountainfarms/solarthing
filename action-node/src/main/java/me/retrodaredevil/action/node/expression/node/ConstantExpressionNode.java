@@ -32,7 +32,7 @@ public class ConstantExpressionNode implements ExpressionNode {
 		if (list.isEmpty()) {
 			throw new IllegalArgumentException("Cannot give empty list for const!");
 		}
-		Object firstElement = list.get(0);
+		Object firstElement = list.getFirst();
 		if (firstElement instanceof String) {
 			expression = StringExpression.createConstant(
 					list.stream()

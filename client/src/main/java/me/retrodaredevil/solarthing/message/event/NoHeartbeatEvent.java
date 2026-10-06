@@ -31,8 +31,7 @@ public class NoHeartbeatEvent implements MessageEvent {
 	@Override
 	public void runForEvent(MessageSender sender, InstancePacketGroup packetGroup) {
 		for (Packet packet : packetGroup.getPackets()) {
-			if (packet instanceof HeartbeatPacket) {
-				HeartbeatPacket heartbeatPacket = (HeartbeatPacket) packet;
+			if (packet instanceof HeartbeatPacket heartbeatPacket) {
 				long dateMillis = packetGroup.getDateMillis();
 				int fragmentId = packetGroup.getFragmentId();
 				HeartbeatIdentifier identifier = new HeartbeatIdentifier(heartbeatPacket.getData().getIdentifier(), fragmentId);

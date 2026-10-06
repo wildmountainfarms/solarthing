@@ -44,8 +44,8 @@ public class SolarThingGraphQLMetaService {
 		int fragmentId = packetNode.getFragmentId();
 		MetaDatabase metaDatabase = simpleQueryHandler.queryMeta();
 		for (TargetedMetaPacket targetedMetaPacket : metaDatabase.getMeta(packetNode.getDateMillis(), fragmentId)) {
-			if (targetedMetaPacket instanceof DeviceInfoPacket) {
-				return (DeviceInfoPacket) targetedMetaPacket;
+			if (targetedMetaPacket instanceof DeviceInfoPacket deviceInfoPacket) {
+				return deviceInfoPacket;
 			}
 		}
 		return null;

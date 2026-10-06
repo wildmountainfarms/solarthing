@@ -71,16 +71,15 @@ public enum RoverBatteryType implements CodeMode {
 	}
 	@JsonCreator
 	public static RoverBatteryType parse(Object object) {
-		if (object instanceof Integer) {
-			int code = (int) object;
+		if (object instanceof Integer code) {
 			for (RoverBatteryType type : RoverBatteryType.values()) {
 				if (type.isActive(code)) {
 					return type;
 				}
 			}
 			throw new IllegalArgumentException("Unknown code: " + code);
-		} else if (object instanceof String ) {
-			return parseFromString((String) object);
+		} else if (object instanceof String string) {
+			return parseFromString(string);
 		}
 		throw new IllegalArgumentException("Unknown type to parse to a battery type: " + object.getClass());
 	}

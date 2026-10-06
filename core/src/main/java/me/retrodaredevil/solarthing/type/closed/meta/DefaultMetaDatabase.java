@@ -18,8 +18,7 @@ public class DefaultMetaDatabase implements MetaDatabase {
 		for (TimedMetaCollection timedMetaCollection : rootMetaPacket.getMeta()) {
 			if (timedMetaCollection.getTimeRange().contains(dateMillis)) {
 				for (BasicMetaPacket basicMetaPacket : timedMetaCollection.getPackets()) {
-					if (basicMetaPacket instanceof TargetMetaPacket) {
-						TargetMetaPacket targetMetaPacket = (TargetMetaPacket) basicMetaPacket;
+					if (basicMetaPacket instanceof TargetMetaPacket targetMetaPacket) {
 						if (targetMetaPacket.getFragmentIds().contains(fragmentId)) {
 							r.addAll(targetMetaPacket.getPackets());
 						}

@@ -56,9 +56,9 @@ public class StatusChatBotHandler implements ChatBotHandler {
 			List<String> lines = new ArrayList<>();
 			for (Packet packet : packetGroup.getPackets()) {
 				int fragmentId = packetGroup.getFragmentId(packet);
-				if (packet instanceof BatteryTemperature && packet instanceof Identifiable) {
-					float temperature = ((BatteryTemperature) packet).getBatteryTemperatureFahrenheit();
-					IdentityInfo identityInfo = ((Identifiable) packet).getIdentityInfo();
+				if (packet instanceof BatteryTemperature batteryTemperature && packet instanceof Identifiable identifiable) {
+					float temperature = batteryTemperature.getBatteryTemperatureFahrenheit();
+					IdentityInfo identityInfo = identifiable.getIdentityInfo();
 					lines.add(identityInfo.getDisplayName() + " (" + fragmentId + "): " + temperature + "F");
 				}
 			}
@@ -77,8 +77,8 @@ public class StatusChatBotHandler implements ChatBotHandler {
 				for (VersionedPacket<StoredAlterPacket> versionedPacket : alterPackets) {
 					StoredAlterPacket storedAlterPacket = versionedPacket.getPacket();
 					AlterPacket alterPacket = storedAlterPacket.getPacket();
-					if (alterPacket instanceof ScheduledCommandPacket) {
-						ScheduledCommandData data = ((ScheduledCommandPacket) alterPacket).getData();
+					if (alterPacket instanceof ScheduledCommandPacket packet) {
+						ScheduledCommandData data = packet.getData();
 //						ExecutionReason executionReason = ((ScheduledCommandPacket) alterPacket).getExecutionReason();
 						String timeString = TimeUtil.instantToSlackDateSeconds(Instant.ofEpochMilli(data.getScheduledTimeMillis()));
 						scheduledCommandLines.add(data.getCommandName() + " - " + timeString);

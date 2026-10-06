@@ -45,8 +45,7 @@ public class LocalRoverModbusSlave implements ModbusSlave {
 			throw new RuntimeException("Got error while parsing message. This should never happen because message should be from a trusted (local) source.", e);
 		}
 
-		if (messageHandler instanceof ReadHoldingRegisters) {
-			ReadHoldingRegisters read = (ReadHoldingRegisters) messageHandler;
+		if (messageHandler instanceof ReadHoldingRegisters read) {
 			return handleRead(read);
 		} else if (messageHandler instanceof WriteMultipleRegisters) {
 

@@ -38,8 +38,8 @@ public class LowBatteryVoltageEvent extends GracePeriodTimeoutEvent {
 	protected @Nullable Runnable createDesiredTrigger(MessageSender sender, FragmentedPacketGroup previous, FragmentedPacketGroup current) {
 		Float currentBatteryVoltage = null;
 		for (Packet packet : current.getPackets()) {
-			if (packet instanceof BatteryVoltage) {
-				float voltage = ((BatteryVoltage) packet).getBatteryVoltage();
+			if (packet instanceof BatteryVoltage batteryVoltage1) {
+				float voltage = batteryVoltage1.getBatteryVoltage();
 				if (voltage - 0.001f <= batteryVoltage) {
 					currentBatteryVoltage = voltage;
 					break;

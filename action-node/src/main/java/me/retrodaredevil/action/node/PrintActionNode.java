@@ -58,7 +58,7 @@ public class PrintActionNode implements ActionNode {
 				if (resultList.size() != 1) {
 					throw new IllegalStateException("Unsupported result list size! size: " + resultList.size());
 				}
-				toPrint = resultList.get(0).getString();
+				toPrint = resultList.getFirst().getString();
 			}
 			printStream.println(toPrint);
 		});
