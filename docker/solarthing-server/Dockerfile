@@ -1,10 +1,10 @@
-FROM ghcr.io/retrodaredevil/lavender-jre:21-ubuntu-noble as builder
+FROM ghcr.io/retrodaredevil/lavender-jre:25-ubuntu-noble as builder
 ARG JAR_LOCATION
 COPY ${JAR_LOCATION} application.jar
 RUN java -Djarmode=tools -jar application.jar extract --layers --launcher --destination result
 
 
-FROM ghcr.io/retrodaredevil/lavender-jre:21-ubuntu-noble
+FROM ghcr.io/retrodaredevil/lavender-jre:25-ubuntu-noble
 
 RUN ["mkdir", "/solarthing"]
 WORKDIR "/solarthing"
