@@ -42,15 +42,14 @@ public class FXAccumulationDataCache extends BaseAccumulationDataCache implement
 
 		identifier = new OutbackIdentifier(address);
 	}
-	public static FXAccumulationDataCache createFromIdentifier(Identifier supplementaryIdentifier, Data mainData, @Nullable Long firstDateMillis, @Nullable Long lastDateMillis, Data unknownData, @Nullable Long unknownStartDateMillis) {
-		if (!(supplementaryIdentifier instanceof SupplementaryIdentifier)) {
-			throw new IllegalArgumentException("The passed identifier is not a SupplementaryIdentifier! It is: " + supplementaryIdentifier.getClass() + " and its value is: " + supplementaryIdentifier.getRepresentation());
+	public static FXAccumulationDataCache createFromIdentifier(Identifier expectSupplementaryIdentifier, Data mainData, @Nullable Long firstDateMillis, @Nullable Long lastDateMillis, Data unknownData, @Nullable Long unknownStartDateMillis) {
+		if (!(expectSupplementaryIdentifier instanceof SupplementaryIdentifier supplementaryIdentifier)) {
+			throw new IllegalArgumentException("The passed identifier is not a SupplementaryIdentifier! It is: " + expectSupplementaryIdentifier.getClass() + " and its value is: " + expectSupplementaryIdentifier.getRepresentation());
 		}
-		Identifier identifier = ((SupplementaryIdentifier) supplementaryIdentifier).getSupplementaryTo();
-		if (!(identifier instanceof OutbackIdentifier)) {
+		Identifier identifier = supplementaryIdentifier.getSupplementaryTo();
+		if (!(identifier instanceof OutbackIdentifier outbackIdentifier)) {
 			throw new IllegalArgumentException("identifier should be an OutbackIdentifier! It is: " + identifier.getClass() + " and its value is: " + identifier.getRepresentation());
 		}
-		OutbackIdentifier outbackIdentifier = (OutbackIdentifier) identifier;
 		return new FXAccumulationDataCache(outbackIdentifier.getAddress(), mainData, firstDateMillis, lastDateMillis, unknownData, unknownStartDateMillis);
 	}
 	public static AccumulationValueFactory<Data> getDataFactory() {

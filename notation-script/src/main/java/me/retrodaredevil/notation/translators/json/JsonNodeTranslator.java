@@ -47,13 +47,12 @@ public class JsonNodeTranslator implements NodeTranslator<JsonNode> {
 			throw new IllegalArgumentException("Invalid number of arguments for racer");
 		}
 		Argument argument = arguments.getFirst();
-		if (!(argument instanceof Node)) {
+		if (!(argument instanceof Node conditionNode)) {
 			throw new IllegalArgumentException("Argument should be a node for racer");
 		}
 		if (node.getLinkedNode() == null) {
 			throw new IllegalArgumentException("Linked node required for racer");
 		}
-		Node conditionNode = (Node) argument;
 		Node actionNode = node.getLinkedNode();
 		return new ArrayNode(
 				JsonNodeFactory.instance,

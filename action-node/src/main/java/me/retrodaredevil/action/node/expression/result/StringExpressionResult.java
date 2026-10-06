@@ -22,8 +22,7 @@ public final class StringExpressionResult implements ExpressionResult {
 	@Override
 	public boolean equals(@Nullable Object o) {
 		if (this == o) return true;
-		if (!(o instanceof StringExpressionResult)) return false;
-		StringExpressionResult that = (StringExpressionResult) o;
+		if (!(o instanceof StringExpressionResult that)) return false;
 		return value.equals(that.value);
 	}
 

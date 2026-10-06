@@ -30,8 +30,7 @@ public class SourceIdentifierFragmentBase<T extends Identifier> implements Known
 	@Override
 	public boolean equals(@Nullable Object o) {
 		if (this == o) return true;
-		if (!(o instanceof SourceIdentifierFragment)) return false;
-		SourceIdentifierFragment that = (SourceIdentifierFragment) o;
+		if (!(o instanceof SourceIdentifierFragment that)) return false;
 		return sourceId.equals(that.getSourceId()) && identifierFragment.equals(that.getIdentifierFragment());
 	}
 

@@ -38,8 +38,7 @@ public class IdentifierFragmentBase<T extends Identifier> implements KnownIdenti
 	@Override
 	public boolean equals(@Nullable Object o) {
 		if (this == o) return true;
-		if (!(o instanceof IdentifierFragment)) return false;
-		IdentifierFragment that = (IdentifierFragment) o;
+		if (!(o instanceof IdentifierFragment that)) return false;
 		return matches(that);
 	}
 

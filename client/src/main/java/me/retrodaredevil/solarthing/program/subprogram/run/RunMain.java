@@ -196,12 +196,12 @@ public class RunMain {
 				return SolarThingConstants.EXIT_CODE_INVALID_CONFIG;
 			}
 			DatabaseSettings settings = config.requireDatabaseSettings();
-			if (!(settings instanceof CouchDbDatabaseSettings)) {
+			if (!(settings instanceof CouchDbDatabaseSettings couchDbDatabaseSettings)) {
 				System.err.println("Must be CouchDB database settings!");
 				return SolarThingConstants.EXIT_CODE_INVALID_CONFIG;
 			}
 			try {
-				return CouchDbSetupMain.createFrom((CouchDbDatabaseSettings) settings).doCouchDbSetupMain();
+				return CouchDbSetupMain.createFrom(couchDbDatabaseSettings).doCouchDbSetupMain();
 			} catch (CouchDbException e) {
 				if (e instanceof CouchDbCodeException exception) {
 					ErrorResponse error = exception.getErrorResponse();

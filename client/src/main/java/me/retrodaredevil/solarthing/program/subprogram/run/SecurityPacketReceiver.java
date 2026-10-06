@@ -105,10 +105,10 @@ public class SecurityPacketReceiver {
 	}
 
 	private static String storedIdentifierToDocumentId(StoredIdentifier storedIdentifier) {
-		if (!(storedIdentifier instanceof CouchDbStoredIdentifier)) {
+		if (!(storedIdentifier instanceof CouchDbStoredIdentifier couchDbStoredIdentifier)) {
 			throw new UnsupportedOperationException("This is tightly coupled to CouchDB. Unexpected storedIdentifier: " + storedIdentifier);
 		}
-		return ((CouchDbStoredIdentifier) storedIdentifier).getId();
+		return couchDbStoredIdentifier.getId();
 	}
 
 	private void reject(StoredPacketGroup storedPacketGroup, SecurityRejectPacket.Reason reason, String moreInfo) {
@@ -202,7 +202,7 @@ public class SecurityPacketReceiver {
 			return;
 		}
 		Packet packet = packetGroupPackets.stream().findFirst().orElseThrow(() -> new AssertionError("size should be 1! This should not fail"));
-		if (!(packet instanceof LargeIntegrityPacket)) {
+		if (!(packet instanceof LargeIntegrityPacket largeIntegrityPacket)) {
 			if (packet instanceof IntegrityPacket) {
 				LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Got an IntegrityPacket! This is no longer supported!");
 				reject(storedPacketGroup, SecurityRejectPacket.Reason.LEGACY_REQUEST, "IntegrityPacket is no longer supported");
@@ -215,7 +215,6 @@ public class SecurityPacketReceiver {
 			}
 			return;
 		}
-		LargeIntegrityPacket largeIntegrityPacket = (LargeIntegrityPacket) packet;
 		String sender = largeIntegrityPacket.getSender();
 		final String invalidSenderReason = SenderUtil.getInvalidSenderNameReason(sender);
 		if(invalidSenderReason != null){

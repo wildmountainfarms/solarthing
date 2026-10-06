@@ -43,10 +43,9 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 
 	@Override
 	default boolean isNewDay(DailyData previousDailyData) {
-		if (!(previousDailyData instanceof RoverReadTable)) {
+		if (!(previousDailyData instanceof RoverReadTable previous)) {
 			throw new IllegalArgumentException("previousDailyData is not a RoverReadTable! It's: " + previousDailyData.getClass().getName());
 		}
-		RoverReadTable previous = (RoverReadTable) previousDailyData;
 		/*
 		NOTE: Some values reset at different times.
 		 */

@@ -143,7 +143,6 @@ tasks.withType<JavaCompile>().configureEach {
 		disable("FutureReturnValueIgnored") // For "send and forget" stuff, this is really annoying
 		disable("UnusedVariable") // We are OK with this most of the time
 		disable("CanonicalDuration") // I will specify my durations in whatever units I please
-		disable("PatternMatchingInstanceof") // TODO reenable and use pattern matching instanceof
 		disable("EffectivelyPrivate") // a warning by default, but I often like to make things public even when they're apart of a private class
 
 
@@ -152,6 +151,7 @@ tasks.withType<JavaCompile>().configureEach {
 		error("NullableOnContainingClass")
 		warn("UnusedMethod") // Note: https://github.com/google/error-prone/issues/3144 // issue is now "completed", but annotations not customizable
 		error("StatementSwitchToExpressionSwitch")
+		error("PatternMatchingInstanceof")
 
 		// Experimental Errors
 		enable("ClassName")
@@ -202,7 +202,7 @@ tasks.withType<JavaCompile>().configureEach {
 		error("PrivateConstructorForUtilityClass") // not completely ideal for spring classes with static initialization
 		warn("RemoveUnusedImports") // Only a warning because https://github.com/antlr/antlr4/issues/2568 and https://github.com/google/error-prone/issues/463
 		error("ReturnsNullCollection")
-		warn("SwitchDefault")
+		error("SwitchDefault")
 		error("SymbolToString")
 		warn("ThrowsUncheckedException") // we should be unchecked exceptions in JavaDoc instead
 		warn("TryFailRefactoring")

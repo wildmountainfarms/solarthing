@@ -21,8 +21,7 @@ final class SimpleNumericExpressionResult implements NumericExpressionResult {
 	@Override
 	public boolean equals(@Nullable Object o) {
 		if (this == o) return true;
-		if (!(o instanceof NumericExpressionResult)) return false;
-		NumericExpressionResult that = (NumericExpressionResult) o;
+		if (!(o instanceof NumericExpressionResult that)) return false;
 		Number thatNumber = that.getNumber();
 		return number.equals(thatNumber) || number.doubleValue() == thatNumber.doubleValue();
 	}

@@ -54,6 +54,7 @@ public class CommonProvider {
 		return Objects.requireNonNullElseGet(defaultFragmentId, DefaultInstanceOptions.DEFAULT_DEFAULT_INSTANCE_OPTIONS::getDefaultFragmentId);
 	}
 
+	@SuppressWarnings("PatternMatchingInstanceof")
 	@PostConstruct
 	public void init() {
 		defaultInstanceOptions = DefaultInstanceOptions.create(getDefaultSourceId(), getDefaultFragmentId());

@@ -35,11 +35,11 @@ public class PacketVoltageProvider implements VoltageProvider {
 	@Override
 	public @Nullable Result getResult(FragmentedPacketGroup fragmentedPacketGroup) {
 		for (Packet packet : fragmentedPacketGroup.getPackets()) {
-			if (!(packet instanceof Identifiable)) {
+			if (!(packet instanceof Identifiable identifiable)) {
 				continue;
 			}
 			int fragmentId = fragmentedPacketGroup.getFragmentId(packet);
-			IdentifierFragment identifierFragment = IdentifierFragment.create(fragmentId, ((Identifiable) packet).getIdentifier());
+			IdentifierFragment identifierFragment = IdentifierFragment.create(fragmentId, identifiable.getIdentifier());
 			if (!voltageIdentifierFragmentMatcher.matches(identifierFragment)) {
 				continue;
 			}

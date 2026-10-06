@@ -25,9 +25,8 @@ public final class OutbackUtil {
 	public static @Nullable FXStatusPacket getMasterFX(Collection<? extends Packet> packets){
 		FXStatusPacket fx = null;
 		for(Packet packet : packets){
-			if(!(packet instanceof SolarStatusPacket)) continue;
+			if(!(packet instanceof SolarStatusPacket solarStatusPacket)) continue;
 
-			SolarStatusPacket solarStatusPacket = (SolarStatusPacket) packet;
 			if(solarStatusPacket.getPacketType() == SolarStatusPacketType.FX_STATUS){
 				FXStatusPacket fxStatusPacket = (FXStatusPacket) packet;
 				if(fx == null || fxStatusPacket.getAddress() < fx.getAddress()){

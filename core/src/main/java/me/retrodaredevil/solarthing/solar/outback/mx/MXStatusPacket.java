@@ -41,10 +41,9 @@ public interface MXStatusPacket extends OutbackStatusPacket, BasicChargeControll
 
 	@Override
 	default boolean isNewDay(DailyData previousDailyData){
-		if (!(previousDailyData instanceof MXStatusPacket)) {
+		if (!(previousDailyData instanceof MXStatusPacket previous)) {
 			throw new IllegalArgumentException("previousDailyData is not a MXStatusPacket! It's: " + previousDailyData.getClass().getName());
 		}
-		MXStatusPacket previous = (MXStatusPacket) previousDailyData;
 		return getDailyKWH() < previous.getDailyKWH() || getDailyAH() < previous.getDailyAH();
 	}
 

@@ -38,10 +38,9 @@ public interface TracerReadTable extends RecordBatteryVoltage, BasicChargeContro
 
 	@Override
 	default boolean isNewDay(DailyData previousDailyData) {
-		if (!(previousDailyData instanceof TracerReadTable)) {
+		if (!(previousDailyData instanceof TracerReadTable previous)) {
 			throw new IllegalArgumentException("previousDailyData is not a TracerReadTable! It's: " + previousDailyData.getClass().getName());
 		}
-		TracerReadTable previous = (TracerReadTable) previousDailyData;
 		return getDailyKWH() < previous.getDailyKWH() || getDailyAH() < previous.getDailyAH() ||
 				getDailyMaxBatteryVoltage() < previous.getDailyMaxBatteryVoltage();
 	}
