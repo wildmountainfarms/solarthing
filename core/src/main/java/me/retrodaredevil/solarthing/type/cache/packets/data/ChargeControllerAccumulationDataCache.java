@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.util.MathUtil;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -64,7 +63,7 @@ public class ChargeControllerAccumulationDataCache extends BaseAccumulationDataC
 
 	@JsonProperty("identifier")
 	@Override
-	public @NonNull Identifier getIdentifier() {
+	public Identifier getIdentifier() {
 		return identifier;
 	}
 

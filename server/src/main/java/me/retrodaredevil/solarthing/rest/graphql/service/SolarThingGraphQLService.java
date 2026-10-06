@@ -49,7 +49,6 @@ import me.retrodaredevil.solarthing.type.closed.meta.MetaDatabase;
 import me.retrodaredevil.solarthing.type.closed.meta.TargetMetaPacket;
 import me.retrodaredevil.solarthing.type.closed.meta.TargetedMetaPacket;
 import me.retrodaredevil.solarthing.type.closed.meta.TargetedMetaPacketType;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -73,7 +72,7 @@ public class SolarThingGraphQLService {
 
 
 	@GraphQLQuery(description = "Query status packets in the specified time range.")
-	public @NonNull SolarThingStatusQuery queryStatus(
+	public SolarThingStatusQuery queryStatus(
 			@GraphQLArgument(name = "from", description = DESCRIPTION_FROM) long from, @GraphQLArgument(name = "to", description = DESCRIPTION_TO) long to,
 			@GraphQLArgument(name = "sourceId", description = DESCRIPTION_OPTIONAL_SOURCE) @Nullable String sourceId,
 			@GraphQLArgument(name = "fragmentId", description = DESCRIPTION_OPTIONAL_FRAGMENT_ID) @Nullable Integer fragmentId
@@ -82,10 +81,10 @@ public class SolarThingGraphQLService {
 		return new SolarThingStatusQuery(new BasicPacketGetter(packets, PacketFilter.KEEP_ALL), simpleQueryHandler.sortPackets(packets, sourceId), simpleQueryHandler);
 	}
 	@GraphQLQuery(description = "Queries status packets in the specified time range while only including the specified identifier in the specified fragment")
-	public @NonNull SolarThingStatusQuery queryStatusIdentifier(
+	public SolarThingStatusQuery queryStatusIdentifier(
 			@GraphQLArgument(name = "from", description = DESCRIPTION_FROM) long from, @GraphQLArgument(name = "to", description = DESCRIPTION_TO) long to,
 			@GraphQLArgument(name = "fragmentId", description = DESCRIPTION_REQUIRED_FRAGMENT_ID) int fragmentId,
-			@GraphQLArgument(name = "identifier") @NonNull String identifierRepresentation,
+			@GraphQLArgument(name = "identifier") String identifierRepresentation,
 			@GraphQLArgument(name = "acceptSupplementary", defaultValue = "true") boolean acceptSupplementary
 	) {
 		// null source ID because each fragment ID is unique, even over multiple sources
@@ -98,7 +97,7 @@ public class SolarThingGraphQLService {
 	}
 
 	@GraphQLQuery(description = "Query the latest collection of status packets on or before the 'to' timestamp.")
-	public @NonNull SolarThingStatusQuery queryStatusLastNow(
+	public SolarThingStatusQuery queryStatusLastNow(
 			@GraphQLArgument(name = "sourceId", description = DESCRIPTION_OPTIONAL_SOURCE) @Nullable String sourceId,
 			@GraphQLArgument(name = "fragmentId", description = DESCRIPTION_OPTIONAL_FRAGMENT_ID) @Nullable Integer fragmentId,
 			@GraphQLArgument(name = "reversed", defaultValue = "false", description = "If set to true, the returned list will be reversed. Useful to set to true if you want the very latest packet to be first.") boolean reversed) {
@@ -106,7 +105,7 @@ public class SolarThingGraphQLService {
 	}
 
 	@GraphQLQuery(description = "Query the latest collection of status packets on or before the 'to' timestamp.")
-	public @NonNull SolarThingStatusQuery queryStatusLast(
+	public SolarThingStatusQuery queryStatusLast(
 			@GraphQLArgument(name = "to", description = DESCRIPTION_TO) long to,
 			@GraphQLArgument(name = "sourceId", description = DESCRIPTION_OPTIONAL_SOURCE) @Nullable String sourceId,
 			@GraphQLArgument(name = "fragmentId", description = DESCRIPTION_OPTIONAL_FRAGMENT_ID) @Nullable Integer fragmentId,
@@ -124,7 +123,7 @@ public class SolarThingGraphQLService {
 		);
 	}
 	@GraphQLQuery
-	public @NonNull SolarThingEventQuery queryEvent(
+	public SolarThingEventQuery queryEvent(
 			@GraphQLArgument(name = "from", description = DESCRIPTION_FROM) long from, @GraphQLArgument(name = "to", description = DESCRIPTION_TO) long to,
 			@GraphQLArgument(name = "sourceId", description = DESCRIPTION_OPTIONAL_SOURCE) @Nullable String sourceId,
 			@GraphQLArgument(name = "fragmentId", description = DESCRIPTION_OPTIONAL_FRAGMENT_ID) @Nullable Integer fragmentId,
@@ -133,10 +132,10 @@ public class SolarThingGraphQLService {
 		return new SolarThingEventQuery(new BasicPacketGetter(simpleQueryHandler.queryEvent(from, to, sourceId, fragmentId), new UnknownChangePacketsFilter(includeUnknownChangePackets)));
 	}
 	@GraphQLQuery(description = "Queries events in the specified time range while only including the specified identifier in the specified fragment")
-	public @NonNull SolarThingEventQuery queryEventIdentifier(
+	public SolarThingEventQuery queryEventIdentifier(
 			@GraphQLArgument(name = "from", description = DESCRIPTION_FROM) long from, @GraphQLArgument(name = "to", description = DESCRIPTION_TO) long to,
 			@GraphQLArgument(name = "fragmentId", description = DESCRIPTION_REQUIRED_FRAGMENT_ID) int fragmentId,
-			@GraphQLArgument(name = "identifier") @NonNull String identifierRepresentation,
+			@GraphQLArgument(name = "identifier") String identifierRepresentation,
 			@GraphQLArgument(name = "includeUnknownChangePackets", defaultValue = "false", description = DESCRIPTION_INCLUDE_UNKNOWN_CHANGE) boolean includeUnknownChangePackets,
 			@GraphQLArgument(name = "acceptSupplementary", defaultValue = "true") boolean acceptSupplementary
 	) {
@@ -147,7 +146,7 @@ public class SolarThingGraphQLService {
 	}
 	@Deprecated(forRemoval = true)
 	@GraphQLQuery(description = "Queries events in the specified time range while only including the specified fragment. Deprecated: Use queryEvent instead")
-	public @NonNull SolarThingEventQuery queryEventFragment(
+	public SolarThingEventQuery queryEventFragment(
 			@GraphQLArgument(name = "from", description = DESCRIPTION_FROM) long from, @GraphQLArgument(name = "to", description = DESCRIPTION_TO) long to,
 			@GraphQLArgument(name = "fragmentId", description = DESCRIPTION_REQUIRED_FRAGMENT_ID) int fragmentId,
 			@GraphQLArgument(name = "includeUnknownChangePackets", defaultValue = "false", description = DESCRIPTION_INCLUDE_UNKNOWN_CHANGE) boolean includeUnknownChangePackets
@@ -169,68 +168,68 @@ public class SolarThingGraphQLService {
 		}
 
 		@GraphQLQuery
-		public @NonNull List<@NonNull PacketNode<BatteryVoltage>> batteryVoltage() {
+		public List<PacketNode<BatteryVoltage>> batteryVoltage() {
 			return packetGetter.getPackets(BatteryVoltage.class);
 		}
 		@GraphQLQuery
-		public @NonNull List<@NonNull PacketNode<FXStatusPacket>> fxStatus() {
+		public List<PacketNode<FXStatusPacket>> fxStatus() {
 			return packetGetter.getPackets(FXStatusPacket.class);
 		}
 		@GraphQLQuery
-		public @NonNull List<@NonNull PacketNode<MXStatusPacket>> mxStatus() {
+		public List<PacketNode<MXStatusPacket>> mxStatus() {
 			return packetGetter.getPackets(MXStatusPacket.class);
 		}
 		@GraphQLQuery
-		public @NonNull List<@NonNull PacketNode<DailyFXPacket>> fxDaily() {
+		public List<PacketNode<DailyFXPacket>> fxDaily() {
 			return packetGetter.getPackets(DailyFXPacket.class);
 		}
 		@GraphQLQuery
-		public @NonNull List<@NonNull PacketNode<RoverStatusPacket>> roverStatus() {
+		public List<PacketNode<RoverStatusPacket>> roverStatus() {
 			return packetGetter.getPackets(RoverStatusPacket.class);
 		}
 		@GraphQLQuery
-		public @NonNull List<@NonNull PacketNode<TracerStatusPacket>> tracerStatus() {
+		public List<PacketNode<TracerStatusPacket>> tracerStatus() {
 			return packetGetter.getPackets(TracerStatusPacket.class);
 		}
 		@GraphQLQuery
-		public @NonNull List<@NonNull PacketNode<SolarDevice>> solarDevice() {
+		public List<PacketNode<SolarDevice>> solarDevice() {
 			return packetGetter.getPackets(SolarDevice.class);
 		}
 		@GraphQLQuery
-		public @NonNull List<@NonNull PacketNode<PVCurrentAndVoltage>> solar() {
+		public List<PacketNode<PVCurrentAndVoltage>> solar() {
 			return packetGetter.getPackets(PVCurrentAndVoltage.class);
 		}
 		@GraphQLQuery
-		public @NonNull List<@NonNull PacketNode<BasicChargeController>> chargeController() {
+		public List<PacketNode<BasicChargeController>> chargeController() {
 			return packetGetter.getPackets(BasicChargeController.class);
 		}
 		@GraphQLQuery
-		public @NonNull List<@NonNull PacketNode<DailyChargeController>> dailyChargeController() {
+		public List<PacketNode<DailyChargeController>> dailyChargeController() {
 			return packetGetter.getPackets(DailyChargeController.class);
 		}
 		@GraphQLQuery
-		public @NonNull List<@NonNull PacketNode<CpuTemperaturePacket>> cpuTemperature() {
+		public List<PacketNode<CpuTemperaturePacket>> cpuTemperature() {
 			return packetGetter.getPackets(CpuTemperaturePacket.class);
 		}
 		@GraphQLQuery
-		public @NonNull List<@NonNull PacketNode<TemperaturePacket>> temperature() {
+		public List<PacketNode<TemperaturePacket>> temperature() {
 			// TODO the filtering of packets should not be based on POSSIBLE_BAD_VALUES, but should instead be based on sudden spikes in the data
 			List<PacketNode<TemperaturePacket>> packetNodes = packetGetter.getPackets(TemperaturePacket.class);
 			packetNodes.removeIf(node -> TemperaturePacket.POSSIBLE_BAD_VALUES.contains(node.getPacket().getTemperatureCelsius()));
 			return packetNodes;
 		}
 		@GraphQLQuery
-		public @NonNull List<@NonNull PacketNode<PzemShuntStatusPacket>> pzemShuntStatus() {
+		public List<PacketNode<PzemShuntStatusPacket>> pzemShuntStatus() {
 			return packetGetter.getPackets(PzemShuntStatusPacket.class);
 		}
 		@GraphQLQuery
-		public @NonNull List<@NonNull PacketNode<DualTemperature>> dualTemperature() {
+		public List<PacketNode<DualTemperature>> dualTemperature() {
 			return packetGetter.getPackets(DualTemperature.class);
 		}
 
 
 		@GraphQLQuery
-		public @NonNull List<@NonNull DataNode<Float>> batteryVoltageTemperatureCompensated() {
+		public List<DataNode<Float>> batteryVoltageTemperatureCompensated() {
 			MetaDatabase metaDatabase = simpleQueryHandler.queryMeta();
 			FXChargingTemperatureAdjustPacket fxChargingTemperatureAdjustPacket = null;
 			// Depending on the date, there could be different configurations. So, this just gets the date of the last packet
@@ -274,7 +273,7 @@ public class SolarThingGraphQLService {
 			return r;
 		}
 		@GraphQLQuery
-		public @NonNull List<@NonNull SimpleNode<Float>> batteryVoltageAverage() {
+		public List<SimpleNode<Float>> batteryVoltageAverage() {
 			List<SimpleNode<Float>> r = new ArrayList<>();
 			for (FragmentedPacketGroup packetGroup : sortedPackets) {
 				float sum = 0;
@@ -293,7 +292,7 @@ public class SolarThingGraphQLService {
 			return r;
 		}
 		@GraphQLQuery
-		public @NonNull List<@NonNull SimpleNode<FlatData>> flatData() {
+		public List<SimpleNode<FlatData>> flatData() {
 			List<SimpleNode<FlatData>> r = new ArrayList<>();
 			for (FragmentedPacketGroup packetGroup : sortedPackets) {
 				List<SolarDevice> solarDevice = new ArrayList<>();
@@ -373,11 +372,11 @@ public class SolarThingGraphQLService {
 			return total;
 		}
 		@JsonProperty("acMode")
-		public @NonNull ACMode getACMode() {
+		public ACMode getACMode() {
 			return fx.getFirst().getACMode();
 		}
 		@JsonProperty("miscModesString")
-		public @NonNull String getMiscModesString() {
+		public String getMiscModesString() {
 			StringBuilder result = new StringBuilder();
 			for (FXStatusPacket device : fx) {
 				String miscModes = device.getMiscModesString();
@@ -390,7 +389,7 @@ public class SolarThingGraphQLService {
 		}
 		@JsonPropertyDescription("Returns the warnings if there are any, empty string if no errors. Errors are formatted with device first, then error description")
 		@JsonProperty("warningsString")
-		public @NonNull String getWarningsString() {
+		public String getWarningsString() {
 			StringBuilder result = new StringBuilder();
 			for (FXStatusPacket device : fx) {
 				List<BitmaskMode> errors = new ArrayList<>(device.getWarningModes());
@@ -473,12 +472,12 @@ public class SolarThingGraphQLService {
 		}
 		@JsonPropertyDescription("Returns a comma separated string of the names of connected devices")
 		@JsonProperty("deviceInfoString")
-		public @NonNull String getDeviceInfoString() {
+		public String getDeviceInfoString() {
 			return solarDevice.stream().map(device -> device.getIdentityInfo().getDisplayName()).collect(Collectors.joining(", "));
 		}
 		@JsonPropertyDescription("Returns a string representing the operating modes of all the devices")
 		@JsonProperty("operatingModeString")
-		public @NonNull String getOperatingModeString() {
+		public String getOperatingModeString() {
 			StringBuilder result = new StringBuilder();
 			for (SolarDevice device : solarDevice) {
 				String name = device.getIdentityInfo().getShortName();
@@ -492,7 +491,7 @@ public class SolarThingGraphQLService {
 		}
 		@JsonPropertyDescription("Returns the errors if there are any, empty string if no errors. Errors are formatted with device first, then error description")
 		@JsonProperty("errorsString")
-		public @NonNull String getErrorsString() {
+		public String getErrorsString() {
 			StringBuilder result = new StringBuilder();
 			for (ErrorReporter device : errorReporter) {
 				List<BitmaskMode> errors = new ArrayList<>(device.getErrorModes());
@@ -513,15 +512,15 @@ public class SolarThingGraphQLService {
 		}
 
 		@GraphQLQuery
-		public @NonNull List<@NonNull PacketNode<FXACModeChangePacket>> fxACModeChange() {
+		public List<PacketNode<FXACModeChangePacket>> fxACModeChange() {
 			return packetGetter.getPackets(FXACModeChangePacket.class);
 		}
 		@GraphQLQuery
-		public @NonNull List<@NonNull PacketNode<FXOperationalModeChangePacket>> fxOperationalModeChange(
-				@GraphQLArgument(name = "include") @Nullable List<@NonNull OperationalMode> include,
-				@GraphQLArgument(name = "exclude") @Nullable List<@NonNull OperationalMode> exclude
+		public List<PacketNode<FXOperationalModeChangePacket>> fxOperationalModeChange(
+				@GraphQLArgument(name = "include") @Nullable List<OperationalMode> include,
+				@GraphQLArgument(name = "exclude") @Nullable List<OperationalMode> exclude
 		) {
-			List<@NonNull PacketNode<FXOperationalModeChangePacket>> r = packetGetter.getPackets(FXOperationalModeChangePacket.class);
+			List<PacketNode<FXOperationalModeChangePacket>> r = packetGetter.getPackets(FXOperationalModeChangePacket.class);
 			if (include != null) {
 				r.removeIf(packetNode -> !include.contains(packetNode.getPacket().getOperationalMode()));
 			} else if (exclude != null) {
@@ -530,31 +529,31 @@ public class SolarThingGraphQLService {
 			return r;
 		}
 		@GraphQLQuery
-		public @NonNull List<@NonNull PacketNode<FXAuxStateChangePacket>> fxAuxStateChange() {
+		public List<PacketNode<FXAuxStateChangePacket>> fxAuxStateChange() {
 			return packetGetter.getPackets(FXAuxStateChangePacket.class);
 		}
 		@GraphQLQuery
-		public @NonNull List<@NonNull PacketNode<MXAuxModeChangePacket>> mxAuxModeChange() {
+		public List<PacketNode<MXAuxModeChangePacket>> mxAuxModeChange() {
 			return packetGetter.getPackets(MXAuxModeChangePacket.class);
 		}
 		@GraphQLQuery
-		public @NonNull List<@NonNull PacketNode<MXRawDayEndPacket>> mxRawDayEnd() {
+		public List<PacketNode<MXRawDayEndPacket>> mxRawDayEnd() {
 			return packetGetter.getPackets(MXRawDayEndPacket.class);
 		}
 		@GraphQLQuery
-		public @NonNull List<@NonNull PacketNode<MXChargerModeChangePacket>> mxChargerModeChange() {
+		public List<PacketNode<MXChargerModeChangePacket>> mxChargerModeChange() {
 			return packetGetter.getPackets(MXChargerModeChangePacket.class);
 		}
 		@GraphQLQuery
-		public @NonNull List<@NonNull PacketNode<RoverChargingStateChangePacket>> roverChargingStateChange() {
+		public List<PacketNode<RoverChargingStateChangePacket>> roverChargingStateChange() {
 			return packetGetter.getPackets(RoverChargingStateChangePacket.class);
 		}
 		@GraphQLQuery
-		public @NonNull List<@NonNull PacketNode<SuccessMateCommandPacket>> mateCommand(
-				@GraphQLArgument(name = "include") @Nullable List<@NonNull MateCommand> include,
-				@GraphQLArgument(name = "exclude") @Nullable List<@NonNull MateCommand> exclude
+		public List<PacketNode<SuccessMateCommandPacket>> mateCommand(
+				@GraphQLArgument(name = "include") @Nullable List<MateCommand> include,
+				@GraphQLArgument(name = "exclude") @Nullable List<MateCommand> exclude
 		) {
-			List<@NonNull PacketNode<SuccessMateCommandPacket>> r = packetGetter.getPackets(SuccessMateCommandPacket.class);
+			List<PacketNode<SuccessMateCommandPacket>> r = packetGetter.getPackets(SuccessMateCommandPacket.class);
 			if (include != null) {
 				r.removeIf(packetNode -> !include.contains(packetNode.getPacket().getCommand()));
 			} else if (exclude != null) {

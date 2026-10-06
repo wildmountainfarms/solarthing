@@ -6,7 +6,6 @@ import okhttp3.Cookie;
 import okhttp3.CookieJar;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -19,13 +18,12 @@ public class ExistingCookieAuthHandler implements OkHttpAuthHandler {
 
 	private final CookieJar cookieJar = new CookieJar() {
 		@Override
-		public void saveFromResponse(@NonNull HttpUrl httpUrl, @NonNull List<Cookie> list) {
+		public void saveFromResponse(HttpUrl httpUrl, List<Cookie> list) {
 
 		}
 
-		@NonNull
 		@Override
-		public List<Cookie> loadForRequest(@NonNull HttpUrl httpUrl) {
+		public List<Cookie> loadForRequest(HttpUrl httpUrl) {
 			return Collections.singletonList(cookie);
 		}
 	};

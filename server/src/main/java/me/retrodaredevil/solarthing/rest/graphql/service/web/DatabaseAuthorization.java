@@ -6,7 +6,6 @@ import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import okhttp3.Cookie;
 import okhttp3.HttpUrl;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
@@ -29,8 +28,8 @@ public class DatabaseAuthorization {
 
 	@JsonCreator
 	public static DatabaseAuthorization create(
-			@JsonProperty("url") @NonNull String urlString,
-			@JsonProperty("cookie") @NonNull String cookieString
+			@JsonProperty("url") String urlString,
+			@JsonProperty("cookie") String cookieString
 	) {
 
 		// internally in Cookie.parse only HttpUrl.host() and HttpUrl.encodedPath() are used, so tacking a http:// on just allows us to easily use this
@@ -45,12 +44,12 @@ public class DatabaseAuthorization {
 
 
 	@JsonProperty("url") // public to avoid IllegalAccessException in GraphQL-spqr code
-	public @NonNull String getUrlString() {
+	public String getUrlString() {
 		return cookie.domain();
 	}
 
 	@JsonProperty("cookie") // public to avoid IllegalAccessException in GraphQL-spqr code
-	public @NonNull String getCookieString() {
+	public String getCookieString() {
 		return cookie.toString();
 	}
 

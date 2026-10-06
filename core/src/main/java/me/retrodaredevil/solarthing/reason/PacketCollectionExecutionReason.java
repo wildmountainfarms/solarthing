@@ -3,7 +3,6 @@ package me.retrodaredevil.solarthing.reason;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -26,9 +25,8 @@ public class PacketCollectionExecutionReason implements ExecutionReason {
 		this.dbId = requireNonNull(dbId);
 	}
 
-	// TODO remove NonNull
 	@Override
-	public @NonNull ExecutionReasonType getPacketType() {
+	public ExecutionReasonType getPacketType() {
 		return ExecutionReasonType.PACKET_COLLECTION;
 	}
 

@@ -11,7 +11,6 @@ import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.event.SupplementarySolarEventPacket;
 import me.retrodaredevil.solarthing.solar.outback.SupplementaryOutbackPacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.ChargerMode;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -20,10 +19,9 @@ import org.jspecify.annotations.Nullable;
 @JsonExplicit
 @NullMarked
 public interface MXChargerModeChangePacket extends SupplementarySolarEventPacket, SupplementaryOutbackPacket, ChangePacket {
-	// TODO remove NonNull
 	@DefaultFinal
 	@Override
-	default @NonNull SolarEventPacketType getPacketType(){
+	default SolarEventPacketType getPacketType(){
 		return SolarEventPacketType.MXFM_CHARGER_MODE_CHANGE;
 	}
 

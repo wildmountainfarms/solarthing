@@ -21,7 +21,6 @@ import me.retrodaredevil.couchdbjava.security.SecurityGroup;
 import me.retrodaredevil.solarthing.SolarThingDatabaseType;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -277,7 +276,7 @@ public class CouchDbSetupMain {
 		}
 
 		@Override
-		public @NonNull String promptUserPassword(SolarThingDatabaseType.UserType userType) {
+		public String promptUserPassword(SolarThingDatabaseType.UserType userType) {
 			return scanner.nextLine();
 		}
 	}

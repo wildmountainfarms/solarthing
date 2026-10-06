@@ -17,7 +17,6 @@ import me.retrodaredevil.solarthing.solcast.common.SimpleEstimatedActual;
 import me.retrodaredevil.solarthing.solcast.rooftop.EstimatedActualCache;
 import me.retrodaredevil.solarthing.solcast.rooftop.EstimatedActualRetriever;
 import okhttp3.OkHttpClient;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -73,7 +72,7 @@ public class SolarThingGraphQLSolcastService {
 	@GraphQLQuery
 	public @Nullable SolarThingSolcastQuery querySolcast(
 			@GraphQLArgument(name = "from", description = DESCRIPTION_FROM) long from, @GraphQLArgument(name = "to", description = DESCRIPTION_TO) long to,
-			@GraphQLArgument(name = "sourceId") @NonNull String sourceId){
+			@GraphQLArgument(name = "sourceId") String sourceId){
 		SolcastHandler handler = sourceHandlerMap.get(sourceId);
 		if (handler == null) {
 			// TODO consider if there's a better way to indicate that the given source is not supported
@@ -85,7 +84,7 @@ public class SolarThingGraphQLSolcastService {
 	@GraphQLQuery
 	public @Nullable SolarThingSolcastDayQuery querySolcastDay(
 			@GraphQLArgument(name = "to", description = "Used to determine what day to query. Should be set similar to other 'to' arguments.") long to,
-			@GraphQLArgument(name = "sourceId") @NonNull String sourceId){
+			@GraphQLArgument(name = "sourceId") String sourceId){
 		SolcastHandler handler = sourceHandlerMap.get(sourceId);
 		if (handler == null) {
 			return null;
@@ -106,11 +105,11 @@ public class SolarThingGraphQLSolcastService {
 		}
 
 		@GraphQLQuery
-		public @NonNull List<@NonNull SimpleEstimatedActual> queryEstimateActuals() throws IOException {
+		public List<SimpleEstimatedActual> queryEstimateActuals() throws IOException {
 			return handler.cache.getEstimatedActuals(from, to, true);
 		}
 		@GraphQLQuery
-		public @NonNull List<@NonNull Forecast> queryForecasts(@GraphQLArgument(name = "includePast", defaultValue = "false") boolean includePast) throws IOException {
+		public List<Forecast> queryForecasts(@GraphQLArgument(name = "includePast", defaultValue = "false") boolean includePast) throws IOException {
 			long now = System.currentTimeMillis();
 			if (!includePast && to < now) {
 				return Collections.emptyList(); // they don't want past data, but their constants are for past data
@@ -119,7 +118,7 @@ public class SolarThingGraphQLSolcastService {
 			return handler.cache.getForecasts(start, to, true);
 		}
 		@GraphQLQuery
-		public @NonNull List<@NonNull DailyEnergy> queryDailyEnergyEstimates() throws IOException {
+		public List<DailyEnergy> queryDailyEnergyEstimates() throws IOException {
 			LocalDate startDate = Instant.ofEpochMilli(from).atZone(zoneId).toLocalDate();
 			LocalDate endDate = Instant.ofEpochMilli(to).atZone(zoneId).toLocalDate();
 			// Note that this call to getEstimatedActuals() has a good chance of requesting past data depending on what startDate is.
@@ -153,7 +152,7 @@ public class SolarThingGraphQLSolcastService {
 				dailyKWH += estimatedActual.getEnergyGenerationEstimate();
 				map.put(date, dailyKWH);
 			}
-			Set<DailyEnergy> r = new TreeSet<>(Comparator.comparing(DailyEnergy::getDayStart));
+			Set<DailyEnergy> r = new TreeSet<>(Comparator.comparingLong(DailyEnergy::getDayStart));
 			for (Map.Entry<LocalDate, Float> entry : map.entrySet()) {
 				r.add(new DailyEnergy(entry.getKey().atStartOfDay(zoneId).toInstant().toEpochMilli(), entry.getValue()));
 			}
@@ -174,7 +173,7 @@ public class SolarThingGraphQLSolcastService {
 			this.cacheController = cacheController;
 		}
 		@GraphQLQuery(description = "Queries the kWh generation estimate for a certain day. offset of 0 is today, 1 is tomorrow, -1 is yesterday")
-		public @NonNull DailyEnergy queryEnergyEstimate(@GraphQLArgument(name = "offset", defaultValue = "0") int offsetDays) throws IOException {
+		public DailyEnergy queryEnergyEstimate(@GraphQLArgument(name = "offset", defaultValue = "0") int offsetDays) throws IOException {
 			/*
 			This is the query the WMF's Grafana uses frequently.
 			If the cacheController is not null, past data will be retrieved from the cache, rather than from Solcast.

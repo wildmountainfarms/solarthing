@@ -4,7 +4,6 @@ import org.jspecify.annotations.NullMarked;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 
@@ -20,7 +19,7 @@ public final class ForecastResult {
 		this.forecasts = requireNonNull(forecasts);
 	}
 
-	public @NonNull List<Forecast> getForecasts() {
+	public List<Forecast> getForecasts() {
 		return forecasts;
 	}
 }

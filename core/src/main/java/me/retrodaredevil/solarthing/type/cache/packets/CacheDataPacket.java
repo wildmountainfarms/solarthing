@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.PacketEntry;
 import me.retrodaredevil.solarthing.packets.instance.SourcedPacket;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 
 import java.time.Duration;
@@ -20,14 +19,12 @@ public interface CacheDataPacket extends PacketEntry, SourcedPacket {
 	@Override
 	String getDbId();
 
-	// TODO remove NonNull
 	@JsonProperty("sourceId")
 	@Override
-	@NonNull String getSourceId();
+	String getSourceId();
 
-	// TODO remove NonNull
 	@JsonProperty("cacheName")
-	@NonNull String getCacheName();
+	String getCacheName();
 
 	@JsonProperty("periodStartDateMillis")
 	long getPeriodStartDateMillis();

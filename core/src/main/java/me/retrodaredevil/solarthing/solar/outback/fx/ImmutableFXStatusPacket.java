@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -114,9 +113,8 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 		);
 	}
 
-	// TODO remove NonNull
 	@Override
-	public @NonNull IdentityInfo getIdentityInfo() {
+	public IdentityInfo getIdentityInfo() {
 		return identityInfo;
 	}
 
@@ -225,9 +223,8 @@ final class ImmutableFXStatusPacket implements FXStatusPacket {
 		return address;
 	}
 
-	// TODO remove NonNull
 	@Override
-	public @NonNull OutbackIdentifier getIdentifier() {
+	public OutbackIdentifier getIdentifier() {
 		return identifier;
 	}
 

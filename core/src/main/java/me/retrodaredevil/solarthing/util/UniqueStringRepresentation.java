@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.util;
 
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -18,7 +17,6 @@ public interface UniqueStringRepresentation {
 	So in some ways, this is just an extra interface which forces implementations to define some method which has the same effect as toString()
 	 */
 
-	// TODO remove NonNull
 	/**
 	 * Note: If
 	 * {@link UniqueStringRepresentation#equals(Object) executionReason.equals}({@link UniqueStringRepresentation anotherReason}),
@@ -29,5 +27,5 @@ public interface UniqueStringRepresentation {
 	 * NOTE: Implementations of this method can and may be changed in the future, so you should not persist the result of this method anywhere.
 	 * @return A string that is not human-readable, but is unique to the contents of this particular {@link UniqueStringRepresentation}
 	 */
-	@NonNull String getUniqueString();
+	String getUniqueString();
 }

@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.packets.identification;
 
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -9,7 +8,7 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 public interface IdentifierFragment extends IdentifierFragmentMatcher { // It would be nice to make these serializable to JSON, but nah. Probably not necessary.
 	int getFragmentId();
-	@NonNull Identifier getIdentifier();
+	Identifier getIdentifier();
 
 	@Override
 	default boolean matches(IdentifierFragment identifierFragment) {

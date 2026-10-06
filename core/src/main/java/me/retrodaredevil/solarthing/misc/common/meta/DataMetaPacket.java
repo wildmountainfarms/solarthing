@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.type.closed.meta.TargetedMetaPacket;
 import me.retrodaredevil.solarthing.type.closed.meta.TargetedMetaPacketType;
-import org.jspecify.annotations.NonNull;
 import me.retrodaredevil.solarthing.misc.common.DataIdentifiable;
 import me.retrodaredevil.solarthing.misc.common.DataIdentifier;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
@@ -36,39 +35,33 @@ public final class DataMetaPacket implements TargetedMetaPacket, DataIdentifiabl
 		identityInfo = new DataMetaIdentityInfo(name, dataId);
 	}
 
-	// TODO remove NonNull
 	@Override
-	public @NonNull TargetedMetaPacketType getPacketType() {
+	public TargetedMetaPacketType getPacketType() {
 		return TargetedMetaPacketType.DATA_INFO;
 	}
 
-	// TODO remove NonNull
 	@JsonProperty("name")
-	public @NonNull String getName() {
+	public String getName() {
 		return name;
 	}
 
-	// TODO remove NonNull
 	@JsonProperty("description")
-	public @NonNull String getDescription() {
+	public String getDescription() {
 		return description;
 	}
 
-	// TODO remove NonNull
 	@JsonProperty("location")
-	public @NonNull String getLocation() {
+	public String getLocation() {
 		return location;
 	}
 
-	// TODO remove NonNull
 	@Override
-	public @NonNull DataIdentifier getIdentifier() {
+	public DataIdentifier getIdentifier() {
 		return dataIdentifier;
 	}
 
-	// TODO remove NonNull
 	@Override
-	public @NonNull IdentityInfo getIdentityInfo() {
+	public IdentityInfo getIdentityInfo() {
 		return identityInfo;
 	}
 

@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.packets.support.Support;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -68,7 +67,7 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 	}
 
 	@Override
-	public @NonNull IdentityInfo getIdentityInfo() {
+	public IdentityInfo getIdentityInfo() {
 		return identityInfo;
 	}
 
@@ -78,7 +77,7 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 	}
 
 	@Override
-	public @NonNull OutbackIdentifier getIdentifier() {
+	public OutbackIdentifier getIdentifier() {
 		return identifier;
 	}
 
@@ -88,13 +87,11 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 		return chargerCurrent;
 	}
 
-	@NonNull
 	@Override
 	public Integer getPVCurrent() {
 		return pvCurrent;
 	}
 
-	@NonNull
 	@Override
 	public Integer getPVVoltage() {
 		return inputVoltage;
@@ -138,7 +135,6 @@ final class ImmutableMXStatusPacket implements MXStatusPacket {
 		return dailyAH;
 	}
 
-	@NonNull
 	@Override
 	public Support getDailyAHSupport() {
 		return dailyAHSupport;

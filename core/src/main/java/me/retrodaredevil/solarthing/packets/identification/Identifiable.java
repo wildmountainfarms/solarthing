@@ -1,7 +1,6 @@
 package me.retrodaredevil.solarthing.packets.identification;
 
 import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -14,11 +13,9 @@ import org.jspecify.annotations.NullMarked;
  */
 @NullMarked
 public interface Identifiable {
-	// TODO remove NonNull
 	@GraphQLInclude("identifier")
-	@NonNull Identifier getIdentifier();
+	Identifier getIdentifier();
 
-	// TODO remove NonNull
 	@GraphQLInclude("identityInfo")
-	@NonNull IdentityInfo getIdentityInfo();
+	IdentityInfo getIdentityInfo();
 }

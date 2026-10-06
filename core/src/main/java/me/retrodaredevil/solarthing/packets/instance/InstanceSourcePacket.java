@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 
 @JsonTypeName("SOURCE")
@@ -16,10 +15,9 @@ public interface InstanceSourcePacket extends InstancePacket, SourcedPacket {
 	String DEFAULT_SOURCE_ID = "default";
 	String UNUSED_SOURCE_ID = "<UNUSED SOURCE ID THAT WILL NEVER BE IN A PACKET>";
 
-	// TODO remove NonNull
 	@DefaultFinal
 	@Override
-	default @NonNull InstancePacketType getPacketType(){
+	default InstancePacketType getPacketType(){
 		return InstancePacketType.SOURCE;
 	}
 

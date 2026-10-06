@@ -12,7 +12,6 @@ import me.retrodaredevil.solarthing.solar.event.SolarEventPacketType;
 import me.retrodaredevil.solarthing.solar.event.SupplementarySolarEventPacket;
 import me.retrodaredevil.solarthing.solar.renogy.rover.ChargingState;
 import me.retrodaredevil.solarthing.solar.renogy.rover.SupplementaryRoverPacket;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -22,10 +21,9 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 public interface RoverChargingStateChangePacket extends SupplementarySolarEventPacket, SupplementaryRoverPacket, ChangePacket {
 
-	// TODO remove NonNull
 	@DefaultFinal
 	@Override
-	default @NonNull SolarEventPacketType getPacketType() {
+	default SolarEventPacketType getPacketType() {
 		return SolarEventPacketType.ROVER_CHARGING_STATE_CHANGE;
 	}
 
@@ -40,9 +38,8 @@ public interface RoverChargingStateChangePacket extends SupplementarySolarEventP
 		return getPreviousChargingStateValue() == null;
 	}
 
-	// TODO remove NonNull
 	@GraphQLInclude("chargingMode")
-	default @NonNull ChargingState getChargingMode() {
+	default ChargingState getChargingMode() {
 		return Modes.getActiveMode(ChargingState.class, getChargingStateValue());
 	}
 	@GraphQLInclude("previousChargingMode")

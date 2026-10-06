@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.type.closed.meta.TargetedMetaPacket;
 import me.retrodaredevil.solarthing.type.closed.meta.TargetedMetaPacketType;
-import org.jspecify.annotations.NonNull;
 import me.retrodaredevil.solarthing.solar.outback.fx.charge.FXChargingSettings;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -30,9 +29,8 @@ public class FXChargingSettingsPacket implements TargetedMetaPacket {
 		this.temperatureAdjustCelsius = temperatureAdjustCelsius == null ? 0 : temperatureAdjustCelsius;
 	}
 
-	// TODO remove NonNull
 	@Override
-	public @NonNull TargetedMetaPacketType getPacketType() {
+	public TargetedMetaPacketType getPacketType() {
 		return TargetedMetaPacketType.FX_CHARGING_SETTINGS;
 	}
 

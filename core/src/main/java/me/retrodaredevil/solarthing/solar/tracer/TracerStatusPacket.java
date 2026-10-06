@@ -10,7 +10,6 @@ import me.retrodaredevil.solarthing.packets.PacketWithVersion;
 import me.retrodaredevil.solarthing.packets.identification.NumberedIdentifiable;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacket;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 
 @JsonExplicit
@@ -29,15 +28,13 @@ public interface TracerStatusPacket extends TracerReadTable, SolarStatusPacket, 
 		public static final int LATEST = CHARGING_EQUIPMENT_EVENT;
 	}
 
-	// TODO remove NonNull
 	@Override
-	default @NonNull SolarStatusPacketType getPacketType() {
+	default SolarStatusPacketType getPacketType() {
 		return SolarStatusPacketType.TRACER_STATUS;
 	}
 
-	// TODO remove NonNull
 	@Override
-	@NonNull TracerIdentifier getIdentifier();
+	TracerIdentifier getIdentifier();
 
 	@JsonInclude(JsonInclude.Include.NON_DEFAULT) // won't include 0
 	@JsonProperty("number")

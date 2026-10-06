@@ -8,7 +8,6 @@ import me.retrodaredevil.solarthing.misc.common.DataIdentifiable;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacket;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 
 @JsonDeserialize(as = ImmutableBatteryVoltageOnlyPacket.class)
@@ -16,10 +15,9 @@ import org.jspecify.annotations.NullMarked;
 @JsonExplicit
 @NullMarked
 public interface BatteryVoltageOnlyPacket extends BatteryVoltage, DataIdentifiable, SolarStatusPacket {
-	// TODO remove NonNull
 	@DefaultFinal
 	@Override
-	default @NonNull SolarStatusPacketType getPacketType() {
+	default SolarStatusPacketType getPacketType() {
 		return SolarStatusPacketType.BATTERY_VOLTAGE_ONLY;
 	}
 }

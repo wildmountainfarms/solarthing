@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.reason.ExecutionReason;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -36,15 +35,13 @@ public class ImmutableSuccessMateCommandPacket implements SuccessMateCommandPack
 		return packetVersion;
 	}
 
-	// TODO remove NonNull
 	@Override
-	public @NonNull MateCommand getCommand() {
+	public MateCommand getCommand() {
 		return command;
 	}
 
-	// TODO remove NonNull
 	@Override
-	public @NonNull String getSource() {
+	public String getSource() {
 		return source;
 	}
 

@@ -9,7 +9,6 @@ import me.retrodaredevil.solarthing.misc.common.DataIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverIdentifier;
 import me.retrodaredevil.solarthing.solar.tracer.TracerIdentifier;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -37,13 +36,12 @@ import org.jspecify.annotations.NullMarked;
 @JsonClassDescription("Contains a representation that is unique across all packets in a particular fragment")
 @NullMarked
 public interface Identifier {
-	// TODO remove NonNull
 	/**
 	 * Also note that representations could change at any time after a SolarThing update, but generally they don't.
 	 * @return A representation of this identifier
 	 */
 	@GraphQLInclude("representation")
 	@JsonPropertyDescription("A string representation of this identifier")
-	@NonNull String getRepresentation();
+	String getRepresentation();
 
 }

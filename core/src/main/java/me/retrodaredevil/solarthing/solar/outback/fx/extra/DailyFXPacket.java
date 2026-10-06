@@ -7,7 +7,6 @@ import me.retrodaredevil.solarthing.solar.extra.SolarExtraPacketType;
 import me.retrodaredevil.solarthing.solar.extra.SupplementarySolarExtraPacket;
 import me.retrodaredevil.solarthing.solar.outback.SupplementaryOutbackPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.FXDailyData;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 
 @JsonDeserialize(using = ImmutableDailyFXPacket.Deserializer.class)
@@ -17,7 +16,7 @@ public interface DailyFXPacket extends FXDailyData, SupplementarySolarExtraPacke
 
 	@DefaultFinal
 	@Override
-	default @NonNull SolarExtraPacketType getPacketType() {
+	default SolarExtraPacketType getPacketType() {
 		return SolarExtraPacketType.FX_DAILY;
 	}
 }

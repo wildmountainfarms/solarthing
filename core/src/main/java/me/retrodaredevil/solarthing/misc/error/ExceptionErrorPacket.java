@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 
 @JsonDeserialize(as = ImmutableExceptionErrorPacket.class)
@@ -15,10 +14,9 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 public interface ExceptionErrorPacket extends ErrorPacket, Identifiable {
 
-	// TODO remove NonNull
 	@DefaultFinal
 	@Override
-	default @NonNull ErrorPacketType getPacketType() {
+	default ErrorPacketType getPacketType() {
 		return ErrorPacketType.EXCEPTION_ERROR;
 	}
 	@JsonProperty("exceptionName")
@@ -39,7 +37,6 @@ public interface ExceptionErrorPacket extends ErrorPacket, Identifiable {
 	@JsonProperty("exceptionInstanceIdentifier")
 	String getExceptionInstanceIdentifier();
 
-	// TODO remove NonNull
 	@Override
-	@NonNull ExceptionErrorIdentifier getIdentifier();
+	ExceptionErrorIdentifier getIdentifier();
 }

@@ -2,7 +2,6 @@ package me.retrodaredevil.solarthing.solar.outback.fx;
 
 
 import me.retrodaredevil.solarthing.packets.CodeMode;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -31,9 +30,8 @@ public enum ACMode implements CodeMode { // one must be active
 		return value;
 	}
 
-	// TODO remove NonNull
 	@Override
-	public @NonNull String getModeName() {
+	public String getModeName() {
 		return name;
 	}
 }

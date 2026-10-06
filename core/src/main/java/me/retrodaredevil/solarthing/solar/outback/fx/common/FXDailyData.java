@@ -12,7 +12,6 @@ import me.retrodaredevil.solarthing.solar.outback.fx.ACMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXErrorMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.OperationalMode;
 import me.retrodaredevil.solarthing.solar.outback.fx.extra.DailyFXPacket;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -53,9 +52,9 @@ public interface FXDailyData extends OutbackData, DailyBatteryVoltage, ErrorRepo
 	// FX Accumulation Data
 
 	@JsonProperty("operationalModeValues")
-	@NonNull Collection<@NonNull Integer> getOperationalModeValues();
+	Collection< Integer> getOperationalModeValues();
 	@GraphQLInclude("operationalModes")
-	default @NonNull Set<@NonNull OperationalMode> getOperationalModes(){ return Modes.getActiveModes(OperationalMode.class, getOperationalModeValues()); }
+	default Set<OperationalMode> getOperationalModes(){ return Modes.getActiveModes(OperationalMode.class, getOperationalModeValues()); }
 
 	/**
 	 * Should be serialized as "errorModeValue"
@@ -68,7 +67,7 @@ public interface FXDailyData extends OutbackData, DailyBatteryVoltage, ErrorRepo
 	int getErrorModeValue();
 	@Deprecated
 	@Override
-	default @NonNull Set<@NonNull FXErrorMode> getErrorModes(){ return Modes.getActiveModes(FXErrorMode.class, getErrorModeValue()); }
+	default Set<FXErrorMode> getErrorModes(){ return Modes.getActiveModes(FXErrorMode.class, getErrorModeValue()); }
 
 	@JsonProperty("warningModeValue")
 	@Override
@@ -79,7 +78,7 @@ public interface FXDailyData extends OutbackData, DailyBatteryVoltage, ErrorRepo
 	int getMiscValue();
 
 	@JsonProperty("acModeValues")
-	@NonNull Collection<@NonNull Integer> getACModeValues();
+	Collection< Integer> getACModeValues();
 	@GraphQLInclude("acModes")
-	default @NonNull Set<@NonNull ACMode> getACModes(){ return Modes.getActiveModes(ACMode.class, getACModeValues()); }
+	default Set<ACMode> getACModes(){ return Modes.getActiveModes(ACMode.class, getACModeValues()); }
 }

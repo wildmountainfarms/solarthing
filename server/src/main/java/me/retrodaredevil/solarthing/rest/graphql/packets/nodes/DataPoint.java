@@ -2,7 +2,6 @@ package me.retrodaredevil.solarthing.rest.graphql.packets.nodes;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -24,16 +23,16 @@ public final class DataPoint<T> {
 
 
 	@JsonProperty("data")
-	public @NonNull T getData() {
+	public T getData() {
 		return data;
 	}
 
 	@JsonProperty("identifiable")
-	public @NonNull Identifiable getIdentifiable() {
+	public Identifiable getIdentifiable() {
 		return identifiable;
 	}
 	@JsonProperty("sourceId")
-	public @NonNull String getSourceId() {
+	public String getSourceId() {
 		return sourceId;
 	}
 

@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.packets.identification;
 
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -23,9 +22,8 @@ public class IdentifierFragmentBase<T extends Identifier> implements KnownIdenti
 		return fragmentId;
 	}
 
-	// TODO remove NonNull
 	@Override
-	public @NonNull T getIdentifier() {
+	public T getIdentifier() {
 		return identifier;
 	}
 

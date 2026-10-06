@@ -3,7 +3,6 @@ package me.retrodaredevil.solarthing.rest.graphql.packets.nodes;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
@@ -30,11 +29,11 @@ public final class DataNode<T> implements Comparable<DataNode<?>> {
 	}
 
 	@JsonProperty("data")
-	public @NonNull T getData() {
+	public T getData() {
 		return data;
 	}
 	@JsonProperty("identifiable")
-	public @NonNull Identifiable getIdentifiable() {
+	public Identifiable getIdentifiable() {
 		return identifiable;
 	}
 
@@ -44,7 +43,7 @@ public final class DataNode<T> implements Comparable<DataNode<?>> {
 	}
 
 	@JsonProperty("sourceId")
-	public @NonNull String getSourceId() {
+	public String getSourceId() {
 		return sourceId;
 	}
 

@@ -14,7 +14,6 @@ import me.retrodaredevil.solarthing.solar.common.SolarMode;
 import me.retrodaredevil.solarthing.solar.outback.OutbackStatusPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.FXMiscReporter;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.FXWarningReporter;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.Set;
@@ -36,16 +35,14 @@ public interface FXStatusPacket extends OutbackStatusPacket, BatteryVoltage, FXW
 
 	int VERSION_LATEST = VERSION_NO_MORE_CONVENIENCE_FIELDS;
 
-	// TODO remove NonNull
 	@DefaultFinal
 	@Override
-	default @NonNull SolarStatusPacketType getPacketType(){
+	default SolarStatusPacketType getPacketType(){
 		return SolarStatusPacketType.FX_STATUS;
 	}
 
-	// TODO remove NonNull
 	@Override
-	default @NonNull SolarMode getSolarMode() {
+	default SolarMode getSolarMode() {
 		return getOperationalMode();
 	}
 
@@ -101,9 +98,8 @@ public interface FXStatusPacket extends OutbackStatusPacket, BatteryVoltage, FXW
 	 */
 	@JsonProperty("operatingMode")
 	int getOperationalModeValue();
-	// TODO remove NonNull
 	@GraphQLInclude("operationalMode")
-	default @NonNull OperationalMode getOperationalMode(){ return Modes.getActiveMode(OperationalMode.class, getOperationalModeValue()); }
+	default OperationalMode getOperationalMode(){ return Modes.getActiveMode(OperationalMode.class, getOperationalModeValue()); }
 
 	/**
 	 * Should be serialized as "errorMode"
@@ -112,9 +108,8 @@ public interface FXStatusPacket extends OutbackStatusPacket, BatteryVoltage, FXW
 	@JsonProperty("errorMode")
 	@Override
 	int getErrorModeValue();
-	// TODO remove NonNull
 	@Override
-	default @NonNull Set<@NonNull FXErrorMode> getErrorModes(){ return Modes.getActiveModes(FXErrorMode.class, getErrorModeValue()); }
+	default Set<FXErrorMode> getErrorModes(){ return Modes.getActiveModes(FXErrorMode.class, getErrorModeValue()); }
 
 	/**
 	 * Should be serialized as "acMode"
@@ -122,8 +117,7 @@ public interface FXStatusPacket extends OutbackStatusPacket, BatteryVoltage, FXW
 	 */
 	@JsonProperty("acMode")
 	int getACModeValue();
-	// TODO remove NonNull
-	default @NonNull ACMode getACMode(){ return Modes.getActiveMode(ACMode.class, getACModeValue()); }
+	default ACMode getACMode(){ return Modes.getActiveMode(ACMode.class, getACModeValue()); }
 
 	/**
 	 * Should be serialized as "misc"
@@ -194,7 +188,6 @@ public interface FXStatusPacket extends OutbackStatusPacket, BatteryVoltage, FXW
 	// endregion
 
 	// region Convenience Strings
-	// TODO remove NonNull
 	/**
 	 * Serialized as "operatingModeName" in packets before {@link #VERSION_NO_MORE_CONVENIENCE_FIELDS}
 	 * @return The name of the operating mode
@@ -202,11 +195,10 @@ public interface FXStatusPacket extends OutbackStatusPacket, BatteryVoltage, FXW
 	@ConvenienceField
 	@GraphQLInclude("operatingModeName")
 	@JsonProperty("operatingModeName")
-	default @NonNull String getOperatingModeName(){
+	default String getOperatingModeName(){
 		return getOperationalMode().getModeName();
 	}
 
-	// TODO remove NonNull
 	/**
 	 * Serialized as "errors" in packets before {@link #VERSION_NO_MORE_CONVENIENCE_FIELDS}
 	 * @return The errors represented as a string
@@ -214,9 +206,8 @@ public interface FXStatusPacket extends OutbackStatusPacket, BatteryVoltage, FXW
 	@ConvenienceField
 	@GraphQLInclude("errorsString")
 	@JsonProperty("errors")
-	default @NonNull String getErrorsString() { return Modes.toString(FXErrorMode.class, getErrorModeValue()); }
+	default String getErrorsString() { return Modes.toString(FXErrorMode.class, getErrorModeValue()); }
 
-	// TODO remove NonNull
 	/**
 	 * Serialized as "acModeName" in packets before {@link #VERSION_NO_MORE_CONVENIENCE_FIELDS}
 	 * @return The name of the ac mode
@@ -224,9 +215,8 @@ public interface FXStatusPacket extends OutbackStatusPacket, BatteryVoltage, FXW
 	@ConvenienceField
 	@GraphQLInclude("acModeName")
 	@JsonProperty("acModeName")
-	default @NonNull String getACModeName() { return getACMode().getModeName(); }
+	default String getACModeName() { return getACMode().getModeName(); }
 
-	// TODO remove NonNull
 	/**
 	 * Serialized as "miscModes" in packets before {@link #VERSION_NO_MORE_CONVENIENCE_FIELDS}
 	 * @return The misc modes represented as a string
@@ -234,9 +224,8 @@ public interface FXStatusPacket extends OutbackStatusPacket, BatteryVoltage, FXW
 	@ConvenienceField
 	@GraphQLInclude("miscModesString")
 	@JsonProperty("miscModes")
-	default @NonNull String getMiscModesString() { return Modes.toString(MiscMode.class, getMiscValue()); }
+	default String getMiscModesString() { return Modes.toString(MiscMode.class, getMiscValue()); }
 
-	// TODO remove NonNull
 	/**
 	 * Serialized as "warnings" in packets before {@link #VERSION_NO_MORE_CONVENIENCE_FIELDS}
 	 * @return The warning modes represented as a string
@@ -244,7 +233,7 @@ public interface FXStatusPacket extends OutbackStatusPacket, BatteryVoltage, FXW
 	@ConvenienceField
 	@GraphQLInclude("warnings")
 	@JsonProperty("warnings")
-	default @NonNull String getWarningsString() { return Modes.toString(WarningMode.class, getWarningModeValue()); }
+	default String getWarningsString() { return Modes.toString(WarningMode.class, getWarningModeValue()); }
 	// endregion
 
 	// region Default Power Getters

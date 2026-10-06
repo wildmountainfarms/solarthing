@@ -7,7 +7,6 @@ import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.reason.ExecutionReason;
 import me.retrodaredevil.solarthing.type.alter.AlterPacket;
 import me.retrodaredevil.solarthing.type.alter.AlterPacketType;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
@@ -28,19 +27,17 @@ public class ScheduledCommandPacket implements AlterPacket {
 	}
 
 	@Override
-	public @NonNull AlterPacketType getPacketType() {
+	public AlterPacketType getPacketType() {
 		return AlterPacketType.SCHEDULED_COMMAND;
 	}
 
-	// TODO remove NonNull
 	@JsonProperty("data")
-	public @NonNull ScheduledCommandData getData() {
+	public ScheduledCommandData getData() {
 		return data;
 	}
 
-	// TODO remove NonNull
 	@JsonProperty("executionReason")
-	public @NonNull ExecutionReason getExecutionReason() {
+	public ExecutionReason getExecutionReason() {
 		return executionReason;
 	}
 }

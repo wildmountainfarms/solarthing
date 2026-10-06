@@ -237,6 +237,8 @@ rewrite {
 	activeRecipe("org.openrewrite.java.migrate.lang.SwitchCaseAssignmentsToSwitchExpression")
 	activeRecipe("org.openrewrite.java.migrate.lang.SwitchCaseReturnsToSwitchExpression")
 	activeRecipe("org.openrewrite.java.jspecify.MigrateToJSpecify") // probably not necessary, but will point out "wrong" nullability imports
+	// https://docs.openrewrite.org/recipes/java/removeannotation
+	activeRecipe("me.retrodaredevil.rewrite.RemoveJSpecifyNonNull")
 	activeRecipe("org.openrewrite.java.ShortenFullyQualifiedTypeReferences")
 
 	// Lots of static analysis

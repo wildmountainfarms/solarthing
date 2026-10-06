@@ -14,7 +14,6 @@ import me.retrodaredevil.solarthing.solar.outback.mx.event.MXChargerModeChangePa
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
 import me.retrodaredevil.solarthing.solar.tracer.TracerStatusPacket;
 import me.retrodaredevil.solarthing.type.alter.flag.ActivePeriod;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -33,7 +32,7 @@ public class SolarThingGraphQLExtensions {
 	}
 
 	@GraphQLQuery(name = "acModeName")
-	public @NonNull String getACModeName(@GraphQLContext FXACModeChangePacket fxACModeChangePacket) {
+	public String getACModeName(@GraphQLContext FXACModeChangePacket fxACModeChangePacket) {
 		return fxACModeChangePacket.getACMode().getModeName();
 	}
 	@GraphQLQuery(name = "previousACModeName")
@@ -42,7 +41,7 @@ public class SolarThingGraphQLExtensions {
 		return acMode == null ? null : acMode.getModeName();
 	}
 	@GraphQLQuery(name = "operationalModeName")
-	public @NonNull String getOperationalModeName(@GraphQLContext FXOperationalModeChangePacket fxOperationalModeChangePacket) {
+	public String getOperationalModeName(@GraphQLContext FXOperationalModeChangePacket fxOperationalModeChangePacket) {
 		return fxOperationalModeChangePacket.getOperationalMode().getModeName();
 	}
 	@GraphQLQuery(name = "previousOperationalModeName")
@@ -51,7 +50,7 @@ public class SolarThingGraphQLExtensions {
 		return operationalMode == null ? null : operationalMode.getModeName();
 	}
 	@GraphQLQuery(name = "chargingModeName")
-	public @NonNull String getChargingModeName(@GraphQLContext MXChargerModeChangePacket mxChargerModeChangePacket) {
+	public String getChargingModeName(@GraphQLContext MXChargerModeChangePacket mxChargerModeChangePacket) {
 		return mxChargerModeChangePacket.getChargingMode().getModeName();
 	}
 	@GraphQLQuery(name = "previousChargingModeName")
@@ -61,12 +60,12 @@ public class SolarThingGraphQLExtensions {
 	}
 
 	@GraphQLQuery(name = "commandName")
-	public @NonNull String getCommandName(@GraphQLContext SuccessMateCommandPacket successMateCommandPacket) {
+	public String getCommandName(@GraphQLContext SuccessMateCommandPacket successMateCommandPacket) {
 		return successMateCommandPacket.getCommand().getCommandName();
 	}
 
 	@GraphQLQuery(name = "dataIdString")
-	public @NonNull String getDataIdString(@GraphQLContext DataIdentifiable identifiable) {
+	public String getDataIdString(@GraphQLContext DataIdentifiable identifiable) {
 		return "" + identifiable.getDataId();
 	}
 	@GraphQLQuery

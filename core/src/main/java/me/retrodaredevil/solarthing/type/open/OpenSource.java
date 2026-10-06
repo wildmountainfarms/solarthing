@@ -6,7 +6,6 @@ import me.retrodaredevil.solarthing.DataSource;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.util.UniqueStringRepresentation;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -46,7 +45,7 @@ public final class OpenSource implements UniqueStringRepresentation {
 	}
 
 	@JsonProperty("sender")
-	public @NonNull String getSender() {
+	public String getSender() {
 		return sender;
 	}
 	@JsonProperty("dateMillis")

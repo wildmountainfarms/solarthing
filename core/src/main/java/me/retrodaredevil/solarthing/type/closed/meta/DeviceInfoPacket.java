@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 
 @JsonTypeName("DEVICE_INFO")
@@ -26,22 +25,22 @@ public final class DeviceInfoPacket implements TargetedMetaPacket {
 	}
 
 	@Override
-	public @NonNull TargetedMetaPacketType getPacketType() {
+	public TargetedMetaPacketType getPacketType() {
 		return TargetedMetaPacketType.DEVICE_INFO;
 	}
 
 	@JsonProperty("deviceName")
-	public @NonNull String getDeviceName() {
+	public String getDeviceName() {
 		return deviceName;
 	}
 
 	@JsonProperty("deviceDescription")
-	public @NonNull String getDeviceDescription() {
+	public String getDeviceDescription() {
 		return deviceDescription;
 	}
 
 	@JsonProperty("deviceLocation")
-	public @NonNull String getDeviceLocation() {
+	public String getDeviceLocation() {
 		return deviceLocation;
 	}
 }

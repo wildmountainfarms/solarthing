@@ -4,7 +4,6 @@ import me.retrodaredevil.solarthing.packets.BitmaskMode;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
 
@@ -68,17 +67,17 @@ class OutbackDuplicatePacketRemoverTest {
 
 
 			@Override
-			public @NonNull OutbackIdentifier getIdentifier() {
+			public OutbackIdentifier getIdentifier() {
 				throw new UnsupportedOperationException();
 			}
 
 			@Override
-			public @NonNull IdentityInfo getIdentityInfo() {
+			public IdentityInfo getIdentityInfo() {
 				throw new UnsupportedOperationException();
 			}
 
 			@Override
-			public @NonNull SolarStatusPacketType getPacketType() {
+			public SolarStatusPacketType getPacketType() {
 				throw new UnsupportedOperationException();
 			}
 
@@ -88,7 +87,7 @@ class OutbackDuplicatePacketRemoverTest {
 			}
 
 			@Override
-			public @NonNull Collection<? extends @NonNull BitmaskMode> getErrorModes() {
+			public Collection<? extends BitmaskMode> getErrorModes() {
 				throw new UnsupportedOperationException();
 			}
 		};

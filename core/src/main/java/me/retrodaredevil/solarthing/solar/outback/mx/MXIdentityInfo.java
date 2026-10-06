@@ -1,7 +1,6 @@
 package me.retrodaredevil.solarthing.solar.outback.mx;
 
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
@@ -12,21 +11,18 @@ public class MXIdentityInfo implements IdentityInfo {
 		this.address = address;
 	}
 
-	// TODO remove NonNull
 	@Override
-	public @NonNull String getName() {
+	public String getName() {
 		return "MX";
 	}
 
-	// TODO remove NonNull
 	@Override
-	public @NonNull String getShortName() {
+	public String getShortName() {
 		return "MX";
 	}
 
-	// TODO remove NonNull
 	@Override
-	public @NonNull String getSuffix() {
+	public String getSuffix() {
 		return "" + address;
 	}
 }

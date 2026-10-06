@@ -3,7 +3,6 @@ package me.retrodaredevil.solarthing.rest.graphql.service.web.authorization;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.type.closed.authorization.AuthorizationPacket;
 import me.retrodaredevil.solarthing.type.closed.authorization.PermissionObject;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
@@ -22,12 +21,12 @@ public final class AuthorizedSender {
 	}
 
 	@JsonProperty("sender")
-	public @NonNull String getSender() {
+	public String getSender() {
 		return sender;
 	}
 
 	@JsonProperty("data")
-	public @NonNull PermissionObject getData() {
+	public PermissionObject getData() {
 		return data;
 	}
 }

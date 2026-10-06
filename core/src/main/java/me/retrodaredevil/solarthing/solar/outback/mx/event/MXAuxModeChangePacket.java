@@ -12,7 +12,6 @@ import me.retrodaredevil.solarthing.solar.event.SupplementarySolarEventPacket;
 import me.retrodaredevil.solarthing.solar.outback.OutbackData;
 import me.retrodaredevil.solarthing.solar.outback.SupplementaryOutbackPacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.AuxMode;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -21,10 +20,9 @@ import org.jspecify.annotations.Nullable;
 @JsonExplicit
 @NullMarked
 public interface MXAuxModeChangePacket extends SupplementarySolarEventPacket, SupplementaryOutbackPacket, OutbackData, ChangePacket {
-	// TODO remove NonNull
 	@DefaultFinal
 	@Override
-	default @NonNull SolarEventPacketType getPacketType(){
+	default SolarEventPacketType getPacketType(){
 		return SolarEventPacketType.MXFM_AUX_MODE_CHANGE;
 	}
 

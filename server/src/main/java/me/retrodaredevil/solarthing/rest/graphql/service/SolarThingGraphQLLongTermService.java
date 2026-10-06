@@ -4,7 +4,6 @@ import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLQuery;
 import me.retrodaredevil.solarthing.type.cache.packets.IdentificationCacheDataPacket;
 import me.retrodaredevil.solarthing.type.cache.packets.data.ChargeControllerAccumulationDataCache;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import me.retrodaredevil.solarthing.rest.cache.CacheController;
@@ -31,14 +30,14 @@ public class SolarThingGraphQLLongTermService {
 	@GraphQLQuery
 	public SolarThingLongTermQuery queryLongTermMillis(
 			@GraphQLArgument(name = "from", description = DESCRIPTION_FROM) long from, @GraphQLArgument(name = "to", description = DESCRIPTION_TO) long to,
-			@GraphQLArgument(name = "sourceId", description = DESCRIPTION_REQUIRED_SOURCE) @NonNull String sourceId){
+			@GraphQLArgument(name = "sourceId", description = DESCRIPTION_REQUIRED_SOURCE) String sourceId){
 		return new SolarThingLongTermQuery(sourceId, from, to);
 	}
 	@GraphQLQuery
 	public SolarThingLongTermQuery queryLongTermMonth(
 			@GraphQLArgument(name = "year") int year,
 			@GraphQLArgument(name = "month") Month month,
-			@GraphQLArgument(name = "sourceId", description = DESCRIPTION_REQUIRED_SOURCE) @NonNull String sourceId){
+			@GraphQLArgument(name = "sourceId", description = DESCRIPTION_REQUIRED_SOURCE) String sourceId){
 		YearMonth yearMonth = YearMonth.of(year, month);
 		LocalDate start = LocalDate.of(year, month, 1);
 		LocalDate end = yearMonth.atEndOfMonth();
@@ -60,7 +59,7 @@ public class SolarThingGraphQLLongTermService {
 		}
 
 		@GraphQLQuery
-		public @NonNull List<@NonNull IdentificationCacheDataPacket<ChargeControllerAccumulationDataCache>> chargeControllerAccumulationRaw(){
+		public List<IdentificationCacheDataPacket<ChargeControllerAccumulationDataCache>> chargeControllerAccumulationRaw(){
 			return cacheController.getChargeControllerAccumulation(sourceId, startMillis, endMillis);
 		}
 		@GraphQLQuery

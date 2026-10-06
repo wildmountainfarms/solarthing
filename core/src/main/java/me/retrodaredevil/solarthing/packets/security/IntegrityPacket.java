@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -16,10 +15,9 @@ import org.jspecify.annotations.NullMarked;
 @JsonExplicit
 @NullMarked
 public interface IntegrityPacket extends SecurityPacket, SenderPacket {
-	// TODO remove NonNull
 	@DefaultFinal
 	@Override
-	default @NonNull SecurityPacketType getPacketType(){
+	default SecurityPacketType getPacketType(){
 		return SecurityPacketType.INTEGRITY_PACKET;
 	}
 

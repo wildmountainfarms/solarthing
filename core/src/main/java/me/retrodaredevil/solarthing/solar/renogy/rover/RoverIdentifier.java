@@ -8,7 +8,6 @@ import me.retrodaredevil.solarthing.annotations.SerializeNameDefinedInBase;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.packets.identification.NumberedIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -46,9 +45,8 @@ public final class RoverIdentifier implements NumberedIdentifier, Comparable<Ide
 		return number;
 	}
 
-	// TODO remove NonNull
 	@Override
-	public @NonNull String getRepresentation() {
+	public String getRepresentation() {
 		if (number != NumberedIdentifier.DEFAULT_NUMBER) {
 			return "RoverIdentifier(number=" + number + ")";
 		}

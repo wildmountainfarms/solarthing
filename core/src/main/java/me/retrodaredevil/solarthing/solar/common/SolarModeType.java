@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.solar.common;
 
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
@@ -41,9 +40,8 @@ public enum SolarModeType implements BasicSolarMode {
 		return false;
 	}
 
-	// TODO remove NonNull
 	@Override
-	public @NonNull String getModeName() {
+	public String getModeName() {
 		return displayName;
 	}
 

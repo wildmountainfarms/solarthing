@@ -30,7 +30,6 @@ import me.retrodaredevil.solarthing.solar.tracer.TracerReadTable;
 import me.retrodaredevil.solarthing.solar.tracer.modbus.TracerModbusSlaveRead;
 import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -101,7 +100,7 @@ public class CheckMain {
 			return parsedData[0];
 		}
 	}
-	private static boolean doModbus(@NonNull String port, int startingAddress, boolean scan, boolean debugTable, SerialConfig serialConfig, Function<ModbusSlave, BatteryVoltage> slaveToReadTable) throws SerialPortException {
+	private static boolean doModbus(String port, int startingAddress, boolean scan, boolean debugTable, SerialConfig serialConfig, Function<ModbusSlave, BatteryVoltage> slaveToReadTable) throws SerialPortException {
 		System.out.println("Going to open serial port using default serial configuration...");
 		try(JSerialIOBundle ioBundle = JSerialIOBundle.createPort(port, serialConfig)) {
 			System.out.println("Successfully opened serial port...");

@@ -1,7 +1,6 @@
 package me.retrodaredevil.solarthing.solar.outback.fx;
 
 import me.retrodaredevil.solarthing.packets.BitmaskMode;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -29,9 +28,8 @@ public enum FXErrorMode implements BitmaskMode { // multiple can be active (or 0
 		return value;
 	}
 
-	// TODO remove NonNull
 	@Override
-	public @NonNull String getModeName() {
+	public String getModeName() {
 		return name;
 	}
 

@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -21,10 +20,9 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 public interface InstanceFragmentIndicatorPacket extends InstancePacket {
 
-	// TODO remove NonNull
 	@DefaultFinal
 	@Override
-	default @NonNull InstancePacketType getPacketType(){
+	default InstancePacketType getPacketType(){
 		return InstancePacketType.FRAGMENT_INDICATOR;
 	}
 

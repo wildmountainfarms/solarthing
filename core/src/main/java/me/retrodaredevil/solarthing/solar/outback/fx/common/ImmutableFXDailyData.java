@@ -8,7 +8,6 @@ import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifi
 import me.retrodaredevil.solarthing.packets.identification.UnknownSupplementaryIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXIdentityInfo;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -64,12 +63,12 @@ public class ImmutableFXDailyData implements FXDailyData {
 	}
 
 	@Override
-	public @NonNull Identifier getIdentifier() {
+	public Identifier getIdentifier() {
 		return identifier;
 	}
 
 	@Override
-	public @NonNull IdentityInfo getIdentityInfo() {
+	public IdentityInfo getIdentityInfo() {
 		return identityInfo;
 	}
 
@@ -91,12 +90,10 @@ public class ImmutableFXDailyData implements FXDailyData {
 	@Override public float getBuyKWH() { return buyKWH; }
 	@Override public float getSellKWH() { return sellKWH; }
 
-	// TODO remove NonNull
-	@Override public @NonNull Collection<@NonNull Integer> getOperationalModeValues() { return operationalModeValues; }
+	@Override public Collection<Integer> getOperationalModeValues() { return operationalModeValues; }
 	@Deprecated
 	@Override public int getErrorModeValue() { return errorModeValue; }
 	@Override public int getWarningModeValue() { return warningModeValue; }
 	@Override public int getMiscValue() { return miscValue; }
-	// TODO remove NonNull
-	@Override public @NonNull Collection<@NonNull Integer> getACModeValues() { return acModeValues; }
+	@Override public Collection<Integer> getACModeValues() { return acModeValues; }
 }

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import me.retrodaredevil.solarthing.type.open.OpenSource;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -22,9 +21,8 @@ public class OpenSourceExecutionReason implements ExecutionReason {
 		this.source = requireNonNull(source);
 	}
 
-	// TODO remove NonNull
 	@Override
-	public @NonNull ExecutionReasonType getPacketType() {
+	public ExecutionReasonType getPacketType() {
 		return ExecutionReasonType.SOURCE;
 	}
 

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.util.UniqueStringRepresentation;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -37,15 +36,13 @@ public final class ScheduledCommandData implements UniqueStringRepresentation {
 		return scheduledTimeMillis;
 	}
 
-	// TODO remove NonNull
 	@JsonProperty("commandName")
-	public @NonNull String getCommandName() {
+	public String getCommandName() {
 		return commandName;
 	}
 
-	// TODO remove NonNull
 	@JsonProperty("targetFragmentIds")
-	public @NonNull Collection<Integer> getTargetFragmentIds() {
+	public Collection<Integer> getTargetFragmentIds() {
 		return targetFragmentIds;
 	}
 

@@ -1,7 +1,6 @@
 package me.retrodaredevil.solarthing.packets.collection;
 
 import me.retrodaredevil.solarthing.packets.Packet;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -34,9 +33,8 @@ class ImmutableTargetPacketGroup implements TargetPacketGroup {
 		return dateMillis;
 	}
 
-	// TODO remove NonNull
 	@Override
-	public @NonNull String getSourceId() {
+	public String getSourceId() {
 		return sourceId;
 	}
 

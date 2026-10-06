@@ -7,7 +7,6 @@ import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
 import me.retrodaredevil.solarthing.packets.identification.SingleTypeIdentifier;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -56,19 +55,18 @@ public class CelsiusCpuTemperaturePacket implements CpuTemperaturePacket {
 		return cpuTemperatureCelsius * 1.8f + 32;
 	}
 
-	// TODO remove NonNull
 	@Override
-	public @NonNull List<Core> getCores() {
+	public List<Core> getCores() {
 		return cores;
 	}
 
 	@Override
-	public @NonNull Identifier getIdentifier() {
+	public Identifier getIdentifier() {
 		return identifier;
 	}
 
 	@Override
-	public @NonNull IdentityInfo getIdentityInfo() {
+	public IdentityInfo getIdentityInfo() {
 		return identityInfo;
 	}
 

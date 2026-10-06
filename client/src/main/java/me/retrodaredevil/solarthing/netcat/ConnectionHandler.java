@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.netcat;
 
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -19,7 +18,7 @@ public class ConnectionHandler {
 		this.netCatServerHandler = netCatServerHandler;
 	}
 
-	public void handleRequests(Function<? super @NonNull String, @Nullable String> function) {
+	public void handleRequests(Function<? super String, @Nullable String> function) {
 		while (true) {
 			SimpleConnection connection = netCatServerHandler.poll();
 			if (connection == null) break;

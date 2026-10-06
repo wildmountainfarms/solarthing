@@ -3,7 +3,6 @@ package me.retrodaredevil.solarthing.misc.error;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.packets.identification.IdentityInfo;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
@@ -33,15 +32,13 @@ public class ImmutableExceptionErrorPacket implements ExceptionErrorPacket {
 		identityInfo = new ExceptionErrorIdentityInfo(identifier);
 	}
 
-	// TODO remove NonNull
 	@Override
-	public @NonNull ExceptionErrorIdentifier getIdentifier() {
+	public ExceptionErrorIdentifier getIdentifier() {
 		return identifier;
 	}
 
-	// TODO remove NonNull
 	@Override
-	public @NonNull IdentityInfo getIdentityInfo() {
+	public IdentityInfo getIdentityInfo() {
 		return identityInfo;
 	}
 

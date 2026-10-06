@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.packets.identification;
 
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
@@ -20,16 +19,13 @@ public class UnknownSupplementaryIdentifier<T extends Identifier> implements Sup
 		this.identifier = requireNonNull(identifier);
 	}
 
-	// TODO remove NonNull
-	@NonNull
 	@Override
 	public T getSupplementaryTo() {
 		return identifier;
 	}
 
-	// TODO remove NonNull
 	@Override
-	public @NonNull String getRepresentation() {
+	public String getRepresentation() {
 		return "UnknownSupplementaryIdentifier(identifier=" + identifier + ")";
 	}
 

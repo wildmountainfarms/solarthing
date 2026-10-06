@@ -21,7 +21,6 @@ import me.retrodaredevil.solarthing.rest.graphql.packets.nodes.SimpleNode;
 import me.retrodaredevil.solarthing.rest.graphql.service.web.authorization.AuthorizedSender;
 import me.retrodaredevil.solarthing.type.closed.authorization.AuthorizationPacket;
 import me.retrodaredevil.solarthing.type.closed.authorization.PermissionObject;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -46,7 +45,7 @@ public class SolarThingAdminService {
 	}
 
 	@GraphQLQuery
-	public @NonNull DatabaseAuthorization databaseAuthorize(@NonNull String username, @NonNull String password) {
+	public DatabaseAuthorization databaseAuthorize(String username, String password) {
 		return databaseProvider.authorize(username, password);
 	}
 
@@ -63,7 +62,7 @@ public class SolarThingAdminService {
 	}
 
 	@GraphQLQuery
-	public @NonNull List<@NonNull AuthorizedSender> authorizedSenders() {
+	public List<AuthorizedSender> authorizedSenders() {
 		final AuthorizationPacket authorizationPacket;
 		try {
 			authorizationPacket = databaseProvider.getDatabase(null).queryAuthorized().getPacket();
@@ -77,7 +76,7 @@ public class SolarThingAdminService {
 		}).collect(Collectors.toList());
 	}
 	@GraphQLQuery
-	public @NonNull List<@NonNull SimpleNode<AuthNewSenderPacket>> authRequests() {
+	public List<SimpleNode<AuthNewSenderPacket>> authRequests() {
 		Instant startTime = Instant.now().minus(Duration.ofHours(4));
 		final List<StoredPacketGroup> rawPackets;
 		try {
@@ -109,7 +108,7 @@ public class SolarThingAdminService {
 		}
 	}
 	@GraphQLMutation
-	public void removeAuthorizedSender(@NonNull DatabaseAuthorization authorization, @NonNull String sender) {
+	public void removeAuthorizedSender(DatabaseAuthorization authorization, String sender) {
 		SolarThingDatabase database = databaseProvider.getDatabase(authorization);
 		VersionedPacket<AuthorizationPacket> versionedPacket = queryAuthorizationPacket(database, sender);
 		Map<String, PermissionObject> originalSenderPermissions = versionedPacket.getPacket().getSenderPermissions();
@@ -126,7 +125,7 @@ public class SolarThingAdminService {
 		}
 	}
 	@GraphQLMutation
-	public void addAuthorizedSender(@NonNull DatabaseAuthorization authorization, @NonNull String sender, @NonNull String publicKey, @GraphQLArgument(name = "allowReplace", defaultValue = "false") boolean allowReplace) {
+	public void addAuthorizedSender(DatabaseAuthorization authorization, String sender, String publicKey, @GraphQLArgument(name = "allowReplace", defaultValue = "false") boolean allowReplace) {
 		{
 			String invalidSenderReason = SenderUtil.getInvalidSenderNameReason(sender);
 			if (invalidSenderReason != null) {
@@ -171,7 +170,7 @@ public class SolarThingAdminService {
 	}
 	public interface DatabaseSystemStatus {
 		@GraphQLQuery(name = "getStatus")
-		@NonNull DatabaseStatus getStatus(@GraphQLArgument(name = "type") @NonNull SolarThingDatabaseType databaseType);
+		DatabaseStatus getStatus(@GraphQLArgument(name = "type") SolarThingDatabaseType databaseType);
 	}
 
 	private static class SolarThingDatabaseSystemStatus implements DatabaseSystemStatus {
@@ -183,7 +182,7 @@ public class SolarThingAdminService {
 			// TODO maybe consider removing authentication from database or make this work when authenticated or when unauthenticated
 		}
 		@Override
-		public @NonNull DatabaseStatus getStatus(@NonNull SolarThingDatabaseType databaseType) {
+		public DatabaseStatus getStatus(SolarThingDatabaseType databaseType) {
 			final DatabaseSource source = switch (requireNonNull(databaseType)) {
 				case STATUS -> database.getStatusDatabase().getDatabaseSource();
 				case EVENT -> database.getEventDatabase().getDatabaseSource();

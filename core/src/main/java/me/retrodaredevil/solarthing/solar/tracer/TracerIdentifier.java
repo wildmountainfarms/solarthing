@@ -9,7 +9,6 @@ import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.packets.identification.NumberedIdentifier;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverIdentifier;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -39,9 +38,8 @@ public final class TracerIdentifier implements NumberedIdentifier, Comparable<Id
 		return number;
 	}
 
-	// TODO remove NonNull
 	@Override
-	public @NonNull String getRepresentation() {
+	public String getRepresentation() {
 		if (number != NumberedIdentifier.DEFAULT_NUMBER) {
 			return "TracerIdentifier(number=" + number + ")";
 		}

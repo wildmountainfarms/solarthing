@@ -9,3 +9,12 @@ recipeList:
   - org.openrewrite.java.ChangeType:
       oldFullyQualifiedTypeName: me.retrodaredevil.solarthing.annotations.NotNull
       newFullyQualifiedTypeName: org.jspecify.annotations.NonNull
+
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: me.retrodaredevil.rewrite.RemoveJSpecifyNonNull
+displayName: Remove JSpecify NonNull annotations
+description: Remove explicit JSpecify NonNull annotations.
+recipeList:
+  - org.openrewrite.java.RemoveAnnotation:
+      annotationPattern: '@org.jspecify.annotations.NonNull'

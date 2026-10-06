@@ -3,7 +3,6 @@ package me.retrodaredevil.solarthing.rest.graphql.packets.nodes;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 
 import static java.util.Objects.requireNonNull;
@@ -24,7 +23,7 @@ public final class SimpleNode<T> {
 	}
 
 	@JsonProperty("data")
-	public @NonNull T getData() {
+	public T getData() {
 		return data;
 	}
 

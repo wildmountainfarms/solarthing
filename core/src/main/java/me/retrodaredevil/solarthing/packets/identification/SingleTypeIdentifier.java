@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.packets.identification;
 
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -16,9 +15,8 @@ public class SingleTypeIdentifier implements Identifier {
 		this.type = requireNonNull(type);
 	}
 
-	// TODO remove NonNull
 	@Override
-	public @NonNull String getRepresentation() {
+	public String getRepresentation() {
 		return "SingleTypeIdentifier(type=" + type + ")";
 	}
 
