@@ -66,7 +66,7 @@ public class W1TemperatureListUpdater implements PacketListReceiver {
 			LOGGER.warn("lines.size() is " + lines.size() + "! lines=" + lines + ". name=" + name);
 			return;
 		}
-		String line1 = lines.get(0);
+		String line1 = lines.getFirst();
 		String line2 = lines.get(1);
 
 		String[] split1 = line1.split(" ");

@@ -46,11 +46,10 @@ public interface SpecialPowerControl_E02D extends UpperLower16Bit {
 	}
 	@GraphQLInclude("isLithiumBattery")
 	default boolean isLithiumBattery(){
-		switch(getBatteryType()){
-			case LITHIUM: return true;
-			case LEAD_ACID: return false;
-			default: throw new UnsupportedOperationException();
-		}
+		return switch (getBatteryType()) {
+			case LITHIUM -> true;
+			case LEAD_ACID -> false;
+		};
 	}
 	default int getRawChargingMethodValueCode(){
 		return (0b1000 & getLower()) >>> 3; // TODO determine if this is correct and if we need a raw/non-raw getter

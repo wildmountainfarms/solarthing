@@ -88,12 +88,20 @@ public class ModbusListUpdaterWrapper implements PacketListReceiver {
 				isTimeout = true;
 				// These messages will hopefully help people with problems fix it faster.
 				if (hasBeenSuccessful) {
-					LOGGER.debug(SolarThingConstants.NO_REMOTE, "\n\nHey! We noticed you got a ModbusTimeoutException after getting this to work.\n" +
-							"This is likely a fluke and hopefully this message isn't printed a bunch of times. If it is not a fluke, you may want to check your cable.\n");
+					LOGGER.debug(SolarThingConstants.NO_REMOTE, """
+							
+							
+							Hey! We noticed you got a ModbusTimeoutException after getting this to work.
+							This is likely a fluke and hopefully this message isn't printed a bunch of times. If it is not a fluke, you may want to check your cable.
+							""");
 				} else {
-					LOGGER.info(SolarThingConstants.NO_REMOTE, "\n\nHey! We noticed you got a ModbusTimeoutException.\n" +
-							"This is likely a problem with your cable. SolarThing is communicating fine with your serial adapter, but it cannot reach the device.\n" +
-							"Make sure the cable you have has the correct pinout, and feel free to open an issue at https://github.com/wildmountainfarms/solarthing/issues if you need help.\n");
+					LOGGER.info(SolarThingConstants.NO_REMOTE, """
+							
+							
+							Hey! We noticed you got a ModbusTimeoutException.
+							This is likely a problem with your cable. SolarThing is communicating fine with your serial adapter, but it cannot reach the device.
+							Make sure the cable you have has the correct pinout, and feel free to open an issue at https://github.com/wildmountainfarms/solarthing/issues if you need help.
+							""");
 				}
 				if (extraFeatures.contains(Feature.DEBUG_MODBUS_TIMEOUT)) {
 					LOGGER.debug("Got a modbus timeout. Message: " + e.getMessage()); // we don't need to log the stacktrace, so the exception is not logged

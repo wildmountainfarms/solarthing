@@ -84,15 +84,15 @@ public enum RoverBatteryType implements CodeMode {
 		throw new IllegalArgumentException("Unknown type to parse to a battery type: " + object.getClass());
 	}
 	public static RoverBatteryType parseFromString(String batteryType) {
-		switch(batteryType){
-			case "self-customized": case "custom": case "customized": case "user": case "user-unlocked": return RoverBatteryType.USER_UNLOCKED;
-			case "open": case "flooded": return RoverBatteryType.OPEN;
-			case "sealed": return RoverBatteryType.SEALED;
-			case "gel": return RoverBatteryType.GEL;
-			case "lithium": return RoverBatteryType.LITHIUM;
-			case "user-locked": case "lithium-36": return RoverBatteryType.USER_LOCKED;
-			case "lithium-48": return RoverBatteryType.LITHIUM_48V;
-			default: return valueOf(batteryType);
-		}
+		return switch (batteryType) {
+			case "self-customized", "custom", "customized", "user", "user-unlocked" -> RoverBatteryType.USER_UNLOCKED;
+			case "open", "flooded" -> RoverBatteryType.OPEN;
+			case "sealed" -> RoverBatteryType.SEALED;
+			case "gel" -> RoverBatteryType.GEL;
+			case "lithium" -> RoverBatteryType.LITHIUM;
+			case "user-locked", "lithium-36" -> RoverBatteryType.USER_LOCKED;
+			case "lithium-48" -> RoverBatteryType.LITHIUM_48V;
+			default -> valueOf(batteryType);
+		};
 	}
 }

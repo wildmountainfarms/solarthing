@@ -533,35 +533,32 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 
 	@Override
 	public int getOperatingDurationHours(OperatingSetting setting) {
-		switch(setting){
-			case STAGE_1: return operatingStage1.getDurationHours();
-			case STAGE_2: return operatingStage2.getDurationHours();
-			case STAGE_3: return operatingStage3.getDurationHours();
-			case MORNING_ON: return operatingMorningOn.getDurationHours();
-			default: throw new UnsupportedOperationException(setting.toString());
-		}
+		return switch (setting) {
+			case STAGE_1 -> operatingStage1.getDurationHours();
+			case STAGE_2 -> operatingStage2.getDurationHours();
+			case STAGE_3 -> operatingStage3.getDurationHours();
+			case MORNING_ON -> operatingMorningOn.getDurationHours();
+		};
 	}
 
 	@Override
 	public int getOperatingPowerPercentage(OperatingSetting setting) {
-		switch(setting){
-			case STAGE_1: return operatingStage1.getOperatingPowerPercentage();
-			case STAGE_2: return operatingStage2.getOperatingPowerPercentage();
-			case STAGE_3: return operatingStage3.getOperatingPowerPercentage();
-			case MORNING_ON: return operatingMorningOn.getOperatingPowerPercentage();
-			default: throw new UnsupportedOperationException(setting.toString());
-		}
+		return switch (setting) {
+			case STAGE_1 -> operatingStage1.getOperatingPowerPercentage();
+			case STAGE_2 -> operatingStage2.getOperatingPowerPercentage();
+			case STAGE_3 -> operatingStage3.getOperatingPowerPercentage();
+			case MORNING_ON -> operatingMorningOn.getOperatingPowerPercentage();
+		};
 	}
 
 	@Override
 	public OperatingSettingBundle getOperatingSettingBundle(OperatingSetting setting) {
-		switch(setting){
-			case STAGE_1: return operatingStage1;
-			case STAGE_2: return operatingStage2;
-			case STAGE_3: return operatingStage3;
-			case MORNING_ON: return operatingMorningOn;
-			default: throw new UnsupportedOperationException(setting.toString());
-		}
+		return switch (setting) {
+			case STAGE_1 -> operatingStage1;
+			case STAGE_2 -> operatingStage2;
+			case STAGE_3 -> operatingStage3;
+			case MORNING_ON -> operatingMorningOn;
+		};
 	}
 
 	@Override
@@ -591,42 +588,38 @@ public class ImmutableRoverStatusPacket implements RoverStatusPacket {
 
 	@Override
 	public @Nullable Integer getWorkingHoursRaw(Sensing sensing) {
-		switch(sensing){
-			case SENSING_1: return sensed1 == null ? null : sensed1.getWorkingHoursRaw();
-			case SENSING_2: return sensed2 == null ? null : sensed2.getWorkingHoursRaw();
-			case SENSING_3: return sensed3 == null ? null : sensed3.getWorkingHoursRaw();
-			default: throw new UnsupportedOperationException(sensing.toString());
-		}
+		return switch (sensing) {
+			case SENSING_1 -> sensed1 == null ? null : sensed1.getWorkingHoursRaw();
+			case SENSING_2 -> sensed2 == null ? null : sensed2.getWorkingHoursRaw();
+			case SENSING_3 -> sensed3 == null ? null : sensed3.getWorkingHoursRaw();
+		};
 	}
 
 	@Override
 	public @Nullable Integer getPowerWithPeopleSensedRaw(Sensing sensing) {
-		switch(sensing){
-			case SENSING_1: return sensed1 == null ? null : sensed1.getPowerWithPeopleSensedRaw();
-			case SENSING_2: return sensed2 == null ? null : sensed2.getPowerWithPeopleSensedRaw();
-			case SENSING_3: return sensed3 == null ? null : sensed3.getPowerWithPeopleSensedRaw();
-			default: throw new UnsupportedOperationException(sensing.toString());
-		}
+		return switch (sensing) {
+			case SENSING_1 -> sensed1 == null ? null : sensed1.getPowerWithPeopleSensedRaw();
+			case SENSING_2 -> sensed2 == null ? null : sensed2.getPowerWithPeopleSensedRaw();
+			case SENSING_3 -> sensed3 == null ? null : sensed3.getPowerWithPeopleSensedRaw();
+		};
 	}
 
 	@Override
 	public @Nullable Integer getPowerWithNoPeopleSensedRaw(Sensing sensing) {
-		switch(sensing){
-			case SENSING_1: return sensed1 == null ? null : sensed1.getPowerWithNoPeopleSensedRaw();
-			case SENSING_2: return sensed2 == null ? null : sensed2.getPowerWithNoPeopleSensedRaw();
-			case SENSING_3: return sensed3 == null ? null : sensed3.getPowerWithNoPeopleSensedRaw();
-			default: throw new UnsupportedOperationException(sensing.toString());
-		}
+		return switch (sensing) {
+			case SENSING_1 -> sensed1 == null ? null : sensed1.getPowerWithNoPeopleSensedRaw();
+			case SENSING_2 -> sensed2 == null ? null : sensed2.getPowerWithNoPeopleSensedRaw();
+			case SENSING_3 -> sensed3 == null ? null : sensed3.getPowerWithNoPeopleSensedRaw();
+		};
 	}
 
 	@Override
 	public @Nullable SensingBundle getSensingBundle(Sensing sensing) {
-		switch(sensing){
-			case SENSING_1: return sensed1;
-			case SENSING_2: return sensed2;
-			case SENSING_3: return sensed3;
-			default: throw new UnsupportedOperationException(sensing.toString());
-		}
+		return switch (sensing) {
+			case SENSING_1 -> sensed1;
+			case SENSING_2 -> sensed2;
+			case SENSING_3 -> sensed3;
+		};
 	}
 	@Override public @Nullable SensingBundle getSensed1() { return sensed1; }
 	@Override public @Nullable SensingBundle getSensed2() { return sensed2; }

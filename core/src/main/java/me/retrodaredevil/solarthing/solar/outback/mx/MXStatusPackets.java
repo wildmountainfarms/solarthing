@@ -98,17 +98,10 @@ public final class MXStatusPackets {
 		if(packetChksum != calculatedChksum && ignoreCheckSum == IgnoreCheckSum.DISABLED){
 			throw new CheckSumException(packetChksum, calculatedChksum, new String(chars));
 		}
-		final int chksum;
-		switch (ignoreCheckSum){
-			case DISABLED: case IGNORE:
-				chksum = packetChksum;
-				break;
-			case IGNORE_AND_USE_CALCULATED:
-				chksum = calculatedChksum;
-				break;
-			default:
-				throw new RuntimeException("Unknown IgnoreCheckSum enum value: " + ignoreCheckSum);
-		}
+		final int chksum = switch (ignoreCheckSum) {
+			case DISABLED, IGNORE -> packetChksum;
+			case IGNORE_AND_USE_CALCULATED -> calculatedChksum;
+		};
 
 		final int chargerCurrent = chargerCurrentTens * 10 + chargerCurrentOnes;
 		final int pvCurrent = pvCurrentTens * 10 + pvCurrentOnes;

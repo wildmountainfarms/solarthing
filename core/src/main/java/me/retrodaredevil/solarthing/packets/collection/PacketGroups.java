@@ -46,10 +46,11 @@ public final class PacketGroups {
 		int fragmentId = defaultInstanceOptions.getDefaultFragmentId();
 		for(Packet packet : group.getPackets()){
 			if (packet instanceof InstancePacket instancePacket) {
-				switch(instancePacket.getPacketType()){
-					case SOURCE: sourceId = ((InstanceSourcePacket) instancePacket).getSourceId(); break;
-					case FRAGMENT_INDICATOR: fragmentId = ((InstanceFragmentIndicatorPacket) instancePacket).getFragmentId(); break;
-					default: break;
+				switch (instancePacket.getPacketType()) {
+					case SOURCE -> sourceId = ((InstanceSourcePacket) instancePacket).getSourceId();
+					case FRAGMENT_INDICATOR -> fragmentId = ((InstanceFragmentIndicatorPacket) instancePacket).getFragmentId();
+					default -> {
+					}
 				}
 			} else {
 				packets.add(packet);
@@ -70,9 +71,9 @@ public final class PacketGroups {
 		for (Packet packet : packetGroup.getPackets()) {
 			if (packet instanceof InstancePacket instancePacket) {
 				switch (instancePacket.getPacketType()) {
-					case SOURCE: sourcePacket = (InstanceSourcePacket) packet; break;
-					case TARGET: targetPacket = (InstanceTargetPacket) packet; break;
-					default: break;
+					case SOURCE -> sourcePacket = (InstanceSourcePacket) packet;
+					case TARGET -> targetPacket = (InstanceTargetPacket) packet;
+					default -> { }
 				}
 			} else {
 				packets.add(packet);

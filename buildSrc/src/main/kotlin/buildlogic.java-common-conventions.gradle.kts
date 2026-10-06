@@ -151,6 +151,7 @@ tasks.withType<JavaCompile>().configureEach {
 		error("AssignmentExpression")
 		error("NullableOnContainingClass")
 		warn("UnusedMethod") // Note: https://github.com/google/error-prone/issues/3144 // issue is now "completed", but annotations not customizable
+		error("StatementSwitchToExpressionSwitch")
 
 		// Experimental Errors
 		enable("ClassName")

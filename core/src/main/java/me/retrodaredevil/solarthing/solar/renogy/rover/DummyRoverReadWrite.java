@@ -191,13 +191,9 @@ public class DummyRoverReadWrite implements RoverReadTable, RoverWriteTable {
 	@Override
 	public void setStreetLightStatus(StreetLight streetLightStatus) {
 		StreetLight oldValue = Modes.getActiveMode(StreetLight.class, streetLightValue);
-		switch(requireNonNull(streetLightStatus)){
-			case OFF:
-				streetLightValue &= StreetLight.IGNORED_BITS;
-				break;
-			case ON:
-				streetLightValue |= (~StreetLight.IGNORED_BITS & 0xFF);
-				break;
+		switch (requireNonNull(streetLightStatus)) {
+			case OFF -> streetLightValue &= StreetLight.IGNORED_BITS;
+			case ON -> streetLightValue |= (~StreetLight.IGNORED_BITS & 0xFF);
 		}
 		onChange.onChange("streetLightStatus", oldValue.getModeName(), streetLightStatus.getModeName());
 	}

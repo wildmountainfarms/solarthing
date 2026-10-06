@@ -33,15 +33,10 @@ public class MutableSpecialPowerControl_E021 implements SpecialPowerControl_E021
 		lower = (lower & ~0b100) | ((enabled ? 1 : 0) << 2);
 	}
 	public void setChargingMethod(ChargingMethod chargingMethod){
-		switch(chargingMethod){
-			case DIRECT:
-				setChargingMethod(ChargingMethod_E021.DIRECT);
-				break;
-			case PWM:
-				setChargingMethod(ChargingMethod_E021.PWM);
-				break;
-			default:
-				throw new UnsupportedOperationException();
+		switch (chargingMethod) {
+			case DIRECT -> setChargingMethod(ChargingMethod_E021.DIRECT);
+			case PWM -> setChargingMethod(ChargingMethod_E021.PWM);
+			default -> throw new UnsupportedOperationException();
 		}
 	}
 	public void setChargingMethod(ChargingMethod_E021 chargingMethod){

@@ -41,11 +41,11 @@ public final class Version {
 			throw new IllegalArgumentException("number cannot be less than 0! it was: " + number);
 		}
 		String r = "" + number;
-		switch(r.length()){
-			case 2: return r;
-			case 1: return "0" + r;
-			default: throw new AssertionError();
-		}
+		return switch (r.length()) {
+			case 2 -> r;
+			case 1 -> "0" + r;
+			default -> throw new AssertionError();
+		};
 	}
 
 	@GraphQLInclude("representation")

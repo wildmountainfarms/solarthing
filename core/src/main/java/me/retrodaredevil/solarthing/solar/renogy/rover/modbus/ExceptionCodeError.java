@@ -20,12 +20,12 @@ public enum ExceptionCodeError {
 		return code;
 	}
 	public static @Nullable ExceptionCodeError fromCodeOrNull(int code) {
-		switch (code) {
-			case 1: return READ_EXCEPTION_UNSUPPORTED_FUNCTION_CODE;
-			case 2: return READ_EXCEPTION_UNSUPPORTED_REGISTER;
-			case 3: return READ_EXCEPTION_TOO_MANY_REGISTERS_TO_READ;
-			case 4: return READ_EXCEPTION_CANNOT_READ_MULTIPLE_REGISTERS;
-		}
-		return null;
+		return switch (code) {
+			case 1 -> READ_EXCEPTION_UNSUPPORTED_FUNCTION_CODE;
+			case 2 -> READ_EXCEPTION_UNSUPPORTED_REGISTER;
+			case 3 -> READ_EXCEPTION_TOO_MANY_REGISTERS_TO_READ;
+			case 4 -> READ_EXCEPTION_CANNOT_READ_MULTIPLE_REGISTERS;
+			default -> null;
+		};
 	}
 }

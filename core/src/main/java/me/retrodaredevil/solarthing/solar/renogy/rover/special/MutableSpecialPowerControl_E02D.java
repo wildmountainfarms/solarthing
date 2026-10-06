@@ -41,17 +41,10 @@ public class MutableSpecialPowerControl_E02D implements SpecialPowerControl_E02D
 		setBatteryType(isLithiumBattery ? BatteryType.LITHIUM : BatteryType.LEAD_ACID);
 	}
 	public void setChargingMethod(ChargingMethod chargingMethod){
-		final ChargingMethod_E02D method;
-		switch (chargingMethod){
-			case PWM:
-				method = ChargingMethod_E02D.PWM;
-				break;
-			case DIRECT:
-				method = ChargingMethod_E02D.DIRECT;
-				break;
-			default:
-				throw new UnsupportedOperationException();
-		}
+		final ChargingMethod_E02D method = switch (chargingMethod) {
+			case PWM -> ChargingMethod_E02D.PWM;
+			case DIRECT -> ChargingMethod_E02D.DIRECT;
+		};
 		setChargingMethod(method);
 	}
 	public void setChargingMethod(ChargingMethod_E02D chargingMethod){

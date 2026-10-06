@@ -30,11 +30,11 @@ public enum BatteryDetection implements CodeMode {
 
 	@JsonCreator
 	public static BatteryDetection parseFromString(String detection) {
-		switch (detection) {
-			case "auto": return AUTO;
-			case "12": return V12;
-			case "24": return V24;
-		}
-		throw new IllegalArgumentException("Unknown detection: " + detection);
+		return switch (detection) {
+			case "auto" -> AUTO;
+			case "12" -> V12;
+			case "24" -> V24;
+			default -> throw new IllegalArgumentException("Unknown detection: " + detection);
+		};
 	}
 }
