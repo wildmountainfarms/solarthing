@@ -4,9 +4,8 @@ plugins {
 }
 
 java {
-	// Staying on Java 11 to avoid accidentally using APIs incompatible with older Android versions
-	sourceCompatibility = JavaVersion.VERSION_11
-	targetCompatibility = JavaVersion.VERSION_11
+	sourceCompatibility = JavaVersion.VERSION_25
+	targetCompatibility = JavaVersion.VERSION_25
 }
 
 version = "0.0.1-SNAPSHOT"
