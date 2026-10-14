@@ -1,9 +1,9 @@
-NOTE: This is outdated and this file will be deleted soon! See: https://solarthing.readthedocs.io/en/latest/misc/history.html
+NOTE: This is outdated and this file will be deleted soon! See: https://docs.solarthing.org/en/latest/misc/history.html
 
 # History
 This program started in the summer of 2017.
 
-NOTE: This page should be moved to https://solarthing.readthedocs.io in the future.
+NOTE: This page should be moved to https://docs.solarthing.org in the future.
 
 ### Inspiration
 [@eidolon1138](https://github.com/eidolon1138) is the one who originally came up with the idea to collect data from his Outback Mate device. He helped

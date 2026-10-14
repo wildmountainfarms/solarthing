@@ -1,6 +1,6 @@
 # Project Structure
 
-WARNING! This page is outdated. Please see: https://solarthing.readthedocs.io
+WARNING! This page is outdated. Please see: https://docs.solarthing.org
 
 TODO: In the future we should migrate information on this page to somewhere in the SolarThing documentation.
 

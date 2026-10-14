@@ -1,4 +1,4 @@
-NOTE: This is outdated! See: https://solarthing.readthedocs.io/en/latest/about/database-and-display.html
+NOTE: This is outdated! See: https://docs.solarthing.org/en/latest/about/database-and-display.html
 
 # Database Choice
 Choosing a database may be difficult, but usually there's a good choice.

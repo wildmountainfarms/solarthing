@@ -1,7 +1,7 @@
 # docker
 This directory is used to contain `Dockerfile`s to build `solarthing` and `solarthing-server` docker images.
 
-NOTE: If you are looking for documentation, go here: https://solarthing.readthedocs.io/en/latest/quickstart/install/docker.html
+NOTE: If you are looking for documentation, go here: https://docs.solarthing.org/en/latest/quickstart/install/docker.html
 
 
 

@@ -125,7 +125,7 @@ public class ModbusListUpdaterWrapper implements PacketListReceiver {
 						} else if (error == ExceptionCodeError.READ_EXCEPTION_TOO_MANY_REGISTERS_TO_READ) {
 							LOGGER.error(SolarThingConstants.SUMMARY_MARKER, "This error should never happen because we never request to read too many registers. Please report this.");
 						} else if (error == ExceptionCodeError.READ_EXCEPTION_CANNOT_READ_MULTIPLE_REGISTERS) {
-							LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "This error is unexpected. To attempt to fix this yourself, please visit: https://solarthing.readthedocs.io/en/latest/config/file/base-json/request/modbus/rover/bulk-request.html to disable bulk request. Please report this anyway, as it should never happen.");
+							LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "This error is unexpected. To attempt to fix this yourself, please visit: https://docs.solarthing.org/en/latest/config/file/base-json/request/modbus/rover/bulk-request.html to disable bulk request. Please report this anyway, as it should never happen.");
 						}
 					}
 				}

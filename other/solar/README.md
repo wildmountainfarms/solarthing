@@ -1,6 +1,6 @@
 # Detailed Solar Implementation
 
-WARNING! This page is outdated. Please see: https://solarthing.readthedocs.io
+WARNING! This page is outdated. Please see: https://docs.solarthing.org
 
 Some information about how this program works with solar products.
 

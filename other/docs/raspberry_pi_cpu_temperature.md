@@ -1,1 +1,1 @@
-NEW DOCUMENTATION HERE: https://solarthing.readthedocs.io/en/latest/config/rpi-cpu-temp.html
+NEW DOCUMENTATION HERE: https://docs.solarthing.org/en/latest/config/rpi-cpu-temp.html

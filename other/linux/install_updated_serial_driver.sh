@@ -3,10 +3,10 @@ BASEDIR=$(dirname "$0")
 cd "$BASEDIR" || exit 1
 
 # This script is deprecated. See
-# https://solarthing.readthedocs.io/en/latest/quickstart/serial-port/hardware/tracer/rs485-port.html
+# https://docs.solarthing.org/en/latest/quickstart/serial-port/hardware/tracer/rs485-port.html
 # You should instead use install_tracer_serial_driver.sh
 
-echo "This script is deprecated. Please follow the updated instructions here: https://solarthing.readthedocs.io/en/latest/quickstart/serial-port/hardware/tracer/rs485-port.html"
+echo "This script is deprecated. Please follow the updated instructions here: https://docs.solarthing.org/en/latest/quickstart/serial-port/hardware/tracer/rs485-port.html"
 echo
 
 echo "This will edit config files on your system to disable cdc-acm "

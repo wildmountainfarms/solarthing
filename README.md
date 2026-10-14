@@ -8,7 +8,7 @@
 
 Stores solar data in a database to view on Android, Grafana, or PVOutput
 
-View full documentation at https://solarthing.readthedocs.io/
+View full documentation at https://docs.solarthing.org/
 
 Contents
 
@@ -30,7 +30,7 @@ Contents
 * DS18B20 Temperature Sensors and PZEM-003 and PZEM-017 Shunts
 
 ## Quickstart
-Ready to install? Use the [Quickstart](https://solarthing.readthedocs.io/en/latest/quickstart/install/index.html)!
+Ready to install? Use the [Quickstart](https://docs.solarthing.org/en/latest/quickstart/install/index.html)!
 
 
 ## Features
@@ -40,7 +40,7 @@ Ready to install? Use the [Quickstart](https://solarthing.readthedocs.io/en/late
 * Supports CouchDB, InfluxDB, local JSON file, and PVOutput exporting.
   * Multiple databases can even be used at the same time!
   * Packets are uploaded in parallel to multiple databases at the same time
-* Can [report CPU temperature](https://solarthing.readthedocs.io/en/latest/config/file/base-json/request/cpu-temperature.html).
+* Can [report CPU temperature](https://docs.solarthing.org/en/latest/config/file/base-json/request/cpu-temperature.html).
 * Runs inside a Docker container
 
 
@@ -48,14 +48,14 @@ Ready to install? Use the [Quickstart](https://solarthing.readthedocs.io/en/late
 
 * Grafana (recommended)
   * Use SolarThing Server (with CouchDB) alongside [Wild GraphQL Data Source](https://grafana.com/grafana/plugins/retrodaredevil-wildgraphql-datasource/)
-    * Documentation: https://solarthing.readthedocs.io/en/latest/quickstart/data/solarthing-server/index.html
+    * Documentation: https://docs.solarthing.org/en/latest/quickstart/data/solarthing-server/index.html
   * Alternatively, configure SolarThing to upload to InfluxDB for viewing of statistics in Grafana
 * [SolarThing Android](https://play.google.com/store/apps/details?id=me.retrodaredevil.solarthing.android)
   * SolarThing Android connects directly to CouchDB to display data in a persistent notification
 * [PVOutput.org](https://pvoutput.org)
   * Upload your data to CouchDB, then let SolarThing upload the data inside your database to PVOutput!
 
-If you are wondering how to set up SolarThing to view your data, you can head here: https://solarthing.readthedocs.io/en/latest/quickstart/data/index.html
+If you are wondering how to set up SolarThing to view your data, you can head here: https://docs.solarthing.org/en/latest/quickstart/data/index.html
 
 ## Supported Databases
 

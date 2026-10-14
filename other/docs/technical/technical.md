@@ -1,6 +1,6 @@
 ### Individual documentation
 
-WARNING! This page is outdated. Please see: https://solarthing.readthedocs.io
+WARNING! This page is outdated. Please see: https://docs.solarthing.org
 
 ### Line count
 ```shell

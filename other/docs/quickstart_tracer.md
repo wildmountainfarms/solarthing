@@ -1,4 +1,4 @@
-NEW DOCUMENTATION HERE: https://solarthing.readthedocs.io/en/latest/tracer/config.html
+NEW DOCUMENTATION HERE: https://docs.solarthing.org/en/latest/tracer/config.html
 
 # Quick Start EPEver Tracer
 * If you haven't already, [click here](quickstart.md) to view how to clone this repo and install the service.

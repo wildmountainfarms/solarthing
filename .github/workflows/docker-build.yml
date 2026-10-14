@@ -82,8 +82,8 @@ jobs:
             org.opencontainers.image.source=https://github.com/wildmountainfarms/solarthing
             org.opencontainers.image.ref.name=${{ matrix.data.image-name }}
             org.opencontainers.image.vendor=wildmountainfarms
-            org.opencontainers.image.documentation=https://solarthing.readthedocs.io/en/latest/
-            org.opencontainers.image.url=https://solarthing.readthedocs.io/en/latest/
+            org.opencontainers.image.documentation=https://docs.solarthing.org/en/latest/
+            org.opencontainers.image.url=https://docs.solarthing.org/en/latest/
             org.opencontainers.image.authors=retrodaredevil
             org.opencontainers.image.base.name=ghcr.io/retrodaredevil/lavender-jre:25-ubuntu-noble
       # https://github.com/marketplace/actions/docker-setup-buildx
