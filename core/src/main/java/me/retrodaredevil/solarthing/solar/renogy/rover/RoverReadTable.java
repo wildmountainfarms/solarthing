@@ -688,6 +688,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 		Integer workingHoursRaw = getWorkingHoursRaw(sensing);
 		Integer powerWithPeopleSensedRaw = getPowerWithPeopleSensedRaw(sensing);
 		Integer powerWithNoPeopleSensedRaw = getPowerWithNoPeopleSensedRaw(sensing);
+		// TODO short-circuit these checks
 		if (workingHoursRaw == null || powerWithPeopleSensedRaw == null || powerWithNoPeopleSensedRaw == null) {
 			return null;
 		}
@@ -701,6 +702,9 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	default @Nullable SensingBundle getSensed3(){ return getSensingBundle(Sensing.SENSING_3); }
 
 
+	/**
+	 * NOTE: this causes a timeout on the newer Rover models that utilize RS485 (the RNG-CTRL-RVR40-US, for instance)
+	 */
 	@JsonProperty("sensingTimeDelayRaw")
 	@Nullable Integer getSensingTimeDelayRaw();
 	default @Nullable Integer getSensingTimeDelaySeconds(){

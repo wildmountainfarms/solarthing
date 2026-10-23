@@ -393,6 +393,10 @@ public class RoverModbusSlaveRead extends AbstractModbusRead implements RoverRea
 		return oneRegister(SPECIAL_POWER_CONTROL_E021);
 	}
 	@Override public @Nullable Integer getWorkingHoursRaw(Sensing sensing) {
+		if (true) {
+			// temporary until https://github.com/wildmountainfarms/solarthing/issues/239 is resolved
+			return null;
+		}
 		try {
 			return oneRegister(new ReadHoldingRegisters(sensing.getWorkingHoursRegister(), 1));
 		} catch (ErrorCodeException ex) {
@@ -400,6 +404,10 @@ public class RoverModbusSlaveRead extends AbstractModbusRead implements RoverRea
 		}
 	}
 	@Override public @Nullable Integer getPowerWithPeopleSensedRaw(Sensing sensing) {
+		if (true) {
+			// temporary until https://github.com/wildmountainfarms/solarthing/issues/239 is resolved
+			return null;
+		}
 		try {
 			return oneRegister(new ReadHoldingRegisters(sensing.getPowerWithPeopleSensedRegister(), 1));
 		} catch (ErrorCodeException ex) {
@@ -407,6 +415,10 @@ public class RoverModbusSlaveRead extends AbstractModbusRead implements RoverRea
 		}
 	}
 	@Override public @Nullable Integer getPowerWithNoPeopleSensedRaw(Sensing sensing) {
+		if (true) {
+			// temporary until https://github.com/wildmountainfarms/solarthing/issues/239 is resolved
+			return null;
+		}
 		try {
 			return oneRegister(new ReadHoldingRegisters(sensing.getPowerWithNoPeopleSensedRegister(), 1));
 		} catch (ErrorCodeException ex) {
@@ -416,6 +428,10 @@ public class RoverModbusSlaveRead extends AbstractModbusRead implements RoverRea
 
 	static final ReadHoldingRegisters SENSING_TIME_DELAY = new ReadHoldingRegisters(0xE02B, 1);
 	@Override public @Nullable Integer getSensingTimeDelayRaw() {
+		if (true) {
+			// temporary until https://github.com/wildmountainfarms/solarthing/issues/239 is resolved
+			return null;
+		}
 		try {
 			return oneRegister(SENSING_TIME_DELAY);
 		} catch (ErrorCodeException ex) {
@@ -424,6 +440,10 @@ public class RoverModbusSlaveRead extends AbstractModbusRead implements RoverRea
 	}
 	static final ReadHoldingRegisters LED_LOAD_CURRENT = new ReadHoldingRegisters(0xE02C, 1);
 	@Override public @Nullable Integer getLEDLoadCurrentRaw() {
+		if (true) {
+			// temporary until https://github.com/wildmountainfarms/solarthing/issues/239 is resolved
+			return null;
+		}
 		try {
 			return oneRegister(LED_LOAD_CURRENT);
 		} catch (ErrorCodeException ex) {
@@ -432,6 +452,10 @@ public class RoverModbusSlaveRead extends AbstractModbusRead implements RoverRea
 	}
 	static final ReadHoldingRegisters SPECIAL_POWER_CONTROL_E02D = new ReadHoldingRegisters(0xE02D, 1);
 	@Override public @Nullable Integer getSpecialPowerControlE02DRaw() {
+		if (true) {
+			// temporary until https://github.com/wildmountainfarms/solarthing/issues/239 is resolved
+			return null;
+		}
 		try {
 			return oneRegister(SPECIAL_POWER_CONTROL_E02D);
 		} catch (ErrorCodeException ex) {
@@ -442,12 +466,14 @@ public class RoverModbusSlaveRead extends AbstractModbusRead implements RoverRea
 	static final ReadHoldingRegisters CONTROLLER_CHARGING_POWER_SETTING = new ReadHoldingRegisters(0xE02E, 1);
 	@Override
 	public Integer getControllerChargingPowerSetting() {
+		// TODO this may result in timeout on some models
 		return oneRegister(CONTROLLER_CHARGING_POWER_SETTING);
 	}
 
 	static final ReadHoldingRegisters GENERATOR_CHARGING_POWER_SETTING = new ReadHoldingRegisters(0xE02F, 1);
 	@Override
 	public Integer getGeneratorChargingPowerSetting() {
+		// TODO this may result in timeout on some models
 		return oneRegister(GENERATOR_CHARGING_POWER_SETTING);
 	}
 	// endregion
