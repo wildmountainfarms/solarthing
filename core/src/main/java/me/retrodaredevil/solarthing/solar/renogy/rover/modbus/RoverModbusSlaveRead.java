@@ -25,10 +25,19 @@ public class RoverModbusSlaveRead extends AbstractModbusRead implements RoverRea
 	public static final int READ_EXCEPTION_TOO_MANY_REGISTERS_TO_READ = 3;
 	public static final int READ_EXCEPTION_CANNOT_READ_MULTIPLE_REGISTERS = 4;
 
+	/**
+	 * Disables the fetching of "MES Load" data. Relates to https://github.com/wildmountainfarms/solarthing/issues/239
+	 */
+	private final boolean fetchMesLoad;
 
-	public RoverModbusSlaveRead(ModbusSlave modbus) {
+	public RoverModbusSlaveRead(ModbusSlave modbus, boolean fetchMesLoad) {
 		super(modbus, Endian.BIG);
+		this.fetchMesLoad = fetchMesLoad;
 	}
+	public RoverModbusSlaveRead(ModbusSlave modbus) {
+		this(modbus, true);
+	}
+
 	@Override
 	public Identifier getIdentifier() {
 		return IDENTIFIER;
@@ -393,6 +402,9 @@ public class RoverModbusSlaveRead extends AbstractModbusRead implements RoverRea
 		return oneRegister(SPECIAL_POWER_CONTROL_E021);
 	}
 	@Override public @Nullable Integer getWorkingHoursRaw(Sensing sensing) {
+		if (!fetchMesLoad) {
+			return null;
+		}
 		try {
 			return oneRegister(new ReadHoldingRegisters(sensing.getWorkingHoursRegister(), 1));
 		} catch (ErrorCodeException ex) {
@@ -400,6 +412,9 @@ public class RoverModbusSlaveRead extends AbstractModbusRead implements RoverRea
 		}
 	}
 	@Override public @Nullable Integer getPowerWithPeopleSensedRaw(Sensing sensing) {
+		if (!fetchMesLoad) {
+			return null;
+		}
 		try {
 			return oneRegister(new ReadHoldingRegisters(sensing.getPowerWithPeopleSensedRegister(), 1));
 		} catch (ErrorCodeException ex) {
@@ -407,6 +422,9 @@ public class RoverModbusSlaveRead extends AbstractModbusRead implements RoverRea
 		}
 	}
 	@Override public @Nullable Integer getPowerWithNoPeopleSensedRaw(Sensing sensing) {
+		if (!fetchMesLoad) {
+			return null;
+		}
 		try {
 			return oneRegister(new ReadHoldingRegisters(sensing.getPowerWithNoPeopleSensedRegister(), 1));
 		} catch (ErrorCodeException ex) {
@@ -416,6 +434,9 @@ public class RoverModbusSlaveRead extends AbstractModbusRead implements RoverRea
 
 	static final ReadHoldingRegisters SENSING_TIME_DELAY = new ReadHoldingRegisters(0xE02B, 1);
 	@Override public @Nullable Integer getSensingTimeDelayRaw() {
+		if (!fetchMesLoad) {
+			return null;
+		}
 		try {
 			return oneRegister(SENSING_TIME_DELAY);
 		} catch (ErrorCodeException ex) {
@@ -424,6 +445,9 @@ public class RoverModbusSlaveRead extends AbstractModbusRead implements RoverRea
 	}
 	static final ReadHoldingRegisters LED_LOAD_CURRENT = new ReadHoldingRegisters(0xE02C, 1);
 	@Override public @Nullable Integer getLEDLoadCurrentRaw() {
+		if (!fetchMesLoad) {
+			return null;
+		}
 		try {
 			return oneRegister(LED_LOAD_CURRENT);
 		} catch (ErrorCodeException ex) {
@@ -432,6 +456,9 @@ public class RoverModbusSlaveRead extends AbstractModbusRead implements RoverRea
 	}
 	static final ReadHoldingRegisters SPECIAL_POWER_CONTROL_E02D = new ReadHoldingRegisters(0xE02D, 1);
 	@Override public @Nullable Integer getSpecialPowerControlE02DRaw() {
+		if (!fetchMesLoad) {
+			return null;
+		}
 		try {
 			return oneRegister(SPECIAL_POWER_CONTROL_E02D);
 		} catch (ErrorCodeException ex) {
@@ -442,12 +469,14 @@ public class RoverModbusSlaveRead extends AbstractModbusRead implements RoverRea
 	static final ReadHoldingRegisters CONTROLLER_CHARGING_POWER_SETTING = new ReadHoldingRegisters(0xE02E, 1);
 	@Override
 	public Integer getControllerChargingPowerSetting() {
+		// TODO this may result in timeout on some models
 		return oneRegister(CONTROLLER_CHARGING_POWER_SETTING);
 	}
 
 	static final ReadHoldingRegisters GENERATOR_CHARGING_POWER_SETTING = new ReadHoldingRegisters(0xE02F, 1);
 	@Override
 	public Integer getGeneratorChargingPowerSetting() {
+		// TODO this may result in timeout on some models
 		return oneRegister(GENERATOR_CHARGING_POWER_SETTING);
 	}
 	// endregion

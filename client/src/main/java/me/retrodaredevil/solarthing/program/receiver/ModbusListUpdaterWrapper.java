@@ -104,9 +104,9 @@ public class ModbusListUpdaterWrapper implements PacketListReceiver {
 							""");
 				}
 				if (extraFeatures.contains(Feature.DEBUG_MODBUS_TIMEOUT)) {
-					LOGGER.debug("Got a modbus timeout. Message: " + e.getMessage()); // we don't need to log the stacktrace, so the exception is not logged
+					LOGGER.debug("Got a modbus timeout. Message: " + e.getMessage());
 				} else {
-					LOGGER.error("Got a modbus timeout. Message: " + e.getMessage()); // we don't need to log the stacktrace, so the exception is not logged
+					LOGGER.error("Got a modbus timeout. Message: " + e.getMessage());
 				}
 			} else if (e instanceof ParsedResponseException parsedResponseException) {
 				// we don't need to log the stacktrace here as long as we log the message of the error

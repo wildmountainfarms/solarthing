@@ -671,6 +671,8 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	// For the Rover Elite, everything below here isn't gonna work because it doesn't have a load.
 
 	// region MES Load
+	// NOTE: Some controller models do not support MES Load (they won't actually respond to requests, causing timeouts)
+	//   Known models where this is the case: RNG-CTRL-RVR40-US
 	@RoverOnly
 	@Nullable Integer getWorkingHoursRaw(Sensing sensing);
 	@Deprecated default int getWorkingHours(Sensing sensing){ return requireNonNull(getWorkingHoursRaw(sensing)) + 1; }
@@ -688,6 +690,7 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 		Integer workingHoursRaw = getWorkingHoursRaw(sensing);
 		Integer powerWithPeopleSensedRaw = getPowerWithPeopleSensedRaw(sensing);
 		Integer powerWithNoPeopleSensedRaw = getPowerWithNoPeopleSensedRaw(sensing);
+		// TODO short-circuit these checks
 		if (workingHoursRaw == null || powerWithPeopleSensedRaw == null || powerWithNoPeopleSensedRaw == null) {
 			return null;
 		}
@@ -727,6 +730,8 @@ public interface RoverReadTable extends Rover, ErrorReporter, BasicChargeControl
 	}
 	// endregion
 
+	// NOTE: If we start using getControllerChargingPowerSetting() or getGeneratorChargingPowerSetting() in the future,
+	//   determine whether they are supported by all devices (they aren't, but would attempting to request them cause errors)
 	/**
 	 * Only applies to Dual Input Charge Controllers
 	 *
