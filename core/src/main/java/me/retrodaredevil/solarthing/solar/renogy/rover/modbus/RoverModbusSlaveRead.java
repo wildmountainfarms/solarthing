@@ -34,6 +34,10 @@ public class RoverModbusSlaveRead extends AbstractModbusRead implements RoverRea
 		super(modbus, Endian.BIG);
 		this.fetchMesLoad = fetchMesLoad;
 	}
+	public RoverModbusSlaveRead(ModbusSlave modbus) {
+		this(modbus, true);
+	}
+
 	@Override
 	public Identifier getIdentifier() {
 		return IDENTIFIER;
