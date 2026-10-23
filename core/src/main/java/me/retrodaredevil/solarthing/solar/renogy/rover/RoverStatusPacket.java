@@ -52,7 +52,8 @@ public interface RoverStatusPacket extends RenogyPacket, RoverReadTable, PacketW
 		public static final int ADDED_CHARGING_STATE_EVENT = 6;
 		public static final int ADDED_ERROR_MODE_EVENT = 7;
 		public static final int ROVER_TEST_2026_01_17 = 8;
-		public static final int LATEST = ROVER_TEST_2026_01_17;
+		public static final int SUPPORT_MES_LOAD_TOGGLE = 9;
+		public static final int LATEST = SUPPORT_MES_LOAD_TOGGLE;
 	}
 
 	@DefaultFinal

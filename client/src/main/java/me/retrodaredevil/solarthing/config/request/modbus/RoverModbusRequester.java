@@ -38,6 +38,7 @@ public class RoverModbusRequester implements ModbusRequester {
 	private final boolean sendErrorPackets;
 	private final boolean bulkRequest;
 	private final int number;
+	private final boolean fetchMesLoad;
 	private final @Nullable NetCatConfig configurationServerConfig;
 
 	@JsonCreator
@@ -45,10 +46,12 @@ public class RoverModbusRequester implements ModbusRequester {
 			@JsonProperty("error_packets") @Nullable Boolean sendErrorPackets,
 			@JsonProperty("bulk_request") @Nullable Boolean bulkRequest,
 			@JsonProperty("number") @Nullable Integer number,
+			@JsonProperty("mes") @Nullable Boolean fetchMesLoad,
 			@JsonProperty("server") @Nullable NetCatConfig configurationServerConfig) {
 		this.sendErrorPackets = Boolean.TRUE.equals(sendErrorPackets); // default false
 		this.bulkRequest = !Boolean.FALSE.equals(bulkRequest); // default true
 		this.number = number == null ? NumberedIdentifier.DEFAULT_NUMBER : number;
+		this.fetchMesLoad = !Boolean.FALSE.equals(fetchMesLoad); // default true
 		this.configurationServerConfig = configurationServerConfig;
 		if (number != null) {
 			LOGGER.warn(SolarThingConstants.SUMMARY_MARKER, "Hey! We noticed you are defining 'number' on this rover modbus requester! Please don't do that unless you actually need to!!");
@@ -70,7 +73,11 @@ public class RoverModbusRequester implements ModbusRequester {
 		modbusCacheSlave.cacheHoldingRangeInclusive(0xE002, 0xE014);
 		// break here just because they're for different things
 		modbusCacheSlave.cacheHoldingRangeInclusive(0xE015, 0xE021);
-//			modbusCacheSlave.cacheRangeInclusive(0xE022, 0xE02D); these do not work when querying in bulk for some reason
+
+		// NOTE: 0xE022 to 0xE02D  are for MES Load. These do not work for querying in bulk.
+		//   0xE02E and 0xE02F are used for DCDC controllers and are untested.
+		//   That is why the below line is commented out
+//			modbusCacheSlave.cacheRangeInclusive(0xE022, 0xE02D);
 	}
 
 	@Override
@@ -79,10 +86,10 @@ public class RoverModbusRequester implements ModbusRequester {
 		final Runnable reloadCache;
 		if (bulkRequest) {
 			ModbusCacheSlave modbusCacheSlave = new ModbusCacheSlave(modbus);
-			read = new RoverModbusSlaveRead(modbusCacheSlave);
+			read = new RoverModbusSlaveRead(modbusCacheSlave, fetchMesLoad);
 			reloadCache = () -> cacheRegisters(modbusCacheSlave);
 		} else {
-			read = new RoverModbusSlaveRead(modbus);
+			read = new RoverModbusSlaveRead(modbus, fetchMesLoad);
 			reloadCache = () -> {};
 		}
 		RoverWriteTable write = new RoverModbusSlaveWrite(modbus);

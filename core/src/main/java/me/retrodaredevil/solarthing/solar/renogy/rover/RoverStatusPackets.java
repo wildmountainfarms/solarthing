@@ -51,7 +51,7 @@ public final class RoverStatusPackets {
 				read.getLEDLoadCurrentSettingRaw(),
 				read.getSpecialPowerControlE021Raw(),
 				read.getSensed1(), read.getSensed2(), read.getSensed3(),
-				null, read.getLEDLoadCurrentRaw(),
+				read.getSensingTimeDelayRaw(), read.getLEDLoadCurrentRaw(),
 				read.getSpecialPowerControlE02DRaw()
 		);
 	}
