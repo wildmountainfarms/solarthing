@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
+import java.time.InstantSource;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -33,16 +34,17 @@ public class RequestMain {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RequestMain.class);
 
-	public static int startRequestProgram(RequestProgramOptions options, boolean isValidate) throws Exception {
+	public static int startRequestProgram(InstantSource instantSource, RequestProgramOptions options, boolean isValidate) throws Exception {
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Beginning request program");
 		AnalyticsManager analyticsManager = new AnalyticsManager(options.isAnalyticsEnabled());
-		return startRequestProgram(options, isValidate, analyticsManager, options.getPeriod(), options.getMinimumWait());
+		return startRequestProgram(instantSource, options, isValidate, analyticsManager, options.getPeriod(), options.getMinimumWait());
 	}
 
-	private static int startRequestProgram(RequestProgramOptions options, boolean isValidate, AnalyticsManager analyticsManager, Duration period, Duration minimumWait) throws Exception {
+	private static int startRequestProgram(InstantSource instantSource, RequestProgramOptions options, boolean isValidate, AnalyticsManager analyticsManager, Duration period, Duration minimumWait) throws Exception {
 		// Note this is very similar to code in OutbackMateMain and could eventually be refactored
 		EnvironmentUpdater[] environmentUpdaterReference = new EnvironmentUpdater[1];
 		PacketHandlerInit.Result handlersResult = PacketHandlerInit.initHandlers(
+				instantSource,
 				options,
 				() -> environmentUpdaterReference[0],
 				Collections.singleton(new RoverAnalyticsHandler(analyticsManager))
@@ -86,7 +88,7 @@ public class RequestMain {
 			long sleepTimeNanos = Math.max(minimumWait.toNanos(), period.toNanos() - timeTakenNanos);
 			LOGGER.debug("Going to sleep for " + TimeUtil.nanosToSecondsString(sleepTimeNanos) + " seconds");
 			try {
-				Thread.sleep(sleepTimeNanos / 1_000_000, (int) (sleepTimeNanos % 1_000_000));
+				Thread.sleep(Duration.ofNanos(sleepTimeNanos));
 			} catch (InterruptedException ex) {
 				Thread.currentThread().interrupt();
 				break;

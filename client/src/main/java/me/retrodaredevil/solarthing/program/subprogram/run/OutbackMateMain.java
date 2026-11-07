@@ -40,6 +40,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
+import java.time.InstantSource;
 import java.util.*;
 
 import static java.util.Objects.requireNonNull;
@@ -52,7 +53,7 @@ public class OutbackMateMain {
 	private static final Collection<MateCommand> ALLOWED_COMMANDS = EnumSet.of(MateCommand.AUX_OFF, MateCommand.AUX_ON, MateCommand.USE, MateCommand.DROP);
 
 	@SuppressWarnings("SameReturnValue")
-	public static int connectMate(MateProgramOptions options, boolean isValidate) throws Exception {
+	public static int connectMate(InstantSource instantSource, MateProgramOptions options, boolean isValidate) throws Exception {
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Beginning mate program");
 		AnalyticsManager analyticsManager = new AnalyticsManager(options.isAnalyticsEnabled());
 		LOGGER.debug("IO Bundle File: " + options.getIOBundleFilePath());
@@ -62,6 +63,7 @@ public class OutbackMateMain {
 			// Note this is very similar to code in RequestMain and could eventually be refactored
 			EnvironmentUpdater[] environmentUpdaterReference = new EnvironmentUpdater[1];
 			PacketHandlerInit.Result handlersResult = PacketHandlerInit.initHandlers(
+					instantSource,
 					options,
 					() -> environmentUpdaterReference[0],
 					Collections.singleton(new MateAnalyticsHandler(analyticsManager))

@@ -6,6 +6,8 @@ import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
+import java.time.InstantSource;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -27,6 +29,8 @@ import static java.util.Objects.requireNonNull;
 public class AsyncRetryingPacketHandler implements PacketHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AsyncRetryingPacketHandler.class);
 
+	private final InstantSource instantSource;
+	private final Duration durationToKeep;
 	private final PacketHandler packetHandler;
 
 	private final ExecutorService mainExecutorService = Executors.newSingleThreadExecutor();
@@ -37,15 +41,16 @@ public class AsyncRetryingPacketHandler implements PacketHandler {
 	/**
 	 * @param packetHandler The {@link PacketHandler} to use. Note: This should be thread safe, as {@link PacketHandler#handle(PacketCollection)} may be called in parallel
 	 */
-	public AsyncRetryingPacketHandler(PacketHandler packetHandler) {
+	public AsyncRetryingPacketHandler(InstantSource instantSource, Duration durationToKeep, PacketHandler packetHandler) {
+		this.instantSource = instantSource;
+		this.durationToKeep = durationToKeep;
 		this.packetHandler = packetHandler;
 
 		reuploadExecutorService.scheduleWithFixedDelay(
 				() -> {
 					// We don't have to worry about synchronizing at all because our executorService executes on a single thread
-					// TODO do a better job about nullability within a PacketGroupNode
 					final List<PacketGroupNode<PacketCollection>> toReupload;
-					long removeBefore = System.currentTimeMillis() - 10 * 60 * 1000; // remove if before 10 minutes ago
+					long removeBefore = instantSource.instant().minus(durationToKeep).toEpochMilli();
 					synchronized (packetCollections) {
 						NavigableSet<PacketGroupNode<PacketCollection>> toRemove = packetCollections.headSet(new PacketGroupNode<>(removeBefore), true);
 						if (!toRemove.isEmpty()) {
@@ -53,18 +58,14 @@ public class AsyncRetryingPacketHandler implements PacketHandler {
 							toRemove.clear();
 						}
 
-						if (!packetCollections.isEmpty()) {
-							toReupload = new ArrayList<>(packetCollections);
-						} else {
-							toReupload = Collections.emptyList();
-						}
+						toReupload = List.copyOf(packetCollections);
 					}
 					if (!toReupload.isEmpty()) {
 						LOGGER.debug("Going to try to reupload " + toReupload.size() + " packets using " + packetHandler);
 						List<PacketGroupNode<PacketCollection>> successfullyUploaded = new ArrayList<>();
 						try {
 							for (PacketGroupNode<PacketCollection> node : toReupload) {
-								PacketCollection packetCollection = requireNonNull(node.getPacketGroup());
+								PacketCollection packetCollection = node.expectPacketGroup();
 								packetHandler.handle(packetCollection);
 								successfullyUploaded.add(node);
 							}
