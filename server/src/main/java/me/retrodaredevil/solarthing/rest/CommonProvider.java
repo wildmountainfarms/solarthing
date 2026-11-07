@@ -36,7 +36,6 @@ public class CommonProvider {
 
 	private DefaultInstanceOptions defaultInstanceOptions;
 	private CouchDbDatabaseSettings couchDbDatabaseSettings;
-	private @Nullable CouchDbDatabaseSettings replicateCouchDbDatabaseSettings;
 
 
 	private String getDefaultSourceId() {
@@ -75,14 +74,6 @@ public class CommonProvider {
 			}
 			couchDbDatabaseSettings = (CouchDbDatabaseSettings) databaseSettings;
 		}
-		if (replicateDatabaseFile != null) {
-			DatabaseConfig databaseConfig = CommonConfigUtil.readConfig(replicateDatabaseFile, DatabaseConfig.class, objectMapper);
-			DatabaseSettings databaseSettings = databaseConfig.requireDatabaseSettings();
-			if(!(databaseSettings instanceof CouchDbDatabaseSettings)) {
-				throw new UnsupportedOperationException("Only CouchDB is supported right now!");
-			}
-			replicateCouchDbDatabaseSettings = (CouchDbDatabaseSettings) databaseSettings;
-		}
 	}
 
 	@Bean
@@ -93,10 +84,6 @@ public class CommonProvider {
 	@Bean
 	public CouchDbDatabaseSettings couchDbDatabaseSettings() {
 		return couchDbDatabaseSettings;
-	}
-	@Bean
-	public @Nullable CouchDbDatabaseSettings replicateCouchDbDatabaseSettings() {
-		return replicateCouchDbDatabaseSettings;
 	}
 
 }

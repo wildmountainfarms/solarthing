@@ -16,7 +16,7 @@ import java.util.Set;
 import static java.util.Objects.requireNonNull;
 
 @SupportedAnnotationTypes({"me.retrodaredevil.solarthing.annotations.SerializeNameDefinedInBase"})
-@SupportedSourceVersion(SourceVersion.RELEASE_11)
+@SupportedSourceVersion(SourceVersion.RELEASE_25)
 @AutoService(Processor.class)
 @NullMarked
 public class SerializeNameDefinedInBaseAnnotationProcessor extends AbstractProcessor {

@@ -20,7 +20,7 @@ class ImmutablePacketCollection implements PacketCollection {
 	 * @param packets The packets collection
 	 */
 	ImmutablePacketCollection(Collection<? extends Packet> packets, long dateMillis, String id){
-		this.packets = Collections.unmodifiableList(new ArrayList<>(packets));
+		this.packets = List.copyOf(packets);
 		this.dateMillis = dateMillis;
 		this.id = id;
 	}
