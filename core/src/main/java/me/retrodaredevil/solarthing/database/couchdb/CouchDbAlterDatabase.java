@@ -29,6 +29,8 @@ import org.jspecify.annotations.NullMarked;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Objects.requireNonNull;
+
 @NullMarked
 public class CouchDbAlterDatabase implements AlterDatabase {
 	private final CouchDbDatabase database;
@@ -74,6 +76,7 @@ public class CouchDbAlterDatabase implements AlterDatabase {
 				continue;
 			}
 			JsonData jsonData = row.getDoc(); // Since we're using _all_docs with include_docs=true, we have to use the doc, since the value is just the ID for _all_docs
+			requireNonNull(jsonData, "Expected getDoc() to return non-null");
 			final JsonNode jsonNode;
 			try {
 				jsonNode = CouchDbJacksonUtil.getNodeFrom(jsonData);

@@ -32,6 +32,8 @@ import org.jspecify.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Objects.requireNonNull;
+
 @NullMarked
 public class CouchDbMillisDatabase implements MillisDatabase {
 
@@ -82,6 +84,7 @@ public class CouchDbMillisDatabase implements MillisDatabase {
 		List<StoredPacketGroup> r = new ArrayList<>(rows.size());
 		for (ViewResponse.DocumentEntry row : rows) {
 			JsonData jsonData = row.getDoc(); // When using includeDocs=true, we want to use the doc, not its value (which is null with millisNull)
+			requireNonNull(jsonData, "Expected getDoc() to return non-null");
 			StoredPacketGroup storedPacketGroup = jsonDataToStoredPacketGroup(jsonData).getPacket();
 			r.add(storedPacketGroup);
 		}

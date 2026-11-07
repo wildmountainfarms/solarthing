@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.node.TextNode;
 import me.retrodaredevil.couchdbjava.CouchDbDatabase;
 import me.retrodaredevil.couchdbjava.CouchDbInstance;
 import me.retrodaredevil.couchdbjava.exception.CouchDbException;
+import me.retrodaredevil.couchdbjava.json.JsonData;
 import me.retrodaredevil.couchdbjava.json.jackson.CouchDbJacksonUtil;
 import me.retrodaredevil.couchdbjava.json.jackson.JacksonJsonData;
 import me.retrodaredevil.couchdbjava.request.ViewQuery;
@@ -66,9 +67,11 @@ public class CustomWmfCouchDbEdit20240318 {
 		for (ViewResponse.DocumentEntry row : response.getRows()) {
 			if (BAD_IDS.stream().anyMatch(endId -> row.getId().endsWith("|" + endId))) {
 				out.println(row.getId());
+				JsonData jsonData = row.getDoc();
+				requireNonNull(jsonData, "Expected getDoc() to return non-null");
 				final JsonNode json;
 				try {
-					json = CouchDbJacksonUtil.getNodeFrom(row.getDoc());
+					json = CouchDbJacksonUtil.getNodeFrom(jsonData);
 				} catch (JsonProcessingException e) {
 					e.printStackTrace(out);
 					out.println("Could not parse JSON data from " + row.getId() + ". Exiting");

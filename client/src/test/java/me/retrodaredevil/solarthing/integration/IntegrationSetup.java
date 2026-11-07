@@ -42,7 +42,7 @@ public class IntegrationSetup {
 
 		@Override
 		public String promptUserPassword(SolarThingDatabaseType.UserType userType) {
-			return IntegrationUtil.getAuthFor(userType).getPassword();
+			return IntegrationUtil.getAuthFor(userType).expectPassword();
 		}
 	}
 }
