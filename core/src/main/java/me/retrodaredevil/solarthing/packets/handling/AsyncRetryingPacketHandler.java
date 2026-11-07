@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import java.time.Duration;
 import java.time.InstantSource;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.NavigableSet;
 import java.util.TreeSet;
@@ -18,7 +17,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static java.util.Objects.requireNonNull;
 
 /**
  * NOTE: Once this class has been instantiated, there is no way to stop the thread that has been created.
