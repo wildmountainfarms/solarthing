@@ -1,7 +1,5 @@
 package me.retrodaredevil.solarthing.program.subprogram.run;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.config.options.CommandOption;
 import me.retrodaredevil.solarthing.config.options.PacketHandlingOption;
@@ -14,6 +12,8 @@ import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import java.time.ZoneId;
 import java.util.Arrays;
@@ -58,7 +58,7 @@ public final class PacketListReceiverHandlerBundle {
 							LOGGER.debug(SolarThingConstants.NO_CONSOLE, "Debugging event packets");
 							try {
 								LOGGER.debug(SolarThingConstants.NO_CONSOLE, MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(packets));
-							} catch (JsonProcessingException e) {
+							} catch (JacksonException e) {
 								LOGGER.debug("Could not serialize packets to debug...", e);
 							}
 						}
@@ -79,7 +79,7 @@ public final class PacketListReceiverHandlerBundle {
 							LOGGER.debug(SolarThingConstants.NO_REMOTE, "Debugging all packets");
 							try {
 								LOGGER.debug(SolarThingConstants.NO_REMOTE, MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(packets));
-							} catch (JsonProcessingException e) {
+							} catch (JacksonException e) {
 								LOGGER.debug("Could not serialize packets to debug...", e);
 							}
 						}

@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.program;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.solarthing.actions.CommonActionUtil;
 import me.retrodaredevil.solarthing.actions.chatbot.WrappedSlackChatBotActionNode;
@@ -25,10 +24,11 @@ import me.retrodaredevil.solarthing.config.options.ActionConfig;
 import me.retrodaredevil.solarthing.config.options.ActionsOption;
 import me.retrodaredevil.solarthing.config.options.CommandOption;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
-import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.cfg.MapperBuilder;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,11 +42,10 @@ public final class ActionUtil {
 	private ActionUtil() { throw new UnsupportedOperationException(); }
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionUtil.class);
 
-	private static final ObjectMapper CONFIG_MAPPER = ActionUtil.registerActionNodes(JacksonUtil.defaultMapper());
+	private static final ObjectMapper CONFIG_MAPPER = ActionUtil.registerActionNodes(JacksonUtil.defaultMapperBuilder()).build();
 
-	@Contract("_ -> param1")
-	public static ObjectMapper registerActionNodes(ObjectMapper objectMapper) {
-		objectMapper.registerSubtypes(
+	public static <M extends ObjectMapper, B extends MapperBuilder<M, B>> B registerActionNodes(MapperBuilder<M, B> builder) {
+		return CommonActionUtil.registerActionNodes(builder.registerSubtypes(
 				MateCommandActionNode.class,
 				MateCommandWaitActionNode.class,
 
@@ -71,8 +70,7 @@ public final class ActionUtil {
 				FlagActionNode.class,
 
 				WrappedAlterManagerActionNode.class
-		);
-		return CommonActionUtil.registerActionNodes(objectMapper);
+		));
 	}
 
 	public static Map<String, ActionNode> createCommandNameToActionNodeMap(CommandOption options) throws IOException {

@@ -26,7 +26,6 @@ dependencies {
 	api(libs.jackson.annotations)
 	api(libs.jackson.databind)
 
-	api(libs.jackson.datatype.jsr310) // heartbeat data uses java time stuff and serviceapi uses this
 
 	// https://mvnrepository.com/artifact/org.apache.commons/commons-text
 	implementation("org.apache.commons:commons-text:1.15.0")

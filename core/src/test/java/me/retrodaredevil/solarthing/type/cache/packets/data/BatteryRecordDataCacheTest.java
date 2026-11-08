@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.type.cache.packets.data;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import me.retrodaredevil.solarthing.PacketTestUtil;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
 import org.jspecify.annotations.NullMarked;
@@ -12,7 +11,7 @@ import java.time.Instant;
 class BatteryRecordDataCacheTest {
 
 	@Test
-	void testDeserialize() throws JsonProcessingException {
+	void testDeserialize() {
 		BatteryRecordDataCache cache = new BatteryRecordDataCache(
 				new OutbackIdentifier(1),
 				Instant.parse("2022-02-16T00:29:55Z").toEpochMilli(),

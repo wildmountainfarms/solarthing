@@ -1,9 +1,9 @@
 package me.retrodaredevil.solarthing.commands.event;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import org.jspecify.annotations.NullMarked;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 @JsonDeserialize(as = ImmutableSecurityAcceptPacket.class)
 @JsonTypeName("ACCEPT")

@@ -1,16 +1,15 @@
 package me.retrodaredevil.solarthing.jackson;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.exc.MismatchedInputException;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.jspecify.annotations.NullMarked;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectReader;
+import tools.jackson.databind.exc.MismatchedInputException;
+import tools.jackson.databind.node.ObjectNode;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -24,27 +23,28 @@ import java.util.List;
 @NullMarked
 public class UnwrappedDeserializeHelper {
 	private final ObjectMapper mapper;
+	private final ObjectReader reader;
 	private final JsonParser parser;
 	private final Class<?> clazz;
 	private final ObjectNode objectNode;
 
-	public UnwrappedDeserializeHelper(JsonParser parser, DeserializationContext context, Class<?> clazz) throws IOException {
+	public UnwrappedDeserializeHelper(JsonParser parser, DeserializationContext context, Class<?> clazz) {
 		this.parser = parser;
 		this.clazz = clazz;
 		this.objectNode = parser.readValueAsTree();
 		mapper = JacksonUtil.defaultMapper();
-		mapper.setConfig(context.getConfig().without(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES));
+		reader = mapper.reader().with(context.getConfig()).without(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 	}
-	public <T> T readValue(Class<T> clazz) throws JsonProcessingException {
-		T r = mapper.treeToValue(objectNode, clazz);
-		for (Iterator<String> it = mapper.valueToTree(r).fieldNames(); it.hasNext(); ){
+	public <T> T readValue(Class<T> clazz) {
+		T r = reader.treeToValue(objectNode, clazz);
+		for (Iterator<String> it = mapper.valueToTree(r).propertyNames().iterator(); it.hasNext(); ){
 			objectNode.remove(it.next());
 		}
 		return r;
 	}
-	public void assertNoUnknown() throws MismatchedInputException {
+	public void assertNoUnknown() {
 		List<String> unknownNames = new ArrayList<>();
-		for (Iterator<String> it = objectNode.fieldNames(); it.hasNext(); ){
+		for (Iterator<String> it = objectNode.propertyNames().iterator(); it.hasNext(); ){
 			String unknownPropertyName = it.next();
 			unknownNames.add(unknownPropertyName);
 		}

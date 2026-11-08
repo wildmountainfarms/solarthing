@@ -3,8 +3,10 @@ package me.retrodaredevil.solarthing.solar.outback.fx;
 import com.fasterxml.jackson.annotation.JsonClassDescription;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import me.retrodaredevil.solarthing.annotations.*;
+import me.retrodaredevil.solarthing.annotations.ConvenienceField;
+import me.retrodaredevil.solarthing.annotations.DefaultFinal;
+import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
+import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.Modes;
 import me.retrodaredevil.solarthing.packets.PacketWithVersion;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
@@ -15,6 +17,7 @@ import me.retrodaredevil.solarthing.solar.outback.OutbackStatusPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.FXMiscReporter;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.FXWarningReporter;
 import org.jspecify.annotations.NullMarked;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 import java.util.Set;
 

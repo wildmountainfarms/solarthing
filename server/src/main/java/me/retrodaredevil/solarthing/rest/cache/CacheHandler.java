@@ -2,11 +2,6 @@ package me.retrodaredevil.solarthing.rest.cache;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import me.retrodaredevil.couchdbjava.CouchDbDatabase;
 import me.retrodaredevil.couchdbjava.CouchDbInstance;
 import me.retrodaredevil.couchdbjava.exception.CouchDbException;
@@ -19,9 +14,6 @@ import me.retrodaredevil.couchdbjava.response.BulkDocumentResponse;
 import me.retrodaredevil.couchdbjava.response.BulkGetResponse;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
-import me.retrodaredevil.solarthing.rest.cache.creators.BatteryRecordCacheNodeCreator;
-import me.retrodaredevil.solarthing.type.cache.CacheUtil;
-import me.retrodaredevil.solarthing.type.cache.packets.CacheDataPacket;
 import me.retrodaredevil.solarthing.database.MillisQuery;
 import me.retrodaredevil.solarthing.database.MillisQueryBuilder;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
@@ -31,15 +23,23 @@ import me.retrodaredevil.solarthing.packets.collection.DefaultInstanceOptions;
 import me.retrodaredevil.solarthing.packets.collection.InstancePacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
+import me.retrodaredevil.solarthing.rest.cache.creators.BatteryRecordCacheNodeCreator;
 import me.retrodaredevil.solarthing.rest.cache.creators.CacheCreator;
 import me.retrodaredevil.solarthing.rest.cache.creators.ChargeControllerAccumulationCacheNodeCreator;
 import me.retrodaredevil.solarthing.rest.cache.creators.DefaultIdentificationCacheCreator;
 import me.retrodaredevil.solarthing.rest.cache.creators.FXAccumulationCacheNodeCreator;
 import me.retrodaredevil.solarthing.rest.exceptions.DatabaseException;
 import me.retrodaredevil.solarthing.rest.exceptions.UnexpectedResponseException;
+import me.retrodaredevil.solarthing.type.cache.CacheUtil;
+import me.retrodaredevil.solarthing.type.cache.packets.CacheDataPacket;
 import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -126,7 +126,7 @@ public class CacheHandler {
 		final JsonNode node;
 		try {
 			node = CouchDbJacksonUtil.getNodeFrom(jsonData);
-		} catch (JsonProcessingException e) {
+		} catch (JacksonException e) {
 			throw new RuntimeException("Couldn't parse to type, so tried parsing to JsonNode. That failed too.", e);
 		}
 		if (!node.isObject()) {
@@ -137,10 +137,10 @@ public class CacheHandler {
 		if (revisionNode == null) {
 			throw new RuntimeException("No _rev field on returned JSON!");
 		}
-		if (!revisionNode.isTextual()) {
+		if (!revisionNode.isString()) {
 			throw new RuntimeException("The _rev field is not a string! revisionNode: " + revisionNode);
 		}
-		return revisionNode.asText();
+		return revisionNode.asString();
 	}
 	private <T extends CacheDataPacket> List<T> queryOrCalculateCaches(TypeReference<T> typeReference, String cacheName, String sourceId, long startPeriodNumber, long endPeriodNumber) {
 		List<String> documentIds = new ArrayList<>(); // the document IDs needed to return data
@@ -183,7 +183,7 @@ public class CacheHandler {
 						periodNumberPacketMap.put(periodNumber, value);
 					}
 					doNotUpdateDocumentIdsSet.add(value.getDbId());
-				} catch (JsonProcessingException ex) {
+				} catch (JacksonException ex) {
 					// If we are in this catch block, one of two things has happened:
 					//   The JSON is invalid (unlikely), we updated how a given cache is serialized/deserialized, or we're dumb and never tested to see if the deserialization works.
 					//   If the JSON is actually invalid, getRevisionFromJsonData will throw an exception. Otherwise, we need to calculate the given cache again
@@ -234,7 +234,7 @@ public class CacheHandler {
 						json = new StringJsonData(mapper.writeValueAsString(new DocumentRevisionWrapper(revision, packet)));
 						updateAttemptCount++;
 					}
-				} catch (JsonProcessingException e) {
+				} catch (JacksonException e) {
 					throw new RuntimeException("Should be able to serialize!", e);
 				}
 				calculatedPacketsJsonDataList.add(json);

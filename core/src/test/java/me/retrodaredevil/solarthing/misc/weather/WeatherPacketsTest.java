@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.misc.weather;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import me.retrodaredevil.solarthing.PacketTestUtil;
 import me.retrodaredevil.solarthing.misc.source.W1Source;
 import org.jspecify.annotations.NullMarked;
@@ -12,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class WeatherPacketsTest {
 
 	@Test
-	void test() throws JsonProcessingException {
+	void test() {
 		{
 			TemperaturePacket packet = new CelsiusTemperaturePacket(1, new W1Source("28-301a279ffb2"), 24.0f);
 			assertEquals(24.0f, packet.getTemperatureCelsius());

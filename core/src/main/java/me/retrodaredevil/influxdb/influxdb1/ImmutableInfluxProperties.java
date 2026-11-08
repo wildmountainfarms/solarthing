@@ -1,7 +1,7 @@
 package me.retrodaredevil.influxdb.influxdb1;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.jspecify.annotations.NullMarked;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 @JsonDeserialize(builder = InfluxPropertiesBuilder.class)
 @NullMarked

@@ -1,13 +1,14 @@
 package me.retrodaredevil.solarthing.config;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.io.JsonEOFException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.exc.UnexpectedEndOfInputException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.exc.MismatchedInputException;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.Map;
 
@@ -24,26 +25,26 @@ class CommonConfigUtilTest {
 			try {
 				mapper.readValue(badJson, Map.class);
 				fail("Reading did not cause exception for: " + badJson);
-			} catch (JsonProcessingException e) {
-				assertTrue(e.getClass() == MismatchedInputException.class || e.getClass() == JsonEOFException.class, "Failed for: " + badJson);
+			} catch (JacksonException e) {
+				assertTrue(e.getClass() == MismatchedInputException.class || e.getClass() == UnexpectedEndOfInputException.class, "Failed for: " + badJson);
 				assertTrue(requireNonNull(e.getMessage(), "message is null").contains("end-of-input"), "Failed for: " + badJson);
 			}
 		}
 	}
 	@Test
-	void testInterpolator() throws JsonProcessingException {
+	void testInterpolator() {
 		// Setting system properties in tests are never a good practice,
 		//   but it's OK here because the key of the property being set is only ever used here.
 		System.setProperty("test-property-ConfigUtilTest", "asdf");
 		assertEquals("hello asdf", CommonConfigUtil.INTERPOLATOR.replace("hello ${sys:test-property-ConfigUtilTest}"));
 
-		JsonNode jsonNode = new ObjectMapper().readTree("{ \"a\": \"${sys:test-property-ConfigUtilTest}\", \"b\": 2, \"c\": \"My string\" }");
+		JsonNode jsonNode = JsonMapper.builder().build().readTree("{ \"a\": \"${sys:test-property-ConfigUtilTest}\", \"b\": 2, \"c\": \"My string\" }");
 		JsonNode newNode = CommonConfigUtil.interpolate(jsonNode);
 		assertTrue(newNode.isObject());
 		assertEquals(3, newNode.size());
-		assertEquals("asdf", newNode.get("a").asText());
+		assertEquals("asdf", newNode.get("a").asString());
 		assertEquals(2, newNode.get("b").asInt());
-		assertEquals("My string", newNode.get("c").asText());
+		assertEquals("My string", newNode.get("c").asString());
 	}
 	@Test
 	void testRandomRetrieval() {

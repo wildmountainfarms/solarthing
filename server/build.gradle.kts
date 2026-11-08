@@ -13,6 +13,14 @@ java {
 
 version = "0.0.1-SNAPSHOT"
 
+// Keep Spring dependency management aligned with the project Jackson BOM.
+extra["jackson-bom.version"] = libs.versions.jackson.get()
+dependencyManagement {
+	imports {
+		mavenBom(libs.jackson.bom.get().toString())
+	}
+}
+
 tasks.named<JavaCompile>("compileJava") {
 	// TODO We don't need the -parameters compiler argument (I don't think), plus now that Java 11 is required for GraphQL, what does it do/is it needed if we did need it?
 	options.compilerArgs.add("-parameters") // we don't want to use have to put @GraphQLArgument everywhere
@@ -36,7 +44,15 @@ dependencies {
 	}
 
 	//    implementation("com.graphql-java:graphql-java:14.0") graphql-spqr adds this dependency
-	implementation("io.leangen.graphql:spqr:0.12.4") // https://github.com/leangen/graphql-spqr/releases
+	// https://github.com/leangen/graphql-spqr/releases
+	implementation("io.leangen.graphql:spqr:0.12.4") {
+		// SolarThing supplies Jackson 3 value mapping and input introspection.
+		exclude(group = "net.dongliu", module = "gson-java8-datatype")
+		exclude(group = "com.fasterxml.jackson.core", module = "jackson-databind")
+		exclude(group = "com.fasterxml.jackson.module", module = "jackson-module-parameter-names")
+		exclude(group = "com.fasterxml.jackson.datatype", module = "jackson-datatype-jdk8")
+		exclude(group = "com.fasterxml.jackson.datatype", module = "jackson-datatype-jsr310")
+	}
 
 	// Although we don't need this dependency, we need to bump the version so that couchdb has the version it needs
 	api(libs.okhttp)
