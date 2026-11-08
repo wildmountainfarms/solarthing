@@ -42,6 +42,7 @@ dependencies {
 	api(libs.okhttp)
 
 	// This is necessary to bump the jackson version to whatever SolarThing is using
+	api(platform(libs.jackson.bom))
 	api(libs.jackson.core)
 	api(libs.jackson.annotations)
 	api(libs.jackson.databind)

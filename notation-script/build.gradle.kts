@@ -16,6 +16,7 @@ dependencies {
 	// https://github.com/antlr/antlr4/releases
 	antlr(libs.antlr4)
 
+	api(platform(libs.jackson.bom))
 	api(libs.jackson.annotations)
 	api(libs.jackson.databind)
 }

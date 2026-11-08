@@ -21,6 +21,7 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.slf4j/slf4j-api
 	api(libs.slf4j.api)
 
+	api(platform(libs.jackson.bom))
 	api(libs.jackson.core)
 	api(libs.jackson.annotations)
 	api(libs.jackson.databind)
