@@ -3,7 +3,9 @@ package me.retrodaredevil.solarthing.util;
 import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.exc.MismatchedInputException;
 import tools.jackson.databind.exc.UnrecognizedPropertyException;
 
 import java.time.Duration;
@@ -41,6 +43,22 @@ class JacksonUtilTest {
 		ObjectMapper configMapper = JacksonUtil.jsonLikeTolerantMapper(JacksonUtil.configurationMapper(mapper.rebuild())).build();
 		assertEquals(new Config(7), configMapper.readValue("{/* comment */ value:7}", Config.class));
 	}
+	@Test
+	void rejectsExplicitNullForPrimitives() {
+		var mapper = JacksonUtil.defaultMapper();
+		var permissiveMapper = mapper.rebuild()
+				.disable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES).build();
+		String json = "{\"value\":null}";
+		assertThrows(MismatchedInputException.class, () -> mapper.readValue(json, Config.class));
+		assertEquals(new Config(0), permissiveMapper.readValue(json, Config.class));
+		assertEquals(new Config(0), mapper.readValue("{\"value\":0}", Config.class));
+	}
+
+	@Test
+	void missingPrimitiveConstructorValueUsesZero() {
+		assertEquals(new Config(0), JacksonUtil.defaultMapper().readValue("{}", Config.class));
+	}
+
 	public record Config(int value) {}
 
 	public enum Status {

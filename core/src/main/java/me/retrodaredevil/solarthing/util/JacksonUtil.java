@@ -23,7 +23,8 @@ public final class JacksonUtil {
 		return builder
 				.enable(EnumFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE)
 				.enable(DeserializationFeature.FAIL_ON_READING_DUP_TREE_KEY)
-				.enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES) // this really means fail on undefined, not null
+				.enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES) // reject explicit null for primitives instead of coercing it to zero
+				// TODO consider enabling FAIL_ON_MISSING_CREATOR_PROPERTIES to reject missing constructor/factory arguments
 				.enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
 				.disable(EnumFeature.READ_ENUMS_USING_TO_STRING)
 				.disable(EnumFeature.WRITE_ENUMS_USING_TO_STRING)
