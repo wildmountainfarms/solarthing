@@ -1,8 +1,5 @@
 package me.retrodaredevil.solarthing.program.action;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lexicalscope.jewel.cli.ArgumentValidationException;
 import com.lexicalscope.jewel.cli.Cli;
 import com.lexicalscope.jewel.cli.CliFactory;
@@ -26,6 +23,10 @@ import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import org.antlr.v4.runtime.CharStreams;
 import org.jspecify.annotations.NullMarked;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,7 +41,7 @@ import java.util.List;
 public class RunActionMain {
 	private RunActionMain() { throw new UnsupportedOperationException(); }
 
-	private static final ObjectMapper MAPPER = new ObjectMapper();
+	private static final ObjectMapper MAPPER = JsonMapper.builder().build();
 	private static final String USAGE = """
 			Usage: solarthing action [options] <file>
 			  --check                Set to only parse the program and exit
@@ -105,7 +106,7 @@ public class RunActionMain {
 	private static ActionNode parseAction(JsonNode json) {
 		try {
 			return MAPPER.treeToValue(json, ActionNode.class);
-		} catch (JsonProcessingException e) {
+		} catch (JacksonException e) {
 			throw new RuntimeException(e);
 		}
 	}

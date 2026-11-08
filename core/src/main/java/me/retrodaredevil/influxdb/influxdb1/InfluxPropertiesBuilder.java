@@ -1,8 +1,8 @@
 package me.retrodaredevil.influxdb.influxdb1;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import org.jspecify.annotations.NullMarked;
+import tools.jackson.databind.annotation.JsonPOJOBuilder;
 
 import static java.util.Objects.requireNonNull;
 

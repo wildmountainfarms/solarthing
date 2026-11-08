@@ -1,11 +1,9 @@
 package me.retrodaredevil.solarthing.config;
 
-import com.fasterxml.jackson.databind.InjectableValues;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.io.IOBundle;
 import me.retrodaredevil.io.serial.SerialConfig;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
+import me.retrodaredevil.solarthing.config.databases.DatabaseConfig;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettingsUtil;
 import me.retrodaredevil.solarthing.config.databases.DatabaseType;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
@@ -14,11 +12,14 @@ import me.retrodaredevil.solarthing.config.io.SerialIOConfig;
 import me.retrodaredevil.solarthing.config.options.DatabaseConfigSettings;
 import me.retrodaredevil.solarthing.config.options.DatabaseOption;
 import me.retrodaredevil.solarthing.config.options.PacketHandlingOption;
-import me.retrodaredevil.solarthing.config.databases.DatabaseConfig;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.jspecify.annotations.NullMarked;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.InjectableValues;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,7 @@ import java.util.List;
 public final class ConfigUtil {
 	private ConfigUtil() { throw new UnsupportedOperationException(); }
 
-	static final ObjectMapper MAPPER = DatabaseSettingsUtil.registerDatabaseSettings(JacksonUtil.defaultMapper());
+	static final JsonMapper MAPPER = DatabaseSettingsUtil.registerDatabaseSettings(JacksonUtil.defaultMapperBuilder()).build();
 	/** A mapper to use only if you are using it to parse JSON and are not using it for deserialization. */
 
 	public static List<DatabaseConfig> resolveConfigs(DatabaseConfigSettings databaseConfigSettings) {
@@ -59,12 +60,13 @@ public final class ConfigUtil {
 		InjectableValues.Std iv = new InjectableValues.Std();
 		iv.addValue(SerialIOConfig.DEFAULT_SERIAL_CONFIG_KEY, defaultSerialConfig);
 
-		ObjectMapper mapper = JacksonUtil.configurationMapper(JacksonUtil.defaultMapper());
-		mapper.setInjectableValues(iv);
+		ObjectMapper mapper = JacksonUtil.configurationMapper(JacksonUtil.defaultMapperBuilder())
+				.injectableValues(iv)
+				.build();
 		final IOConfig config;
 		try {
 			config = mapper.treeToValue(node, IOConfig.class);
-		} catch (IOException e) {
+		} catch (JacksonException e) {
 			throw CommonConfigUtil.createExceptionFromJackson(file.toString(), e);
 		}
 		return config;

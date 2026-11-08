@@ -1,6 +1,6 @@
 package me.retrodaredevil.solarthing.rest.command;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.PostConstruct;
 import me.retrodaredevil.couchdb.CouchDbUtil;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
@@ -13,8 +13,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
-import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -53,7 +54,7 @@ public class CommandHandlerProvider {
 			try (InputStream inputStream = Files.newInputStream(commandConfigurationFile)) {
 				// TODO [Interpolate] allow interpolated values in config file
 				config = SIMPLE_OBJECT_MAPPER.readValue(inputStream, RestCommandConfig.class);
-			} catch (IOException e) {
+			} catch (IOException | JacksonException e) {
 				throw new RuntimeException("Could not read command configuration file", e);
 			}
 			LOGGER.info("Configured to accept commands from authorized API keys.");

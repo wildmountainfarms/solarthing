@@ -1,10 +1,9 @@
 package me.retrodaredevil.solarthing.solar.renogy.rover;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.ObjectMapper;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -12,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @NullMarked
 public class RoverElitePacketTest {
 	@Test
-	void test() throws JsonProcessingException {
+	void test() {
 		String json = """
 				{
 					"packetType" : "RENOGY_ROVER_STATUS",

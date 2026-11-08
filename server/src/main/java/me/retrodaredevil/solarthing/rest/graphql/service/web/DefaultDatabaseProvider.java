@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.rest.graphql.service.web;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.couchdb.CouchDbUtil;
 import me.retrodaredevil.couchdbjava.CouchDbAuth;
 import me.retrodaredevil.couchdbjava.CouchDbInstance;
@@ -17,6 +16,7 @@ import me.retrodaredevil.solarthing.rest.exceptions.DatabaseException;
 import okhttp3.Cookie;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import tools.jackson.databind.ObjectMapper;
 
 import static java.util.Objects.requireNonNull;
 

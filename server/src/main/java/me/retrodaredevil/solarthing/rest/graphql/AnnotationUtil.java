@@ -1,10 +1,10 @@
 package me.retrodaredevil.solarthing.rest.graphql;
 
-import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
 import io.leangen.graphql.metadata.TypedElement;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import tools.jackson.databind.introspect.AnnotatedMember;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;

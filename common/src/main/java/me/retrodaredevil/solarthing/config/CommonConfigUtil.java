@@ -1,16 +1,18 @@
 package me.retrodaredevil.solarthing.config;
 
-import com.fasterxml.jackson.databind.DatabindException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.TextNode;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import org.apache.commons.text.StringSubstitutor;
 import org.jspecify.annotations.NullMarked;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.DatabindException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.exc.UnrecognizedPropertyException;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.JsonNodeFactory;
+import tools.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.node.StringNode;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,7 +34,7 @@ public class CommonConfigUtil {
 	 */
 	static final StringSubstitutor INTERPOLATOR = StringSubstitutor.createInterpolator();
 
-	private static final ObjectMapper VANILLA_MAPPER = new ObjectMapper();
+	private static final ObjectMapper VANILLA_MAPPER = JsonMapper.builder().build();
 
 	static {
 		INTERPOLATOR.setEnableSubstitutionInVariables(true); // Allows for nested $'s.
@@ -53,8 +55,8 @@ public class CommonConfigUtil {
 				objectNode.set(newKey, newValue);
 			});
 			return objectNode;
-		} else if (node.isTextual()) {
-			return new TextNode(INTERPOLATOR.replace(node.asText()));
+		} else if (node.isString()) {
+			return new StringNode(INTERPOLATOR.replace(node.asString()));
 		}
 		return node;
 	}
@@ -64,7 +66,7 @@ public class CommonConfigUtil {
 		try (InputStream inputStream = Files.newInputStream(file)) {
 			try {
 				node = VANILLA_MAPPER.readTree(inputStream);
-			} catch (IOException e) {
+			} catch (JacksonException e) {
 				throw createExceptionFromJackson(file.toString(), e);
 			}
 		} catch (IOException e) {
@@ -75,17 +77,17 @@ public class CommonConfigUtil {
 
 	/**
 	 * @param fileRepresentation The string representing the file.
-	 * @param jacksonIOException The IOException occurring from a calling a Jackson method
+	 * @param jacksonException The exception from a Jackson method
 	 * @return The resulting config exception with a customized message
 	 */
-	public static ConfigException createExceptionFromJackson(String fileRepresentation, IOException jacksonIOException) {
-		String exceptionMessage = jacksonIOException.getMessage();
+	public static ConfigException createExceptionFromJackson(String fileRepresentation, JacksonException jacksonException) {
+		String exceptionMessage = jacksonException.getMessage();
 		if (exceptionMessage != null && exceptionMessage.contains("end-of-input")) {
-			throw new ConfigException("Invalid JSON in file: " + fileRepresentation + " (check formatting)", jacksonIOException);
+			throw new ConfigException("Invalid JSON in file: " + fileRepresentation + " (check formatting)", jacksonException);
 		}
-		if (jacksonIOException instanceof DatabindException) {
-			if (jacksonIOException instanceof UnrecognizedPropertyException) {
-				String internalMessage = jacksonIOException.getMessage();
+		if (jacksonException instanceof DatabindException) {
+			if (jacksonException instanceof UnrecognizedPropertyException) {
+				String internalMessage = jacksonException.getMessage();
 				final String property;
 				if (internalMessage != null && internalMessage.startsWith("Unrecognized field \"")) {
 					String[] splitMessage = internalMessage.split("\"", 3);
@@ -98,18 +100,18 @@ public class CommonConfigUtil {
 					property = null;
 				}
 				String extraMessage = property != null ? " Unrecognized property: " + property : "";
-				throw new ConfigException("Unrecognized config property in file: " + fileRepresentation + " Please make sure you don't have any typos." + extraMessage, jacksonIOException);
+				throw new ConfigException("Unrecognized config property in file: " + fileRepresentation + " Please make sure you don't have any typos." + extraMessage, jacksonException);
 			}
-			throw new ConfigException("Couldn't parse data from file: " + fileRepresentation + " Please make sure all your properties are correct", jacksonIOException);
+			throw new ConfigException("Couldn't parse data from file: " + fileRepresentation + " Please make sure all your properties are correct", jacksonException);
 		}
-		throw new ConfigException("Couldn't parse data from file: " + fileRepresentation + " Please make sure your JSON is formatted correctly.", jacksonIOException);
+		throw new ConfigException("Couldn't parse data from file: " + fileRepresentation + " Please make sure your JSON is formatted correctly.", jacksonException);
 	}
 
 	public static <T> T readConfig(Path file, Class<T> clazz, ObjectMapper objectMapper) {
 		JsonNode node = readAndInterpolate(file);
 		try {
 			return objectMapper.treeToValue(node, clazz);
-		} catch (IOException e) {
+		} catch (JacksonException e) {
 			throw createExceptionFromJackson(file.toString(), e);
 		}
 	}

@@ -1,10 +1,10 @@
 package me.retrodaredevil.couchdb;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import okhttp3.HttpUrl;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import tools.jackson.databind.annotation.JsonPOJOBuilder;
 
 @SuppressWarnings({"UnusedReturnValue", "unused"})
 @JsonPOJOBuilder

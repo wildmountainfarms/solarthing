@@ -7,7 +7,9 @@ import io.leangen.graphql.metadata.strategy.query.PublicResolverBuilder;
 import io.leangen.graphql.metadata.strategy.query.ResolverBuilderParams;
 import io.leangen.graphql.metadata.strategy.value.Property;
 import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
+import me.retrodaredevil.solarthing.rest.graphql.jackson.JacksonDefaultValueProvider;
 import org.jspecify.annotations.NullMarked;
+import tools.jackson.databind.ObjectMapper;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -15,7 +17,8 @@ import java.lang.reflect.Method;
 @NullMarked
 public class SolarThingResolverBuilder extends PublicResolverBuilder {
 
-	public SolarThingResolverBuilder(){
+	public SolarThingResolverBuilder(ObjectMapper mapper){
+		this.argumentBuilder = new JacksonDefaultValueProvider.ArgumentBuilder(mapper);
 		withOperationInfoGenerator(new PropertyOperationInfoGenerator() {
 			@Override
 			public String name(OperationInfoGeneratorParams params) {

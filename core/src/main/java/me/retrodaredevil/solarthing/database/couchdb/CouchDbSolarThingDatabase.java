@@ -1,7 +1,5 @@
 package me.retrodaredevil.solarthing.database.couchdb;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.couchdbjava.CouchDbDatabase;
 import me.retrodaredevil.couchdbjava.CouchDbInstance;
 import me.retrodaredevil.couchdbjava.exception.CouchDbException;
@@ -43,6 +41,8 @@ import me.retrodaredevil.solarthing.type.event.feedback.FeedbackPacket;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import static java.util.Objects.requireNonNull;
 
@@ -75,26 +75,23 @@ public class CouchDbSolarThingDatabase implements SolarThingDatabase {
 		closedDatabase = instance.getDatabase(SolarThingConstants.CLOSED_DATABASE);
 		closedDatabaseSource = new CouchDbDatabaseSource(closedDatabase);
 		cacheDatabaseSource = new CouchDbDatabaseSource(instance.getDatabase(SolarThingConstants.CACHE_DATABASE)); // we don't use cache database anywhere in this class except here, so we can just call instance.getDatabase() here
-		metaObjectMapper = JacksonUtil.lenientSubTypeMapper(mapper.copy());
-		metaObjectMapper.getSubtypeResolver().registerSubtypes(TargetMetaPacket.class, DeviceInfoPacket.class, DataMetaPacket.class, FXChargingSettingsPacket.class, FXChargingTemperatureAdjustPacket.class);
-		simpleObjectMapper = mapper.copy();
+		var metaBuilder = mapper.rebuild();
+		metaObjectMapper = JacksonUtil.lenientSubTypeMapper(metaBuilder).registerSubtypes(TargetMetaPacket.class, DeviceInfoPacket.class, DataMetaPacket.class, FXChargingSettingsPacket.class, FXChargingTemperatureAdjustPacket.class).build();
+		simpleObjectMapper = mapper;
 
-		ObjectMapper statusMapper = mapper.copy();
-		statusMapper.getSubtypeResolver().registerSubtypes(SolarStatusPacket.class, SolarExtraPacket.class, DevicePacket.class, ErrorPacket.class, WeatherPacket.class, InstancePacket.class, CommandStatusPacket.class);
+		ObjectMapper statusMapper = mapper.rebuild().registerSubtypes(SolarStatusPacket.class, SolarExtraPacket.class, DevicePacket.class, ErrorPacket.class, WeatherPacket.class, InstancePacket.class, CommandStatusPacket.class).build();
 		statusDatabase = new CouchDbMillisDatabase(instance.getDatabase(SolarThingConstants.STATUS_DATABASE), statusMapper, errorHandler);
 
-		ObjectMapper eventMapper = mapper.copy();
-		eventMapper.getSubtypeResolver().registerSubtypes(SolarEventPacket.class, MateCommandFeedbackPacket.class, FeedbackPacket.class, InstancePacket.class, InstancePacket.class);
+		ObjectMapper eventMapper = mapper.rebuild().registerSubtypes(SolarEventPacket.class, MateCommandFeedbackPacket.class, FeedbackPacket.class, InstancePacket.class, InstancePacket.class).build();
 		eventDatabase = new CouchDbMillisDatabase(instance.getDatabase(SolarThingConstants.EVENT_DATABASE), eventMapper, errorHandler);
 
-		ObjectMapper openMapper = mapper.copy();
-		openMapper.getSubtypeResolver().registerSubtypes(SecurityPacket.class, InstancePacket.class);
+		ObjectMapper openMapper = mapper.rebuild().registerSubtypes(SecurityPacket.class, InstancePacket.class).build();
 		openDatabase = new CouchDbMillisDatabase(instance.getDatabase(SolarThingConstants.OPEN_DATABASE), openMapper, errorHandler);
 
 		alterDatabase = new CouchDbAlterDatabase(instance.getDatabase(SolarThingConstants.ALTER_DATABASE), mapper); // we don't need to register any subtypes for the alter database because it's just that cool :)
 	}
 	public static CouchDbSolarThingDatabase create(CouchDbInstance instance) {
-		return new CouchDbSolarThingDatabase(instance, PacketParsingErrorHandler.DO_NOTHING, JacksonUtil.lenientMapper(JacksonUtil.defaultMapper()));
+		return new CouchDbSolarThingDatabase(instance, PacketParsingErrorHandler.DO_NOTHING, JacksonUtil.lenientMapper(JacksonUtil.defaultMapperBuilder()).build());
 	}
 
 	public static RevisionUpdateToken checkUpdateToken(UpdateToken updateToken) {
@@ -148,7 +145,7 @@ public class CouchDbSolarThingDatabase implements SolarThingDatabase {
 		try {
 			RootMetaPacket packet = CouchDbJacksonUtil.readValue(metaObjectMapper, jsonData, RootMetaPacket.class);
 			return new VersionedPacket<>(packet, new RevisionUpdateToken(data.getRevision()));
-		} catch (JsonProcessingException e) {
+		} catch (JacksonException e) {
 			throw new SolarThingDatabaseException("Invalid meta! Failed to parse!", e);
 		}
 	}
@@ -163,7 +160,7 @@ public class CouchDbSolarThingDatabase implements SolarThingDatabase {
 		try {
 			AuthorizationPacket packet = CouchDbJacksonUtil.readValue(simpleObjectMapper, jsonData, AuthorizationPacket.class);
 			return new VersionedPacket<>(packet, new RevisionUpdateToken(data.getRevision()));
-		} catch (JsonProcessingException e) {
+		} catch (JacksonException e) {
 			throw new SolarThingDatabaseException("Invalid authorization packet! Failed to parse!", e);
 		}
 	}
@@ -173,7 +170,7 @@ public class CouchDbSolarThingDatabase implements SolarThingDatabase {
 		final JsonData data;
 		try {
 			data = new StringJsonData(simpleObjectMapper.writeValueAsString(authorizationPacket));
-		} catch (JsonProcessingException e) {
+		} catch (JacksonException e) {
 			throw new RuntimeException("Exception should not occur when serializing authorization packet.", e);
 		}
 		try {

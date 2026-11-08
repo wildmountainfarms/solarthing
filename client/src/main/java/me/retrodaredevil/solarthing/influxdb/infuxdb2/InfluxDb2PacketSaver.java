@@ -1,9 +1,5 @@
 package me.retrodaredevil.solarthing.influxdb.infuxdb2;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.DecimalNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.ValueNode;
 import com.influxdb.LogLevel;
 import com.influxdb.client.InfluxDBClient;
 import com.influxdb.client.InfluxDBClientFactory;
@@ -30,6 +26,10 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.DecimalNode;
+import tools.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.node.ValueNode;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,7 +42,7 @@ import static java.util.Objects.requireNonNull;
 public class InfluxDb2PacketSaver implements PacketHandler {
 //	private static final Logger LOGGER = LoggerFactory.getLogger(InfluxDbPacketSaver.class);
 	private static final Logger INFLUX_LOGGER = LoggerFactory.getLogger("org.influxdb");
-	private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.includeConvenienceFields(JacksonUtil.defaultMapper());
+	private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.includeConvenienceFields(JacksonUtil.defaultMapperBuilder()).build();
 
 
 	private final InfluxDBClient client;
@@ -129,7 +129,7 @@ public class InfluxDb2PacketSaver implements PacketHandler {
 				String key = entry.getKey();
 				ValueNode prim = entry.getValue();
 				if(tagKeys.contains(key)){
-					point.addTag(key, prim.asText());
+					point.addTag(key, prim.asString());
 				}
 				if (prim.isNumber()) {
 					// always store as float datatype because you can never change the type from int to float easily
@@ -141,11 +141,11 @@ public class InfluxDb2PacketSaver implements PacketHandler {
 						value = prim.asDouble();
 					}
 					point.addField(key, value);
-				} else if (prim.isTextual() || prim.isBinary()) {
-					point.addField(key, prim.asText());
+				} else if (prim.isString() || prim.isBinary()) {
+					point.addField(key, prim.asString());
 				} else if (prim.isBoolean()) {
 					point.addField(key, prim.asBoolean());
-				} else throw new AssertionError("This primitive isn't a number, string/binary or boolean! It's: " + prim + " class: " + prim.getClass() + " text=" + prim.asText());
+				} else throw new AssertionError("This primitive isn't a number, string/binary or boolean! It's: " + prim + " class: " + prim.getClass() + " text=" + prim.asString());
 			}
 			points.add(point);
 		}

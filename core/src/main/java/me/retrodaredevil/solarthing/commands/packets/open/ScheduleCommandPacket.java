@@ -2,12 +2,12 @@ package me.retrodaredevil.solarthing.commands.packets.open;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.type.alter.UniqueRequestIdContainer;
 import me.retrodaredevil.solarthing.type.alter.packets.ScheduledCommandData;
 import org.jspecify.annotations.NullMarked;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 import java.util.UUID;
 

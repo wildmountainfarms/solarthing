@@ -2,7 +2,6 @@ package me.retrodaredevil.solarthing.solar.outback.mx.event;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.ChangePacket;
@@ -14,6 +13,7 @@ import me.retrodaredevil.solarthing.solar.outback.SupplementaryOutbackPacket;
 import me.retrodaredevil.solarthing.solar.outback.mx.AuxMode;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 @JsonDeserialize(as = ImmutableMXAuxModeChangePacket.class)
 @JsonTypeName("MXFM_AUX_MODE_CHANGE")

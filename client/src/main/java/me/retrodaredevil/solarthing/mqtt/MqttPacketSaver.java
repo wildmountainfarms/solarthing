@@ -1,9 +1,5 @@
 package me.retrodaredevil.solarthing.mqtt;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.ValueNode;
 import me.retrodaredevil.solarthing.influxdb.PointUtil;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.*;
@@ -19,6 +15,10 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.node.ValueNode;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -95,7 +95,7 @@ public class MqttPacketSaver implements PacketHandler {
 			final String collectionJson;
 			try {
 				collectionJson = OBJECT_MAPPER.writeValueAsString(entirePacketCollection);
-			} catch (JsonProcessingException e) {
+			} catch (JacksonException e) {
 				throw new RuntimeException("We should be able to serial this to JSON!", e);
 			}
 			client.publish(
@@ -115,7 +115,7 @@ public class MqttPacketSaver implements PacketHandler {
 				final String rawJson;
 				try {
 					rawJson = OBJECT_MAPPER.writeValueAsString(packet);
-				} catch (JsonProcessingException e) {
+				} catch (JacksonException e) {
 					throw new RuntimeException("We should be able to serialize this to JSON!", e);
 				}
 				client.publish(topic + "dateMillis", ("" + dateMillis).getBytes(CHARSET), 2, retain);
@@ -125,7 +125,7 @@ public class MqttPacketSaver implements PacketHandler {
 					String key = entry.getKey();
 					ValueNode prim = entry.getValue();
 					// Make individual fields use QoS of 1 because we want them all to go through, but no one should be using them as "event"-like packets
-					client.publish(topic + "packet/" + key, prim.asText().getBytes(CHARSET), 1, retain);
+					client.publish(topic + "packet/" + key, prim.asString().getBytes(CHARSET), 1, retain);
 				}
 			}
 		}

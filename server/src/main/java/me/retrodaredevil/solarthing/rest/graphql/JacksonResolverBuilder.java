@@ -1,10 +1,6 @@
 package me.retrodaredevil.solarthing.rest.graphql;
 
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
-import com.fasterxml.jackson.databind.BeanDescription;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
-import com.fasterxml.jackson.databind.introspect.BeanPropertyDefinition;
 import io.leangen.graphql.annotations.GraphQLIgnore;
 import io.leangen.graphql.generator.JavaDeprecationMappingConfig;
 import io.leangen.graphql.metadata.Resolver;
@@ -20,6 +16,10 @@ import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
 import org.checkerframework.checker.nullness.qual.EnsuresNonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import tools.jackson.databind.BeanDescription;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.introspect.AnnotatedMember;
+import tools.jackson.databind.introspect.BeanPropertyDefinition;
 
 import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Field;
@@ -32,15 +32,12 @@ import java.util.List;
 @NullMarked
 public class JacksonResolverBuilder implements ResolverBuilder {
 
-	private ObjectMapper objectMapper = new ObjectMapper();
+	private final ObjectMapper objectMapper;
 	private JavaDeprecationMappingConfig javaDeprecationConfig;
 
-	public JacksonResolverBuilder() {
-		withJavaDeprecation(new JavaDeprecationMappingConfig(true, "Deprecated"));
-	}
-	public JacksonResolverBuilder withObjectMapper(ObjectMapper objectMapper){
+	public JacksonResolverBuilder(ObjectMapper objectMapper) {
 		this.objectMapper = objectMapper;
-		return this;
+		withJavaDeprecation(new JavaDeprecationMappingConfig(true, "Deprecated"));
 	}
 
 	/**
@@ -91,7 +88,7 @@ public class JacksonResolverBuilder implements ResolverBuilder {
 		Class<?> rawType = ClassUtils.getRawType(beanType.getType());
 		if (rawType.isArray() || rawType.isPrimitive()) return Collections.emptyList();
 
-		BeanDescription bean = objectMapper.getSerializationConfig().introspect(objectMapper.constructType(rawType));
+		BeanDescription bean = objectMapper._serializationContext().introspectBeanDescription(objectMapper.constructType(rawType));
 		AnnotatedMember jsonValueAccessor = bean.findJsonValueAccessor();
 		if(jsonValueAccessor != null){
 			System.err.println("@JsonValue is present! Bad!");
