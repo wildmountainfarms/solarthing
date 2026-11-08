@@ -10,6 +10,7 @@ import me.retrodaredevil.couchdbjava.json.jackson.CouchDbJacksonUtil;
 import me.retrodaredevil.couchdbjava.response.DocumentData;
 import me.retrodaredevil.couchdbjava.response.SessionGetResponse;
 import me.retrodaredevil.solarthing.SolarThingConstants;
+import me.retrodaredevil.solarthing.commands.event.SecurityEventPacket;
 import me.retrodaredevil.solarthing.commands.packets.status.CommandStatusPacket;
 import me.retrodaredevil.solarthing.database.DatabaseManagementSource;
 import me.retrodaredevil.solarthing.database.DatabaseSource;
@@ -82,7 +83,7 @@ public class CouchDbSolarThingDatabase implements SolarThingDatabase {
 		ObjectMapper statusMapper = mapper.rebuild().registerSubtypes(SolarStatusPacket.class, SolarExtraPacket.class, DevicePacket.class, ErrorPacket.class, WeatherPacket.class, InstancePacket.class, CommandStatusPacket.class).build();
 		statusDatabase = new CouchDbMillisDatabase(instance.getDatabase(SolarThingConstants.STATUS_DATABASE), statusMapper, errorHandler);
 
-		ObjectMapper eventMapper = mapper.rebuild().registerSubtypes(SolarEventPacket.class, MateCommandFeedbackPacket.class, FeedbackPacket.class, InstancePacket.class, InstancePacket.class).build();
+		ObjectMapper eventMapper = mapper.rebuild().registerSubtypes(SolarEventPacket.class, MateCommandFeedbackPacket.class, FeedbackPacket.class, SecurityEventPacket.class, InstancePacket.class).build();
 		eventDatabase = new CouchDbMillisDatabase(instance.getDatabase(SolarThingConstants.EVENT_DATABASE), eventMapper, errorHandler);
 
 		ObjectMapper openMapper = mapper.rebuild().registerSubtypes(SecurityPacket.class, InstancePacket.class).build();

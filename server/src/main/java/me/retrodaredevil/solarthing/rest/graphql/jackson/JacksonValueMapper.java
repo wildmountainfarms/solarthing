@@ -69,7 +69,7 @@ public class JacksonValueMapper implements ValueMapper, InputFieldBuilder {
 	public <T> T fromInput(Object graphQLInput, Type sourceType, AnnotatedType outputType) {
 		try {
 			return objectMapper.convertValue(graphQLInput, objectMapper.getTypeFactory().constructType(outputType.getType()));
-		} catch (IllegalArgumentException e) {
+		} catch (JacksonException e) {
 			throw new InputParsingException(graphQLInput, outputType.getType(), e);
 		}
 	}
