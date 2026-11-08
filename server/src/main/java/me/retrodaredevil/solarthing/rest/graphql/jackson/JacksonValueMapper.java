@@ -6,6 +6,7 @@
 package me.retrodaredevil.solarthing.rest.graphql.jackson;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.leangen.geantyref.GenericTypeReflector;
 import io.leangen.graphql.annotations.GraphQLInputField;
 import io.leangen.graphql.execution.GlobalEnvironment;
@@ -97,11 +98,7 @@ public class JacksonValueMapper implements ValueMapper, InputFieldBuilder {
 		if (output == null || output instanceof String) {
 			return (String) output;
 		}
-		try {
-			return objectMapper.writeValueAsString(output);
-		} catch (JacksonException e) {
-			throw e;
-		}
+		return objectMapper.writeValueAsString(output);
 	}
 
 	@Override
@@ -139,7 +136,7 @@ public class JacksonValueMapper implements ValueMapper, InputFieldBuilder {
 		AnnotatedClass clazz = AnnotatedClassResolver.resolve(deserializationConfig, javaType, deserializationConfig);
 		AnnotationIntrospector annotationIntrospector = deserializationConfig.getAnnotationIntrospector();
 
-		com.fasterxml.jackson.annotation.JsonTypeInfo.Value typeResolver = annotationIntrospector.findPolymorphicTypeInfo(deserializationConfig, clazz);
+		JsonTypeInfo.Value typeResolver = annotationIntrospector.findPolymorphicTypeInfo(deserializationConfig, clazz);
 		String discriminatorFieldName = typeResolver != null
 				? typeResolver.getPropertyName()
 				: ValueMapper.TYPE_METADATA_FIELD_NAME;
