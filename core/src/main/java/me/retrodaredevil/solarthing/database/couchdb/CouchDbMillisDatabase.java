@@ -1,9 +1,5 @@
 package me.retrodaredevil.solarthing.database.couchdb;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import me.retrodaredevil.couchdbjava.CouchDbDatabase;
 import me.retrodaredevil.couchdbjava.exception.CouchDbException;
 import me.retrodaredevil.couchdbjava.json.JsonData;
@@ -28,9 +24,15 @@ import me.retrodaredevil.solarthing.packets.collection.parsing.PacketParsingErro
 import me.retrodaredevil.solarthing.packets.collection.parsing.SimplePacketGroupParser;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.Objects.requireNonNull;
 
 @NullMarked
 public class CouchDbMillisDatabase implements MillisDatabase {
@@ -51,7 +53,7 @@ public class CouchDbMillisDatabase implements MillisDatabase {
 		final JsonNode jsonNode;
 		try {
 			jsonNode = CouchDbJacksonUtil.getNodeFrom(jsonData);
-		} catch (JsonProcessingException e) {
+		} catch (JacksonException e) {
 			throw new SolarThingDatabaseException("We couldn't parse some of the data into JSON. This should never happen", e);
 		}
 		if (!jsonNode.isObject()) {
@@ -64,8 +66,8 @@ public class CouchDbMillisDatabase implements MillisDatabase {
 		} catch (PacketParseException e) {
 			throw new SolarThingDatabaseException("Problem parsing JSON data to packet group", e);
 		}
-		String documentId = objectNode.get("_id").asText();
-		String documentRevision = objectNode.get("_rev").asText();
+		String documentId = objectNode.get("_id").asString();
+		String documentRevision = objectNode.get("_rev").asString();
 		StoredPacketGroup storedPacketGroup = PacketGroups.createStoredPacketGroup(packetGroup, new CouchDbStoredIdentifier(packetGroup.getDateMillis(), documentId, documentRevision));
 		return new VersionedPacket<>(storedPacketGroup, new RevisionUpdateToken(documentRevision));
 	}
@@ -82,6 +84,7 @@ public class CouchDbMillisDatabase implements MillisDatabase {
 		List<StoredPacketGroup> r = new ArrayList<>(rows.size());
 		for (ViewResponse.DocumentEntry row : rows) {
 			JsonData jsonData = row.getDoc(); // When using includeDocs=true, we want to use the doc, not its value (which is null with millisNull)
+			requireNonNull(jsonData, "Expected getDoc() to return non-null");
 			StoredPacketGroup storedPacketGroup = jsonDataToStoredPacketGroup(jsonData).getPacket();
 			r.add(storedPacketGroup);
 		}
@@ -93,7 +96,7 @@ public class CouchDbMillisDatabase implements MillisDatabase {
 		final JsonData jsonData;
 		try {
 			jsonData = new StringJsonData(mapper.writeValueAsString(packetCollection));
-		} catch (JsonProcessingException e) {
+		} catch (JacksonException e) {
 			throw new RuntimeException("Couldn't serialize the packet collection", e);
 		}
 		try {

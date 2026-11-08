@@ -1,8 +1,5 @@
 package me.retrodaredevil.solarthing.config;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.InjectableValues;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
@@ -35,6 +32,8 @@ import me.retrodaredevil.solarthing.util.ParsePacketAsciiDecimalDigitException;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.InjectableValues;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -60,11 +59,12 @@ public class DeserializeTest {
 	private static final DirectoryStream.Filter<? super Path> JSON_FILTER = path -> path.getFileName().toString().endsWith(".json");
 	private static final DirectoryStream.Filter<? super Path> NOTATION_SCRIPT_FILTER = path -> path.getFileName().toString().endsWith(".ns");
 
-	private static final ObjectMapper MAPPER = ActionUtil.registerActionNodes(DatabaseSettingsUtil.registerDatabaseSettings(JacksonUtil.defaultMapper()));
+	private static final JsonMapper MAPPER = DatabaseSettingsUtil.registerDatabaseSettings(ActionUtil.registerActionNodes(JacksonUtil.defaultMapperBuilder())).build();
 
 	@Test
-	void testInfluxDb1() throws JsonProcessingException {
-		ObjectMapper mapper = JacksonUtil.defaultMapper();
+	void testInfluxDb1() {
+		JsonMapper mapper = JacksonUtil.defaultMapperBuilder()
+				.registerSubtypes(DatabaseSettings.class, InfluxDbDatabaseSettings.class).build();
 		String json = """
 				{
 				"type": "influxdb",
@@ -87,7 +87,6 @@ public class DeserializeTest {
 					}
 				}
 				}""";
-		mapper.registerSubtypes(DatabaseSettings.class, InfluxDbDatabaseSettings.class);
 		DatabaseConfig config = mapper.readValue(json, DatabaseConfig.class);
 		assertInstanceOf(InfluxDbDatabaseSettings.class, config.requireDatabaseSettings());
 	}
@@ -134,11 +133,11 @@ public class DeserializeTest {
 		/*
 		Also note that mattermost stuff was here, so we may not need it after it was removed on 2021.05.13
 
-		ObjectMapper mapper = MAPPER.copy();
+		ObjectMapper mapper = MAPPER;
 		InjectableValues.Std iv = new InjectableValues.Std();
 		Map<String, File> hardcodedFileMap = new HashMap<>();
 		iv.addValue(FileMapper.JACKSON_INJECT_IDENTIFIER, (FileMapper) hardcodedFileMap::get);
-		mapper.setInjectableValues(iv);
+		mapper = mapper.rebuild().injectableValues(iv).build();
 		TODO in future, uncomment if https://github.com/FasterXML/jackson-databind/issues/3072 is implemented
 		 */
 
@@ -167,10 +166,9 @@ public class DeserializeTest {
 	}
 	@Test
 	void testAllIO() throws IOException {
-		ObjectMapper mapper = MAPPER.copy();
 		InjectableValues.Std iv = new InjectableValues.Std();
 		iv.addValue(SerialIOConfig.DEFAULT_SERIAL_CONFIG_KEY, new SerialConfigBuilder(9600));
-		mapper.setInjectableValues(iv);
+		JsonMapper mapper = MAPPER.rebuild().injectableValues(iv).build();
 
 		for (Path configFile : getJsonFiles(IO_CONFIG_DIRECTORY)) {
 			try {

@@ -1,13 +1,5 @@
 package me.retrodaredevil.notation.translators.json;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.BooleanNode;
-import com.fasterxml.jackson.databind.node.DecimalNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.NullNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.TextNode;
 import me.retrodaredevil.notation.Argument;
 import me.retrodaredevil.notation.ArrayArgument;
 import me.retrodaredevil.notation.BooleanArgument;
@@ -16,6 +8,14 @@ import me.retrodaredevil.notation.NodeTranslator;
 import me.retrodaredevil.notation.NumberArgument;
 import me.retrodaredevil.notation.StringArgument;
 import org.jspecify.annotations.NullMarked;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.BooleanNode;
+import tools.jackson.databind.node.DecimalNode;
+import tools.jackson.databind.node.JsonNodeFactory;
+import tools.jackson.databind.node.NullNode;
+import tools.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.node.StringNode;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -99,7 +99,7 @@ public class JsonNodeTranslator implements NodeTranslator<JsonNode> {
 			return BooleanNode.valueOf(booleanArgument.getValue());
 		} else if (argument instanceof StringArgument stringArgument) {
 			String rawValue = stringArgument.getValue();
-			return TextNode.valueOf(rawValue);
+			return StringNode.valueOf(rawValue);
 		} else throw new AssertionError("Unknown argument type: " + argument.getClass().getName());
 	}
 
@@ -117,7 +117,7 @@ public class JsonNodeTranslator implements NodeTranslator<JsonNode> {
 			String typeName = simpleNodeConfiguration.getIdentifierFieldValueOverride() == null
 					? node.getIdentifier()
 					: simpleNodeConfiguration.getIdentifierFieldValueOverride();
-			objectNode.set(simpleNodeConfiguration.getIdentifierFieldKey(), new TextNode(typeName));
+			objectNode.set(simpleNodeConfiguration.getIdentifierFieldKey(), new StringNode(typeName));
 			List<String> positionalArgumentFieldNames = simpleNodeConfiguration.getPositionalArgumentFieldNames();
 			List<Argument> positionalArguments = node.getPositionalArguments();
 			if (positionalArguments.size() > positionalArgumentFieldNames.size()) {

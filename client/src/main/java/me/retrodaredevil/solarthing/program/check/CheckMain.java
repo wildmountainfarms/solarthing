@@ -1,7 +1,5 @@
 package me.retrodaredevil.solarthing.program.check;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lexicalscope.jewel.cli.ArgumentValidationException;
 import com.lexicalscope.jewel.cli.Cli;
 import com.lexicalscope.jewel.cli.CliFactory;
@@ -19,8 +17,8 @@ import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.packets.handling.PacketListReceiver;
 import me.retrodaredevil.solarthing.packets.handling.implementations.TimedPacketReceiver;
-import me.retrodaredevil.solarthing.program.subprogram.run.SolarReader;
 import me.retrodaredevil.solarthing.program.modbus.MutableAddressModbusSlave;
+import me.retrodaredevil.solarthing.program.subprogram.run.SolarReader;
 import me.retrodaredevil.solarthing.solar.common.BatteryVoltage;
 import me.retrodaredevil.solarthing.solar.outback.MatePacketCreator49;
 import me.retrodaredevil.solarthing.solar.outback.OutbackConstants;
@@ -32,6 +30,8 @@ import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -108,8 +108,7 @@ public class CheckMain {
 			MutableAddressModbusSlave modbusSlave = new MutableAddressModbusSlave(startingAddress, bus);
 			BatteryVoltage readTable = slaveToReadTable.apply(modbusSlave);
 
-			ObjectMapper modbusCatchingMapper = JacksonUtil.defaultMapper();
-			modbusCatchingMapper.registerModule(ModbusSerializationCatcher.createModule(readTable.getClass()));
+			JsonMapper modbusCatchingMapper = JacksonUtil.defaultMapperBuilder().addModule(ModbusSerializationCatcher.createModule(readTable.getClass())).build();
 
 			int maxAddress = scan ? 247 : startingAddress;
 			for (int currentAddress = startingAddress; currentAddress <= maxAddress; currentAddress++) {
@@ -124,7 +123,7 @@ public class CheckMain {
 							String data = modbusCatchingMapper.writeValueAsString(readTable);
 							System.out.println(data);
 							System.out.println("(At least some) data successfully retrieved above");
-						} catch (JsonProcessingException e) {
+						} catch (JacksonException e) {
 							e.printStackTrace(System.out);
 							System.out.println("\nSome error occurred while trying to get more data.\n" +
 									"This should not happen, as this is designed to catch errors. Report this here: " + SolarThingConstants.Links.ISSUES);

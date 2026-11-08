@@ -1,13 +1,11 @@
 package me.retrodaredevil.solarthing.solar.renogy;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
 import org.jspecify.annotations.NullMarked;
-
-import java.io.IOException;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.ValueSerializer;
+import tools.jackson.databind.annotation.JsonSerialize;
 
 @JsonSerialize(using = Version.StringOnlySerializer.class)
 @NullMarked
@@ -54,20 +52,20 @@ public final class Version {
 		return "V" + twoPlaces(high) + "." + twoPlaces(middle) + "." +twoPlaces(low);
 	}
 
-	public static class StringOnlySerializer extends JsonSerializer<Version> {
+	public static class StringOnlySerializer extends ValueSerializer<Version> {
 
 		@Override
-		public void serialize(Version value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+		public void serialize(Version value, JsonGenerator gen, SerializationContext serializers) {
 			gen.writeString(value.toString());
 		}
 	}
-	public static class CompleteVersionSerializer extends JsonSerializer<Version> {
+	public static class CompleteVersionSerializer extends ValueSerializer<Version> {
 
 		@Override
-		public void serialize(Version value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+		public void serialize(Version value, JsonGenerator gen, SerializationContext serializers) {
 			gen.writeStartObject();
-			gen.writeNumberField("Version", value.raw);
-			gen.writeStringField("VersionString", value.toString());
+			gen.writeNumberProperty("Version", value.raw);
+			gen.writeStringProperty("VersionString", value.toString());
 			gen.writeEndObject();
 		}
 	}

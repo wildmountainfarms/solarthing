@@ -1,7 +1,5 @@
 package me.retrodaredevil.solarthing.actions;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.CallActionNode;
@@ -14,12 +12,13 @@ import me.retrodaredevil.solarthing.program.ActionUtil;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.ObjectMapper;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @NullMarked
 class ActionNodeTest {
-	private static final ObjectMapper MAPPER = ActionUtil.registerActionNodes(JacksonUtil.defaultMapper());
+	private static final ObjectMapper MAPPER = ActionUtil.registerActionNodes(JacksonUtil.defaultMapperBuilder()).build();
 
 	private ActionEnvironment createEnvironment() {
 		return new ActionEnvironment(
@@ -31,12 +30,12 @@ class ActionNodeTest {
 	}
 
 	@Test
-	void testParse() throws JsonProcessingException {
+	void testParse() {
 		String json = "{ \"type\": \"call\", \"name\": \"asdf\" }";
 		assertTrue(MAPPER.readValue(json, ActionNode.class) instanceof CallActionNode);
 	}
 	@Test
-	void testDeclaration() throws JsonProcessingException {
+	void testDeclaration() {
 		String json = """
 				{
 				"type": "race",

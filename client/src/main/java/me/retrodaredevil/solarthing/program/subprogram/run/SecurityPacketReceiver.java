@@ -1,10 +1,5 @@
 package me.retrodaredevil.solarthing.program.subprogram.run;
 
-import com.fasterxml.jackson.core.Base64Variants;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import me.retrodaredevil.solarthing.PacketGroupReceiver;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.commands.event.ImmutableSecurityAcceptPacket;
@@ -37,6 +32,11 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.core.Base64Variants;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
 
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
@@ -90,8 +90,7 @@ public class SecurityPacketReceiver {
 
 		List<Class<? extends DocumentedPacket>> classList = new ArrayList<>(packetClasses);
 		classList.add(InstancePacket.class);
-		ObjectMapper integrityMapper = MAPPER.copy();
-		integrityMapper.getSubtypeResolver().registerSubtypes(Collections.unmodifiableList(classList));
+		ObjectMapper integrityMapper = MAPPER.rebuild().registerSubtypes(Collections.unmodifiableList(classList)).build();
 
 		// Use a DO_NOTHING error handler, because many instances of SecurityPacketReceiver will only have one or a few packetClasses.
 		//   So it's actually very likely that parsing a packet will fail often
@@ -311,7 +310,7 @@ public class SecurityPacketReceiver {
 		final JsonNode node;
 		try {
 			node = MAPPER.readTree(message);
-		} catch (JsonProcessingException e) {
+		} catch (JacksonException e) {
 			LOGGER.warn("Couldn't parse message to JSON. message=" + message);
 			reject(storedPacketGroup, SecurityRejectPacket.Reason.INVALID_DATA, "Could not parse JSON");
 			return;

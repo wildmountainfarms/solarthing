@@ -41,7 +41,7 @@ public final class CouchDbUtil {
 			if (couchProperties.forceBasicAuth()) {
 				authHandler = new BasicAuthHandler(auth);
 			} else {
-				authHandler = new CookieAuthHandler(auth.getUsername(), auth.getPassword());
+				authHandler = new CookieAuthHandler(auth.expectUsername(), auth.expectPassword());
 			}
 		} else {
 			authHandler = new BasicAuthHandler(CouchDbAuth.createNoAuth());

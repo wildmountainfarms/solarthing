@@ -3,7 +3,6 @@ package me.retrodaredevil.solarthing.solar.outback.command.packets;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.PacketWithVersion;
@@ -11,6 +10,7 @@ import me.retrodaredevil.solarthing.reason.ExecutionReason;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 @JsonTypeName("MATE_COMMAND_SUCCESS")
 @JsonDeserialize(as = ImmutableSuccessMateCommandPacket.class)

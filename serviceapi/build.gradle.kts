@@ -17,8 +17,6 @@ dependencies {
 	// https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
 	api(libs.okhttp)
 	api(libs.retrofit)
-	api(libs.retrofit.converter.jackson)
 	implementation(libs.retrofit.converter.scalars)
-	implementation(libs.retrofit.converter.jackson)
 	implementation(libs.okhttp.logging.interceptor)
 }

@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.program.subprogram.run;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.action.ActionMultiplexer;
 import me.retrodaredevil.action.Actions;
 import me.retrodaredevil.action.node.ActionNode;
@@ -61,8 +60,12 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.time.Clock;
+import java.time.Duration;
+import java.time.InstantSource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -80,11 +83,12 @@ public class PacketHandlerInit {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PacketHandlerInit.class);
 	private static final ObjectMapper MAPPER = JacksonUtil.defaultMapper();
+	private static final Duration EVENT_RETRY_CUTOFF = Duration.ofMinutes(90);
 
 	/**
 	 * @param configs The fully resolved list of {@link DatabaseConfig}s.
 	 */
-	public static PacketHandlerBundle getPacketHandlerBundle(List<DatabaseConfig> configs, String uniqueStatusName, String uniqueEventName, String sourceId, int fragmentId){
+	public static PacketHandlerBundle getPacketHandlerBundle(Clock clock, List<DatabaseConfig> configs, String uniqueStatusName, String uniqueEventName, String sourceId, int fragmentId){
 		List<PacketHandler> statusPacketHandlers = new ArrayList<>();
 		List<PacketHandler> eventPacketHandlers = new ArrayList<>();
 		for(DatabaseConfig config : configs) {
@@ -99,7 +103,7 @@ public class PacketHandlerInit {
 							new AsyncPacketHandlerWrapper(new PrintPacketHandleExceptionWrapper(new CouchDbPacketSaver(instance.getDatabase(uniqueStatusName), false))),
 							statusFrequencySettings
 					));
-					eventPacketHandlers.add(new AsyncRetryingPacketHandler(new CouchDbPacketSaver(instance.getDatabase(uniqueEventName), true)));
+					eventPacketHandlers.add(new AsyncRetryingPacketHandler(clock, EVENT_RETRY_CUTOFF, new CouchDbPacketSaver(instance.getDatabase(uniqueEventName), true)));
 				} else if (InfluxDbDatabaseSettings.TYPE.equals(config.getType())) {
 					LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "You are using InfluxDB 1.X! It is recommended that you switch to 2.0, but is not required.");
 					InfluxDbDatabaseSettings settings = (InfluxDbDatabaseSettings) config.requireDatabaseSettings();
@@ -120,7 +124,7 @@ public class PacketHandlerInit {
 							))),
 							statusFrequencySettings
 					));
-					eventPacketHandlers.add(new AsyncRetryingPacketHandler(new InfluxDbPacketSaver(
+					eventPacketHandlers.add(new AsyncRetryingPacketHandler(clock, EVENT_RETRY_CUTOFF, new InfluxDbPacketSaver(
 							settings.getInfluxProperties(),
 							settings.getOkHttpProperties(),
 							new ConstantNameGetter(databaseName != null ? databaseName : uniqueEventName),
@@ -143,7 +147,7 @@ public class PacketHandlerInit {
 							))),
 							statusFrequencySettings
 					));
-					eventPacketHandlers.add(new AsyncRetryingPacketHandler(new InfluxDb2PacketSaver(
+					eventPacketHandlers.add(new AsyncRetryingPacketHandler(clock, EVENT_RETRY_CUTOFF, new InfluxDb2PacketSaver(
 							settings.getInfluxDbProperties(),
 							settings.getOkHttpProperties(),
 							new ConstantNameGetter(uniqueEventName),
@@ -183,9 +187,10 @@ public class PacketHandlerInit {
 		return new PacketHandlerBundle(statusPacketHandlers, eventPacketHandlers);
 	}
 
-	public static <T extends PacketHandlingOption & CommandOption & ActionsOption> Result initHandlers(T options, Supplier<? extends @Nullable EnvironmentUpdater> environmentUpdaterSupplier, Collection<? extends PacketHandler> additionalPacketHandlers) throws IOException {
+	public static <T extends PacketHandlingOption & CommandOption & ActionsOption> Result initHandlers(InstantSource instantSource, T options, Supplier<? extends @Nullable EnvironmentUpdater> environmentUpdaterSupplier, Collection<? extends PacketHandler> additionalPacketHandlers) throws IOException {
+		Clock clock = instantSource.withZone(options.getZoneId());
 		List<DatabaseConfig> databaseConfigs = ConfigUtil.resolveConfigs(options.getDatabaseConfigSettings());
-		PacketHandlerBundle packetHandlerBundle = PacketHandlerInit.getPacketHandlerBundle(databaseConfigs, SolarThingConstants.STATUS_DATABASE, SolarThingConstants.EVENT_DATABASE, options.getSourceId(), options.getFragmentId());
+		PacketHandlerBundle packetHandlerBundle = PacketHandlerInit.getPacketHandlerBundle(clock, databaseConfigs, SolarThingConstants.STATUS_DATABASE, SolarThingConstants.EVENT_DATABASE, options.getSourceId(), options.getFragmentId());
 		List<PacketHandler> statusPacketHandlers = new ArrayList<>();
 
 		final Runnable updateCommandActions;

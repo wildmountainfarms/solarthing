@@ -1,8 +1,5 @@
 package me.retrodaredevil.solarthing.influxdb.influxdb1;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.ValueNode;
 import me.retrodaredevil.influxdb.influxdb1.InfluxProperties;
 import me.retrodaredevil.okhttp3.OkHttpProperties;
 import me.retrodaredevil.okhttp3.OkHttpUtil;
@@ -32,6 +29,9 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.node.ValueNode;
 
 import java.util.Collection;
 import java.util.List;
@@ -49,7 +49,7 @@ import static java.util.Objects.requireNonNull;
 public class InfluxDbPacketSaver implements PacketHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(InfluxDbPacketSaver.class);
 	private static final Logger INFLUX_LOGGER = LoggerFactory.getLogger("org.influxdb");
-	private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.includeConvenienceFields(JacksonUtil.defaultMapper());
+	private static final ObjectMapper OBJECT_MAPPER = JacksonUtil.includeConvenienceFields(JacksonUtil.defaultMapperBuilder()).build();
 
 	private final InfluxProperties properties;
 	private final OkHttpProperties okHttpProperties;
@@ -164,16 +164,16 @@ public class InfluxDbPacketSaver implements PacketHandler {
 					String key = entry.getKey();
 					ValueNode prim = entry.getValue();
 					if(tagKeys.contains(key)){
-						pointBuilder.tag(key, prim.asText());
+						pointBuilder.tag(key, prim.asString());
 					}
 					if (prim.isNumber()) {
 						// always store as float datatype
 						pointBuilder.addField(key, prim.asDouble());
-					} else if (prim.isTextual() || prim.isBinary()) {
-						pointBuilder.addField(key, prim.asText());
+					} else if (prim.isString() || prim.isBinary()) {
+						pointBuilder.addField(key, prim.asString());
 					} else if (prim.isBoolean()) {
 						pointBuilder.addField(key, prim.asBoolean());
-					} else throw new AssertionError("This primitive isn't a number, string/binary or boolean! It's: " + prim + " class: " + prim.getClass() + " text=" + prim.asText());
+					} else throw new AssertionError("This primitive isn't a number, string/binary or boolean! It's: " + prim + " class: " + prim.getClass() + " text=" + prim.asString());
 				}
 				points.point(pointBuilder.build());
 				packetsWritten++;

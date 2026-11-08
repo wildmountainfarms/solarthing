@@ -2,7 +2,6 @@ package me.retrodaredevil.solarthing.solar.tracer.event;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.GraphQLInclude;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
@@ -13,6 +12,7 @@ import me.retrodaredevil.solarthing.solar.tracer.SupplementaryTracerPacket;
 import me.retrodaredevil.solarthing.solar.tracer.TracerChargingEquipmentStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 /**
  * Represents a change in charging equipment status which can represent any or all changes in

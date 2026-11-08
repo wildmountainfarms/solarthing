@@ -14,6 +14,7 @@ dependencies {
 	annotationProcessor(project(":process-annotations"))
 
 	api("com.github.retrodaredevil:action-lib:v1.3.1")
+	api(platform(libs.jackson.bom))
 	api(libs.jackson.annotations)
 	api(libs.jackson.databind)
 }

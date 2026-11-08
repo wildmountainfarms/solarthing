@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.solar.outback;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import me.retrodaredevil.solarthing.PacketTestUtil;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacket;
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacket;
@@ -39,7 +38,7 @@ public class OutbackPacketsTest {
 	private static final Path DIRECTORY_MX = PacketTestUtil.SOLARTHING_ROOT.resolve("testing/packets/mx");
 
 	@Test
-	void test() throws JsonProcessingException, ParsePacketAsciiDecimalDigitException, CheckSumException {
+	void test() throws ParsePacketAsciiDecimalDigitException, CheckSumException {
 		{
 			FXStatusPacket packet = FXStatusPackets.createFromChars("\n1,10,10,10,100,100,10,03,000,02,282,129,000,999\r".toCharArray(), IgnoreCheckSum.IGNORE_AND_USE_CALCULATED);
 			assertEquals(28.2, packet.getBatteryVoltage(), 0.001f);

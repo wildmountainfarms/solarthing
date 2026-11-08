@@ -1,16 +1,15 @@
 package me.retrodaredevil.solarthing.pvoutput;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DatabindException;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ValueDeserializer;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.exc.MismatchedInputException;
 
-import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -136,15 +135,15 @@ public final class SimpleDate implements Comparable<SimpleDate>, PVOutputString 
 	public String toString() {
 		return toPVOutputString();
 	}
-	static class Deserializer extends JsonDeserializer<SimpleDate> {
+	static class Deserializer extends ValueDeserializer<SimpleDate> {
 
 		@Override
-		public SimpleDate deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-			JsonNode node = p.getCodec().readTree(p);
-			if(!node.isTextual()){
-				throw new JsonMappingException(p, "This isn't textual!");
+		public SimpleDate deserialize(JsonParser p, DeserializationContext ctxt) {
+			JsonNode node = p.objectReadContext().readTree(p);
+			if(!node.isString()){
+				throw DatabindException.from(p, "This isn't textual!");
 			}
-			String value = node.textValue();
+			String value = node.stringValue();
 			if(value.length() != 8){
 				throw MismatchedInputException.from(p, SimpleDate.class, "value.length() isn't 8! value=" + value);
 			}
@@ -157,7 +156,7 @@ public final class SimpleDate implements Comparable<SimpleDate>, PVOutputString 
 				month = Integer.parseInt(monthString);
 				day = Integer.parseInt(dayString);
 			} catch(NumberFormatException ex){
-				throw new JsonMappingException(p, "Couldn't parse either year, month, or day! value=" + value, ex);
+				throw DatabindException.from(p, "Couldn't parse either year, month, or day! value=" + value, ex);
 			}
 			return new SimpleDate(year, month, day);
 		}

@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
+import java.time.InstantSource;
 import java.util.List;
 import java.util.Random;
 
@@ -78,7 +79,7 @@ public class RunMain {
 	}
 
 
-	public static int doMainCommand(CommandOptions commandOptions, Path baseConfigFile) {
+	public static int doMainCommand(InstantSource instantSource, CommandOptions commandOptions, Path baseConfigFile) {
 		String user = System.getProperty("user.name");
 		if (!"solarthing".equals(user) && !SolarThingEnvironment.isRunningInDocker()) {
 			if (user.equals("root")) {
@@ -108,13 +109,13 @@ public class RunMain {
 		final ProgramType programType = options.getProgramType();
 		try {
 			if(programType == ProgramType.MATE) {
-				return OutbackMateMain.connectMate((MateProgramOptions) options, commandOptions.isValidate());
+				return OutbackMateMain.connectMate(instantSource, (MateProgramOptions) options, commandOptions.isValidate());
 			} else if(programType == ProgramType.ROVER_SETUP){
 				return RoverMain.connectRoverSetup((RoverSetupProgramOptions) options, commandOptions.isValidate());
 			} else if(programType == ProgramType.PVOUTPUT_UPLOAD){
 				return PVOutputUploadMain.startPVOutputUpload((PVOutputUploadProgramOptions) options, commandOptions, commandOptions.isValidate());
 			} else if(programType == ProgramType.REQUEST) {
-				return RequestMain.startRequestProgram((RequestProgramOptions) options, commandOptions.isValidate());
+				return RequestMain.startRequestProgram(instantSource, (RequestProgramOptions) options, commandOptions.isValidate());
 			} else if(programType == ProgramType.AUTOMATION) {
 				return AutomationMain.startAutomation((AutomationProgramOptions) options, commandOptions.isValidate());
 			}
@@ -184,7 +185,7 @@ public class RunMain {
 			return SolarThingConstants.EXIT_CODE_INVALID_OPTIONS;
 		}
 		if (commandOptions.getBaseConfigFile() != null) {
-			return doMainCommand(commandOptions, Path.of(commandOptions.getBaseConfigFile()));
+			return doMainCommand(InstantSource.system(), commandOptions, Path.of(commandOptions.getBaseConfigFile()));
 		}
 		if (commandOptions.getCouchDbSetupFile() != null) {
 			final DatabaseConfig config;

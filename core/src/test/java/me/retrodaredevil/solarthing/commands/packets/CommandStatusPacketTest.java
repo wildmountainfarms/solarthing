@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.commands.packets;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import me.retrodaredevil.solarthing.PacketTestUtil;
 import me.retrodaredevil.solarthing.commands.CommandInfo;
 import me.retrodaredevil.solarthing.commands.packets.status.AvailableCommandsPacket;
@@ -17,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class CommandStatusPacketTest {
 
 	@Test
-	void test() throws JsonProcessingException {
+	void test() {
 		AvailableCommandsPacket packet = new ImmutableAvailableCommandsPacket(Collections.singletonList(new CommandInfo("asdf", "Asdf", "Cool")));
 		assertEquals("asdf", packet.getCommandInfoList().getFirst().getName());
 		assertEquals(1, packet.getCommandInfoList().size());

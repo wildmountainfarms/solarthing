@@ -1,7 +1,5 @@
 package me.retrodaredevil.solarthing.actions;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.action.lang.ActionLangUtil;
 import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.expression.node.ExpressionNode;
@@ -26,9 +24,11 @@ import me.retrodaredevil.solarthing.expression.BatteryVoltageExpressionNode;
 import me.retrodaredevil.solarthing.expression.NetChargeExpressionNode;
 import org.antlr.v4.runtime.CharStreams;
 import org.jspecify.annotations.NullMarked;
-import org.jetbrains.annotations.Contract;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.cfg.MapperBuilder;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -61,10 +61,8 @@ public final class CommonActionUtil {
 		));
 	}
 
-
-	@Contract("_ -> param1")
-	public static ObjectMapper registerActionNodes(ObjectMapper objectMapper) {
-		objectMapper.registerSubtypes(
+	public static <M extends ObjectMapper, B extends MapperBuilder<M, B>> B registerActionNodes(B builder) {
+		return builder.registerSubtypes(
 				ActionNode.class,
 
 				LogActionNode.class,
@@ -78,15 +76,13 @@ public final class CommonActionUtil {
 
 				SendEncryptedActionNode.class,
 				FlagActionNode.class
-		);
-		objectMapper.registerSubtypes(
+		).registerSubtypes(
 				ExpressionNode.class,
 
 				BatteryVoltageExpressionNode.class,
 				NetChargeExpressionNode.class,
 				RoverBoostVoltageExpressionNode.class
 		);
-		return objectMapper;
 	}
 	public static ActionNode readActionReference(ObjectMapper objectMapper, ActionReference actionReference) throws IOException {
 		// TODO We might consider supporting interpolating values (using ConfigUtil)

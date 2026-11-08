@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.rest.command;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.environment.InjectEnvironment;
 import me.retrodaredevil.action.node.environment.NanoTimeProviderEnvironment;
@@ -13,6 +12,8 @@ import me.retrodaredevil.solarthing.database.SolarThingDatabase;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,7 +24,7 @@ import static java.util.Objects.requireNonNull;
 
 @NullMarked
 public class CommandHandler {
-	private static final ObjectMapper CONFIG_MAPPER = CommonActionUtil.registerActionNodes(JacksonUtil.defaultMapper());
+	private static final ObjectMapper CONFIG_MAPPER = CommonActionUtil.registerActionNodes(JacksonUtil.defaultMapperBuilder()).build();
 
 	private final RestCommandConfig restCommandConfig;
 	private final SolarThingDatabase solarThingDatabase;
@@ -50,7 +51,7 @@ public class CommandHandler {
 			// TODO [Interpolate]? We still need to decide how we want to allow the possibility
 			// TODO we want to allow NotationScript formatted files to be used
 			return CONFIG_MAPPER.readValue(inputStream, ActionNode.class);
-		} catch (IOException e) {
+		} catch (IOException | JacksonException e) {
 			throw new RuntimeException("Could not json from file: " + command.getActionFile(), e);
 		}
 	}

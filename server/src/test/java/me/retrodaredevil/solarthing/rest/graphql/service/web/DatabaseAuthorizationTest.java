@@ -1,11 +1,10 @@
 package me.retrodaredevil.solarthing.rest.graphql.service.web;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import okhttp3.Cookie;
 import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.ObjectMapper;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -13,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class DatabaseAuthorizationTest {
 
 	@Test
-	void test() throws JsonProcessingException {
+	void test() {
 		ObjectMapper objectMapper = JacksonUtil.defaultMapper();
 		String output = objectMapper.writeValueAsString(DatabaseAuthorization.create(
 				new Cookie.Builder()

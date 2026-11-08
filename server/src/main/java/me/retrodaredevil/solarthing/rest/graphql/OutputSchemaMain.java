@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.rest.graphql;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.idl.SchemaPrinter;
 import me.retrodaredevil.couchdb.CouchDbUtil;
@@ -13,6 +12,8 @@ import me.retrodaredevil.solarthing.rest.cache.CacheHandler;
 import me.retrodaredevil.solarthing.rest.graphql.solcast.SolcastConfig;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.jspecify.annotations.NullMarked;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -33,7 +34,7 @@ public class OutputSchemaMain {
 		// Use DefaultInstanceOptions.REQUIRE_NO_DEFAULTS while testing because first, we don't actually query any data,
 		//   and second, we're trying to get rid of usages of DefaultInstanceOptions.DEFAULT_DEFAULT_INSTANCE_OPTIONS
 		CacheController cacheController = new CacheController(new CacheHandler(mapper, DefaultInstanceOptions.REQUIRE_NO_DEFAULTS, CouchDbUtil.createInstance(couchDbDatabaseSettings.getCouchProperties(), couchDbDatabaseSettings.getOkHttpProperties())));
-		GraphQLSchema schema = GraphQLProvider.createGraphQLSchemaGenerator(JacksonUtil.defaultMapper(), couchDbDatabaseSettings, DefaultInstanceOptions.REQUIRE_NO_DEFAULTS, new SolcastConfig(Collections.emptyMap()), cacheController).generate();
+		GraphQLSchema schema = GraphQLProvider.createGraphQLSchemaGenerator(mapper, couchDbDatabaseSettings, DefaultInstanceOptions.REQUIRE_NO_DEFAULTS, new SolcastConfig(Collections.emptyMap()), cacheController).generate();
 		String schemaString = new SchemaPrinter(
 				SchemaPrinter.Options.defaultOptions()
 						.includeIntrospectionTypes(true)
@@ -45,7 +46,7 @@ public class OutputSchemaMain {
 
 		try {
 			Files.writeString(outputFile, schemaString);
-		} catch (IOException e) {
+		} catch (IOException | JacksonException e) {
 			throw new RuntimeException(e);
 		}
 	}

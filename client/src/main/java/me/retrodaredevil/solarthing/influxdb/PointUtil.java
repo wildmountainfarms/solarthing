@@ -1,8 +1,5 @@
 package me.retrodaredevil.solarthing.influxdb;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.ValueNode;
 import me.retrodaredevil.solarthing.annotations.TagKeys;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.packets.DocumentedPacket;
@@ -12,6 +9,9 @@ import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.packets.identification.SupplementaryIdentifier;
 import org.jspecify.annotations.NullMarked;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.node.ValueNode;
 
 import java.util.*;
 

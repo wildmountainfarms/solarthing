@@ -1,10 +1,10 @@
 package me.retrodaredevil.solarthing.program.subprogram.pvoutput;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.couchdb.CouchDbUtil;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.analytics.AnalyticsManager;
+import me.retrodaredevil.solarthing.config.ConfigUtil;
+import me.retrodaredevil.solarthing.config.databases.DatabaseConfig;
 import me.retrodaredevil.solarthing.config.databases.DatabaseType;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.config.options.PVOutputUploadProgramOptions;
@@ -15,12 +15,10 @@ import me.retrodaredevil.solarthing.database.couchdb.CouchDbSolarThingDatabase;
 import me.retrodaredevil.solarthing.database.exception.SolarThingDatabaseException;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
-import me.retrodaredevil.solarthing.program.subprogram.run.CommandOptions;
-import me.retrodaredevil.solarthing.config.ConfigUtil;
-import me.retrodaredevil.solarthing.config.databases.DatabaseConfig;
 import me.retrodaredevil.solarthing.program.PacketUtil;
 import me.retrodaredevil.solarthing.program.subprogram.pvoutput.provider.TemperatureCelsiusProvider;
 import me.retrodaredevil.solarthing.program.subprogram.pvoutput.provider.VoltageProvider;
+import me.retrodaredevil.solarthing.program.subprogram.run.CommandOptions;
 import me.retrodaredevil.solarthing.pvoutput.CsvUtil;
 import me.retrodaredevil.solarthing.pvoutput.SimpleDate;
 import me.retrodaredevil.solarthing.pvoutput.data.AddBatchOutputParameters;
@@ -42,6 +40,8 @@ import org.slf4j.LoggerFactory;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 import java.time.Instant;
@@ -59,7 +59,7 @@ import java.util.Locale;
 public class PVOutputUploadMain {
 	private PVOutputUploadMain(){ throw new UnsupportedOperationException(); }
 	private static final Logger LOGGER = LoggerFactory.getLogger(PVOutputUploadMain.class);
-	private static final ObjectMapper MAPPER = JacksonUtil.lenientMapper(JacksonUtil.defaultMapper());
+	private static final JsonMapper MAPPER = JacksonUtil.lenientMapper(JacksonUtil.defaultMapperBuilder()).build();
 
 	// TODO Make this an action for the automation program
 
@@ -156,7 +156,7 @@ public class PVOutputUploadMain {
 						System.err.println("Unsuccessfully checked packets for " + date);
 						try {
 							System.out.println(MAPPER.writeValueAsString(packetGroups.getLast()));
-						} catch (JsonProcessingException e) {
+						} catch (JacksonException e) {
 							e.printStackTrace();
 						}
 					} else {
@@ -196,7 +196,7 @@ public class PVOutputUploadMain {
 			AddBatchOutputParameters batchOutputParameters = new ImmutableAddBatchOutputParameters(parameters);
 			try {
 				LOGGER.debug("Batch Output parameters as JSON: " + MAPPER.writeValueAsString(batchOutputParameters));
-			} catch (JsonProcessingException e) {
+			} catch (JacksonException e) {
 				LOGGER.error("Got error serializing JSON. This should never happen.", e);
 			}
 			boolean successful = false;
@@ -305,7 +305,7 @@ public class PVOutputUploadMain {
 						LOGGER.warn("The last packet is more than 5 minutes in the past! now=" + now + " packet date=" + latestPacketGroup.getDateMillis());
 						try {
 							LOGGER.debug("Packets: " + MAPPER.writeValueAsString(latestPacketGroup.getPackets()));
-						} catch (JsonProcessingException e) {
+						} catch (JacksonException e) {
 							LOGGER.warn("Couldn't serialize for some reason", e);
 						}
 					} else if (!handler.checkPackets(dayStartTimeMillis, packetGroups)){
@@ -337,7 +337,7 @@ public class PVOutputUploadMain {
 	private static boolean uploadStatus(PVOutputService service, AddStatusParameters addStatusParameters) {
 		try {
 			LOGGER.debug("Status parameters as JSON: " + MAPPER.writeValueAsString(addStatusParameters));
-		} catch (JsonProcessingException e) {
+		} catch (JacksonException e) {
 			LOGGER.error("Got error serializing JSON. This should never happen.", e);
 		}
 		Call<String> call = service.addStatus(addStatusParameters);
@@ -346,7 +346,7 @@ public class PVOutputUploadMain {
 	private static boolean uploadOutput(PVOutputService service, AddOutputParameters addOutputParameters) {
 		try {
 			LOGGER.debug("Output parameters as JSON: " + MAPPER.writeValueAsString(addOutputParameters));
-		} catch (JsonProcessingException e) {
+		} catch (JacksonException e) {
 			LOGGER.error("Got error serializing JSON. This should never happen.", e);
 		}
 		Call<String> call = service.addOutput(addOutputParameters);

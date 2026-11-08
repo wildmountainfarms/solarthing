@@ -3,7 +3,6 @@ package me.retrodaredevil.solarthing.config.io;
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fazecast.jSerialComm.SerialPort;
 import me.retrodaredevil.io.IOBundle;
 import me.retrodaredevil.io.serial.JSerialIOBundle;
@@ -12,6 +11,7 @@ import me.retrodaredevil.io.serial.SerialConfigBuilder;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 @JsonTypeName("serial")
 @NullMarked

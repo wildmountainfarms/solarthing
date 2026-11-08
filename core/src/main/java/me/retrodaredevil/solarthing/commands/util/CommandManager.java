@@ -1,7 +1,5 @@
 package me.retrodaredevil.solarthing.commands.util;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.solarthing.commands.packets.open.CommandOpenPacket;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollection;
@@ -22,6 +20,8 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import javax.crypto.Cipher;
 import java.io.IOException;
@@ -118,7 +118,7 @@ public class CommandManager {
 			final String payload;
 			try {
 				payload = MAPPER.writeValueAsString(packetCollectionToNestAndEncrypt);
-			} catch (JsonProcessingException e) {
+			} catch (JacksonException e) {
 				throw new RuntimeException(e);
 			}
 			String hashString = Long.toHexString(now.toEpochMilli()) + "," + HashUtil.encodedHash(payload);
