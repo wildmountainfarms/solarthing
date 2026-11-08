@@ -5,6 +5,7 @@ import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
 import org.jspecify.annotations.NullMarked;
+import tools.jackson.core.JacksonException;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.node.ObjectNode;
@@ -45,7 +46,7 @@ public class SimplePacketGroupParser {
 			DocumentedPacket packet = null;
 			try {
 				packet = mapper.convertValue(jsonPacket, DocumentedPacket.class);
-			} catch (IllegalArgumentException ex) {
+			} catch (JacksonException ex) {
 				errorHandler.handleError(ex);
 			}
 			if(packet != null){
