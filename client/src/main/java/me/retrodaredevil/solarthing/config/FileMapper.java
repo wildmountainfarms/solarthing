@@ -10,5 +10,5 @@ public interface FileMapper {
 	Path map(String fileName);
 
 	String JACKSON_INJECT_IDENTIFIER = "fileMapperJacksonInject";
-	FileMapper ONE_TO_ONE = Paths::get;
+	FileMapper ONE_TO_ONE = Path::of;
 }

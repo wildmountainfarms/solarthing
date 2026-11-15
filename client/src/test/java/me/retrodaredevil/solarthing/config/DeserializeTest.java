@@ -35,6 +35,7 @@ import org.junit.jupiter.api.Test;
 import tools.jackson.databind.InjectableValues;
 import tools.jackson.databind.json.JsonMapper;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -42,7 +43,9 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.*;
@@ -130,24 +133,22 @@ public class DeserializeTest {
 	}
 	@Test
 	void testJsonActions() throws IOException {
-		/*
-		Also note that mattermost stuff was here, so we may not need it after it was removed on 2021.05.13
-
-		ObjectMapper mapper = MAPPER;
 		InjectableValues.Std iv = new InjectableValues.Std();
-		Map<String, File> hardcodedFileMap = new HashMap<>();
-		iv.addValue(FileMapper.JACKSON_INJECT_IDENTIFIER, (FileMapper) hardcodedFileMap::get);
-		mapper = mapper.rebuild().injectableValues(iv).build();
-		TODO in future, uncomment if https://github.com/FasterXML/jackson-databind/issues/3072 is implemented
-		 */
+		Map<String, Path> hardcodedFileMap = new HashMap<>();
+		hardcodedFileMap.put("config/slack_important.json", SOLARTHING_ROOT.resolve("config_templates/message/slack_template.json"));
+		hardcodedFileMap.put("config/slack.json", SOLARTHING_ROOT.resolve("config_templates/message/slack_template.json"));
+		iv.addValue(FileMapper.JACKSON_INJECT_IDENTIFIER, (FileMapper) key -> {
+			Path r = hardcodedFileMap.get(key);
+			if (r == null) {
+				return FileMapper.ONE_TO_ONE.map(key);
+			}
+			return r;
+		});
+		JsonMapper mapper = MAPPER.rebuild().injectableValues(iv).build();
 
 		for (Path configFile : getJsonFiles(ACTION_JSON_CONFIG_DIRECTORY)) {
-			if (configFile.endsWith("message_sender.json")) {
-				// We cannot test this one because it tries to read the file "config/slack.json", and we currently don't have a mechanism to change that
-				continue;
-			}
 			try {
-				CommonConfigUtil.readConfig(configFile, ActionNode.class, MAPPER);
+				CommonConfigUtil.readConfig(configFile, ActionNode.class, mapper);
 			} catch (ConfigException ex) {
 				fail("Failed parsing config: " + configFile, ex);
 			}
