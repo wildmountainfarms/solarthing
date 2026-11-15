@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
@@ -131,7 +132,8 @@ public class ModbusListUpdaterWrapper implements PacketListReceiver {
 				}
 			} else if (e instanceof RawResponseException exception) {
 				byte[] data = exception.getRawData();
-				LOGGER.info("Got part of a response back. (Maybe timed out halfway through?) data='" + dataToSplitHex(data) + "' Feel free to open an issue at https://github.com/wildmountainfarms/solarthing/issues/", e);
+				Supplier<String> dataRepresentation = () -> data == null ? "null" : "'" + dataToSplitHex(data) + "'";
+				LOGGER.info("Got part of a response back. (Maybe timed out halfway through?) data={} Feel free to open an issue at https://github.com/wildmountainfarms/solarthing/issues/", dataRepresentation, e);
 			} else {
 				LOGGER.error("Modbus exception", e);
 			}

@@ -20,13 +20,13 @@ dependencies {
 	// Add checker-qual dependency so we can use @RequiresNonNull.
 	//   More info: https://github.com/uber/NullAway/wiki/Supported-Annotations#ensuresnonnullif
 	// https://mvnrepository.com/artifact/org.checkerframework/checker-qual
-	implementation("org.checkerframework:checker-qual:4.3.0")
+	implementation("org.checkerframework:checker-qual:4.4.0")
 
 	// https://github.com/google/error-prone/releases
-	val errorProneVersion = "2.50.0"
+	val errorProneVersion = "2.52.0"
 	errorprone("com.google.errorprone:error_prone_core:$errorProneVersion")
 	// https://github.com/uber/NullAway/releases
-	errorprone("com.uber.nullaway:nullaway:0.14.2")
+	errorprone("com.uber.nullaway:nullaway:0.14.3")
 
 	// https://mvnrepository.com/artifact/com.google.errorprone/error_prone_annotations
 	compileOnly("com.google.errorprone:error_prone_annotations:$errorProneVersion")

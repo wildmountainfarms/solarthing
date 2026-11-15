@@ -29,7 +29,7 @@ dependencies {
 	implementation(libs.log4j.slf4j2.impl)
 
 	// https://github.com/slackapi/java-slack-sdk/releases
-	implementation("com.slack.api:slack-api-client:1.45.3")
+	implementation("com.slack.api:slack-api-client:1.55.0")
 	// https://mvnrepository.com/artifact/org.java-websocket/Java-WebSocket
 	implementation("org.java-websocket:Java-WebSocket:1.6.0")
 
@@ -38,7 +38,7 @@ dependencies {
 	implementation("com.lexicalscope.jewelcli:jewelcli:0.8.9")
 
 	// https://mvnrepository.com/artifact/commons-cli/commons-cli
-	implementation("commons-cli:commons-cli:1.9.0")
+	implementation("commons-cli:commons-cli:1.11.0")
 
 	implementation("org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5")
 	// https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-jul
@@ -50,7 +50,7 @@ dependencies {
 	implementation("biz.paluch.logging:logstash-gelf:1.15.1")
 
 	// https://mvnrepository.com/artifact/com.google.guava/guava // used for com.google.common.math
-	implementation("com.google.guava:guava:33.4.8-jre")
+	implementation("com.google.guava:guava:33.8.0-jre")
 }
 
 tasks.shadowJar {
