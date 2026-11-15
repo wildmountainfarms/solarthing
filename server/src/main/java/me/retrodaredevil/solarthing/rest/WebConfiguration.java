@@ -10,6 +10,7 @@ import org.springframework.graphql.execution.DefaultExecutionGraphQlService;
 import org.springframework.graphql.execution.GraphQlSource;
 import org.springframework.graphql.server.WebGraphQlHandler;
 import org.springframework.graphql.server.webmvc.GraphQlHttpHandler;
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.function.RequestPredicates;
@@ -17,6 +18,7 @@ import org.springframework.web.servlet.function.RouterFunction;
 import org.springframework.web.servlet.function.RouterFunctions;
 import org.springframework.web.servlet.function.ServerResponse;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
+import tools.jackson.databind.json.JsonMapper;
 
 @Configuration
 @NullMarked
@@ -39,11 +41,12 @@ public class WebConfiguration {
 	}
 
 	@Bean
-	public RouterFunction<ServerResponse> graphQLRouterFunction(GraphQlSource graphQlSource) {
+	public RouterFunction<ServerResponse> graphQLRouterFunction(GraphQlSource graphQlSource, JsonMapper mapper) {
 		ExecutionGraphQlService executionGraphQlService = new DefaultExecutionGraphQlService(graphQlSource);
 		GraphQlHttpHandler handler = new GraphQlHttpHandler(
 				WebGraphQlHandler.builder(executionGraphQlService)
-						.build()
+						.build(),
+				new JacksonJsonHttpMessageConverter(mapper)
 		);
 		return RouterFunctions.route(RequestPredicates.path("/graphql"), handler::handleRequest);
 //		return RouterFunctions.route()

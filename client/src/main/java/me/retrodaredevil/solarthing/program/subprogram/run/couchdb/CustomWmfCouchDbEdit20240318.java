@@ -1,10 +1,5 @@
 package me.retrodaredevil.solarthing.program.subprogram.run.couchdb;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.LongNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.TextNode;
 import me.retrodaredevil.couchdbjava.CouchDbDatabase;
 import me.retrodaredevil.couchdbjava.CouchDbInstance;
 import me.retrodaredevil.couchdbjava.exception.CouchDbException;
@@ -17,6 +12,11 @@ import me.retrodaredevil.couchdbjava.response.ViewResponse;
 import me.retrodaredevil.solarthing.SolarThingConstants;
 import me.retrodaredevil.solarthing.couchdb.SolarThingCouchDb;
 import org.jspecify.annotations.NullMarked;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.LongNode;
+import tools.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.node.StringNode;
 
 import java.io.PrintStream;
 import java.time.Duration;
@@ -72,12 +72,12 @@ public class CustomWmfCouchDbEdit20240318 {
 				final JsonNode json;
 				try {
 					json = CouchDbJacksonUtil.getNodeFrom(jsonData);
-				} catch (JsonProcessingException e) {
+				} catch (JacksonException e) {
 					e.printStackTrace(out);
 					out.println("Could not parse JSON data from " + row.getId() + ". Exiting");
 					return 1;
 				}
-				ObjectNode object = json.deepCopy();
+				ObjectNode object = (ObjectNode) json.deepCopy();
 				long dateMillis = object.get("dateMillis").asLong();
 				if (dateMillis < BAD_TIMESTAMP_START.toEpochMilli() || dateMillis > BAD_TIMESTAMP_END.toEpochMilli()) {
 					out.println("Could not parse dateMillis for " + row.getId() + ". Exiting");
@@ -90,7 +90,7 @@ public class CustomWmfCouchDbEdit20240318 {
 				long newDateMillis = dateMillis + Duration.ofSeconds(60 * 60 + 2 * 60 + 10).toMillis(); // plus 1 hour, 2 minutes, 10 seconds
 				object.set("dateMillis", new LongNode(newDateMillis));
 				object.set("originalDateMillis", new LongNode(dateMillis));
-				object.set("editReason", new TextNode("wmf-custom-2024-03-18"));
+				object.set("editReason", new StringNode("wmf-custom-2024-03-18"));
 				database.putDocument(row.getId(), new JacksonJsonData(object));
 			}
 		}

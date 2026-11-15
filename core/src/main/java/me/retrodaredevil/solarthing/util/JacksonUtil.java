@@ -1,70 +1,66 @@
 package me.retrodaredevil.solarthing.util;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
-import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import me.retrodaredevil.solarthing.annotations.ConvenienceField;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import org.jspecify.annotations.NullMarked;
+import tools.jackson.core.json.JsonReadFeature;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.cfg.DateTimeFeature;
+import tools.jackson.databind.cfg.EnumFeature;
+import tools.jackson.databind.cfg.MapperBuilder;
+import tools.jackson.databind.cfg.MapperConfig;
+import tools.jackson.databind.introspect.AnnotatedMember;
+import tools.jackson.databind.introspect.JacksonAnnotationIntrospector;
+import tools.jackson.databind.json.JsonMapper;
 
 @UtilityClass
 @NullMarked
 public final class JacksonUtil {
 	private JacksonUtil(){ throw new UnsupportedOperationException(); }
 
-	public static ObjectMapper defaultMapper(ObjectMapper mapper){
-		// We will eventually use a JsonMapper.Builder (JsonMapper.builder()) to create this, but there are some things that require the direct configuration of an ObjectMapper
-		mapper.setConfig(
-				mapper.getDeserializationConfig()
-						.with(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE)
-//						.with(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES) this really means fail on undefined, not null
-						.with(DeserializationFeature.FAIL_ON_READING_DUP_TREE_KEY)
-						.with(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
-		);
-		mapper.setConfig(
-				mapper.getSerializationConfig()
-						.without(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS) // for things we want to be represented numerically, we usually use numeric types, otherwise use ISO-8601
-						.without(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS) // durations should be written with ISO-8601
-		);
-		mapper.findAndRegisterModules(); // this is just plain useful. In serviceapi we depend on the JavaTimeModule, so this will auto add it if it is there.
-		return mapper;
+	public static <M extends ObjectMapper, B extends MapperBuilder<M, B>> B defaultMapper(MapperBuilder<M, B> builder) {
+		return builder
+				.enable(EnumFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE)
+				.enable(DeserializationFeature.FAIL_ON_READING_DUP_TREE_KEY)
+				.enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES) // reject explicit null for primitives instead of coercing it to zero
+				// TODO consider enabling FAIL_ON_MISSING_CREATOR_PROPERTIES to reject missing constructor/factory arguments
+				.enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+				.disable(EnumFeature.READ_ENUMS_USING_TO_STRING)
+				.disable(EnumFeature.WRITE_ENUMS_USING_TO_STRING)
+				.disable(DateTimeFeature.WRITE_DATES_AS_TIMESTAMPS) // for things we want to be represented numerically, we usually use numeric types, otherwise use ISO-8601
+				.disable(DateTimeFeature.WRITE_DURATIONS_AS_TIMESTAMPS) // durations should be written with ISO-8601
+				;
 	}
-	public static ObjectMapper defaultMapper(){
-		return defaultMapper(new ObjectMapper());
+	public static JsonMapper.Builder defaultMapperBuilder() {
+		return defaultMapper(JsonMapper.builder());
 	}
-	public static ObjectMapper configurationMapper(ObjectMapper mapper) {
+	public static JsonMapper defaultMapper() {
+		return defaultMapperBuilder().build();
+	}
+	public static JsonMapper.Builder configurationMapper(JsonMapper.Builder builder) {
 		// When parsing configuration files, we should allow comments
-		return mapper.configure(JsonParser.Feature.ALLOW_COMMENTS, true);
+		return builder.enable(JsonReadFeature.ALLOW_JAVA_COMMENTS);
 	}
 
-	/**
-	 * This edits {@code mapper}'s deserialization config to make deserializing more lenient. This is useful for
-	 * deserialization when you want a mapper that <b>will not fail</b> if it tries to parse a packet with newer fields.
-	 * @param mapper The {@link ObjectMapper} to configure
-	 * @return {@code mapper}.
-	 */
-	public static ObjectMapper lenientMapper(ObjectMapper mapper) {
-		mapper.setConfig(mapper.getDeserializationConfig().without(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES));
-		return mapper;
+	/** Configures the builder to accept unknown properties, such as fields from newer packets. */
+	public static <M extends ObjectMapper, B extends MapperBuilder<M, B>> B lenientMapper(MapperBuilder<M, B> builder) {
+		return builder.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 	}
-	public static ObjectMapper lenientSubTypeMapper(ObjectMapper mapper) {
-		mapper.setConfig(mapper.getDeserializationConfig().without(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE));
-		return mapper;
+	public static <M extends ObjectMapper, B extends MapperBuilder<M, B>> B lenientSubTypeMapper(MapperBuilder<M, B> builder) {
+		return builder.disable(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE);
 	}
-	public static ObjectMapper jsonLikeTolerantMapper(ObjectMapper mapper) {
-		return mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+	public static JsonMapper.Builder jsonLikeTolerantMapper(JsonMapper.Builder builder) {
+		return builder.enable(JsonReadFeature.ALLOW_UNQUOTED_PROPERTY_NAMES);
 	}
-	public static ObjectMapper includeConvenienceFields(ObjectMapper mapper) {
-		return mapper.setAnnotationIntrospector(new JacksonAnnotationIntrospector() {
+	public static <M extends ObjectMapper, B extends MapperBuilder<M, B>> B includeConvenienceFields(MapperBuilder<M, B> builder) {
+		return builder.annotationIntrospector(new JacksonAnnotationIntrospector() {
 			@Override
-			public boolean hasIgnoreMarker(AnnotatedMember m) {
+			public boolean hasIgnoreMarker(MapperConfig<?> config, AnnotatedMember m) {
 				if (m.hasAnnotation(ConvenienceField.class)) {
 					return false;
 				}
-				return super.hasIgnoreMarker(m);
+				return super.hasIgnoreMarker(config, m);
 			}
 		});
 	}

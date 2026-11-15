@@ -1,13 +1,12 @@
 package me.retrodaredevil.solarthing.type.cache.packets;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import me.retrodaredevil.solarthing.type.cache.packets.data.ChargeControllerAccumulationDataCache;
 import me.retrodaredevil.solarthing.packets.identification.Identifier;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
+import me.retrodaredevil.solarthing.type.cache.packets.data.ChargeControllerAccumulationDataCache;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.ObjectMapper;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -15,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class DataCacheTest {
 
 	@Test
-	void test() throws JsonProcessingException {
+	void test() {
 		ObjectMapper mapper = JacksonUtil.defaultMapper();
 		Identifier identifier = new OutbackIdentifier(3);
 

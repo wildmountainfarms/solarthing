@@ -1,7 +1,5 @@
 package me.retrodaredevil.solarthing.solar.renogy;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.solarthing.PacketTestUtil;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacket;
 import me.retrodaredevil.solarthing.solar.event.SolarEventPacket;
@@ -13,6 +11,7 @@ import me.retrodaredevil.solarthing.solar.renogy.rover.special.MutableSpecialPow
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.ObjectMapper;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
@@ -124,7 +123,7 @@ final class RenogyTest {
 		assertFalse(power.is24VSystem());
 	}
 	@Test
-	void testPacket() throws JsonProcessingException {
+	void testPacket() {
 		Rover.OperatingSettingBundle operating = new Rover.OperatingSettingBundle(0, 0);
 		Rover.SensingBundle sensing = new Rover.SensingBundle(0, 0, 0);
 		RoverStatusPacket packet = new ImmutableRoverStatusPacket(
@@ -161,7 +160,7 @@ final class RenogyTest {
 	}
 
 	@Test
-	void testEventPackets() throws JsonProcessingException {
+	void testEventPackets() {
 		PacketTestUtil.testJson(new ImmutableRoverChargingStateChangePacket(RoverIdentifier.getFromNumber(0), ChargingState.MPPT.getValueCode(), null), SolarEventPacket.class);
 		PacketTestUtil.testJson(new ImmutableRoverChargingStateChangePacket(RoverIdentifier.getFromNumber(0), ChargingState.BOOST.getValueCode(), ChargingState.MPPT.getValueCode()), SolarEventPacket.class);
 

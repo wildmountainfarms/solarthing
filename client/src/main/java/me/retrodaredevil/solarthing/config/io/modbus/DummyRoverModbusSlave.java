@@ -3,12 +3,13 @@ package me.retrodaredevil.solarthing.config.io.modbus;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.io.modbus.ModbusSlave;
 import me.retrodaredevil.solarthing.solar.renogy.rover.RoverStatusPacket;
 import me.retrodaredevil.solarthing.solar.renogy.rover.modbus.LocalRoverModbusSlave;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.jspecify.annotations.NullMarked;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,7 +39,7 @@ public class DummyRoverModbusSlave implements DummyModbusSlave {
 		final RoverStatusPacket roverStatusPacket;
 		try {
 			roverStatusPacket = MAPPER.readValue(fileInputStream, RoverStatusPacket.class);
-		} catch (IOException e) {
+		} catch (JacksonException e) {
 			throw new RuntimeException(e);
 		}
 		return new LocalRoverModbusSlave(roverStatusPacket);

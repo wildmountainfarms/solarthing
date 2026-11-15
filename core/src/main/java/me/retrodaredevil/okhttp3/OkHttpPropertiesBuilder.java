@@ -2,9 +2,9 @@ package me.retrodaredevil.okhttp3;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import org.jspecify.annotations.NullMarked;
+import tools.jackson.databind.annotation.JsonPOJOBuilder;
 
 @JsonPOJOBuilder
 @JsonExplicit

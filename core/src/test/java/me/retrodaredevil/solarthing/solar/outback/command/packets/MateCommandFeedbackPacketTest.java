@@ -1,11 +1,10 @@
 package me.retrodaredevil.solarthing.solar.outback.command.packets;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import me.retrodaredevil.solarthing.type.open.OpenSource;
 import me.retrodaredevil.solarthing.PacketTestUtil;
 import me.retrodaredevil.solarthing.commands.packets.open.ImmutableRequestCommandPacket;
 import me.retrodaredevil.solarthing.reason.OpenSourceExecutionReason;
 import me.retrodaredevil.solarthing.solar.outback.command.MateCommand;
+import me.retrodaredevil.solarthing.type.open.OpenSource;
 import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +14,7 @@ import org.junit.jupiter.api.Test;
 final class MateCommandFeedbackPacketTest {
 
 	@Test
-	void test() throws JsonProcessingException {
+	void test() {
 		PacketTestUtil.testJson(new ImmutableSuccessMateCommandPacket(null, MateCommand.AUX_OFF, "my_source", null), MateCommandFeedbackPacket.class);
 		PacketTestUtil.testJson(new ImmutableSuccessMateCommandPacket(SuccessMateCommandPacket.VERSION_LATEST, MateCommand.AUX_OFF, "my_source", null), MateCommandFeedbackPacket.class);
 

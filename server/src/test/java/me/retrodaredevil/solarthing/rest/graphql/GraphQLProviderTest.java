@@ -1,19 +1,19 @@
 package me.retrodaredevil.solarthing.rest.graphql;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import graphql.GraphQL;
 import graphql.schema.GraphQLSchema;
 import me.retrodaredevil.couchdb.CouchDbUtil;
 import me.retrodaredevil.couchdb.CouchPropertiesBuilder;
 import me.retrodaredevil.okhttp3.OkHttpPropertiesBuilder;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
+import me.retrodaredevil.solarthing.packets.collection.DefaultInstanceOptions;
 import me.retrodaredevil.solarthing.rest.cache.CacheController;
 import me.retrodaredevil.solarthing.rest.cache.CacheHandler;
 import me.retrodaredevil.solarthing.rest.graphql.solcast.SolcastConfig;
-import me.retrodaredevil.solarthing.packets.collection.DefaultInstanceOptions;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.Collections;
 
@@ -31,7 +31,7 @@ class GraphQLProviderTest {
 		// Use DefaultInstanceOptions.REQUIRE_NO_DEFAULTS while testing because first, we don't actually query any data,
 		//   and second, we're trying to get rid of usages of DefaultInstanceOptions.DEFAULT_DEFAULT_INSTANCE_OPTIONS
 		CacheController cacheController = new CacheController(new CacheHandler(mapper, DefaultInstanceOptions.REQUIRE_NO_DEFAULTS, CouchDbUtil.createInstance(couchDbDatabaseSettings.getCouchProperties(), couchDbDatabaseSettings.getOkHttpProperties())));
-		GraphQLSchema schema = GraphQLProvider.createGraphQLSchemaGenerator(JacksonUtil.defaultMapper(), couchDbDatabaseSettings, DefaultInstanceOptions.REQUIRE_NO_DEFAULTS, new SolcastConfig(Collections.emptyMap()), cacheController).generate();
+		GraphQLSchema schema = GraphQLProvider.createGraphQLSchemaGenerator(mapper, couchDbDatabaseSettings, DefaultInstanceOptions.REQUIRE_NO_DEFAULTS, new SolcastConfig(Collections.emptyMap()), cacheController).generate();
 		GraphQL.newGraphQL(schema).build();
 	}
 }

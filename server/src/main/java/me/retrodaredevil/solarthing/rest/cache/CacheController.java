@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.rest.cache;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import me.retrodaredevil.solarthing.type.cache.packets.IdentificationCacheDataPacket;
 import me.retrodaredevil.solarthing.type.cache.packets.data.BatteryRecordDataCache;
 import me.retrodaredevil.solarthing.type.cache.packets.data.ChargeControllerAccumulationDataCache;
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import tools.jackson.core.type.TypeReference;
 
 import java.util.List;
 

@@ -2,11 +2,11 @@ package me.retrodaredevil.solarthing.misc.error;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.identification.Identifiable;
 import org.jspecify.annotations.NullMarked;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 @JsonDeserialize(as = ImmutableExceptionErrorPacket.class)
 @JsonTypeName("EXCEPTION_ERROR")

@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.type.event.feedback;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import me.retrodaredevil.solarthing.PacketTestUtil;
 import me.retrodaredevil.solarthing.commands.packets.open.ImmutableRequestCommandPacket;
 import me.retrodaredevil.solarthing.packets.collection.PacketCollectionIdGenerator;
@@ -18,7 +17,7 @@ import java.time.ZonedDateTime;
 class FeedbackPacketTest {
 
 	@Test
-	void test() throws JsonProcessingException {
+	void test() {
 		PacketTestUtil.testJson(
 				new ImmutableExecutionFeedbackPacket(
 						"hello there",

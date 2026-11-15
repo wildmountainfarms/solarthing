@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.packets.instance;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import me.retrodaredevil.solarthing.PacketTestUtil;
 import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
@@ -14,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class InstancePacketTest {
 
 	@Test
-	void test() throws JsonProcessingException {
+	void test() {
 
 		InstanceFragmentIndicatorPacket fragmentPacket = InstanceFragmentIndicatorPackets.create(3);
 		PacketTestUtil.testJson(fragmentPacket, InstanceFragmentIndicatorPacket.class);

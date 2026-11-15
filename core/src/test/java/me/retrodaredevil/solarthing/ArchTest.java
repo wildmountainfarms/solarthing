@@ -1,7 +1,6 @@
 package me.retrodaredevil.solarthing;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.domain.JavaModifier;
@@ -10,15 +9,16 @@ import com.tngtech.archunit.lang.ArchRule;
 import me.retrodaredevil.solarthing.annotations.SerializeNameDefinedInBase;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.database.UpdateToken;
-import me.retrodaredevil.solarthing.type.alter.flag.ActivePeriod;
-import me.retrodaredevil.solarthing.type.open.OpenSourcePacket;
 import me.retrodaredevil.solarthing.packets.DocumentedPacketType;
 import me.retrodaredevil.solarthing.packets.Mode;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.TypedDocumentedPacket;
 import me.retrodaredevil.solarthing.reason.ExecutionReason;
+import me.retrodaredevil.solarthing.type.alter.flag.ActivePeriod;
+import me.retrodaredevil.solarthing.type.open.OpenSourcePacket;
 import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 import java.util.ArrayList;
 import java.util.Collection;

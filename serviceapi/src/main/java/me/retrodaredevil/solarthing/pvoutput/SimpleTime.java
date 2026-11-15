@@ -1,15 +1,14 @@
 package me.retrodaredevil.solarthing.pvoutput;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import org.jspecify.annotations.NullMarked;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DatabindException;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ValueDeserializer;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.exc.MismatchedInputException;
 
-import java.io.IOException;
 import java.time.temporal.ChronoField;
 import java.time.temporal.Temporal;
 import java.util.Calendar;
@@ -51,15 +50,15 @@ public final class SimpleTime implements PVOutputString {
 		}
 		return hourString + ":" + minuteString;
 	}
-	static class Deserializer extends JsonDeserializer<SimpleTime> {
+	static class Deserializer extends ValueDeserializer<SimpleTime> {
 
 		@Override
-		public SimpleTime deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-			JsonNode node = p.getCodec().readTree(p);
-			if(!node.isTextual()){
-				throw new JsonMappingException(p, "This isn't textual!");
+		public SimpleTime deserialize(JsonParser p, DeserializationContext ctxt) {
+			JsonNode node = p.objectReadContext().readTree(p);
+			if(!node.isString()){
+				throw DatabindException.from(p, "This isn't textual!");
 			}
-			String value = node.textValue();
+			String value = node.stringValue();
 			String[] split = value.split(":");
 			if(split.length != 2){
 				throw MismatchedInputException.from(p, SimpleTime.class, "split.length isn't 2! value=" + value);
@@ -69,7 +68,7 @@ public final class SimpleTime implements PVOutputString {
 				hour = Integer.parseInt(split[0]);
 				minute = Integer.parseInt(split[1]);
 			} catch (NumberFormatException ex){
-				throw new JsonMappingException(p, "Couldn't parse either hour or minute! value=" + value, ex);
+				throw DatabindException.from(p, "Couldn't parse either hour or minute! value=" + value, ex);
 			}
 			return new SimpleTime(hour, minute);
 		}

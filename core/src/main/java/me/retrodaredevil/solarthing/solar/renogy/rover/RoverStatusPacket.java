@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonClassDescription;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
@@ -13,6 +12,7 @@ import me.retrodaredevil.solarthing.packets.identification.NumberedIdentifiable;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import me.retrodaredevil.solarthing.solar.renogy.RenogyPacket;
 import org.jspecify.annotations.NullMarked;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 /**
  * Represents a Rover Status Packet. This implements {@link RoverReadTable}

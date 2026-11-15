@@ -2,7 +2,6 @@ package me.retrodaredevil.solarthing.solar.outback.fx.extra;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.jackson.UnwrappedDeserializer;
 import me.retrodaredevil.solarthing.solar.extra.SolarExtraPacketType;
 import me.retrodaredevil.solarthing.solar.outback.OutbackIdentifier;
@@ -11,6 +10,7 @@ import me.retrodaredevil.solarthing.solar.outback.fx.common.FXDailyData;
 import me.retrodaredevil.solarthing.solar.outback.fx.common.ImmutableFXDailyData;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 import static java.util.Objects.requireNonNull;
 

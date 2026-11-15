@@ -1,9 +1,5 @@
 package me.retrodaredevil.solarthing.program.receiver;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import me.retrodaredevil.io.modbus.ModbusRuntimeException;
 import me.retrodaredevil.io.modbus.handling.FunctionCodeException;
 import me.retrodaredevil.solarthing.SolarThingConstants;
@@ -23,8 +19,12 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectReader;
+import tools.jackson.databind.node.JsonNodeFactory;
+import tools.jackson.databind.node.ObjectNode;
 
-import java.io.IOException;
 import java.time.*;
 import java.util.List;
 
@@ -104,7 +104,7 @@ public class TracerPacketListUpdater implements PacketListReceiver {
 					boolean success = true;
 					try {
 						reader.readValue(input);
-					} catch (IOException e) {
+					} catch (JacksonException e) {
 						success = false;
 					}
 					if (success) {

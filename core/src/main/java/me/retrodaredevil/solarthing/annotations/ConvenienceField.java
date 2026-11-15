@@ -2,13 +2,13 @@ package me.retrodaredevil.solarthing.annotations;
 
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jspecify.annotations.NullMarked;
+import tools.jackson.databind.ObjectMapper;
 
 import java.lang.annotation.*;
 
 /**
- * A convenience field is that which does not need to be included in a packet by default, unless using an {@link com.fasterxml.jackson.databind.ObjectMapper}
+ * A convenience field is that which does not need to be included in a packet by default, unless using an {@link tools.jackson.databind.ObjectMapper}
  * configured by {@link me.retrodaredevil.solarthing.util.JacksonUtil#includeConvenienceFields(ObjectMapper)}
  */
 @Target({ElementType.METHOD, ElementType.FIELD})

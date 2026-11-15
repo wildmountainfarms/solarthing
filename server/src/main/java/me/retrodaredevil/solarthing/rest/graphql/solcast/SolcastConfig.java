@@ -3,9 +3,9 @@ package me.retrodaredevil.solarthing.rest.graphql.solcast;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 import java.util.Collection;
 import java.util.HashMap;

@@ -1,10 +1,10 @@
 package me.retrodaredevil.couchdb;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import okhttp3.HttpUrl;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 import java.net.URI;
 

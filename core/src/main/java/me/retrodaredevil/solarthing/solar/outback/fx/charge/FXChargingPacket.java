@@ -1,12 +1,12 @@
 package me.retrodaredevil.solarthing.solar.outback.fx.charge;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.solar.outback.OutbackData;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 @JsonDeserialize(as = ImmutableFXChargingPacket.class)
 @JsonExplicit

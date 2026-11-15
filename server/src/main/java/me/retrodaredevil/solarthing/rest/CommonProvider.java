@@ -1,6 +1,6 @@
 package me.retrodaredevil.solarthing.rest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.PostConstruct;
 import me.retrodaredevil.solarthing.config.CommonConfigUtil;
 import me.retrodaredevil.solarthing.config.databases.DatabaseConfig;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
@@ -15,8 +15,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
+import tools.jackson.databind.json.JsonMapper;
 
-import jakarta.annotation.PostConstruct;
 import java.nio.file.Path;
 import java.util.Objects;
 
@@ -61,11 +61,10 @@ public class CommonProvider {
 		LOGGER.debug("Database file: " + databaseFile.toAbsolutePath());
 		LOGGER.debug("Working directory: " + Path.of(".").toAbsolutePath());
 
-		ObjectMapper objectMapper = JacksonUtil.defaultMapper();
-		objectMapper.getSubtypeResolver().registerSubtypes(
+		JsonMapper objectMapper = JacksonUtil.defaultMapperBuilder().registerSubtypes(
 				DatabaseSettings.class,
 				CouchDbDatabaseSettings.class
-		);
+		).build();
 		{
 			DatabaseConfig databaseConfig = CommonConfigUtil.readConfig(databaseFile, DatabaseConfig.class, objectMapper);
 			DatabaseSettings databaseSettings = databaseConfig.requireDatabaseSettings();

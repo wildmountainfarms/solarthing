@@ -1,9 +1,5 @@
 package me.retrodaredevil.solarthing.database.couchdb;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import me.retrodaredevil.couchdbjava.CouchDbDatabase;
 import me.retrodaredevil.couchdbjava.exception.CouchDbException;
 import me.retrodaredevil.couchdbjava.exception.CouchDbNotFoundException;
@@ -25,6 +21,10 @@ import me.retrodaredevil.solarthing.database.exception.UnauthorizedSolarThingDat
 import me.retrodaredevil.solarthing.database.exception.UpdateConflictSolarThingDatabaseException;
 import me.retrodaredevil.solarthing.type.alter.StoredAlterPacket;
 import org.jspecify.annotations.NullMarked;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +48,7 @@ public class CouchDbAlterDatabase implements AlterDatabase {
 		final JsonData jsonData;
 		try {
 			jsonData = new StringJsonData(mapper.writeValueAsString(storedAlterPacket));
-		} catch (JsonProcessingException e) {
+		} catch (JacksonException e) {
 			throw new RuntimeException("Couldn't serialize the packet collection", e);
 		}
 		try {
@@ -80,7 +80,7 @@ public class CouchDbAlterDatabase implements AlterDatabase {
 			final JsonNode jsonNode;
 			try {
 				jsonNode = CouchDbJacksonUtil.getNodeFrom(jsonData);
-			} catch (JsonProcessingException e) {
+			} catch (JacksonException e) {
 				throw new SolarThingDatabaseException("We couldn't parse some of the data into JSON. This should never happen", e);
 			}
 			if (!jsonNode.isObject()) {
@@ -90,11 +90,11 @@ public class CouchDbAlterDatabase implements AlterDatabase {
 			final StoredAlterPacket storedAlterPacket;
 			try {
 				storedAlterPacket = mapper.treeToValue(objectNode, StoredAlterPacket.class);
-			} catch (JsonProcessingException e) {
+			} catch (JacksonException e) {
 				throw new SolarThingDatabaseException("Could not parse. JsonData: " + jsonData.getJson(), e);
 			}
-//			String documentId = objectNode.get("_id").asText();
-			String documentRevision = objectNode.get("_rev").asText();
+//			String documentId = objectNode.get("_id").asString();
+			String documentRevision = objectNode.get("_rev").asString();
 			VersionedPacket<StoredAlterPacket> versionedPacket = new VersionedPacket<>(storedAlterPacket, new RevisionUpdateToken(documentRevision));
 			r.add(versionedPacket);
 		}

@@ -1,15 +1,15 @@
 package me.retrodaredevil.solarthing.program.check;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.BeanDescription;
-import com.fasterxml.jackson.databind.Module;
-import com.fasterxml.jackson.databind.SerializationConfig;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
-import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
 import me.retrodaredevil.io.modbus.handling.ErrorCodeException;
 import org.jspecify.annotations.NullMarked;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.BeanDescription;
+import tools.jackson.databind.JacksonModule;
+import tools.jackson.databind.SerializationConfig;
+import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.module.SimpleModule;
+import tools.jackson.databind.ser.BeanPropertyWriter;
+import tools.jackson.databind.ser.ValueSerializerModifier;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,10 +23,10 @@ public class ModbusSerializationCatcher extends BeanPropertyWriter {
 	}
 
 	@Override
-	public void serializeAsField(Object bean, JsonGenerator gen, SerializerProvider prov) throws Exception {
+	public void serializeAsProperty(Object bean, JsonGenerator gen, SerializationContext prov) throws Exception {
 		try {
 			System.out.println("Serializing: " + _name);
-			super.serializeAsField(bean, gen, prov);
+			super.serializeAsProperty(bean, gen, prov);
 		} catch (Exception ex) { // likely an InvocationTargetException, but catch exception in case it is anything else
 			final ErrorCodeException actual;
 			if (ex instanceof ErrorCodeException exception) {
@@ -38,17 +38,17 @@ public class ModbusSerializationCatcher extends BeanPropertyWriter {
 					throw ex;
 				}
 			}
-			gen.writeFieldName(_name);
+			gen.writeName(_name);
 			gen.writeString("Modbus Exception: " + actual.getExceptionCode());
 		}
 	}
 
-	public static Module createModule(Class<?> desiredClass) {
+	public static JacksonModule createModule(Class<?> desiredClass) {
 		SimpleModule module = new SimpleModule();
-		module.setSerializerModifier(new BeanSerializerModifier() {
+		module.setSerializerModifier(new ValueSerializerModifier() {
 			@Override
-			public List<BeanPropertyWriter> changeProperties(SerializationConfig config, BeanDescription beanDesc, List<BeanPropertyWriter> beanProperties) {
-				if (beanDesc.getBeanClass() == desiredClass) {
+			public List<BeanPropertyWriter> changeProperties(SerializationConfig config, BeanDescription.Supplier beanDesc, List<BeanPropertyWriter> beanProperties) {
+				if (beanDesc.get().getBeanClass() == desiredClass) {
 					return beanProperties.stream()
 							.map(ModbusSerializationCatcher::new)
 							.collect(Collectors.toList());

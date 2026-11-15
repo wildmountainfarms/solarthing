@@ -7,7 +7,9 @@ import io.leangen.graphql.metadata.TypedElement;
 import io.leangen.graphql.metadata.exceptions.TypeMappingException;
 import io.leangen.graphql.metadata.strategy.query.*;
 import io.leangen.graphql.metadata.strategy.value.Property;
+import me.retrodaredevil.solarthing.rest.graphql.jackson.JacksonDefaultValueProvider;
 import org.jspecify.annotations.NullMarked;
+import tools.jackson.databind.ObjectMapper;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -22,9 +24,9 @@ import java.lang.reflect.Method;
 public class SolarThingAnnotatedResolverBuilder extends PublicResolverBuilder {
 
 
-	public SolarThingAnnotatedResolverBuilder() {
+	public SolarThingAnnotatedResolverBuilder(ObjectMapper mapper) {
 		this.operationInfoGenerator = new DefaultOperationInfoGenerator();
-		this.argumentBuilder = new AnnotatedArgumentBuilder();
+		this.argumentBuilder = new JacksonDefaultValueProvider.ArgumentBuilder(mapper);
 		this.propertyElementReducer = SolarThingAnnotatedResolverBuilder::annotatedElementReducer;
 		withDefaultFilters();
 	}

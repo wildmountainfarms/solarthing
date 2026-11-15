@@ -2,13 +2,13 @@ package me.retrodaredevil.solarthing.solar.pzem;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.DefaultFinal;
 import me.retrodaredevil.solarthing.misc.common.DataIdentifiable;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacket;
 import me.retrodaredevil.solarthing.solar.SolarStatusPacketType;
 import me.retrodaredevil.solarthing.solar.common.Shunt;
 import org.jspecify.annotations.NullMarked;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 @JsonDeserialize(as = ImmutablePzemShuntStatusPacket.class)
 @JsonTypeName("PZEM_SHUNT")

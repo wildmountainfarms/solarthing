@@ -2,10 +2,10 @@ package me.retrodaredevil.solarthing.config.options;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.solarthing.config.databases.DatabaseConfig;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.Collections;
 import java.util.List;

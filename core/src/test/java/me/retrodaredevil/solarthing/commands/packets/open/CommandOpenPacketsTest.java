@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.commands.packets.open;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import me.retrodaredevil.solarthing.PacketTestUtil;
 import me.retrodaredevil.solarthing.database.couchdb.RevisionUpdateToken;
 import me.retrodaredevil.solarthing.type.alter.flag.FlagAliasData;
@@ -21,7 +20,7 @@ import java.util.UUID;
 class CommandOpenPacketsTest {
 
 	@Test
-	void test() throws JsonProcessingException {
+	void test() {
 		PacketTestUtil.testJson(new ImmutableRequestCommandPacket("GEN OFF"), CommandOpenPacket.class, true);
 		PacketTestUtil.testJson(
 				new ImmutableRequestFlagPacket(

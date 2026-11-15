@@ -1,8 +1,5 @@
 package me.retrodaredevil.notation.antlr;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.TextNode;
 import me.retrodaredevil.notation.Argument;
 import me.retrodaredevil.notation.ArrayArgument;
 import me.retrodaredevil.notation.BooleanArgument;
@@ -14,6 +11,10 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ConsoleErrorListener;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.jspecify.annotations.NullMarked;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.StringNode;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ import java.util.Map;
 
 @NullMarked
 public final class NodeParser {
-	private static final ObjectMapper MAPPER = new ObjectMapper();
+	private static final ObjectMapper MAPPER = JsonMapper.builder().build();
 	private NodeParser() { throw new UnsupportedOperationException(); }
 
 	public static Node parseFrom(CharStream charStream) throws SyntaxException {
@@ -50,13 +51,13 @@ public final class NodeParser {
 
 	private static String stringFromString(TerminalNode stringTerminal) {
 		String rawText = stringTerminal.getText();
-		final TextNode text;
+		final StringNode text;
 		try {
-			text = MAPPER.readValue(rawText, TextNode.class);
-		} catch (JsonProcessingException e) {
+			text = MAPPER.readValue(rawText, StringNode.class);
+		} catch (JacksonException e) {
 			throw new IllegalArgumentException("Incorrectly formatted string", e);
 		}
-		return text.textValue();
+		return text.stringValue();
 	}
 	private static boolean booleanFromBoolean(TerminalNode booleanTerminal) {
 		return booleanTerminal.getText().equals("true");

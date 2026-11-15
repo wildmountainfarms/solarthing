@@ -1,32 +1,34 @@
 package me.retrodaredevil.action.lang;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.action.Action;
+import me.retrodaredevil.action.node.ActionNode;
+import me.retrodaredevil.action.node.environment.ActionEnvironment;
+import me.retrodaredevil.action.node.environment.InjectEnvironment;
+import me.retrodaredevil.action.node.environment.NanoTimeProviderEnvironment;
+import me.retrodaredevil.action.node.environment.VariableEnvironment;
 import me.retrodaredevil.notation.Node;
 import me.retrodaredevil.notation.NodeTranslator;
 import me.retrodaredevil.notation.antlr.NodeParser;
 import me.retrodaredevil.notation.antlr.SyntaxException;
 import me.retrodaredevil.notation.translators.json.JsonNodeTranslator;
 import me.retrodaredevil.notation.translators.json.SimpleConfigurationProvider;
-import me.retrodaredevil.action.node.ActionNode;
-import me.retrodaredevil.action.node.environment.ActionEnvironment;
-import me.retrodaredevil.action.node.environment.InjectEnvironment;
-import me.retrodaredevil.action.node.environment.NanoTimeProviderEnvironment;
-import me.retrodaredevil.action.node.environment.VariableEnvironment;
 import org.antlr.v4.runtime.CharStreams;
 import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 import java.time.Duration;
+
 import static java.util.Objects.requireNonNull;
 
 @NullMarked
 public class ActionLangTest {
 
-	private static final ObjectMapper MAPPER = new ObjectMapper();
+	private static final ObjectMapper MAPPER = JsonMapper.builder().build();
 
 	@Test
 	void testCode() throws IOException, SyntaxException {
@@ -63,7 +65,7 @@ public class ActionLangTest {
 	private ActionNode parseAction(JsonNode json) {
 		try {
 			return MAPPER.treeToValue(json, ActionNode.class);
-		} catch (JsonProcessingException e) {
+		} catch (JacksonException e) {
 			throw new RuntimeException(e);
 		}
 	}

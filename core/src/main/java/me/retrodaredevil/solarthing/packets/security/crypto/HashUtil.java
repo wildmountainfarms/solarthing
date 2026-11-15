@@ -1,8 +1,8 @@
 package me.retrodaredevil.solarthing.packets.security.crypto;
 
-import com.fasterxml.jackson.core.Base64Variants;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import org.jspecify.annotations.NullMarked;
+import tools.jackson.core.Base64Variants;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;

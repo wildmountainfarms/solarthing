@@ -1,10 +1,9 @@
 package me.retrodaredevil.solarthing;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.jspecify.annotations.NullMarked;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -21,10 +20,10 @@ public class PacketTestUtil {
 
 	public static final Path SOLARTHING_ROOT = Path.of("..");
 
-	public static <T> void testJson(T originalPacket, Class<T> packetClass) throws JsonProcessingException {
+	public static <T> void testJson(T originalPacket, Class<T> packetClass) {
 		testJson(originalPacket, packetClass, false);
 	}
-	public static <T> void testJson(T originalPacket, Class<T> packetClass, boolean isEqualsImplemented) throws JsonProcessingException {
+	public static <T> void testJson(T originalPacket, Class<T> packetClass, boolean isEqualsImplemented) {
 		ObjectMapper mapper = JacksonUtil.defaultMapper();
 		String json = mapper.writeValueAsString(originalPacket);
 //		System.out.println(json);

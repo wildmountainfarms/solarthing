@@ -2,11 +2,11 @@ package me.retrodaredevil.solarthing.type.alter;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.packets.PacketEntry;
 import me.retrodaredevil.solarthing.packets.instance.SourcedPacket;
 import org.jspecify.annotations.NullMarked;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 @JsonIgnoreProperties(value = { "_rev" }, allowGetters = true) // tightly coupled to CouchDB
 @JsonDeserialize(as = ImmutableStoredAlterPacket.class)

@@ -1,7 +1,5 @@
 package me.retrodaredevil.solarthing.couchdb;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.couchdbjava.CouchDbDatabase;
 import me.retrodaredevil.couchdbjava.exception.CouchDbException;
 import me.retrodaredevil.couchdbjava.exception.CouchDbNotFoundException;
@@ -19,6 +17,8 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -59,7 +59,7 @@ public class CouchDbPacketSaver implements PacketHandler {
 		final JsonData jsonData;
 		try {
 			jsonData = new StringJsonData(MAPPER.writeValueAsString(packetCollection));
-		} catch (JsonProcessingException e) {
+		} catch (JacksonException e) {
 			throw new RuntimeException("Cannot serialize packet collection! This is bad!", e);
 		}
 		try {

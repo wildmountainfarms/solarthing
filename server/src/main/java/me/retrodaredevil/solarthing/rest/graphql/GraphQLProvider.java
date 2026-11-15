@@ -1,12 +1,9 @@
 package me.retrodaredevil.solarthing.rest.graphql;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import graphql.GraphQL;
 import graphql.schema.GraphQLSchema;
 import io.leangen.graphql.GraphQLSchemaGenerator;
 import io.leangen.graphql.generator.mapping.common.NonNullMapper;
-import io.leangen.graphql.metadata.strategy.query.ResolverBuilder;
-import io.leangen.graphql.metadata.strategy.value.jackson.JacksonValueMapperFactory;
 import jakarta.annotation.PostConstruct;
 import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbDatabaseSettings;
 import me.retrodaredevil.solarthing.packets.collection.DefaultInstanceOptions;
@@ -21,7 +18,6 @@ import me.retrodaredevil.solarthing.rest.graphql.service.SolarThingGraphQLSolcas
 import me.retrodaredevil.solarthing.rest.graphql.service.web.DefaultDatabaseProvider;
 import me.retrodaredevil.solarthing.rest.graphql.service.web.SolarThingAdminService;
 import me.retrodaredevil.solarthing.rest.graphql.solcast.SolcastConfig;
-import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +25,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.graphql.execution.GraphQlSource;
 import org.springframework.stereotype.Component;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -45,28 +44,28 @@ public class GraphQLProvider {
 	private final CouchDbDatabaseSettings couchDbDatabaseSettings;
 	private final DefaultInstanceOptions defaultInstanceOptions;
 	private final CacheController cacheController;
+	private final ObjectMapper objectMapper;
 
 	@Value("${solarthing.config.solcast_file:config/solcast.json}")
 	private Path solcastFile;
 
 	private GraphQL graphQL;
 
-	public GraphQLProvider(CouchDbDatabaseSettings couchDbDatabaseSettings, DefaultInstanceOptions defaultInstanceOptions, CacheController cacheController) {
+	public GraphQLProvider(CouchDbDatabaseSettings couchDbDatabaseSettings, DefaultInstanceOptions defaultInstanceOptions, CacheController cacheController, JsonMapper objectMapper) {
 		this.couchDbDatabaseSettings = couchDbDatabaseSettings;
 		this.defaultInstanceOptions = defaultInstanceOptions;
 		this.cacheController = cacheController;
+		this.objectMapper = objectMapper;
 	}
 
 
 	@PostConstruct
 	public void init() {
-		ObjectMapper objectMapper = JacksonUtil.defaultMapper();
-
 		SolcastConfig solcastConfig = null;
 		try (InputStream inputStream = Files.newInputStream(solcastFile)) {
 			// TODO [Interpolate] Allow interpolated values
 			solcastConfig = objectMapper.readValue(inputStream, SolcastConfig.class);
-		} catch (IOException e) {
+		} catch (IOException | JacksonException e) {
 			LOGGER.debug("No solcast config! Not using solcast!");
 		}
 		if (solcastConfig == null) {
@@ -81,14 +80,10 @@ public class GraphQLProvider {
 	}
 
 	static GraphQLSchemaGenerator createGraphQLSchemaGenerator(ObjectMapper objectMapper, CouchDbDatabaseSettings couchDbDatabaseSettings, DefaultInstanceOptions defaultInstanceOptions, SolcastConfig solcastConfig, CacheController cacheController) {
-		JacksonValueMapperFactory jacksonValueMapperFactory = JacksonValueMapperFactory.builder()
-				.withPrototype(objectMapper)
-				.build();
-		ResolverBuilder resolverBuilder = new SolarThingAnnotatedResolverBuilder();
 		SimpleQueryHandler simpleQueryHandler = new SimpleQueryHandler(defaultInstanceOptions, couchDbDatabaseSettings, objectMapper);
 		ZoneId zoneId = ZoneId.systemDefault(); // In the future, we could make this customizable, but like, bro just make sure your system time is correct
 		LOGGER.debug("Using timezone: " + zoneId);
-		return new GraphQLSchemaGenerator()
+		return GraphQLJacksonConfiguration.schemaGenerator(objectMapper)
 				.withBasePackages("me.retrodaredevil.solarthing")
 				.withOperationsFromSingleton(new SolarThingGraphQLService(simpleQueryHandler))
 				.withOperationsFromSingleton(new SolarThingGraphQLDailyService(simpleQueryHandler, zoneId, cacheController))
@@ -102,14 +97,7 @@ public class GraphQLProvider {
 				.withOperationsFromSingleton(new SolarThingAdminService(new DefaultDatabaseProvider(couchDbDatabaseSettings, objectMapper)))
 				.withTypeMappers((config, defaults) -> defaults.replace(NonNullMapper.class, ignored -> new DefaultNonNullMapper()))
 				.withSchemaTransformers((config, defaults) -> defaults.replace(NonNullMapper.class, ignored -> new DefaultNonNullMapper()))
-				.withTypeInfoGenerator(new SolarThingTypeInfoGenerator())
-				.withValueMapperFactory(jacksonValueMapperFactory)
-				.withResolverBuilders(resolverBuilder)
-				.withNestedResolverBuilders(
-						resolverBuilder,
-						new JacksonResolverBuilder().withObjectMapper(objectMapper),
-						new SolarThingResolverBuilder()
-				);
+				.withTypeInfoGenerator(new SolarThingTypeInfoGenerator());
 	}
 
 

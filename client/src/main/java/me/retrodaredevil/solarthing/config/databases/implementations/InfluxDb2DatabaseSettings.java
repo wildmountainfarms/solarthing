@@ -2,15 +2,15 @@ package me.retrodaredevil.solarthing.config.databases.implementations;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.retrodaredevil.influxdb.influxdb2.InfluxDb2Properties;
-import me.retrodaredevil.solarthing.jackson.UnwrappedDeserializer;
 import me.retrodaredevil.okhttp3.OkHttpProperties;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.DatabaseType;
 import me.retrodaredevil.solarthing.config.databases.SimpleDatabaseType;
+import me.retrodaredevil.solarthing.jackson.UnwrappedDeserializer;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 import static java.util.Objects.requireNonNull;
 

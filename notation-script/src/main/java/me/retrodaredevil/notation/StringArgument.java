@@ -1,7 +1,7 @@
 package me.retrodaredevil.notation;
 
-import com.fasterxml.jackson.databind.node.TextNode;
 import org.jspecify.annotations.NullMarked;
+import tools.jackson.databind.node.StringNode;
 
 import static java.util.Objects.requireNonNull;
 
@@ -19,6 +19,6 @@ public final class StringArgument implements Argument {
 
 	@Override
 	public String toString() {
-		return new TextNode(value).toString();
+		return new StringNode(value).toString();
 	}
 }

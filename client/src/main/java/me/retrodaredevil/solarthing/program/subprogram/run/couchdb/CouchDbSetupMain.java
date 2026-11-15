@@ -3,8 +3,6 @@ package me.retrodaredevil.solarthing.program.subprogram.run.couchdb;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import me.retrodaredevil.couchdb.CouchDbUtil;
 import me.retrodaredevil.couchdb.design.MutablePacketsDesign;
 import me.retrodaredevil.couchdbjava.CouchDbDatabase;
@@ -23,6 +21,8 @@ import me.retrodaredevil.solarthing.config.databases.implementations.CouchDbData
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.PrintStream;
 import java.nio.charset.Charset;
@@ -72,7 +72,7 @@ public class CouchDbSetupMain {
 		if (userDocumentData != null) {
 			try {
 				user = CouchDbJacksonUtil.readValue(MAPPER, userDocumentData.getJsonData(), UserEntry.class);
-			} catch (JsonProcessingException e) {
+			} catch (JacksonException e) {
 				throw new RuntimeException("Could not parse user document data. Please report this bug", e);
 			}
 		} else {
@@ -86,7 +86,7 @@ public class CouchDbSetupMain {
 			final JsonData jsonData;
 			try {
 				jsonData = new StringJsonData(MAPPER.writeValueAsString(new UserEntry(username, password)));
-			} catch (JsonProcessingException e) {
+			} catch (JacksonException e) {
 				throw new RuntimeException("Couldn't serialize json! Report this!", e);
 			}
 			usersDatabase.createIfNotExists();
@@ -115,7 +115,7 @@ public class CouchDbSetupMain {
 		final JsonData jsonData;
 		try {
 			jsonData = new StringJsonData(MAPPER.writeValueAsString(design));
-		} catch (JsonProcessingException e) {
+		} catch (JacksonException e) {
 			throw new RuntimeException("Couldn't serialize json! Report this!", e);
 		}
 		try {
@@ -134,7 +134,7 @@ public class CouchDbSetupMain {
 		final JsonData jsonData;
 		try {
 			jsonData = new StringJsonData(MAPPER.writeValueAsString(packetFiltersDesign));
-		} catch (JsonProcessingException e) {
+		} catch (JacksonException e) {
 			throw new RuntimeException("Couldn't serialize json! Report this!", e);
 		}
 		try {

@@ -1,18 +1,17 @@
 package me.retrodaredevil.solarthing.program.receiver.util;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import me.retrodaredevil.solarthing.util.StringUtil;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
-
-import java.io.IOException;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectReader;
+import tools.jackson.databind.node.JsonNodeFactory;
+import tools.jackson.databind.node.ObjectNode;
 
 @UtilityClass
 @NullMarked
@@ -34,7 +33,7 @@ public final class NetCatUtil {
 			if (value == null) {
 				return "unknown field";
 			}
-			return value.asText();
+			return value.asString();
 		}
 		String value = split[1];
 		ObjectReader reader = MAPPER.readerForUpdating(write);
@@ -42,7 +41,7 @@ public final class NetCatUtil {
 		input.put(fieldName, value);
 		try {
 			reader.readValue(input);
-		} catch (IOException e) {
+		} catch (JacksonException e) {
 			return "Got error: " + e.getMessage();
 		}
 		return "success";

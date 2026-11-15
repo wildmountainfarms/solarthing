@@ -1,6 +1,5 @@
 package me.retrodaredevil.solarthing.misc.device;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import me.retrodaredevil.solarthing.PacketTestUtil;
 import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.Test;
@@ -13,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class DevicePacketTest {
 
 	@Test
-	void test() throws JsonProcessingException {
+	void test() {
 		{
 			CpuTemperaturePacket packet = new CelsiusCpuTemperaturePacket(null, 20, Collections.emptyList());
 			assertEquals(20, packet.getCpuTemperatureCelsius());

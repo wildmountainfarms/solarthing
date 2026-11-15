@@ -20,7 +20,7 @@ make sure there's a file named `base.json`.
 JSON related errors are the most common errors. You will likely see an error like this:
 ```
 ........................... (Fatal)Error while parsing ProgramOptions. args=[config/base.json]
-com.fasterxml.jackson.databind.... <Helpful message here>
+tools.jackson.databind.... <Helpful message here>
 ```
 If you look at where the `<Helpful message here>` is, you may be able to figure out the problem.
 

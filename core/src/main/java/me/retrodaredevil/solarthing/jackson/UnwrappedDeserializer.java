@@ -1,16 +1,14 @@
 package me.retrodaredevil.solarthing.jackson;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonDeserializer;
 import org.jspecify.annotations.NullMarked;
-
-import java.io.IOException;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.ValueDeserializer;
 
 @Deprecated
 @NullMarked
-public abstract class UnwrappedDeserializer<T, U> extends JsonDeserializer<T> {
+public abstract class UnwrappedDeserializer<T, U> extends ValueDeserializer<T> {
 	// This aims to be a fix for https://github.com/FasterXML/jackson-databind/issues/650
 	// TODO remove this class
 
@@ -23,7 +21,7 @@ public abstract class UnwrappedDeserializer<T, U> extends JsonDeserializer<T> {
 	}
 
 	@Override
-	public T deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+	public T deserialize(JsonParser p, DeserializationContext ctxt) {
 		UnwrappedDeserializeHelper helper = new UnwrappedDeserializeHelper(p, ctxt, builderClass);
 		U builder = helper.readValue(builderClass);
 		if (ctxt.isEnabled(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)) {

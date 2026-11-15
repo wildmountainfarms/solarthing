@@ -1,19 +1,17 @@
 package me.retrodaredevil.solarthing.pvoutput.service;
 
-import org.jspecify.annotations.NullMarked;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
+import org.jspecify.annotations.NullMarked;
 import retrofit2.Converter;
 import retrofit2.Retrofit;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-
 
 @NullMarked
 public class FormBodyJacksonConverterFactory extends Converter.Factory {
@@ -40,7 +38,7 @@ public class FormBodyJacksonConverterFactory extends Converter.Factory {
 					// TODO should this be an exception or at least a log message?
 					System.out.println("key=" + key + " fieldNode is not a value node! fieldNode=" + fieldNode);
 				} else {
-					formBuilder.add(key, fieldNode.asText());
+					formBuilder.add(key, fieldNode.asString());
 				}
 			});
 			return formBuilder.build();

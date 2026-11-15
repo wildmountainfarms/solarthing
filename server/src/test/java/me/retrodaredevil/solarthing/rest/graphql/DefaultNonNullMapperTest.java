@@ -4,11 +4,11 @@ import graphql.GraphQL;
 import graphql.schema.GraphQLInputObjectType;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.GraphQLTypeUtil;
-import io.leangen.graphql.GraphQLSchemaGenerator;
 import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLInputField;
 import io.leangen.graphql.annotations.GraphQLQuery;
 import io.leangen.graphql.generator.mapping.common.NonNullMapper;
+import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class DefaultNonNullMapperTest {
 
 	private static GraphQLSchema generateSchema() {
-		return new GraphQLSchemaGenerator()
+		return GraphQLJacksonConfiguration.schemaGenerator(JacksonUtil.defaultMapper())
 				.withOperationsFromSingleton(new Queries())
 				.withTypeMappers((config, defaults) -> defaults.replace(NonNullMapper.class, ignored -> new DefaultNonNullMapper()))
 				.withSchemaTransformers((config, defaults) -> defaults.replace(NonNullMapper.class, ignored -> new DefaultNonNullMapper()))
