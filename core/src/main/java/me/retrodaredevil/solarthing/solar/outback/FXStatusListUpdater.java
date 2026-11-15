@@ -20,6 +20,8 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Instant;
+import java.time.InstantSource;
 import java.util.*;
 
 import static java.util.Objects.requireNonNull;
@@ -34,17 +36,19 @@ public class FXStatusListUpdater implements PacketListReceiver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FXStatusListUpdater.class);
 
 	private final TimeIdentifier timeIdentifier;
+	private final InstantSource instantSource;
 
 	private final Map<Identifier, FXListUpdater> fxMap = new HashMap<>();
 	private @Nullable Long lastTimeId = null;
 
-	public FXStatusListUpdater(TimeIdentifier timeIdentifier) {
+	public FXStatusListUpdater(TimeIdentifier timeIdentifier, InstantSource instantSource) {
 		this.timeIdentifier = requireNonNull(timeIdentifier);
+		this.instantSource = requireNonNull(instantSource);
 	}
 
 	@Override
 	public void receive(List<Packet> packets) {
-		long now = System.currentTimeMillis();
+		Instant now = instantSource.instant();
 
 		long timeId = timeIdentifier.getTimeId(now);
 		final Long lastTimeId = this.lastTimeId;
@@ -73,7 +77,7 @@ public class FXStatusListUpdater implements PacketListReceiver {
 		return new TrapezoidalRuleAccumulator();
 	}
 	private static final class FXListUpdater {
-		private @Nullable Long startDateMillis = null;
+		private @Nullable Instant startTime = null;
 		private @Nullable Float minimumBatteryVoltage = null;
 		private @Nullable Float maximumBatteryVoltage = null;
 
@@ -88,11 +92,11 @@ public class FXStatusListUpdater implements PacketListReceiver {
 		private int misc = 0;
 		private final Set<Integer> acModeValues = new HashSet<>();
 
-		private void update(long currentTimeMillis, List<? super Packet> packets, FXStatusPacket fx){
-			Long startDateMillis = this.startDateMillis;
-			if(startDateMillis == null){
-				startDateMillis = currentTimeMillis;
-				this.startDateMillis = startDateMillis;
+		private void update(Instant currentTime, List<? super Packet> packets, FXStatusPacket fx){
+			Instant startTime = this.startTime;
+			if(startTime == null){
+				startTime = currentTime;
+				this.startTime = startTime;
 			}
 
 			float batteryVoltage = fx.getBatteryVoltage();
@@ -106,12 +110,11 @@ public class FXStatusListUpdater implements PacketListReceiver {
 				maximumBatteryVoltage = batteryVoltage;
 			}
 
-			double hours = currentTimeMillis / (1000.0 * 60 * 60);
 			try {
-				inverterWH.add(hours, fx.getInverterWattage());
-				chargerWH.add(hours, fx.getChargerWattage());
-				buyWH.add(hours, fx.getBuyWattage());
-				sellWH.add(hours, fx.getSellWattage());
+				inverterWH.add(currentTime, fx.getInverterWattage());
+				chargerWH.add(currentTime, fx.getChargerWattage());
+				buyWH.add(currentTime, fx.getBuyWattage());
+				sellWH.add(currentTime, fx.getSellWattage());
 			} catch (IllegalArgumentException e) {
 				LOGGER.info("The clock must have changed on us!", e);
 			}
@@ -125,11 +128,11 @@ public class FXStatusListUpdater implements PacketListReceiver {
 
 			packets.add(packet);
 		}
-		@RequiresNonNull({"minimumBatteryVoltage", "maximumBatteryVoltage"})
+		@RequiresNonNull({"minimumBatteryVoltage", "maximumBatteryVoltage", "startTime"})
 		private FXDailyData createData(FXStatusPacket fx){
 			return new ImmutableFXDailyData(
 					fx.getAddress(),
-					startDateMillis,
+					startTime.toEpochMilli(),
 					minimumBatteryVoltage, maximumBatteryVoltage,
 					(float) (inverterWH.getIntegral() / 1000), (float) (chargerWH.getIntegral() / 1000),
 					(float) (buyWH.getIntegral() / 1000), (float) (sellWH.getIntegral() / 1000),

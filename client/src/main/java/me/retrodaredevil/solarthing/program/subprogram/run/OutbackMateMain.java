@@ -78,7 +78,7 @@ public class OutbackMateMain {
 					OutbackDuplicatePacketRemover.INSTANCE,
 					new FXEventUpdaterListReceiver(bundle.getEventHandler().getPacketListReceiverAccepter(), options.getFXWarningIgnoreMap()),
 					new MXEventUpdaterListReceiver(bundle.getEventHandler().getPacketListReceiverAccepter()),
-					new FXStatusListUpdater(new DailyIdentifier(options.getZoneId()))
+					new FXStatusListUpdater(new DailyIdentifier(options.getZoneId()), instantSource)
 			));
 			List<EnvironmentUpdater> environmentUpdaters = new ArrayList<>();
 

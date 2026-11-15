@@ -16,8 +16,8 @@ public class DailyIdentifier implements TimeIdentifier {
 	}
 
 	@Override
-	public long getTimeId(long timeMillis) {
-		LocalDateTime date = Instant.ofEpochMilli(timeMillis).atZone(zoneId).toLocalDateTime();
+	public long getTimeId(Instant time) {
+		LocalDateTime date = time.atZone(zoneId).toLocalDateTime();
 		return 400L * date.getYear() + date.getDayOfYear(); // this is arbitrary, so using 400 is fine
 	}
 }

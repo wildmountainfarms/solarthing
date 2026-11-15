@@ -5,7 +5,7 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 public class TrapezoidalRuleAccumulator extends MutableIntegralAccumulator {
 	@Override
-	protected double getAmountToAdd(double deltaX, double lastY, double y) {
-		return deltaX * (lastY + y) / 2;
+	protected double getAmountToAdd(double deltaHours, double lastY, double y) {
+		return deltaHours * (lastY + y) / 2;
 	}
 }
