@@ -23,10 +23,10 @@ dependencies {
 	implementation("org.checkerframework:checker-qual:4.4.0")
 
 	// https://github.com/google/error-prone/releases
-	val errorProneVersion = "2.52.0"
+	val errorProneVersion = "2.53.0"
 	errorprone("com.google.errorprone:error_prone_core:$errorProneVersion")
 	// https://github.com/uber/NullAway/releases
-	errorprone("com.uber.nullaway:nullaway:0.14.3")
+	errorprone("com.uber.nullaway:nullaway:0.14.4")
 
 	// https://mvnrepository.com/artifact/com.google.errorprone/error_prone_annotations
 	compileOnly("com.google.errorprone:error_prone_annotations:$errorProneVersion")
@@ -152,6 +152,7 @@ tasks.withType<JavaCompile>().configureEach {
 		warn("UnusedMethod") // Note: https://github.com/google/error-prone/issues/3144 // issue is now "completed", but annotations not customizable
 		error("StatementSwitchToExpressionSwitch")
 		error("PatternMatchingInstanceof")
+		error("BootclasspathShadowing")
 
 		// Experimental Errors
 		enable("ClassName")
