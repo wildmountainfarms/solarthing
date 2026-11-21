@@ -9,7 +9,7 @@ import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.AlterPacketsProvider;
 import me.retrodaredevil.solarthing.actions.environment.AlterPacketsEnvironment;
-import me.retrodaredevil.solarthing.actions.environment.ClockEnvironment;
+import me.retrodaredevil.action.node.environment.ClockEnvironment;
 import me.retrodaredevil.solarthing.database.VersionedPacket;
 import me.retrodaredevil.solarthing.type.alter.StoredAlterPacket;
 import me.retrodaredevil.solarthing.type.alter.flag.FlagUtil;

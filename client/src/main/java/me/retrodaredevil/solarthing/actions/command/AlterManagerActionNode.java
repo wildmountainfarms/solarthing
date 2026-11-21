@@ -7,7 +7,7 @@ import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.AlterPacketsProvider;
 import me.retrodaredevil.solarthing.actions.environment.AlterPacketsEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.AuthorizationEnvironment;
-import me.retrodaredevil.solarthing.actions.environment.ClockEnvironment;
+import me.retrodaredevil.action.node.environment.ClockEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.OpenDatabaseCacheEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.SolarThingDatabaseEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.SourceIdEnvironment;

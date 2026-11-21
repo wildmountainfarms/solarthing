@@ -18,7 +18,7 @@ import me.retrodaredevil.solarthing.actions.environment.EventReceiverEnvironment
 import me.retrodaredevil.solarthing.actions.environment.ExecutionReasonEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.SourceIdEnvironment;
-import me.retrodaredevil.solarthing.actions.environment.ClockEnvironment;
+import me.retrodaredevil.action.node.environment.ClockEnvironment;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.config.ConfigUtil;
 import me.retrodaredevil.solarthing.config.databases.DatabaseConfig;
