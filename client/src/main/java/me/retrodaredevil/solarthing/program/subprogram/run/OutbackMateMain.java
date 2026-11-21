@@ -50,7 +50,9 @@ public class OutbackMateMain {
 	private OutbackMateMain() { throw new UnsupportedOperationException(); }
 	private static final Logger LOGGER = LoggerFactory.getLogger(OutbackMateMain.class);
 
-	private static final Collection<MateCommand> ALLOWED_COMMANDS = EnumSet.of(MateCommand.AUX_OFF, MateCommand.AUX_ON, MateCommand.USE, MateCommand.DROP);
+	// TODO make allowed commands configurable. For the longest time ON and OFF have been disallowed, but now that safeguard is removed.
+	//   Though it's worth noting I'm not that concerned about it. It does require a change of a config file to even use commands so... yeah.
+	private static final Collection<MateCommand> ALLOWED_COMMANDS = EnumSet.allOf(MateCommand.class);
 
 	@SuppressWarnings("SameReturnValue")
 	public static int connectMate(InstantSource instantSource, MateProgramOptions options, boolean isValidate) throws Exception {

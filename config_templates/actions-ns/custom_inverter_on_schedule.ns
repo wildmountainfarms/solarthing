@@ -1,0 +1,15 @@
+scope : queue {
+  act turn_system_on : queue {
+    // matecommand(command="ON")
+    log("Pretend I'm turning the system on now", summary = true)
+
+    // block for 5 minutes to prevent numerous commands
+    wait PT5M
+  }
+  act schedule : with-lock "custom inverter on schedule" : race {
+    racer(wallclock(start="03:00", end="03:03")) : call turn_system_on
+    racer(wallclock(start="07:00", end="07:03")) : call turn_system_on
+  }
+
+  call schedule
+}

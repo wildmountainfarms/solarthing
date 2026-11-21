@@ -1,0 +1,16 @@
+scope : queue {
+  act is_generator_on : ac-mode(mode="No AC", not=true)
+  act is_generator_off : ac-mode(mode="No AC")
+
+  act main : queue {
+    call is_generator_on
+    call is_generator_off
+    wait PT5S
+    race {
+      racer(call is_generator_on) : pass
+      racer(wait PT5S) : matecommand(command="USE")
+    }
+  }
+
+  call main
+}
