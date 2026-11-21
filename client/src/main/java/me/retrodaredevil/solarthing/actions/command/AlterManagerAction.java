@@ -52,9 +52,9 @@ import org.slf4j.LoggerFactory;
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import java.security.NoSuchAlgorithmException;
+import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -88,20 +88,20 @@ public class AlterManagerAction extends SimpleAction {
 	private final DatabaseCache openDatabaseCache;
 	private final AlterPacketsProvider alterPacketsProvider;
 	private final String sourceId;
-	private final ZoneId zoneId;
+	private final Clock clock;
 
 	private final SecurityPacketReceiver securityPacketReceiver;
 
 	private long listenStartTime;
 
-	public AlterManagerAction(CommandManager commandManager, PublicKeyLookUp publicKeyLookUp, SolarThingDatabase database, DatabaseCache openDatabaseCache, AlterPacketsProvider alterPacketsProvider, String sourceId, ZoneId zoneId, int fragmentId) {
+	public AlterManagerAction(CommandManager commandManager, PublicKeyLookUp publicKeyLookUp, SolarThingDatabase database, DatabaseCache openDatabaseCache, AlterPacketsProvider alterPacketsProvider, String sourceId, Clock clock, int fragmentId) {
 		super(false);
 		this.commandManager = commandManager;
 		this.database = database;
 		this.openDatabaseCache = openDatabaseCache;
 		this.alterPacketsProvider = alterPacketsProvider;
 		this.sourceId = sourceId;
-		this.zoneId = zoneId;
+		this.clock = clock;
 
 
 		securityPacketReceiver = new SecurityPacketReceiver(
@@ -139,7 +139,7 @@ public class AlterManagerAction extends SimpleAction {
 
 
 		// Check packets in solarthing_alter and see if we need to send a command because of a scheduled command packet
-		Instant now = Instant.now();
+		Instant now = clock.instant();
 		List<VersionedPacket<StoredAlterPacket>> alterPackets = alterPacketsProvider.getPackets();
 		if (alterPackets == null) {
 			LOGGER.info("alterPackets is null. Maybe query failed? Maybe additional info in previous logs?");
@@ -332,7 +332,7 @@ public class AlterManagerAction extends SimpleAction {
 		// Having a document ID based off of the StoredAlterPacket's _id helps make sure we don't process it twice in case we are unable to delete it.
 		//   -- if there's an update conflict while uploading, we know we already processed it
 		String documentId = "scheduled-request-" + versionedPacket.getPacket().getDbId();
-		PacketCollectionCreator creator = commandManager.makeCreator(sourceId, zoneId, InstanceTargetPackets.create(data.getTargetFragmentIds()), requestCommandPacket, zonedDateTime -> documentId);
+		PacketCollectionCreator creator = commandManager.makeCreator(sourceId, clock.getZone(), InstanceTargetPackets.create(data.getTargetFragmentIds()), requestCommandPacket, zonedDateTime -> documentId);
 		executorService.execute(() -> {
 			Instant uploadingNow = Instant.now();
 			PacketCollection packetCollection = creator.create(uploadingNow);

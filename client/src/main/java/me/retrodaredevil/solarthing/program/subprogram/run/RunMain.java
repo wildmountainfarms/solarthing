@@ -117,7 +117,7 @@ public class RunMain {
 			} else if(programType == ProgramType.REQUEST) {
 				return RequestMain.startRequestProgram(instantSource, (RequestProgramOptions) options, commandOptions.isValidate());
 			} else if(programType == ProgramType.AUTOMATION) {
-				return AutomationMain.startAutomation((AutomationProgramOptions) options, commandOptions.isValidate());
+				return AutomationMain.startAutomation(instantSource, (AutomationProgramOptions) options, commandOptions.isValidate());
 			}
 			throw new AssertionError("Unknown program type... type=" + programType + " programOptions=" + options);
 		} catch (ConfigException e) {

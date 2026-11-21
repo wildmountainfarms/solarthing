@@ -18,7 +18,7 @@ import me.retrodaredevil.solarthing.actions.environment.EventReceiverEnvironment
 import me.retrodaredevil.solarthing.actions.environment.ExecutionReasonEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.LatestPacketGroupEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.SourceIdEnvironment;
-import me.retrodaredevil.solarthing.actions.environment.TimeZoneEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.ClockEnvironment;
 import me.retrodaredevil.solarthing.annotations.UtilityClass;
 import me.retrodaredevil.solarthing.config.ConfigUtil;
 import me.retrodaredevil.solarthing.config.databases.DatabaseConfig;
@@ -208,10 +208,10 @@ public class PacketHandlerInit {
 						}
 						injectEnvironmentBuilder
 								.add(new NanoTimeProviderEnvironment(NanoTimeProvider.SYSTEM_NANO_TIME))
-								.add(new TimeZoneEnvironment(options.getZoneId()))
+								.add(new ClockEnvironment(clock))
 								.add(new LatestPacketGroupEnvironment(latestPacketHandler::getLatestPacketCollection))
 								.add(new ExecutionReasonEnvironment(executionReason))
-								.add(new EventReceiverEnvironment(PacketListReceiverHandlerBundle.createEventPacketListReceiverHandler(RunMain.getSourceAndFragmentUpdater(options), options.getZoneId(), packetHandlerBundle)))
+								.add(new EventReceiverEnvironment(PacketListReceiverHandlerBundle.createEventPacketListReceiverHandler(RunMain.getSourceAndFragmentUpdater(options), clock, packetHandlerBundle)))
 						;
 						EnvironmentUpdater environmentUpdater = environmentUpdaterSupplier.get();
 						if (environmentUpdater == null) {
@@ -222,7 +222,7 @@ public class PacketHandlerInit {
 			);
 			PacketGroupReceiver mainPacketGroupReceiver = new PacketGroupReceiverMultiplexer(Arrays.asList(
 					commandReceiver,
-					new RequestHeartbeatReceiver(PacketListReceiverHandlerBundle.createEventPacketListReceiverHandler(RunMain.getSourceAndFragmentUpdater(options), options.getZoneId(), packetHandlerBundle))
+					new RequestHeartbeatReceiver(PacketListReceiverHandlerBundle.createEventPacketListReceiverHandler(RunMain.getSourceAndFragmentUpdater(options), clock, packetHandlerBundle))
 			));
 
 			statusPacketHandlers.add((packetCollection) -> commandReceiver.getActionUpdater().update());
@@ -234,15 +234,16 @@ public class PacketHandlerInit {
 			LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Commands are disabled");
 			updateCommandActions = () -> {};
 		}
-		statusPacketHandlers.add(createActionExecutorPacketHandler(options, environmentUpdaterSupplier));
+		statusPacketHandlers.add(createActionExecutorPacketHandler(clock, options, environmentUpdaterSupplier));
 		statusPacketHandlers.addAll(additionalPacketHandlers);
 		statusPacketHandlers.addAll(packetHandlerBundle.getStatusPacketHandlers());
 
-		PacketListReceiverHandlerBundle bundle = PacketListReceiverHandlerBundle.createFrom(options, packetHandlerBundle, statusPacketHandlers);
+		PacketListReceiverHandlerBundle bundle = PacketListReceiverHandlerBundle.createFrom(clock, options, packetHandlerBundle, statusPacketHandlers);
 
 		return new Result(bundle, updateCommandActions);
 	}
-	private static <T extends ActionsOption & PacketHandlingOption> PacketHandler createActionExecutorPacketHandler(T options, Supplier<? extends EnvironmentUpdater> environmentUpdaterSupplier) throws IOException {
+	private static <T extends ActionsOption & PacketHandlingOption> PacketHandler createActionExecutorPacketHandler(Clock clock, T options, Supplier<? extends EnvironmentUpdater> environmentUpdaterSupplier) throws IOException {
+		requireNonNull(clock);
 		requireNonNull(options);
 		requireNonNull(environmentUpdaterSupplier);
 		List<ActionNodeEntry> originalActionNodeEntries = ActionUtil.createActionNodeEntries(options);
@@ -264,7 +265,7 @@ public class PacketHandlerInit {
 					.add(new ExecutionReasonEnvironment(executionReason))
 					.add(new NanoTimeProviderEnvironment(NanoTimeProvider.SYSTEM_NANO_TIME))
 					.add(new SourceIdEnvironment(options.getSourceId()))
-					.add(new TimeZoneEnvironment(options.getZoneId()))
+					.add(new ClockEnvironment(clock))
 					.add(latestPacketGroupEnvironment)
 					;
 			environmentUpdater.updateInjectEnvironment(executionReason, injectEnvironmentBuilder);

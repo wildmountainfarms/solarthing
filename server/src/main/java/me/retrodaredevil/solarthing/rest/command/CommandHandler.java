@@ -7,7 +7,7 @@ import me.retrodaredevil.action.node.util.NanoTimeProvider;
 import me.retrodaredevil.solarthing.actions.CommonActionUtil;
 import me.retrodaredevil.solarthing.actions.environment.SolarThingDatabaseEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.SourceIdEnvironment;
-import me.retrodaredevil.solarthing.actions.environment.TimeZoneEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.ClockEnvironment;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
 import org.jspecify.annotations.NullMarked;
@@ -18,6 +18,7 @@ import tools.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.time.Clock;
 import java.time.ZoneId;
 
 import static java.util.Objects.requireNonNull;
@@ -28,12 +29,12 @@ public class CommandHandler {
 
 	private final RestCommandConfig restCommandConfig;
 	private final SolarThingDatabase solarThingDatabase;
-	private final ZoneId zoneId;
+	private final Clock clock;
 
-	public CommandHandler(RestCommandConfig restCommandConfig, SolarThingDatabase solarThingDatabase, ZoneId zoneId) {
+	public CommandHandler(RestCommandConfig restCommandConfig, SolarThingDatabase solarThingDatabase, Clock clock) {
 		this.restCommandConfig = restCommandConfig;
 		this.solarThingDatabase = solarThingDatabase;
-		this.zoneId = zoneId;
+		this.clock = clock;
 	}
 
 
@@ -59,7 +60,7 @@ public class CommandHandler {
 		var builder = new InjectEnvironment.Builder()
 				.add(new NanoTimeProviderEnvironment(NanoTimeProvider.SYSTEM_NANO_TIME))
 				.add(new SolarThingDatabaseEnvironment(solarThingDatabase))
-				.add(new TimeZoneEnvironment(zoneId))
+				.add(new ClockEnvironment(clock))
 				;
 		RestCommandConfig.Command command = restCommandConfig.getCommandToActionFileMap().get(commandName);
 		if (command == null) {

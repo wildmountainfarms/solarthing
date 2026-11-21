@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
+import java.time.InstantSource;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -33,6 +34,7 @@ import static java.util.Objects.requireNonNull;
 public class SendPacketAction extends SimpleAction implements LinkedAction {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SendPacketAction.class);
 
+	private final InstantSource instantSource;
 	private final Supplier<MillisDatabase> millisDatabaseSupplier;
 	private final PacketCollectionCreator packetCollectionCreator;
 	/** The amount of time in milliseconds to wait between retries. If null, a retry will not happen until the next call to {@link #update()}*/
@@ -45,13 +47,14 @@ public class SendPacketAction extends SimpleAction implements LinkedAction {
 
 	private final ExecutorService executorService;
 
-	public SendPacketAction(ThreadFactory threadFactory, Supplier<MillisDatabase> millisDatabaseSupplier, PacketCollectionCreator packetCollectionCreator, long retryWaitMillis, int maxRetries, Action onSuccessAction, Action onMaxRetriesAction) {
+	public SendPacketAction(ThreadFactory threadFactory, InstantSource instantSource, Supplier<MillisDatabase> millisDatabaseSupplier, PacketCollectionCreator packetCollectionCreator, long retryWaitMillis, int maxRetries, Action onSuccessAction, Action onMaxRetriesAction) {
 		super(false);
 		// TODO it is not ideal that we are creating a new ExecutorService here because it will create a new thread no matter what
 		//  using threadFactory. Ideally we could just pass an ExecutorService through the constructor, but
 		//  then cancelling tasks belonging to this action only would also cancel tasks belonging to other actions using
 		//  the same ExecutorService.
 		executorService = Executors.newSingleThreadExecutor(threadFactory);
+		this.instantSource = instantSource;
 		this.millisDatabaseSupplier = requireNonNull(millisDatabaseSupplier);
 		this.packetCollectionCreator = requireNonNull(packetCollectionCreator);
 		this.retryWaitMillis = retryWaitMillis;
@@ -75,7 +78,7 @@ public class SendPacketAction extends SimpleAction implements LinkedAction {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		Instant now = Instant.now();
+		Instant now = instantSource.instant();
 
 		MillisDatabase millisDatabase = millisDatabaseSupplier.get();
 		PacketCollection packetCollection = packetCollectionCreator.create(now);

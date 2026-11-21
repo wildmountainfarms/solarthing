@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Clock;
 import java.time.ZoneId;
 import java.util.Collections;
 
@@ -32,12 +33,14 @@ public class CommandHandlerProvider {
 	@Value("${solarthing.config.command_file:#{null}}")
 	private @Nullable Path commandConfigurationFile;
 
+	private final Clock clock;
 	private final SolarThingDatabase solarThingDatabase;
 
 
 	private CommandHandler commandHandler;
 
-	public CommandHandlerProvider(CouchDbDatabaseSettings couchDbDatabaseSettings) {
+	public CommandHandlerProvider(Clock clock, CouchDbDatabaseSettings couchDbDatabaseSettings) {
+		this.clock = clock;
 		this.solarThingDatabase = CouchDbSolarThingDatabase.create(CouchDbUtil.createInstance(
 				couchDbDatabaseSettings.getCouchProperties(),
 				couchDbDatabaseSettings.getOkHttpProperties()
@@ -62,7 +65,7 @@ public class CommandHandlerProvider {
 		commandHandler = new CommandHandler(
 				config,
 				solarThingDatabase,
-				ZoneId.systemDefault() // graphql program doesn't have a way to configure time zone *yet*
+				clock
 		);
 	}
 	@Bean

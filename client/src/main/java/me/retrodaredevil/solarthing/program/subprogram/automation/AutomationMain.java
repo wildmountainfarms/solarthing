@@ -46,6 +46,7 @@ import java.io.IOException;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.InstantSource;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -61,8 +62,8 @@ public final class AutomationMain {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AutomationMain.class);
 
-	public static int startAutomation(AutomationProgramOptions options, boolean isValidate) throws IOException {
-		return startAutomation(ActionUtil.createActionNodeEntries(options), options, options.getPeriodMillis(), isValidate);
+	public static int startAutomation(InstantSource instantSource, AutomationProgramOptions options, boolean isValidate) throws IOException {
+		return startAutomation(instantSource.withZone(options.getZoneId()), ActionUtil.createActionNodeEntries(options), options, options.getPeriodMillis(), isValidate);
 	}
 
 	private static void queryAndFeed(MillisDatabase millisDatabase, ResourceManager<SimpleDatabaseCache> databaseCacheManager, boolean useEndDate) {
@@ -95,7 +96,7 @@ public final class AutomationMain {
 	}
 
 	@SuppressWarnings("InconsistentOverloads")
-	public static int startAutomation(List<ActionNodeEntry> originalActionNodeEntries, DatabaseTimeZoneOptionBase options, long periodMillis, boolean isValidate) {
+	public static int startAutomation(Clock clock, List<ActionNodeEntry> originalActionNodeEntries, DatabaseTimeZoneOptionBase options, long periodMillis, boolean isValidate) {
 		LOGGER.info(SolarThingConstants.SUMMARY_MARKER, "Starting automation program.");
 		final CouchDbDatabaseSettings couchSettings;
 		try {
@@ -112,7 +113,6 @@ public final class AutomationMain {
 		AtomicReference<@Nullable FragmentedPacketGroup> latestPacketGroupReference = new AtomicReference<@Nullable FragmentedPacketGroup>(null); // Use atomic reference so that access is thread safe
 		AtomicReference<@Nullable List<VersionedPacket<StoredAlterPacket>>> alterPacketsReference = new AtomicReference<@Nullable List<VersionedPacket<StoredAlterPacket>>>(null); // Use atomic reference so that access is thread safe
 		FragmentedPacketGroupProvider fragmentedPacketGroupProvider = latestPacketGroupReference::get; // note this may return null, and that's OK // This is thread safe if needed
-		Clock clock = Clock.systemUTC();
 
 		SimpleDatabaseCache statusDatabaseCache = SimpleDatabaseCache.createDefault(clock);
 		ResourceManager<SimpleDatabaseCache> statusDatabaseCacheManager = new BasicResourceManager<>(statusDatabaseCache); // not thread safe
@@ -128,7 +128,7 @@ public final class AutomationMain {
 				.add(new SourceIdEnvironment(sourceId))
 				.add(new CouchDbEnvironment(couchSettings)) // most of the time, it's better to use SolarThingDatabaseEnvironment instead, but this option is here in case it's needed
 				.add(new SolarThingDatabaseEnvironment(CouchDbSolarThingDatabase.create(CouchDbUtil.createInstance(couchSettings.getCouchProperties(), couchSettings.getOkHttpProperties()))))
-				.add(new TimeZoneEnvironment(options.getZoneId()))
+				.add(new ClockEnvironment(clock))
 				.add(new LatestPacketGroupEnvironment(fragmentedPacketGroupProvider)) // access is thread safe if needed
 				.add(new LatestFragmentedPacketGroupEnvironment(fragmentedPacketGroupProvider)) // access is thread safe if needed
 				.add(new StatusDatabaseCacheEnvironment(statusDatabaseCacheManager))

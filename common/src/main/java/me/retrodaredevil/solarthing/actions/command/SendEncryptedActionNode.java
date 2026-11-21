@@ -12,7 +12,7 @@ import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.actions.command.provider.CommandOpenProvider;
 import me.retrodaredevil.solarthing.actions.environment.SolarThingDatabaseEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.SourceIdEnvironment;
-import me.retrodaredevil.solarthing.actions.environment.TimeZoneEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.ClockEnvironment;
 import me.retrodaredevil.solarthing.commands.packets.open.CommandOpenPacket;
 import me.retrodaredevil.solarthing.commands.util.CommandManager;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
@@ -22,6 +22,7 @@ import me.retrodaredevil.solarthing.packets.instance.InstanceTargetPackets;
 import org.jspecify.annotations.NullMarked;
 
 import java.nio.file.Path;
+import java.time.Clock;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -70,12 +71,12 @@ public class SendEncryptedActionNode implements ActionNode {
 	public Action createAction(ActionEnvironment actionEnvironment) {
 		SolarThingDatabase database = actionEnvironment.getInjectEnvironment().get(SolarThingDatabaseEnvironment.class).getSolarThingDatabase();
 		String sourceId = actionEnvironment.getInjectEnvironment().get(SourceIdEnvironment.class).getSourceId();
-		ZoneId zoneId = actionEnvironment.getInjectEnvironment().get(TimeZoneEnvironment.class).getZoneId();
+		Clock clock = actionEnvironment.getInjectEnvironment().get(ClockEnvironment.class).clock();
 		CommandOpenPacket packet = packetProvider.get();
 		requireNonNull(packet, "The supplier should have given us a packet!");
 		PacketCollectionCreator creator = commandManager.makeCreator(
 				sourceId,
-				zoneId,
+				clock.getZone(),
 				InstanceTargetPackets.create(fragmentIdTargets),
 				packet,
 				PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR
@@ -83,6 +84,7 @@ public class SendEncryptedActionNode implements ActionNode {
 		return Actions.createLinkedActionRunner(
 				new SendPacketAction(
 						threadFactory,
+						clock,
 						database::getOpenDatabase,
 						creator, 100, 10,
 						PassActionNode.getInstance().createAction(actionEnvironment), // TODO allow actions to be passed in for these

@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 
-import java.time.ZoneId;
+import java.time.Clock;
 import java.util.Arrays;
 import java.util.List;
 
@@ -49,7 +49,7 @@ public final class PacketListReceiverHandlerBundle {
 				getEventHandler().getPacketListReceiverHandler() // send the event PacketCollection off to the database
 		);
 	}
-	public static PacketListReceiverHandler createEventPacketListReceiverHandler(PacketListReceiver sourceAndFragmentUpdater, ZoneId zoneId, PacketHandlerBundle packetHandlerBundle) {
+	public static PacketListReceiverHandler createEventPacketListReceiverHandler(PacketListReceiver sourceAndFragmentUpdater, Clock clock, PacketHandlerBundle packetHandlerBundle) {
 		PacketHandler eventPacketHandler = new PacketHandlerMultiplexer(packetHandlerBundle.getEventPacketHandlers());
 		return new PacketListReceiverHandler(
 				new PacketListReceiverMultiplexer(
@@ -65,13 +65,13 @@ public final class PacketListReceiverHandlerBundle {
 				),
 				eventPacketHandler,
 				PacketCollectionIdGenerator.Defaults.UNIQUE_GENERATOR,
-				zoneId
+				clock
 		);
 	}
 
-	public static <T extends PacketHandlingOption & CommandOption> PacketListReceiverHandlerBundle createFrom(T options, PacketHandlerBundle packetHandlerBundle, List<PacketHandler> statusPacketHandlers) {
+	public static <T extends PacketHandlingOption & CommandOption> PacketListReceiverHandlerBundle createFrom(Clock clock, T options, PacketHandlerBundle packetHandlerBundle, List<PacketHandler> statusPacketHandlers) {
 		PacketListReceiver sourceAndFragmentUpdater = RunMain.getSourceAndFragmentUpdater(options);
-		PacketListReceiverHandler eventPacketListReceiverHandler = createEventPacketListReceiverHandler(sourceAndFragmentUpdater, options.getZoneId(), packetHandlerBundle);
+		PacketListReceiverHandler eventPacketListReceiverHandler = createEventPacketListReceiverHandler(sourceAndFragmentUpdater, clock, packetHandlerBundle);
 		PacketListReceiverHandler statusPacketListReceiverHandler = new PacketListReceiverHandler(
 				new PacketListReceiverMultiplexer(
 						sourceAndFragmentUpdater,
@@ -86,7 +86,7 @@ public final class PacketListReceiverHandlerBundle {
 				),
 				new PacketHandlerMultiplexer(statusPacketHandlers),
 				RunMain.createIdGenerator(options.getUniqueIdsInOneHour(), options.isDocumentIdShort()),
-				options.getZoneId()
+				clock
 		);
 		return new PacketListReceiverHandlerBundle(statusPacketListReceiverHandler, eventPacketListReceiverHandler);
 	}

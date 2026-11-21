@@ -9,12 +9,14 @@ import me.retrodaredevil.action.node.ActionNode;
 import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.AlterPacketsProvider;
 import me.retrodaredevil.solarthing.actions.environment.AlterPacketsEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.ClockEnvironment;
 import me.retrodaredevil.solarthing.database.VersionedPacket;
 import me.retrodaredevil.solarthing.type.alter.StoredAlterPacket;
 import me.retrodaredevil.solarthing.type.alter.flag.FlagUtil;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+import java.time.Clock;
 import java.time.Instant;
 import java.util.List;
 
@@ -35,6 +37,9 @@ public class FlagActionNode implements ActionNode {
 	@Override
 	public Action createAction(ActionEnvironment actionEnvironment) {
 		AlterPacketsEnvironment alterPacketsEnvironment = actionEnvironment.getInjectEnvironment().get(AlterPacketsEnvironment.class);
+		ClockEnvironment clockEnvironment = actionEnvironment.getInjectEnvironment().get(ClockEnvironment.class);
+
+		Clock clock = clockEnvironment.clock();
 
 		AlterPacketsProvider provider = alterPacketsEnvironment.getAlterPacketsProvider();
 		return new SimpleAction(false) {
@@ -43,7 +48,7 @@ public class FlagActionNode implements ActionNode {
 				super.onUpdate();
 				List<VersionedPacket<StoredAlterPacket>> packets = provider.getPackets();
 				if (packets != null) {
-					Instant now = Instant.now();
+					Instant now = clock.instant();
 					if (FlagUtil.isFlagActive(now, flagName, packets.stream().map(VersionedPacket::getPacket)) != not) {
 						setDone(true);
 					}

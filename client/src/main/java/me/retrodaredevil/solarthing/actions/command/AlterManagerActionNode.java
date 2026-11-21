@@ -7,10 +7,10 @@ import me.retrodaredevil.action.node.environment.ActionEnvironment;
 import me.retrodaredevil.solarthing.AlterPacketsProvider;
 import me.retrodaredevil.solarthing.actions.environment.AlterPacketsEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.AuthorizationEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.ClockEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.OpenDatabaseCacheEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.SolarThingDatabaseEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.SourceIdEnvironment;
-import me.retrodaredevil.solarthing.actions.environment.TimeZoneEnvironment;
 import me.retrodaredevil.solarthing.commands.util.CommandManager;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
 import me.retrodaredevil.solarthing.database.cache.DatabaseCache;
@@ -40,7 +40,7 @@ public class AlterManagerActionNode implements ActionNode {
 		AuthorizationEnvironment authorizationEnvironment = actionEnvironment.getInjectEnvironment().get(AuthorizationEnvironment.class);
 		AlterPacketsEnvironment alterPacketsEnvironment = actionEnvironment.getInjectEnvironment().get(AlterPacketsEnvironment.class);
 		SourceIdEnvironment sourceIdEnvironment = actionEnvironment.getInjectEnvironment().get(SourceIdEnvironment.class);
-		TimeZoneEnvironment timeZoneEnvironment = actionEnvironment.getInjectEnvironment().get(TimeZoneEnvironment.class);
+		ClockEnvironment clockEnvironment = actionEnvironment.getInjectEnvironment().get(ClockEnvironment.class);
 
 		SolarThingDatabase database = solarThingDatabaseEnvironment.getSolarThingDatabase();
 		DatabaseCache openDatabaseCache = openDatabaseCacheEnvironment.getOpenDatabaseCache();
@@ -55,7 +55,7 @@ public class AlterManagerActionNode implements ActionNode {
 				openDatabaseCache,
 				alterPacketsProvider,
 				sourceId,
-				timeZoneEnvironment.getZoneId(),
+				clockEnvironment.clock(),
 				fragmentId
 		);
 	}

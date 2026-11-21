@@ -1,0 +1,5 @@
+name: External 1
+variables:
+  - secret: true
+    name: baseUrl
+    description: ""

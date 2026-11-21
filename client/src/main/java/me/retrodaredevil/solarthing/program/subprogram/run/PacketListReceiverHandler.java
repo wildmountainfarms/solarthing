@@ -11,8 +11,8 @@ import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Clock;
 import java.time.Instant;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +22,7 @@ public class PacketListReceiverHandler {
 	private final PacketListReceiver packetListReceiver;
 	private final PacketHandler packetHandler;
 	private final PacketCollectionIdGenerator idGenerator;
-	private final ZoneId zoneId;
+	private final Clock clock;
 
 	private final List<Packet> packetList = new ArrayList<>();
 	private final List<PacketCollection> packetCollectionList = new ArrayList<>();
@@ -32,13 +32,13 @@ public class PacketListReceiverHandler {
 	 * @param packetListReceiver The {@link PacketListReceiver} that is only used if the list of packets to pack is not empty
 	 * @param packetHandler Handles packed packets
 	 * @param idGenerator ID Generator for the packet collection
-	 * @param zoneId The timezone used when generating packet collection IDs
+	 * @param clock Allows retrieval of now Instant and contains the timezone used when generating packet collection IDs
 	 */
-	public PacketListReceiverHandler(PacketListReceiver packetListReceiver, PacketHandler packetHandler, PacketCollectionIdGenerator idGenerator, ZoneId zoneId) {
+	public PacketListReceiverHandler(PacketListReceiver packetListReceiver, PacketHandler packetHandler, PacketCollectionIdGenerator idGenerator, Clock clock) {
 		this.packetListReceiver = packetListReceiver;
 		this.packetHandler = packetHandler;
 		this.idGenerator = idGenerator;
-		this.zoneId = zoneId;
+		this.clock = clock;
 	}
 
 	/**
@@ -73,8 +73,8 @@ public class PacketListReceiverHandler {
 			return;
 		}
 		packetListReceiver.receive(packetList);
-		Instant now = Instant.now();
-		PacketCollection packetCollection = PacketCollections.createFromPackets(now, packetList, idGenerator, zoneId);
+		Instant now = clock.instant();
+		PacketCollection packetCollection = PacketCollections.createFromPackets(now, packetList, idGenerator, clock.getZone());
 		packetList.clear();
 		packetCollectionList.add(packetCollection);
 	}
@@ -106,7 +106,7 @@ public class PacketListReceiverHandler {
 			return;
 		}
 		packetListReceiver.receive(mutablePackets); // this call may mutate mutablePackets, which is why we need it in the first place
-		PacketCollection packetCollection = PacketCollections.createFromPackets(now, mutablePackets, idGenerator, zoneId);
+		PacketCollection packetCollection = PacketCollections.createFromPackets(now, mutablePackets, idGenerator, clock.getZone());
 		handleSinglePacketCollection(packetCollection);
 	}
 }

@@ -13,7 +13,7 @@ import me.retrodaredevil.solarthing.actions.environment.EventDatabaseCacheEnviro
 import me.retrodaredevil.solarthing.actions.environment.LatestFragmentedPacketGroupEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.SolarThingDatabaseEnvironment;
 import me.retrodaredevil.solarthing.actions.environment.SourceIdEnvironment;
-import me.retrodaredevil.solarthing.actions.environment.TimeZoneEnvironment;
+import me.retrodaredevil.solarthing.actions.environment.ClockEnvironment;
 import me.retrodaredevil.solarthing.chatbot.*;
 import me.retrodaredevil.solarthing.commands.util.CommandManager;
 import me.retrodaredevil.solarthing.database.SolarThingDatabase;
@@ -77,7 +77,7 @@ public class SlackChatBotActionNode implements ActionNode {
 		AlterPacketsEnvironment alterPacketsEnvironment = actionEnvironment.getInjectEnvironment().get(AlterPacketsEnvironment.class);
 		SolarThingDatabaseEnvironment solarThingDatabaseEnvironment = actionEnvironment.getInjectEnvironment().get(SolarThingDatabaseEnvironment.class);
 		SourceIdEnvironment sourceIdEnvironment = actionEnvironment.getInjectEnvironment().get(SourceIdEnvironment.class);
-		TimeZoneEnvironment timeZoneEnvironment = actionEnvironment.getInjectEnvironment().get(TimeZoneEnvironment.class);
+		ClockEnvironment clockEnvironment = actionEnvironment.getInjectEnvironment().get(ClockEnvironment.class);
 		EventDatabaseCacheEnvironment eventDatabaseCacheEnvironment = actionEnvironment.getInjectEnvironment().get(EventDatabaseCacheEnvironment.class);
 
 		// Note that all objects listed here must be thread safe, as data will be accessed from them on a separate thread
@@ -85,7 +85,7 @@ public class SlackChatBotActionNode implements ActionNode {
 		AlterPacketsProvider alterPacketsProvider = alterPacketsEnvironment.getAlterPacketsProvider();
 		SolarThingDatabase database = solarThingDatabaseEnvironment.getSolarThingDatabase();
 		String sourceId = sourceIdEnvironment.getSourceId();
-		ZoneId zoneId = timeZoneEnvironment.getZoneId();
+		ZoneId zoneId = clockEnvironment.clock().getZone();
 		ResourceManager<? extends DatabaseCache> eventDatabaseCacheManager = eventDatabaseCacheEnvironment.getEventDatabaseCacheManager();
 
 

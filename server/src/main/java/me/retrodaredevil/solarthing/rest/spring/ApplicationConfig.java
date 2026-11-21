@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.nio.file.Path;
+import java.time.Clock;
 import java.util.Map;
 
 @Component
@@ -20,5 +21,11 @@ public class ApplicationConfig {
 		));
 
 		return configurer;
+	}
+
+	@Bean
+	public Clock clock() {
+		// Time zone within SolarThing Server application is simply the system default!
+		return Clock.systemDefaultZone();
 	}
 }
