@@ -19,12 +19,17 @@ import me.retrodaredevil.solarthing.config.databases.implementations.InfluxDbDat
 import me.retrodaredevil.solarthing.config.io.IOConfig;
 import me.retrodaredevil.solarthing.config.io.SerialIOConfig;
 import me.retrodaredevil.solarthing.config.options.ProgramOptions;
+import me.retrodaredevil.solarthing.packets.DocumentedPacket;
+import me.retrodaredevil.solarthing.packets.Packet;
 import me.retrodaredevil.solarthing.packets.collection.FragmentedPacketGroup;
 import me.retrodaredevil.solarthing.packets.collection.PacketGroups;
 import me.retrodaredevil.solarthing.program.ActionUtil;
 import me.retrodaredevil.solarthing.config.databases.DatabaseConfig;
+import me.retrodaredevil.solarthing.solar.extra.SolarExtraPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPacket;
 import me.retrodaredevil.solarthing.solar.outback.fx.FXStatusPackets;
+import me.retrodaredevil.solarthing.solar.outback.fx.extra.DailyFXPacket;
+import me.retrodaredevil.solarthing.solar.outback.fx.extra.ImmutableDailyFXPacket;
 import me.retrodaredevil.solarthing.util.CheckSumException;
 import me.retrodaredevil.solarthing.util.IgnoreCheckSum;
 import me.retrodaredevil.solarthing.util.JacksonUtil;
@@ -33,6 +38,7 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import tools.jackson.databind.InjectableValues;
+import tools.jackson.databind.exc.UnrecognizedPropertyException;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
@@ -69,28 +75,59 @@ public class DeserializeTest {
 				.registerSubtypes(DatabaseSettings.class, InfluxDbDatabaseSettings.class).build();
 		String json = """
 				{
-				"type": "influxdb",
-				"config": {
-					"url": "http://localhost:8086",
-					"username": "root",
-					"password": "root",
-					"database": "default_database",
-					"measurement": null,
+					"type": "influxdb",
+					"config": {
+						"url": "http://localhost:8086",
+						"username": "root",
+						"password": "root",
+						"database": "default_database",
+						"measurement": null,
 
-					"status_retention_policies": [
-					{
-						"frequency": 120,
-						"name": "autogen"
-					}
-					],
+						"status_retention_policies": [
+							{
+								"frequency": 120,
+								"name": "autogen"
+							}
+						],
 
-					"event_retention_policy": {
-					"name": "autogen"
+						"event_retention_policy": {
+							"name": "autogen"
+						}
 					}
-				}
 				}""";
 		DatabaseConfig config = mapper.readValue(json, DatabaseConfig.class);
 		assertInstanceOf(InfluxDbDatabaseSettings.class, config.requireDatabaseSettings());
+	}
+	@Test
+	void testInfluxDb1UnknownPropertiesCausesFailure() {
+		// Relates to https://github.com/wildmountainfarms/solarthing/issues/267
+		JsonMapper mapper = JacksonUtil.defaultMapperBuilder()
+				.registerSubtypes(DatabaseSettings.class, InfluxDbDatabaseSettings.class).build();
+		String json = """
+				{
+					"type": "influxdb",
+					"config": {
+						"url": "http://localhost:8086",
+						"username": "root",
+						"password": "root",
+						"database": "default_database",
+						"measurement": null,
+
+						"status_retention_policies": [
+							{
+								"frequency": 120,
+								"name": "autogen"
+							}
+						],
+
+						"event_retention_policy": {
+							"name": "autogen"
+						},
+						"an_unknown_properties": "should make this fail"
+					}
+				}""";
+
+		assertThrows(UnrecognizedPropertyException.class, () -> mapper.readValue(json, DatabaseConfig.class));
 	}
 
 	private List<Path> getJsonFiles(Path directory) throws IOException {
@@ -197,7 +234,7 @@ public class DeserializeTest {
 		testRunAlertGeneratorOffWhileAuxOn(nsActionNode);
 	}
 
-	void testRunAlertGeneratorOffWhileAuxOn(ActionNode actionNode) throws ParsePacketAsciiDecimalDigitException, CheckSumException {
+	private void testRunAlertGeneratorOffWhileAuxOn(ActionNode actionNode) throws ParsePacketAsciiDecimalDigitException, CheckSumException {
 		// We need to simulate an automation program environment to run this action
 		Duration[] timeReference = new Duration [] { Duration.ZERO };
 		@Nullable FragmentedPacketGroup[] packetGroupReference = new @Nullable FragmentedPacketGroup[] { null };
@@ -257,5 +294,23 @@ public class DeserializeTest {
 			action.update();
 			assertTrue(action.isDone()); // the 300-second timeout has completed, so the action will end
 		}
+	}
+
+	@Test
+	void testDeserializeDailyFXPacket() {
+		// Testing for https://github.com/wildmountainfarms/solarthing/issues/267 to ensure @JsonUnwrapped still has its known properties validated against
+		JsonMapper mapper = JacksonUtil.defaultMapper();
+		String json = """
+				{"packetType":"FX_DAILY","acModeValues":[0,1,2],"address":1,"buyKWH":5.4402184,"chargerKWH":3.9259536,"dailyMaxBatteryVoltage":30.2,"dailyMinBatteryVoltage":20.8,"errorModeValue":0,"inverterKWH":2.4953694,"miscValue":8,"operationalModeValues":[2,3,4],"sellKWH":0.0,"startDateMillis":1795330800094,"warningModeValue":10}
+				""";
+		Packet packet = mapper.readValue(json, SolarExtraPacket.class);
+		assertInstanceOf(ImmutableDailyFXPacket.class, packet);
+		DailyFXPacket dailyFXPacket = (DailyFXPacket) packet;
+		assertEquals(1, dailyFXPacket.getAddress());
+
+		String jsonWithUnknown = """
+				{"something_unknown": "asdf","packetType":"FX_DAILY","acModeValues":[0,1,2],"address":1,"buyKWH":5.4402184,"chargerKWH":3.9259536,"dailyMaxBatteryVoltage":30.2,"dailyMinBatteryVoltage":20.8,"errorModeValue":0,"inverterKWH":2.4953694,"miscValue":8,"operationalModeValues":[2,3,4],"sellKWH":0.0,"startDateMillis":1795330800094,"warningModeValue":10}
+				""";
+		assertThrows(UnrecognizedPropertyException.class, () -> mapper.readValue(jsonWithUnknown, SolarExtraPacket.class));
 	}
 }

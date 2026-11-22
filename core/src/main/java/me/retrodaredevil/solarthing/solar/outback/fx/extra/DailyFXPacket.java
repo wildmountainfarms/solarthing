@@ -9,7 +9,7 @@ import me.retrodaredevil.solarthing.solar.outback.fx.common.FXDailyData;
 import org.jspecify.annotations.NullMarked;
 import tools.jackson.databind.annotation.JsonDeserialize;
 
-@JsonDeserialize(using = ImmutableDailyFXPacket.Deserializer.class)
+@JsonDeserialize(as = ImmutableDailyFXPacket.class)
 @JsonTypeName("FX_DAILY")
 @NullMarked
 public interface DailyFXPacket extends FXDailyData, SupplementarySolarExtraPacket, SupplementaryOutbackPacket {

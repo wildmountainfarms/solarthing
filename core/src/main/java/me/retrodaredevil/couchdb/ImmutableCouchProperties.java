@@ -1,6 +1,5 @@
 package me.retrodaredevil.couchdb;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import okhttp3.HttpUrl;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -29,7 +28,6 @@ class ImmutableCouchProperties implements CouchProperties {
 		return url;
 	}
 
-	@JsonProperty("url") // JsonProperty to work with UnwrappedDeserializer
 	@Override
 	public URI getUri() {
 		return url.uri();
@@ -37,27 +35,11 @@ class ImmutableCouchProperties implements CouchProperties {
 
 
 
-	@JsonProperty("username") // JsonProperty to work with UnwrappedDeserializer
 	@Override public @Nullable String getUsername() { return username; }
 
-	@JsonProperty("password") // JsonProperty to work with UnwrappedDeserializer
 	@Override public @Nullable String getPassword() { return password; }
 
-	@JsonProperty("basic_auth") // JsonProperty to work with UnwrappedDeserializer
 	@Override
 	public boolean forceBasicAuth() { return basicAuth; }
 
-
-
-	// methods below here should be removed eventually, but are here so that when
-	//   UnwrappedDeserializer tries to serialize this it can see that these values exist
-	// TODO find a better solution than using UnwrappedDeserializer
-	@JsonProperty("protocol")
-	private String getProtocol() { return url.scheme(); }
-	@JsonProperty("host")
-	private String getHost() { return url.host(); }
-	@JsonProperty("path")
-	private String getPath() { return url.encodedPath(); }
-	@JsonProperty("port")
-	private int getPort() { return url.port(); }
 }

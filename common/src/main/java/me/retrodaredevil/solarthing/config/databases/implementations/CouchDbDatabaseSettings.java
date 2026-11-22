@@ -1,6 +1,6 @@
 package me.retrodaredevil.solarthing.config.databases.implementations;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import me.retrodaredevil.couchdb.CouchProperties;
@@ -10,16 +10,12 @@ import me.retrodaredevil.solarthing.annotations.JsonExplicit;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.DatabaseType;
 import me.retrodaredevil.solarthing.config.databases.SimpleDatabaseType;
-import me.retrodaredevil.solarthing.jackson.UnwrappedDeserializer;
 import okhttp3.HttpUrl;
 import org.jspecify.annotations.NullMarked;
-import org.jspecify.annotations.Nullable;
-import tools.jackson.databind.annotation.JsonDeserialize;
 
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("couchdb")
-@JsonDeserialize(using = CouchDbDatabaseSettings.Deserializer.class)
 @JsonExplicit
 @NullMarked
 public final class CouchDbDatabaseSettings implements DatabaseSettings {
@@ -30,9 +26,17 @@ public final class CouchDbDatabaseSettings implements DatabaseSettings {
 	@JsonUnwrapped
 	private final OkHttpProperties okHttpProperties;
 
-	public CouchDbDatabaseSettings(CouchProperties couchProperties, OkHttpProperties okHttpProperties) {
-		this.couchProperties = couchProperties;
-		this.okHttpProperties = okHttpProperties;
+	// Note: explicitly defining PROPERTIES mode here is required, as it otherwise is not correctly inferred since we have no arguments annotated with @JsonProperty
+	@JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+	public CouchDbDatabaseSettings(
+			@JsonUnwrapped
+			CouchProperties couchProperties,
+
+			@JsonUnwrapped
+			OkHttpProperties okHttpProperties
+	) {
+		this.couchProperties = requireNonNull(couchProperties, "couchProperties");
+		this.okHttpProperties = requireNonNull(okHttpProperties, "okHttpProperties");
 	}
 
 	@Override
@@ -57,26 +61,4 @@ public final class CouchDbDatabaseSettings implements DatabaseSettings {
 		return TYPE;
 	}
 
-
-	@Deprecated
-	static class Deserializer extends UnwrappedDeserializer<CouchDbDatabaseSettings, Builder> {
-		Deserializer() {
-			super(Builder.class, Builder::build);
-		}
-	}
-
-	static class Builder {
-
-		@JsonUnwrapped
-		@JsonProperty(required = true)
-		private @Nullable CouchProperties couchProperties;
-
-		@JsonUnwrapped
-		@JsonProperty(required = true)
-		private @Nullable OkHttpProperties okHttpProperties;
-
-		public CouchDbDatabaseSettings build(){
-			return new CouchDbDatabaseSettings(requireNonNull(couchProperties), requireNonNull(okHttpProperties));
-		}
-	}
 }

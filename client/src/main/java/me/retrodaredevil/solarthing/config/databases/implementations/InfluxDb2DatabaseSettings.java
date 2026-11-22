@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.config.databases.implementations;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import me.retrodaredevil.influxdb.influxdb2.InfluxDb2Properties;
@@ -7,14 +8,10 @@ import me.retrodaredevil.okhttp3.OkHttpProperties;
 import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.DatabaseType;
 import me.retrodaredevil.solarthing.config.databases.SimpleDatabaseType;
-import me.retrodaredevil.solarthing.jackson.UnwrappedDeserializer;
 import org.jspecify.annotations.NullMarked;
-import org.jspecify.annotations.Nullable;
-import tools.jackson.databind.annotation.JsonDeserialize;
 
 import static java.util.Objects.requireNonNull;
 
-@JsonDeserialize(using = InfluxDb2DatabaseSettings.Deserializer.class)
 @JsonTypeName("influxdb2")
 @NullMarked
 public class InfluxDb2DatabaseSettings implements DatabaseSettings {
@@ -23,7 +20,8 @@ public class InfluxDb2DatabaseSettings implements DatabaseSettings {
 	private final InfluxDb2Properties influxDbProperties;
 	private final OkHttpProperties okHttpProperties;
 
-	public InfluxDb2DatabaseSettings(InfluxDb2Properties influxDbProperties, OkHttpProperties okHttpProperties) {
+	@JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+	public InfluxDb2DatabaseSettings(@JsonUnwrapped InfluxDb2Properties influxDbProperties, @JsonUnwrapped OkHttpProperties okHttpProperties) {
 		this.influxDbProperties = requireNonNull(influxDbProperties);
 		this.okHttpProperties = requireNonNull(okHttpProperties);
 	}
@@ -43,25 +41,5 @@ public class InfluxDb2DatabaseSettings implements DatabaseSettings {
 	}
 	public OkHttpProperties getOkHttpProperties() {
 		return okHttpProperties;
-	}
-	@Deprecated
-	static class Deserializer extends UnwrappedDeserializer<InfluxDb2DatabaseSettings, Builder> {
-		Deserializer() {
-			super(Builder.class, Builder::build);
-		}
-	}
-	static class Builder {
-		@JsonUnwrapped
-		private @Nullable InfluxDb2Properties influxDbProperties;
-		@JsonUnwrapped
-		private @Nullable OkHttpProperties okHttpProperties;
-
-		public InfluxDb2DatabaseSettings build() {
-			return new InfluxDb2DatabaseSettings(
-					requireNonNull(influxDbProperties, "JsonUnwrapped should have initialized influxDbProperties"),
-					requireNonNull(okHttpProperties, "JsonUnwrapped should have initialized okHttpProperties")
-			);
-		}
-
 	}
 }

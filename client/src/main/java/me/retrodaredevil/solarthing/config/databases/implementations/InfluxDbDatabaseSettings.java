@@ -1,5 +1,6 @@
 package me.retrodaredevil.solarthing.config.databases.implementations;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
@@ -9,19 +10,16 @@ import me.retrodaredevil.solarthing.config.databases.DatabaseSettings;
 import me.retrodaredevil.solarthing.config.databases.DatabaseType;
 import me.retrodaredevil.solarthing.config.databases.SimpleDatabaseType;
 import me.retrodaredevil.solarthing.influxdb.retention.RetentionPolicySetting;
-import me.retrodaredevil.solarthing.jackson.UnwrappedDeserializer;
 import me.retrodaredevil.solarthing.util.frequency.FrequentObject;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
-import tools.jackson.databind.annotation.JsonDeserialize;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
 @JsonTypeName("influxdb")
-//@JsonDeserialize(builder = InfluxDbDatabaseSettings.Builder.class)
-@JsonDeserialize(using = InfluxDbDatabaseSettings.Deserializer.class)
 @NullMarked
 public final class InfluxDbDatabaseSettings implements DatabaseSettings {
 	public static final DatabaseType TYPE = new SimpleDatabaseType("influxdb");
@@ -34,7 +32,15 @@ public final class InfluxDbDatabaseSettings implements DatabaseSettings {
 
 	private final @Nullable RetentionPolicySetting eventRetentionPolicySetting;
 
-	public InfluxDbDatabaseSettings(InfluxProperties influxProperties, OkHttpProperties okHttpProperties, @Nullable String databaseName, @Nullable String measurementName, Collection<FrequentObject<RetentionPolicySetting>> frequentRetentionPolicies, @Nullable RetentionPolicySetting eventRetentionPolicySetting) {
+	// Note that PROPERTIES can be inferred here, but for consistency when using @JsonUnwrapped we define the mode explicitly
+	@JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+	public InfluxDbDatabaseSettings(
+			@JsonUnwrapped InfluxProperties influxProperties,
+			@JsonUnwrapped OkHttpProperties okHttpProperties,
+			@JsonProperty("database") @Nullable String databaseName,
+			@JsonProperty("measurement") @Nullable String measurementName,
+			@JsonProperty("status_retention_policies") Collection<FrequentObject<RetentionPolicySetting>> frequentRetentionPolicies,
+			@JsonProperty("event_retention_policy") @Nullable RetentionPolicySetting eventRetentionPolicySetting) {
 		this.influxProperties = requireNonNull(influxProperties);
 		this.okHttpProperties = requireNonNull(okHttpProperties);
 		this.databaseName = databaseName;
@@ -70,36 +76,5 @@ public final class InfluxDbDatabaseSettings implements DatabaseSettings {
 	}
 	public @Nullable RetentionPolicySetting getEventRetentionPolicy(){
 		return eventRetentionPolicySetting;
-	}
-	@Deprecated
-	static class Deserializer extends UnwrappedDeserializer<InfluxDbDatabaseSettings, Builder> {
-		Deserializer() {
-			super(Builder.class, Builder::build);
-		}
-	}
-	public static class Builder {
-		@JsonUnwrapped
-		private @Nullable InfluxProperties influxProperties;
-		@JsonUnwrapped
-		private @Nullable OkHttpProperties okHttpProperties;
-		@JsonProperty("database")
-		private @Nullable String databaseName;
-		@JsonProperty("measurement")
-		private @Nullable String measurementName;
-		@JsonProperty("status_retention_policies")
-		private @Nullable List<FrequentObject<RetentionPolicySetting>> frequentStatusRetentionPolicies;
-		@JsonProperty("event_retention_policy")
-		private @Nullable RetentionPolicySetting eventRetentionPolicySetting;
-
-		public InfluxDbDatabaseSettings build() {
-			return new InfluxDbDatabaseSettings(
-					requireNonNull(influxProperties, "JsonUnwrapped should have initialized influxProperties"),
-					requireNonNull(okHttpProperties, "JsonUnwrapped should have initialized okHttpProperties"),
-					databaseName,
-					measurementName,
-					requireNonNull(frequentStatusRetentionPolicies, "status_retention_policies must be configured"),
-					eventRetentionPolicySetting
-			);
-		}
 	}
 }

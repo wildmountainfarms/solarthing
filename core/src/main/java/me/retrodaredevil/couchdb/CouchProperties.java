@@ -10,8 +10,7 @@ import tools.jackson.databind.annotation.JsonDeserialize;
 import java.net.URI;
 
 /**
- * Note: This does not support serialization officially.
- * Implementation may support serialization to make {@link me.retrodaredevil.solarthing.jackson.UnwrappedDeserializer} happy, but that's the only reason
+ * Note: Implementations are not required to support serialization.
  */
 @JsonDeserialize(as = ImmutableCouchProperties.class)
 @JsonExplicit
