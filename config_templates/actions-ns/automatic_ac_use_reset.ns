@@ -2,7 +2,7 @@ scope : queue {
   act is_generator_on : ac-mode(mode="No AC", not=true)
   act is_generator_off : ac-mode(mode="No AC")
 
-  act main : queue {
+  act main : with-lock "automatic ac use reset" : queue {
     call is_generator_on
     call is_generator_off
     wait PT5S
